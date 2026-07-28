@@ -21,12 +21,8 @@ Inicio | Asuntos Internos
 
 <section class="upload-card">
 
-    <form
-        action="<?= base_url('asuntos-internos/archivos/procesar') ?>"
-        method="post"
-        enctype="multipart/form-data"
-        class="upload-form"
-    >
+    <form action="<?= base_url('asuntos-internos/archivos/procesar') ?>" method="post" enctype="multipart/form-data"
+        class="upload-form">
         <?= csrf_field() ?>
 
         <label class="upload-area" for="archivo_excel">
@@ -36,16 +32,10 @@ Inicio | Asuntos Internos
             <strong>Selecciona un archivo Excel</strong>
 
             <span>
-    Archivos permitidos: .xlsx y .xlsm, máximo 50 MB
-</span>
+                Archivos permitidos: .xlsx y .xlsm, máximo 50 MB
+            </span>
 
-            <input
-                type="file"
-                name="archivo_excel"
-                id="archivo_excel"
-                accept=".xlsx,.xlsm"
-                required
-            >
+            <input type="file" name="archivo_excel" id="archivo_excel" accept=".xlsx,.xlsm" required>
 
             <button type="button" class="button button--secondary">
                 Seleccionar archivo
@@ -72,13 +62,12 @@ Inicio | Asuntos Internos
             <h2>Últimos archivos</h2>
         </div>
 
-        <a
-            href="<?= base_url('asuntos-internos/archivos') ?>"
-            class="text-link"
-        >
+        <a href="<?= base_url('asuntos-internos/archivos') ?>" class="text-link">
             Ver historial
         </a>
     </div>
+
+    <?php if (empty($archivosRecientes)): ?>
 
     <div class="empty-state">
         <strong>Aún no hay archivos procesados</strong>
@@ -88,17 +77,85 @@ Inicio | Asuntos Internos
         </p>
     </div>
 
+<?php else: ?>
+
+    <div class="recent-files">
+
+        <?php foreach ($archivosRecientes as $archivo): ?>
+
+            <article class="recent-file">
+
+                <div class="recent-file__info">
+                    <div class="recent-file__icon">
+                        XLS
+                    </div>
+
+                    <div>
+                        <strong>
+                            <?= esc($archivo['nombre_original']) ?>
+                        </strong>
+
+                        <span>
+                            <?= esc(
+                                date(
+                                    'd/m/Y H:i',
+                                    strtotime(
+                                        $archivo['fecha_procesamiento']
+                                    )
+                                )
+                            ) ?>
+                            ·
+                            <?= esc(
+                                number_format(
+                                    ($archivo['tamano'] ?? 0) / 1024,
+                                    2
+                                )
+                            ) ?> KB
+                        </span>
+                    </div>
+                </div>
+
+                <div class="recent-file__actions">
+
+                    <span class="status status--success">
+                        <?= esc(
+                            $archivo['fechas_modificadas'] ?? 0
+                        ) ?> fechas
+                    </span>
+
+                    <a
+                        class="table-action"
+                        href="<?= base_url(
+                            'asuntos-internos/archivos/descargar/'
+                            . rawurlencode(
+                                $archivo['archivo_fisico']
+                            )
+                        ) ?>"
+                    >
+                        Descargar
+                    </a>
+
+                </div>
+
+            </article>
+
+        <?php endforeach; ?>
+
+    </div>
+
+<?php endif; ?>
+
 </section>
 
 <script>
-    const inputArchivo = document.getElementById('archivo_excel');
-    const nombreArchivo = document.getElementById('file-name');
+const inputArchivo = document.getElementById('archivo_excel');
+const nombreArchivo = document.getElementById('file-name');
 
-    inputArchivo.addEventListener('change', function () {
-        nombreArchivo.textContent = this.files.length
-            ? this.files[0].name
-            : 'Ningún archivo seleccionado';
-    });
+inputArchivo.addEventListener('change', function() {
+    nombreArchivo.textContent = this.files.length ?
+        this.files[0].name :
+        'Ningún archivo seleccionado';
+});
 </script>
 
 <?= $this->endSection() ?>
