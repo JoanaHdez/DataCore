@@ -1,0 +1,364 @@
+:root {
+    --primary: #163c68;
+    --primary-dark: #0e2948;
+    --primary-light: #eaf1f8;
+    --background: #f4f6f9;
+    --surface: #ffffff;
+    --text: #172033;
+    --text-muted: #687083;
+    --border: #dfe4ec;
+    --success: #217a4b;
+    --shadow: 0 14px 40px rgba(25, 43, 70, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--text);
+    background: var(--background);
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+.topbar {
+    min-height: 76px;
+    padding: 0 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.topbar__brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.topbar__brand strong,
+.topbar__brand small {
+    display: block;
+}
+
+.topbar__brand strong {
+    font-size: 17px;
+}
+
+.topbar__brand small {
+    margin-top: 3px;
+    color: var(--text-muted);
+}
+
+.topbar__logo {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    color: #ffffff;
+    background: var(--primary);
+    font-weight: 700;
+}
+
+.topbar__nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.topbar__nav a {
+    padding: 11px 16px;
+    border-radius: 10px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.topbar__nav a:hover,
+.topbar__nav a.active {
+    color: var(--primary);
+    background: var(--primary-light);
+}
+
+.main-content {
+    width: min(1180px, 90%);
+    margin: 0 auto;
+    padding: 48px 0 70px;
+}
+
+.page-header {
+    margin-bottom: 28px;
+}
+
+.page-header--row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.page-header__label {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.1;
+}
+
+.page-header p {
+    max-width: 660px;
+    margin: 12px 0 0;
+    color: var(--text-muted);
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.upload-card,
+.history-card {
+    padding: 30px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+}
+
+.upload-form {
+    display: grid;
+    gap: 20px;
+}
+
+.upload-area {
+    min-height: 300px;
+    padding: 40px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border: 2px dashed #b8c5d6;
+    border-radius: 18px;
+    background: #fafbfd;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.upload-area:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.upload-area input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.upload-area__icon {
+    width: 58px;
+    height: 58px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #ffffff;
+    background: var(--primary);
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.upload-area strong {
+    font-size: 20px;
+}
+
+.upload-area span,
+.upload-area small {
+    color: var(--text-muted);
+}
+
+.button {
+    min-height: 46px;
+    padding: 0 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.button--primary {
+    color: #ffffff;
+    background: var(--primary);
+}
+
+.button--primary:hover {
+    background: var(--primary-dark);
+}
+
+.button--secondary {
+    color: var(--primary);
+    background: var(--primary-light);
+}
+
+.upload-form > .button {
+    justify-self: end;
+}
+
+.recent-section {
+    margin-top: 44px;
+}
+
+.section-heading {
+    margin-bottom: 18px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.section-heading h2 {
+    margin: 0;
+    font-size: 26px;
+}
+
+.text-link {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.empty-state {
+    padding: 36px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--surface);
+    text-align: center;
+}
+
+.empty-state p {
+    margin-bottom: 0;
+    color: var(--text-muted);
+}
+
+.history-toolbar {
+    margin-bottom: 22px;
+    display: grid;
+    grid-template-columns: minmax(240px, 1fr) 190px;
+    gap: 14px;
+}
+
+.search-input,
+.date-input {
+    width: 100%;
+    min-height: 46px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    outline: none;
+}
+
+.search-input:focus,
+.date-input:focus {
+    border-color: var(--primary);
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.history-table th,
+.history-table td {
+    padding: 16px 14px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    white-space: nowrap;
+}
+
+.history-table th {
+    color: var(--text-muted);
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.table-empty {
+    padding: 42px !important;
+    color: var(--text-muted);
+    text-align: center !important;
+}
+
+@media (max-width: 760px) {
+    .topbar {
+        padding: 16px 5%;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .topbar__nav {
+        width: 100%;
+    }
+
+    .topbar__nav a {
+        flex: 1;
+        text-align: center;
+    }
+
+    .main-content {
+        width: min(92%, 1180px);
+        padding-top: 32px;
+    }
+
+    .page-header--row,
+    .section-heading {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .upload-card,
+    .history-card {
+        padding: 20px;
+    }
+
+    .upload-area {
+        min-height: 260px;
+    }
+
+    .upload-form > .button {
+        width: 100%;
+    }
+
+    .history-toolbar {
+        grid-template-columns: 1fr;
+    }
+}
