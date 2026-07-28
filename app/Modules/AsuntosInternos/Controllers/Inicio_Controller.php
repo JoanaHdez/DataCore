@@ -18,7 +18,7 @@ class Inicio_Controller extends BaseController
         return view(
             'App\Modules\AsuntosInternos\Views\inicio',
             [
-                'archivosRecientes' => $this->obtenerArchivosRecientes(5),
+                'archivosRecientes' => $this->obtenerArchivosRecientes(3),
             ]
         );
     }

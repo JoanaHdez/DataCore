@@ -120,12 +120,6 @@ Inicio | Asuntos Internos
 
             <div class="recent-file__actions">
 
-                <span class="status status--success">
-                    <?= esc(
-                            $archivo['fechas_modificadas'] ?? 0
-                        ) ?> fechas
-                </span>
-
                 <a class="table-action" href="<?= base_url(
                             'asuntos-internos/archivos/descargar/'
                             . rawurlencode(

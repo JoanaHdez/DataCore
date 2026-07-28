@@ -30,25 +30,12 @@ Historial | Asuntos Internos
 
     <div class="history-toolbar">
 
-        <input
-            type="search"
-            class="search-input"
-            id="buscar-archivo"
-            placeholder="Buscar por nombre de archivo"
-            autocomplete="off"
-        >
+        <input type="search" class="search-input" id="buscar-archivo" placeholder="Buscar por nombre de archivo"
+            autocomplete="off">
 
-        <input
-            type="date"
-            class="date-input"
-            id="buscar-fecha"
-        >
+        <input type="date" class="date-input" id="buscar-fecha">
 
-        <button
-            type="button"
-            class="button button--secondary"
-            id="limpiar-filtros"
-        >
+        <button type="button" class="button button--secondary" id="limpiar-filtros">
             Limpiar filtros
         </button>
 
@@ -72,59 +59,53 @@ Historial | Asuntos Internos
 
                 <?php if (empty($archivos)): ?>
 
-                    <tr>
-                        <td colspan="6" class="table-empty">
-                            No hay archivos almacenados.
-                        </td>
-                    </tr>
+                <tr>
+                    <td colspan="6" class="table-empty">
+                        No hay archivos almacenados.
+                    </td>
+                </tr>
 
                 <?php else: ?>
 
-                    <?php foreach ($archivos as $archivo): ?>
+                <?php foreach ($archivos as $archivo): ?>
 
-                        <tr
-                            data-file-row
-                            data-file-name="<?= esc(strtolower($archivo['nombre_original']), 'attr') ?>"
-                            data-file-date="<?= esc(date('Y-m-d', strtotime($archivo['fecha_procesamiento'])), 'attr') ?>"
-                        >
+                <tr data-file-row data-file-name="<?= esc(strtolower($archivo['nombre_original']), 'attr') ?>"
+                    data-file-date="<?= esc(date('Y-m-d', strtotime($archivo['fecha_procesamiento'])), 'attr') ?>">
 
-                            <td>
-                                <strong>
-                                    <?= esc($archivo['nombre_original']) ?>
-                                </strong>
-                            </td>
+                    <td>
+                        <strong>
+                            <?= esc($archivo['nombre_original']) ?>
+                        </strong>
+                    </td>
 
-                            <td>
-                                <?= esc(date('d/m/Y H:i', strtotime($archivo['fecha_procesamiento']))) ?>
-                            </td>
+                    <td>
+                        <?= esc(date('d/m/Y H:i', strtotime($archivo['fecha_procesamiento']))) ?>
+                    </td>
 
-                            <td>
-                                <?= esc(number_format(($archivo['tamano'] ?? 0) / 1024, 2)) ?> KB
-                            </td>
+                    <td>
+                        <?= esc(number_format(($archivo['tamano'] ?? 0) / 1024, 2)) ?> KB
+                    </td>
 
-                            <td>
-                                <span class="status status--success">
-                                    Completado
-                                </span>
-                            </td>
+                    <td>
+                        <span class="status status--success">
+                            Completado
+                        </span>
+                    </td>
 
-                            <td>
+                    <td>
 
-                                <a
-                                    class="table-action"
-                                    href="<?= base_url(
+                        <a class="table-action" href="<?= base_url(
                                         'asuntos-internos/archivos/descargar/' .
                                         rawurlencode($archivo['archivo_fisico'])
-                                    ) ?>"
-                                >
-                                    Descargar
-                                </a>
+                                    ) ?>">
+                            Descargar
+                        </a>
 
-                            </td>
+                    </td>
 
-                        </tr>
+                </tr>
 
-                    <?php endforeach; ?>
+                <?php endforeach; ?>
 
                 <?php endif; ?>
 
@@ -141,6 +122,30 @@ Historial | Asuntos Internos
             </tbody>
 
         </table>
+
+    </div>
+
+    <div class="history-pagination" id="history-pagination">
+
+        <span class="history-pagination__summary" id="pagination-summary">
+            Mostrando 0 archivos
+        </span>
+
+        <div class="history-pagination__controls">
+
+            <button type="button" class="pagination-button" id="pagina-anterior" aria-label="Página anterior">
+                ‹
+            </button>
+
+            <span class="history-pagination__counter" id="pagination-counter">
+                Página 1 de 1
+            </span>
+
+            <button type="button" class="pagination-button" id="pagina-siguiente" aria-label="Página siguiente">
+                ›
+            </button>
+
+        </div>
 
     </div>
 
