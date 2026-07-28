@@ -1,0 +1,96 @@
+.upload-card {
+    padding: 30px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+}
+
+.upload-form {
+    display: grid;
+    gap: 20px;
+}
+
+.upload-area {
+    min-height: 300px;
+    padding: 40px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border: 2px dashed #b8c5d6;
+    border-radius: 18px;
+    background: #fafbfd;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.upload-area:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.upload-area input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.upload-area__icon {
+    width: 58px;
+    height: 58px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #ffffff;
+    background: var(--primary);
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.upload-area strong {
+    font-size: 20px;
+}
+
+.upload-area span,
+.upload-area small {
+    color: var(--text-muted);
+}
+
+.upload-form > .button {
+    justify-self: end;
+}
+
+.recent-section {
+    margin-top: 44px;
+}
+
+.section-heading {
+    margin-bottom: 18px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.section-heading h2 {
+    margin: 0;
+    font-size: 26px;
+}
+
+.empty-state {
+    padding: 36px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--surface);
+    text-align: center;
+}
+
+.empty-state p {
+    margin-bottom: 0;
+    color: var(--text-muted);
+}

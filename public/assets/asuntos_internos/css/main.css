@@ -1,4 +1,12 @@
-:root {
+@import url('./base.css');
+@import url('./layout.css');
+@import url('./components.css');
+@import url('./inicio.css');
+@import url('./historial.css');
+@import url('./responsive.css');
+
+
+/* :root {
     --primary: #163c68;
     --primary-dark: #0e2948;
     --primary-light: #eaf1f8;
@@ -318,6 +326,47 @@ input {
     text-align: center !important;
 }
 
+.alert {
+    margin-bottom: 24px;
+    padding: 16px 18px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.alert--success {
+    color: #17613b;
+    background: #e8f7ef;
+    border: 1px solid #b7e4ca;
+}
+
+.alert--error {
+    color: #8c2631;
+    background: #fff0f1;
+    border: 1px solid #f0c3c8;
+}
+
+.status {
+    display: inline-flex;
+    padding: 7px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.status--success {
+    color: #17613b;
+    background: #e8f7ef;
+}
+
+.table-action {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.table-action:hover {
+    text-decoration: underline;
+}
+
 @media (max-width: 760px) {
     .topbar {
         padding: 16px 5%;
@@ -361,4 +410,4 @@ input {
     .history-toolbar {
         grid-template-columns: 1fr;
     }
-}
+} */

@@ -36,14 +36,14 @@ Inicio | Asuntos Internos
             <strong>Selecciona un archivo Excel</strong>
 
             <span>
-                También puedes arrastrarlo y soltarlo aquí
-            </span>
+    Archivos permitidos: .xlsx y .xlsm, máximo 50 MB
+</span>
 
             <input
                 type="file"
                 name="archivo_excel"
                 id="archivo_excel"
-                accept=".xlsx,.xls,.xlsm,.xlsb"
+                accept=".xlsx,.xlsm"
                 required
             >
 

@@ -1,0 +1,101 @@
+.topbar {
+    min-height: 76px;
+    padding: 0 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.topbar__brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.topbar__brand strong,
+.topbar__brand small {
+    display: block;
+}
+
+.topbar__brand strong {
+    font-size: 17px;
+}
+
+.topbar__brand small {
+    margin-top: 3px;
+    color: var(--text-muted);
+}
+
+.topbar__logo {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    color: #ffffff;
+    background: var(--primary);
+    font-weight: 700;
+}
+
+.topbar__nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.topbar__nav a {
+    padding: 11px 16px;
+    border-radius: 10px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.topbar__nav a:hover,
+.topbar__nav a.active {
+    color: var(--primary);
+    background: var(--primary-light);
+}
+
+.main-content {
+    width: min(1180px, 90%);
+    margin: 0 auto;
+    padding: 48px 0 70px;
+}
+
+.page-header {
+    margin-bottom: 28px;
+}
+
+.page-header--row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.page-header__label {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.1;
+}
+
+.page-header p {
+    max-width: 660px;
+    margin: 12px 0 0;
+    color: var(--text-muted);
+    font-size: 16px;
+    line-height: 1.6;
+}

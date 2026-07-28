@@ -1,0 +1,58 @@
+.history-card {
+    padding: 30px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+}
+
+.history-toolbar {
+    margin-bottom: 22px;
+    display: grid;
+    grid-template-columns: minmax(240px, 1fr) 190px;
+    gap: 14px;
+}
+
+.search-input,
+.date-input {
+    width: 100%;
+    min-height: 46px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    outline: none;
+}
+
+.search-input:focus,
+.date-input:focus {
+    border-color: var(--primary);
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.history-table th,
+.history-table td {
+    padding: 16px 14px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    white-space: nowrap;
+}
+
+.history-table th {
+    color: var(--text-muted);
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.table-empty {
+    padding: 42px !important;
+    color: var(--text-muted);
+    text-align: center !important;
+}

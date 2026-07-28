@@ -7,7 +7,6 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 $routes->group('asuntos-internos', static function ($routes) {
-
     $routes->get(
         '/',
         '\App\Modules\AsuntosInternos\Controllers\Inicio_Controller::index'
@@ -18,4 +17,13 @@ $routes->group('asuntos-internos', static function ($routes) {
         '\App\Modules\AsuntosInternos\Controllers\Archivos_Controller::index'
     );
 
+    $routes->post(
+        'archivos/procesar',
+        '\App\Modules\AsuntosInternos\Controllers\Archivos_Controller::procesar'
+    );
+
+    $routes->get(
+        'archivos/descargar/(:segment)',
+        '\App\Modules\AsuntosInternos\Controllers\Archivos_Controller::descargar/$1'
+    );
 });

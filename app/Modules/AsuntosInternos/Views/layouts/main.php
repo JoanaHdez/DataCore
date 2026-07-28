@@ -7,7 +7,10 @@
 
     <title><?= $this->renderSection('title') ?: 'Asuntos Internos' ?></title>
 
-    <link rel="stylesheet" href="<?= base_url('assets/asuntos_internos/css/main.css') ?>">
+    <link
+        rel="stylesheet"
+        href="<?= base_url('assets/asuntos_internos/css/main.css') ?>"
+    >
 </head>
 
 <body>
@@ -40,7 +43,21 @@
     </header>
 
     <main class="main-content">
+
+        <?php if (session()->getFlashdata('success')): ?>
+            <div class="alert alert--success">
+                <?= esc(session()->getFlashdata('success')) ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (session()->getFlashdata('error')): ?>
+            <div class="alert alert--error">
+                <?= esc(session()->getFlashdata('error')) ?>
+            </div>
+        <?php endif; ?>
+
         <?= $this->renderSection('content') ?>
+
     </main>
 
 </body>
