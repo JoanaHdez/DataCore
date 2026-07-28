@@ -27,6 +27,9 @@ class Archivos_Controller extends BaseController
             'App\Modules\AsuntosInternos\Views\archivos\index',
             [
                 'archivos' => $this->obtenerArchivosProcesados(),
+                'js' => [
+                    'historial.js',
+                ],
             ]
         );
     }
@@ -120,8 +123,8 @@ class Archivos_Controller extends BaseController
                 json_encode(
                     $metadata,
                     JSON_PRETTY_PRINT
-                    | JSON_UNESCAPED_UNICODE
-                    | JSON_THROW_ON_ERROR
+                        | JSON_UNESCAPED_UNICODE
+                        | JSON_THROW_ON_ERROR
                 ),
                 LOCK_EX
             );
@@ -134,10 +137,7 @@ class Archivos_Controller extends BaseController
                 ->to(base_url('asuntos-internos/archivos'))
                 ->with(
                     'success',
-                    sprintf(
-                        'Archivo procesado correctamente. Se actualizaron %d fechas.',
-                        $resultado['fechas_modificadas']
-                    )
+                    'El archivo se procesó correctamente.'
                 );
         } catch (\Throwable $e) {
             log_message(
@@ -208,11 +208,11 @@ class Archivos_Controller extends BaseController
 
         usort(
             $archivos,
-            static fn (array $a, array $b): int =>
-                strcmp(
-                    $b['fecha_procesamiento'] ?? '',
-                    $a['fecha_procesamiento'] ?? ''
-                )
+            static fn(array $a, array $b): int =>
+            strcmp(
+                $b['fecha_procesamiento'] ?? '',
+                $a['fecha_procesamiento'] ?? ''
+            )
         );
 
         return $archivos;

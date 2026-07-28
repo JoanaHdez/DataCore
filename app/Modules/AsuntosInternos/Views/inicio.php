@@ -22,11 +22,10 @@ Inicio | Asuntos Internos
 <section class="upload-card">
 
     <form action="<?= base_url('asuntos-internos/archivos/procesar') ?>" method="post" enctype="multipart/form-data"
-        class="upload-form">
+        class="upload-form" data-upload-form>
         <?= csrf_field() ?>
 
-        <label class="upload-area" for="archivo_excel">
-
+        <label class="upload-area" for="archivo_excel" data-drop-area>
             <div class="upload-area__icon">↑</div>
 
             <strong>Selecciona un archivo Excel</strong>
@@ -47,8 +46,12 @@ Inicio | Asuntos Internos
 
         </label>
 
-        <button type="submit" class="button button--primary">
-            Procesar archivo
+        <button type="submit" class="button button--primary" data-submit-button>
+            <span class="button__spinner" aria-hidden="true"></span>
+
+            <span data-button-text>
+                Procesar archivo
+            </span>
         </button>
     </form>
 
@@ -77,26 +80,26 @@ Inicio | Asuntos Internos
         </p>
     </div>
 
-<?php else: ?>
+    <?php else: ?>
 
     <div class="recent-files">
 
         <?php foreach ($archivosRecientes as $archivo): ?>
 
-            <article class="recent-file">
+        <article class="recent-file">
 
-                <div class="recent-file__info">
-                    <div class="recent-file__icon">
-                        XLS
-                    </div>
+            <div class="recent-file__info">
+                <div class="recent-file__icon">
+                    XLS
+                </div>
 
-                    <div>
-                        <strong>
-                            <?= esc($archivo['nombre_original']) ?>
-                        </strong>
+                <div>
+                    <strong>
+                        <?= esc($archivo['nombre_original']) ?>
+                    </strong>
 
-                        <span>
-                            <?= esc(
+                    <span>
+                        <?= esc(
                                 date(
                                     'd/m/Y H:i',
                                     strtotime(
@@ -104,46 +107,43 @@ Inicio | Asuntos Internos
                                     )
                                 )
                             ) ?>
-                            ·
-                            <?= esc(
+                        ·
+                        <?= esc(
                                 number_format(
                                     ($archivo['tamano'] ?? 0) / 1024,
                                     2
                                 )
                             ) ?> KB
-                        </span>
-                    </div>
+                    </span>
                 </div>
+            </div>
 
-                <div class="recent-file__actions">
+            <div class="recent-file__actions">
 
-                    <span class="status status--success">
-                        <?= esc(
+                <span class="status status--success">
+                    <?= esc(
                             $archivo['fechas_modificadas'] ?? 0
                         ) ?> fechas
-                    </span>
+                </span>
 
-                    <a
-                        class="table-action"
-                        href="<?= base_url(
+                <a class="table-action" href="<?= base_url(
                             'asuntos-internos/archivos/descargar/'
                             . rawurlencode(
                                 $archivo['archivo_fisico']
                             )
-                        ) ?>"
-                    >
-                        Descargar
-                    </a>
+                        ) ?>">
+                    Descargar
+                </a>
 
-                </div>
+            </div>
 
-            </article>
+        </article>
 
         <?php endforeach; ?>
 
     </div>
 
-<?php endif; ?>
+    <?php endif; ?>
 
 </section>
 

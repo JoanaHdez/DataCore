@@ -20,10 +20,7 @@ Historial | Asuntos Internos
         </p>
     </div>
 
-    <a
-        href="<?= base_url('asuntos-internos') ?>"
-        class="button button--primary"
-    >
+    <a href="<?= base_url('asuntos-internos') ?>" class="button button--primary">
         Subir archivo
     </a>
 
@@ -38,6 +35,7 @@ Historial | Asuntos Internos
             class="search-input"
             id="buscar-archivo"
             placeholder="Buscar por nombre de archivo"
+            autocomplete="off"
         >
 
         <input
@@ -45,6 +43,14 @@ Historial | Asuntos Internos
             class="date-input"
             id="buscar-fecha"
         >
+
+        <button
+            type="button"
+            class="button button--secondary"
+            id="limpiar-filtros"
+        >
+            Limpiar filtros
+        </button>
 
     </div>
 
@@ -57,7 +63,6 @@ Historial | Asuntos Internos
                     <th>Archivo</th>
                     <th>Fecha de carga</th>
                     <th>Tamaño</th>
-                    <th>Fechas modificadas</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
@@ -77,7 +82,12 @@ Historial | Asuntos Internos
 
                     <?php foreach ($archivos as $archivo): ?>
 
-                        <tr>
+                        <tr
+                            data-file-row
+                            data-file-name="<?= esc(strtolower($archivo['nombre_original']), 'attr') ?>"
+                            data-file-date="<?= esc(date('Y-m-d', strtotime($archivo['fecha_procesamiento'])), 'attr') ?>"
+                        >
+
                             <td>
                                 <strong>
                                     <?= esc($archivo['nombre_original']) ?>
@@ -85,29 +95,11 @@ Historial | Asuntos Internos
                             </td>
 
                             <td>
-                                <?= esc(
-                                    date(
-                                        'd/m/Y H:i',
-                                        strtotime(
-                                            $archivo['fecha_procesamiento']
-                                        )
-                                    )
-                                ) ?>
+                                <?= esc(date('d/m/Y H:i', strtotime($archivo['fecha_procesamiento']))) ?>
                             </td>
 
                             <td>
-                                <?= esc(
-                                    number_format(
-                                        ($archivo['tamano'] ?? 0) / 1024,
-                                        2
-                                    )
-                                ) ?> KB
-                            </td>
-
-                            <td>
-                                <?= esc(
-                                    $archivo['fechas_modificadas'] ?? 0
-                                ) ?>
+                                <?= esc(number_format(($archivo['tamano'] ?? 0) / 1024, 2)) ?> KB
                             </td>
 
                             <td>
@@ -117,23 +109,34 @@ Historial | Asuntos Internos
                             </td>
 
                             <td>
+
                                 <a
                                     class="table-action"
                                     href="<?= base_url(
-                                        'asuntos-internos/archivos/descargar/'
-                                        . rawurlencode(
-                                            $archivo['archivo_fisico']
-                                        )
+                                        'asuntos-internos/archivos/descargar/' .
+                                        rawurlencode($archivo['archivo_fisico'])
                                     ) ?>"
                                 >
                                     Descargar
                                 </a>
+
                             </td>
+
                         </tr>
 
                     <?php endforeach; ?>
 
                 <?php endif; ?>
+
+            </tbody>
+
+            <tbody id="sin-resultados" hidden>
+
+                <tr>
+                    <td colspan="6" class="table-empty">
+                        No se encontraron archivos con los filtros seleccionados.
+                    </td>
+                </tr>
 
             </tbody>
 

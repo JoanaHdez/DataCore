@@ -7,10 +7,7 @@
 
     <title><?= $this->renderSection('title') ?: 'Asuntos Internos' ?></title>
 
-    <link
-        rel="stylesheet"
-        href="<?= base_url('assets/asuntos_internos/css/main.css') ?>"
-    >
+    <link rel="stylesheet" href="<?= base_url('assets/asuntos_internos/css/main.css') ?>">
 </head>
 
 <body>
@@ -26,17 +23,12 @@
         </div>
 
         <nav class="topbar__nav">
-            <a
-                href="<?= base_url('asuntos-internos') ?>"
-                class="<?= url_is('asuntos-internos') ? 'active' : '' ?>"
-            >
+            <a href="<?= base_url('asuntos-internos') ?>" class="<?= url_is('asuntos-internos') ? 'active' : '' ?>">
                 Inicio
             </a>
 
-            <a
-                href="<?= base_url('asuntos-internos/archivos') ?>"
-                class="<?= url_is('asuntos-internos/archivos*') ? 'active' : '' ?>"
-            >
+            <a href="<?= base_url('asuntos-internos/archivos') ?>"
+                class="<?= url_is('asuntos-internos/archivos*') ? 'active' : '' ?>">
                 Historial
             </a>
         </nav>
@@ -45,20 +37,55 @@
     <main class="main-content">
 
         <?php if (session()->getFlashdata('success')): ?>
-            <div class="alert alert--success">
-                <?= esc(session()->getFlashdata('success')) ?>
+            <div class="alert alert--success" data-alert>
+                <div class="alert__icon">
+                    ✓
+                </div>
+
+                <div class="alert__content">
+                    <strong>Proceso completado</strong>
+
+                    <span>
+                        <?= esc(session()->getFlashdata('success')) ?>
+                    </span>
+                </div>
+
+                <button type="button" class="alert__close" aria-label="Cerrar alerta" data-alert-close>
+                    ×
+                </button>
             </div>
         <?php endif; ?>
 
         <?php if (session()->getFlashdata('error')): ?>
-            <div class="alert alert--error">
-                <?= esc(session()->getFlashdata('error')) ?>
+            <div class="alert alert--error" data-alert>
+                <div class="alert__icon">
+                    !
+                </div>
+
+                <div class="alert__content">
+                    <strong>No se pudo completar el proceso</strong>
+
+                    <span>
+                        <?= esc(session()->getFlashdata('error')) ?>
+                    </span>
+                </div>
+
+                <button type="button" class="alert__close" aria-label="Cerrar alerta" data-alert-close>
+                    ×
+                </button>
             </div>
         <?php endif; ?>
 
         <?= $this->renderSection('content') ?>
 
     </main>
+
+    <?= view(
+        'App\Modules\AsuntosInternos\Views\components\scripts',
+        [
+            'js' => $js ?? []
+        ]
+    ) ?>
 
 </body>
 

@@ -153,3 +153,9 @@
     align-items: center;
     gap: 18px;
 }
+
+.upload-area.is-dragging {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    transform: scale(1.01);
+}

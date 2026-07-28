@@ -9,7 +9,7 @@
 .history-toolbar {
     margin-bottom: 22px;
     display: grid;
-    grid-template-columns: minmax(240px, 1fr) 190px;
+    grid-template-columns: minmax(240px, 1fr) 190px auto;
     gap: 14px;
 }
 
