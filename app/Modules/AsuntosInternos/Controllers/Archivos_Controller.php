@@ -28,8 +28,9 @@ class Archivos_Controller extends BaseController
             [
                 'archivos' => $this->obtenerArchivosProcesados(),
                 'js' => [
-                    'historial.js',
-                ],
+    'main.js',
+    'historial.js',
+],
             ]
         );
     }
@@ -87,9 +88,11 @@ class Archivos_Controller extends BaseController
                     );
             }
 
-            $nombreProcesado = pathinfo($nombreOriginal, PATHINFO_FILENAME)
-                . '_procesado_'
-                . date('Ymd_His')
+            $nombreBase = pathinfo($nombreOriginal, PATHINFO_FILENAME);
+
+            $nombreProcesado = $nombreBase
+                . '_'
+                . date('Y-m-d')
                 . '.'
                 . $extension;
 
@@ -178,6 +181,59 @@ class Archivos_Controller extends BaseController
             ->download($ruta, null)
             ->setFileName($nombreDescarga);
     }
+
+    public function eliminar(string $archivo)
+{
+    $archivo = basename(urldecode($archivo));
+
+    $rutaArchivo = $this->rutaProcesados . $archivo;
+    $rutaMetadata = $rutaArchivo . '.json';
+
+    if (! is_file($rutaArchivo) || ! is_file($rutaMetadata)) {
+        return redirect()
+            ->to(base_url('asuntos-internos/archivos'))
+            ->with(
+                'error',
+                'No se encontró el archivo que intentas eliminar.'
+            );
+    }
+
+    try {
+        if (! unlink($rutaArchivo)) {
+            throw new RuntimeException(
+                'No fue posible eliminar el archivo físico.'
+            );
+        }
+
+        if (! unlink($rutaMetadata)) {
+            throw new RuntimeException(
+                'No fue posible eliminar la información del archivo.'
+            );
+        }
+
+        return redirect()
+            ->to(base_url('asuntos-internos/archivos'))
+            ->with(
+                'success',
+                'El archivo se eliminó correctamente.'
+            );
+    } catch (\Throwable $e) {
+        log_message(
+            'error',
+            'Error eliminando archivo: {mensaje}',
+            [
+                'mensaje' => $e->getMessage(),
+            ]
+        );
+
+        return redirect()
+            ->to(base_url('asuntos-internos/archivos'))
+            ->with(
+                'error',
+                'No fue posible eliminar el archivo.'
+            );
+    }
+}
 
     private function obtenerArchivosProcesados(): array
     {

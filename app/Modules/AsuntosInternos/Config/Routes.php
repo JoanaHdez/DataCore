@@ -26,4 +26,9 @@ $routes->group('asuntos-internos', static function ($routes) {
         'archivos/descargar/(:segment)',
         '\App\Modules\AsuntosInternos\Controllers\Archivos_Controller::descargar/$1'
     );
+
+    $routes->post(
+        'archivos/eliminar/(:segment)',
+        '\App\Modules\AsuntosInternos\Controllers\Archivos_Controller::eliminar/$1'
+    );
 });

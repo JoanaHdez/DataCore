@@ -1,52 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-    configurarAlertas();
     configurarFormularioCarga();
     configurarAreaDeCarga();
+    configurarModalesDeResultado();
 });
-
-function configurarAlertas() {
-    const alertas = document.querySelectorAll('[data-alert]');
-
-    alertas.forEach((alerta) => {
-        activarAlerta(alerta);
-    });
-}
-
-function activarAlerta(alerta) {
-    if (!alerta) {
-        return;
-    }
-
-    const botonCerrar = alerta.querySelector('[data-alert-close]');
-
-    botonCerrar?.addEventListener('click', () => {
-        cerrarAlerta(alerta);
-    });
-
-    const temporizador = window.setTimeout(() => {
-        cerrarAlerta(alerta);
-    }, 4000);
-
-    alerta.addEventListener(
-        'mouseenter',
-        () => {
-            window.clearTimeout(temporizador);
-        },
-        { once: true }
-    );
-}
-
-function cerrarAlerta(alerta) {
-    if (!alerta || alerta.classList.contains('is-hiding')) {
-        return;
-    }
-
-    alerta.classList.add('is-hiding');
-
-    window.setTimeout(() => {
-        alerta.remove();
-    }, 250);
-}
 
 function configurarFormularioCarga() {
     const formulario = document.querySelector('[data-upload-form]');
@@ -67,7 +23,8 @@ function configurarFormularioCarga() {
         if (!inputArchivo?.files?.length) {
             event.preventDefault();
 
-            mostrarAlertaLocal(
+            mostrarModalLocal(
+                'Revisa la información',
                 'Selecciona un archivo antes de procesarlo.',
                 'error'
             );
@@ -94,10 +51,29 @@ function configurarAreaDeCarga() {
     const area = document.querySelector('[data-drop-area]');
     const input = document.querySelector('#archivo_excel');
     const nombre = document.querySelector('#file-name');
+    const botonSeleccionar = document.querySelector(
+        '[data-file-trigger]'
+    );
 
     if (!area || !input || !nombre) {
         return;
     }
+
+    botonSeleccionar?.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        input.click();
+    });
+
+    botonSeleccionar?.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') {
+            return;
+        }
+
+        event.preventDefault();
+        input.click();
+    });
 
     input.addEventListener('change', () => {
         actualizarNombreArchivo(input, nombre);
@@ -132,7 +108,8 @@ function configurarAreaDeCarga() {
             ?.toLowerCase();
 
         if (!['xlsx', 'xlsm'].includes(extension)) {
-            mostrarAlertaLocal(
+            mostrarModalLocal(
+                'Formato no permitido',
                 'Solo se permiten archivos .xlsx y .xlsm.',
                 'error'
             );
@@ -157,53 +134,109 @@ function actualizarNombreArchivo(input, elementoNombre) {
         : 'Ningún archivo seleccionado';
 }
 
-function mostrarAlertaLocal(mensaje, tipo = 'error') {
-    const contenidoPrincipal = document.querySelector('.main-content');
+function configurarModalesDeResultado() {
+    const modales = document.querySelectorAll(
+        '[data-result-modal]'
+    );
 
-    if (!contenidoPrincipal) {
+    modales.forEach((modal) => {
+        activarModalResultado(modal);
+    });
+}
+
+function activarModalResultado(modal) {
+    if (!modal) {
         return;
     }
 
-    const alertaAnterior = document.querySelector('[data-local-alert]');
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
 
-    alertaAnterior?.remove();
+    document.body.classList.add('modal-open');
 
-    const alerta = document.createElement('div');
+    window.setTimeout(() => {
+        cerrarModalResultado(modal);
+    }, 3500);
+}
 
-    alerta.className = `alert alert--${tipo}`;
-    alerta.dataset.alert = '';
-    alerta.dataset.localAlert = '';
+function cerrarModalResultado(modal) {
+    if (!modal || modal.hidden) {
+        return;
+    }
 
-    alerta.innerHTML = `
-        <div class="alert__icon">
-            ${tipo === 'success' ? '✓' : '!'}
-        </div>
+    modal.classList.add('is-hiding');
 
-        <div class="alert__content">
-            <strong>
-                ${
-                    tipo === 'success'
-                        ? 'Proceso completado'
-                        : 'Revisa la información'
-                }
-            </strong>
+    window.setTimeout(() => {
+        modal.hidden = true;
+        modal.setAttribute('aria-hidden', 'true');
 
-            <span>${escaparHtml(mensaje)}</span>
-        </div>
+        document.body.classList.remove('modal-open');
 
-        <button
-            type="button"
-            class="alert__close"
-            aria-label="Cerrar alerta"
-            data-alert-close
+        if (modal.hasAttribute('data-local-modal')) {
+            modal.remove();
+        }
+    }, 300);
+}
+
+function mostrarModalLocal(
+    titulo,
+    mensaje,
+    tipo = 'error'
+) {
+    const modalAnterior = document.querySelector(
+        '[data-local-modal]'
+    );
+
+    modalAnterior?.remove();
+
+    const esExito = tipo === 'success';
+
+    const modal = document.createElement('div');
+
+    modal.className =
+        `confirmation-modal confirmation-modal--${tipo}`;
+
+    modal.dataset.resultModal = '';
+    modal.dataset.localModal = '';
+
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+
+    modal.innerHTML = `
+        <div class="confirmation-modal__backdrop"></div>
+
+        <div
+            class="confirmation-modal__dialog"
+            role="status"
+            aria-live="polite"
         >
-            ×
-        </button>
+            <div class="confirmation-modal__icon">
+                ${esExito ? '✓' : '!'}
+            </div>
+
+            <div class="confirmation-modal__content">
+
+                <span class="confirmation-modal__label">
+                    ${esExito
+                        ? 'Proceso completado'
+                        : 'Atención'}
+                </span>
+
+                <h2>
+                    ${escaparHtml(titulo)}
+                </h2>
+
+                <p>
+                    ${escaparHtml(mensaje)}
+                </p>
+
+            </div>
+        </div>
     `;
 
-    document.body.appendChild(alerta);
+    document.body.appendChild(modal);
 
-    activarAlerta(alerta);
+    activarModalResultado(modal);
 }
 
 function escaparHtml(texto) {

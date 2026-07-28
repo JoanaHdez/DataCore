@@ -7,6 +7,23 @@ function iniciarHistorial() {
     const filtroFecha = document.querySelector('#buscar-fecha');
     const botonLimpiar = document.querySelector('#limpiar-filtros');
 
+    const formulariosEliminar = document.querySelectorAll(
+        '[data-delete-form]'
+    );
+
+    const modalEliminar = document.querySelector('#delete-modal');
+    const nombreArchivoModal = document.querySelector(
+        '#delete-file-name'
+    );
+
+    const botonConfirmarEliminar = document.querySelector(
+        '#confirm-delete-button'
+    );
+
+    const botonesCancelarModal = document.querySelectorAll(
+        '[data-modal-cancel]'
+    );
+
     const filas = Array.from(
         document.querySelectorAll('[data-file-row]')
     );
@@ -27,6 +44,7 @@ function iniciarHistorial() {
 
     let paginaActual = 1;
     let filasFiltradas = [...filas];
+    let formularioPendiente = null;
 
     buscador.addEventListener('input', () => {
         paginaActual = 1;
@@ -66,6 +84,80 @@ function iniciarHistorial() {
         paginaActual++;
         mostrarPagina();
     });
+
+    formulariosEliminar.forEach((formulario) => {
+        formulario.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            formularioPendiente = formulario;
+
+            const nombreArchivo =
+                formulario.dataset.fileName ?? 'seleccionado';
+
+            abrirModalEliminar(nombreArchivo);
+        });
+    });
+
+    botonConfirmarEliminar?.addEventListener('click', () => {
+        if (!formularioPendiente) {
+            return;
+        }
+
+        botonConfirmarEliminar.disabled = true;
+        botonConfirmarEliminar.textContent = 'Eliminando...';
+
+        formularioPendiente.submit();
+    });
+
+    botonesCancelarModal.forEach((boton) => {
+        boton.addEventListener('click', cerrarModalEliminar);
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (
+            event.key === 'Escape'
+            && modalEliminar
+            && !modalEliminar.hidden
+        ) {
+            cerrarModalEliminar();
+        }
+    });
+
+    function abrirModalEliminar(nombreArchivo) {
+        if (!modalEliminar) {
+            formularioPendiente?.submit();
+            return;
+        }
+
+        if (nombreArchivoModal) {
+            nombreArchivoModal.textContent = nombreArchivo;
+        }
+
+        modalEliminar.hidden = false;
+        modalEliminar.setAttribute('aria-hidden', 'false');
+
+        document.body.classList.add('modal-open');
+
+        botonConfirmarEliminar?.focus();
+    }
+
+    function cerrarModalEliminar() {
+        if (!modalEliminar) {
+            return;
+        }
+
+        modalEliminar.hidden = true;
+        modalEliminar.setAttribute('aria-hidden', 'true');
+
+        document.body.classList.remove('modal-open');
+
+        formularioPendiente = null;
+
+        if (botonConfirmarEliminar) {
+            botonConfirmarEliminar.disabled = false;
+            botonConfirmarEliminar.textContent = 'Sí, eliminar';
+        }
+    }
 
     function aplicarFiltros() {
         const textoBusqueda = normalizarTexto(buscador.value);
@@ -128,6 +220,7 @@ function iniciarHistorial() {
         sinResultados?.setAttribute('hidden', '');
 
         const inicio = (paginaActual - 1) * registrosPorPagina;
+
         const fin = Math.min(
             inicio + registrosPorPagina,
             totalRegistros
