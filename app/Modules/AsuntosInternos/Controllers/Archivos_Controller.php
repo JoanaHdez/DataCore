@@ -3,19 +3,36 @@
 namespace App\Modules\AsuntosInternos\Controllers;
 
 use App\Controllers\BaseController;
+use App\Modules\AsuntosInternos\Models\ArchivoModel;
+use App\Modules\AsuntosInternos\Models\BitacoraModel;
 use App\Modules\AsuntosInternos\Services\ExcelDateFormatService;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use RuntimeException;
+use Throwable;
+use ZipArchive;
 
 class Archivos_Controller extends BaseController
 {
+    protected ArchivoModel $archivoModel;
+    protected BitacoraModel $bitacoraModel;
+
     private string $rutaOriginales;
     private string $rutaProcesados;
 
     public function __construct()
     {
-        $this->rutaOriginales = WRITEPATH . 'asuntos-internos/originales/';
-        $this->rutaProcesados = WRITEPATH . 'asuntos-internos/procesados/';
+        $this->archivoModel = new ArchivoModel();
+        $this->bitacoraModel = new BitacoraModel();
+
+        /*
+         * Estas carpetas ahora solamente se usan de manera temporal
+         * mientras el archivo se valida y procesa.
+         */
+        $this->rutaOriginales = WRITEPATH
+            . 'asuntos-internos/originales/';
+
+        $this->rutaProcesados = WRITEPATH
+            . 'asuntos-internos/procesados/';
 
         $this->crearDirectorio($this->rutaOriginales);
         $this->crearDirectorio($this->rutaProcesados);
@@ -28,9 +45,9 @@ class Archivos_Controller extends BaseController
             [
                 'archivos' => $this->obtenerArchivosProcesados(),
                 'js' => [
-    'main.js',
-    'historial.js',
-],
+                    'main.js',
+                    'historial.js',
+                ],
             ]
         );
     }
@@ -43,16 +60,24 @@ class Archivos_Controller extends BaseController
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Selecciona un archivo de Excel válido.');
+                ->with(
+                    'error',
+                    'Selecciona un archivo de Excel válido.'
+                );
         }
 
         if ($archivo->hasMoved()) {
             return redirect()
                 ->back()
-                ->with('error', 'El archivo ya fue procesado anteriormente.');
+                ->with(
+                    'error',
+                    'El archivo ya fue procesado anteriormente.'
+                );
         }
 
-        $extension = strtolower($archivo->getClientExtension());
+        $extension = strtolower(
+            $archivo->getClientExtension()
+        );
 
         if (! in_array($extension, ['xlsx', 'xlsm'], true)) {
             return redirect()
@@ -66,19 +91,37 @@ class Archivos_Controller extends BaseController
         if ($archivo->getSize() > 50 * 1024 * 1024) {
             return redirect()
                 ->back()
-                ->with('error', 'El archivo no puede superar los 50 MB.');
+                ->with(
+                    'error',
+                    'El archivo no puede superar los 50 MB.'
+                );
         }
 
         $nombreOriginal = $archivo->getClientName();
-        $nombreSeguro = bin2hex(random_bytes(16)) . '.' . $extension;
+        $tipoMime = $archivo->getClientMimeType();
+
+        $nombreOriginalSeguro = bin2hex(
+            random_bytes(16)
+        ) . '.' . $extension;
+
+        $nombreProcesadoSeguro = bin2hex(
+            random_bytes(16)
+        ) . '.' . $extension;
+
+        $rutaOriginal = $this->rutaOriginales
+            . $nombreOriginalSeguro;
+
+        $rutaProcesada = $this->rutaProcesados
+            . $nombreProcesadoSeguro;
 
         try {
-            $archivo->move($this->rutaOriginales, $nombreSeguro);
-
-            $rutaOriginal = $this->rutaOriginales . $nombreSeguro;
+            $archivo->move(
+                $this->rutaOriginales,
+                $nombreOriginalSeguro
+            );
 
             if (! $this->esExcelValido($rutaOriginal)) {
-                @unlink($rutaOriginal);
+                $this->eliminarArchivoTemporal($rutaOriginal);
 
                 return redirect()
                     ->back()
@@ -88,20 +131,6 @@ class Archivos_Controller extends BaseController
                     );
             }
 
-            $nombreBase = pathinfo($nombreOriginal, PATHINFO_FILENAME);
-
-            $nombreProcesado = $nombreBase
-                . '_'
-                . date('Y-m-d')
-                . '.'
-                . $extension;
-
-            $nombreProcesadoSeguro = bin2hex(random_bytes(16))
-                . '.'
-                . $extension;
-
-            $rutaProcesada = $this->rutaProcesados . $nombreProcesadoSeguro;
-
             $servicio = new ExcelDateFormatService();
 
             $resultado = $servicio->procesar(
@@ -109,205 +138,358 @@ class Archivos_Controller extends BaseController
                 $rutaProcesada
             );
 
-            $metadata = [
-                'nombre_original'      => $nombreOriginal,
-                'nombre_descarga'      => $nombreProcesado,
-                'archivo_fisico'       => $nombreProcesadoSeguro,
-                'extension'            => $extension,
-                'tamano'               => filesize($rutaProcesada) ?: 0,
-                'fechas_modificadas'   => $resultado['fechas_modificadas'],
-                'hojas_revisadas'      => $resultado['hojas_revisadas'],
-                'fecha_procesamiento'  => date('Y-m-d H:i:s'),
-                'estado'               => 'completado',
-            ];
+            if (! is_file($rutaProcesada)) {
+                throw new RuntimeException(
+                    'El archivo procesado no fue generado.'
+                );
+            }
 
-            file_put_contents(
-                $rutaProcesada . '.json',
-                json_encode(
-                    $metadata,
-                    JSON_PRETTY_PRINT
-                        | JSON_UNESCAPED_UNICODE
-                        | JSON_THROW_ON_ERROR
-                ),
-                LOCK_EX
+            $contenidoExcel = file_get_contents(
+                $rutaProcesada
             );
 
-            // El original se elimina porque el requisito es conservar
-            // únicamente el archivo final procesado.
-            @unlink($rutaOriginal);
+            if ($contenidoExcel === false) {
+                throw new RuntimeException(
+                    'No fue posible leer el archivo procesado.'
+                );
+            }
+
+            $tamano = filesize($rutaProcesada);
+
+            if ($tamano === false) {
+                $tamano = strlen($contenidoExcel);
+            }
+
+            $fechaProcesamiento = date('Y-m-d H:i:s');
+
+            $conexion = db_connect();
+            $conexion->transStart();
+
+            $idArchivo = $this->archivoModel->insert(
+                [
+                    'nombre_original' => $nombreOriginal,
+                    'extension' => $extension,
+                    'tipo_mime' => $tipoMime
+                        ?: $this->obtenerTipoMime($extension),
+                    'tamano' => $tamano,
+                    'archivo_excel' => $contenidoExcel,
+                    'total_fechas_modificadas' =>
+                        (int) (
+                            $resultado['fechas_modificadas']
+                            ?? 0
+                        ),
+                    'estado' => 'completado',
+                    'mensaje_error' => null,
+                    'fecha_procesamiento' =>
+                        $fechaProcesamiento,
+                    'created_at' => $fechaProcesamiento,
+                ],
+                true
+            );
+
+            if (! $idArchivo) {
+                throw new RuntimeException(
+                    'No fue posible registrar el archivo en la base de datos.'
+                );
+            }
+
+            $this->bitacoraModel->insert([
+                'id_archivo' => $idArchivo,
+                'accion' => 'PROCESAMIENTO_COMPLETADO',
+                'descripcion' =>
+                    'El archivo fue procesado y almacenado correctamente.',
+                'nivel' => 'INFO',
+                'fecha_evento' => $fechaProcesamiento,
+            ]);
+
+            $conexion->transComplete();
+
+            if (! $conexion->transStatus()) {
+                throw new RuntimeException(
+                    'No fue posible completar el registro en la base de datos.'
+                );
+            }
+
+            /*
+             * Los archivos físicos son temporales.
+             * El archivo final ya quedó almacenado en la base.
+             */
+            $this->eliminarArchivoTemporal($rutaOriginal);
+            $this->eliminarArchivoTemporal($rutaProcesada);
 
             return redirect()
-                ->to(base_url('asuntos-internos/archivos'))
+                ->to(
+                    base_url(
+                        'asuntos-internos/archivos'
+                    )
+                )
                 ->with(
                     'success',
                     'El archivo se procesó correctamente.'
                 );
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
+            $this->eliminarArchivoTemporal($rutaOriginal);
+            $this->eliminarArchivoTemporal($rutaProcesada);
+
             log_message(
                 'error',
                 'Error procesando Excel: {mensaje}',
-                ['mensaje' => $e->getMessage()]
+                [
+                    'mensaje' => $e->getMessage(),
+                ]
             );
 
             return redirect()
                 ->back()
+                ->withInput()
                 ->with(
                     'error',
-                    'No fue posible procesar el archivo: ' . $e->getMessage()
+                    'No fue posible procesar el archivo: '
+                        . $e->getMessage()
                 );
         }
     }
 
-    public function descargar(string $archivo)
+    public function descargar(int $idArchivo)
     {
-        $archivo = basename($archivo);
-        $ruta = $this->rutaProcesados . $archivo;
-        $rutaMetadata = $ruta . '.json';
+        $archivo = $this->archivoModel->find($idArchivo);
 
-        if (! is_file($ruta) || ! is_file($rutaMetadata)) {
+        if (
+            ! $archivo
+            || ($archivo['estado'] ?? '') === 'eliminado'
+        ) {
             throw PageNotFoundException::forPageNotFound(
                 'No se encontró el archivo solicitado.'
             );
         }
 
-        $metadata = json_decode(
-            file_get_contents($rutaMetadata) ?: '',
-            true
+        $contenido = $archivo['archivo_excel'] ?? null;
+
+        if (
+            $contenido === null
+            || $contenido === ''
+        ) {
+            throw PageNotFoundException::forPageNotFound(
+                'El archivo no contiene información para descargar.'
+            );
+        }
+
+        $nombreDescarga = $this->crearNombreDescarga(
+            $archivo
         );
 
-        $nombreDescarga = $metadata['nombre_descarga'] ?? $archivo;
-
-        return $this->response
-            ->download($ruta, null)
-            ->setFileName($nombreDescarga);
-    }
-
-    public function eliminar(string $archivo)
-{
-    $archivo = basename(urldecode($archivo));
-
-    $rutaArchivo = $this->rutaProcesados . $archivo;
-    $rutaMetadata = $rutaArchivo . '.json';
-
-    if (! is_file($rutaArchivo) || ! is_file($rutaMetadata)) {
-        return redirect()
-            ->to(base_url('asuntos-internos/archivos'))
-            ->with(
+        try {
+            $this->bitacoraModel->insert([
+                'id_archivo' => $idArchivo,
+                'accion' => 'DESCARGA',
+                'descripcion' =>
+                    'El archivo fue descargado.',
+                'nivel' => 'INFO',
+                'fecha_evento' => date('Y-m-d H:i:s'),
+            ]);
+        } catch (Throwable $e) {
+            /*
+             * Una falla en la bitácora no debe impedir
+             * que el archivo pueda descargarse.
+             */
+            log_message(
                 'error',
-                'No se encontró el archivo que intentas eliminar.'
-            );
-    }
-
-    try {
-        /*
-         * La información se obtiene antes de borrar el JSON,
-         * porque después de eliminarlo ya no podríamos recuperar
-         * el nombre original del archivo.
-         */
-        $contenidoMetadata = file_get_contents($rutaMetadata);
-
-        $metadata = $contenidoMetadata !== false
-            ? json_decode($contenidoMetadata, true)
-            : [];
-
-        $nombreOriginal = is_array($metadata)
-            ? ($metadata['nombre_original'] ?? $archivo)
-            : $archivo;
-
-        if (! unlink($rutaArchivo)) {
-            throw new RuntimeException(
-                'No fue posible eliminar el archivo físico.'
-            );
-        }
-
-        if (! unlink($rutaMetadata)) {
-            throw new RuntimeException(
-                'No fue posible eliminar la información del archivo.'
-            );
-        }
-
-        return redirect()
-            ->to(base_url('asuntos-internos/archivos'))
-            ->with(
-                'delete_success',
+                'No se pudo registrar la descarga: {mensaje}',
                 [
-                    'titulo' => 'Archivo eliminado correctamente',
-                    'archivo' => $nombreOriginal,
-                    'mensaje' => 'La eliminación se completó de forma permanente.',
+                    'mensaje' => $e->getMessage(),
                 ]
             );
-    } catch (\Throwable $e) {
-        log_message(
-            'error',
-            'Error eliminando archivo: {mensaje}',
-            [
-                'mensaje' => $e->getMessage(),
-            ]
-        );
+        }
 
-        return redirect()
-            ->to(base_url('asuntos-internos/archivos'))
-            ->with(
-                'error',
-                'No fue posible eliminar el archivo.'
-            );
+        return $this->response
+            ->setHeader(
+                'Content-Type',
+                $archivo['tipo_mime']
+                    ?: $this->obtenerTipoMime(
+                        $archivo['extension']
+                    )
+            )
+            ->setHeader(
+                'Content-Disposition',
+                'attachment; filename="'
+                    . addslashes($nombreDescarga)
+                    . '"'
+            )
+            ->setHeader(
+                'Content-Length',
+                (string) strlen($contenido)
+            )
+            ->setBody($contenido);
     }
-}
+
+    public function eliminar(int $idArchivo)
+    {
+        $archivo = $this->archivoModel->find($idArchivo);
+
+        if (! $archivo) {
+            return redirect()
+                ->to(
+                    base_url(
+                        'asuntos-internos/archivos'
+                    )
+                )
+                ->with(
+                    'error',
+                    'No se encontró el archivo que intentas eliminar.'
+                );
+        }
+
+        $nombreOriginal = $archivo['nombre_original']
+            ?? 'Archivo sin nombre';
+
+        try {
+            /*
+             * La tabla bitacora tiene relación con archivos.
+             * Si la llave foránea utiliza ON DELETE CASCADE,
+             * las entradas de bitácora también serán eliminadas.
+             */
+            if (! $this->archivoModel->delete($idArchivo)) {
+                throw new RuntimeException(
+                    'No fue posible eliminar el registro.'
+                );
+            }
+
+            return redirect()
+                ->to(
+                    base_url(
+                        'asuntos-internos/archivos'
+                    )
+                )
+                ->with(
+                    'delete_success',
+                    [
+                        'titulo' =>
+                            'Archivo eliminado correctamente',
+                        'archivo' => $nombreOriginal,
+                        'mensaje' =>
+                            'La eliminación se completó de forma permanente.',
+                    ]
+                );
+        } catch (Throwable $e) {
+            log_message(
+                'error',
+                'Error eliminando archivo: {mensaje}',
+                [
+                    'mensaje' => $e->getMessage(),
+                ]
+            );
+
+            return redirect()
+                ->to(
+                    base_url(
+                        'asuntos-internos/archivos'
+                    )
+                )
+                ->with(
+                    'error',
+                    'No fue posible eliminar el archivo.'
+                );
+        }
+    }
 
     private function obtenerArchivosProcesados(): array
     {
-        $archivos = [];
+        $registros = $this->archivoModel
+            ->orderBy('fecha_procesamiento', 'DESC')
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
 
-        foreach (glob($this->rutaProcesados . '*.json') ?: [] as $metadataPath) {
-            $contenido = file_get_contents($metadataPath);
+        return array_map(
+            function (array $archivo): array {
+                /*
+                 * Se conservan algunos nombres usados anteriormente
+                 * por la vista para no romperla inmediatamente.
+                 */
+                $archivo['fechas_modificadas'] =
+                    (int) (
+                        $archivo['total_fechas_modificadas']
+                        ?? 0
+                    );
 
-            if ($contenido === false) {
-                continue;
-            }
+                $archivo['archivo_fisico'] =
+                    (string) $archivo['id_archivo'];
 
-            $metadata = json_decode($contenido, true);
+                $archivo['nombre_descarga'] =
+                    $this->crearNombreDescarga($archivo);
 
-            if (! is_array($metadata)) {
-                continue;
-            }
+                return $archivo;
+            },
+            $registros
+        );
+    }
 
-            $rutaArchivo = $this->rutaProcesados
-                . ($metadata['archivo_fisico'] ?? '');
+    private function crearNombreDescarga(
+        array $archivo
+    ): string {
+        $nombreOriginal = $archivo['nombre_original']
+            ?? 'archivo.xlsx';
 
-            if (! is_file($rutaArchivo)) {
-                continue;
-            }
-
-            $archivos[] = $metadata;
-        }
-
-        usort(
-            $archivos,
-            static fn(array $a, array $b): int =>
-            strcmp(
-                $b['fecha_procesamiento'] ?? '',
-                $a['fecha_procesamiento'] ?? ''
-            )
+        $nombreBase = pathinfo(
+            $nombreOriginal,
+            PATHINFO_FILENAME
         );
 
-        return $archivos;
+        $extension = $archivo['extension']
+            ?? pathinfo(
+                $nombreOriginal,
+                PATHINFO_EXTENSION
+            );
+
+        $fecha = $archivo['fecha_procesamiento']
+            ?? $archivo['created_at']
+            ?? date('Y-m-d H:i:s');
+
+        $timestamp = strtotime($fecha);
+
+        $fechaFormateada = $timestamp !== false
+            ? date('Y-m-d', $timestamp)
+            : date('Y-m-d');
+
+        return $nombreBase
+            . '_'
+            . $fechaFormateada
+            . '.'
+            . $extension;
     }
 
     private function esExcelValido(string $ruta): bool
     {
-        $zip = new \ZipArchive();
+        $zip = new ZipArchive();
 
         if ($zip->open($ruta) !== true) {
             return false;
         }
 
         try {
-            return $zip->locateName('[Content_Types].xml') !== false
-                && $zip->locateName('xl/workbook.xml') !== false
-                && $zip->locateName('xl/styles.xml') !== false;
+            return $zip->locateName(
+                '[Content_Types].xml'
+            ) !== false
+                && $zip->locateName(
+                    'xl/workbook.xml'
+                ) !== false
+                && $zip->locateName(
+                    'xl/styles.xml'
+                ) !== false;
         } finally {
             $zip->close();
         }
+    }
+
+    private function obtenerTipoMime(
+        string $extension
+    ): string {
+        return match (strtolower($extension)) {
+            'xlsm' =>
+                'application/vnd.ms-excel.sheet.macroEnabled.12',
+
+            default =>
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        };
     }
 
     private function crearDirectorio(string $ruta): void
@@ -316,10 +498,22 @@ class Archivos_Controller extends BaseController
             return;
         }
 
-        if (! mkdir($ruta, 0775, true) && ! is_dir($ruta)) {
+        if (
+            ! mkdir($ruta, 0775, true)
+            && ! is_dir($ruta)
+        ) {
             throw new RuntimeException(
-                'No fue posible crear el directorio: ' . $ruta
+                'No fue posible crear el directorio: '
+                    . $ruta
             );
+        }
+    }
+
+    private function eliminarArchivoTemporal(
+        string $ruta
+    ): void {
+        if (is_file($ruta)) {
+            @unlink($ruta);
         }
     }
 }

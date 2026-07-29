@@ -3,14 +3,15 @@
 namespace App\Modules\AsuntosInternos\Controllers;
 
 use App\Controllers\BaseController;
+use App\Modules\AsuntosInternos\Models\ArchivoModel;
 
 class Inicio_Controller extends BaseController
 {
-    private string $rutaProcesados;
+    protected ArchivoModel $archivoModel;
 
     public function __construct()
     {
-        $this->rutaProcesados = WRITEPATH . 'asuntos-internos/procesados/';
+        $this->archivoModel = new ArchivoModel();
     }
 
     public function index()
@@ -25,40 +26,10 @@ class Inicio_Controller extends BaseController
 
     private function obtenerArchivosRecientes(int $limite = 5): array
     {
-        $archivos = [];
-
-        foreach (glob($this->rutaProcesados . '*.json') ?: [] as $metadataPath) {
-            $contenido = file_get_contents($metadataPath);
-
-            if ($contenido === false) {
-                continue;
-            }
-
-            $metadata = json_decode($contenido, true);
-
-            if (! is_array($metadata)) {
-                continue;
-            }
-
-            $rutaArchivo = $this->rutaProcesados
-                . ($metadata['archivo_fisico'] ?? '');
-
-            if (! is_file($rutaArchivo)) {
-                continue;
-            }
-
-            $archivos[] = $metadata;
-        }
-
-        usort(
-            $archivos,
-            static fn (array $a, array $b): int =>
-                strcmp(
-                    $b['fecha_procesamiento'] ?? '',
-                    $a['fecha_procesamiento'] ?? ''
-                )
-        );
-
-        return array_slice($archivos, 0, $limite);
+        return $this->archivoModel
+            ->where('estado', 'completado')
+            ->orderBy('fecha_procesamiento', 'DESC')
+            ->orderBy('created_at', 'DESC')
+            ->findAll($limite);
     }
 }

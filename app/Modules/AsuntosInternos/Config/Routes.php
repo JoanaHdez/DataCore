@@ -23,12 +23,12 @@ $routes->group('asuntos-internos', static function ($routes) {
     );
 
     $routes->get(
-        'archivos/descargar/(:segment)',
+        'archivos/descargar/(:num)',
         '\App\Modules\AsuntosInternos\Controllers\Archivos_Controller::descargar/$1'
     );
 
     $routes->post(
-        'archivos/eliminar/(:segment)',
+        'archivos/eliminar/(:num)',
         '\App\Modules\AsuntosInternos\Controllers\Archivos_Controller::eliminar/$1'
     );
 });
