@@ -1,28 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     iniciarHistorial();
+    configurarConfirmacionEliminacion();
 });
 
 function iniciarHistorial() {
     const buscador = document.querySelector('#buscar-archivo');
     const filtroFecha = document.querySelector('#buscar-fecha');
     const botonLimpiar = document.querySelector('#limpiar-filtros');
-
-    const formulariosEliminar = document.querySelectorAll(
-        '[data-delete-form]'
-    );
-
-    const modalEliminar = document.querySelector('#delete-modal');
-    const nombreArchivoModal = document.querySelector(
-        '#delete-file-name'
-    );
-
-    const botonConfirmarEliminar = document.querySelector(
-        '#confirm-delete-button'
-    );
-
-    const botonesCancelarModal = document.querySelectorAll(
-        '[data-modal-cancel]'
-    );
 
     const filas = Array.from(
         document.querySelectorAll('[data-file-row]')
@@ -44,7 +28,6 @@ function iniciarHistorial() {
 
     let paginaActual = 1;
     let filasFiltradas = [...filas];
-    let formularioPendiente = null;
 
     buscador.addEventListener('input', () => {
         paginaActual = 1;
@@ -84,80 +67,6 @@ function iniciarHistorial() {
         paginaActual++;
         mostrarPagina();
     });
-
-    formulariosEliminar.forEach((formulario) => {
-        formulario.addEventListener('submit', (event) => {
-            event.preventDefault();
-
-            formularioPendiente = formulario;
-
-            const nombreArchivo =
-                formulario.dataset.fileName ?? 'seleccionado';
-
-            abrirModalEliminar(nombreArchivo);
-        });
-    });
-
-    botonConfirmarEliminar?.addEventListener('click', () => {
-        if (!formularioPendiente) {
-            return;
-        }
-
-        botonConfirmarEliminar.disabled = true;
-        botonConfirmarEliminar.textContent = 'Eliminando...';
-
-        formularioPendiente.submit();
-    });
-
-    botonesCancelarModal.forEach((boton) => {
-        boton.addEventListener('click', cerrarModalEliminar);
-    });
-
-    document.addEventListener('keydown', (event) => {
-        if (
-            event.key === 'Escape'
-            && modalEliminar
-            && !modalEliminar.hidden
-        ) {
-            cerrarModalEliminar();
-        }
-    });
-
-    function abrirModalEliminar(nombreArchivo) {
-        if (!modalEliminar) {
-            formularioPendiente?.submit();
-            return;
-        }
-
-        if (nombreArchivoModal) {
-            nombreArchivoModal.textContent = nombreArchivo;
-        }
-
-        modalEliminar.hidden = false;
-        modalEliminar.setAttribute('aria-hidden', 'false');
-
-        document.body.classList.add('modal-open');
-
-        botonConfirmarEliminar?.focus();
-    }
-
-    function cerrarModalEliminar() {
-        if (!modalEliminar) {
-            return;
-        }
-
-        modalEliminar.hidden = true;
-        modalEliminar.setAttribute('aria-hidden', 'true');
-
-        document.body.classList.remove('modal-open');
-
-        formularioPendiente = null;
-
-        if (botonConfirmarEliminar) {
-            botonConfirmarEliminar.disabled = false;
-            botonConfirmarEliminar.textContent = 'Sí, eliminar';
-        }
-    }
 
     function aplicarFiltros() {
         const textoBusqueda = normalizarTexto(buscador.value);
@@ -288,10 +197,186 @@ function iniciarHistorial() {
     aplicarFiltros();
 }
 
+function configurarConfirmacionEliminacion() {
+    const formularios = document.querySelectorAll(
+        '[data-delete-form]'
+    );
+
+    formularios.forEach((formulario) => {
+        formulario.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            mostrarConfirmacionEliminacion(formulario);
+        });
+    });
+}
+
+function mostrarConfirmacionEliminacion(formulario) {
+    const modalAnterior = document.querySelector(
+        '[data-delete-confirmation-modal]'
+    );
+
+    modalAnterior?.remove();
+
+    const nombreArchivo =
+        formulario.dataset.fileName || 'este archivo';
+
+    const modal = document.createElement('div');
+
+    modal.className = 'confirmation-modal';
+    modal.dataset.deleteConfirmationModal = '';
+
+    modal.setAttribute('aria-hidden', 'false');
+
+    modal.innerHTML = `
+        <div
+            class="confirmation-modal__backdrop"
+            data-delete-cancel
+        ></div>
+
+        <div
+            class="confirmation-modal__dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-confirmation-title"
+            aria-describedby="delete-confirmation-description"
+        >
+            <button
+                type="button"
+                class="confirmation-modal__close"
+                data-delete-cancel
+                aria-label="Cerrar"
+            >
+                ×
+            </button>
+
+            <div class="confirmation-modal__icon">
+                !
+            </div>
+
+            <div class="confirmation-modal__content">
+
+                <span class="confirmation-modal__label">
+                    Confirmar eliminación
+                </span>
+
+                <h2 id="delete-confirmation-title">
+                    ¿Eliminar este archivo?
+                </h2>
+
+                <p id="delete-confirmation-description">
+                    Se eliminará:
+                </p>
+
+                <strong class="confirmation-modal__file-name">
+                    ${escaparHtmlHistorial(nombreArchivo)}
+                </strong>
+
+                <p class="confirmation-modal__warning">
+                    Esta acción no se puede deshacer.
+                </p>
+
+            </div>
+
+            <div class="confirmation-modal__actions">
+
+                <button
+                    type="button"
+                    class="button button--secondary"
+                    data-delete-cancel
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    class="button button--danger"
+                    data-delete-confirm
+                >
+                    Eliminar archivo
+                </button>
+
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    document.body.classList.add('modal-open');
+
+    const botonConfirmar = modal.querySelector(
+        '[data-delete-confirm]'
+    );
+
+    const elementosCancelar = modal.querySelectorAll(
+        '[data-delete-cancel]'
+    );
+
+    const cerrarConEscape = (event) => {
+        if (event.key !== 'Escape') {
+            return;
+        }
+
+        cerrarModal();
+    };
+
+    const cerrarModal = () => {
+        document.removeEventListener(
+            'keydown',
+            cerrarConEscape
+        );
+
+        cerrarConfirmacionEliminacion(modal);
+    };
+
+    elementosCancelar.forEach((elemento) => {
+        elemento.addEventListener('click', cerrarModal);
+    });
+
+    botonConfirmar?.addEventListener('click', () => {
+        botonConfirmar.disabled = true;
+        botonConfirmar.textContent = 'Eliminando...';
+
+        document.removeEventListener(
+            'keydown',
+            cerrarConEscape
+        );
+
+        formulario.submit();
+    });
+
+    document.addEventListener(
+        'keydown',
+        cerrarConEscape
+    );
+
+    botonConfirmar?.focus();
+}
+
+function cerrarConfirmacionEliminacion(modal) {
+    if (!modal) {
+        return;
+    }
+
+    modal.classList.add('is-hiding');
+
+    window.setTimeout(() => {
+        modal.remove();
+        document.body.classList.remove('modal-open');
+    }, 300);
+}
+
 function normalizarTexto(texto) {
     return texto
         .toLowerCase()
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
         .trim();
+}
+
+function escaparHtmlHistorial(texto) {
+    const elemento = document.createElement('div');
+
+    elemento.textContent = texto;
+
+    return elemento.innerHTML;
 }
