@@ -25,44 +25,29 @@ Inicio | Asuntos Internos
         class="upload-form" data-upload-form>
         <?= csrf_field() ?>
 
-        <label
-    class="upload-area"
-    for="archivo_excel"
-    data-drop-area
->
-    <div class="upload-area__icon">
-        ↑
-    </div>
+        <label class="upload-area" for="archivo_excel" data-drop-area>
+            <div class="upload-area__icon">
+                ↑
+            </div>
 
-    <strong>
-        Selecciona un archivo Excel
-    </strong>
+            <strong>
+                Selecciona un archivo Excel
+            </strong>
 
-    <span>
-        Archivos permitidos: .xlsx y .xlsm, máximo 50 MB
-    </span>
+            <span>
+                Archivos permitidos: .xlsx y .xlsm, máximo 50 MB
+            </span>
 
-    <span
-        class="button button--secondary upload-area__button"
-        role="button"
-        tabindex="0"
-        data-file-trigger
-    >
-        Seleccionar archivo
-    </span>
+            <span class="button button--secondary upload-area__button" role="button" tabindex="0" data-file-trigger>
+                Seleccionar archivo
+            </span>
 
-    <span id="file-name">
-        Ningún archivo seleccionado
-    </span>
+            <span id="file-name">
+                Ningún archivo seleccionado
+            </span>
 
-    <input
-        type="file"
-        name="archivo_excel"
-        id="archivo_excel"
-        accept=".xlsx,.xlsm"
-        hidden
-    >
-</label>
+            <input type="file" name="archivo_excel" id="archivo_excel" accept=".xlsx,.xlsm" hidden>
+        </label>
 
         <button type="submit" class="button button--primary" data-submit-button>
             <span class="button__spinner" aria-hidden="true"></span>
@@ -118,20 +103,20 @@ Inicio | Asuntos Internos
 
                     <span>
                         <?= esc(
-                                date(
-                                    'd/m/Y H:i',
-                                    strtotime(
-                                        $archivo['fecha_procesamiento']
+                                    date(
+                                        'd/m/Y H:i',
+                                        strtotime(
+                                            $archivo['fecha_procesamiento']
+                                        )
                                     )
-                                )
-                            ) ?>
+                                ) ?>
                         ·
                         <?= esc(
-                                number_format(
-                                    ($archivo['tamano'] ?? 0) / 1024,
-                                    2
-                                )
-                            ) ?> KB
+                                    number_format(
+                                        ($archivo['tamano'] ?? 0) / 1024,
+                                        2
+                                    )
+                                ) ?> KB
                     </span>
                 </div>
             </div>
@@ -139,11 +124,9 @@ Inicio | Asuntos Internos
             <div class="recent-file__actions">
 
                 <a class="table-action" href="<?= base_url(
-                            'asuntos-internos/archivos/descargar/'
-                            . rawurlencode(
-                                $archivo['archivo_fisico']
-                            )
-                        ) ?>">
+                                                            'asuntos-internos/archivos/descargar/'
+                                                                . $archivo['id_archivo']
+) ?>">
                     Descargar
                 </a>
 
