@@ -7,6 +7,8 @@
 
     <title><?= $this->renderSection('title') ?: 'Asuntos Internos' ?></title>
 
+    <link rel="icon" type="image/png" href="<?= base_url('assets/asuntos_internos/img/dgsc2025-01.png') ?>">
+
     <link rel="stylesheet" href="<?= base_url('assets/asuntos_internos/css/main.css') ?>">
 </head>
 
@@ -18,7 +20,7 @@
 
             <div>
                 <strong>Asuntos Internos</strong>
-                <small>DataCore</small>
+                <small>Comisaria General de Seguridad Ciudadana</small>
             </div>
         </div>
 
