@@ -35,27 +35,6 @@
     </header>
 
     <main class="main-content">
-
-        <?php if (session()->getFlashdata('success')): ?>
-            <div class="alert alert--success" data-alert>
-                <div class="alert__icon">
-                    ✓
-                </div>
-
-                <div class="alert__content">
-                    <strong>Proceso completado</strong>
-
-                    <span>
-                        <?= esc(session()->getFlashdata('success')) ?>
-                    </span>
-                </div>
-
-                <button type="button" class="alert__close" aria-label="Cerrar alerta" data-alert-close>
-                    ×
-                </button>
-            </div>
-        <?php endif; ?>
-
         <?php if (session()->getFlashdata('error')): ?>
             <div class="alert alert--error" data-alert>
                 <div class="alert__icon">

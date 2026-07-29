@@ -199,6 +199,21 @@ class Archivos_Controller extends BaseController
     }
 
     try {
+        /*
+         * La información se obtiene antes de borrar el JSON,
+         * porque después de eliminarlo ya no podríamos recuperar
+         * el nombre original del archivo.
+         */
+        $contenidoMetadata = file_get_contents($rutaMetadata);
+
+        $metadata = $contenidoMetadata !== false
+            ? json_decode($contenidoMetadata, true)
+            : [];
+
+        $nombreOriginal = is_array($metadata)
+            ? ($metadata['nombre_original'] ?? $archivo)
+            : $archivo;
+
         if (! unlink($rutaArchivo)) {
             throw new RuntimeException(
                 'No fue posible eliminar el archivo físico.'
@@ -214,8 +229,12 @@ class Archivos_Controller extends BaseController
         return redirect()
             ->to(base_url('asuntos-internos/archivos'))
             ->with(
-                'success',
-                'El archivo se eliminó correctamente.'
+                'delete_success',
+                [
+                    'titulo' => 'Archivo eliminado correctamente',
+                    'archivo' => $nombreOriginal,
+                    'mensaje' => 'La eliminación se completó de forma permanente.',
+                ]
             );
     } catch (\Throwable $e) {
         log_message(

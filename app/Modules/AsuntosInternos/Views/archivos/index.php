@@ -20,9 +20,7 @@ Historial | Asuntos Internos
         </p>
     </div>
 
-    <a
-        href="<?= base_url('asuntos-internos') ?>"
-        class="button button--primary">
+    <a href="<?= base_url('asuntos-internos') ?>" class="button button--primary">
         Subir archivo
     </a>
 
@@ -32,22 +30,12 @@ Historial | Asuntos Internos
 
     <div class="history-toolbar">
 
-        <input
-            type="search"
-            class="search-input"
-            id="buscar-archivo"
-            placeholder="Buscar por nombre de archivo"
+        <input type="search" class="search-input" id="buscar-archivo" placeholder="Buscar por nombre de archivo"
             autocomplete="off">
 
-        <input
-            type="date"
-            class="date-input"
-            id="buscar-fecha">
+        <input type="date" class="date-input" id="buscar-fecha">
 
-        <button
-            type="button"
-            class="button button--secondary"
-            id="limpiar-filtros">
+        <button type="button" class="button button--secondary" id="limpiar-filtros">
             Limpiar filtros
         </button>
 
@@ -71,23 +59,20 @@ Historial | Asuntos Internos
 
                 <?php if (empty($archivos)): ?>
 
-                    <tr>
-                        <td colspan="5" class="table-empty">
-                            No hay archivos almacenados.
-                        </td>
-                    </tr>
+                <tr>
+                    <td colspan="5" class="table-empty">
+                        No hay archivos almacenados.
+                    </td>
+                </tr>
 
                 <?php else: ?>
 
-                    <?php foreach ($archivos as $archivo): ?>
+                <?php foreach ($archivos as $archivo): ?>
 
-                        <tr
-                            data-file-row
-                            data-file-name="<?= esc(
+                <tr data-file-row data-file-name="<?= esc(
                                                 strtolower($archivo['nombre_original']),
                                                 'attr'
-                                            ) ?>"
-                            data-file-date="<?= esc(
+                                            ) ?>" data-file-date="<?= esc(
                                                 date(
                                                     'Y-m-d',
                                                     strtotime($archivo['fecha_procesamiento'])
@@ -95,18 +80,17 @@ Historial | Asuntos Internos
                                                 'attr'
                                             ) ?>">
 
-                            <td>
-                                <strong
-                                    title="<?= esc(
+                    <td>
+                        <strong title="<?= esc(
                                                 $archivo['nombre_original'],
                                                 'attr'
                                             ) ?>">
-                                    <?= esc($archivo['nombre_original']) ?>
-                                </strong>
-                            </td>
+                            <?= esc($archivo['nombre_original']) ?>
+                        </strong>
+                    </td>
 
-                            <td>
-                                <?= esc(
+                    <td>
+                        <?= esc(
                                     date(
                                         'd/m/Y H:i',
                                         strtotime(
@@ -114,66 +98,58 @@ Historial | Asuntos Internos
                                         )
                                     )
                                 ) ?>
-                            </td>
+                    </td>
 
-                            <td>
-                                <?= esc(
+                    <td>
+                        <?= esc(
                                     number_format(
                                         ($archivo['tamano'] ?? 0) / 1024,
                                         2
                                     )
                                 ) ?> KB
-                            </td>
+                    </td>
 
-                            <td>
-                                <span class="status status--success">
-                                    Completado
-                                </span>
-                            </td>
+                    <td>
+                        <span class="status status--success">
+                            Completado
+                        </span>
+                    </td>
 
-                            <td>
-                                <div class="table-actions">
+                    <td>
+                        <div class="table-actions">
 
-                                    <a
-                                        class="table-action"
-                                        href="<?= base_url(
+                            <a class="table-action" href="<?= base_url(
                                                     'asuntos-internos/archivos/descargar/'
                                                         . rawurlencode(
                                                             $archivo['archivo_fisico']
                                                         )
                                                 ) ?>">
-                                        Descargar
-                                    </a>
+                                Descargar
+                            </a>
 
-                                    <form
-                                        action="<?= base_url(
+                            <form action="<?= base_url(
                                                     'asuntos-internos/archivos/eliminar/'
                                                         . rawurlencode(
                                                             $archivo['archivo_fisico']
                                                         )
-                                                ) ?>"
-                                        method="post"
-                                        class="delete-form"
-                                        data-delete-form
-                                        data-file-name="<?= esc(
+                                                ) ?>" method="post" class="delete-form" data-delete-form
+                                data-file-name="<?= esc(
                                                             $archivo['nombre_original'],
                                                             'attr'
                                                         ) ?>">
-                                        <?= csrf_field() ?>
+                                <?= csrf_field() ?>
 
-                                        <button
-                                            type="submit"
-                                            class="table-action table-action--danger">
-                                            Eliminar
-                                        </button>
-                                    </form>
+                                <button type="submit" class="table-action table-action--danger">
+                                    Eliminar
+                                </button>
+                            </form>
 
-                                </div>
-                            </td>
+                        </div>
+                    </td>
 
-                        </tr>
+                </tr>
 
-                    <?php endforeach; ?>
+                <?php endforeach; ?>
 
                 <?php endif; ?>
 
@@ -191,37 +167,23 @@ Historial | Asuntos Internos
 
     </div>
 
-    <div
-        class="history-pagination"
-        id="history-pagination">
+    <div class="history-pagination" id="history-pagination">
 
-        <span
-            class="history-pagination__summary"
-            id="pagination-summary">
+        <span class="history-pagination__summary" id="pagination-summary">
             Mostrando 0 archivos
         </span>
 
         <div class="history-pagination__controls">
 
-            <button
-                type="button"
-                class="pagination-button"
-                id="pagina-anterior"
-                aria-label="Página anterior">
+            <button type="button" class="pagination-button" id="pagina-anterior" aria-label="Página anterior">
                 ‹
             </button>
 
-            <span
-                class="history-pagination__counter"
-                id="pagination-counter">
+            <span class="history-pagination__counter" id="pagination-counter">
                 Página 1 de 1
             </span>
 
-            <button
-                type="button"
-                class="pagination-button"
-                id="pagina-siguiente"
-                aria-label="Página siguiente">
+            <button type="button" class="pagination-button" id="pagina-siguiente" aria-label="Página siguiente">
                 ›
             </button>
 
@@ -231,7 +193,12 @@ Historial | Asuntos Internos
 
 </section>
 
-<?php if (session()->getFlashdata('success')): ?>
+<?php
+$mensajeProceso = session()->getFlashdata('success');
+$datosEliminacion = session()->getFlashdata('delete_success');
+?>
+
+<?php if ($mensajeProceso): ?>
 
     <div
         class="confirmation-modal confirmation-modal--success"
@@ -263,11 +230,70 @@ Historial | Asuntos Internos
                 </h2>
 
                 <p id="process-success-description">
-                    <?= esc(session()->getFlashdata('success')) ?>
+                    <?= esc($mensajeProceso) ?>
                 </p>
 
                 <p class="confirmation-modal__message">
                     El archivo ya está disponible para descargar.
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+<?php endif; ?>
+
+
+<?php if (
+    is_array($datosEliminacion)
+    && ! empty($datosEliminacion['archivo'])
+): ?>
+
+    <div
+        class="confirmation-modal confirmation-modal--delete-success"
+        id="delete-success-modal"
+        data-result-modal
+        aria-hidden="false"
+    >
+        <div class="confirmation-modal__backdrop"></div>
+
+        <div
+            class="confirmation-modal__dialog"
+            role="status"
+            aria-live="polite"
+            aria-labelledby="delete-success-title"
+            aria-describedby="delete-success-description"
+        >
+            <div class="confirmation-modal__icon">
+                ✓
+            </div>
+
+            <div class="confirmation-modal__content">
+
+                <span class="confirmation-modal__label">
+                    Eliminación completada
+                </span>
+
+                <h2 id="delete-success-title">
+                    <?= esc(
+                        $datosEliminacion['titulo']
+                        ?? 'Archivo eliminado correctamente'
+                    ) ?>
+                </h2>
+
+                <p id="delete-success-description">
+                    Se eliminó el archivo:
+                </p>
+
+                <strong class="confirmation-modal__file-name">
+                    <?= esc($datosEliminacion['archivo']) ?>
+                </strong>
+
+                <p class="confirmation-modal__message">
+                    <?= esc(
+                        $datosEliminacion['mensaje']
+                        ?? 'La eliminación se completó de forma permanente.'
+                    ) ?>
                 </p>
 
             </div>

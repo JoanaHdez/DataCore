@@ -411,7 +411,7 @@ body.modal-open {
 
 
 /* =========================================================
-   MODAL DE ÉXITO
+   RESULTADO DE PROCESAMIENTO: VERDE
 ========================================================= */
 
 .confirmation-modal--success .confirmation-modal__dialog {
@@ -454,7 +454,61 @@ body.modal-open {
     background: #ecfdf3;
 }
 
+/* =========================================================
+   RESULTADO DE ELIMINACIÓN: ROJO
+========================================================= */
 
+.confirmation-modal--delete-success .confirmation-modal__dialog {
+    border-color: #f2c9c5;
+    text-align: center;
+}
+
+.confirmation-modal--delete-success .confirmation-modal__icon {
+    margin: 0 auto 20px;
+
+    color: #b42318;
+    background: #fff1f0;
+}
+
+.confirmation-modal--delete-success .confirmation-modal__content {
+    padding-right: 0;
+    text-align: center;
+}
+
+.confirmation-modal--delete-success .confirmation-modal__label {
+    color: #b42318;
+    text-align: center;
+}
+
+.confirmation-modal--delete-success .confirmation-modal__content h2,
+.confirmation-modal--delete-success .confirmation-modal__content p {
+    text-align: center;
+}
+
+.confirmation-modal--delete-success .confirmation-modal__file-name {
+    display: block;
+
+    margin-top: 10px;
+    padding: 12px 14px;
+
+    color: var(--text);
+    background: #fff7f6;
+    border: 1px solid #f2c9c5;
+    border-radius: 10px;
+
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.45;
+
+    overflow-wrap: anywhere;
+}
+
+.confirmation-modal--delete-success .confirmation-modal__message {
+    margin-top: 14px !important;
+
+    color: #b42318 !important;
+    text-align: center;
+}
 /* =========================================================
    MODAL DE ERROR
 ========================================================= */
