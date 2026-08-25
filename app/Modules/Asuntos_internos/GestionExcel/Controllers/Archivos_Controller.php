@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Modules\AsuntosInternos\Controllers;
+namespace App\Modules\Asuntos_internos\GestionExcel\Controllers;
 
 use App\Controllers\BaseController;
-use App\Modules\AsuntosInternos\Models\ArchivoModel;
-use App\Modules\AsuntosInternos\Models\BitacoraModel;
-use App\Modules\AsuntosInternos\Services\ExcelDateFormatService;
+use App\Modules\Asuntos_internos\GestionExcel\Models\ArchivoModel;
+use App\Modules\Asuntos_internos\GestionExcel\Models\BitacoraModel;
+use App\Modules\Asuntos_internos\GestionExcel\Services\ExcelDateFormatService;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use RuntimeException;
 use Throwable;
@@ -41,7 +41,7 @@ class Archivos_Controller extends BaseController
     public function index()
     {
         return view(
-            'App\Modules\AsuntosInternos\Views\archivos\index',
+            'App\Modules\Asuntos_internos\GestionExcel\Views\archivos\index',
             [
                 'archivos' => $this->obtenerArchivosProcesados(),
                 'js' => [

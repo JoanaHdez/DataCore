@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\AsuntosInternos\Models;
+namespace App\Modules\Asuntos_internos\GestionExcel\Models;
 
 use CodeIgniter\Model;
 

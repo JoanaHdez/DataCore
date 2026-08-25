@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\AsuntosInternos\Services;
+namespace App\Modules\Asuntos_internos\GestionExcel\Services;
 
 use DOMDocument;
 use DOMElement;

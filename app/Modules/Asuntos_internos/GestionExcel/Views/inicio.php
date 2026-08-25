@@ -1,4 +1,4 @@
-<?= $this->extend('App\Modules\AsuntosInternos\Views\layouts\main') ?>
+<?= $this->extend('App\Modules\Asuntos_internos\GestionExcel\Views\layouts\main') ?>
 
 <?= $this->section('title') ?>
 Inicio | Asuntos Internos

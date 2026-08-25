@@ -43,7 +43,7 @@ class Autoload extends AutoloadConfig
     ]; */
     public $psr4 = [
     APP_NAMESPACE => APPPATH,
-    'App\Modules\AsuntosInternos' => APPPATH . 'Modules/AsuntosInternos',
+    'App\Modules\Asuntos_internos\GestionExcel' => APPPATH . 'Modules/Asuntos_internos/GestionExcel',
 ];
 
     /**

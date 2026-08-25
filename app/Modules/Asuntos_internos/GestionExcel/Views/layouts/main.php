@@ -74,7 +74,7 @@
     </main>
 
     <?= view(
-        'App\Modules\AsuntosInternos\Views\components\scripts',
+        'App\Modules\Asuntos_internos\GestionExcel\Views\components\scripts',
         [
             'js' => $js ?? []
         ]

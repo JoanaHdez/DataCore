@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Modules\AsuntosInternos\Controllers;
+namespace App\Modules\Asuntos_internos\GestionExcel\Controllers;
 
 use App\Controllers\BaseController;
-use App\Modules\AsuntosInternos\Models\ArchivoModel;
+use App\Modules\Asuntos_internos\GestionExcel\Models\ArchivoModel;
 
 class Inicio_Controller extends BaseController
 {
@@ -17,7 +17,7 @@ class Inicio_Controller extends BaseController
     public function index()
     {
         return view(
-            'App\Modules\AsuntosInternos\Views\inicio',
+            'App\Modules\Asuntos_internos\GestionExcel\Views\inicio',
             [
                 'archivosRecientes' => $this->obtenerArchivosRecientes(3),
             ]
