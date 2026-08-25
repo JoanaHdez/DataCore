@@ -2,26 +2,64 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Nuevo reporte | Asuntos Internos</title>
+    <?= $this->include(
+        'App\Modules\Asuntos_internos\SistemaReportes\Views\layouts\head'
+    ) ?>
 </head>
 
 <body>
 
-    <h1>Nuevo reporte</h1>
+    <main class="nuevo-reporte">
 
-    <p>
-        Inicio de sesión realizado correctamente.
-    </p>
+        <?= $this->include(
+            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\encabezado'
+        ) ?>
 
-    <a href="<?= base_url('asuntos-internos/reportes/logout') ?>">
-        Cerrar sesión
-    </a>
+        <form id="form-nuevo-reporte" class="form-nuevo-reporte" method="post" action="#">
+
+            <?= csrf_field() ?>
+
+            <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\identificacion'
+            ) ?>
+
+            <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\datos_registro'
+            ) ?>
+
+            <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\datos_hechos'
+            ) ?>
+
+
+            <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\personal_involucrado'
+            ) ?>
+
+            <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\datos_quejoso'
+            ) ?>
+
+            <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\clasificacion_seguimiento'
+            ) ?>
+
+            <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\observaciones'
+            ) ?>
+            
+            <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\ubicacion'
+            ) ?>
+
+
+            <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\acciones'
+            ) ?>
+
+        </form>
+
+    </main>
 
 </body>
 

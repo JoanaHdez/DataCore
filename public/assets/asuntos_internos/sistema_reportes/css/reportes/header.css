@@ -1,0 +1,397 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   Encabezado
+========================================================= */
+
+.report-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+
+    width: 100%;
+    min-height: 105px;
+
+    padding: 18px 45px;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #e2e8f0;
+}
+
+
+/* =========================================================
+   INSTITUCIÓN
+========================================================= */
+
+.report-header__institution {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+}
+
+
+/* =========================================================
+   LOGOS
+========================================================= */
+
+.report-header__logos {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+
+    padding-right: 28px;
+
+    border-right: 1px solid #dce3eb;
+}
+
+.report-header__logos img {
+    display: block;
+
+    width: auto;
+    max-width: 105px;
+    height: 62px;
+
+    object-fit: contain;
+}
+
+
+/* =========================================================
+   TÍTULO
+========================================================= */
+
+.report-header__title span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #60728a;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.report-header__title h1 {
+    margin: 0;
+
+    color: #102b4e;
+
+    font-size: 25px;
+    font-weight: 800;
+
+    line-height: 1.2;
+}
+
+
+/* =========================================================
+   USUARIO
+========================================================= */
+
+.report-header__user {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    flex-shrink: 0;
+}
+
+.report-header__user-data {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.report-header__user-data span {
+    margin-bottom: 2px;
+
+    color: #7a899c;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.report-header__user-data strong {
+    color: #152d4c;
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.report-header__user-data small {
+    margin-top: 2px;
+
+    color: #718096;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   AVATAR
+========================================================= */
+
+.report-header__user-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 45px;
+    height: 45px;
+
+    border-radius: 50%;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            145deg,
+            #1584db,
+            #0758aa 55%,
+            #073675
+        );
+
+    box-shadow:
+        0 6px 14px rgba(7, 75, 145, 0.2);
+
+    font-size: 17px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   NAVEGACIÓN
+========================================================= */
+
+.report-nav {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    min-height: 58px;
+
+    padding: 0 45px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #071b3c 0%,
+            #0a3564 50%,
+            #07558d 100%
+        );
+
+    box-shadow:
+        0 5px 15px rgba(7, 31, 68, 0.13);
+}
+
+
+/* =========================================================
+   ENLACES
+========================================================= */
+
+.report-nav__link {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    height: 58px;
+
+    padding: 0 23px;
+
+    color: rgba(255, 255, 255, 0.72);
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.report-nav__link:hover {
+    color: #ffffff;
+
+    background: rgba(255, 255, 255, 0.05);
+}
+
+
+/* Activo */
+
+.report-nav__link--active {
+    color: #ffffff;
+}
+
+.report-nav__link--active::after {
+    content: "";
+
+    position: absolute;
+
+    left: 22px;
+    right: 22px;
+    bottom: 0;
+
+    height: 3px;
+
+    border-radius: 3px 3px 0 0;
+
+    background: #31a9ff;
+
+    box-shadow:
+        0 0 10px rgba(49, 169, 255, 0.55);
+}
+
+
+/* =========================================================
+   CERRAR SESIÓN
+========================================================= */
+
+.report-nav__logout {
+    margin-left: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 36px;
+
+    padding: 0 18px;
+
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 8px;
+
+    color: rgba(255, 255, 255, 0.88);
+
+    text-decoration: none;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.report-nav__logout:hover {
+    color: #ffffff;
+
+    border-color: rgba(255, 255, 255, 0.4);
+
+    background: rgba(255, 255, 255, 0.1);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .report-header {
+        align-items: flex-start;
+
+        padding: 20px 25px;
+    }
+
+    .report-header__institution {
+        align-items: flex-start;
+    }
+
+    .report-header__logos {
+        gap: 10px;
+
+        padding-right: 18px;
+    }
+
+    .report-header__logos img {
+        max-width: 75px;
+        height: 50px;
+    }
+
+    .report-header__title h1 {
+        font-size: 21px;
+    }
+
+    .report-nav {
+        padding: 0 25px;
+
+        overflow-x: auto;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .report-header {
+        flex-direction: column;
+
+        gap: 18px;
+    }
+
+    .report-header__institution {
+        width: 100%;
+    }
+
+    .report-header__user {
+        width: 100%;
+
+        justify-content: flex-end;
+    }
+
+}
+
+
+@media (max-width: 520px) {
+
+    .report-header {
+        padding: 18px;
+    }
+
+    .report-header__institution {
+        flex-direction: column;
+
+        gap: 15px;
+    }
+
+    .report-header__logos {
+        width: 100%;
+
+        padding: 0 0 15px;
+
+        border-right: 0;
+        border-bottom: 1px solid #dce3eb;
+    }
+
+    .report-header__logos img {
+        max-width: 80px;
+        height: 45px;
+    }
+
+    .report-nav {
+        padding: 0 10px;
+    }
+
+    .report-nav__link {
+        padding: 0 15px;
+
+        white-space: nowrap;
+    }
+
+    .report-nav__logout {
+        margin-left: 10px;
+
+        white-space: nowrap;
+    }
+
+}

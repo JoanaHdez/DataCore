@@ -27,6 +27,22 @@
             'assets/asuntos_internos/sistema_reportes/css/login.css'
         ) ?>"
     >
+
+    <link
+    rel="stylesheet"
+    href="<?= base_url(
+        'assets/asuntos_internos/sistema_reportes/css/reportes/header.css'
+    ) ?>"
+>
+
+<link
+    rel="stylesheet"
+    href="<?= base_url(
+        'assets/asuntos_internos/sistema_reportes/css/reportes/formulario.css'
+    ) ?>"
+>
+
+
 </head>
 
 <body>
