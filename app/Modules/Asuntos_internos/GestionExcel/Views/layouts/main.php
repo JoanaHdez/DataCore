@@ -7,9 +7,9 @@
 
     <title><?= $this->renderSection('title') ?: 'Asuntos Internos' ?></title>
 
-    <link rel="icon" type="image/png" href="<?= base_url('assets/asuntos_internos/img/dgsc2025-01.png') ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('assets/asuntos_internos/gestion_excel/img/dgsc2025-01.png') ?>">
 
-    <link rel="stylesheet" href="<?= base_url('assets/asuntos_internos/css/main.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/asuntos_internos/gestion_excel/css/main.css') ?>">
 </head>
 
 <body>
@@ -19,7 +19,7 @@
 
         <div class="topbar__logo">
             <img
-                src="<?= base_url('assets/asuntos_internos/img/asun.png') ?>"
+                src="<?= base_url('assets/asuntos_internos/gestion_excel/img/asun.png') ?>"
                 alt="Logo"
             >
         </div>
