@@ -34,12 +34,8 @@ Acceso | Sistema de Reportes
 
                 </div>
 
-                <form
-                    class="login-form"
-                    method="post"
-                    action="#"
-                    autocomplete="off"
-                >
+                <form class="login-form" method="post" action="<?= base_url('asuntos-internos/reportes/login') ?>"
+                    autocomplete="off">
 
                     <?= csrf_field() ?>
 
@@ -51,19 +47,10 @@ Acceso | Sistema de Reportes
 
                         <div class="form-control">
 
-                            <input
-                                type="text"
-                                id="nomina"
-                                name="nomina"
-                                placeholder="Ingresa tu número de nómina"
-                                autocomplete="off"
-                                required
-                            >
+                            <input type="text" id="nomina" name="nomina" placeholder="Ingresa tu número de nómina"
+                                autocomplete="off" required>
 
-                            <span
-                                class="form-control__icon"
-                                aria-hidden="true"
-                            >
+                            <span class="form-control__icon" aria-hidden="true">
                                 ♙
                             </span>
 
@@ -80,20 +67,10 @@ Acceso | Sistema de Reportes
 
                         <div class="form-control">
 
-                            <input
-                                type="text"
-                                id="curp"
-                                name="curp"
-                                placeholder="Ingresa tu CURP"
-                                maxlength="18"
-                                autocomplete="off"
-                                required
-                            >
+                            <input type="text" id="curp" name="curp" placeholder="Ingresa tu CURP" maxlength="18"
+                                autocomplete="off" required>
 
-                            <span
-                                class="form-control__icon"
-                                aria-hidden="true"
-                            >
+                            <span class="form-control__icon" aria-hidden="true">
                                 ▣
                             </span>
 
@@ -102,10 +79,7 @@ Acceso | Sistema de Reportes
                     </div>
 
 
-                    <button
-                        type="submit"
-                        class="login-form__submit"
-                    >
+                    <button type="submit" class="login-form__submit">
                         Ingresar
                     </button>
 
@@ -128,12 +102,9 @@ Acceso | Sistema de Reportes
 
                 <div class="login__logo">
 
-                    <img
-                        src="<?= base_url(
+                    <img src="<?= base_url(
                             'assets/asuntos_internos/sistema_reportes/img/logo.png'
-                        ) ?>"
-                        alt="Coordinación de Asuntos Internos"
-                    >
+                        ) ?>" alt="Coordinación de Asuntos Internos">
 
                 </div>
 
