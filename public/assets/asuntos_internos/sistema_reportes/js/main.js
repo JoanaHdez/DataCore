@@ -9,7 +9,7 @@ import './reportes/dashboard/graficas/clasificaciones.js';
 import './reportes/dashboard/graficas/areas.js';
 import './reportes/dashboard/graficas/turnos.js';
 import './reportes/dashboard/graficas/tendencia.js';
-
+import './reportes/dashboard/exportar.js';
 
 /* =========================================================
    REPORTES - LISTADO

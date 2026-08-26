@@ -44,6 +44,9 @@ Reportes | Asuntos Internos
 
         </div>
 
+        <?= $this->include(
+            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\modales\exportar'
+        ) ?>
     </main>
 
     <?= $this->include(

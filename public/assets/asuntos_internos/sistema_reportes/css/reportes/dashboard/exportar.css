@@ -1,0 +1,209 @@
+/* =========================================================
+   MODAL EXPORTAR DASHBOARD
+========================================================= */
+
+.modal-reporte__dialog--exportar {
+    width: min(680px, calc(100% - 32px));
+}
+
+
+/* =========================================================
+   INTRODUCCIÓN
+========================================================= */
+
+.dashboard-exportar__introduccion {
+    margin-bottom: 18px;
+}
+
+.dashboard-exportar__introduccion h3 {
+    margin: 0 0 5px;
+
+    color: #173554;
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.dashboard-exportar__introduccion p {
+    margin: 0;
+
+    color: #788b9c;
+
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   OPCIONES
+========================================================= */
+
+.dashboard-exportar__opciones {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+
+    margin-top: 12px;
+}
+
+.dashboard-exportar__opcion {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    min-width: 0;
+
+    padding: 14px;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe7ed;
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.dashboard-exportar__opcion:hover {
+    border-color: #a9cfe5;
+
+    background: #fafdff;
+}
+
+.dashboard-exportar__opcion--principal {
+    background: #f5faff;
+
+    border-color: #c8dfed;
+}
+
+
+/* =========================================================
+   CHECKBOX
+========================================================= */
+
+.dashboard-exportar__opcion input {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    opacity: 0;
+    pointer-events: none;
+}
+
+.dashboard-exportar__check {
+    position: relative;
+
+    width: 18px;
+    height: 18px;
+
+    flex-shrink: 0;
+
+    background: #ffffff;
+
+    border: 1px solid #c7d4de;
+    border-radius: 4px;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.dashboard-exportar__opcion input:checked
++ .dashboard-exportar__check {
+    background: #1681c4;
+
+    border-color: #1681c4;
+}
+
+.dashboard-exportar__opcion input:checked
++ .dashboard-exportar__check::after {
+    content: "";
+
+    position: absolute;
+
+    top: 3px;
+    left: 6px;
+
+    width: 4px;
+    height: 8px;
+
+    border-right: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+
+    transform: rotate(45deg);
+}
+
+
+/* =========================================================
+   TEXTO
+========================================================= */
+
+.dashboard-exportar__contenido {
+    display: block;
+
+    min-width: 0;
+}
+
+.dashboard-exportar__contenido strong {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #29445c;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.dashboard-exportar__contenido small {
+    display: block;
+
+    color: #8493a0;
+
+    font-size: 9px;
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   MENSAJE
+========================================================= */
+
+.dashboard-exportar__mensaje {
+    margin-top: 14px;
+
+    padding: 9px 11px;
+
+    color: #a36618;
+    background: #fff8e9;
+
+    border: 1px solid #f0dfb6;
+    border-radius: 6px;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .dashboard-exportar__opciones {
+        grid-template-columns: 1fr;
+    }
+
+}

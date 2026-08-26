@@ -60,12 +60,20 @@ Dashboard | Asuntos Internos
                 <?= $this->include(
                     'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\tendencia'
                 ) ?>
+
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\recientes'
+                ) ?>
             </div>
 
         </div>
 
     </main>
 
+    <?= $this->include(
+        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\modales\exportar'
+    ) ?> 
+    
 </div>
 
 <?= $this->endSection() ?>

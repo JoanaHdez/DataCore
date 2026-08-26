@@ -53,4 +53,9 @@ $routes->group('asuntos-internos/reportes', static function ($routes) {
         'ubicacion/direccion',
         '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Ubicacion_Controller::direccion'
     );
+
+    $routes->post(
+        'dashboard/exportar',
+        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::exportarDashboard'
+    );
 });

@@ -6,6 +6,14 @@
     margin-bottom: 22px;
 }
 
+.dashboard-encabezado__contenido {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 24px;
+}
+
 .dashboard-encabezado__eyebrow {
     display: block;
 
@@ -36,4 +44,74 @@
 
     font-size: 12px;
     line-height: 1.6;
+}
+
+
+/* =========================================================
+   ACCIONES
+========================================================= */
+
+.dashboard-encabezado__acciones {
+    display: flex;
+    align-items: center;
+
+    flex-shrink: 0;
+}
+
+.dashboard-encabezado__exportar {
+    min-width: 135px;
+    height: 40px;
+
+    padding: 0 17px;
+
+    color: #ffffff;
+    background: #147a4e;
+
+    border: 1px solid #147a4e;
+    border-radius: 7px;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.dashboard-encabezado__exportar:hover {
+    background: #10663f;
+    border-color: #10663f;
+
+    box-shadow:
+        0 5px 12px rgba(20, 122, 78, 0.16);
+
+    transform: translateY(-1px);
+}
+
+.dashboard-encabezado__exportar:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .dashboard-encabezado__contenido {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .dashboard-encabezado__acciones,
+    .dashboard-encabezado__exportar {
+        width: 100%;
+    }
+
 }

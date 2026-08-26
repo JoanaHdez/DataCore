@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Modules\Asuntos_internos\SistemaReportes\Controllers;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardExcelService;
 
 use App\Controllers\BaseController;
 
@@ -62,5 +63,64 @@ class Reportes_Controller extends BaseController
         return view(
             'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\index'
         );
+    }
+
+    public function exportarDashboard()
+    {
+        $secciones =
+            $this->request->getPost(
+                'secciones'
+            );
+
+        if (
+            ! is_array($secciones)
+            || empty($secciones)
+        ) {
+            return $this->response
+                ->setStatusCode(400)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'Selecciona al menos una sección para exportar.',
+                ]);
+        }
+
+        try {
+
+            $servicio =
+                new DashboardExcelService();
+
+            $ruta =
+                $servicio->generar(
+                    $secciones
+                );
+
+            return $this->response
+                ->download(
+                    $ruta,
+                    null
+                )
+                ->setFileName(
+                    basename($ruta)
+                );
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error exportando Dashboard: {mensaje}',
+                [
+                    'mensaje' => $e->getMessage(),
+                ]
+            );
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                    'archivo' => $e->getFile(),
+                    'linea' => $e->getLine(),
+                ]);
+        }
     }
 }

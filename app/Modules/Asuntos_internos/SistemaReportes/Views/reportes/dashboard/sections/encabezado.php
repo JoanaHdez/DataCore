@@ -1,15 +1,36 @@
 <section class="dashboard-encabezado">
 
-    <span class="dashboard-encabezado__eyebrow">
-        Asuntos Internos
-    </span>
+    <div class="dashboard-encabezado__contenido">
 
-    <h1 class="dashboard-encabezado__titulo">
-        Dashboard
-    </h1>
+        <div>
 
-    <p class="dashboard-encabezado__descripcion">
-        Consulta indicadores y estadísticas generales de los reportes.
-    </p>
+            <span class="dashboard-encabezado__eyebrow">
+                Asuntos Internos
+            </span>
+
+            <h1 class="dashboard-encabezado__titulo">
+                Dashboard
+            </h1>
+
+            <p class="dashboard-encabezado__descripcion">
+                Consulta indicadores y estadísticas generales de los reportes.
+            </p>
+
+        </div>
+
+
+        <div class="dashboard-encabezado__acciones">
+
+            <button
+                type="button"
+                class="dashboard-encabezado__exportar"
+                id="btn-exportar-dashboard"
+            >
+                Exportar Excel
+            </button>
+
+        </div>
+
+    </div>
 
 </section>
