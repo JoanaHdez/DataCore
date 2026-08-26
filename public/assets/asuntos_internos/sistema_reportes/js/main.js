@@ -5,7 +5,7 @@
 
 import './login.js';
 import './reportes/ubicacion.js';
-
+import './reportes/dashboard/graficas/clasificaciones.js';
 
 /* =========================================================
    REPORTES - LISTADO

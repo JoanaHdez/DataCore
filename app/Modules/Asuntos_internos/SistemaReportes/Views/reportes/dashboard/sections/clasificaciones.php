@@ -19,27 +19,13 @@
     </div>
 
 
-    <div class="dashboard-grafica__contenido">
+    <div class="dashboard-grafica__canvas">
 
-        <div
-            class="dashboard-grafica__canvas"
-            id="grafica-clasificaciones"
-        >
+    <canvas
+        id="grafica-clasificaciones"
+        aria-label="Gráfica de reportes por clasificación"
+    ></canvas>
 
-            <div class="dashboard-grafica__placeholder">
-
-                <strong>
-                    Gráfica de clasificaciones
-                </strong>
-
-                <span>
-                    Aquí se mostrará la distribución de los reportes.
-                </span>
-
-            </div>
-
-        </div>
-
-    </div>
+</div>
 
 </section>
