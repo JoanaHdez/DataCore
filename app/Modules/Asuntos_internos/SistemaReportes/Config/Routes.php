@@ -20,6 +20,12 @@ $routes->group('asuntos-internos/reportes', static function ($routes) {
         '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::index'
     );
 
+    // Dashboard
+    $routes->get(
+        'dashboard',
+        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::dashboard'
+    );
+
     // Procesar inicio de sesión
     $routes->post(
         'login',

@@ -91,9 +91,11 @@ $nominaUsuario = $usuario['nomina'] ?? '000000';
         Reportes
     </a>
 
-    <a href="#" class="report-nav__link <?= url_is(
-            'asuntos-internos/reportes/dashboard'
-        ) ? 'report-nav__link--active' : '' ?>">
+    <a href="<?= base_url(
+        'asuntos-internos/reportes/dashboard'
+    ) ?>" class="report-nav__link <?= url_is(
+        'asuntos-internos/reportes/dashboard'
+    ) ? 'report-nav__link--active' : '' ?>">
         Dashboard
     </a>
 

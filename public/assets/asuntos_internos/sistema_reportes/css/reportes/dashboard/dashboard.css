@@ -1,0 +1,41 @@
+/* =========================================================
+   DASHBOARD
+   Archivo coordinador
+========================================================= */
+
+@import url('./encabezado.css');
+@import url('./filtros.css');
+@import url('./indicadores.css');
+@import url('./graficas.css');
+@import url('./recientes.css');
+
+
+/* =========================================================
+   ESTRUCTURA GENERAL
+========================================================= */
+
+.dashboard-page {
+    min-height: 100vh;
+
+    background: #f4f7fa;
+}
+
+.dashboard-page__main {
+    padding: 28px 32px 40px;
+}
+
+.dashboard-page__container {
+    width: 100%;
+    max-width: 1450px;
+
+    margin: 0 auto;
+}
+
+
+@media (max-width: 768px) {
+
+    .dashboard-page__main {
+        padding: 20px 16px 32px;
+    }
+
+}

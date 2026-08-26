@@ -1,0 +1,194 @@
+/* =========================================================
+   FILTROS DEL DASHBOARD
+========================================================= */
+
+.dashboard-filtros {
+    margin-bottom: 24px;
+    padding: 18px 20px;
+
+    background: #ffffff;
+
+    border: 1px solid #e1e8ee;
+    border-radius: 10px;
+}
+
+.dashboard-filtros__encabezado {
+    margin-bottom: 15px;
+}
+
+.dashboard-filtros__eyebrow {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #1681c4;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.dashboard-filtros__titulo {
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 15px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   CONTROLES
+========================================================= */
+
+.dashboard-filtros__controles {
+    display: grid;
+
+    grid-template-columns:
+        minmax(150px, 1fr)
+        minmax(150px, 1fr)
+        minmax(180px, 1fr)
+        auto;
+
+    align-items: end;
+
+    gap: 14px;
+}
+
+.dashboard-filtros__campo {
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+.dashboard-filtros__campo label {
+    color: #607487;
+
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.dashboard-filtros__campo input,
+.dashboard-filtros__campo select {
+    width: 100%;
+    height: 38px;
+
+    padding: 0 11px;
+
+    color: #344d64;
+    background: #ffffff;
+
+    border: 1px solid #d8e1e9;
+    border-radius: 6px;
+
+    font-family: inherit;
+    font-size: 10px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.dashboard-filtros__campo input:focus,
+.dashboard-filtros__campo select:focus {
+    border-color: #1681c4;
+
+    box-shadow:
+        0 0 0 3px rgba(22, 129, 196, 0.1);
+}
+
+
+/* =========================================================
+   BOTONES
+========================================================= */
+
+.dashboard-filtros__acciones {
+    display: flex;
+
+    gap: 8px;
+}
+
+.dashboard-filtros__boton {
+    height: 38px;
+
+    padding: 0 15px;
+
+    border-radius: 6px;
+
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.dashboard-filtros__boton--secondary {
+    color: #607487;
+    background: #ffffff;
+
+    border: 1px solid #d7e0e8;
+}
+
+.dashboard-filtros__boton--secondary:hover {
+    background: #f4f7f9;
+}
+
+.dashboard-filtros__boton--primary {
+    color: #ffffff;
+    background: #1681c4;
+
+    border: 1px solid #1681c4;
+}
+
+.dashboard-filtros__boton--primary:hover {
+    background: #116da6;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 950px) {
+
+    .dashboard-filtros__controles {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-filtros__acciones {
+        grid-column: 1 / -1;
+    }
+
+}
+
+
+@media (max-width: 550px) {
+
+    .dashboard-filtros__controles {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-filtros__acciones {
+        grid-column: auto;
+
+        flex-direction: column;
+    }
+
+    .dashboard-filtros__boton {
+        width: 100%;
+    }
+
+}

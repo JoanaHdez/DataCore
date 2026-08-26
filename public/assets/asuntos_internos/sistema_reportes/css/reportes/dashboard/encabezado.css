@@ -1,0 +1,39 @@
+/* =========================================================
+   ENCABEZADO DEL DASHBOARD
+========================================================= */
+
+.dashboard-encabezado {
+    margin-bottom: 22px;
+}
+
+.dashboard-encabezado__eyebrow {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #1681c4;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.dashboard-encabezado__titulo {
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 26px;
+    font-weight: 800;
+}
+
+.dashboard-encabezado__descripcion {
+    margin: 6px 0 0;
+
+    color: #718293;
+
+    font-size: 12px;
+    line-height: 1.6;
+}

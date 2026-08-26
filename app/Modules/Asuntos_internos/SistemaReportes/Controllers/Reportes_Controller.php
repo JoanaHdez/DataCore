@@ -56,4 +56,11 @@ class Reportes_Controller extends BaseController
             'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\nuevo'
         );
     }
+
+    public function dashboard()
+    {
+        return view(
+            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\index'
+        );
+    }
 }

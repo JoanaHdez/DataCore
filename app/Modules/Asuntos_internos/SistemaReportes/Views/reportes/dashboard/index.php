@@ -1,0 +1,40 @@
+<?= $this->extend(
+    'App\Modules\Asuntos_internos\SistemaReportes\Views\layouts\head'
+) ?>
+
+<?= $this->section('title') ?>
+Dashboard | Asuntos Internos
+<?= $this->endSection() ?>
+
+
+<?= $this->section('content') ?>
+
+<div class="dashboard-page">
+
+    <!-- HEADER GENERAL DEL SISTEMA -->
+    <?= $this->include(
+        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\encabezado'
+    ) ?>
+
+    <main class="dashboard-page__main">
+
+        <div class="dashboard-page__container">
+
+            <!-- ENCABEZADO DEL DASHBOARD -->
+            <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\encabezado'
+            ) ?>
+
+
+            <!-- FILTROS -->
+            <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\filtros'
+            ) ?>
+
+        </div>
+
+    </main>
+
+</div>
+
+<?= $this->endSection() ?>
