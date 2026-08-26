@@ -21,24 +21,14 @@
 
     <div class="dashboard-grafica__contenido">
 
-        <div
-            class="dashboard-grafica__canvas"
-            id="grafica-areas"
-        >
+        <div class="dashboard-grafica__canvas">
 
-            <div class="dashboard-grafica__placeholder">
+    <canvas
+        id="grafica-areas"
+        aria-label="Gráfica de reportes por área"
+    ></canvas>
 
-                <strong>
-                    Gráfica de áreas
-                </strong>
-
-                <span>
-                    Aquí se mostrará la distribución de los reportes.
-                </span>
-
-            </div>
-
-        </div>
+</div>
 
     </div>
 

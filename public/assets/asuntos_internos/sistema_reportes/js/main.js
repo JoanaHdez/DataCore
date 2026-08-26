@@ -6,6 +6,7 @@
 import './login.js';
 import './reportes/ubicacion.js';
 import './reportes/dashboard/graficas/clasificaciones.js';
+import './reportes/dashboard/graficas/areas.js';
 
 /* =========================================================
    REPORTES - LISTADO
