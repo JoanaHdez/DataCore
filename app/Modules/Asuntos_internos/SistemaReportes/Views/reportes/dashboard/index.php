@@ -31,10 +31,28 @@ Dashboard | Asuntos Internos
                 'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\filtros'
             ) ?>
 
-            <!-- CLASIFICACION -->
+
+            <!-- INDICADORES -->
             <?= $this->include(
-                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\clasificaciones'
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\indicadores'
             ) ?>
+
+
+            <!-- GRÁFICAS PRINCIPALES -->
+            <div class="dashboard-graficas-grid">
+
+                <!-- CLASIFICACIÓN -->
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\clasificaciones'
+                ) ?>
+
+
+                <!-- ÁREAS -->
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\areas'
+                ) ?>
+
+            </div>
 
         </div>
 
