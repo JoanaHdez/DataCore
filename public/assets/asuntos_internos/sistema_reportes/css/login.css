@@ -28,18 +28,20 @@ body {
 
     background:
         radial-gradient(
-            circle at 30% 45%,
-            rgba(226, 244, 255, 0.95) 0%,
-            rgba(162, 207, 235, 0.85) 30%,
-            rgba(54, 111, 158, 0.55) 58%,
-            rgba(8, 24, 54, 0.96) 100%
+            circle at 26% 48%,
+            rgba(247, 253, 255, 1) 0%,
+            rgba(220, 241, 255, 0.97) 20%,
+            rgba(146, 196, 230, 0.88) 40%,
+            rgba(65, 126, 183, 0.84) 60%,
+            rgba(20, 67, 123, 0.92) 76%,
+            rgba(5, 27, 66, 1) 100%
         ),
         linear-gradient(
-            120deg,
-            #dbefff 0%,
-            #8fc1df 42%,
-            #295781 70%,
-            #07162f 100%
+            115deg,
+            #e7f6ff 0%,
+            #9bc9e6 38%,
+            #397bb6 68%,
+            #061a42 100%
         );
 
     overflow-x: hidden;
@@ -65,824 +67,14 @@ body {
     overflow: hidden;
 }
 
+
+/* Luz vertical central */
+
 .login::before {
     content: "";
 
     position: absolute;
 
-    top: -20%;
-    left: 30%;
-
-    width: 38%;
-    height: 140%;
-
-    background: rgba(226, 245, 255, 0.28);
-
-    filter: blur(75px);
-
-    transform: rotate(8deg);
-
-    pointer-events: none;
-}
-
-
-/* =========================================================
-   TARJETA PRINCIPAL
-========================================================= */
-
-.login__card {
-    position: relative;
-    z-index: 1;
-
-    width: min(1180px, 100%);
-    min-height: 650px;
-
-    display: grid;
-    grid-template-columns: 1fr 0.88fr;
-
-    background: rgba(255, 255, 255, 0.14);
-
-    border: 1px solid rgba(255, 255, 255, 0.55);
-    border-radius: 46px;
-
-    box-shadow:
-        0 35px 80px rgba(5, 20, 45, 0.22),
-        inset 0 1px 0 rgba(255, 255, 255, 0.32);
-
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-
-    overflow: visible;
-}
-
-
-/* =========================================================
-   PANELES
-========================================================= */
-
-.login__panel {
-    position: relative;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-/* =========================================================
-   PANEL IZQUIERDO
-========================================================= */
-
-.login__panel--form {
-    padding: 70px 75px;
-}
-
-.login__panel--form > div {
-    width: 100%;
-    max-width: 450px;
-}
-
-
-/* =========================================================
-   ENCABEZADO
-========================================================= */
-
-.login__heading {
-    margin-bottom: 42px;
-}
-
-.login__eyebrow {
-    display: inline-block;
-
-    margin-bottom: 10px;
-
-    color: #1f5f8f;
-
-    font-size: 12px;
-    font-weight: 800;
-
-    letter-spacing: 3px;
-    text-transform: uppercase;
-}
-
-.login__heading h1 {
-    margin: 0 0 12px;
-
-    color: #091c3b;
-
-    font-size: clamp(36px, 4vw, 48px);
-    font-weight: 800;
-    line-height: 1.05;
-}
-
-.login__heading p {
-    max-width: 390px;
-
-    color: rgba(9, 28, 59, 0.7);
-
-    font-size: 14px;
-    line-height: 1.7;
-}
-
-
-/* =========================================================
-   FORMULARIO
-========================================================= */
-
-.login-form {
-    width: 100%;
-}
-
-.form-field {
-    margin-bottom: 30px;
-}
-
-.form-field label {
-    display: block;
-
-    margin-bottom: 7px;
-
-    color: #102f52;
-
-    font-size: 12px;
-    font-weight: 700;
-
-    letter-spacing: 0.5px;
-}
-
-
-/* =========================================================
-   INPUTS
-========================================================= */
-
-.form-control {
-    position: relative;
-
-    display: flex;
-    align-items: center;
-
-    width: 100%;
-
-    border-bottom: 1.5px solid rgba(9, 28, 59, 0.5);
-
-    transition:
-        border-color 0.2s ease,
-        transform 0.2s ease;
-}
-
-.form-control:focus-within {
-    border-color: #0b5788;
-
-    transform: translateY(-1px);
-}
-
-.form-control input {
-    width: 100%;
-
-    padding: 12px 45px 12px 2px;
-
-    border: 0;
-    outline: 0;
-
-    color: #071831;
-    background: transparent;
-
-    font-family: inherit;
-    font-size: 16px;
-    font-weight: 500;
-}
-
-.form-control input::placeholder {
-    color: rgba(10, 34, 67, 0.45);
-}
-
-.form-control__icon {
-    position: absolute;
-    right: 5px;
-
-    width: 30px;
-    height: 30px;
-
-    display: grid;
-    place-items: center;
-
-    color: #0d2947;
-
-    font-size: 18px;
-
-    pointer-events: none;
-}
-
-
-/* =========================================================
-   BOTÓN
-========================================================= */
-
-.login-form__submit {
-    width: 100%;
-
-    margin-top: 14px;
-    padding: 16px 24px;
-
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 999px;
-
-    color: #ffffff;
-
-    background:
-        linear-gradient(
-            180deg,
-            #367fae 0%,
-            #18547f 45%,
-            #0a2448 100%
-        );
-
-    box-shadow:
-        0 12px 24px rgba(5, 28, 62, 0.25),
-        inset 0 1px 1px rgba(255, 255, 255, 0.25);
-
-    cursor: pointer;
-
-    font-family: inherit;
-    font-size: 16px;
-    font-weight: 800;
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        filter 0.2s ease;
-}
-
-.login-form__submit:hover {
-    transform: translateY(-2px);
-
-    filter: brightness(1.06);
-
-    box-shadow:
-        0 16px 30px rgba(5, 28, 62, 0.3),
-        inset 0 1px 1px rgba(255, 255, 255, 0.28);
-}
-
-.login-form__submit:active {
-    transform: translateY(0);
-}
-
-
-/* =========================================================
-   MENSAJE DE ACCESO
-========================================================= */
-
-.login__help {
-    margin-top: 34px;
-
-    color: rgba(9, 28, 59, 0.6);
-
-    text-align: center;
-
-    font-size: 12px;
-    line-height: 1.5;
-}
-
-
-/* =========================================================
-   PANEL DERECHO
-========================================================= */
-
-.login__panel--identity {
-    min-height: 650px;
-
-    margin:
-        -35px
-        -35px
-        -35px
-        0;
-
-    border-radius: 85px;
-
-    background:
-        radial-gradient(
-            circle at 50% 40%,
-            #194873 0%,
-            #0d2d54 38%,
-            #081d3d 67%,
-            #041027 100%
-        );
-
-    box-shadow:
-        -18px 20px 50px rgba(5, 19, 43, 0.26),
-        inset 0 1px 1px rgba(255, 255, 255, 0.08);
-
-    overflow: hidden;
-}
-
-.login__panel--identity::before {
-    content: "";
-
-    position: absolute;
-
-    top: -160px;
-    left: 50%;
-
-    width: 500px;
-    height: 360px;
-
-    border-radius: 50%;
-
-    background: rgba(80, 162, 214, 0.14);
-
-    filter: blur(70px);
-
-    transform: translateX(-50%);
-}
-
-
-/* =========================================================
-   IDENTIDAD
-========================================================= */
-
-.login__identity-content {
-    position: relative;
-    z-index: 2;
-
-    width: 100%;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    padding: 45px;
-}
-
-
-/* =========================================================
-   LOGO
-========================================================= */
-
-.login__logo {
-    width: min(420px, 90%);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.login__logo img {
-    display: block;
-
-    width: 100%;
-    max-width: 420px;
-    height: auto;
-
-    object-fit: contain;
-
-    filter:
-        drop-shadow(0 22px 22px rgba(0, 0, 0, 0.38))
-        drop-shadow(0 0 18px rgba(95, 172, 218, 0.15));
-}
-
-
-/* =========================================================
-   TEXTO DEL PANEL
-========================================================= */
-
-.login__identity-text {
-    margin-top: 24px;
-
-    color: #ffffff;
-
-    text-align: center;
-}
-
-.login__identity-text span {
-    display: block;
-
-    margin-bottom: 7px;
-
-    color: rgba(255, 255, 255, 0.58);
-
-    font-size: 10px;
-    font-weight: 700;
-
-    letter-spacing: 3px;
-    text-transform: uppercase;
-}
-
-.login__identity-text strong {
-    display: block;
-
-    color: #ffffff;
-
-    font-size: 20px;
-    font-weight: 800;
-    line-height: 1.3;
-
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-.login__identity-text small {
-    display: block;
-
-    margin-top: 8px;
-
-    color: rgba(255, 255, 255, 0.5);
-
-    font-size: 10px;
-    font-weight: 600;
-
-    letter-spacing: 2px;
-    text-transform: uppercase;
-}
-
-/* =========================================================
-   AJUSTE VISUAL FINAL
-   Referencia azul institucional
-========================================================= */
-
-
-/* Fondo general: más profundo y con luz central */
-body {
-    background:
-        radial-gradient(
-            ellipse at 28% 48%,
-            rgba(238, 249, 255, 1) 0%,
-            rgba(200, 228, 247, 0.97) 22%,
-            rgba(123, 176, 216, 0.88) 43%,
-            rgba(45, 104, 163, 0.82) 63%,
-            rgba(6, 31, 74, 0.98) 100%
-        ),
-        linear-gradient(
-            115deg,
-            #dff3ff 0%,
-            #8ebddd 40%,
-            #2665a5 68%,
-            #041638 100%
-        );
-}
-
-
-/* Luz vertical suave del centro */
-.login::before {
-    top: -20%;
-    left: 25%;
-
-    width: 40%;
-    height: 145%;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(240, 250, 255, 0.50),
-            rgba(255, 255, 255, 0.28),
-            transparent
-        );
-
-    filter: blur(55px);
-}
-
-
-/* =========================================================
-   CONTENEDOR PRINCIPAL
-========================================================= */
-
-.login__card {
-    background:
-        linear-gradient(
-            110deg,
-            rgba(235, 248, 255, 0.31) 0%,
-            rgba(213, 236, 251, 0.20) 45%,
-            rgba(255, 255, 255, 0.05) 100%
-        );
-
-    border: 1px solid rgba(255, 255, 255, 0.72);
-
-    box-shadow:
-        0 35px 85px rgba(3, 22, 55, 0.30),
-        inset 0 1px 0 rgba(255, 255, 255, 0.55);
-
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-}
-
-
-/* =========================================================
-   PANEL IZQUIERDO
-========================================================= */
-
-.login__panel--form {
-    background:
-        radial-gradient(
-            circle at 38% 42%,
-            rgba(242, 250, 255, 0.28),
-            rgba(213, 237, 250, 0.10) 55%,
-            transparent 78%
-        );
-}
-
-
-/* Texto pequeño */
-.login__eyebrow {
-    color: #0863b4;
-
-    text-shadow:
-        0 1px 8px rgba(255, 255, 255, 0.55);
-}
-
-
-/* Título */
-.login__heading h1 {
-    color: #061941;
-
-    text-shadow:
-        0 2px 8px rgba(255, 255, 255, 0.45);
-}
-
-
-/* Descripción */
-.login__heading p {
-    color: #304c70;
-}
-
-
-/* Labels */
-.form-field label {
-    color: #0c244a;
-
-    font-weight: 800;
-}
-
-
-/* =========================================================
-   INPUTS
-   Cambiamos la línea simple por el efecto de la referencia
-========================================================= */
-
-.form-control {
-    min-height: 58px;
-
-    padding: 0 16px;
-
-    border: 1px solid rgba(48, 105, 160, 0.30);
-    border-radius: 14px;
-
-    background:
-        linear-gradient(
-            100deg,
-            rgba(255, 255, 255, 0.45),
-            rgba(242, 249, 255, 0.24)
-        );
-
-    box-shadow:
-        inset 0 1px 2px rgba(255, 255, 255, 0.75),
-        0 3px 9px rgba(30, 83, 135, 0.05);
-
-    backdrop-filter: blur(10px);
-
-    transition:
-        border-color 0.22s ease,
-        box-shadow 0.22s ease,
-        background 0.22s ease,
-        transform 0.22s ease;
-}
-
-
-.form-control:focus-within {
-    border-color: #1675c8;
-
-    background:
-        rgba(248, 252, 255, 0.62);
-
-    box-shadow:
-        0 0 0 3px rgba(21, 117, 200, 0.12),
-        0 8px 18px rgba(23, 83, 145, 0.10);
-
-    transform: translateY(-1px);
-}
-
-
-.form-control input {
-    padding: 0 44px 0 4px;
-
-    color: #08234b;
-
-    font-size: 16px;
-}
-
-
-.form-control input::placeholder {
-    color: #7189a5;
-
-    opacity: 1;
-}
-
-
-.form-control__icon {
-    right: 14px;
-
-    color: #0b65b4;
-
-    font-size: 20px;
-}
-
-
-/* =========================================================
-   BOTÓN
-========================================================= */
-
-.login-form__submit {
-    min-height: 58px;
-
-    border: 1px solid rgba(112, 190, 255, 0.48);
-
-    background:
-        linear-gradient(
-            180deg,
-            #0876d5 0%,
-            #0756ad 40%,
-            #062b72 75%,
-            #041c55 100%
-        );
-
-    box-shadow:
-        0 12px 24px rgba(5, 58, 131, 0.30),
-        0 4px 8px rgba(3, 31, 83, 0.20),
-        inset 0 1px 1px rgba(255, 255, 255, 0.35);
-
-    text-shadow:
-        0 1px 2px rgba(0, 0, 0, 0.20);
-}
-
-
-.login-form__submit:hover {
-    background:
-        linear-gradient(
-            180deg,
-            #1287e9 0%,
-            #0967c5 42%,
-            #073887 78%,
-            #05205c 100%
-        );
-
-    box-shadow:
-        0 17px 32px rgba(4, 65, 148, 0.36),
-        inset 0 1px 1px rgba(255, 255, 255, 0.40);
-
-    transform: translateY(-2px);
-}
-
-
-/* Texto inferior */
-.login__help {
-    color: #345477;
-}
-
-
-/* =========================================================
-   PANEL DERECHO
-========================================================= */
-
-.login__panel--identity {
-    background:
-        radial-gradient(
-            ellipse at 52% 50%,
-            #15528a 0%,
-            #0b376d 23%,
-            #082a59 43%,
-            #061e46 66%,
-            #031331 84%,
-            #020b20 100%
-        );
-
-    border:
-        1px solid rgba(112, 169, 216, 0.16);
-
-    box-shadow:
-        -20px 22px 55px rgba(2, 20, 55, 0.34),
-        inset 18px 0 45px rgba(31, 104, 170, 0.08),
-        inset 0 1px 1px rgba(255, 255, 255, 0.08);
-}
-
-
-/* Halo azul detrás del escudo */
-.login__panel--identity::before {
-    top: 6%;
-    left: 50%;
-
-    width: 80%;
-    height: 75%;
-
-    background:
-        radial-gradient(
-            ellipse,
-            rgba(44, 132, 205, 0.28) 0%,
-            rgba(21, 94, 167, 0.13) 38%,
-            transparent 72%
-        );
-
-    filter: blur(35px);
-}
-
-
-/* Luz inferior debajo del escudo */
-.login__panel--identity::after {
-    content: "";
-
-    position: absolute;
-
-    left: 50%;
-    bottom: 75px;
-
-    width: 65%;
-    height: 24px;
-
-    border-radius: 50%;
-
-    background:
-        rgba(26, 129, 223, 0.38);
-
-    filter: blur(18px);
-
-    transform: translateX(-50%);
-}
-
-
-/* =========================================================
-   ESCUDO
-========================================================= */
-
-.login__logo {
-    position: relative;
-    z-index: 2;
-}
-
-
-.login__logo img {
-    filter:
-        drop-shadow(0 25px 22px rgba(0, 0, 0, 0.42))
-        drop-shadow(0 6px 16px rgba(7, 82, 164, 0.28));
-}
-
-
-/* =========================================================
-   TEXTO PANEL DERECHO
-========================================================= */
-
-.login__identity-text {
-    position: relative;
-    z-index: 3;
-}
-
-
-.login__identity-text span {
-    color: rgba(188, 219, 247, 0.66);
-}
-
-
-.login__identity-text strong {
-    color: #ffffff;
-
-    text-shadow:
-        0 3px 10px rgba(0, 0, 0, 0.25);
-}
-
-
-.login__identity-text small {
-    color: rgba(181, 213, 243, 0.58);
-}
-
-/* =========================================================
-   EFECTOS FINALES DEL LOGIN
-========================================================= */
-
-/* Fondo con mayor profundidad */
-body {
-    background:
-        radial-gradient(
-            circle at 26% 48%,
-            rgba(247, 253, 255, 1) 0%,
-            rgba(220, 241, 255, 0.97) 20%,
-            rgba(146, 196, 230, 0.88) 40%,
-            rgba(65, 126, 183, 0.84) 60%,
-            rgba(20, 67, 123, 0.92) 76%,
-            rgba(5, 27, 66, 1) 100%
-        ),
-        linear-gradient(
-            115deg,
-            #e7f6ff 0%,
-            #9bc9e6 38%,
-            #397bb6 68%,
-            #061a42 100%
-        );
-}
-
-
-/* Resplandor vertical central */
-.login::before {
-    content: "";
-
-    position: absolute;
     top: -15%;
     left: 24%;
 
@@ -906,10 +98,12 @@ body {
 
 
 /* Brillo azul inferior */
+
 .login::after {
     content: "";
 
     position: absolute;
+
     left: 14%;
     bottom: -220px;
 
@@ -928,10 +122,22 @@ body {
 
 
 /* =========================================================
-   TARJETA
+   TARJETA PRINCIPAL
 ========================================================= */
 
 .login__card {
+    position: relative;
+    z-index: 1;
+
+    width: min(1180px, 100%);
+    min-height: 650px;
+
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        0.88fr;
+
     background:
         linear-gradient(
             115deg,
@@ -944,6 +150,8 @@ body {
     border:
         1px solid rgba(255, 255, 255, 0.78);
 
+    border-radius: 46px;
+
     box-shadow:
         0 32px 70px rgba(5, 29, 66, 0.22),
         0 10px 30px rgba(26, 102, 163, 0.12),
@@ -951,6 +159,21 @@ body {
 
     backdrop-filter: blur(28px);
     -webkit-backdrop-filter: blur(28px);
+
+    overflow: visible;
+}
+
+
+/* =========================================================
+   PANELES
+========================================================= */
+
+.login__panel {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 
@@ -961,6 +184,8 @@ body {
 .login__panel--form {
     position: relative;
 
+    padding: 70px 75px;
+
     background:
         radial-gradient(
             circle at 45% 42%,
@@ -970,8 +195,17 @@ body {
         );
 }
 
+.login__panel--form > div {
+    position: relative;
+    z-index: 2;
+
+    width: 100%;
+    max-width: 450px;
+}
+
 
 /* Halo detrás del formulario */
+
 .login__panel--form::before {
     content: "";
 
@@ -999,10 +233,102 @@ body {
 
 
 /* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.login__heading {
+    margin-bottom: 42px;
+}
+
+.login__eyebrow {
+    display: inline-block;
+
+    margin-bottom: 10px;
+
+    color: #096abe;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: 3px;
+
+    text-transform: uppercase;
+
+    text-shadow:
+        0 1px 7px rgba(255, 255, 255, 0.55);
+}
+
+.login__heading h1 {
+    margin: 0 0 12px;
+
+    color: #071a43;
+
+    font-size: clamp(36px, 4vw, 48px);
+    font-weight: 800;
+
+    line-height: 1.05;
+
+    text-shadow:
+        0 2px 9px rgba(255, 255, 255, 0.38);
+}
+
+.login__heading p {
+    max-width: 390px;
+
+    color: #304c70;
+
+    font-size: 14px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   FORMULARIO
+========================================================= */
+
+.login-form {
+    width: 100%;
+}
+
+.form-field {
+    margin-bottom: 30px;
+}
+
+.form-field label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #0c244a;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: 0.5px;
+}
+
+
+/* =========================================================
    INPUTS
 ========================================================= */
 
 .form-control {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    min-height: 58px;
+
+    padding: 0 16px;
+
+    border:
+        1px solid rgba(70, 130, 185, 0.34);
+
+    border-radius: 14px;
+
     background:
         linear-gradient(
             110deg,
@@ -1010,12 +336,17 @@ body {
             rgba(232, 246, 255, 0.30)
         );
 
-    border:
-        1px solid rgba(70, 130, 185, 0.34);
-
     box-shadow:
         inset 0 1px 1px rgba(255, 255, 255, 0.88),
         0 6px 14px rgba(24, 83, 138, 0.06);
+
+    backdrop-filter: blur(10px);
+
+    transition:
+        border-color 0.22s ease,
+        box-shadow 0.22s ease,
+        background 0.22s ease,
+        transform 0.22s ease;
 }
 
 .form-control:hover {
@@ -1030,10 +361,62 @@ body {
 .form-control:focus-within {
     border-color: #0c79d5;
 
+    background:
+        rgba(248, 252, 255, 0.62);
+
     box-shadow:
         0 0 0 3px rgba(12, 121, 213, 0.12),
         0 10px 22px rgba(15, 84, 150, 0.14),
         inset 0 1px 1px rgba(255, 255, 255, 0.9);
+
+    transform: translateY(-1px);
+}
+
+.form-control input {
+    width: 100%;
+
+    padding:
+        0
+        44px
+        0
+        4px;
+
+    border: 0;
+
+    outline: 0;
+
+    color: #08234b;
+
+    background: transparent;
+
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.form-control input::placeholder {
+    color: #7189a5;
+
+    opacity: 1;
+}
+
+.form-control__icon {
+    position: absolute;
+
+    right: 14px;
+
+    width: 30px;
+    height: 30px;
+
+    display: grid;
+
+    place-items: center;
+
+    color: #0b65b4;
+
+    font-size: 20px;
+
+    pointer-events: none;
 }
 
 
@@ -1042,6 +425,20 @@ body {
 ========================================================= */
 
 .login-form__submit {
+    width: 100%;
+    min-height: 58px;
+
+    margin-top: 14px;
+
+    padding: 16px 24px;
+
+    border:
+        1px solid rgba(112, 190, 255, 0.48);
+
+    border-radius: 999px;
+
+    color: #ffffff;
+
     background:
         linear-gradient(
             180deg,
@@ -1057,15 +454,52 @@ body {
         0 5px 12px rgba(3, 37, 91, 0.24),
         inset 0 1px 1px rgba(255, 255, 255, 0.42),
         inset 0 -2px 3px rgba(0, 0, 0, 0.12);
+
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.20);
+
+    cursor: pointer;
+
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 800;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
 }
 
 .login-form__submit:hover {
+    transform: translateY(-2px);
+
+    filter: brightness(1.08);
+
     box-shadow:
         0 18px 34px rgba(5, 69, 158, 0.38),
         0 7px 15px rgba(3, 37, 91, 0.24),
         inset 0 1px 1px rgba(255, 255, 255, 0.48);
+}
 
-    filter: brightness(1.08);
+.login-form__submit:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   MENSAJE DE ACCESO
+========================================================= */
+
+.login__help {
+    margin-top: 34px;
+
+    color: #345477;
+
+    text-align: center;
+
+    font-size: 12px;
+
+    line-height: 1.5;
 }
 
 
@@ -1074,6 +508,19 @@ body {
 ========================================================= */
 
 .login__panel--identity {
+    min-height: 650px;
+
+    margin:
+        -35px
+        -35px
+        -35px
+        0;
+
+    border:
+        1px solid rgba(112, 169, 216, 0.16);
+
+    border-radius: 85px;
+
     background:
         radial-gradient(
             circle at 50% 42%,
@@ -1089,10 +536,13 @@ body {
         -22px 20px 55px rgba(4, 25, 62, 0.35),
         inset 18px 0 50px rgba(34, 105, 174, 0.07),
         inset 0 1px 1px rgba(255, 255, 255, 0.08);
+
+    overflow: hidden;
 }
 
 
 /* Halo detrás del escudo */
+
 .login__panel--identity::before {
     content: "";
 
@@ -1104,7 +554,8 @@ body {
     width: 76%;
     height: 62%;
 
-    transform: translateX(-50%);
+    transform:
+        translateX(-50%);
 
     border-radius: 50%;
 
@@ -1124,6 +575,7 @@ body {
 
 
 /* Luz inferior tipo pedestal */
+
 .login__panel--identity::after {
     content: "";
 
@@ -1135,7 +587,8 @@ body {
     width: 58%;
     height: 28px;
 
-    transform: translateX(-50%);
+    transform:
+        translateX(-50%);
 
     border-radius: 50%;
 
@@ -1149,10 +602,48 @@ body {
 
 
 /* =========================================================
-   ESCUDO
+   IDENTIDAD
 ========================================================= */
 
+.login__identity-content {
+    position: relative;
+    z-index: 2;
+
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 45px;
+}
+
+
+/* =========================================================
+   LOGO PRINCIPAL - ASUNTOS INTERNOS
+========================================================= */
+
+.login__logo {
+    position: relative;
+    z-index: 2;
+
+    width: min(420px, 90%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .login__logo img {
+    display: block;
+
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+
+    object-fit: contain;
+
     filter:
         drop-shadow(0 28px 24px rgba(0, 0, 0, 0.42))
         drop-shadow(0 8px 16px rgba(6, 73, 151, 0.30))
@@ -1164,7 +655,9 @@ body {
 }
 
 .login__logo img:hover {
-    transform: translateY(-3px) scale(1.01);
+    transform:
+        translateY(-3px)
+        scale(1.01);
 
     filter:
         drop-shadow(0 32px 26px rgba(0, 0, 0, 0.45))
@@ -1174,26 +667,203 @@ body {
 
 
 /* =========================================================
-   TEXTOS
+   TEXTO DEL PANEL DERECHO
 ========================================================= */
 
-.login__eyebrow {
-    color: #096abe;
+.login__identity-text {
+    position: relative;
+    z-index: 3;
 
-    text-shadow:
-        0 1px 7px rgba(255, 255, 255, 0.55);
+    margin-top: 24px;
+
+    color: #ffffff;
+
+    text-align: center;
 }
 
-.login__heading h1 {
-    color: #071a43;
+.login__identity-text span {
+    display: block;
 
-    text-shadow:
-        0 2px 9px rgba(255, 255, 255, 0.38);
+    margin-bottom: 7px;
+
+    color:
+        rgba(188, 219, 247, 0.66);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 3px;
+
+    text-transform: uppercase;
 }
 
 .login__identity-text strong {
+    display: block;
+
+    color: #ffffff;
+
+    font-size: 20px;
+    font-weight: 800;
+
+    line-height: 1.3;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+
     text-shadow:
         0 3px 12px rgba(0, 0, 0, 0.30);
+}
+
+.login__identity-text small {
+    display: block;
+
+    margin-top: 8px;
+
+    color:
+        rgba(181, 213, 243, 0.58);
+
+    font-size: 10px;
+    font-weight: 600;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   LOGOS INSTITUCIONALES
+   AYUNTAMIENTO + COMISARÍA
+========================================================= */
+
+.login-institucional__logos {
+    position: relative;
+    z-index: 4;
+
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 30px;
+
+    margin-top: 30px;
+
+    padding:
+        12px
+        10px;
+}
+
+
+/* =========================================================
+   LOGOS INSTITUCIONALES - IMÁGENES
+========================================================= */
+
+.login-institucional__logo {
+    display: block;
+
+    width: auto;
+    height: 68px;
+
+    object-fit: contain;
+
+    filter:
+        brightness(1.12)
+        drop-shadow(
+            0
+            0
+            5px
+            rgba(255, 255, 255, 0.95)
+        )
+        drop-shadow(
+            0
+            0
+            12px
+            rgba(255, 255, 255, 0.55)
+        )
+        drop-shadow(
+            0
+            8px
+            12px
+            rgba(0, 0, 0, 0.28)
+        );
+
+    transition:
+        transform 0.25s ease,
+        filter 0.25s ease;
+}
+
+
+/* Ayuntamiento */
+
+.login-institucional__logo--ayuntamiento {
+    width: 215px;
+    max-width: 215px;
+}
+
+
+/* Comisaría */
+
+.login-institucional__logo--comisaria {
+    width: 195px;
+    max-width: 195px;
+}
+
+
+/* =========================================================
+   EFECTO DE LOS LOGOS
+========================================================= */
+
+.login-institucional__logo:hover {
+    transform:
+        translateY(-2px);
+
+    filter:
+        brightness(1.18)
+        drop-shadow(
+            0
+            0
+            7px
+            rgba(255, 255, 255, 1)
+        )
+        drop-shadow(
+            0
+            0
+            16px
+            rgba(255, 255, 255, 0.65)
+        )
+        drop-shadow(
+            0
+            10px
+            16px
+            rgba(0, 0, 0, 0.32)
+        );
+}
+
+
+/* =========================================================
+   SEPARADOR DE LOGOS
+========================================================= */
+
+.login-institucional__logos-separador {
+    width: 1px;
+    height: 52px;
+
+    flex-shrink: 0;
+
+    background:
+        linear-gradient(
+            180deg,
+            transparent,
+            rgba(255, 255, 255, 0.55),
+            transparent
+        );
+
+    box-shadow:
+        0 0 8px
+        rgba(255, 255, 255, 0.18);
 }
 
 
@@ -1204,8 +874,11 @@ body {
 @media (max-width: 950px) {
 
     .login {
-        padding: 35px 24px;
+        padding:
+            35px
+            24px;
     }
+
 
     .login__card {
         grid-template-columns: 1fr;
@@ -1217,33 +890,71 @@ body {
         overflow: hidden;
     }
 
+
     .login__panel--identity {
         order: 1;
 
         min-height: auto;
 
         margin: 0;
-        padding: 45px 30px;
+
+        padding:
+            45px
+            30px;
 
         border-radius: 0;
     }
 
+
     .login__panel--form {
         order: 2;
 
-        padding: 55px 60px 60px;
+        padding:
+            55px
+            60px
+            60px;
     }
+
 
     .login__logo {
         width: 280px;
     }
 
+
     .login__logo img {
         max-width: 280px;
     }
 
-}
 
+    .login-institucional__logos {
+        gap: 24px;
+
+        margin-top: 24px;
+    }
+
+
+    .login-institucional__logo {
+        height: 60px;
+    }
+
+
+    .login-institucional__logo--ayuntamiento {
+        width: 190px;
+        max-width: 190px;
+    }
+
+
+    .login-institucional__logo--comisaria {
+        width: 175px;
+        max-width: 175px;
+    }
+
+
+    .login-institucional__logos-separador {
+        height: 46px;
+    }
+
+}
 
 
 /* =========================================================
@@ -1262,11 +973,15 @@ body {
             );
     }
 
+
     .login {
         align-items: flex-start;
 
-        padding: 18px 14px;
+        padding:
+            18px
+            14px;
     }
+
 
     .login__card {
         width: 100%;
@@ -1274,36 +989,83 @@ body {
         border-radius: 28px;
     }
 
+
     .login__panel--identity {
-        padding: 32px 20px;
+        padding:
+            32px
+            20px;
     }
 
+
     .login__panel--form {
-        padding: 42px 28px;
+        padding:
+            42px
+            28px;
     }
+
 
     .login__logo {
         width: 210px;
     }
 
+
     .login__logo img {
         max-width: 210px;
     }
+
 
     .login__identity-text strong {
         font-size: 16px;
     }
 
+
     .login__heading {
         margin-bottom: 34px;
     }
+
 
     .login__heading h1 {
         font-size: 34px;
     }
 
+
     .login__heading p {
         font-size: 13px;
+    }
+
+
+    /* Logos institucionales */
+
+    .login-institucional__logos {
+        gap: 16px;
+
+        margin-top: 22px;
+
+        padding:
+            8px
+            0;
+    }
+
+
+    .login-institucional__logo {
+        height: 48px;
+    }
+
+
+    .login-institucional__logo--ayuntamiento {
+        width: 145px;
+        max-width: 145px;
+    }
+
+
+    .login-institucional__logo--comisaria {
+        width: 135px;
+        max-width: 135px;
+    }
+
+
+    .login-institucional__logos-separador {
+        height: 38px;
     }
 
 }
@@ -1319,6 +1081,7 @@ body {
         padding: 12px;
     }
 
+
     .login__panel--form {
         padding:
             36px
@@ -1326,12 +1089,41 @@ body {
             40px;
     }
 
+
     .login__logo {
         width: 175px;
     }
 
+
     .login__logo img {
         max-width: 175px;
+    }
+
+
+    .login-institucional__logos {
+        gap: 10px;
+    }
+
+
+    .login-institucional__logo {
+        height: 40px;
+    }
+
+
+    .login-institucional__logo--ayuntamiento {
+        width: 120px;
+        max-width: 120px;
+    }
+
+
+    .login-institucional__logo--comisaria {
+        width: 110px;
+        max-width: 110px;
+    }
+
+
+    .login-institucional__logos-separador {
+        height: 32px;
     }
 
 }

@@ -125,6 +125,28 @@ Acceso | Sistema de Reportes
                         Nezahualcóyotl
                     </small>
 
+                    <div class="login-institucional__logos">
+
+    <img
+        src="<?= base_url(
+            'assets/asuntos_internos/sistema_reportes/img/ayuntamiento.png'
+        ) ?>"
+        alt="Ayuntamiento de Nezahualcóyotl"
+        class="login-institucional__logo login-institucional__logo--ayuntamiento"
+    >
+
+    <span class="login-institucional__logos-separador"></span>
+
+    <img
+        src="<?= base_url(
+            'assets/asuntos_internos/sistema_reportes/img/cgsc.png'
+        ) ?>"
+        alt="Comisaría General de Seguridad Ciudadana"
+        class="login-institucional__logo login-institucional__logo--comisaria"
+    >
+
+</div>
+
                 </div>
 
             </div>

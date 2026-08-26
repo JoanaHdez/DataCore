@@ -12,19 +12,10 @@ $nominaUsuario = $usuario['nomina'] ?? '000000';
         <div class="report-header__logos">
 
             <img src="<?= base_url(
-                    'assets/asuntos_internos/sistema_reportes/img/ayuntamiento.png'
-                ) ?>" alt="Ayuntamiento de Nezahualcóyotl">
-
-            <img src="<?= base_url(
-                    'assets/asuntos_internos/sistema_reportes/img/cgsc.png'
-                ) ?>" alt="Comisaría General de Seguridad Ciudadana">
-
-            <img src="<?= base_url(
-                    'assets/asuntos_internos/sistema_reportes/img/logo.png'
-                ) ?>" alt="Coordinación de Asuntos Internos">
+            'assets/asuntos_internos/sistema_reportes/img/logo.png'
+        ) ?>" alt="Coordinación de Asuntos Internos">
 
         </div>
-
 
         <div class="report-header__title">
 
