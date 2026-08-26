@@ -56,6 +56,10 @@ Dashboard | Asuntos Internos
                 <?= $this->include(
                     'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\turnos'
                 ) ?>
+
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\tendencia'
+                ) ?>
             </div>
 
         </div>
