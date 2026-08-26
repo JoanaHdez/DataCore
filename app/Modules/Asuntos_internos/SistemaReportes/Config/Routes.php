@@ -27,8 +27,18 @@ $routes->group('asuntos-internos/reportes', static function ($routes) {
     );
 
     // Nuevo reporte
-$routes->get(
-    'nuevo',
-    '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::nuevo'
-);
+    $routes->get(
+        'nuevo',
+        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::nuevo'
+    );
+
+    $routes->get(
+        'ubicacion/buscar',
+        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Ubicacion_Controller::buscar'
+    );
+
+    $routes->get(
+        'ubicacion/direccion',
+        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Ubicacion_Controller::direccion'
+    );
 });
