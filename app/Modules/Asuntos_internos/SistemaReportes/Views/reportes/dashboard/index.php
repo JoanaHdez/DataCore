@@ -52,6 +52,10 @@ Dashboard | Asuntos Internos
                     'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\areas'
                 ) ?>
 
+
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\turnos'
+                ) ?>
             </div>
 
         </div>
