@@ -1,0 +1,199 @@
+/* =========================================================
+   INDICADORES
+========================================================= */
+
+.dashboard-indicadores {
+    margin-bottom: 24px;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.dashboard-indicadores__encabezado {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 12px;
+}
+
+.dashboard-indicadores__eyebrow {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #1681c4;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.dashboard-indicadores__titulo {
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.dashboard-indicadores__periodo {
+    color: #8291a0;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.dashboard-indicadores__grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+
+/* =========================================================
+   TARJETA
+========================================================= */
+
+.dashboard-indicador {
+    min-width: 0;
+
+    padding: 17px 18px;
+
+    background: #ffffff;
+
+    border: 1px solid #e1e8ee;
+    border-radius: 9px;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.dashboard-indicador:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 18px rgba(34, 61, 84, 0.07);
+}
+
+
+/* =========================================================
+   CABECERA DE TARJETA
+========================================================= */
+
+.dashboard-indicador__encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 12px;
+}
+
+.dashboard-indicador__etiqueta {
+    color: #607487;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   PUNTO DE ESTADO
+========================================================= */
+
+.dashboard-indicador__punto {
+    width: 8px;
+    height: 8px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+}
+
+.dashboard-indicador__punto--total {
+    background: #1681c4;
+}
+
+.dashboard-indicador__punto--pendiente {
+    background: #d69c25;
+}
+
+.dashboard-indicador__punto--proceso {
+    background: #527da4;
+}
+
+.dashboard-indicador__punto--finalizado {
+    background: #2f9b70;
+}
+
+
+/* =========================================================
+   VALOR
+========================================================= */
+
+.dashboard-indicador__valor {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #173554;
+
+    font-size: 27px;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+.dashboard-indicador__descripcion {
+    color: #8a99a7;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 950px) {
+
+    .dashboard-indicadores__grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .dashboard-indicadores__encabezado {
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 5px;
+    }
+
+    .dashboard-indicadores__grid {
+        grid-template-columns: 1fr;
+    }
+
+}

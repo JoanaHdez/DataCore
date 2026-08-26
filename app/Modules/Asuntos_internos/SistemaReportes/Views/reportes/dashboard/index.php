@@ -31,6 +31,11 @@ Dashboard | Asuntos Internos
                 'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\filtros'
             ) ?>
 
+            <!-- CLASIFICACION -->
+            <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\clasificaciones'
+            ) ?>
+
         </div>
 
     </main>
