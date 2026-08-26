@@ -28,7 +28,9 @@
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
-
+    <link rel="stylesheet" href="<?= base_url(
+        'assets/asuntos_internos/sistema_reportes/css/reportes/index.css'
+    ) ?>">
 
 </head>
 

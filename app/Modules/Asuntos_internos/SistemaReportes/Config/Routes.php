@@ -14,6 +14,12 @@ $routes->group('asuntos-internos/reportes', static function ($routes) {
         '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Inicio_Controller::index'
     );
 
+    // Listado de reportes
+    $routes->get(
+        'listado',
+        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::index'
+    );
+
     // Procesar inicio de sesión
     $routes->post(
         'login',

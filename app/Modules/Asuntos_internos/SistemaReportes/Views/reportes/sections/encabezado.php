@@ -11,26 +11,17 @@ $nominaUsuario = $usuario['nomina'] ?? '000000';
 
         <div class="report-header__logos">
 
-            <img
-                src="<?= base_url(
+            <img src="<?= base_url(
                     'assets/asuntos_internos/sistema_reportes/img/ayuntamiento.png'
-                ) ?>"
-                alt="Ayuntamiento de Nezahualcóyotl"
-            >
+                ) ?>" alt="Ayuntamiento de Nezahualcóyotl">
 
-            <img
-                src="<?= base_url(
+            <img src="<?= base_url(
                     'assets/asuntos_internos/sistema_reportes/img/cgsc.png'
-                ) ?>"
-                alt="Comisaría General de Seguridad Ciudadana"
-            >
+                ) ?>" alt="Comisaría General de Seguridad Ciudadana">
 
-            <img
-                src="<?= base_url(
+            <img src="<?= base_url(
                     'assets/asuntos_internos/sistema_reportes/img/logo.png'
-                ) ?>"
-                alt="Coordinación de Asuntos Internos"
-            >
+                ) ?>" alt="Coordinación de Asuntos Internos">
 
         </div>
 
@@ -84,36 +75,31 @@ $nominaUsuario = $usuario['nomina'] ?? '000000';
 
 <nav class="report-nav">
 
-    <a
-        href="<?= base_url(
+    <a href="<?= base_url(
             'asuntos-internos/reportes/nuevo'
-        ) ?>"
-        class="report-nav__link report-nav__link--active"
-    >
+        ) ?>" class="report-nav__link <?= url_is(
+            'asuntos-internos/reportes/nuevo'
+        ) ? 'report-nav__link--active' : '' ?>">
         Nuevo reporte
     </a>
 
-    <a
-        href="#"
-        class="report-nav__link"
-    >
+    <a href="<?= base_url(
+            'asuntos-internos/reportes/listado'
+        ) ?>" class="report-nav__link <?= url_is(
+            'asuntos-internos/reportes/listado'
+        ) ? 'report-nav__link--active' : '' ?>">
         Reportes
     </a>
 
-    <a
-        href="#"
-        class="report-nav__link"
-    >
+    <a href="#" class="report-nav__link <?= url_is(
+            'asuntos-internos/reportes/dashboard'
+        ) ? 'report-nav__link--active' : '' ?>">
         Dashboard
     </a>
 
-
-    <a
-        href="<?= base_url(
+    <a href="<?= base_url(
             'asuntos-internos/reportes/logout'
-        ) ?>"
-        class="report-nav__logout"
-    >
+        ) ?>" class="report-nav__logout">
         Cerrar sesión
     </a>
 

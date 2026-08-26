@@ -1,0 +1,102 @@
+/* =========================================================
+   VISTA DE REPORTES
+========================================================= */
+
+.reportes-page {
+    width: 100%;
+    min-height: 100vh;
+
+    background: #f4f7fa;
+}
+
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+.reportes-page__main {
+    width: 100%;
+
+    padding: 32px 24px 60px;
+}
+
+.reportes-page__container {
+    width: 100%;
+    max-width: 1400px;
+
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   ENCABEZADO DE LA VISTA
+========================================================= */
+
+.reportes-page__heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 24px;
+
+    margin-bottom: 28px;
+}
+
+.reportes-page__eyebrow {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #1681c4;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.reportes-page__title {
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.reportes-page__description {
+    max-width: 650px;
+
+    margin: 7px 0 0;
+
+    color: #77889a;
+
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .reportes-page__main {
+        padding:
+            24px 16px
+            50px;
+    }
+
+    .reportes-page__heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .reportes-page__title {
+        font-size: 24px;
+    }
+
+}
