@@ -1,0 +1,301 @@
+/* =========================================================
+   IMPRESIÓN DE TARJETA INFORMATIVA
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+
+    background: #ffffff;
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    color: #243d56;
+}
+
+
+/* =========================================================
+   HOJA
+========================================================= */
+
+.tarjeta-impresion {
+    width: 100%;
+
+    padding: 0;
+}
+
+
+/* =========================================================
+   TARJETA
+========================================================= */
+
+.tarjeta-reporte {
+    width: 100%;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #cfd9e2;
+    border-radius: 8px;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.tarjeta-reporte__encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 24px;
+
+    padding: 24px 26px;
+
+    color: #ffffff;
+
+    background: #173f6f;
+
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+.tarjeta-reporte__institucion span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: rgba(255, 255, 255, 0.8);
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.tarjeta-reporte__institucion h3 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 25px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   FOLIO
+========================================================= */
+
+.tarjeta-reporte__folio {
+    min-width: 140px;
+
+    padding: 11px 15px;
+
+    color: #ffffff;
+
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 7px;
+
+    text-align: right;
+}
+
+.tarjeta-reporte__folio span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+}
+
+.tarjeta-reporte__folio strong {
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   SECCIONES
+========================================================= */
+
+.tarjeta-reporte__seccion {
+    padding: 22px 26px;
+
+    border-bottom: 1px solid #e3e9ef;
+}
+
+.tarjeta-reporte__seccion:last-child {
+    border-bottom: 0;
+}
+
+.tarjeta-reporte__seccion-titulo {
+    margin-bottom: 14px;
+
+    color: #176fa8;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.tarjeta-reporte__grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 18px 28px;
+}
+
+.tarjeta-reporte__campo span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #78899a;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.tarjeta-reporte__campo strong {
+    color: #263f57;
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   QUEJOSO
+========================================================= */
+
+.tarjeta-reporte__dato-destacado {
+    padding: 14px 16px;
+
+    background: #f5f8fa;
+
+    border: 1px solid #dfe6ec;
+    border-radius: 7px;
+
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+.tarjeta-reporte__dato-destacado strong {
+    color: #263f57;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   SEGUIMIENTO
+========================================================= */
+
+.tarjeta-reporte__seguimiento {
+    padding: 14px 16px;
+
+    color: #536a7e;
+
+    background: #f8fafc;
+
+    border-left: 4px solid #1681c4;
+    border-radius: 0 7px 7px 0;
+
+    font-size: 12px;
+    line-height: 1.7;
+
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+.tarjeta-reporte__seguimiento strong {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #263f57;
+
+    font-size: 12px;
+}
+
+.tarjeta-reporte__seguimiento span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #607487;
+}
+
+.tarjeta-reporte__seguimiento p {
+    margin: 0;
+
+    color: #526779;
+}
+
+
+/* =========================================================
+   CONFIGURACIÓN DE IMPRESIÓN
+========================================================= */
+
+@page {
+    size: Letter portrait;
+
+    margin: 10mm;
+}
+
+@media print {
+
+    html,
+    body {
+        width: 100%;
+
+        background: #ffffff;
+    }
+
+    body {
+        margin: 0;
+    }
+
+    .tarjeta-impresion {
+        width: 100%;
+
+        padding: 0;
+    }
+
+    .tarjeta-reporte {
+        width: 100%;
+
+        margin: 0;
+
+        break-inside: avoid;
+
+        box-shadow: none;
+    }
+
+}

@@ -1,0 +1,205 @@
+/* =========================================================
+   PERIODO DE CONSULTA
+========================================================= */
+
+.reportes-periodo {
+    margin-bottom: 24px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #e3eaf1;
+    border-radius: 10px;
+
+    box-shadow:
+        0 3px 12px rgba(24, 53, 84, 0.05);
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.reportes-periodo__header {
+    padding: 20px 22px 16px;
+
+    border-bottom: 1px solid #edf1f5;
+}
+
+.reportes-periodo__eyebrow {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #1681c4;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.reportes-periodo__title {
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.reportes-periodo__description {
+    margin: 5px 0 0;
+
+    color: #8291a0;
+
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+.reportes-periodo__body {
+    display: grid;
+
+    grid-template-columns:
+        minmax(180px, 240px)
+        minmax(180px, 240px)
+        auto;
+
+    align-items: end;
+
+    gap: 18px;
+
+    padding: 20px 22px;
+}
+
+
+/* =========================================================
+   CAMPOS
+========================================================= */
+
+.reportes-periodo__field {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+.reportes-periodo__field label {
+    color: #526779;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.reportes-periodo__input {
+    width: 100%;
+    height: 40px;
+
+    padding: 0 12px;
+
+    color: #344d64;
+
+    background: #ffffff;
+
+    border: 1px solid #d8e1e9;
+    border-radius: 6px;
+
+    font-size: 12px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.reportes-periodo__input:focus {
+    border-color: #1681c4;
+
+    box-shadow:
+        0 0 0 3px rgba(22, 129, 196, 0.1);
+}
+
+
+/* =========================================================
+   BOTÓN
+========================================================= */
+
+.reportes-periodo__actions {
+    display: flex;
+    align-items: flex-end;
+}
+
+.reportes-periodo__button {
+    min-width: 140px;
+    height: 40px;
+
+    padding: 0 18px;
+
+    color: #ffffff;
+
+    background: #1681c4;
+
+    border: 0;
+    border-radius: 6px;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.reportes-periodo__button:hover {
+    background: #116da7;
+}
+
+.reportes-periodo__button:active {
+    transform: translateY(1px);
+}
+
+.reportes-periodo__resultado,
+.reportes-periodo__error {
+    padding: 12px 22px;
+
+    border-top: 1px solid #edf1f5;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.reportes-periodo__resultado {
+    color: #17683a;
+    background: #f2fbf6;
+}
+
+.reportes-periodo__error {
+    color: #a83333;
+    background: #fff5f5;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .reportes-periodo__body {
+        grid-template-columns: 1fr;
+    }
+
+    .reportes-periodo__button {
+        width: 100%;
+    }
+
+}

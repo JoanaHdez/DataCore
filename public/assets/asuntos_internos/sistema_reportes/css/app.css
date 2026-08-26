@@ -1,0 +1,45 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   Entrada principal de estilos
+========================================================= */
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+@import url('./login.css');
+
+
+/* =========================================================
+   REPORTES - GENERALES
+========================================================= */
+
+@import url('./reportes/header.css');
+@import url('./reportes/formulario.css');
+@import url('./reportes/index.css');
+
+
+/* =========================================================
+   REPORTES - LISTADO
+========================================================= */
+
+@import url('./reportes/listado/periodo.css');
+@import url('./reportes/listado/resumen.css');
+@import url('./reportes/listado/filtros.css');
+@import url('./reportes/listado/tabla.css');
+@import url('./reportes/listado/paginacion.css');
+
+/* =========================================================
+   COMPONENTES REUTILIZABLES
+   Se irán agregando conforme los creemos
+========================================================= */
+
+@import url('./reportes/listado/modales.css');
+
+/*
+@import url('./components/buttons.css');
+@import url('./components/modals.css');
+@import url('./components/alerts.css');
+@import url('./components/tables.css');
+*/

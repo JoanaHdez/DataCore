@@ -1,0 +1,204 @@
+/* =========================================================
+   FILTROS DE REPORTES
+========================================================= */
+
+.reportes-filtros {
+    margin-bottom: 24px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #e3eaf1;
+    border-radius: 10px;
+
+    box-shadow:
+        0 3px 12px rgba(24, 53, 84, 0.05);
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.reportes-filtros__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 18px 22px;
+
+    border-bottom: 1px solid #edf1f5;
+}
+
+.reportes-filtros__eyebrow {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #1681c4;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.reportes-filtros__title {
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.reportes-filtros__description {
+    margin: 5px 0 0;
+
+    color: #8291a0;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+.reportes-filtros__body {
+    display: grid;
+
+    grid-template-columns:
+        minmax(250px, 2fr)
+        repeat(4, minmax(130px, 1fr));
+
+    gap: 14px;
+
+    padding: 20px 22px;
+}
+
+
+/* =========================================================
+   CAMPOS
+========================================================= */
+
+.reportes-filtros__field {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+
+    min-width: 0;
+}
+
+.reportes-filtros__field label {
+    color: #526779;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.reportes-filtros__input,
+.reportes-filtros__select {
+    width: 100%;
+    height: 40px;
+
+    padding: 0 12px;
+
+    color: #344d64;
+
+    background: #ffffff;
+
+    border: 1px solid #d8e1e9;
+    border-radius: 6px;
+
+    font-size: 11px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.reportes-filtros__input:focus,
+.reportes-filtros__select:focus {
+    border-color: #1681c4;
+
+    box-shadow:
+        0 0 0 3px rgba(22, 129, 196, 0.1);
+}
+
+
+/* =========================================================
+   LIMPIAR
+========================================================= */
+
+.reportes-filtros__clear {
+    padding: 8px 14px;
+
+    color: #496174;
+
+    background: #ffffff;
+
+    border: 1px solid #d5e0e9;
+    border-radius: 6px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.reportes-filtros__clear:hover {
+    background: #f4f8fb;
+    border-color: #bccbd7;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .reportes-filtros__body {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .reportes-filtros__field--search {
+        grid-column: 1 / -1;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .reportes-filtros__header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .reportes-filtros__body {
+        grid-template-columns: 1fr;
+    }
+
+    .reportes-filtros__field--search {
+        grid-column: auto;
+    }
+
+    .reportes-filtros__clear {
+        width: 100%;
+    }
+
+}

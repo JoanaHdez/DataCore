@@ -2,52 +2,53 @@
     'App\Modules\Asuntos_internos\SistemaReportes\Views\layouts\head'
 ) ?>
 
-
 <?= $this->section('title') ?>
-
 Reportes | Asuntos Internos
-
 <?= $this->endSection() ?>
-
 
 <?= $this->section('content') ?>
 
 <div class="reportes-page">
 
-    <!-- ENCABEZADO DEL SISTEMA -->
     <?= $this->include(
         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\encabezado'
     ) ?>
 
-
-    <!-- CONTENIDO -->
     <main class="reportes-page__main">
 
         <div class="reportes-page__container">
 
-            <div class="reportes-page__heading">
+            <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\encabezado'
+            ) ?>
 
-                <div>
+            <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\periodo'
+            ) ?>
 
-                    <span class="reportes-page__eyebrow">
-                        Asuntos Internos
-                    </span>
+            <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\resumen'
+            ) ?>
 
-                    <h1 class="reportes-page__title">
-                        Reportes
-                    </h1>
+            <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\filtros'
+            ) ?>
 
-                    <p class="reportes-page__description">
-                        Consulta, administra y da seguimiento a los reportes registrados.
-                    </p>
+            <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\tabla'
+            ) ?>
 
-                </div>
-
-            </div>
+            <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\paginacion'
+            ) ?>
 
         </div>
 
     </main>
+
+    <?= $this->include(
+        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales'
+    ) ?>
 
 </div>
 

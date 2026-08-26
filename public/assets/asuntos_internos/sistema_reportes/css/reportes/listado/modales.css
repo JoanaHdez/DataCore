@@ -1,0 +1,954 @@
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modal-reporte {
+    position: fixed;
+    inset: 0;
+
+    z-index: 1000;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+}
+
+.modal-reporte--visible {
+    display: flex;
+}
+
+
+/* =========================================================
+   FONDO
+========================================================= */
+
+.modal-reporte__overlay {
+    position: absolute;
+    inset: 0;
+
+    background: rgba(5, 22, 44, 0.62);
+
+    backdrop-filter: blur(3px);
+}
+
+
+/* =========================================================
+   CONTENEDOR
+========================================================= */
+
+.modal-reporte__dialog {
+    position: relative;
+
+    width: min(900px, 100%);
+    max-height: 90vh;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 30px 80px rgba(6, 31, 62, 0.28);
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.modal-reporte__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 20px 24px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #173f6f,
+            #0f5d94
+        );
+}
+
+.modal-reporte__eyebrow {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: rgba(255, 255, 255, 0.68);
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.modal-reporte__title {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.modal-reporte__close {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.10);
+
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 50%;
+
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+.modal-reporte__body {
+    max-height: calc(90vh - 80px);
+
+    overflow-y: auto;
+
+    padding: 24px;
+}
+
+
+/* =========================================================
+   DETALLE
+========================================================= */
+
+.detalle-reporte-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+.detalle-reporte-campo {
+    padding: 14px 16px;
+
+    background: #f7fafc;
+
+    border: 1px solid #e2e9f0;
+    border-radius: 8px;
+}
+
+.detalle-reporte-campo span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #7a8a9b;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.detalle-reporte-campo strong {
+    color: #203d59;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* =========================================================
+   BODY CON MODAL ABIERTO
+========================================================= */
+
+body.modal-abierto {
+    overflow: hidden;
+}
+
+/* =========================================================
+   FORMULARIO DE EDICIÓN
+========================================================= */
+
+.modal-reporte__form {
+    width: 100%;
+}
+
+.editar-reporte-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+.editar-reporte-campo {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+.editar-reporte-campo--full {
+    grid-column: 1 / -1;
+}
+
+.editar-reporte-campo label {
+    color: #526779;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.editar-reporte-campo input,
+.editar-reporte-campo select {
+    width: 100%;
+    height: 40px;
+
+    padding: 0 12px;
+
+    color: #344d64;
+    background: #ffffff;
+
+    border: 1px solid #d8e1e9;
+    border-radius: 6px;
+
+    font-family: inherit;
+    font-size: 11px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.editar-reporte-campo input:focus,
+.editar-reporte-campo select:focus {
+    border-color: #1681c4;
+
+    box-shadow:
+        0 0 0 3px rgba(22, 129, 196, 0.1);
+}
+
+.editar-reporte-campo input[readonly] {
+    color: #718396;
+    background: #f3f6f8;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   FOOTER DEL MODAL
+========================================================= */
+
+.modal-reporte__footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    padding: 16px 24px;
+
+    background: #f8fafc;
+
+    border-top: 1px solid #e5ebf0;
+}
+
+.modal-reporte__button {
+    min-width: 110px;
+    height: 38px;
+
+    padding: 0 16px;
+
+    border-radius: 6px;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.modal-reporte__button--secondary {
+    color: #526779;
+    background: #ffffff;
+
+    border: 1px solid #d5e0e9;
+}
+
+.modal-reporte__button--secondary:hover {
+    background: #f1f5f8;
+}
+
+.modal-reporte__button--primary {
+    color: #ffffff;
+    background: #1681c4;
+
+    border: 1px solid #1681c4;
+}
+
+.modal-reporte__button--primary:hover {
+    background: #116da7;
+    border-color: #116da7;
+}
+
+/* =========================================================
+   SEGUIMIENTO
+========================================================= */
+
+.seguimiento-reporte__info {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 12px;
+
+    margin-bottom: 24px;
+}
+
+.seguimiento-reporte__dato {
+    padding: 13px 15px;
+
+    background: #f5f8fb;
+
+    border: 1px solid #e1e8ef;
+    border-radius: 8px;
+}
+
+.seguimiento-reporte__dato span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #8291a0;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.seguimiento-reporte__dato strong {
+    color: #203d59;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   SECCIÓN
+========================================================= */
+
+.seguimiento-reporte__section {
+    padding-top: 20px;
+
+    border-top: 1px solid #e5ebf0;
+}
+
+.seguimiento-reporte__section-header {
+    margin-bottom: 16px;
+}
+
+.seguimiento-reporte__section-header span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #1681c4;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.seguimiento-reporte__section-header h3 {
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 15px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.seguimiento-reporte-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+
+/* =========================================================
+   TEXTAREA
+========================================================= */
+
+.seguimiento-reporte__textarea {
+    width: 100%;
+    min-height: 110px;
+
+    padding: 11px 12px;
+
+    resize: vertical;
+
+    color: #344d64;
+    background: #ffffff;
+
+    border: 1px solid #d8e1e9;
+    border-radius: 6px;
+
+    font-family: inherit;
+    font-size: 11px;
+    line-height: 1.5;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.seguimiento-reporte__textarea:focus {
+    border-color: #1681c4;
+
+    box-shadow:
+        0 0 0 3px rgba(22, 129, 196, 0.1);
+}
+
+/* =========================================================
+   HISTORIAL DE SEGUIMIENTOS
+========================================================= */
+
+.seguimiento-historial {
+    margin-top: 26px;
+    padding-top: 22px;
+
+    border-top: 1px solid #e5ebf0;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.seguimiento-historial__header {
+    margin-bottom: 16px;
+}
+
+.seguimiento-historial__header span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #1681c4;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.seguimiento-historial__header h3 {
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.seguimiento-historial__header p {
+    margin: 5px 0 0;
+
+    color: #8291a0;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   LISTA
+========================================================= */
+
+.seguimiento-historial__lista {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+
+/* =========================================================
+   MOVIMIENTO
+========================================================= */
+
+.seguimiento-historial__item {
+    position: relative;
+
+    padding: 14px 16px 14px 20px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e9f0;
+    border-radius: 8px;
+}
+
+.seguimiento-historial__item::before {
+    content: '';
+
+    position: absolute;
+
+    top: 0;
+    bottom: 0;
+    left: 0;
+
+    width: 4px;
+
+    background: #1681c4;
+
+    border-radius: 8px 0 0 8px;
+}
+
+
+/* =========================================================
+   CABECERA DEL MOVIMIENTO
+========================================================= */
+
+.seguimiento-historial__item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 8px;
+}
+
+.seguimiento-historial__tipo {
+    color: #203d59;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.seguimiento-historial__fecha {
+    color: #8291a0;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+.seguimiento-historial__estado {
+    display: inline-flex;
+
+    margin-bottom: 8px;
+
+    padding: 4px 8px;
+
+    border-radius: 20px;
+
+    font-size: 8px;
+    font-weight: 800;
+}
+
+.seguimiento-historial__estado.estado--proceso {
+    color: #9a6800;
+    background: #fff6dc;
+}
+
+.seguimiento-historial__estado.estado--finalizado {
+    color: #147a4e;
+    background: #eaf8f1;
+}
+
+.seguimiento-historial__estado.estado--pendiente {
+    color: #66788a;
+    background: #edf2f6;
+}
+
+
+/* =========================================================
+   OBSERVACIONES
+========================================================= */
+
+.seguimiento-historial__observaciones {
+    margin: 0;
+
+    color: #526779;
+
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   ESTADO VACÍO
+========================================================= */
+
+.seguimiento-historial__vacio {
+    min-height: 90px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    gap: 4px;
+
+    padding: 20px;
+
+    background: #f8fafc;
+
+    border: 1px dashed #d5dfe8;
+    border-radius: 8px;
+
+    text-align: center;
+}
+
+.seguimiento-historial__vacio strong {
+    color: #607487;
+
+    font-size: 10px;
+}
+
+.seguimiento-historial__vacio span {
+    color: #96a3af;
+
+    font-size: 9px;
+}
+
+/* =========================================================
+   TARJETA INFORMATIVA
+========================================================= */
+
+.modal-reporte__dialog--tarjeta {
+    width: min(820px, 100%);
+}
+
+
+/* =========================================================
+   CONTENEDOR DE LA TARJETA
+========================================================= */
+
+.tarjeta-reporte {
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #dce5ed;
+    border-radius: 10px;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.tarjeta-reporte__encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 20px 22px;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            90deg,
+            #173f6f,
+            #0f5d94
+        );
+}
+
+.tarjeta-reporte__institucion span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: rgba(255, 255, 255, 0.72);
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.tarjeta-reporte__institucion h3 {
+    margin: 0;
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   FOLIO
+========================================================= */
+
+.tarjeta-reporte__folio {
+    flex-shrink: 0;
+
+    padding: 9px 13px;
+
+    text-align: right;
+
+    background: rgba(255, 255, 255, 0.10);
+
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 7px;
+}
+
+.tarjeta-reporte__folio span {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: rgba(255, 255, 255, 0.7);
+
+    font-size: 8px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+}
+
+.tarjeta-reporte__folio strong {
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   SECCIONES
+========================================================= */
+
+.tarjeta-reporte__seccion {
+    padding: 18px 22px;
+
+    border-bottom: 1px solid #e7edf2;
+}
+
+.tarjeta-reporte__seccion:last-child {
+    border-bottom: 0;
+}
+
+.tarjeta-reporte__seccion-titulo {
+    margin-bottom: 12px;
+
+    color: #1681c4;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.tarjeta-reporte__grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 12px 20px;
+}
+
+.tarjeta-reporte__campo span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #8291a0;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.tarjeta-reporte__campo strong {
+    color: #263f57;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   DATO DESTACADO
+========================================================= */
+
+.tarjeta-reporte__dato-destacado {
+    padding: 12px 14px;
+
+    background: #f6f9fb;
+
+    border: 1px solid #e1e8ee;
+    border-radius: 7px;
+}
+
+.tarjeta-reporte__dato-destacado strong {
+    color: #263f57;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   ÚLTIMO SEGUIMIENTO
+========================================================= */
+
+.tarjeta-reporte__seguimiento {
+    padding: 12px 14px;
+
+    color: #536a7e;
+    background: #f8fafc;
+
+    border-left: 3px solid #1681c4;
+    border-radius: 0 7px 7px 0;
+
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .tarjeta-reporte__encabezado {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .tarjeta-reporte__folio {
+        width: 100%;
+
+        text-align: left;
+    }
+
+    .tarjeta-reporte__grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 500px) {
+
+    .seguimiento-historial__item-header {
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 3px;
+    }
+
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .seguimiento-reporte__info,
+    .seguimiento-reporte-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* =========================================================
+   RESPONSIVE EDICIÓN
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .editar-reporte-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .editar-reporte-campo--full {
+        grid-column: auto;
+    }
+
+    .modal-reporte__footer {
+        flex-direction: column-reverse;
+    }
+
+    .modal-reporte__button {
+        width: 100%;
+    }
+
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .detalle-reporte-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
