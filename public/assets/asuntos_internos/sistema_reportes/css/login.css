@@ -765,28 +765,28 @@ body {
     display: block;
 
     width: auto;
-    height: 68px;
+    height: 78px;
 
     object-fit: contain;
 
     filter:
-        brightness(1.12)
+        brightness(1.14)
         drop-shadow(
             0
             0
-            5px
+            6px
             rgba(255, 255, 255, 0.95)
         )
         drop-shadow(
             0
             0
-            12px
-            rgba(255, 255, 255, 0.55)
+            14px
+            rgba(255, 255, 255, 0.58)
         )
         drop-shadow(
             0
-            8px
-            12px
+            10px
+            14px
             rgba(0, 0, 0, 0.28)
         );
 
@@ -795,22 +795,15 @@ body {
         filter 0.25s ease;
 }
 
-
-/* Ayuntamiento */
-
 .login-institucional__logo--ayuntamiento {
-    width: 215px;
-    max-width: 215px;
+    width: 245px;
+    max-width: 245px;
 }
-
-
-/* Comisaría */
 
 .login-institucional__logo--comisaria {
-    width: 195px;
-    max-width: 195px;
+    width: 220px;
+    max-width: 220px;
 }
-
 
 /* =========================================================
    EFECTO DE LOS LOGOS
