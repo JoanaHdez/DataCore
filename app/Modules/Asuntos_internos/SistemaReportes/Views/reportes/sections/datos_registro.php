@@ -1,8 +1,9 @@
-<section class="report-section report-section--registro">
+<section class="report-section">
 
     <div class="report-section__header">
 
         <div>
+
             <span class="report-section__eyebrow">
                 Nuevo registro
             </span>
@@ -14,6 +15,7 @@
             <p class="report-section__description">
                 Información general para la identificación del reporte.
             </p>
+
         </div>
 
     </div>
@@ -23,24 +25,36 @@
 
         <div class="report-form-grid">
 
-            <!-- FOLIO -->
+            <!-- QJ -->
             <div class="report-field">
 
-                <label for="folio">
-                    Folio
+                <label for="prefijo_folio">
+                    Prefijo
                 </label>
 
-                <input
-                    type="text"
-                    id="folio"
-                    name="folio"
-                    value="Se generará automáticamente"
-                    readonly
-                    class="report-input report-input--readonly"
-                >
+                <input type="text" id="prefijo_folio" name="prefijo_folio" class="report-input report-input--readonly"
+                    value="QJ" readonly>
 
                 <small class="report-field__help">
-                    El sistema asignará el folio al guardar el registro.
+                    Identificador fijo del tipo de registro.
+                </small>
+
+            </div>
+
+
+            <!-- NÚMERO DE FOLIO -->
+            <div class="report-field">
+
+                <label for="numero_folio">
+                    Número de folio
+                    <span class="required">*</span>
+                </label>
+
+                <input type="text" id="numero_folio" name="numero_folio" class="report-input"
+                    placeholder="Ingresa el número de folio" autocomplete="off" required>
+
+                <small class="report-field__help">
+                    Captura únicamente el número correspondiente al folio.
                 </small>
 
             </div>
@@ -53,14 +67,12 @@
                     Fecha de registro
                 </label>
 
-                <input
-                    type="text"
-                    id="fecha_registro"
-                    name="fecha_registro"
-                    value="<?= date('d/m/Y') ?>"
-                    readonly
-                    class="report-input report-input--readonly"
-                >
+                <input type="text" id="fecha_registro" name="fecha_registro" class="report-input report-input--readonly"
+                    value="<?= date('d/m/Y') ?>" readonly>
+
+                <small class="report-field__help">
+                    Se asigna automáticamente con la fecha actual.
+                </small>
 
             </div>
 

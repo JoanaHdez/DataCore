@@ -20,12 +20,14 @@
             <?= csrf_field() ?>
 
             <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\datos_registro'
+            ) ?>
+
+        
+            <?= $this->include(
                 'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\identificacion'
             ) ?>
 
-            <?= $this->include(
-                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\datos_registro'
-            ) ?>
 
             <?= $this->include(
                 'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\datos_hechos'
