@@ -648,6 +648,30 @@
     border-color: #1681c4;
 }
 
+/* =========================================================
+   PASO COMPLETADO
+========================================================= */
+
+.report-steps__item--completed {
+    color: #24633f;
+    background: #eef8f2;
+    border-color: #a8d7b8;
+}
+
+.report-steps__item--completed span {
+    color: #ffffff;
+    background: #2f9b5f;
+    border-color: #2f9b5f;
+
+    font-size: 0;
+}
+
+.report-steps__item--completed span::before {
+    content: "✓";
+
+    font-size: 13px;
+    font-weight: 900;
+}
 
 /* =========================================================
    NAVEGACIÓN

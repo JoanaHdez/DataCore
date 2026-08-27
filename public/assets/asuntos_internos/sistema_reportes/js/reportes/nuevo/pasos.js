@@ -49,6 +49,13 @@ function inicializarFormularioPorPasos() {
 
     const totalPasos = pasos.length;
 
+    /*
+     * Guarda los pasos que el usuario
+     * ya completó correctamente.
+     */
+    const pasosCompletados =
+        new Set();
+
 
     /*
      * Mostrar paso correspondiente
@@ -84,9 +91,23 @@ function inicializarFormularioPorPasos() {
                     indicador.dataset.stepIndicator
                 );
 
+
+            /*
+             * Paso actual = azul
+             */
             indicador.classList.toggle(
                 'report-steps__item--active',
                 numero === pasoActual
+            );
+
+
+            /*
+             * Paso terminado = verde
+             */
+            indicador.classList.toggle(
+                'report-steps__item--completed',
+                pasosCompletados.has(numero)
+                && numero !== pasoActual
             );
 
         });
@@ -146,17 +167,22 @@ function inicializarFormularioPorPasos() {
             }
 
 
-            /*
-             * Antes de avanzar validamos únicamente
-             * los campos obligatorios de este paso.
-             */
             if (!validarPasoActual(paso)) {
                 return;
             }
 
 
             /*
-             * Todo correcto.
+             * El paso pasó correctamente
+             * todas sus validaciones.
+             */
+            pasosCompletados.add(
+                pasoActual
+            );
+
+
+            /*
+             * Avanzamos al siguiente paso.
              */
             mostrarPaso(
                 pasoActual + 1
