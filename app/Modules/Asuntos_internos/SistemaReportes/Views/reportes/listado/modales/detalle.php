@@ -1,21 +1,20 @@
-<div
-    class="modal-reporte"
-    id="modal-detalle-reporte"
-    aria-hidden="true"
->
+<div class="modal-reporte" id="modal-detalle-reporte" aria-hidden="true">
 
-    <div
-        class="modal-reporte__overlay"
-        data-cerrar-modal
-    ></div>
+    <!-- =====================================================
+         OVERLAY
+    ====================================================== -->
+    <div class="modal-reporte__overlay" data-cerrar-modal></div>
 
-    <div
-        class="modal-reporte__dialog"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-detalle-titulo"
-    >
 
+    <!-- =====================================================
+         MODAL
+    ====================================================== -->
+    <div class="modal-reporte__dialog modal-reporte__dialog--detalle" role="dialog" aria-modal="true"
+        aria-labelledby="modal-detalle-titulo">
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
         <div class="modal-reporte__header">
 
             <div>
@@ -24,72 +23,155 @@
                     Detalle del registro
                 </span>
 
-                <h2
-                    class="modal-reporte__title"
-                    id="modal-detalle-titulo"
-                >
+                <h2 class="modal-reporte__title" id="modal-detalle-titulo">
                     Reporte
                 </h2>
 
+
+                <div class="detalle-reporte__meta">
+
+                    <span>
+                        Expediente:
+                        <strong id="detalle-meta-expediente">
+                            —
+                        </strong>
+                    </span>
+
+                    <span>
+                        Estado:
+                        <strong id="detalle-meta-estado">
+                            —
+                        </strong>
+                    </span>
+
+                </div>
+
             </div>
 
-            <button
-                type="button"
-                class="modal-reporte__close"
-                data-cerrar-modal
-                aria-label="Cerrar"
-            >
+
+            <button type="button" class="modal-reporte__close" data-cerrar-modal aria-label="Cerrar">
                 ×
             </button>
 
         </div>
 
 
-        <div class="modal-reporte__body">
+        <!-- =================================================
+             MENÚ
+        ================================================== -->
+        <nav class="detalle-reporte-nav">
 
-            <div class="detalle-reporte-grid">
+            <button type="button" class="detalle-reporte-nav__item detalle-reporte-nav__item--active"
+                data-detalle-seccion="datos">
+                Datos del reporte
+            </button>
 
-                <div class="detalle-reporte-campo">
-                    <span>Folio</span>
-                    <strong id="detalle-folio">—</strong>
-                </div>
+            <button type="button" class="detalle-reporte-nav__item" data-detalle-seccion="hechos">
+                Datos de los hechos
+            </button>
 
-                <div class="detalle-reporte-campo">
-                    <span>Fecha de queja</span>
-                    <strong id="detalle-fecha-queja">—</strong>
-                </div>
+            <button type="button" class="detalle-reporte-nav__item" data-detalle-seccion="personal">
+                Personal y unidades
+            </button>
 
-                <div class="detalle-reporte-campo">
-                    <span>Expediente</span>
-                    <strong id="detalle-expediente">—</strong>
-                </div>
+            <button type="button" class="detalle-reporte-nav__item" data-detalle-seccion="quejoso">
+                Datos del quejoso
+            </button>
 
-                <div class="detalle-reporte-campo">
-                    <span>Clasificación</span>
-                    <strong id="detalle-clasificacion">—</strong>
-                </div>
+            <button type="button" class="detalle-reporte-nav__item" data-detalle-seccion="clasificacion">
+                Clasificación y seguimiento
+            </button>
 
-                <div class="detalle-reporte-campo">
-                    <span>Quejoso</span>
-                    <strong id="detalle-quejoso">—</strong>
-                </div>
+        </nav>
 
-                <div class="detalle-reporte-campo">
-                    <span>Área</span>
-                    <strong id="detalle-area">—</strong>
-                </div>
 
-                <div class="detalle-reporte-campo">
-                    <span>Turno</span>
-                    <strong id="detalle-turno">—</strong>
-                </div>
+        <!-- =================================================
+             BODY
+        ================================================== -->
+        <div class="modal-reporte__body modal-reporte__body--detalle">
 
-                <div class="detalle-reporte-campo">
-                    <span>Resolución</span>
-                    <strong id="detalle-resolucion">—</strong>
-                </div>
 
-            </div>
+            <!-- =============================================
+                 PASO 1
+                 DATOS DEL REPORTE
+            ============================================== -->
+            <section class="detalle-reporte-seccion detalle-reporte-seccion--active" data-detalle-panel="datos">
+
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\detalle\sections\datos_registro'
+                ) ?>
+
+
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\detalle\sections\identificacion'
+                ) ?>
+
+            </section>
+
+
+            <!-- =============================================
+                 PASO 2
+                 DATOS DE LOS HECHOS
+                 Lo construiremos después
+            ============================================== -->
+            <section class="detalle-reporte-seccion" data-detalle-panel="hechos">
+
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\detalle\sections\datos_hechos'
+                ) ?>
+
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\detalle\sections\ubicacion'
+                ) ?>
+            </section>
+
+
+            <!-- =============================================
+                 PASO 3
+                 PERSONAL Y UNIDADES
+            ============================================== -->
+            <section class="detalle-reporte-seccion" data-detalle-panel="personal">
+
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\detalle\sections\personal'
+                ) ?>
+
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\detalle\sections\unidad'
+                ) ?>
+            </section>
+
+            <!-- =============================================
+                 PASO 4
+                 QUEJOSO
+            ============================================== -->
+            <section class="detalle-reporte-seccion" data-detalle-panel="quejoso">
+
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\detalle\sections\datos_quejoso'
+                ) ?>
+
+            </section>
+
+
+            <!-- =============================================
+                 PASO 5
+                 CLASIFICACIÓN Y SEGUIMIENTO
+            ============================================== -->
+            <section class="detalle-reporte-seccion" data-detalle-panel="clasificacion">
+
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\detalle\sections\clasificacion'
+                ) ?>
+
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\detalle\sections\evidencia'
+                ) ?>
+
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\detalle\sections\observaciones'
+                ) ?>
+            </section>
 
         </div>
 
