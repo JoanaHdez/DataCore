@@ -1,0 +1,31 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   Nuevo reporte - Unidades
+========================================================= */
+
+
+/* =========================================================
+   GRID DE DATOS DE LA UNIDAD
+========================================================= */
+
+.report-form-grid--unit {
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+}
+
+
+/* =========================================================
+   SELECT DE UNIDAD DESHABILITADO
+========================================================= */
+
+/*
+ * El aspecto general del select deshabilitado
+ * se encuentra en campos.css.
+ *
+ * Aquí únicamente mantenemos cualquier comportamiento
+ * específico de la sección de unidades.
+ */
+
+.report-form-grid--unit .report-select:disabled {
+    cursor: not-allowed;
+}

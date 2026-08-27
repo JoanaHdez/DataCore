@@ -1,0 +1,358 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   Nuevo reporte - Campos y controles
+========================================================= */
+
+
+/* =========================================================
+   LABELS
+========================================================= */
+
+.report-field label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #243c5a;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   INPUT BASE
+========================================================= */
+
+.report-input,
+.report-select,
+.report-textarea {
+    display: block;
+
+    width: 100%;
+
+    border: 1px solid #ccd8e4;
+    border-radius: 8px;
+
+    outline: none;
+
+    background: #ffffff;
+
+    color: #183452;
+
+    font-family: inherit;
+    font-size: 13px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+
+
+.report-input,
+.report-select {
+    min-height: 43px;
+
+    padding: 0 13px;
+}
+
+
+.report-textarea {
+    min-height: 110px;
+
+    padding: 12px 13px;
+
+    resize: vertical;
+}
+
+
+/* =========================================================
+   PLACEHOLDER
+========================================================= */
+
+.report-input::placeholder,
+.report-textarea::placeholder {
+    color: #9aa8b8;
+}
+
+
+/* =========================================================
+   FOCUS
+========================================================= */
+
+.report-input:focus,
+.report-select:focus,
+.report-textarea:focus {
+    border-color: #2384c7;
+
+    box-shadow:
+        0 0 0 3px rgba(35, 132, 199, 0.11);
+}
+
+
+/* =========================================================
+   CAMPOS AUTOMÁTICOS / BLOQUEADOS
+========================================================= */
+
+.report-input--readonly {
+    color: #536a83;
+
+    border-color: #d8e1ea;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f4f7fa,
+            #edf2f6
+        );
+
+    cursor: default;
+}
+
+
+.report-input--readonly:focus {
+    border-color: #d8e1ea;
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   TEXTO DE AYUDA
+========================================================= */
+
+.report-field__help {
+    display: block;
+
+    margin-top: 6px;
+
+    color: #8a98a8;
+
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   CAMPOS OBLIGATORIOS
+========================================================= */
+
+.report-field label .required,
+.report-field__required {
+    margin-left: 2px;
+
+    color: #c73c3c;
+}
+
+
+/* =========================================================
+   SELECT
+========================================================= */
+
+.report-select {
+    appearance: none;
+    -webkit-appearance: none;
+
+    padding-right: 38px;
+
+    background-color: #ffffff;
+
+    background-image:
+        linear-gradient(
+            45deg,
+            transparent 50%,
+            #637990 50%
+        ),
+        linear-gradient(
+            135deg,
+            #637990 50%,
+            transparent 50%
+        );
+
+    background-position:
+        calc(100% - 17px) 18px,
+        calc(100% - 12px) 18px;
+
+    background-size:
+        5px 5px,
+        5px 5px;
+
+    background-repeat: no-repeat;
+}
+
+
+/* =========================================================
+   SELECT DESHABILITADO
+========================================================= */
+
+.report-select:disabled {
+    color: #536a83;
+
+    border-color: #d8e1ea;
+
+    background-color: #edf2f6;
+
+    cursor: not-allowed;
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   ACCIONES DEL FORMULARIO
+========================================================= */
+
+.report-actions {
+    width: 100%;
+
+    margin-top: 30px;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe7ef;
+    border-radius: 14px;
+
+    box-shadow:
+        0 5px 18px rgba(24, 54, 88, 0.06);
+}
+
+
+.report-actions__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 30px;
+
+    padding: 24px 30px;
+}
+
+
+.report-actions__info {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+.report-actions__info strong {
+    color: #173554;
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+
+.report-actions__info span {
+    color: #7c8b9c;
+
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+
+.report-actions__buttons {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   BOTONES
+========================================================= */
+
+.button {
+    min-height: 43px;
+
+    padding: 0 20px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid transparent;
+    border-radius: 9px;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.button:hover {
+    transform: translateY(-1px);
+}
+
+
+.button:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   BOTÓN PRIMARIO
+========================================================= */
+
+.button--primary {
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            180deg,
+            #147bc5,
+            #0a5fa5
+        );
+
+    box-shadow:
+        0 7px 15px rgba(10, 95, 165, 0.18);
+}
+
+
+.button--primary:hover {
+    background:
+        linear-gradient(
+            180deg,
+            #1689db,
+            #0963ae
+        );
+
+    box-shadow:
+        0 9px 19px rgba(10, 95, 165, 0.24);
+}
+
+
+/* =========================================================
+   BOTÓN SECUNDARIO
+========================================================= */
+
+.button--secondary {
+    color: #34536f;
+
+    background: #ffffff;
+
+    border-color: #ccd7e2;
+}
+
+
+.button--secondary:hover {
+    color: #174b77;
+
+    border-color: #93b5d0;
+
+    background: #f6f9fc;
+}

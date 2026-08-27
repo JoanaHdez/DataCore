@@ -1,0 +1,226 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   Nuevo reporte - Responsive
+========================================================= */
+
+
+/* =========================================================
+   1050px
+   INDICADOR DE PASOS
+========================================================= */
+
+@media (max-width: 1050px) {
+
+    .report-steps {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+}
+
+
+/* =========================================================
+   900px
+   INDICADOR DE PASOS
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .report-steps {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+/* =========================================================
+   850px
+   FORMULARIO GENERAL
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .form-nuevo-reporte {
+        width: min(100% - 36px, 1400px);
+
+        margin-top: 25px;
+    }
+
+
+    .report-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .report-form-grid--unit {
+        grid-template-columns: 1fr;
+    }
+
+
+    .report-field--full {
+        grid-column: auto;
+    }
+
+}
+
+
+/* =========================================================
+   700px
+   ACCIONES
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .report-actions__content {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+
+    .report-actions__buttons {
+        width: 100%;
+    }
+
+
+    .report-actions__buttons .button {
+        flex: 1;
+    }
+
+
+    /* Navegación del formulario */
+
+    .report-step-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+
+    .report-step-actions__right {
+        width: 100%;
+
+        margin-left: 0;
+    }
+
+
+    .report-step-actions__right .button {
+        flex: 1;
+    }
+
+
+    #btn-step-anterior {
+        width: 100%;
+    }
+
+}
+
+
+/* =========================================================
+   600px
+   EVIDENCIA
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .report-evidence__dropzone {
+        min-height: 140px;
+
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+
+    .report-evidence__file {
+        align-items: flex-start;
+    }
+
+}
+
+
+/* =========================================================
+   520px
+   FORMULARIO Y PASOS
+========================================================= */
+
+@media (max-width: 520px) {
+
+    .form-nuevo-reporte {
+        width: calc(100% - 24px);
+
+        margin-top: 18px;
+    }
+
+
+    /* Secciones */
+
+    .report-section {
+        border-radius: 10px;
+    }
+
+
+    .report-section__header {
+        padding: 20px;
+    }
+
+
+    .report-section__body {
+        padding: 22px 20px 25px;
+    }
+
+
+    .report-section__title {
+        font-size: 18px;
+    }
+
+
+    /* Indicador de pasos */
+
+    .report-steps {
+        grid-template-columns: 1fr;
+
+        padding: 12px;
+    }
+
+
+    .report-steps__item {
+        padding: 10px 12px;
+    }
+
+
+    /* Navegación */
+
+    .report-step-actions {
+        padding: 18px;
+    }
+
+
+    .report-step-actions__right {
+        flex-direction: column;
+    }
+
+
+    .report-step-actions__right .button {
+        width: 100%;
+    }
+
+}
+
+
+/* =========================================================
+   460px
+   BOTONES
+========================================================= */
+
+@media (max-width: 460px) {
+
+    .report-actions__buttons {
+        flex-direction: column-reverse;
+    }
+
+
+    .report-actions__buttons .button {
+        width: 100%;
+    }
+
+}

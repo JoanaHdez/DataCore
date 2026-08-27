@@ -1,0 +1,209 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   Nuevo reporte - Formulario por pasos
+========================================================= */
+
+
+/* =========================================================
+   PASOS DEL FORMULARIO
+========================================================= */
+
+.report-step {
+    display: none;
+}
+
+
+.report-step--active {
+    display: block;
+}
+
+
+/* =========================================================
+   INDICADOR DE PASOS
+========================================================= */
+
+.report-steps {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+
+    gap: 10px;
+
+    margin-bottom: 28px;
+
+    padding: 18px;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe7ef;
+    border-radius: 14px;
+
+    box-shadow:
+        0 5px 18px rgba(24, 54, 88, 0.06);
+}
+
+
+/* =========================================================
+   PASO
+========================================================= */
+
+.report-steps__item {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 12px 14px;
+
+    color: #7b8998;
+
+    background: #f6f8fa;
+
+    border: 1px solid #e3e9ef;
+    border-radius: 9px;
+
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/* =========================================================
+   NÚMERO DEL PASO
+========================================================= */
+
+.report-steps__item span {
+    width: 27px;
+    height: 27px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #6f8294;
+
+    background: #e7edf3;
+
+    border-radius: 50%;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+
+/* =========================================================
+   NOMBRE DEL PASO
+========================================================= */
+
+.report-steps__item strong {
+    min-width: 0;
+
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   PASO ACTUAL
+========================================================= */
+
+.report-steps__item--active {
+    color: #125f99;
+
+    background: #eef8ff;
+
+    border-color: #93c9eb;
+
+    box-shadow:
+        0 4px 12px rgba(20, 117, 189, 0.08);
+}
+
+
+.report-steps__item--active span {
+    color: #ffffff;
+
+    background: #1475bd;
+}
+
+
+/* =========================================================
+   PASO COMPLETADO
+========================================================= */
+
+.report-steps__item--completed {
+    color: #26734a;
+
+    background: #f0faf5;
+
+    border-color: #a9d8bf;
+
+    box-shadow:
+        0 4px 12px rgba(38, 115, 74, 0.06);
+}
+
+
+.report-steps__item--completed span {
+    color: #ffffff;
+
+    background: #2e8b57;
+}
+
+
+/* =========================================================
+   ACCIONES DE NAVEGACIÓN
+========================================================= */
+
+.report-step-actions {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-top: 28px;
+
+    padding: 22px 24px;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe7ef;
+    border-radius: 14px;
+
+    box-shadow:
+        0 5px 18px rgba(24, 54, 88, 0.06);
+}
+
+
+.report-step-actions__right {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-left: auto;
+}
+
+
+/* =========================================================
+   CONTROLES OCULTOS
+========================================================= */
+
+.report-step-control--hidden {
+    display: none !important;
+}

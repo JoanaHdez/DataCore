@@ -1,0 +1,203 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   Nuevo reporte - Estructura general
+========================================================= */
+
+
+/* =========================================================
+   PÁGINA
+========================================================= */
+
+.nuevo-reporte {
+    min-height: 100vh;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f4f8fc 0%,
+            #edf3f8 100%
+        );
+
+    color: #172b46;
+}
+
+
+/* =========================================================
+   FORMULARIO GENERAL
+========================================================= */
+
+.form-nuevo-reporte {
+    width: min(1400px, calc(100% - 60px));
+
+    margin: 38px auto 70px;
+}
+
+
+/* =========================================================
+   SECCIÓN
+========================================================= */
+
+.report-section {
+    width: 100%;
+
+    margin-bottom: 28px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe7ef;
+    border-radius: 14px;
+
+    box-shadow:
+        0 5px 18px rgba(24, 54, 88, 0.06);
+}
+
+
+/* =========================================================
+   ENCABEZADO DE SECCIÓN
+========================================================= */
+
+.report-section__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 24px 30px 20px;
+
+    border-bottom: 1px solid #e8eef4;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ffffff 0%,
+            #f7faff 100%
+        );
+}
+
+
+.report-section__eyebrow {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #1475bd;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+}
+
+
+.report-section__title {
+    margin: 0;
+
+    color: #102d50;
+
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.3;
+}
+
+
+.report-section__description {
+    margin: 5px 0 0;
+
+    color: #738296;
+
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   CUERPO DE SECCIÓN
+========================================================= */
+
+.report-section__body {
+    padding: 28px 30px 32px;
+}
+
+
+/* =========================================================
+   GRID GENERAL
+========================================================= */
+
+.report-form-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 25px 28px;
+}
+
+
+.report-field--full {
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   CAMPO
+========================================================= */
+
+.report-field {
+    min-width: 0;
+}
+
+
+/* =========================================================
+   SUBSECCIÓN
+========================================================= */
+
+.report-subsection {
+    margin-top: 30px;
+
+    padding-top: 26px;
+
+    border-top: 1px solid #e4ebf2;
+}
+
+
+.report-subsection__header {
+    margin-bottom: 20px;
+}
+
+
+.report-subsection__eyebrow {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #1475bd;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
+
+
+.report-subsection__title {
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 16px;
+    font-weight: 800;
+}
+
+
+.report-subsection__description {
+    margin: 5px 0 0;
+
+    color: #7b8998;
+
+    font-size: 11px;
+}

@@ -129,8 +129,12 @@ Nuevo reporte | Asuntos Internos
             ) ?>
 
             <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\evidencia'
+            ) ?>
+            <?= $this->include(
                 'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\observaciones'
             ) ?>
+
 
         </div>
 
