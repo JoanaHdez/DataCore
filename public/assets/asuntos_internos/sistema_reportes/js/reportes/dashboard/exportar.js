@@ -31,6 +31,14 @@ function inicializarExportacionDashboard() {
         );
 
 
+    /*
+     * Este archivo se importa desde main.js
+     * también en vistas donde el Dashboard
+     * no está presente.
+     *
+     * Si no existen sus elementos, simplemente
+     * no inicializamos este módulo.
+     */
     if (
         !modal
         || !botonAbrir
@@ -113,8 +121,10 @@ function inicializarExportacionDashboard() {
             );
 
         opciones.forEach((opcion) => {
+
             opcion.checked =
                 seleccionarTodo.checked;
+
         });
 
         actualizarEstadoSeleccionarTodo(
@@ -187,12 +197,6 @@ function inicializarExportacionDashboard() {
         );
 
 
-        /*
-         * TEMPORAL
-         *
-         * Aquí conectaremos posteriormente
-         * el backend que generará el Excel.
-         */
         enviarExportacionDashboard(
             secciones,
             modal,
@@ -234,8 +238,12 @@ function prepararModalExportacion(
      * no dejamos seleccionado "Seleccionar todo".
      */
     if (opciones.length === 0) {
-        seleccionarTodo.checked = false;
-        seleccionarTodo.indeterminate = false;
+
+        seleccionarTodo.checked =
+            false;
+
+        seleccionarTodo.indeterminate =
+            false;
     }
 
 
@@ -281,9 +289,13 @@ function cerrarModalExportacion(
      * Si algún elemento dentro del modal
      * conserva el foco, lo quitamos antes
      * de ocultar el modal.
+     *
+     * Esto evita la advertencia de aria-hidden
+     * cuando el botón todavía conserva el foco.
      */
     const elementoActivo =
         document.activeElement;
+
 
     if (
         elementoActivo
@@ -311,22 +323,6 @@ function cerrarModalExportacion(
     );
 }
 
-modal.classList.remove(
-    'modal-reporte--visible'
-);
-
-modal.setAttribute(
-    'aria-hidden',
-    'true'
-);
-
-document.body.classList.remove(
-    'modal-abierto'
-);
-
-ocultarMensajeExportacion(
-    mensaje
-);
 
 /* =============================================================
    OBTENER CHECKBOXES
@@ -388,7 +384,8 @@ function actualizarEstadoSeleccionarTodo(
      */
     if (seleccionadas.length === 0) {
 
-        seleccionarTodo.checked = false;
+        seleccionarTodo.checked =
+            false;
 
         seleccionarTodo.indeterminate =
             false;
@@ -405,7 +402,8 @@ function actualizarEstadoSeleccionarTodo(
         === opciones.length
     ) {
 
-        seleccionarTodo.checked = true;
+        seleccionarTodo.checked =
+            true;
 
         seleccionarTodo.indeterminate =
             false;
@@ -417,7 +415,8 @@ function actualizarEstadoSeleccionarTodo(
     /*
      * Solo algunas seleccionadas
      */
-    seleccionarTodo.checked = false;
+    seleccionarTodo.checked =
+        false;
 
     seleccionarTodo.indeterminate =
         true;
@@ -436,7 +435,8 @@ function mostrarMensajeExportacion(
         return;
     }
 
-    mensaje.hidden = false;
+    mensaje.hidden =
+        false;
 }
 
 
@@ -452,8 +452,14 @@ function ocultarMensajeExportacion(
         return;
     }
 
-    mensaje.hidden = true;
+    mensaje.hidden =
+        true;
 }
+
+
+/* =============================================================
+   ENVIAR EXPORTACIÓN AL BACKEND
+============================================================= */
 
 async function enviarExportacionDashboard(
     secciones,
@@ -465,6 +471,7 @@ async function enviarExportacionDashboard(
         document.querySelector(
             '#btn-generar-excel'
         );
+
 
     const textoOriginal =
         botonGenerar?.textContent
@@ -480,7 +487,8 @@ async function enviarExportacionDashboard(
          */
         if (botonGenerar) {
 
-            botonGenerar.disabled = true;
+            botonGenerar.disabled =
+                true;
 
             botonGenerar.textContent =
                 'Generando...';
@@ -526,7 +534,9 @@ async function enviarExportacionDashboard(
          */
         if (!respuesta.ok) {
 
-            let resultado = null;
+            let resultado =
+                null;
+
 
             try {
 
@@ -548,10 +558,12 @@ async function enviarExportacionDashboard(
                 resultado
             );
 
+
             mostrarErrorExportacion(
                 mensaje,
                 resultado.message
             );
+
 
             return;
         }
@@ -595,7 +607,8 @@ async function enviarExportacionDashboard(
             document.createElement('a');
 
 
-        enlace.href = url;
+        enlace.href =
+            url;
 
         enlace.download =
             nombreArchivo;
@@ -607,6 +620,7 @@ async function enviarExportacionDashboard(
 
 
         enlace.click();
+
 
         enlace.remove();
 
@@ -674,6 +688,7 @@ function obtenerNombreArchivo(
 
 
     if (!contentDisposition) {
+
         return nombrePredeterminado;
     }
 
@@ -694,6 +709,7 @@ function obtenerNombreArchivo(
         !coincidencia
         || !coincidencia[1]
     ) {
+
         return nombrePredeterminado;
     }
 
@@ -721,5 +737,6 @@ function mostrarErrorExportacion(
         || 'No fue posible generar el archivo de Excel.';
 
 
-    mensaje.hidden = false;
+    mensaje.hidden =
+        false;
 }
