@@ -1,7 +1,6 @@
 import {
-    mostrarResultado
+    mostrarResultadoYRedirigir
 } from '../notificaciones/resultado.js';
-
 
 document.addEventListener('DOMContentLoaded', () => {
     inicializarFormularioPorPasos();
@@ -340,12 +339,14 @@ function inicializarFormularioPorPasos() {
              * se mostrará únicamente después
              * de recibir confirmación real.
              */
-            mostrarResultado({
-                tipo: 'success',
-                titulo: 'Reporte listo',
-                mensaje:
-                    'La información del reporte fue validada correctamente.',
-            });
+            mostrarResultadoYRedirigir({
+    tipo: 'success',
+    titulo: 'Reporte guardado',
+    mensaje:
+        'El reporte se registró correctamente.',
+    url: '/asuntos-internos/reportes/listado',
+    duracion: 2000,
+});
 
         }
     );

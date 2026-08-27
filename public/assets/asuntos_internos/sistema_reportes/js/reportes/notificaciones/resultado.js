@@ -104,6 +104,68 @@ export function mostrarResultado({
     );
 }
 
+/* =========================================================
+   MOSTRAR RESULTADO Y REDIRIGIR
+========================================================= */
+
+export function mostrarResultadoYRedirigir({
+    tipo = 'success',
+    titulo = 'Operación realizada',
+    mensaje = 'La operación se realizó correctamente.',
+    url = '',
+    duracion = 2000,
+} = {}) {
+
+    /*
+     * Mostramos primero el modal.
+     */
+    mostrarResultado({
+        tipo,
+        titulo,
+        mensaje,
+    });
+
+
+    /*
+     * Si no existe una URL,
+     * únicamente mostramos el resultado.
+     */
+    if (!url) {
+        return;
+    }
+
+
+    /*
+     * Después del tiempo indicado:
+     *
+     * 1. Cerramos el modal.
+     * 2. Redirigimos a la nueva vista.
+     */
+    window.setTimeout(
+        () => {
+
+            cerrarResultado();
+
+
+            /*
+             * Damos unos milisegundos
+             * para que se vea la animación
+             * de cierre.
+             */
+            window.setTimeout(
+                () => {
+
+                    window.location.href =
+                        url;
+
+                },
+                250
+            );
+
+        },
+        duracion
+    );
+}
 
 /* =========================================================
    CERRAR RESULTADO

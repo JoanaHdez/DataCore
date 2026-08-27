@@ -69,19 +69,6 @@
 
         </div>
 
-
-        <div class="modal-resultado__acciones">
-
-            <button
-                type="button"
-                class="modal-resultado__boton"
-                data-cerrar-resultado
-            >
-                Aceptar
-            </button>
-
-        </div>
-
     </div>
 
 </div>
