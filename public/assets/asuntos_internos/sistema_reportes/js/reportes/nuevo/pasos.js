@@ -1,3 +1,8 @@
+import {
+    mostrarResultado
+} from '../notificaciones/resultado.js';
+
+
 document.addEventListener('DOMContentLoaded', () => {
     inicializarFormularioPorPasos();
 });
@@ -47,31 +52,37 @@ function inicializarFormularioPorPasos() {
 
     let pasoActual = 1;
 
-    const totalPasos = pasos.length;
+    const totalPasos =
+        pasos.length;
+
 
     /*
-     * Guarda los pasos que el usuario
-     * ya completó correctamente.
+     * Pasos completados correctamente.
      */
     const pasosCompletados =
         new Set();
 
 
-    /*
-     * Mostrar paso correspondiente
-     */
+    /* =========================================================
+       MOSTRAR PASO
+    ========================================================= */
+
     function mostrarPaso(numeroPaso) {
 
-        pasoActual = numeroPaso;
+        pasoActual =
+            numeroPaso;
 
 
         /*
-         * Secciones
+         * Mostrar únicamente
+         * el bloque correspondiente.
          */
         pasos.forEach((paso) => {
 
             const numero =
-                Number(paso.dataset.step);
+                Number(
+                    paso.dataset.step
+                );
 
             paso.classList.toggle(
                 'report-step--active',
@@ -82,7 +93,7 @@ function inicializarFormularioPorPasos() {
 
 
         /*
-         * Indicadores superiores
+         * Actualizar indicador superior.
          */
         indicadores.forEach((indicador) => {
 
@@ -93,7 +104,7 @@ function inicializarFormularioPorPasos() {
 
 
             /*
-             * Paso actual = azul
+             * Paso actual = azul.
              */
             indicador.classList.toggle(
                 'report-steps__item--active',
@@ -102,7 +113,7 @@ function inicializarFormularioPorPasos() {
 
 
             /*
-             * Paso terminado = verde
+             * Paso completado = verde.
              */
             indicador.classList.toggle(
                 'report-steps__item--completed',
@@ -113,24 +124,37 @@ function inicializarFormularioPorPasos() {
         });
 
 
+        /*
+         * Botón Anterior.
+         */
         botonAnterior.classList.toggle(
             'report-step-control--hidden',
             pasoActual === 1
         );
 
+
+        /*
+         * Botón Siguiente.
+         */
         botonSiguiente.classList.toggle(
             'report-step-control--hidden',
             pasoActual === totalPasos
         );
 
+
+        /*
+         * Guardar solo aparece
+         * en el último paso.
+         */
         botonGuardar.classList.toggle(
             'report-step-control--hidden',
             pasoActual !== totalPasos
         );
 
+
         /*
-         * Subimos al inicio del formulario
-         * al cambiar de paso.
+         * Regresamos visualmente
+         * al inicio del formulario.
          */
         formulario.scrollIntoView({
             behavior: 'smooth',
@@ -139,26 +163,28 @@ function inicializarFormularioPorPasos() {
     }
 
 
-    /*
-     * SIGUIENTE
-     */
+    /* =========================================================
+       SIGUIENTE
+    ========================================================= */
+
     botonSiguiente.addEventListener(
         'click',
         () => {
 
-            if (pasoActual >= totalPasos) {
+            if (
+                pasoActual
+                >= totalPasos
+            ) {
                 return;
             }
 
 
-            /*
-             * Obtenemos el bloque actualmente visible.
-             */
             const paso =
                 pasos.find(
                     (elemento) =>
-                        Number(elemento.dataset.step)
-                        === pasoActual
+                        Number(
+                            elemento.dataset.step
+                        ) === pasoActual
                 );
 
 
@@ -167,14 +193,22 @@ function inicializarFormularioPorPasos() {
             }
 
 
-            if (!validarPasoActual(paso)) {
+            /*
+             * Validamos únicamente
+             * el paso actual.
+             */
+            if (
+                !validarPasoActual(
+                    paso
+                )
+            ) {
                 return;
             }
 
 
             /*
-             * El paso pasó correctamente
-             * todas sus validaciones.
+             * Marcamos el paso
+             * como completado.
              */
             pasosCompletados.add(
                 pasoActual
@@ -182,18 +216,20 @@ function inicializarFormularioPorPasos() {
 
 
             /*
-             * Avanzamos al siguiente paso.
+             * Avanzamos.
              */
             mostrarPaso(
                 pasoActual + 1
             );
+
         }
     );
 
 
-    /*
-     * ANTERIOR
-     */
+    /* =========================================================
+       ANTERIOR
+    ========================================================= */
+
     botonAnterior.addEventListener(
         'click',
         () => {
@@ -202,37 +238,154 @@ function inicializarFormularioPorPasos() {
                 return;
             }
 
+
             mostrarPaso(
                 pasoActual - 1
             );
+
+        }
+    );
+
+
+    /* =========================================================
+       GUARDAR REPORTE
+    ========================================================= */
+
+    formulario.addEventListener(
+        'submit',
+        (evento) => {
+
+            /*
+             * TEMPORAL:
+             *
+             * Todavía no enviamos al backend.
+             * Esto cambiará cuando conectemos BD.
+             */
+            evento.preventDefault();
+
+
+            const ultimoPaso =
+                pasos.find(
+                    (elemento) =>
+                        Number(
+                            elemento.dataset.step
+                        ) === totalPasos
+                );
+
+
+            if (!ultimoPaso) {
+                return;
+            }
+
+
+            /*
+             * Validamos el último paso.
+             */
+            if (
+                !validarPasoActual(
+                    ultimoPaso
+                )
+            ) {
+                return;
+            }
+
+
+            /*
+             * Marcamos el último paso
+             * como completado.
+             */
+            pasosCompletados.add(
+                totalPasos
+            );
+
+
+            /*
+             * Actualizamos visualmente
+             * el indicador final.
+             */
+            indicadores.forEach(
+                (indicador) => {
+
+                    const numero =
+                        Number(
+                            indicador
+                                .dataset
+                                .stepIndicator
+                        );
+
+
+                    if (
+                        numero
+                        === totalPasos
+                    ) {
+
+                        indicador.classList.remove(
+                            'report-steps__item--active'
+                        );
+
+                        indicador.classList.add(
+                            'report-steps__item--completed'
+                        );
+
+                    }
+
+                }
+            );
+
+
+            /*
+             * MODAL TEMPORAL DE PRUEBA.
+             *
+             * Cuando conectemos el backend,
+             * se mostrará únicamente después
+             * de recibir confirmación real.
+             */
+            mostrarResultado({
+                tipo: 'success',
+                titulo: 'Reporte listo',
+                mensaje:
+                    'La información del reporte fue validada correctamente.',
+            });
+
         }
     );
 
 
     /*
-     * Estado inicial
+     * Estado inicial.
      */
     mostrarPaso(1);
 }
+
 
 /* =========================================================
    VALIDAR PASO ACTUAL
 ========================================================= */
 
-function validarPasoActual(paso) {
+function validarPasoActual(
+    paso
+) {
 
     const camposObligatorios =
         Array.from(
             paso.querySelectorAll(
-                'input[required], select[required], textarea[required]'
+                `
+                input[required],
+                select[required],
+                textarea[required]
+                `
             )
         );
 
 
-    for (const campo of camposObligatorios) {
+    for (
+        const campo
+        of camposObligatorios
+    ) {
 
         /*
-         * Ignoramos campos deshabilitados.
+         * El navegador ignora
+         * campos deshabilitados.
          */
         if (campo.disabled) {
             continue;
@@ -240,26 +393,17 @@ function validarPasoActual(paso) {
 
 
         /*
-         * Utilizamos la validación nativa
-         * del navegador.
+         * Validación nativa.
          */
         if (!campo.checkValidity()) {
 
-            /*
-             * Mostramos el mensaje nativo.
-             */
             campo.reportValidity();
 
-
-            /*
-             * Llevamos el foco al campo
-             * que necesita atención.
-             */
             campo.focus();
-
 
             return false;
         }
+
     }
 
 

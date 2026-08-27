@@ -30,3 +30,7 @@ import './reportes/listado/modales/editar.js';
 import './reportes/listado/modales/seguimiento.js';
 import './reportes/listado/modales/tarjeta.js';
 import './reportes/listado/modales/imprimirTarjeta.js';
+
+
+
+import './reportes/notificaciones/resultado.js';
