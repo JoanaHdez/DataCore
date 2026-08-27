@@ -27,22 +27,25 @@
 
                 <label for="clasificacion">
                     Clasificación
+                    <span class="required">*</span>
                 </label>
 
                 <input type="text" id="clasificacion" name="clasificacion" class="report-input"
-                    placeholder="Ingresa la clasificación" autocomplete="off">
+                    placeholder="Ingresa la clasificación" autocomplete="off" required>
 
             </div>
+
 
             <!-- INSPECTOR -->
             <div class="report-field">
 
                 <label for="inspector">
                     Inspector
+                    <span class="required">*</span>
                 </label>
 
                 <input type="text" id="inspector" name="inspector" class="report-input"
-                    placeholder="Ingresa el nombre del inspector" autocomplete="off">
+                    placeholder="Ingresa el nombre del inspector" autocomplete="off" required>
 
             </div>
 

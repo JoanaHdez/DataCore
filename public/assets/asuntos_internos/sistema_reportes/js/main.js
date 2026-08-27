@@ -12,6 +12,13 @@ import './reportes/dashboard/graficas/tendencia.js';
 import './reportes/dashboard/exportar.js';
 
 /* =========================================================
+   REPORTES - NUEVO
+========================================================= */
+
+import './reportes/nuevo/limpiar.js';
+import './reportes/nuevo/pasos.js';
+
+/* =========================================================
    REPORTES - LISTADO
 ========================================================= */
 

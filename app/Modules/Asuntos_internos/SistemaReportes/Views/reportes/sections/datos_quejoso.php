@@ -18,6 +18,7 @@
 
     </div>
 
+
     <div class="report-section__body">
 
         <div class="report-form-grid">
@@ -27,33 +28,39 @@
 
                 <label for="quejoso">
                     Quejoso
+                    <span class="required">*</span>
                 </label>
 
                 <input type="text" id="quejoso" name="quejoso" class="report-input"
-                    placeholder="Ingresa el nombre del quejoso" autocomplete="off">
+                    placeholder="Ingresa el nombre del quejoso" autocomplete="off" required>
 
             </div>
+
 
             <!-- EDAD -->
             <div class="report-field">
 
                 <label for="edad">
                     Edad
+                    <span class="required">*</span>
                 </label>
 
                 <input type="number" id="edad" name="edad" class="report-input" placeholder="Ingresa la edad" min="0"
-                    max="120">
+                    max="120" required>
 
             </div>
+
 
             <!-- GÉNERO -->
             <div class="report-field">
 
                 <label for="genero">
                     Género
+                    <span class="required">*</span>
                 </label>
 
-                <select id="genero" name="genero" class="report-select">
+                <select id="genero" name="genero" class="report-select" required>
+
                     <option value="" selected disabled>
                         Selecciona una opción
                     </option>
@@ -77,6 +84,7 @@
                 </select>
 
             </div>
+
 
             <!-- MEDIO DE CONTACTO -->
             <div class="report-field">

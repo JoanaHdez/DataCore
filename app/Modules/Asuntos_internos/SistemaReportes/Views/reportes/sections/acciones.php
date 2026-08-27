@@ -19,6 +19,7 @@
             <button
                 type="reset"
                 class="button button--secondary"
+                id="btn-limpiar-reporte"
             >
                 Limpiar formulario
             </button>

@@ -562,6 +562,173 @@
     opacity: 1;
 }
 
+/* =========================================================
+   FORMULARIO POR PASOS
+========================================================= */
+
+.report-step {
+    display: none;
+}
+
+.report-step--active {
+    display: block;
+}
+
+
+/* =========================================================
+   INDICADOR DE PASOS
+========================================================= */
+
+.report-steps {
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+
+    gap: 10px;
+
+    margin-bottom: 28px;
+}
+
+.report-steps__item {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 12px 14px;
+
+    color: #7d8b99;
+    background: #eef3f7;
+
+    border: 1px solid #dce5ed;
+    border-radius: 9px;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.report-steps__item span {
+    width: 26px;
+    height: 26px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    color: #61758a;
+    background: #ffffff;
+
+    border: 1px solid #cad6e1;
+    border-radius: 50%;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.report-steps__item strong {
+    line-height: 1.3;
+}
+
+.report-steps__item--active {
+    color: #164c77;
+    background: #edf7fd;
+
+    border-color: #9dcce9;
+}
+
+.report-steps__item--active span {
+    color: #ffffff;
+    background: #1681c4;
+
+    border-color: #1681c4;
+}
+
+
+/* =========================================================
+   NAVEGACIÓN
+========================================================= */
+
+.report-step-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-top: 28px;
+
+    padding: 20px 24px;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe7ef;
+    border-radius: 14px;
+
+    box-shadow:
+        0 5px 18px rgba(24, 54, 88, 0.06);
+}
+
+.report-step-actions__right {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-left: auto;
+}
+
+/* =========================================================
+   VISIBILIDAD DE CONTROLES MULTIPASO
+========================================================= */
+
+.report-step-control--hidden {
+    display: none !important;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .report-steps {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .report-steps {
+        grid-template-columns: 1fr;
+    }
+
+    .report-step-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .report-step-actions__right {
+        width: 100%;
+
+        flex-direction: column;
+
+        margin-left: 0;
+    }
+
+    .report-step-actions .button {
+        width: 100%;
+    }
+
+}
+
 
 /* =========================================================
    RESPONSIVE
