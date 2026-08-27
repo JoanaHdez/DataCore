@@ -3,6 +3,7 @@
     <div class="report-section__header">
 
         <div>
+
             <span class="report-section__eyebrow">
                 Datos generales
             </span>
@@ -14,45 +15,42 @@
             <p class="report-section__description">
                 Información general para identificar el reporte.
             </p>
+
         </div>
 
     </div>
+
 
     <div class="report-section__body">
 
         <div class="report-form-grid">
 
+            <!-- FOLIO IP -->
             <div class="report-field">
 
-                <label for="folio_consecutivo">
-                    Folio consecutivo
+                <label for="folio_ip">
+                    Folio IP
                 </label>
 
-                <input type="text" id="folio_consecutivo" name="folio_consecutivo" value="Se generará automáticamente"
-                    readonly class="report-input report-input--readonly">
+                <input type="text" id="folio_ip" name="folio_ip" class="report-input" placeholder="Ingresa el folio IP">
 
             </div>
 
-            <div class="report-field">
 
-                <label for="folio_if">
-                    Folio IF
-                </label>
-
-                <input type="text" id="folio_if" name="folio_if" class="report-input" placeholder="Ingresa el folio IF">
-
-            </div>
-
+            <!-- FECHA DE QUEJA -->
             <div class="report-field">
 
                 <label for="fecha_queja">
                     Fecha de queja
+                    <span class="required">*</span>
                 </label>
 
-                <input type="date" id="fecha_queja" name="fecha_queja" class="report-input">
+                <input type="date" id="fecha_queja" name="fecha_queja" class="report-input" required>
 
             </div>
 
+
+            <!-- FECHA DE ACUERDO -->
             <div class="report-field">
 
                 <label for="fecha_acuerdo">
@@ -63,17 +61,22 @@
 
             </div>
 
+
+            <!-- EXPEDIENTE -->
             <div class="report-field">
 
                 <label for="expediente">
                     Expediente
+                    <span class="required">*</span>
                 </label>
 
                 <input type="text" id="expediente" name="expediente" class="report-input"
-                    placeholder="Ingresa el número de expediente">
+                    placeholder="Ingresa el número de expediente" required>
 
             </div>
 
+
+            <!-- NOMENCLATURA -->
             <div class="report-field">
 
                 <label for="nomenclatura">
@@ -85,6 +88,8 @@
 
             </div>
 
+
+            <!-- NÚMERO DE OFICIO -->
             <div class="report-field">
 
                 <label for="no_oficio">

@@ -488,6 +488,102 @@
     height: 100%;
 }
 
+/* =========================================================
+   SUBSECCIÓN
+========================================================= */
+
+.report-subsection {
+    margin-top: 30px;
+
+    padding-top: 26px;
+
+    border-top: 1px solid #e4ebf2;
+}
+
+.report-subsection__header {
+    margin-bottom: 20px;
+}
+
+.report-subsection__eyebrow {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #1475bd;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
+
+.report-subsection__title {
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.report-subsection__description {
+    margin: 5px 0 0;
+
+    color: #7b8998;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   GRID DATOS DE UNIDAD
+========================================================= */
+
+.report-form-grid--unit {
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+}
+
+
+/* =========================================================
+   SELECT DESHABILITADO
+========================================================= */
+
+.report-select:disabled {
+    color: #536a83;
+
+    border-color: #d8e1ea;
+
+    background-color: #edf2f6;
+
+    cursor: not-allowed;
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1050px) {
+
+    .report-form-grid--unit {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .report-form-grid--unit {
+        grid-template-columns: 1fr;
+    }
+
+}
 
 /* =========================================================
    RESPONSIVE
