@@ -61,8 +61,7 @@
                     Turno
                 </label>
 
-                <input type="text" id="turno" name="turno" class="report-input" placeholder="Ingresa el turno"
-                    autocomplete="off">
+                <input type="text" id="turno" name="turno" class="report-input report-input--readonly" readonly>
 
             </div>
 

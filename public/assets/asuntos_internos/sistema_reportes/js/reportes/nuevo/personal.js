@@ -20,8 +20,15 @@ function inicializarPersonalInvolucrado() {
     const inputArea =
         document.querySelector('#area');
 
+    const inputTurno =
+        document.querySelector('#turno');
 
-    if (!inputOficial || !inputArea) {
+
+    if (
+        !inputOficial
+        || !inputArea
+        || !inputTurno
+    ) {
         return;
     }
 
@@ -38,16 +45,19 @@ function inicializarPersonalInvolucrado() {
             id: 1,
             nombre: 'Juan Pérez López',
             area: 'Seguridad Ciudadana',
+            turno: 'Primer turno',
         },
         {
             id: 2,
             nombre: 'María Hernández García',
             area: 'Tránsito',
+            turno: 'Segundo turno',
         },
         {
             id: 3,
             nombre: 'Carlos Ramírez Torres',
             area: 'Operaciones',
+            turno: 'Tercer turno',
         },
     ];
 
@@ -69,7 +79,8 @@ function inicializarPersonalInvolucrado() {
         if (!nombre) {
 
             limpiarDatosOficial(
-                inputArea
+                inputArea,
+                inputTurno
             );
 
             return;
@@ -89,12 +100,13 @@ function inicializarPersonalInvolucrado() {
 
         /*
          * Si todavía no existe coincidencia,
-         * mantenemos Área vacía.
+         * mantenemos Área y Turno vacíos.
          */
         if (!oficial) {
 
             limpiarDatosOficial(
-                inputArea
+                inputArea,
+                inputTurno
             );
 
             return;
@@ -107,7 +119,8 @@ function inicializarPersonalInvolucrado() {
          */
         cargarDatosOficial(
             oficial,
-            inputArea
+            inputArea,
+            inputTurno
         );
 
     });
@@ -149,11 +162,15 @@ function buscarOficialPorNombre(
 
 function cargarDatosOficial(
     oficial,
-    inputArea
+    inputArea,
+    inputTurno
 ) {
 
     inputArea.value =
         oficial.area || '';
+
+    inputTurno.value =
+        oficial.turno || '';
 
 }
 
@@ -163,10 +180,13 @@ function cargarDatosOficial(
 ========================================================= */
 
 function limpiarDatosOficial(
-    inputArea
+    inputArea,
+    inputTurno
 ) {
 
     inputArea.value = '';
+
+    inputTurno.value = '';
 
 }
 

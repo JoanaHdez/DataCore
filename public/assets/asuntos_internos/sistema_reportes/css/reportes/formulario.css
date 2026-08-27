@@ -714,6 +714,271 @@
     display: none !important;
 }
 
+/* =========================================================
+   EVIDENCIA FOTOGRÁFICA
+========================================================= */
+
+.report-evidence {
+    width: 100%;
+}
+
+
+.report-evidence__input {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   ZONA DE CARGA
+========================================================= */
+
+.report-evidence__dropzone {
+    width: 100%;
+    min-height: 150px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 18px;
+
+    padding: 24px;
+
+    color: #4c647b;
+
+    background:
+        linear-gradient(
+            180deg,
+            #fbfdff,
+            #f5f9fc
+        );
+
+    border:
+        1.5px dashed #a9bfd2;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.report-evidence__dropzone:hover {
+    border-color: #2183c4;
+
+    background: #f4faff;
+
+    box-shadow:
+        0 8px 20px rgba(25, 100, 155, 0.08);
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   ICONO
+========================================================= */
+
+.report-evidence__icon {
+    width: 54px;
+    height: 54px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #1475bd;
+
+    background: #e9f5fc;
+
+    border-radius: 12px;
+}
+
+
+.report-evidence__icon svg {
+    width: 26px;
+    height: 26px;
+}
+
+
+/* =========================================================
+   TEXTO
+========================================================= */
+
+.report-evidence__content {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+
+.report-evidence__content strong {
+    color: #173554;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+
+.report-evidence__content span {
+    color: #718293;
+
+    font-size: 10px;
+}
+
+
+.report-evidence__content small {
+    color: #98a6b3;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   ARCHIVOS SELECCIONADOS
+========================================================= */
+
+.report-evidence__files {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    margin-top: 12px;
+}
+
+
+.report-evidence__file {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 10px 12px;
+
+    color: #52697d;
+
+    background: #f5f8fb;
+
+    border: 1px solid #e0e8ef;
+    border-radius: 8px;
+
+    font-size: 10px;
+}
+
+
+.report-evidence__file strong {
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   INFORMACIÓN DEL ARCHIVO
+========================================================= */
+
+.report-evidence__file-info {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.report-evidence__file-info strong {
+    overflow: hidden;
+
+    color: #38536b;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.report-evidence__file-info span {
+    color: #8a99a7;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   ELIMINAR ARCHIVO
+========================================================= */
+
+.report-evidence__remove {
+    width: 28px;
+    height: 28px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    color: #a45a5a;
+    background: #fff5f5;
+
+    border: 1px solid #efd5d5;
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-family: inherit;
+    font-size: 18px;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.report-evidence__remove:hover {
+    color: #ffffff;
+
+    background: #c94d4d;
+
+    border-color: #c94d4d;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .report-evidence__dropzone {
+        min-height: 140px;
+
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+}
+
 
 /* =========================================================
    RESPONSIVE

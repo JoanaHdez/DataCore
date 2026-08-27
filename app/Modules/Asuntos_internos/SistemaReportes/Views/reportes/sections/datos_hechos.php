@@ -59,32 +59,6 @@
 
             </div>
 
-
-            <!-- UBICACIÓN -->
-            <div class="report-field report-field--full">
-
-                <label for="ubicacion">
-                    Ubicación
-                    <span class="required">*</span>
-                </label>
-
-                <input
-                    type="text"
-                    id="ubicacion"
-                    name="ubicacion"
-                    class="report-input"
-                    placeholder="Ingresa la ubicación de los hechos"
-                    autocomplete="off"
-                    required
-                >
-
-                <small class="report-field__help">
-                    Más adelante esta información se podrá complementar mediante el mapa.
-                </small>
-
-            </div>
-
-
             <!-- DESCRIPCIÓN -->
             <div class="report-field report-field--full">
 

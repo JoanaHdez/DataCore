@@ -87,17 +87,30 @@
 
 
             <!-- MEDIO DE CONTACTO -->
+            <!-- TELÉFONO -->
             <div class="report-field">
 
-                <label for="medio_contacto">
-                    Medio de contacto
+                <label for="telefono">
+                    Número de teléfono
                 </label>
 
-                <input type="text" id="medio_contacto" name="medio_contacto" class="report-input"
-                    placeholder="Ingresa el medio de contacto" autocomplete="off">
+                <input type="tel" id="telefono" name="telefono" class="report-input"
+                    placeholder="Ingresa el número de teléfono" autocomplete="tel">
 
             </div>
 
+
+            <!-- CORREO ELECTRÓNICO -->
+            <div class="report-field">
+
+                <label for="correo">
+                    Correo electrónico
+                </label>
+
+                <input type="email" id="correo" name="correo" class="report-input"
+                    placeholder="Ingresa el correo electrónico" autocomplete="email">
+
+            </div>
         </div>
 
     </div>

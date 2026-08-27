@@ -16,8 +16,7 @@ Nuevo reporte | Asuntos Internos
     ) ?>
 
 
-    <form id="form-nuevo-reporte" class="form-nuevo-reporte" method="post" action="#">
-
+    <form id="form-nuevo-reporte" class="form-nuevo-reporte" method="post" action="#" enctype="multipart/form-data">
         <?= csrf_field() ?>
 
 
@@ -93,9 +92,7 @@ Nuevo reporte | Asuntos Internos
             PERSONAL Y UNIDADES
         ====================================================== -->
 
-        <div
-            class="report-step"
-            data-step="3">
+        <div class="report-step" data-step="3">
 
             <?= $this->include(
                 'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\personal_involucrado'

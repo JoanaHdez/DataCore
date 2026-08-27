@@ -3,6 +3,7 @@
     <div class="report-section__header">
 
         <div>
+
             <span class="report-section__eyebrow">
                 Geolocalización
             </span>
@@ -14,22 +15,26 @@
             <p class="report-section__description">
                 Selecciona la ubicación en el mapa para completar automáticamente la dirección.
             </p>
+
         </div>
 
     </div>
+
 
     <div class="report-section__body">
 
         <div class="report-location">
 
-            <!-- BUSCADOR -->
+            <!-- =====================================================
+                 BUSCADOR
+            ====================================================== -->
             <div class="report-field report-field--full">
 
                 <label for="ubicacion_busqueda">
                     Buscar ubicación
                 </label>
 
-                <input type="text" id="ubicacion_busqueda" class="report-input"
+                <input type="text" id="ubicacion_busqueda" name="ubicacion_busqueda" class="report-input"
                     placeholder="Busca una calle, colonia o dirección" autocomplete="off">
 
                 <small class="report-field__help">
@@ -38,13 +43,15 @@
 
             </div>
 
+            <!-- =====================================================
+                 MAPA
+            ====================================================== -->
+            <div id="mapa-ubicacion" class="report-location__map"></div>
 
-            <!-- MAPA -->
-            <div id="mapa-ubicacion" class="report-location__map">
-            </div>
 
-
-            <!-- DIRECCIÓN DESGLOSADA -->
+            <!-- =====================================================
+                 DIRECCIÓN DESGLOSADA
+            ====================================================== -->
             <div class="report-form-grid report-location__fields">
 
                 <!-- CALLE -->
@@ -55,7 +62,7 @@
                         <span class="required">*</span>
                     </label>
 
-                    <input type="text" id="calle" name="calle" class="report-input" autocomplete="off">
+                    <input type="text" id="calle" name="calle" class="report-input" autocomplete="off" required>
 
                 </div>
 
@@ -65,9 +72,10 @@
 
                     <label for="numero">
                         No. Ext.
+                        <span class="required">*</span>
                     </label>
 
-                    <input type="text" id="numero" name="numero" class="report-input" autocomplete="off">
+                    <input type="text" id="numero" name="numero" class="report-input" autocomplete="off" required>
 
                 </div>
 
@@ -77,9 +85,10 @@
 
                     <label for="colonia">
                         Colonia
+                        <span class="required">*</span>
                     </label>
 
-                    <input type="text" id="colonia" name="colonia" class="report-input" autocomplete="off">
+                    <input type="text" id="colonia" name="colonia" class="report-input" autocomplete="off" required>
 
                 </div>
 
@@ -89,9 +98,11 @@
 
                     <label for="entre_calle">
                         Entre calle
+                        <span class="required">*</span>
                     </label>
 
-                    <input type="text" id="entre_calle" name="entre_calle" class="report-input" autocomplete="off">
+                    <input type="text" id="entre_calle" name="entre_calle" class="report-input" autocomplete="off"
+                        required>
 
                 </div>
 
@@ -101,21 +112,23 @@
 
                     <label for="y_calle">
                         Y calle
+                        <span class="required">*</span>
                     </label>
 
-                    <input type="text" id="y_calle" name="y_calle" class="report-input" autocomplete="off">
+                    <input type="text" id="y_calle" name="y_calle" class="report-input" autocomplete="off" required>
 
                 </div>
 
 
-                <!-- CIUDAD / MUNICIPIO -->
+                <!-- MUNICIPIO -->
                 <div class="report-field">
 
                     <label for="municipio">
                         Ciudad / Municipio
+                        <span class="required">*</span>
                     </label>
 
-                    <input type="text" id="municipio" name="municipio" class="report-input" autocomplete="off">
+                    <input type="text" id="municipio" name="municipio" class="report-input" autocomplete="off" required>
 
                 </div>
 
@@ -125,9 +138,10 @@
 
                     <label for="estado">
                         Estado
+                        <span class="required">*</span>
                     </label>
 
-                    <input type="text" id="estado" name="estado" class="report-input" autocomplete="off">
+                    <input type="text" id="estado" name="estado" class="report-input" autocomplete="off" required>
 
                 </div>
 
@@ -137,9 +151,10 @@
 
                     <label for="sector">
                         Sector
+                        <span class="required">*</span>
                     </label>
 
-                    <input type="text" id="sector" name="sector" class="report-input" autocomplete="off">
+                    <input type="text" id="sector" name="sector" class="report-input" autocomplete="off" required>
 
                 </div>
 
@@ -149,25 +164,23 @@
 
                     <label for="cuadrante">
                         Cuadrante
+                        <span class="required">*</span>
                     </label>
 
-                    <input type="text" id="cuadrante" name="cuadrante" class="report-input" autocomplete="off">
+                    <input type="text" id="cuadrante" name="cuadrante" class="report-input" autocomplete="off" required>
 
                 </div>
 
             </div>
 
 
-            <!-- COORDENADAS INTERNAS -->
-            <input type="hidden" id="latitud" name="latitud">
+            <!-- =====================================================
+                 COORDENADAS
+            ====================================================== -->
 
-            <input type="hidden" id="longitud" name="longitud">
+            <input type="hidden" id="latitud" name="latitud" required>
 
-
-            <!-- COORDENADAS -->
-            <input type="hidden" id="latitud" name="latitud">
-
-            <input type="hidden" id="longitud" name="longitud">
+            <input type="hidden" id="longitud" name="longitud" required>
 
         </div>
 
