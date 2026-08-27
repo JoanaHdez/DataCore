@@ -22,8 +22,8 @@ Nuevo reporte | Asuntos Internos
 
 
         <!-- =====================================================
-     INDICADOR DE PASOS
-====================================================== -->
+            INDICADOR DE PASOS
+        ====================================================== -->
         <div class="report-steps">
 
             <div class="report-steps__item report-steps__item--active" data-step-indicator="1">
@@ -55,85 +55,92 @@ Nuevo reporte | Asuntos Internos
 
 
         <!-- =====================================================
-     PASO 1
-     DATOS DEL REPORTE + IDENTIFICACIÓN
-====================================================== -->
+            PASO 1
+            DATOS DEL REPORTE + IDENTIFICACIÓN
+        ====================================================== -->
         <div class="report-step report-step--active" data-step="1">
 
             <?= $this->include(
-        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\datos_registro'
-    ) ?>
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\datos_registro'
+            ) ?>
 
             <?= $this->include(
-        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\identificacion'
-    ) ?>
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\identificacion'
+            ) ?>
 
         </div>
 
 
         <!-- =====================================================
-     PASO 2
-     DATOS DE LOS HECHOS + UBICACIÓN
-====================================================== -->
+            PASO 2
+            DATOS DE LOS HECHOS + UBICACIÓN
+        ====================================================== -->
         <div class="report-step" data-step="2">
 
             <?= $this->include(
-        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\datos_hechos'
-    ) ?>
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\datos_hechos'
+            ) ?>
 
             <?= $this->include(
-        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\ubicacion'
-    ) ?>
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\ubicacion'
+            ) ?>
 
         </div>
 
 
         <!-- =====================================================
-     PASO 3
-     PERSONAL Y UNIDADES
-====================================================== -->
-        <div class="report-step" data-step="3">
+            PASO 3
+            PERSONAL Y UNIDADES
+        ====================================================== -->
+
+        <div
+            class="report-step"
+            data-step="3">
 
             <?= $this->include(
-        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\personal_involucrado'
-    ) ?>
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\personal_involucrado'
+            ) ?>
+
+            <?= $this->include(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\unidad'
+            ) ?>
 
         </div>
 
 
         <!-- =====================================================
-     PASO 4
-     DATOS DEL QUEJOSO
-====================================================== -->
+            PASO 4
+            DATOS DEL QUEJOSO
+        ====================================================== -->
         <div class="report-step" data-step="4">
 
             <?= $this->include(
-        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\datos_quejoso'
-    ) ?>
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\datos_quejoso'
+            ) ?>
 
         </div>
 
 
         <!-- =====================================================
-     PASO 5
-     CLASIFICACIÓN + OBSERVACIONES
-====================================================== -->
+            PASO 5
+            CLASIFICACIÓN + OBSERVACIONES
+        ====================================================== -->
         <div class="report-step" data-step="5">
 
             <?= $this->include(
-        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\clasificacion_seguimiento'
-    ) ?>
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\clasificacion_seguimiento'
+            ) ?>
 
             <?= $this->include(
-        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\observaciones'
-    ) ?>
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\observaciones'
+            ) ?>
 
         </div>
 
 
         <!-- =====================================================
-     NAVEGACIÓN DEL FORMULARIO
-====================================================== -->
+            NAVEGACIÓN DEL FORMULARIO
+        ====================================================== -->
         <div class="report-step-actions">
 
             <button type="button" class="button button--secondary report-step-control--hidden" id="btn-step-anterior">

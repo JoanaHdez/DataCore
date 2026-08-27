@@ -17,6 +17,8 @@ import './reportes/dashboard/exportar.js';
 
 import './reportes/nuevo/limpiar.js';
 import './reportes/nuevo/pasos.js';
+import './reportes/nuevo/personal.js';
+import './reportes/nuevo/unidades.js';
 
 /* =========================================================
    REPORTES - LISTADO
