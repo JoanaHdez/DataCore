@@ -34,6 +34,14 @@ Acceso | Sistema de Reportes
 
                 </div>
 
+                <?php if (session()->getFlashdata('error')): ?>
+
+    <div class="login-form__error">
+        <?= esc(session()->getFlashdata('error')) ?>
+    </div>
+
+<?php endif; ?>
+
                 <form class="login-form" method="post" action="<?= base_url('asuntos-internos/reportes/login') ?>"
                     autocomplete="off">
 

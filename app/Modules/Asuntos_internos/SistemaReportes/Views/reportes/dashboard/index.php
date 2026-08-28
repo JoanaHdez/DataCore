@@ -16,7 +16,7 @@ Dashboard | Asuntos Internos
         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\encabezado'
     ) ?>
 
-    <main class="dashboard-page__main">
+    <main class="dashboard-page__main" data-dashboard-requiere-autorizacion="<?= !empty($requiereAutorizacionAdmin) ? '1' : '0' ?>">
 
         <div class="dashboard-page__container">
 
@@ -72,12 +72,12 @@ Dashboard | Asuntos Internos
 
     <?= $this->include(
         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\modales\exportar'
-    ) ?> 
+    ) ?>
 
     <?= $this->include(
-    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\modales\autorizacion'
-) ?>
-    
+        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\modales\autorizacion'
+    ) ?>
+
 </div>
 
 <?= $this->endSection() ?>

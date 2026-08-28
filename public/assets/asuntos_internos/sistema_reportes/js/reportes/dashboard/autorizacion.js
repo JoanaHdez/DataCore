@@ -10,6 +10,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function inicializarAutorizacionAdmin() {
 
+    const dashboard =
+        document.querySelector(
+            '[data-dashboard-requiere-autorizacion]'
+        );
+
     const modal =
         document.querySelector(
             '#modal-autorizacion-admin'
@@ -32,7 +37,8 @@ function inicializarAutorizacionAdmin() {
 
 
     if (
-        !modal
+        !dashboard
+        || !modal
         || !formulario
         || !password
         || !mensaje
@@ -41,18 +47,34 @@ function inicializarAutorizacionAdmin() {
     }
 
 
-    /*
-     * =====================================================
-     * TEMPORAL
-     * =====================================================
-     *
-     * Por ahora abrimos el modal automáticamente
-     * al entrar al Dashboard para revisar diseño.
-     *
-     * Después esto se reemplazará por la validación
-     * real del rol de la sesión.
-     */
+    /* =====================================================
+       ¿REQUIERE AUTORIZACIÓN?
+    ===================================================== */
 
+    const requiereAutorizacion =
+        dashboard.dataset
+            .dashboardRequiereAutorizacion
+        === '1';
+
+
+    /*
+     * ADMINISTRADOR
+     *
+     * Si PHP determinó que no requiere autorización,
+     * no hacemos absolutamente nada.
+     */
+    if (!requiereAutorizacion) {
+
+        return;
+
+    }
+
+
+    /*
+     * USUARIO NORMAL
+     *
+     * El Dashboard requiere autorización administrativa.
+     */
     prepararAutorizacionDashboard(
         modal,
         password,
@@ -66,7 +88,7 @@ function inicializarAutorizacionAdmin() {
 
 
     /* =====================================================
-       CERRAR
+       CERRAR / CANCELAR
     ===================================================== */
 
     modal.addEventListener(
@@ -84,15 +106,7 @@ function inicializarAutorizacionAdmin() {
             }
 
 
-            cerrarAutorizacionAdmin(
-                modal
-            );
-
-
-            limpiarAutorizacionAdmin(
-                password,
-                mensaje
-            );
+            salirDashboardRestringido();
 
         }
     );
@@ -113,15 +127,7 @@ function inicializarAutorizacionAdmin() {
                 )
             ) {
 
-                cerrarAutorizacionAdmin(
-                    modal
-                );
-
-
-                limpiarAutorizacionAdmin(
-                    password,
-                    mensaje
-                );
+                salirDashboardRestringido();
 
             }
 
@@ -130,7 +136,7 @@ function inicializarAutorizacionAdmin() {
 
 
     /* =====================================================
-       SUBMIT TEMPORAL
+       SUBMIT
     ===================================================== */
 
     formulario.addEventListener(
@@ -160,7 +166,9 @@ function inicializarAutorizacionAdmin() {
 
 
             /*
-             * Todavía no validamos contra plantilla ID 758.
+             * Todavía falta conectar aquí
+             * la validación real en backend
+             * contra el administrador ID 758.
              */
             mostrarMensajeAutorizacion(
                 mensaje,
@@ -216,6 +224,26 @@ function prepararAutorizacionDashboard(
             'Para acceder al Dashboard, ingresa la contraseña del administrador.';
 
     }
+
+}
+
+
+/* =========================================================
+   SALIR DEL DASHBOARD RESTRINGIDO
+========================================================= */
+
+function salirDashboardRestringido() {
+
+    /*
+     * Un usuario que no tiene autorización
+     * NO debe poder cerrar el modal y quedarse
+     * viendo el Dashboard.
+     *
+     * Lo regresamos al listado de reportes.
+     */
+
+    window.location.href =
+        `${window.location.origin}/asuntos-internos/reportes/listado`;
 
 }
 
@@ -299,6 +327,26 @@ function abrirAutorizacionAdmin(
 
     document.body.classList.add(
         'modal-abierto'
+    );
+
+
+    /*
+     * Ponemos el foco directamente
+     * en la contraseña.
+     */
+    window.setTimeout(
+        () => {
+
+            const password =
+                modal.querySelector(
+                    '#autorizacion-admin-password'
+                );
+
+
+            password?.focus();
+
+        },
+        100
     );
 
 }

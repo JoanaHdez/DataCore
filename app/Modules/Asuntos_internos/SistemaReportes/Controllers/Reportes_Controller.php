@@ -62,8 +62,77 @@ class Reportes_Controller extends BaseController
 
     public function dashboard()
     {
+        /*
+     * =========================================================
+     * VALIDAR SESIÓN
+     * =========================================================
+     */
+
+        if (
+            session()->get('reportes_autenticado') !== true
+            || ! session()->has('usuario_reportes')
+        ) {
+
+            return redirect()
+                ->to(
+                    base_url(
+                        'asuntos-internos/reportes'
+                    )
+                )
+                ->with(
+                    'error',
+                    'Inicia sesión para continuar.'
+                );
+        }
+
+
+        $usuario =
+            session()->get(
+                'usuario_reportes'
+            );
+
+
+        $rol =
+            $usuario['rol']
+            ?? null;
+
+
+        /*
+     * =========================================================
+     * ADMINISTRADOR
+     * =========================================================
+     *
+     * El administrador tiene acceso directo al Dashboard.
+     * No necesita volver a ingresar su CURP.
+     */
+
+        if ($rol === 'admin') {
+
+            return view(
+                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\index',
+                [
+                    'requiereAutorizacionAdmin' => false,
+                ]
+            );
+        }
+
+
+        /*
+     * =========================================================
+     * USUARIO NORMAL
+     * =========================================================
+     *
+     * Más adelante esta autorización será validada por backend.
+     *
+     * Por ahora enviamos el estado a la vista para que el
+     * frontend sepa que este usuario NO tiene acceso directo.
+     */
+
         return view(
-            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\index'
+            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\index',
+            [
+                'requiereAutorizacionAdmin' => true,
+            ]
         );
     }
 
