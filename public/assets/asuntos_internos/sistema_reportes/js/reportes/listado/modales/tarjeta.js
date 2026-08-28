@@ -244,10 +244,8 @@ function cargarUltimoSeguimientoTarjeta(
        ÚLTIMO MOVIMIENTO
     --------------------------------------------------------- */
 
-    const ultimo =
-        seguimientos[
-            seguimientos.length - 1
-        ];
+   const ultimo =
+    seguimientos[0];
 
 
     const encabezado =

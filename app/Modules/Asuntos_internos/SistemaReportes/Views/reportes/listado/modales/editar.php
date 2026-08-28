@@ -117,9 +117,10 @@
              FORMULARIO
         ================================================== -->
         <form
-    class="modal-reporte__form modal-reporte__form--editar"
-    id="form-editar-reporte"
-    enctype="multipart/form-data">
+            class="modal-reporte__form modal-reporte__form--editar"
+            id="form-editar-reporte"
+            enctype="multipart/form-data"
+            novalidate>
 
             <div class="modal-reporte__body modal-reporte__body--editar">
 
@@ -147,19 +148,19 @@
      PASO 2
      DATOS DE LOS HECHOS
 ========================================== -->
-<section
-    class="detalle-reporte-seccion"
-    data-editar-panel="hechos">
+                <section
+                    class="detalle-reporte-seccion"
+                    data-editar-panel="hechos">
 
-    <?= $this->include(
-        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\datos_hechos'
-    ) ?>
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\datos_hechos'
+                    ) ?>
 
-    <?= $this->include(
-        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\ubicacion'
-    ) ?>
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\ubicacion'
+                    ) ?>
 
-</section>
+                </section>
 
 
                 <!-- =========================================

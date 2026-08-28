@@ -1,20 +1,9 @@
-<div
-    class="modal-reporte"
-    id="modal-seguimiento-reporte"
-    aria-hidden="true"
->
+<div class="modal-reporte" id="modal-seguimiento-reporte" aria-hidden="true">
+
+    <div class="modal-reporte__overlay" data-cerrar-modal-seguimiento></div>
 
     <div
-        class="modal-reporte__overlay"
-        data-cerrar-modal-seguimiento
-    ></div>
-
-    <div
-        class="modal-reporte__dialog"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-seguimiento-titulo"
-    >
+    class="modal-reporte__dialog modal-reporte__dialog--seguimiento" role="dialog" aria-modal="true" aria-labelledby="modal-seguimiento-titulo">
 
         <!-- =====================================================
              HEADER
@@ -27,21 +16,13 @@
                     Seguimiento del caso
                 </span>
 
-                <h2
-                    class="modal-reporte__title"
-                    id="modal-seguimiento-titulo"
-                >
+                <h2 class="modal-reporte__title" id="modal-seguimiento-titulo">
                     Seguimiento
                 </h2>
 
             </div>
 
-            <button
-                type="button"
-                class="modal-reporte__close"
-                data-cerrar-modal-seguimiento
-                aria-label="Cerrar"
-            >
+            <button type="button" class="modal-reporte__close" data-cerrar-modal-seguimiento aria-label="Cerrar">
                 ×
             </button>
 
@@ -52,11 +33,11 @@
              FORMULARIO
         ====================================================== -->
         <form
-            class="modal-reporte__form"
-            id="form-seguimiento-reporte"
-        >
+    class="modal-reporte__form modal-reporte__form--seguimiento"
+    id="form-seguimiento-reporte"
+>
 
-            <div class="modal-reporte__body">
+            <div class="modal-reporte__body modal-reporte__body--seguimiento">
 
                 <!-- =================================================
                      INFORMACIÓN DEL REPORTE
@@ -131,12 +112,7 @@
                                 Fecha
                             </label>
 
-                            <input
-                                type="date"
-                                id="seguimiento-fecha"
-                                name="fecha"
-                                required
-                            >
+                            <input type="date" id="seguimiento-fecha" name="fecha" required>
 
                         </div>
 
@@ -148,11 +124,7 @@
                                 Tipo de seguimiento
                             </label>
 
-                            <select
-                                id="seguimiento-tipo"
-                                name="tipo"
-                                required
-                            >
+                            <select id="seguimiento-tipo" name="tipo" required>
 
                                 <option value="">
                                     Selecciona
@@ -184,19 +156,13 @@
 
 
                         <!-- ESTADO RESULTANTE -->
-                        <div
-                            class="editar-reporte-campo editar-reporte-campo--full"
-                        >
+                        <div class="editar-reporte-campo editar-reporte-campo--full">
 
                             <label for="seguimiento-estado">
                                 Estado resultante
                             </label>
 
-                            <select
-                                id="seguimiento-estado"
-                                name="estado"
-                                required
-                            >
+                            <select id="seguimiento-estado" name="estado" required>
 
                                 <option value="">
                                     Selecciona
@@ -220,22 +186,15 @@
 
 
                         <!-- OBSERVACIONES -->
-                        <div
-                            class="editar-reporte-campo editar-reporte-campo--full"
-                        >
+                        <div class="editar-reporte-campo editar-reporte-campo--full">
 
                             <label for="seguimiento-observaciones">
                                 Observaciones
                             </label>
 
-                            <textarea
-                                id="seguimiento-observaciones"
-                                name="observaciones"
-                                class="seguimiento-reporte__textarea"
-                                rows="5"
-                                placeholder="Describe el seguimiento realizado..."
-                                required
-                            ></textarea>
+                            <textarea id="seguimiento-observaciones" name="observaciones"
+                                class="seguimiento-reporte__textarea" rows="5"
+                                placeholder="Describe el seguimiento realizado..." required></textarea>
 
                         </div>
 
@@ -266,10 +225,7 @@
                     </div>
 
 
-                    <div
-                        class="seguimiento-historial__lista"
-                        id="seguimiento-historial-lista"
-                    >
+                    <div class="seguimiento-historial__lista" id="seguimiento-historial-lista">
 
                         <div class="seguimiento-historial__vacio">
 
@@ -295,24 +251,17 @@
             ====================================================== -->
             <div class="modal-reporte__footer">
 
-                <button
-                    type="button"
-                    class="
+                <button type="button" class="
                         modal-reporte__button
                         modal-reporte__button--secondary
-                    "
-                    data-cerrar-modal-seguimiento
-                >
+                    " data-cerrar-modal-seguimiento>
                     Cancelar
                 </button>
 
-                <button
-                    type="submit"
-                    class="
+                <button type="submit" class="
                         modal-reporte__button
                         modal-reporte__button--primary
-                    "
-                >
+                    ">
                     Registrar seguimiento
                 </button>
 

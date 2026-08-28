@@ -1303,6 +1303,76 @@ body.modal-abierto {
     font-size: 9px;
 }
 
+
+/* =========================================================
+   MODAL SEGUIMIENTO - ALTURA Y SCROLL
+========================================================= */
+
+.modal-reporte__dialog--seguimiento {
+    width: min(900px, 100%);
+
+    height: 90vh;
+    max-height: 90vh;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   HEADER FIJO
+========================================================= */
+
+.modal-reporte__dialog--seguimiento
+> .modal-reporte__header {
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   FORMULARIO
+========================================================= */
+
+.modal-reporte__form--seguimiento {
+    flex: 1;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   CUERPO CON SCROLL
+========================================================= */
+
+.modal-reporte__body--seguimiento {
+    flex: 1;
+    min-height: 0;
+
+    max-height: none;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding: 24px;
+}
+
+
+/* =========================================================
+   FOOTER FIJO
+========================================================= */
+
+.modal-reporte__form--seguimiento
+> .modal-reporte__footer {
+    flex-shrink: 0;
+}
+
+
 /* =========================================================
    RESPONSIVE
 ========================================================= */
