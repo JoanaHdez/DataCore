@@ -13,3 +13,7 @@
 <?= $this->include(
     'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\tarjeta'
 ) ?>
+
+<?= $this->include(
+    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\eliminar'
+) ?>

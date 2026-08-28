@@ -113,6 +113,147 @@
     cursor: not-allowed;
 }
 
+/* =========================================================
+   MODAL ELIMINAR
+========================================================= */
+
+.eliminar-reporte__info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    margin-bottom: 20px;
+
+    padding: 16px 18px;
+
+    background: #f7f9fb;
+
+    border: 1px solid #dfe7ef;
+    border-radius: 10px;
+}
+
+
+.eliminar-reporte__info span {
+    color: #6f8194;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+.eliminar-reporte__info strong {
+    color: #173554;
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   ADVERTENCIA
+========================================================= */
+
+.eliminar-reporte__advertencia {
+    margin-bottom: 20px;
+
+    padding: 16px 18px;
+
+    background: #fff7f6;
+
+    border: 1px solid #f1c7c3;
+    border-left: 4px solid #c9473d;
+    border-radius: 10px;
+}
+
+
+.eliminar-reporte__advertencia strong {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #9f3029;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+
+.eliminar-reporte__advertencia p {
+    margin: 0;
+
+    color: #6f4a47;
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   MENSAJES
+========================================================= */
+
+.eliminar-reporte__mensaje {
+    margin-top: 14px;
+
+    padding: 12px 14px;
+
+    border-radius: 8px;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+.eliminar-reporte__mensaje--error {
+    color: #9f3029;
+    background: #fff1f0;
+
+    border: 1px solid #efc1bd;
+}
+
+
+.eliminar-reporte__mensaje--info {
+    color: #315c7d;
+    background: #f0f7fc;
+
+    border: 1px solid #c7deee;
+}
+
+
+.eliminar-reporte__mensaje--success {
+    color: #1f6d4e;
+    background: #eef9f4;
+
+    border: 1px solid #c7e7d8;
+}
+
+
+/* =========================================================
+   BOTÓN DE ELIMINAR
+========================================================= */
+
+.modal-reporte__button--danger {
+    color: #ffffff;
+    background: #bd3b32;
+
+    border: 1px solid #bd3b32;
+}
+
+
+.modal-reporte__button--danger:hover {
+    background: #a8322b;
+
+    border-color: #a8322b;
+}
+
+
+.modal-reporte__button--danger:focus {
+    outline: none;
+
+    box-shadow:
+        0 0 0 3px rgba(189, 59, 50, 0.18);
+}
 
 /* =========================================================
    RESPONSIVE

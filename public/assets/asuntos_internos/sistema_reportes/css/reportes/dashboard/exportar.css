@@ -3,7 +3,9 @@
 ========================================================= */
 
 .modal-reporte__dialog--exportar {
-    width: min(680px, calc(100% - 32px));
+    width: min(760px, calc(100% - 32px));
+
+    overflow: hidden;
 }
 
 
@@ -16,11 +18,11 @@
 }
 
 .dashboard-exportar__introduccion h3 {
-    margin: 0 0 5px;
+    margin: 0 0 6px;
 
     color: #173554;
 
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 800;
 }
 
@@ -29,8 +31,27 @@
 
     color: #788b9c;
 
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1.6;
+}
+
+
+/* =========================================================
+   SELECCIONAR TODO
+========================================================= */
+
+.dashboard-exportar__opcion--principal {
+    margin-bottom: 14px;
+
+    background: #f4f9fd;
+
+    border-color: #c9ddea;
+}
+
+.dashboard-exportar__opcion--principal:hover {
+    background: #eef7fc;
+
+    border-color: #9fc6dc;
 }
 
 
@@ -44,46 +65,58 @@
     grid-template-columns:
         repeat(2, minmax(0, 1fr));
 
-    gap: 10px;
-
-    margin-top: 12px;
+    gap: 12px;
 }
+
 
 .dashboard-exportar__opcion {
     position: relative;
 
     display: flex;
-    align-items: center;
+    align-items: flex-start;
 
-    gap: 11px;
+    gap: 12px;
 
     min-width: 0;
+    min-height: 86px;
 
-    padding: 14px;
+    padding: 16px;
 
     background: #ffffff;
 
     border: 1px solid #dfe7ed;
-    border-radius: 8px;
+    border-radius: 10px;
 
     cursor: pointer;
 
     transition:
         border-color 0.2s ease,
         background 0.2s ease,
-        box-shadow 0.2s ease;
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
 }
+
 
 .dashboard-exportar__opcion:hover {
-    border-color: #a9cfe5;
-
     background: #fafdff;
+
+    border-color: #acd0e3;
+
+    box-shadow:
+        0 4px 12px rgba(23, 53, 84, 0.05);
+
+    transform: translateY(-1px);
 }
 
-.dashboard-exportar__opcion--principal {
-    background: #f5faff;
 
-    border-color: #c8dfed;
+/* =========================================================
+   OPCIÓN SELECCIONADA
+========================================================= */
+
+.dashboard-exportar__opcion:has(input:checked) {
+    background: #f7fbfe;
+
+    border-color: #9ecae2;
 }
 
 
@@ -98,33 +131,43 @@
     height: 1px;
 
     opacity: 0;
+
     pointer-events: none;
 }
+
 
 .dashboard-exportar__check {
     position: relative;
 
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
 
     flex-shrink: 0;
+
+    margin-top: 1px;
 
     background: #ffffff;
 
     border: 1px solid #c7d4de;
-    border-radius: 4px;
+    border-radius: 5px;
 
     transition:
         background 0.2s ease,
-        border-color 0.2s ease;
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
+
 
 .dashboard-exportar__opcion input:checked
 + .dashboard-exportar__check {
     background: #1681c4;
 
     border-color: #1681c4;
+
+    box-shadow:
+        0 0 0 3px rgba(22, 129, 196, 0.10);
 }
+
 
 .dashboard-exportar__opcion input:checked
 + .dashboard-exportar__check::after {
@@ -133,10 +176,10 @@
     position: absolute;
 
     top: 3px;
-    left: 6px;
+    left: 7px;
 
     width: 4px;
-    height: 8px;
+    height: 9px;
 
     border-right: 2px solid #ffffff;
     border-bottom: 2px solid #ffffff;
@@ -155,24 +198,28 @@
     min-width: 0;
 }
 
+
 .dashboard-exportar__contenido strong {
     display: block;
 
-    margin-bottom: 3px;
+    margin-bottom: 5px;
 
     color: #29445c;
 
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 800;
+
+    line-height: 1.35;
 }
+
 
 .dashboard-exportar__contenido small {
     display: block;
 
     color: #8493a0;
 
-    font-size: 9px;
-    line-height: 1.45;
+    font-size: 10px;
+    line-height: 1.5;
 }
 
 
@@ -181,17 +228,18 @@
 ========================================================= */
 
 .dashboard-exportar__mensaje {
-    margin-top: 14px;
+    margin-top: 16px;
 
-    padding: 9px 11px;
+    padding: 11px 13px;
 
     color: #a36618;
+
     background: #fff8e9;
 
     border: 1px solid #f0dfb6;
-    border-radius: 6px;
+    border-radius: 8px;
 
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
 }
 
@@ -200,10 +248,20 @@
    RESPONSIVE
 ========================================================= */
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
+
+    .modal-reporte__dialog--exportar {
+        width: min(680px, calc(100% - 20px));
+    }
+
 
     .dashboard-exportar__opciones {
         grid-template-columns: 1fr;
+    }
+
+
+    .dashboard-exportar__opcion {
+        min-height: auto;
     }
 
 }

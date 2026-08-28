@@ -127,6 +127,11 @@
                             Tarjeta
                         </button>
 
+                        <button type="button" class="reportes-tabla__accion reportes-tabla__accion--eliminar"
+                            data-accion="eliminar" data-folio="<?= esc($reporte['folio']) ?>">
+                            Eliminar
+                        </button>
+
                     </td>
 
                 </tr>
