@@ -182,11 +182,11 @@ function inicializarEditarReporte() {
 
 
             /*
-             * Temporal.
+             * Por ahora seguimos trabajando
+             * de manera temporal con la tabla.
              *
-             * Mientras todavía no conectamos
-             * la BD, actualizamos únicamente
-             * los datos disponibles en la tabla.
+             * Cuando conectemos la BD,
+             * aquí se hará el fetch al backend.
              */
             guardarCambiosEnFila(
                 filaActual,
@@ -224,6 +224,15 @@ function cargarDatosFormulario(
     if (celdas.length < 8) {
         return;
     }
+
+
+    /* =====================================================
+       LIMPIAR FORMULARIO
+    ===================================================== */
+
+    limpiarFormularioEditar(
+        modal
+    );
 
 
     /* =====================================================
@@ -297,13 +306,47 @@ function cargarDatosFormulario(
 
 
     /* =====================================================
-       CAMPOS TEMPORALES
+       PASO 1
+       DATOS DEL REPORTE
     ===================================================== */
 
     asignarValorEditar(
         modal,
-        '#editar-folio',
-        folio
+        '#editar-prefijo',
+        obtenerPrefijoFolio(
+            folio
+        )
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-numero-folio',
+        obtenerNumeroFolio(
+            folio
+        )
+    );
+
+
+    /*
+     * Fecha de registro todavía no está
+     * disponible en la tabla temporal.
+     */
+    asignarValorEditar(
+        modal,
+        '#editar-fecha-registro',
+        ''
+    );
+
+
+    /* =====================================================
+       IDENTIFICACIÓN
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-folio-ip',
+        ''
     );
 
 
@@ -316,6 +359,13 @@ function cargarDatosFormulario(
 
     asignarValorEditar(
         modal,
+        '#editar-fecha-acuerdo',
+        ''
+    );
+
+
+    asignarValorEditar(
+        modal,
         '#editar-expediente',
         expediente
     );
@@ -323,15 +373,124 @@ function cargarDatosFormulario(
 
     asignarValorEditar(
         modal,
-        '#editar-clasificacion',
-        clasificacion
+        '#editar-nomenclatura',
+        ''
     );
 
 
     asignarValorEditar(
         modal,
-        '#editar-quejoso',
-        quejoso
+        '#editar-no-oficio',
+        ''
+    );
+
+
+    /* =====================================================
+       PASO 2
+       DATOS DE LOS HECHOS
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-fecha-hechos',
+        ''
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-hora-hechos',
+        ''
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-descripcion',
+        ''
+    );
+
+
+    /* =====================================================
+       UBICACIÓN
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-calle',
+        ''
+    );
+
+    asignarValorEditar(
+        modal,
+        '#editar-numero',
+        ''
+    );
+
+    asignarValorEditar(
+        modal,
+        '#editar-colonia',
+        ''
+    );
+
+    asignarValorEditar(
+        modal,
+        '#editar-entre-calle',
+        ''
+    );
+
+    asignarValorEditar(
+        modal,
+        '#editar-y-calle',
+        ''
+    );
+
+    asignarValorEditar(
+        modal,
+        '#editar-municipio',
+        ''
+    );
+
+    asignarValorEditar(
+        modal,
+        '#editar-estado',
+        ''
+    );
+
+    asignarValorEditar(
+        modal,
+        '#editar-sector',
+        ''
+    );
+
+    asignarValorEditar(
+        modal,
+        '#editar-cuadrante',
+        ''
+    );
+
+    asignarValorEditar(
+        modal,
+        '#editar-latitud',
+        ''
+    );
+
+    asignarValorEditar(
+        modal,
+        '#editar-longitud',
+        ''
+    );
+
+
+    /* =====================================================
+       PASO 3
+       PERSONAL
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-oficial',
+        ''
     );
 
 
@@ -349,9 +508,168 @@ function cargarDatosFormulario(
     );
 
 
-    assignarEstadoTemporal(
+    /* =====================================================
+       UNIDAD
+    ===================================================== */
+
+    asignarValorEditar(
         modal,
+        '#editar-unidad',
+        ''
+    );
+
+    asignarValorEditar(
+        modal,
+        '#editar-unidad-marca',
+        ''
+    );
+
+    asignarValorEditar(
+        modal,
+        '#editar-unidad-submarca',
+        ''
+    );
+
+    asignarValorEditar(
+        modal,
+        '#editar-unidad-color',
+        ''
+    );
+
+    asignarValorEditar(
+        modal,
+        '#editar-unidad-estatus',
+        ''
+    );
+
+    asignarValorEditar(
+        modal,
+        '#editar-unidad-servicio-adscripcion',
+        ''
+    );
+
+    asignarValorEditar(
+        modal,
+        '#editar-unidad-tipo-vehiculo',
+        ''
+    );
+
+    asignarValorEditar(
+        modal,
+        '#editar-unidad-origen',
+        ''
+    );
+
+
+    /* =====================================================
+       PASO 4
+       QUEJOSO
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-quejoso',
+        quejoso
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-edad',
+        ''
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-genero',
+        ''
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-telefono',
+        ''
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-correo',
+        ''
+    );
+
+
+    /* =====================================================
+       PASO 5
+       CLASIFICACIÓN Y SEGUIMIENTO
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-clasificacion',
+        clasificacion
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-inspector',
+        ''
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-investigador',
+        ''
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-quien-emite-resolucion',
+        ''
+    );
+
+
+    /*
+     * TEMPORAL:
+     * la tabla actual utiliza la última columna
+     * como estado/resolución.
+     */
+    asignarValorEditar(
+        modal,
+        '#editar-resolucion',
         estado
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-motivos',
+        ''
+    );
+
+
+    /* =====================================================
+       OBSERVACIONES
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-observaciones',
+        ''
+    );
+
+
+    /* =====================================================
+       EVIDENCIA
+    ===================================================== */
+
+    limpiarEvidenciaEditar(
+        modal
     );
 
 }
@@ -422,7 +740,7 @@ function mostrarSeccionEditar(
 
     const body =
         modal.querySelector(
-            '.modal-reporte__body--detalle'
+            '.modal-reporte__body--editar'
         );
 
 
@@ -505,6 +823,119 @@ function cerrarModalEditar(
 
 
 /* =========================================================
+   LIMPIAR FORMULARIO
+========================================================= */
+
+function limpiarFormularioEditar(
+    modal
+) {
+
+    const campos =
+        modal.querySelectorAll(
+            'input, select, textarea'
+        );
+
+
+    campos.forEach((campo) => {
+
+        /*
+         * No intentamos establecer value
+         * en inputs de tipo file.
+         */
+        if (
+            campo instanceof HTMLInputElement
+            && campo.type === 'file'
+        ) {
+
+            campo.value = '';
+
+            return;
+        }
+
+
+        /*
+         * El prefijo QJ es fijo.
+         */
+        if (
+            campo.id === 'editar-prefijo'
+        ) {
+
+            campo.value = 'QJ';
+
+            return;
+        }
+
+
+        campo.value = '';
+
+    });
+
+
+    limpiarEvidenciaEditar(
+        modal
+    );
+
+}
+
+
+/* =========================================================
+   LIMPIAR EVIDENCIA
+========================================================= */
+
+function limpiarEvidenciaEditar(
+    modal
+) {
+
+    const input =
+        modal.querySelector(
+            '#editar-evidencia-fotografica'
+        );
+
+
+    if (input) {
+
+        input.value = '';
+
+    }
+
+
+    const existente =
+        modal.querySelector(
+            '#editar-evidencia-existente'
+        );
+
+
+    if (existente) {
+
+        existente.innerHTML = `
+            <span class="editar-evidencia__vacio">
+                Sin evidencia registrada
+            </span>
+        `;
+
+    }
+
+
+    const nueva =
+        modal.querySelector(
+            '#editar-evidencia-nueva'
+        );
+
+
+    if (nueva) {
+
+        nueva.innerHTML = `
+            <span class="editar-evidencia__vacio">
+                No se han seleccionado archivos nuevos
+            </span>
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
    GUARDAR CAMBIOS TEMPORALES EN TABLA
 ========================================================= */
 
@@ -528,15 +959,14 @@ function guardarCambiosEnFila(
         );
 
 
-    /*
-     * Como todavía estamos construyendo
-     * las nuevas secciones de Editar,
-     * estos campos pueden no existir todavía.
-     */
-    const folio =
+    /* =====================================================
+       DATOS QUE ACTUALMENTE EXISTEN EN LA TABLA
+    ===================================================== */
+
+    const numeroFolio =
         obtenerDatoFormulario(
             datos,
-            'folio'
+            'numero_folio'
         );
 
 
@@ -589,20 +1019,30 @@ function guardarCambiosEnFila(
         );
 
 
-    /*
-     * Solo actualizamos una celda
-     * si el formulario contiene ese campo.
-     */
+    /* =====================================================
+       FOLIO
+    ===================================================== */
 
-    if (datos.has('folio')) {
+    if (
+        datos.has('numero_folio')
+        && numeroFolio
+    ) {
+
+        const folioTemporal =
+            `QJ-${numeroFolio}`;
+
 
         celdas[0].innerHTML =
             `<strong>${escaparHTML(
-                folio
+                folioTemporal
             )}</strong>`;
 
     }
 
+
+    /* =====================================================
+       FECHA DE QUEJA
+    ===================================================== */
 
     if (datos.has('fecha_queja')) {
 
@@ -614,6 +1054,10 @@ function guardarCambiosEnFila(
     }
 
 
+    /* =====================================================
+       EXPEDIENTE
+    ===================================================== */
+
     if (datos.has('expediente')) {
 
         celdas[2].textContent =
@@ -621,6 +1065,10 @@ function guardarCambiosEnFila(
 
     }
 
+
+    /* =====================================================
+       CLASIFICACIÓN
+    ===================================================== */
 
     if (datos.has('clasificacion')) {
 
@@ -630,6 +1078,10 @@ function guardarCambiosEnFila(
     }
 
 
+    /* =====================================================
+       QUEJOSO
+    ===================================================== */
+
     if (datos.has('quejoso')) {
 
         celdas[4].textContent =
@@ -637,6 +1089,10 @@ function guardarCambiosEnFila(
 
     }
 
+
+    /* =====================================================
+       ÁREA
+    ===================================================== */
 
     if (datos.has('area')) {
 
@@ -646,6 +1102,10 @@ function guardarCambiosEnFila(
     }
 
 
+    /* =====================================================
+       TURNO
+    ===================================================== */
+
     if (datos.has('turno')) {
 
         celdas[6].textContent =
@@ -653,6 +1113,10 @@ function guardarCambiosEnFila(
 
     }
 
+
+    /* =====================================================
+       ESTADO / RESOLUCIÓN TEMPORAL
+    ===================================================== */
 
     if (datos.has('resolucion')) {
 
@@ -702,27 +1166,66 @@ function actualizarEstadoFilaEditar(
 
 
 /* =========================================================
-   ASIGNAR ESTADO TEMPORAL
+   OBTENER PREFIJO DEL FOLIO
 ========================================================= */
 
-function assignarEstadoTemporal(
-    modal,
-    estado
+function obtenerPrefijoFolio(
+    folio
 ) {
 
-    const campo =
-        modal.querySelector(
-            '#editar-resolucion'
-        );
-
-
-    if (!campo) {
-        return;
+    if (!folio) {
+        return 'QJ';
     }
 
 
-    campo.value =
-        estado || '';
+    const partes =
+        folio.split('-');
+
+
+    if (partes.length > 1) {
+
+        /*
+         * Temporal:
+         * los registros actuales todavía
+         * utilizan folios ficticios AI-...
+         */
+        return partes[0];
+
+    }
+
+
+    return 'QJ';
+
+}
+
+
+/* =========================================================
+   OBTENER NÚMERO DEL FOLIO
+========================================================= */
+
+function obtenerNumeroFolio(
+    folio
+) {
+
+    if (!folio) {
+        return '';
+    }
+
+
+    const partes =
+        folio.split('-');
+
+
+    if (partes.length > 1) {
+
+        return partes
+            .slice(1)
+            .join('-');
+
+    }
+
+
+    return folio;
 
 }
 
@@ -825,7 +1328,7 @@ function obtenerClaseEstado(
 
 
 /* =========================================================
-   ASIGNAR VALOR A CAMPO
+   ASIGNAR VALOR
 ========================================================= */
 
 function asignarValorEditar(
@@ -846,7 +1349,7 @@ function asignarValorEditar(
 
 
     elemento.value =
-        valor || '';
+        valor ?? '';
 
 }
 
@@ -872,15 +1375,20 @@ function asignarTextoEditar(
     }
 
 
+    const texto =
+        String(
+            valor ?? ''
+        ).trim();
+
+
     elemento.textContent =
-        valor?.trim()
-        || '—';
+        texto || '—';
 
 }
 
 
 /* =========================================================
-   OBTENER DATO DE FORMDATA
+   OBTENER DATO DE FORMULARIO
 ========================================================= */
 
 function obtenerDatoFormulario(

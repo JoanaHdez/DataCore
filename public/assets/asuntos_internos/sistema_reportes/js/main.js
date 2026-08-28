@@ -26,6 +26,8 @@ import './reportes/nuevo/evidencia.js';
 ========================================================= */
 
 import './reportes/listado/periodo.js';
+import './reportes/listado/filtros.js';
+
 import './reportes/listado/modales/detalle.js';
 import './reportes/listado/modales/editar.js';
 import './reportes/listado/modales/seguimiento.js';
