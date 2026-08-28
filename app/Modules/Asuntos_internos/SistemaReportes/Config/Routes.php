@@ -58,4 +58,9 @@ $routes->group('asuntos-internos/reportes', static function ($routes) {
         'dashboard/exportar',
         '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::exportarDashboard'
     );
+
+    $routes->post(
+        'listado/exportar',
+        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::exportarListado'
+    );
 });

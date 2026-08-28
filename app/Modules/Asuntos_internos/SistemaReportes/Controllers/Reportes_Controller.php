@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Modules\Asuntos_internos\SistemaReportes\Controllers;
+
 use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardExcelService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\ListadoExcelService;
 
 use App\Controllers\BaseController;
 
@@ -120,6 +122,84 @@ class Reportes_Controller extends BaseController
                     'message' => $e->getMessage(),
                     'archivo' => $e->getFile(),
                     'linea' => $e->getLine(),
+                ]);
+        }
+    }
+
+    public function exportarListado()
+    {
+        $reportes =
+            $this->request->getPost(
+                'reportes'
+            );
+
+        /*
+     * Los registros vienen desde JS
+     * como JSON.
+     */
+        if (is_string($reportes)) {
+
+            $reportes =
+                json_decode(
+                    $reportes,
+                    true
+                );
+        }
+
+
+        if (
+            ! is_array($reportes)
+            || empty($reportes)
+        ) {
+
+            return $this->response
+                ->setStatusCode(400)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'No hay reportes para exportar.',
+                ]);
+        }
+
+
+        try {
+
+            $servicio =
+                new ListadoExcelService();
+
+
+            $ruta =
+                $servicio->generar(
+                    $reportes
+                );
+
+
+            return $this->response
+                ->download(
+                    $ruta,
+                    null
+                )
+                ->setFileName(
+                    basename($ruta)
+                );
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error exportando listado de reportes: {mensaje}',
+                [
+                    'mensaje' =>
+                    $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'No fue posible generar el archivo de Excel.',
                 ]);
         }
     }

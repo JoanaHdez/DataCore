@@ -29,6 +29,7 @@ import './reportes/listado/periodo.js';
 import './reportes/listado/filtros.js';
 import './reportes/listado/resumen.js';
 import './reportes/listado/paginacion.js';
+import './reportes/listado/exportar.js';
 
 import './reportes/listado/modales/detalle.js';
 import './reportes/listado/modales/editar.js';
