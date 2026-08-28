@@ -1,37 +1,39 @@
 <nav
     class="reportes-paginacion"
+    id="reportes-paginacion"
     aria-label="Paginación de reportes"
 >
 
     <div class="reportes-paginacion__info">
         Mostrando
-        <strong>1–3</strong>
+        <strong id="paginacion-desde">0</strong>–<strong id="paginacion-hasta">0</strong>
         de
-        <strong>3</strong>
+        <strong id="paginacion-total">0</strong>
         reportes
     </div>
+
 
     <div class="reportes-paginacion__controls">
 
         <button
             type="button"
             class="reportes-paginacion__button"
-            disabled
+            id="paginacion-anterior"
         >
             Anterior
         </button>
 
-        <button
-            type="button"
-            class="reportes-paginacion__button reportes-paginacion__button--active"
-        >
-            1
-        </button>
+
+        <div
+            class="reportes-paginacion__paginas"
+            id="paginacion-paginas"
+        ></div>
+
 
         <button
             type="button"
             class="reportes-paginacion__button"
-            disabled
+            id="paginacion-siguiente"
         >
             Siguiente
         </button>
