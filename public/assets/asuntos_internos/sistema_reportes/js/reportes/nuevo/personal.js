@@ -8,6 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+/* =========================================================
+   INICIALIZAR
+========================================================= */
+
 function inicializarPersonalInvolucrado() {
 
     const inputBusqueda =
@@ -85,7 +89,39 @@ function inicializarPersonalInvolucrado() {
 
 
     /* =====================================================
-       BUSCAR
+       TURNO EN MAYÚSCULAS
+    ===================================================== */
+
+    inputTurno.addEventListener('input', () => {
+
+        const inicio =
+            inputTurno.selectionStart;
+
+        const fin =
+            inputTurno.selectionEnd;
+
+
+        inputTurno.value =
+            inputTurno.value.toUpperCase();
+
+
+        if (
+            inicio !== null
+            && fin !== null
+        ) {
+
+            inputTurno.setSelectionRange(
+                inicio,
+                fin
+            );
+
+        }
+
+    });
+
+
+    /* =====================================================
+       BUSCAR PERSONAL
     ===================================================== */
 
     inputBusqueda.addEventListener('input', () => {
@@ -100,7 +136,11 @@ function inicializarPersonalInvolucrado() {
 
 
         if (temporizadorBusqueda) {
-            clearTimeout(temporizadorBusqueda);
+
+            clearTimeout(
+                temporizadorBusqueda
+            );
+
         }
 
 
@@ -123,10 +163,16 @@ function inicializarPersonalInvolucrado() {
     });
 
 
+    /* =====================================================
+       CONSULTAR BACKEND
+    ===================================================== */
+
     async function buscarPersonal(termino) {
 
         if (controladorBusqueda) {
+
             controladorBusqueda.abort();
+
         }
 
 
@@ -161,9 +207,11 @@ function inicializarPersonalInvolucrado() {
                     url.toString(),
                     {
                         method: 'GET',
+
                         headers: {
                             Accept: 'application/json',
                         },
+
                         signal:
                             controladorBusqueda.signal,
                     }
@@ -216,12 +264,13 @@ function inicializarPersonalInvolucrado() {
 
 
     /* =====================================================
-       RESULTADOS
+       RENDERIZAR RESULTADOS
     ===================================================== */
 
     function renderizarResultados(personal) {
 
-        contenedorResultados.innerHTML = '';
+        contenedorResultados.innerHTML =
+            '';
 
 
         if (!personal.length) {
@@ -237,10 +286,13 @@ function inicializarPersonalInvolucrado() {
         personal.forEach((persona) => {
 
             const boton =
-                document.createElement('button');
+                document.createElement(
+                    'button'
+                );
 
 
-            boton.type = 'button';
+            boton.type =
+                'button';
 
             boton.className =
                 'personal-resultados__item';
@@ -260,16 +312,25 @@ function inicializarPersonalInvolucrado() {
                 <span class="personal-resultados__datos">
 
                     <strong>
-                        ${escaparHtml(persona.nombre || 'Sin nombre')}
+                        ${escaparHtml(
+                            persona.nombre
+                            || 'Sin nombre'
+                        )}
                     </strong>
 
                     <small>
                         Nómina:
-                        ${escaparHtml(persona.nomina || '—')}
+                        ${escaparHtml(
+                            persona.nomina
+                            || '—'
+                        )}
                     </small>
 
                     <small>
-                        ${escaparHtml(persona.area || 'Sin área')}
+                        ${escaparHtml(
+                            persona.area
+                            || 'Sin área'
+                        )}
                     </small>
 
                 </span>
@@ -279,9 +340,11 @@ function inicializarPersonalInvolucrado() {
             boton.addEventListener(
                 'click',
                 () => {
+
                     seleccionarPersona(
                         persona
                     );
+
                 }
             );
 
@@ -300,6 +363,10 @@ function inicializarPersonalInvolucrado() {
     }
 
 
+    /* =====================================================
+       MENSAJE DE RESULTADOS
+    ===================================================== */
+
     function mostrarMensajeResultados(
         mensaje
     ) {
@@ -310,11 +377,16 @@ function inicializarPersonalInvolucrado() {
             </div>
         `;
 
+
         contenedorResultados.hidden =
             false;
 
     }
 
+
+    /* =====================================================
+       OCULTAR RESULTADOS
+    ===================================================== */
 
     function ocultarResultados() {
 
@@ -334,8 +406,11 @@ function inicializarPersonalInvolucrado() {
     function seleccionarPersona(persona) {
 
         personaSeleccionada = {
+
             id:
-                Number(persona.id) || 0,
+                Number(
+                    persona.id
+                ) || 0,
 
             perscod:
                 String(
@@ -345,7 +420,9 @@ function inicializarPersonalInvolucrado() {
             nombre:
                 String(
                     persona.nombre || ''
-                ).trim(),
+                )
+                    .trim()
+                    .toUpperCase(),
 
             nomina:
                 String(
@@ -355,12 +432,16 @@ function inicializarPersonalInvolucrado() {
             area:
                 String(
                     persona.area || ''
-                ).trim(),
+                )
+                    .trim()
+                    .toUpperCase(),
 
             turno:
                 String(
                     persona.turno || ''
-                ).trim(),
+                )
+                    .trim()
+                    .toUpperCase(),
 
             foto:
                 String(
@@ -381,9 +462,10 @@ function inicializarPersonalInvolucrado() {
         inputArea.value =
             personaSeleccionada.area;
 
+
         /*
-         * El turno viene de plantilla,
-         * pero queda editable.
+         * El turno se obtiene inicialmente
+         * desde plantilla, pero permanece editable.
          */
         inputTurno.value =
             personaSeleccionada.turno;
@@ -435,9 +517,12 @@ function inicializarPersonalInvolucrado() {
         }
 
 
-        foto.hidden = true;
+        foto.hidden =
+            true;
 
-        foto.removeAttribute('src');
+        foto.removeAttribute(
+            'src'
+        );
 
 
         if (!persona.foto) {
@@ -450,8 +535,12 @@ function inicializarPersonalInvolucrado() {
             foto.hidden =
                 false;
 
+
             if (fotoFallback) {
-                fotoFallback.hidden = true;
+
+                fotoFallback.hidden =
+                    true;
+
             }
 
         };
@@ -466,8 +555,12 @@ function inicializarPersonalInvolucrado() {
                 'src'
             );
 
+
             if (fotoFallback) {
-                fotoFallback.hidden = false;
+
+                fotoFallback.hidden =
+                    false;
+
             }
 
         };
@@ -495,8 +588,19 @@ function inicializarPersonalInvolucrado() {
             }
 
 
+            /*
+             * Normalizamos nuevamente el turno
+             * antes de guardarlo.
+             */
             const turno =
-                inputTurno.value.trim();
+                inputTurno
+                    .value
+                    .trim()
+                    .toUpperCase();
+
+
+            inputTurno.value =
+                turno;
 
 
             /*
@@ -537,14 +641,16 @@ function inicializarPersonalInvolucrado() {
 
 
     /* =====================================================
-       TABLA
+       RENDERIZAR PERSONAL AGREGADO
     ===================================================== */
 
     function renderizarPersonalAgregado() {
 
-        tablaBody.innerHTML = '';
+        tablaBody.innerHTML =
+            '';
 
-        hiddenInputs.innerHTML = '';
+        hiddenInputs.innerHTML =
+            '';
 
 
         personalAgregado.forEach(
@@ -568,7 +674,9 @@ function inicializarPersonalInvolucrado() {
                             <div class="personal-tabla__foto">
 
                                 <img
-                                    src="${escaparAtributo(persona.foto)}"
+                                    src="${escaparAtributo(
+                                        persona.foto
+                                    )}"
                                     alt=""
                                     onerror="
                                         this.style.display='none';
@@ -584,35 +692,51 @@ function inicializarPersonalInvolucrado() {
                         `
                         : `
                             <div class="personal-tabla__foto">
+
                                 <span>
                                     ${escaparHtml(inicial)}
                                 </span>
+
                             </div>
                         `;
 
 
                 fila.innerHTML = `
+
                     <td>
                         ${fotoHtml}
                     </td>
 
                     <td>
+
                         <strong>
-                            ${escaparHtml(persona.nombre)}
+                            ${escaparHtml(
+                                persona.nombre
+                            )}
                         </strong>
 
                         <small class="personal-tabla__nomina">
                             Nómina:
-                            ${escaparHtml(persona.nomina || '—')}
+                            ${escaparHtml(
+                                persona.nomina
+                                || '—'
+                            )}
                         </small>
+
                     </td>
 
                     <td>
-                        ${escaparHtml(persona.area || '—')}
+                        ${escaparHtml(
+                            persona.area
+                            || '—'
+                        )}
                     </td>
 
                     <td>
-                        ${escaparHtml(persona.turno || '—')}
+                        ${escaparHtml(
+                            persona.turno
+                            || '—'
+                        )}
                     </td>
 
                     <td>
@@ -648,11 +772,12 @@ function inicializarPersonalInvolucrado() {
 
 
         /*
-         * Para la validación de los pasos:
-         * dejamos constancia de cuántas personas
-         * existen realmente.
+         * Cantidad real de personas agregadas.
+         * Puede utilizarse para validar el paso.
          */
-        contenedorAgregado.dataset.totalPersonal =
+        contenedorAgregado
+            .dataset
+            .totalPersonal =
             String(
                 personalAgregado.length
             );
@@ -681,7 +806,8 @@ function inicializarPersonalInvolucrado() {
 
             const indice =
                 Number(
-                    boton.dataset
+                    boton
+                        .dataset
                         .eliminarPersonal
                 );
 
@@ -707,7 +833,7 @@ function inicializarPersonalInvolucrado() {
 
 
     /* =====================================================
-       INPUTS PARA BACKEND
+       INPUTS OCULTOS PARA BACKEND
     ===================================================== */
 
     function crearInputsOcultos(
@@ -716,6 +842,7 @@ function inicializarPersonalInvolucrado() {
     ) {
 
         const campos = {
+
             plantilla_id:
                 persona.id,
 
@@ -732,7 +859,9 @@ function inicializarPersonalInvolucrado() {
                 persona.area,
 
             turno:
-                persona.turno,
+                String(
+                    persona.turno || ''
+                ).toUpperCase(),
         };
 
 
@@ -749,8 +878,10 @@ function inicializarPersonalInvolucrado() {
                     input.type =
                         'hidden';
 
+
                     input.name =
                         `personal[${indice}][${campo}]`;
+
 
                     input.value =
                         valor ?? '';
@@ -780,12 +911,17 @@ function inicializarPersonalInvolucrado() {
         inputBusqueda.value =
             '';
 
+
         limpiarPersonaSeleccionada();
 
         ocultarResultados();
 
     }
 
+
+    /* =====================================================
+       LIMPIAR PERSONA SELECCIONADA
+    ===================================================== */
 
     function limpiarPersonaSeleccionada() {
 
@@ -807,7 +943,8 @@ function inicializarPersonalInvolucrado() {
 
         if (foto) {
 
-            foto.hidden = true;
+            foto.hidden =
+                true;
 
             foto.removeAttribute(
                 'src'
