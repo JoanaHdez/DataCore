@@ -8,7 +8,12 @@ Reportes | Asuntos Internos
 
 <?= $this->section('content') ?>
 
-<div class="reportes-page">
+<?php
+$usuarioReportes = session()->get('usuario_reportes') ?? [];
+$rolUsuario = $usuarioReportes['rol'] ?? 'usuario';
+?>
+
+<div class="reportes-page" data-usuario-rol="<?= esc($rolUsuario) ?>">
 
     <?= $this->include(
         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\encabezado'

@@ -4,6 +4,7 @@ namespace App\Modules\Asuntos_internos\SistemaReportes\Controllers;
 
 use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardExcelService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\ListadoExcelService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\AuthService;
 
 use App\Controllers\BaseController;
 
@@ -62,15 +63,9 @@ class Reportes_Controller extends BaseController
 
     public function dashboard()
     {
-        /*
-     * =========================================================
-     * VALIDAR SESIÓN
-     * =========================================================
-     */
-
         if (
             session()->get('reportes_autenticado') !== true
-            || ! session()->has('usuario_reportes')
+            || !session()->has('usuario_reportes')
         ) {
 
             return redirect()
@@ -92,46 +87,35 @@ class Reportes_Controller extends BaseController
             );
 
 
-        $rol =
-            $usuario['rol']
-            ?? null;
+        $esAdmin =
+            ($usuario['rol'] ?? null)
+            === 'admin';
+
+
+        $autorizacionTemporal =
+            session()->get(
+                'reportes_dashboard_autorizado'
+            ) === true;
 
 
         /*
-     * =========================================================
-     * ADMINISTRADOR
-     * =========================================================
+     * Admin:
+     * acceso directo.
      *
-     * El administrador tiene acceso directo al Dashboard.
-     * No necesita volver a ingresar su CURP.
+     * Usuario:
+     * requiere autorización administrativa,
+     * salvo que ya haya sido autorizada.
      */
+        $requiereAutorizacion =
+            !$esAdmin
+            && !$autorizacionTemporal;
 
-        if ($rol === 'admin') {
-
-            return view(
-                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\index',
-                [
-                    'requiereAutorizacionAdmin' => false,
-                ]
-            );
-        }
-
-
-        /*
-     * =========================================================
-     * USUARIO NORMAL
-     * =========================================================
-     *
-     * Más adelante esta autorización será validada por backend.
-     *
-     * Por ahora enviamos el estado a la vista para que el
-     * frontend sepa que este usuario NO tiene acceso directo.
-     */
 
         return view(
             'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\index',
             [
-                'requiereAutorizacionAdmin' => true,
+                'requiereAutorizacionAdmin' =>
+                $requiereAutorizacion,
             ]
         );
     }
@@ -271,5 +255,287 @@ class Reportes_Controller extends BaseController
                     'No fue posible generar el archivo de Excel.',
                 ]);
         }
+    }
+
+    public function autorizarDashboard()
+    {
+        /*
+     * =========================================================
+     * SESIÓN
+     * =========================================================
+     */
+
+        if (
+            session()->get('reportes_autenticado') !== true
+            || !session()->has('usuario_reportes')
+        ) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'La sesión no es válida.',
+                ]);
+        }
+
+
+        $usuario =
+            session()->get(
+                'usuario_reportes'
+            );
+
+
+        /*
+     * =========================================================
+     * ADMIN
+     * =========================================================
+     *
+     * El administrador ya tiene acceso directo.
+     */
+
+        if (
+            ($usuario['rol'] ?? null)
+            === 'admin'
+        ) {
+
+            return $this->response
+                ->setJSON([
+                    'success' => true,
+                    'message' =>
+                    'Acceso autorizado.',
+                ]);
+        }
+
+
+        /*
+     * =========================================================
+     * CURP ADMINISTRATIVA
+     * =========================================================
+     */
+
+        $curp =
+            strtoupper(
+                trim(
+                    (string)
+                    $this->request->getPost(
+                        'password_admin'
+                    )
+                )
+            );
+
+
+        if ($curp === '') {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'Ingresa la contraseña del administrador.',
+                ]);
+        }
+
+
+        try {
+
+            $authService =
+                new AuthService();
+
+
+            $autorizado =
+                $authService
+                ->validarAutorizacionAdmin(
+                    $curp
+                );
+        } catch (\Throwable $e) {
+
+            /*
+         * No registramos CURP ni información
+         * sensible en el log.
+         */
+            log_message(
+                'error',
+                'Error validando autorización administrativa del Dashboard: {mensaje}',
+                [
+                    'mensaje' =>
+                    $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'No fue posible validar la autorización.',
+                ]);
+        }
+
+
+        if (!$autorizado) {
+
+            return $this->response
+                ->setStatusCode(403)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'Contraseña de administrador incorrecta.',
+                ]);
+        }
+
+
+        /*
+     * =========================================================
+     * AUTORIZACIÓN TEMPORAL DEL DASHBOARD
+     * =========================================================
+     *
+     * NO cambiamos:
+     *
+     * usuario_reportes['rol']
+     *
+     * El usuario continúa siendo "usuario".
+     */
+
+        session()->set(
+            'reportes_dashboard_autorizado',
+            true
+        );
+
+
+        return $this->response
+            ->setJSON([
+                'success' => true,
+                'message' =>
+                'Acceso autorizado.',
+            ]);
+    }
+
+    public function autorizarEliminacion()
+    {
+        /* =========================================================
+        VALIDAR SESIÓN
+        ========================================================= */
+
+        if (
+            session()->get('reportes_autenticado') !== true
+            || ! session()->has('usuario_reportes')
+        ) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La sesión no es válida.',
+                ]);
+        }
+
+
+        $usuario =
+            session()->get('usuario_reportes');
+
+
+        /* =========================================================
+        ADMIN
+        =========================================================
+        El administrador no necesita contraseña extra.
+        ========================================================= */
+
+        if (
+            ($usuario['rol'] ?? null)
+            === 'admin'
+        ) {
+
+            return $this->response
+                ->setJSON([
+                    'success' => true,
+                    'message' => 'Autorización válida.',
+                ]);
+        }
+
+
+        /* =========================================================
+        CONTRASEÑA ADMINISTRATIVA
+        ========================================================= */
+
+        $curp =
+            strtoupper(
+                trim(
+                    (string)
+                    $this->request->getPost(
+                        'password_admin'
+                    )
+                )
+            );
+
+
+        if ($curp === '') {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'Ingresa la contraseña del administrador.',
+                ]);
+        }
+
+
+        try {
+
+            $authService =
+                new \App\Modules\Asuntos_internos\SistemaReportes\Services\AuthService();
+
+
+            $autorizado =
+                $authService
+                ->validarAutorizacionAdmin(
+                    $curp
+                );
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error validando autorización para eliminar reporte: {mensaje}',
+                [
+                    'mensaje' =>
+                    $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'No fue posible validar la autorización.',
+                ]);
+        }
+
+
+        if (!$autorizado) {
+
+            return $this->response
+                ->setStatusCode(403)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'Contraseña de administrador incorrecta.',
+                ]);
+        }
+
+
+        /* =========================================================
+        AUTORIZACIÓN CORRECTA
+        ========================================================= */
+
+        return $this->response
+            ->setJSON([
+                'success' => true,
+                'message' =>
+                'Autorización válida.',
+            ]);
     }
 }

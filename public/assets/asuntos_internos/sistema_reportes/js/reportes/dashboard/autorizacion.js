@@ -35,6 +35,11 @@ function inicializarAutorizacionAdmin() {
             '#autorizacion-admin-mensaje'
         );
 
+    const botonAutorizar =
+        document.querySelector(
+            '#btn-autorizar-acceso'
+        );
+
 
     if (
         !dashboard
@@ -42,6 +47,7 @@ function inicializarAutorizacionAdmin() {
         || !formulario
         || !password
         || !mensaje
+        || !botonAutorizar
     ) {
         return;
     }
@@ -58,23 +64,17 @@ function inicializarAutorizacionAdmin() {
 
 
     /*
-     * ADMINISTRADOR
-     *
-     * Si PHP determinó que no requiere autorización,
-     * no hacemos absolutamente nada.
+     * ADMINISTRADOR O USUARIO YA AUTORIZADO
      */
     if (!requiereAutorizacion) {
-
         return;
-
     }
 
 
-    /*
-     * USUARIO NORMAL
-     *
-     * El Dashboard requiere autorización administrativa.
-     */
+    /* =====================================================
+       USUARIO NORMAL
+    ===================================================== */
+
     prepararAutorizacionDashboard(
         modal,
         password,
@@ -136,12 +136,12 @@ function inicializarAutorizacionAdmin() {
 
 
     /* =====================================================
-       SUBMIT
+       AUTORIZAR
     ===================================================== */
 
     formulario.addEventListener(
         'submit',
-        (evento) => {
+        async (evento) => {
 
             evento.preventDefault();
 
@@ -165,16 +165,178 @@ function inicializarAutorizacionAdmin() {
             }
 
 
-            /*
-             * Todavía falta conectar aquí
-             * la validación real en backend
-             * contra el administrador ID 758.
-             */
-            mostrarMensajeAutorizacion(
-                mensaje,
-                'Validación administrativa pendiente de conexión con el backend.',
-                'info'
+            /* =================================================
+               PREPARAR ENVÍO
+            ================================================= */
+
+            botonAutorizar.disabled = true;
+
+            const textoOriginal =
+                botonAutorizar.textContent;
+
+            botonAutorizar.textContent =
+                'Validando...';
+
+
+            limpiarMensajeAutorizacion(
+                mensaje
             );
+
+
+            try {
+
+                const formData =
+                    new FormData();
+
+
+                formData.append(
+                    'password_admin',
+                    valor
+                );
+
+
+                /*
+                 * CSRF
+                 *
+                 * Tomamos el token generado por CodeIgniter
+                 * desde el propio formulario si existe.
+                 */
+                const csrf =
+                    formulario.querySelector(
+                        'input[type="hidden"]'
+                    );
+
+
+                if (
+                    csrf
+                    && csrf.name
+                    && csrf.value
+                ) {
+
+                    formData.append(
+                        csrf.name,
+                        csrf.value
+                    );
+
+                }
+
+
+                const respuesta =
+                    await fetch(
+                        `${window.location.origin}/asuntos-internos/reportes/dashboard/autorizar`,
+                        {
+                            method: 'POST',
+
+                            body: formData,
+
+                            headers: {
+                                'X-Requested-With':
+                                    'XMLHttpRequest',
+                            },
+                        }
+                    );
+
+
+                let datos = null;
+
+
+                try {
+
+                    datos =
+                        await respuesta.json();
+
+                } catch {
+
+                    throw new Error(
+                        'El servidor devolvió una respuesta no válida.'
+                    );
+
+                }
+
+
+                /* =================================================
+                   AUTORIZACIÓN RECHAZADA
+                ================================================= */
+
+                if (
+                    !respuesta.ok
+                    || !datos.success
+                ) {
+
+                    mostrarMensajeAutorizacion(
+                        mensaje,
+                        datos.message
+                        ?? 'No fue posible autorizar el acceso.',
+                        'error'
+                    );
+
+
+                    password.value = '';
+
+                    password.focus();
+
+                    return;
+                }
+
+
+                /* =================================================
+                   AUTORIZACIÓN CORRECTA
+                ================================================= */
+
+                mostrarMensajeAutorizacion(
+                    mensaje,
+                    'Acceso autorizado.',
+                    'success'
+                );
+
+
+                password.value = '';
+
+
+                /*
+                 * Recargamos el Dashboard.
+                 *
+                 * Ahora la sesión contiene:
+                 *
+                 * reportes_dashboard_autorizado = true
+                 *
+                 * Por lo tanto PHP entregará el Dashboard
+                 * sin volver a solicitar autorización.
+                 */
+                window.setTimeout(
+                    () => {
+
+                        window.location.reload();
+
+                    },
+                    400
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    'Error autorizando Dashboard:',
+                    error
+                );
+
+
+                mostrarMensajeAutorizacion(
+                    mensaje,
+                    'No fue posible validar la autorización. Inténtalo nuevamente.',
+                    'error'
+                );
+
+            } finally {
+
+                botonAutorizar.disabled =
+                    false;
+
+
+                botonAutorizar.textContent =
+                    textoOriginal;
+
+            }
 
         }
     );
@@ -192,8 +354,9 @@ function prepararAutorizacionDashboard(
     mensaje
 ) {
 
-    limpiarAutorizacionAdmin(
-        password,
+    password.value = '';
+
+    limpiarMensajeAutorizacion(
         mensaje
     );
 
@@ -235,11 +398,8 @@ function prepararAutorizacionDashboard(
 function salirDashboardRestringido() {
 
     /*
-     * Un usuario que no tiene autorización
-     * NO debe poder cerrar el modal y quedarse
-     * viendo el Dashboard.
-     *
-     * Lo regresamos al listado de reportes.
+     * Si no existe autorización, el usuario no permanece
+     * en el Dashboard.
      */
 
     window.location.href =
@@ -249,7 +409,7 @@ function salirDashboardRestringido() {
 
 
 /* =========================================================
-   MENSAJE
+   MOSTRAR MENSAJE
 ========================================================= */
 
 function mostrarMensajeAutorizacion(
@@ -281,16 +441,12 @@ function mostrarMensajeAutorizacion(
 
 
 /* =========================================================
-   LIMPIAR
+   LIMPIAR MENSAJE
 ========================================================= */
 
-function limpiarAutorizacionAdmin(
-    password,
+function limpiarMensajeAutorizacion(
     mensaje
 ) {
-
-    password.value = '';
-
 
     mensaje.textContent = '';
 
@@ -330,10 +486,6 @@ function abrirAutorizacionAdmin(
     );
 
 
-    /*
-     * Ponemos el foco directamente
-     * en la contraseña.
-     */
     window.setTimeout(
         () => {
 
@@ -347,48 +499,6 @@ function abrirAutorizacionAdmin(
 
         },
         100
-    );
-
-}
-
-
-/* =========================================================
-   CERRAR
-========================================================= */
-
-function cerrarAutorizacionAdmin(
-    modal
-) {
-
-    const activo =
-        document.activeElement;
-
-
-    if (
-        activo
-        && modal.contains(
-            activo
-        )
-    ) {
-
-        activo.blur();
-
-    }
-
-
-    modal.classList.remove(
-        'modal-reporte--visible'
-    );
-
-
-    modal.setAttribute(
-        'aria-hidden',
-        'true'
-    );
-
-
-    document.body.classList.remove(
-        'modal-abierto'
     );
 
 }

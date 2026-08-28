@@ -16,16 +16,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function inicializarEliminarReporte() {
 
-    /* =====================================================
-       MODAL USUARIO - REQUIERE CONTRASEÑA
-    ===================================================== */
+    const pagina =
+        document.querySelector(
+            '.reportes-page[data-usuario-rol]'
+        );
 
-    const modal =
+    const modalUsuario =
         document.querySelector(
             '#modal-eliminar-reporte'
         );
 
-    const formulario =
+    const formularioUsuario =
         document.querySelector(
             '#form-eliminar-reporte'
         );
@@ -35,35 +36,38 @@ function inicializarEliminarReporte() {
             '#eliminar-reporte-password'
         );
 
-    const mensaje =
+    const mensajeUsuario =
         document.querySelector(
             '#eliminar-reporte-mensaje'
         );
 
-
-    /* =====================================================
-       MODAL ADMIN - SOLO CONFIRMACIÓN
-    ===================================================== */
-
-    const modalConfirmacion =
+    const modalAdmin =
         document.querySelector(
             '#modal-confirmar-eliminacion-reporte'
         );
 
-    const formularioConfirmacion =
+    const formularioAdmin =
         document.querySelector(
             '#form-confirmar-eliminacion-reporte'
         );
 
 
     if (
-        !modal
-        || !formulario
+        !pagina
+        || !modalUsuario
+        || !formularioUsuario
         || !inputPassword
-        || !mensaje
+        || !mensajeUsuario
+        || !modalAdmin
+        || !formularioAdmin
     ) {
         return;
     }
+
+
+    const rolUsuario =
+        pagina.dataset.usuarioRol
+        ?? 'usuario';
 
 
     let filaActual = null;
@@ -71,7 +75,7 @@ function inicializarEliminarReporte() {
 
 
     /* =====================================================
-       ABRIR ELIMINACIÓN
+       ABRIR MODAL SEGÚN ROL
     ===================================================== */
 
     document.addEventListener(
@@ -111,33 +115,20 @@ function inicializarEliminarReporte() {
                 || '';
 
 
-            /*
-             * =================================================
-             * TEMPORAL
-             * =================================================
-             *
-             * Mientras todavía no conectamos sesión/roles,
-             * abrimos el modal de ADMIN para probarlo.
-             *
-             * Después esto se sustituirá por algo como:
-             *
-             * if (usuarioEsAdmin) {
-             *     confirmación
-             * } else {
-             *     contraseña de administrador
-             * }
-             */
+            /* =============================================
+               ADMIN
+            ============================================== */
 
-            if (modalConfirmacion) {
+            if (rolUsuario === 'admin') {
 
                 prepararModalConfirmacionAdmin(
-                    modalConfirmacion,
+                    modalAdmin,
                     folioActual
                 );
 
 
-                abrirModalConfirmacionAdmin(
-                    modalConfirmacion
+                abrirModal(
+                    modalAdmin
                 );
 
 
@@ -145,22 +136,20 @@ function inicializarEliminarReporte() {
             }
 
 
-            /*
-             * Respaldo:
-             * si por alguna razón no existe el modal
-             * de confirmación, abrimos el modal anterior.
-             */
+            /* =============================================
+               USUARIO NORMAL
+            ============================================== */
 
-            prepararModalEliminar(
-                modal,
+            prepararModalUsuario(
+                modalUsuario,
                 inputPassword,
-                mensaje,
+                mensajeUsuario,
                 folioActual
             );
 
 
-            abrirModalEliminar(
-                modal
+            abrirModal(
+                modalUsuario
             );
 
         }
@@ -168,32 +157,32 @@ function inicializarEliminarReporte() {
 
 
     /* =====================================================
-       CERRAR MODAL CON CONTRASEÑA
+       CERRAR MODAL USUARIO
     ===================================================== */
 
-    modal.addEventListener(
+    modalUsuario.addEventListener(
         'click',
         (evento) => {
 
-            const botonCerrar =
+            const cerrar =
                 evento.target.closest(
                     '[data-cerrar-modal-eliminar]'
                 );
 
 
-            if (!botonCerrar) {
+            if (!cerrar) {
                 return;
             }
 
 
-            cerrarModalEliminar(
-                modal
+            cerrarModal(
+                modalUsuario
             );
 
 
-            limpiarModalEliminar(
+            limpiarModalUsuario(
                 inputPassword,
-                mensaje
+                mensajeUsuario
             );
 
 
@@ -208,35 +197,31 @@ function inicializarEliminarReporte() {
        CERRAR MODAL ADMIN
     ===================================================== */
 
-    if (modalConfirmacion) {
+    modalAdmin.addEventListener(
+        'click',
+        (evento) => {
 
-        modalConfirmacion.addEventListener(
-            'click',
-            (evento) => {
-
-                const botonCerrar =
-                    evento.target.closest(
-                        '[data-cerrar-modal-confirmar-eliminacion]'
-                    );
-
-
-                if (!botonCerrar) {
-                    return;
-                }
-
-
-                cerrarModalConfirmacionAdmin(
-                    modalConfirmacion
+            const cerrar =
+                evento.target.closest(
+                    '[data-cerrar-modal-confirmar-eliminacion]'
                 );
 
 
-                filaActual = null;
-                folioActual = '';
-
+            if (!cerrar) {
+                return;
             }
-        );
 
-    }
+
+            cerrarModal(
+                modalAdmin
+            );
+
+
+            filaActual = null;
+            folioActual = '';
+
+        }
+    );
 
 
     /* =====================================================
@@ -247,53 +232,43 @@ function inicializarEliminarReporte() {
         'keydown',
         (evento) => {
 
-            if (
-                evento.key !== 'Escape'
-            ) {
+            if (evento.key !== 'Escape') {
                 return;
             }
 
 
-            /*
-             * Modal contraseña
-             */
             if (
-                modal.classList.contains(
+                modalUsuario.classList.contains(
                     'modal-reporte--visible'
                 )
             ) {
 
-                cerrarModalEliminar(
-                    modal
+                cerrarModal(
+                    modalUsuario
                 );
 
 
-                limpiarModalEliminar(
+                limpiarModalUsuario(
                     inputPassword,
-                    mensaje
+                    mensajeUsuario
                 );
 
 
                 filaActual = null;
                 folioActual = '';
 
-
                 return;
             }
 
 
-            /*
-             * Modal admin
-             */
             if (
-                modalConfirmacion
-                && modalConfirmacion.classList.contains(
+                modalAdmin.classList.contains(
                     'modal-reporte--visible'
                 )
             ) {
 
-                cerrarModalConfirmacionAdmin(
-                    modalConfirmacion
+                cerrarModal(
+                    modalAdmin
                 );
 
 
@@ -307,13 +282,13 @@ function inicializarEliminarReporte() {
 
 
     /* =====================================================
-       USUARIO NORMAL
-       ELIMINACIÓN CON CONTRASEÑA
+    USUARIO NORMAL
+    VALIDAR CONTRASEÑA ADMIN
     ===================================================== */
 
-    formulario.addEventListener(
+    formularioUsuario.addEventListener(
         'submit',
-        (evento) => {
+        async (evento) => {
 
             evento.preventDefault();
 
@@ -332,9 +307,9 @@ function inicializarEliminarReporte() {
 
             if (!password) {
 
-                mostrarMensajeEliminar(
-                    mensaje,
-                    'Ingresa la contraseña del administrador para continuar.',
+                mostrarMensajeUsuario(
+                    mensajeUsuario,
+                    'Ingresa la contraseña del administrador.',
                     'error'
                 );
 
@@ -345,20 +320,215 @@ function inicializarEliminarReporte() {
             }
 
 
-            /*
-             * =================================================
-             * TEMPORAL
-             * =================================================
-             *
-             * Mientras no conectemos el backend,
-             * cualquier contraseña no vacía funciona.
-             *
-             * Después:
-             *
-             * backend → plantilla_general.plantilla
-             * administrador → ID 758
-             * password → CURP del administrador
-             */
+            const botonSubmit =
+                formularioUsuario.querySelector(
+                    'button[type="submit"]'
+                );
+
+
+            const textoOriginal =
+                botonSubmit
+                    ? botonSubmit.textContent
+                    : 'Eliminar reporte';
+
+
+            if (botonSubmit) {
+
+                botonSubmit.disabled =
+                    true;
+
+                botonSubmit.textContent =
+                    'Validando...';
+
+            }
+
+
+            mensajeUsuario.hidden =
+                true;
+
+
+            try {
+
+                const formData =
+                    new FormData();
+
+
+                formData.append(
+                    'password_admin',
+                    password
+                );
+
+
+                /*
+                 * CSRF
+                 */
+                const csrf =
+                    formularioUsuario.querySelector(
+                        'input[type="hidden"]'
+                    );
+
+
+                if (
+                    csrf
+                    && csrf.name
+                    && csrf.value
+                ) {
+
+                    formData.append(
+                        csrf.name,
+                        csrf.value
+                    );
+
+                }
+
+
+                const respuesta =
+                    await fetch(
+                        `${window.location.origin}/asuntos-internos/reportes/listado/autorizar-eliminacion`,
+                        {
+                            method: 'POST',
+
+                            body: formData,
+
+                            headers: {
+                                'X-Requested-With':
+                                    'XMLHttpRequest',
+                            },
+                        }
+                    );
+
+
+                let datos = null;
+
+
+                try {
+
+                    datos =
+                        await respuesta.json();
+
+                } catch {
+
+                    throw new Error(
+                        'El servidor devolvió una respuesta no válida.'
+                    );
+
+                }
+
+
+                /* =============================================
+                   AUTORIZACIÓN RECHAZADA
+                ============================================== */
+
+                if (
+                    !respuesta.ok
+                    || !datos.success
+                ) {
+
+                    mostrarMensajeUsuario(
+                        mensajeUsuario,
+                        datos.message
+                        ?? 'No fue posible autorizar la eliminación.',
+                        'error'
+                    );
+
+
+                    inputPassword.value =
+                        '';
+
+
+                    inputPassword.focus();
+
+                    return;
+                }
+
+
+                /* =============================================
+                   AUTORIZACIÓN CORRECTA
+                ============================================== */
+
+                const folioEliminado =
+                    folioActual;
+
+
+                eliminarFilaTemporal(
+                    filaActual
+                );
+
+
+                actualizarListadoDespuesEliminar();
+
+
+                cerrarModal(
+                    modalUsuario
+                );
+
+
+                limpiarModalUsuario(
+                    inputPassword,
+                    mensajeUsuario
+                );
+
+
+                filaActual = null;
+                folioActual = '';
+
+
+                mostrarNotificacionEliminado(
+                    folioEliminado
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    'Error autorizando eliminación:',
+                    error
+                );
+
+
+                mostrarMensajeUsuario(
+                    mensajeUsuario,
+                    'No fue posible validar la autorización. Inténtalo nuevamente.',
+                    'error'
+                );
+
+
+            } finally {
+
+                if (botonSubmit) {
+
+                    botonSubmit.disabled =
+                        false;
+
+                    botonSubmit.textContent =
+                        textoOriginal;
+
+                }
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       ADMIN
+       CONFIRMACIÓN DIRECTA
+    ===================================================== */
+
+    formularioAdmin.addEventListener(
+        'submit',
+        (evento) => {
+
+            evento.preventDefault();
+
+
+            if (
+                !filaActual
+                || !folioActual
+            ) {
+                return;
+            }
 
 
             const folioEliminado =
@@ -373,30 +543,8 @@ function inicializarEliminarReporte() {
             actualizarListadoDespuesEliminar();
 
 
-            document.dispatchEvent(
-                new CustomEvent(
-                    'reporteEliminadoTemporalmente',
-                    {
-                        detail: {
-                            folio:
-                                folioEliminado,
-
-                            autorizacion:
-                                'admin_password',
-                        },
-                    }
-                )
-            );
-
-
-            cerrarModalEliminar(
-                modal
-            );
-
-
-            limpiarModalEliminar(
-                inputPassword,
-                mensaje
+            cerrarModal(
+                modalAdmin
             );
 
 
@@ -411,83 +559,231 @@ function inicializarEliminarReporte() {
         }
     );
 
-
-    /* =====================================================
-       ADMINISTRADOR
-       CONFIRMAR ELIMINACIÓN SIN CONTRASEÑA
-    ===================================================== */
-
-    if (formularioConfirmacion) {
-
-        formularioConfirmacion.addEventListener(
-            'submit',
-            (evento) => {
-
-                evento.preventDefault();
+}
 
 
-                if (
-                    !filaActual
-                    || !folioActual
-                ) {
-                    return;
-                }
+/* =========================================================
+   PREPARAR MODAL USUARIO
+========================================================= */
+
+function prepararModalUsuario(
+    modal,
+    inputPassword,
+    mensaje,
+    folio
+) {
+
+    limpiarModalUsuario(
+        inputPassword,
+        mensaje
+    );
 
 
-                const folioEliminado =
-                    folioActual;
-
-
-                /*
-                 * TEMPORAL:
-                 *
-                 * después el backend comprobará que
-                 * la sesión realmente pertenece al
-                 * administrador plantilla ID = 758.
-                 */
-
-
-                eliminarFilaTemporal(
-                    filaActual
-                );
-
-
-                actualizarListadoDespuesEliminar();
-
-
-                document.dispatchEvent(
-                    new CustomEvent(
-                        'reporteEliminadoTemporalmente',
-                        {
-                            detail: {
-                                folio:
-                                    folioEliminado,
-
-                                autorizacion:
-                                    'admin_directo',
-                            },
-                        }
-                    )
-                );
-
-
-                cerrarModalConfirmacionAdmin(
-                    modalConfirmacion
-                );
-
-
-                filaActual = null;
-                folioActual = '';
-
-
-                mostrarNotificacionEliminado(
-                    folioEliminado
-                );
-
-            }
+    const folioElemento =
+        modal.querySelector(
+            '#eliminar-reporte-folio'
         );
 
+
+    if (folioElemento) {
+
+        folioElemento.textContent =
+            folio || '—';
+
     }
+
+
+    const titulo =
+        modal.querySelector(
+            '#modal-eliminar-titulo'
+        );
+
+
+    if (titulo) {
+
+        titulo.textContent =
+            folio
+                ? `Eliminar ${folio}`
+                : 'Eliminar reporte';
+
+    }
+
+
+    window.setTimeout(
+        () => {
+
+            inputPassword.focus();
+
+        },
+        100
+    );
+
+}
+
+
+/* =========================================================
+   PREPARAR MODAL ADMIN
+========================================================= */
+
+function prepararModalConfirmacionAdmin(
+    modal,
+    folio
+) {
+
+    const folioElemento =
+        modal.querySelector(
+            '#confirmar-eliminacion-folio'
+        );
+
+
+    if (folioElemento) {
+
+        folioElemento.textContent =
+            folio || '—';
+
+    }
+
+
+    const titulo =
+        modal.querySelector(
+            '#titulo-confirmar-eliminacion'
+        );
+
+
+    if (titulo) {
+
+        titulo.textContent =
+            folio
+                ? `Eliminar ${folio}`
+                : 'Eliminar reporte';
+
+    }
+
+}
+
+
+/* =========================================================
+   LIMPIAR MODAL USUARIO
+========================================================= */
+
+function limpiarModalUsuario(
+    inputPassword,
+    mensaje
+) {
+
+    inputPassword.value = '';
+
+
+    mensaje.textContent = '';
+
+    mensaje.hidden = true;
+
+
+    mensaje.classList.remove(
+        'eliminar-reporte__mensaje--error',
+        'eliminar-reporte__mensaje--info',
+        'eliminar-reporte__mensaje--success'
+    );
+
+}
+
+
+/* =========================================================
+   MENSAJE USUARIO
+========================================================= */
+
+function mostrarMensajeUsuario(
+    mensaje,
+    texto,
+    tipo
+) {
+
+    mensaje.textContent =
+        texto;
+
+
+    mensaje.hidden =
+        false;
+
+
+    mensaje.classList.remove(
+        'eliminar-reporte__mensaje--error',
+        'eliminar-reporte__mensaje--info',
+        'eliminar-reporte__mensaje--success'
+    );
+
+
+    mensaje.classList.add(
+        `eliminar-reporte__mensaje--${tipo}`
+    );
+
+}
+
+
+/* =========================================================
+   ABRIR MODAL
+========================================================= */
+
+function abrirModal(
+    modal
+) {
+
+    modal.classList.add(
+        'modal-reporte--visible'
+    );
+
+
+    modal.setAttribute(
+        'aria-hidden',
+        'false'
+    );
+
+
+    document.body.classList.add(
+        'modal-abierto'
+    );
+
+}
+
+
+/* =========================================================
+   CERRAR MODAL
+========================================================= */
+
+function cerrarModal(
+    modal
+) {
+
+    const activo =
+        document.activeElement;
+
+
+    if (
+        activo
+        && modal.contains(
+            activo
+        )
+    ) {
+
+        activo.blur();
+
+    }
+
+
+    modal.classList.remove(
+        'modal-reporte--visible'
+    );
+
+
+    modal.setAttribute(
+        'aria-hidden',
+        'true'
+    );
+
+
+    document.body.classList.remove(
+        'modal-abierto'
+    );
 
 }
 
@@ -522,15 +818,6 @@ function actualizarListadoDespuesEliminar() {
         );
 
 
-    /*
-     * filtros.js concentra la lógica de:
-     *
-     * - filtros
-     * - búsqueda
-     * - tarjetas resumen
-     * - paginación
-     */
-
     if (busqueda) {
 
         busqueda.dispatchEvent(
@@ -551,7 +838,7 @@ function actualizarListadoDespuesEliminar() {
 
 
 /* =========================================================
-   ESTADO VACÍO DE TABLA
+   TABLA VACÍA
 ========================================================= */
 
 function actualizarTablaVacia() {
@@ -630,7 +917,7 @@ function actualizarTablaVacia() {
 
 
 /* =========================================================
-   NOTIFICACIÓN DE ÉXITO
+   NOTIFICACIÓN
 ========================================================= */
 
 function mostrarNotificacionEliminado(
@@ -639,10 +926,7 @@ function mostrarNotificacionEliminado(
 
     mostrarResultado({
         tipo: 'success',
-
-        titulo:
-            'Reporte eliminado',
-
+        titulo: 'Reporte eliminado',
         mensaje:
             `El reporte ${folio} fue eliminado correctamente.`,
     });
@@ -656,303 +940,5 @@ function mostrarNotificacionEliminado(
         },
         2000
     );
-
-}
-
-
-/* =========================================================
-   PREPARAR MODAL CON CONTRASEÑA
-========================================================= */
-
-function prepararModalEliminar(
-    modal,
-    inputPassword,
-    mensaje,
-    folio
-) {
-
-    limpiarModalEliminar(
-        inputPassword,
-        mensaje
-    );
-
-
-    const folioElemento =
-        modal.querySelector(
-            '#eliminar-reporte-folio'
-        );
-
-
-    if (folioElemento) {
-
-        folioElemento.textContent =
-            folio || '—';
-
-    }
-
-
-    const titulo =
-        modal.querySelector(
-            '#modal-eliminar-titulo'
-        );
-
-
-    if (titulo) {
-
-        titulo.textContent =
-            folio
-                ? `Eliminar ${folio}`
-                : 'Eliminar reporte';
-
-    }
-
-
-    window.setTimeout(
-        () => {
-
-            inputPassword.focus();
-
-        },
-        100
-    );
-
-}
-
-
-/* =========================================================
-   LIMPIAR MODAL CON CONTRASEÑA
-========================================================= */
-
-function limpiarModalEliminar(
-    inputPassword,
-    mensaje
-) {
-
-    inputPassword.value = '';
-
-
-    mensaje.textContent = '';
-
-    mensaje.hidden = true;
-
-
-    mensaje.classList.remove(
-        'eliminar-reporte__mensaje--error',
-        'eliminar-reporte__mensaje--info',
-        'eliminar-reporte__mensaje--success'
-    );
-
-}
-
-
-/* =========================================================
-   MENSAJE DEL MODAL
-========================================================= */
-
-function mostrarMensajeEliminar(
-    mensaje,
-    texto,
-    tipo
-) {
-
-    mensaje.textContent =
-        texto;
-
-
-    mensaje.hidden =
-        false;
-
-
-    mensaje.classList.remove(
-        'eliminar-reporte__mensaje--error',
-        'eliminar-reporte__mensaje--info',
-        'eliminar-reporte__mensaje--success'
-    );
-
-
-    mensaje.classList.add(
-        `eliminar-reporte__mensaje--${tipo}`
-    );
-
-}
-
-
-/* =========================================================
-   ABRIR MODAL CON CONTRASEÑA
-========================================================= */
-
-function abrirModalEliminar(
-    modal
-) {
-
-    modal.classList.add(
-        'modal-reporte--visible'
-    );
-
-
-    modal.setAttribute(
-        'aria-hidden',
-        'false'
-    );
-
-
-    document.body.classList.add(
-        'modal-abierto'
-    );
-
-}
-
-
-/* =========================================================
-   CERRAR MODAL CON CONTRASEÑA
-========================================================= */
-
-function cerrarModalEliminar(
-    modal
-) {
-
-    desenfocarElementoModal(
-        modal
-    );
-
-
-    modal.classList.remove(
-        'modal-reporte--visible'
-    );
-
-
-    modal.setAttribute(
-        'aria-hidden',
-        'true'
-    );
-
-
-    document.body.classList.remove(
-        'modal-abierto'
-    );
-
-}
-
-
-/* =========================================================
-   PREPARAR CONFIRMACIÓN ADMIN
-========================================================= */
-
-function prepararModalConfirmacionAdmin(
-    modal,
-    folio
-) {
-
-    const folioElemento =
-        modal.querySelector(
-            '#confirmar-eliminacion-folio'
-        );
-
-
-    if (folioElemento) {
-
-        folioElemento.textContent =
-            folio || '—';
-
-    }
-
-
-    const titulo =
-        modal.querySelector(
-            '#titulo-confirmar-eliminacion'
-        );
-
-
-    if (titulo) {
-
-        titulo.textContent =
-            folio
-                ? `Eliminar ${folio}`
-                : 'Eliminar reporte';
-
-    }
-
-}
-
-
-/* =========================================================
-   ABRIR CONFIRMACIÓN ADMIN
-========================================================= */
-
-function abrirModalConfirmacionAdmin(
-    modal
-) {
-
-    modal.classList.add(
-        'modal-reporte--visible'
-    );
-
-
-    modal.setAttribute(
-        'aria-hidden',
-        'false'
-    );
-
-
-    document.body.classList.add(
-        'modal-abierto'
-    );
-
-}
-
-
-/* =========================================================
-   CERRAR CONFIRMACIÓN ADMIN
-========================================================= */
-
-function cerrarModalConfirmacionAdmin(
-    modal
-) {
-
-    desenfocarElementoModal(
-        modal
-    );
-
-
-    modal.classList.remove(
-        'modal-reporte--visible'
-    );
-
-
-    modal.setAttribute(
-        'aria-hidden',
-        'true'
-    );
-
-
-    document.body.classList.remove(
-        'modal-abierto'
-    );
-
-}
-
-
-/* =========================================================
-   DESENFOCAR ELEMENTO DEL MODAL
-========================================================= */
-
-function desenfocarElementoModal(
-    modal
-) {
-
-    const elementoActivo =
-        document.activeElement;
-
-
-    if (
-        elementoActivo
-        && modal.contains(
-            elementoActivo
-        )
-    ) {
-
-        elementoActivo.blur();
-
-    }
 
 }

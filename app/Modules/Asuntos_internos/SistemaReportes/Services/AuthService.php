@@ -354,4 +354,57 @@ class AuthService
             ->get()
             ->getRowArray();
     }
+
+    /**
+     * =========================================================
+     * VALIDAR AUTORIZACIÓN DEL ADMINISTRADOR
+     * =========================================================
+     *
+     * Valida la contraseña administrativa directamente contra
+     * plantilla_general.plantilla.
+     *
+     * La autorización corresponde exclusivamente al usuario
+     * cuyo ID de plantilla es 758.
+     *
+     * La CURP:
+     * - no se guarda en DataCore
+     * - no se guarda en sesión
+     * - no se registra en logs
+     */
+    public function validarAutorizacionAdmin(
+        string $curp
+    ): bool {
+
+        $curp = strtoupper(
+            trim($curp)
+        );
+
+
+        if ($curp === '') {
+            return false;
+        }
+
+
+        $administrador =
+            $this->dbPlantilla
+            ->table('plantilla')
+            ->select('ID')
+            ->where(
+                'ID',
+                self::ADMIN_PLANTILLA_ID
+            )
+            ->where(
+                'CURP',
+                $curp
+            )
+            ->where(
+                'ESTADO',
+                'ACTIVO'
+            )
+            ->get()
+            ->getRowArray();
+
+
+        return !empty($administrador);
+    }
 }

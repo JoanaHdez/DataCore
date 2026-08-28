@@ -26,6 +26,11 @@ $routes->group('asuntos-internos/reportes', static function ($routes) {
         '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::dashboard'
     );
 
+    $routes->post(
+        'dashboard/autorizar',
+        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::autorizarDashboard'
+    );
+
     // Procesar inicio de sesión
     $routes->post(
         'login',
@@ -62,5 +67,10 @@ $routes->group('asuntos-internos/reportes', static function ($routes) {
     $routes->post(
         'listado/exportar',
         '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::exportarListado'
+    );
+
+    $routes->post(
+        'listado/autorizar-eliminacion',
+        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::autorizarEliminacion'
     );
 });

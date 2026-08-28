@@ -5,19 +5,16 @@
 <div
     class="modal-reporte"
     id="modal-autorizacion-admin"
-    aria-hidden="true"
->
+    aria-hidden="true">
     <div
         class="modal-reporte__overlay"
-        data-cerrar-modal-autorizacion
-    ></div>
+        data-cerrar-modal-autorizacion></div>
 
     <div
         class="modal-reporte__dialog modal-reporte__dialog--autorizacion"
         role="dialog"
         aria-modal="true"
-        aria-labelledby="modal-autorizacion-titulo"
-    >
+        aria-labelledby="modal-autorizacion-titulo">
 
         <!-- HEADER -->
         <div class="modal-reporte__header">
@@ -29,8 +26,7 @@
 
                 <h2
                     class="modal-reporte__title"
-                    id="modal-autorizacion-titulo"
-                >
+                    id="modal-autorizacion-titulo">
                     Acceso restringido
                 </h2>
             </div>
@@ -39,8 +35,7 @@
                 type="button"
                 class="modal-reporte__close"
                 data-cerrar-modal-autorizacion
-                aria-label="Cerrar"
-            >
+                aria-label="Cerrar">
                 &times;
             </button>
 
@@ -50,8 +45,10 @@
         <!-- FORMULARIO -->
         <form
             id="form-autorizacion-admin"
-            novalidate
-        >
+            class="modal-reporte__form"
+            novalidate>
+
+            <?= csrf_field() ?>
 
             <div class="modal-reporte__body">
 
@@ -75,8 +72,7 @@
 
                     <label
                         class="autorizacion-admin__label"
-                        for="autorizacion-admin-password"
-                    >
+                        for="autorizacion-admin-password">
                         Contraseña del administrador
                     </label>
 
@@ -86,8 +82,7 @@
                         name="password_admin"
                         class="autorizacion-admin__input"
                         autocomplete="current-password"
-                        placeholder="Ingresa la contraseña"
-                    >
+                        placeholder="Ingresa la contraseña">
 
                 </div>
 
@@ -97,8 +92,7 @@
                     class="autorizacion-admin__mensaje"
                     id="autorizacion-admin-mensaje"
                     role="alert"
-                    hidden
-                ></div>
+                    hidden></div>
 
             </div>
 
@@ -109,16 +103,14 @@
                 <button
                     type="button"
                     class="btn btn--secondary"
-                    data-cerrar-modal-autorizacion
-                >
+                    data-cerrar-modal-autorizacion>
                     Cancelar
                 </button>
 
                 <button
                     type="submit"
                     class="btn btn--primary"
-                    id="btn-autorizar-acceso"
-                >
+                    id="btn-autorizar-acceso">
                     Autorizar acceso
                 </button>
 

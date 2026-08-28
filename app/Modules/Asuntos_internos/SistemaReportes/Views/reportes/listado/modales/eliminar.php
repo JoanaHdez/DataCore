@@ -1,21 +1,9 @@
-<div
-    class="modal-reporte"
-    id="modal-eliminar-reporte"
-    aria-hidden="true"
->
+<div class="modal-reporte" id="modal-eliminar-reporte" aria-hidden="true">
 
-    <div
-        class="modal-reporte__overlay"
-        data-cerrar-modal-eliminar
-    ></div>
+    <div class="modal-reporte__overlay" data-cerrar-modal-eliminar></div>
 
 
-    <div
-        class="modal-reporte__dialog"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-eliminar-titulo"
-    >
+    <div class="modal-reporte__dialog" role="dialog" aria-modal="true" aria-labelledby="modal-eliminar-titulo">
 
         <!-- =====================================================
              HEADER
@@ -28,22 +16,14 @@
                     Eliminación de registro
                 </span>
 
-                <h2
-                    class="modal-reporte__title"
-                    id="modal-eliminar-titulo"
-                >
+                <h2 class="modal-reporte__title" id="modal-eliminar-titulo">
                     Eliminar reporte
                 </h2>
 
             </div>
 
 
-            <button
-                type="button"
-                class="modal-reporte__close"
-                data-cerrar-modal-eliminar
-                aria-label="Cerrar"
-            >
+            <button type="button" class="modal-reporte__close" data-cerrar-modal-eliminar aria-label="Cerrar">
                 ×
             </button>
 
@@ -53,11 +33,9 @@
         <!-- =====================================================
              FORMULARIO
         ====================================================== -->
-        <form
-            class="modal-reporte__form"
-            id="form-eliminar-reporte"
-            novalidate
-        >
+        <form class="modal-reporte__form" id="form-eliminar-reporte" novalidate>
+
+            <?= csrf_field() ?>
 
             <div class="modal-reporte__body">
 
@@ -101,17 +79,12 @@
                 <div class="editar-reporte-campo">
 
                     <label for="eliminar-reporte-password">
-                        Contraseña
+                        Contraseña del administrador
                         <span class="required">*</span>
                     </label>
 
-                    <input
-                        type="password"
-                        id="eliminar-reporte-password"
-                        name="password"
-                        autocomplete="current-password"
-                        placeholder="Ingresa tu contraseña"
-                    >
+                    <input type="password" id="eliminar-reporte-password" name="password"
+                        autocomplete="current-password" placeholder="Ingresa la contraseña del administrador">
 
                 </div>
 
@@ -119,11 +92,7 @@
                 <!-- =================================================
                      MENSAJE
                 ================================================== -->
-                <div
-                    class="eliminar-reporte__mensaje"
-                    id="eliminar-reporte-mensaje"
-                    hidden
-                ></div>
+                <div class="eliminar-reporte__mensaje" id="eliminar-reporte-mensaje" hidden></div>
 
             </div>
 
@@ -133,25 +102,17 @@
             ====================================================== -->
             <div class="modal-reporte__footer">
 
-                <button
-                    type="button"
-                    class="
+                <button type="button" class="
                         modal-reporte__button
                         modal-reporte__button--secondary
-                    "
-                    data-cerrar-modal-eliminar
-                >
+                    " data-cerrar-modal-eliminar>
                     Cancelar
                 </button>
 
-                <button
-                    type="submit"
-                    class="
+                <button type="submit" class="
                         modal-reporte__button
                         modal-reporte__button--danger
-                    "
-                    id="btn-confirmar-eliminar-reporte"
-                >
+                    " id="btn-confirmar-eliminar-reporte">
                     Eliminar reporte
                 </button>
 
