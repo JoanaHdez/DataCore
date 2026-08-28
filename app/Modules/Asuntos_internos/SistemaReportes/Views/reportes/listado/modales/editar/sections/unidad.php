@@ -3,157 +3,307 @@
     <div class="detalle-reporte-seccion__header">
 
         <span>
-            Unidad relacionada
+            Unidades relacionadas
         </span>
 
         <h3>
-            Datos de la unidad
+            Unidades involucradas
         </h3>
 
     </div>
 
 
+    <!-- =====================================================
+         BUSCADOR
+    ====================================================== -->
+
     <div class="editar-reporte-grid">
 
-        <!-- UNIDAD -->
-        <div class="editar-reporte-campo">
+        <div class="editar-reporte-campo editar-reporte-campo--full">
 
-            <label for="editar-unidad">
-                Unidad
-                <span class="required">*</span>
-            </label>
-
-            <select
-                id="editar-unidad"
-                name="unidad"
-                required
-            >
-                <option value="">
-                    Selecciona una unidad
-                </option>
-            </select>
-
-        </div>
-
-
-        <!-- MARCA -->
-        <div class="editar-reporte-campo">
-
-            <label for="editar-unidad-marca">
-                Marca Unidad
+            <label for="editar-unidad-busqueda">
+                Buscar unidad
             </label>
 
             <input
                 type="text"
-                id="editar-unidad-marca"
-                name="unidad_marca"
-                readonly
+                id="editar-unidad-busqueda"
+                autocomplete="off"
+                placeholder="Busca por número económico o placas"
             >
 
-        </div>
+            <small class="editar-reporte-campo__help">
+                Puedes agregar una o más unidades al reporte.
+            </small>
 
 
-        <!-- SUBMARCA -->
-        <div class="editar-reporte-campo">
-
-            <label for="editar-unidad-submarca">
-                SubMarca Unidad
-            </label>
-
-            <input
-                type="text"
-                id="editar-unidad-submarca"
-                name="unidad_submarca"
-                readonly
-            >
-
-        </div>
-
-
-        <!-- COLOR -->
-        <div class="editar-reporte-campo">
-
-            <label for="editar-unidad-color">
-                Color Unidad
-            </label>
-
-            <input
-                type="text"
-                id="editar-unidad-color"
-                name="unidad_color"
-                readonly
-            >
-
-        </div>
-
-
-        <!-- ESTATUS -->
-        <div class="editar-reporte-campo">
-
-            <label for="editar-unidad-estatus">
-                Estatus de la Unidad
-            </label>
-
-            <input
-                type="text"
-                id="editar-unidad-estatus"
-                name="unidad_estatus"
-                readonly
-            >
-
-        </div>
-
-
-        <!-- SERVICIO Y ADSCRIPCIÓN -->
-        <div class="editar-reporte-campo">
-
-            <label for="editar-unidad-servicio-adscripcion">
-                Servicio y Adscripción
-            </label>
-
-            <input
-                type="text"
-                id="editar-unidad-servicio-adscripcion"
-                name="unidad_servicio_adscripcion"
-                readonly
-            >
-
-        </div>
-
-
-        <!-- TIPO DE VEHÍCULO -->
-        <div class="editar-reporte-campo">
-
-            <label for="editar-unidad-tipo-vehiculo">
-                Tipo de Vehículo
-            </label>
-
-            <input
-                type="text"
-                id="editar-unidad-tipo-vehiculo"
-                name="unidad_tipo_vehiculo"
-                readonly
-            >
-
-        </div>
-
-
-        <!-- ORIGEN -->
-        <div class="editar-reporte-campo">
-
-            <label for="editar-unidad-origen">
-                Origen
-            </label>
-
-            <input
-                type="text"
-                id="editar-unidad-origen"
-                name="unidad_origen"
-                readonly
-            >
+            <div
+                class="editar-unidad-resultados"
+                id="editar-unidad-resultados"
+                hidden
+            ></div>
 
         </div>
 
     </div>
+
+
+    <!-- =====================================================
+         UNIDAD SELECCIONADA
+    ====================================================== -->
+
+    <div
+        class="editar-unidad-seleccionada"
+        id="editar-unidad-seleccionada"
+        hidden
+    >
+
+        <input
+            type="hidden"
+            id="editar-unidad-parque-id"
+        >
+
+
+        <div class="editar-reporte-grid">
+
+            <!-- UNIDAD -->
+            <div class="editar-reporte-campo">
+
+                <label for="editar-unidad-no-economico">
+                    Unidad
+                </label>
+
+                <input
+                    type="text"
+                    id="editar-unidad-no-economico"
+                    readonly
+                >
+
+            </div>
+
+
+            <!-- PLACAS -->
+            <div class="editar-reporte-campo">
+
+                <label for="editar-unidad-placas">
+                    Placas
+                </label>
+
+                <input
+                    type="text"
+                    id="editar-unidad-placas"
+                    readonly
+                >
+
+            </div>
+
+
+            <!-- MARCA -->
+            <div class="editar-reporte-campo">
+
+                <label for="editar-unidad-marca">
+                    Marca
+                </label>
+
+                <input
+                    type="text"
+                    id="editar-unidad-marca"
+                    readonly
+                >
+
+            </div>
+
+
+            <!-- SUBMARCA -->
+            <div class="editar-reporte-campo">
+
+                <label for="editar-unidad-submarca">
+                    Submarca
+                </label>
+
+                <input
+                    type="text"
+                    id="editar-unidad-submarca"
+                    readonly
+                >
+
+            </div>
+
+
+            <!-- COLOR -->
+            <div class="editar-reporte-campo">
+
+                <label for="editar-unidad-color">
+                    Color
+                </label>
+
+                <input
+                    type="text"
+                    id="editar-unidad-color"
+                    readonly
+                >
+
+            </div>
+
+
+            <!-- ESTATUS -->
+            <div class="editar-reporte-campo">
+
+                <label for="editar-unidad-estatus">
+                    Estatus
+                </label>
+
+                <input
+                    type="text"
+                    id="editar-unidad-estatus"
+                    readonly
+                >
+
+            </div>
+
+
+            <!-- SERVICIO -->
+            <div class="editar-reporte-campo">
+
+                <label for="editar-unidad-servicio">
+                    Servicio y adscripción
+                </label>
+
+                <input
+                    type="text"
+                    id="editar-unidad-servicio"
+                    readonly
+                >
+
+            </div>
+
+
+            <!-- TIPO -->
+            <div class="editar-reporte-campo">
+
+                <label for="editar-unidad-tipo">
+                    Tipo de vehículo
+                </label>
+
+                <input
+                    type="text"
+                    id="editar-unidad-tipo"
+                    readonly
+                >
+
+            </div>
+
+
+            <!-- ORIGEN -->
+            <div class="editar-reporte-campo">
+
+                <label for="editar-unidad-origen">
+                    Origen
+                </label>
+
+                <select id="editar-unidad-origen">
+
+                    <option value="">
+                        Selecciona
+                    </option>
+
+                    <option value="ARRENDADA">
+                        ARRENDADA
+                    </option>
+
+                    <option value="DGSC">
+                        DGSC
+                    </option>
+
+                    <option value="PROPIA">
+                        PROPIA
+                    </option>
+
+                    <option value="OTRO">
+                        OTRO
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="editar-unidad-seleccionada__acciones">
+
+            <button
+                type="button"
+                class="modal-reporte__button modal-reporte__button--primary"
+                id="btn-editar-agregar-unidad"
+            >
+                Agregar unidad
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         UNIDADES ACTUALES DEL REPORTE
+    ====================================================== -->
+
+    <div
+        class="editar-unidades-agregadas"
+        id="editar-unidades-agregadas"
+        hidden
+    >
+
+        <div class="editar-unidades-agregadas__header">
+
+            <div>
+
+                <span>
+                    Unidades agregadas
+                </span>
+
+                <strong>
+                    Unidades relacionadas con el reporte
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="editar-unidades-agregadas__tabla-wrapper">
+
+            <table class="editar-unidades-agregadas__tabla">
+
+                <thead>
+
+                    <tr>
+                        <th>Unidad</th>
+                        <th>Marca / Submarca</th>
+                        <th>Color</th>
+                        <th>Estatus</th>
+                        <th>Servicio</th>
+                        <th>Tipo</th>
+                        <th>Origen</th>
+                        <th>Acciones</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="editar-unidades-agregadas-body"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         DATOS PARA BACKEND
+    ====================================================== -->
+
+    <div id="editar-unidades-hidden-inputs"></div>
 
 </div>

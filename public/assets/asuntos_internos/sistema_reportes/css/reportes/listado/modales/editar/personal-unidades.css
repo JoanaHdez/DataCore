@@ -1,0 +1,701 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   Editar reporte - Personal y unidades
+========================================================= */
+
+
+/* =========================================================
+   RESULTADOS DE BÚSQUEDA
+========================================================= */
+
+.editar-personal-resultados,
+.editar-unidad-resultados {
+    margin-top: 8px;
+
+    background: #ffffff;
+
+    border: 1px solid #d8e3ec;
+    border-radius: 10px;
+
+    box-shadow:
+        0 10px 26px rgba(21, 53, 84, 0.10);
+
+    overflow: hidden;
+}
+
+
+.editar-personal-resultados[hidden],
+.editar-unidad-resultados[hidden] {
+    display: none !important;
+}
+
+
+/* =========================================================
+   RESULTADOS - PERSONAL
+========================================================= */
+
+.editar-personal-resultados__item {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 11px 14px;
+
+    text-align: left;
+
+    background: #ffffff;
+
+    border: 0;
+    border-bottom: 1px solid #edf2f6;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease;
+}
+
+
+.editar-personal-resultados__item:last-child {
+    border-bottom: 0;
+}
+
+
+.editar-personal-resultados__item:hover {
+    background: #f5faff;
+}
+
+
+.editar-personal-resultados__avatar {
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #0d78bd;
+
+    background: #e8f4fb;
+
+    border: 1px solid #cce2ef;
+    border-radius: 50%;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+.editar-personal-resultados__datos {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+.editar-personal-resultados__datos strong {
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+.editar-personal-resultados__datos small {
+    color: #738698;
+
+    font-size: 9px;
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   RESULTADOS - UNIDADES
+========================================================= */
+
+.editar-unidad-resultados__item {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 11px 14px;
+
+    text-align: left;
+
+    background: #ffffff;
+
+    border: 0;
+    border-bottom: 1px solid #edf2f6;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease;
+}
+
+
+.editar-unidad-resultados__item:last-child {
+    border-bottom: 0;
+}
+
+
+.editar-unidad-resultados__item:hover {
+    background: #f5faff;
+}
+
+
+.editar-unidad-resultados__icono {
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #ffffff;
+
+    background: #1681c4;
+
+    border-radius: 8px;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+.editar-unidad-resultados__datos {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+.editar-unidad-resultados__datos strong {
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+.editar-unidad-resultados__datos small {
+    color: #738698;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   MENSAJES
+========================================================= */
+
+.editar-personal-resultados__vacio,
+.editar-unidad-resultados__vacio {
+    padding: 14px;
+
+    color: #7a8b9a;
+
+    background: #f8fafc;
+
+    font-size: 10px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   PERSONA SELECCIONADA
+========================================================= */
+
+.editar-personal-seleccionado {
+    margin-top: 18px;
+
+    padding: 20px;
+
+    display: grid;
+
+    grid-template-columns:
+        76px minmax(0, 1fr);
+
+    gap: 18px;
+
+    background: #f8fbfe;
+
+    border: 1px solid #dbe6ef;
+    border-radius: 12px;
+}
+
+
+.editar-personal-seleccionado[hidden] {
+    display: none !important;
+}
+
+
+/* =========================================================
+   FOTO
+========================================================= */
+
+.editar-personal-seleccionado__foto {
+    width: 68px;
+    height: 68px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background: #e8f3fb;
+
+    border: 1px solid #cddfea;
+    border-radius: 50%;
+}
+
+
+.editar-personal-seleccionado__foto img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+}
+
+
+.editar-personal-seleccionado__foto img[hidden] {
+    display: none !important;
+}
+
+
+.editar-personal-seleccionado__foto span {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #1681c4;
+
+    font-size: 15px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   DATOS PERSONA SELECCIONADA
+========================================================= */
+
+.editar-personal-seleccionado__datos {
+    min-width: 0;
+}
+
+
+.editar-personal-seleccionado__acciones {
+    grid-column: 1 / -1;
+
+    display: flex;
+    justify-content: flex-end;
+
+    margin-top: 4px;
+}
+
+
+/* =========================================================
+   UNIDAD SELECCIONADA
+========================================================= */
+
+.editar-unidad-seleccionada {
+    margin-top: 18px;
+
+    padding: 20px;
+
+    background: #f8fbfe;
+
+    border: 1px solid #dbe6ef;
+    border-radius: 12px;
+}
+
+
+.editar-unidad-seleccionada[hidden] {
+    display: none !important;
+}
+
+
+.editar-unidad-seleccionada__acciones {
+    display: flex;
+    justify-content: flex-end;
+
+    margin-top: 18px;
+}
+
+
+/* =========================================================
+   TABLA PERSONAL
+========================================================= */
+
+.editar-personal-agregado {
+    margin-top: 22px;
+
+    background: #ffffff;
+
+    border: 1px solid #dce6ee;
+    border-radius: 12px;
+
+    overflow: hidden;
+}
+
+
+.editar-personal-agregado[hidden] {
+    display: none !important;
+}
+
+
+.editar-personal-agregado__header {
+    padding: 14px 18px;
+
+    background: #f5f9fc;
+
+    border-bottom: 1px solid #e4ebf1;
+}
+
+
+.editar-personal-agregado__header span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #1475bd;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+
+.editar-personal-agregado__header strong {
+    color: #173554;
+
+    font-size: 11px;
+}
+
+
+.editar-personal-agregado__tabla-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+.editar-personal-agregado__tabla {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+
+.editar-personal-agregado__tabla th {
+    padding: 10px 12px;
+
+    color: #64798b;
+    background: #fbfcfd;
+
+    border-bottom: 1px solid #e5edf3;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    text-align: left;
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+
+.editar-personal-agregado__tabla td {
+    padding: 12px;
+
+    color: #29445c;
+
+    border-bottom: 1px solid #edf2f6;
+
+    font-size: 9px;
+    line-height: 1.4;
+
+    vertical-align: middle;
+}
+
+
+.editar-personal-agregado__tabla tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+
+.editar-personal-agregado__tabla td strong {
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   FOTO EN TABLA
+========================================================= */
+
+.editar-personal-tabla__foto {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background: #e8f3fb;
+
+    border: 1px solid #cfe0ec;
+    border-radius: 50%;
+}
+
+
+.editar-personal-tabla__foto img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+.editar-personal-tabla__foto span {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #1681c4;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   TABLA UNIDADES
+========================================================= */
+
+.editar-unidades-agregadas {
+    margin-top: 22px;
+
+    background: #ffffff;
+
+    border: 1px solid #dce6ee;
+    border-radius: 12px;
+
+    overflow: hidden;
+}
+
+
+.editar-unidades-agregadas[hidden] {
+    display: none !important;
+}
+
+
+.editar-unidades-agregadas__header {
+    padding: 14px 18px;
+
+    background: #f5f9fc;
+
+    border-bottom: 1px solid #e4ebf1;
+}
+
+
+.editar-unidades-agregadas__header span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #1475bd;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+
+.editar-unidades-agregadas__header strong {
+    color: #173554;
+
+    font-size: 11px;
+}
+
+
+.editar-unidades-agregadas__tabla-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+.editar-unidades-agregadas__tabla {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+
+.editar-unidades-agregadas__tabla th {
+    padding: 10px 11px;
+
+    color: #64798b;
+
+    background: #fbfcfd;
+
+    border-bottom: 1px solid #e5edf3;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    text-align: left;
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+
+.editar-unidades-agregadas__tabla td {
+    padding: 11px;
+
+    color: #29445c;
+
+    border-bottom: 1px solid #edf2f6;
+
+    font-size: 8.5px;
+    line-height: 1.45;
+
+    vertical-align: middle;
+}
+
+
+.editar-unidades-agregadas__tabla tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+
+.editar-unidades-agregadas__tabla td strong {
+    display: block;
+
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+.editar-unidad-tabla__placas {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #8292a0;
+
+    font-size: 8px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   BOTONES QUITAR
+========================================================= */
+
+.editar-personal-tabla__eliminar,
+.editar-unidad-tabla__eliminar {
+    padding: 6px 10px;
+
+    color: #b33c36;
+
+    background: #fff5f4;
+
+    border: 1px solid #efd1ce;
+    border-radius: 6px;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.editar-personal-tabla__eliminar:hover,
+.editar-unidad-tabla__eliminar:hover {
+    background: #ffebe8;
+
+    border-color: #e5b4af;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 800px) {
+
+    .editar-personal-seleccionado {
+        grid-template-columns: 1fr;
+    }
+
+
+    .editar-personal-seleccionado__foto {
+        margin: 0 auto;
+    }
+
+
+    .editar-personal-seleccionado__acciones,
+    .editar-unidad-seleccionada__acciones {
+        justify-content: stretch;
+    }
+
+
+    .editar-personal-seleccionado__acciones button,
+    .editar-unidad-seleccionada__acciones button {
+        width: 100%;
+    }
+
+
+    .editar-personal-agregado__tabla {
+        min-width: 700px;
+    }
+
+
+    .editar-unidades-agregadas__tabla {
+        min-width: 900px;
+    }
+
+}

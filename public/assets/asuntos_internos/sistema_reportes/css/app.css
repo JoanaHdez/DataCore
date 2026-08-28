@@ -30,6 +30,8 @@
 @import url('./reportes/listado/tabla.css');
 @import url('./reportes/listado/paginacion.css');
 
+@import url("./reportes/listado/modales/editar/personal-unidades.css");
+
 /* =========================================================
    REPORTES - DASHBOARD
 ========================================================= */
