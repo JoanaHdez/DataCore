@@ -3,126 +3,66 @@
     <div class="detalle-reporte-seccion__header">
 
         <span>
-            Unidad relacionada
+            Unidades relacionadas
         </span>
 
         <h3>
-            Datos de la unidad
+            Unidades involucradas
         </h3>
 
     </div>
 
 
-    <div class="detalle-reporte-grid">
+    <!-- =====================================================
+         CONTENEDOR
+    ====================================================== -->
 
-        <!-- UNIDAD -->
-        <div class="detalle-reporte-campo">
+    <div
+        class="detalle-unidades"
+        id="detalle-unidades"
+    >
 
-            <span>
-                Unidad
-            </span>
+        <!-- =================================================
+             ESTADO VACÍO
+        ================================================== -->
 
-            <strong id="detalle-unidad">
-                —
-            </strong>
-
+        <div
+            class="detalle-unidades__vacio"
+            id="detalle-unidades-vacio"
+        >
+            No hay unidades relacionadas con este reporte.
         </div>
 
 
-        <!-- MARCA -->
-        <div class="detalle-reporte-campo">
+        <!-- =================================================
+             TABLA
+        ================================================== -->
 
-            <span>
-                Marca
-            </span>
+        <div
+            class="detalle-unidades__tabla-wrapper"
+            id="detalle-unidades-tabla-wrapper"
+            hidden
+        >
 
-            <strong id="detalle-unidad-marca">
-                —
-            </strong>
+            <table class="detalle-unidades__tabla">
 
-        </div>
+                <thead>
 
+                    <tr>
+                        <th>Unidad</th>
+                        <th>Marca / Submarca</th>
+                        <th>Color</th>
+                        <th>Estatus</th>
+                        <th>Servicio</th>
+                        <th>Tipo</th>
+                        <th>Origen</th>
+                    </tr>
 
-        <!-- SUBMARCA -->
-        <div class="detalle-reporte-campo">
+                </thead>
 
-            <span>
-                Submarca
-            </span>
+                <tbody id="detalle-unidades-body"></tbody>
 
-            <strong id="detalle-unidad-submarca">
-                —
-            </strong>
-
-        </div>
-
-
-        <!-- COLOR -->
-        <div class="detalle-reporte-campo">
-
-            <span>
-                Color
-            </span>
-
-            <strong id="detalle-unidad-color">
-                —
-            </strong>
-
-        </div>
-
-
-        <!-- ESTATUS -->
-        <div class="detalle-reporte-campo">
-
-            <span>
-                Estatus
-            </span>
-
-            <strong id="detalle-unidad-estatus">
-                —
-            </strong>
-
-        </div>
-
-
-        <!-- SERVICIO / ADSCRIPCIÓN -->
-        <div class="detalle-reporte-campo">
-
-            <span>
-                Servicio y adscripción
-            </span>
-
-            <strong id="detalle-unidad-servicio-adscripcion">
-                —
-            </strong>
-
-        </div>
-
-
-        <!-- TIPO DE VEHÍCULO -->
-        <div class="detalle-reporte-campo">
-
-            <span>
-                Tipo de vehículo
-            </span>
-
-            <strong id="detalle-unidad-tipo-vehiculo">
-                —
-            </strong>
-
-        </div>
-
-
-        <!-- ORIGEN -->
-        <div class="detalle-reporte-campo">
-
-            <span>
-                Origen
-            </span>
-
-            <strong id="detalle-unidad-origen">
-                —
-            </strong>
+            </table>
 
         </div>
 

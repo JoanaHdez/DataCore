@@ -13,46 +13,51 @@
     </div>
 
 
-    <div class="detalle-reporte-grid">
+    <!-- =====================================================
+         CONTENEDOR DE PERSONAL
+    ====================================================== -->
+    <div
+        class="detalle-personal"
+        id="detalle-personal"
+    >
 
-        <!-- OFICIAL -->
-        <div class="detalle-reporte-campo detalle-reporte-campo--full">
-
-            <span>
-                Oficial
-            </span>
-
-            <strong id="detalle-oficial">
-                —
-            </strong>
-
+        <!-- =================================================
+             ESTADO VACÍO
+        ================================================== -->
+        <div
+            class="detalle-personal__vacio"
+            id="detalle-personal-vacio"
+        >
+            No hay personal relacionado con este reporte.
         </div>
 
 
-        <!-- ÁREA -->
-        <div class="detalle-reporte-campo">
+        <!-- =================================================
+             TABLA
+        ================================================== -->
+        <div
+            class="detalle-personal__tabla-wrapper"
+            id="detalle-personal-tabla-wrapper"
+            hidden
+        >
 
-            <span>
-                Área
-            </span>
+            <table class="detalle-personal__tabla">
 
-            <strong id="detalle-area">
-                —
-            </strong>
+                <thead>
 
-        </div>
+                    <tr>
+                        <th>Foto</th>
+                        <th>Nombre</th>
+                        <th>Nómina</th>
+                        <th>Área</th>
+                        <th>Turno</th>
+                    </tr>
 
+                </thead>
 
-        <!-- TURNO -->
-        <div class="detalle-reporte-campo">
+                <tbody id="detalle-personal-body"></tbody>
 
-            <span>
-                Turno
-            </span>
-
-            <strong id="detalle-turno">
-                —
-            </strong>
+            </table>
 
         </div>
 
