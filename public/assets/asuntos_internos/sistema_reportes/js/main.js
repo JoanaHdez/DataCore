@@ -10,6 +10,7 @@ import './reportes/dashboard/graficas/areas.js';
 import './reportes/dashboard/graficas/turnos.js';
 import './reportes/dashboard/graficas/tendencia.js';
 import './reportes/dashboard/exportar.js';
+import './reportes/dashboard/autorizacion.js';
 
 /* =========================================================
    REPORTES - NUEVO

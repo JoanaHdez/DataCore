@@ -3,6 +3,8 @@ $usuario = session()->get('usuario_reportes') ?? [];
 
 $nombreUsuario = $usuario['nombre'] ?? 'Usuario de prueba';
 $nominaUsuario = $usuario['nomina'] ?? '000000';
+$fotoUsuario = $usuario['foto'] ?? null;
+
 ?>
 
 <header class="report-header">
@@ -52,11 +54,23 @@ $nominaUsuario = $usuario['nomina'] ?? '000000';
 
 
         <div class="report-header__user-avatar">
-            <?= esc(
+
+            <?php if (! empty($fotoUsuario)): ?>
+
+            <img src="<?= esc($fotoUsuario) ?>" alt="Foto de <?= esc($nombreUsuario) ?>">
+
+            <?php else: ?>
+
+            <span>
+                <?= esc(
                 strtoupper(
                     mb_substr($nombreUsuario, 0, 1)
                 )
             ) ?>
+            </span>
+
+            <?php endif; ?>
+
         </div>
 
     </div>

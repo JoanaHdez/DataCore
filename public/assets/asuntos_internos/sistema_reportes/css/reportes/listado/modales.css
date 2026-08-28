@@ -1372,6 +1372,379 @@ body.modal-abierto {
     flex-shrink: 0;
 }
 
+/* =========================================================
+   CONFIRMACIÓN DE ELIMINACIÓN - ADMIN
+========================================================= */
+
+.modal-reporte__dialog--confirmacion {
+    width: min(560px, calc(100% - 32px));
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   ALERTA
+========================================================= */
+
+.modal-reporte__alert {
+    padding: 18px;
+
+    border-radius: 10px;
+}
+
+
+.modal-reporte__alert--danger {
+    background: #fff7f6;
+
+    border: 1px solid #efc8c4;
+    border-left: 4px solid #c9473d;
+}
+
+
+.modal-reporte__alert-content strong {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #9f3029;
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+
+.modal-reporte__alert-content p {
+    margin: 0 0 7px;
+
+    color: #5f6f7f;
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+
+.modal-reporte__alert-content p:last-child {
+    margin-bottom: 0;
+}
+
+
+.modal-reporte__alert-content p strong {
+    display: inline;
+
+    margin: 0;
+
+    color: #173554;
+
+    font-size: inherit;
+}
+
+
+/* =========================================================
+   BOTONES CONFIRMACIÓN
+========================================================= */
+
+#form-confirmar-eliminacion-reporte
+.modal-reporte__footer {
+    gap: 10px;
+}
+
+
+#form-confirmar-eliminacion-reporte
+.btn {
+    min-width: 120px;
+
+    padding: 11px 18px;
+
+    border-radius: 7px;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/* CANCELAR */
+
+#form-confirmar-eliminacion-reporte
+.btn--secondary {
+    color: #405a70;
+
+    background: #ffffff;
+
+    border: 1px solid #d2dde6;
+}
+
+
+#form-confirmar-eliminacion-reporte
+.btn--secondary:hover {
+    background: #f6f9fb;
+
+    border-color: #b9c9d5;
+}
+
+
+/* ELIMINAR */
+
+#form-confirmar-eliminacion-reporte
+.btn--danger {
+    color: #ffffff;
+
+    background: #bd3b32;
+
+    border: 1px solid #bd3b32;
+}
+
+
+#form-confirmar-eliminacion-reporte
+.btn--danger:hover {
+    background: #a8322b;
+
+    border-color: #a8322b;
+}
+
+
+#form-confirmar-eliminacion-reporte
+.btn--danger:focus {
+    outline: none;
+
+    box-shadow:
+        0 0 0 3px rgba(189, 59, 50, 0.18);
+}
+
+/* =========================================================
+   MODAL AUTORIZACIÓN ADMINISTRATIVA
+========================================================= */
+
+.modal-reporte__dialog--autorizacion {
+    width: min(560px, calc(100% - 32px));
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   AVISO
+========================================================= */
+
+.autorizacion-admin__aviso {
+    margin-bottom: 20px;
+
+    padding: 16px 18px;
+
+    background: #f5f9fc;
+
+    border: 1px solid #d7e4ec;
+    border-left: 4px solid #1681c4;
+    border-radius: 10px;
+}
+
+
+.autorizacion-admin__aviso strong {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #173554;
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+
+.autorizacion-admin__aviso p {
+    margin: 0;
+
+    color: #607386;
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   CAMPO
+========================================================= */
+
+.autorizacion-admin__campo {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+
+.autorizacion-admin__label {
+    color: #29445c;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+.autorizacion-admin__input {
+    width: 100%;
+
+    min-height: 42px;
+
+    padding: 10px 12px;
+
+    color: #173554;
+
+    background: #ffffff;
+
+    border: 1px solid #ccd9e3;
+    border-radius: 7px;
+
+    outline: none;
+
+    font-size: 11px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.autorizacion-admin__input::placeholder {
+    color: #9aa8b4;
+}
+
+
+.autorizacion-admin__input:focus {
+    border-color: #1681c4;
+
+    box-shadow:
+        0 0 0 3px rgba(22, 129, 196, 0.12);
+}
+
+
+/* =========================================================
+   MENSAJES
+========================================================= */
+
+.autorizacion-admin__mensaje {
+    margin-top: 14px;
+
+    padding: 11px 13px;
+
+    border-radius: 8px;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+
+.autorizacion-admin__mensaje--error {
+    color: #9f3029;
+
+    background: #fff1f0;
+
+    border: 1px solid #efc1bd;
+}
+
+
+.autorizacion-admin__mensaje--info {
+    color: #315c7d;
+
+    background: #f0f7fc;
+
+    border: 1px solid #c7deee;
+}
+
+
+.autorizacion-admin__mensaje--success {
+    color: #1f6d4e;
+
+    background: #eef9f4;
+
+    border: 1px solid #c7e7d8;
+}
+
+
+/* =========================================================
+   BOTONES
+========================================================= */
+
+#form-autorizacion-admin
+.modal-reporte__footer {
+    gap: 10px;
+}
+
+
+#form-autorizacion-admin
+.btn {
+    min-width: 120px;
+
+    padding: 11px 18px;
+
+    border-radius: 7px;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/* CANCELAR */
+
+#form-autorizacion-admin
+.btn--secondary {
+    color: #405a70;
+
+    background: #ffffff;
+
+    border: 1px solid #d2dde6;
+}
+
+
+#form-autorizacion-admin
+.btn--secondary:hover {
+    background: #f6f9fb;
+
+    border-color: #b9c9d5;
+}
+
+
+/* AUTORIZAR */
+
+#form-autorizacion-admin
+.btn--primary {
+    color: #ffffff;
+
+    background: #1681c4;
+
+    border: 1px solid #1681c4;
+}
+
+
+#form-autorizacion-admin
+.btn--primary:hover {
+    background: #126da6;
+
+    border-color: #126da6;
+}
+
+
+#form-autorizacion-admin
+.btn--primary:focus {
+    outline: none;
+
+    box-shadow:
+        0 0 0 3px rgba(22, 129, 196, 0.18);
+}
 
 /* =========================================================
    RESPONSIVE

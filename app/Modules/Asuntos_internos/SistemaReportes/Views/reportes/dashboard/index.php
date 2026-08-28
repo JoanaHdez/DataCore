@@ -73,6 +73,10 @@ Dashboard | Asuntos Internos
     <?= $this->include(
         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\modales\exportar'
     ) ?> 
+
+    <?= $this->include(
+    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\modales\autorizacion'
+) ?>
     
 </div>
 
