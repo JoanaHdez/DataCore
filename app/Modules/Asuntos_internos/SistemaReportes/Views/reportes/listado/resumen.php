@@ -5,7 +5,10 @@
             Total de reportes
         </span>
 
-        <strong class="resumen-card__value">
+        <strong
+            class="resumen-card__value"
+            id="resumen-total-reportes"
+        >
             0
         </strong>
     </article>
@@ -16,7 +19,10 @@
             En proceso
         </span>
 
-        <strong class="resumen-card__value">
+        <strong
+            class="resumen-card__value"
+            id="resumen-en-proceso"
+        >
             0
         </strong>
     </article>
@@ -27,7 +33,10 @@
             Finalizados
         </span>
 
-        <strong class="resumen-card__value">
+        <strong
+            class="resumen-card__value"
+            id="resumen-finalizados"
+        >
             0
         </strong>
     </article>
