@@ -122,10 +122,14 @@
 
 .modal-reporte__body--detalle {
     flex: 1;
+    min-height: 0;
+
+    max-height: none;
 
     padding: 26px 24px 30px;
 
     overflow-y: auto;
+    overflow-x: hidden;
 
     background: #ffffff;
 }
@@ -261,20 +265,112 @@
 .detalle-reporte-evidencia__vacio {
     grid-column: 1 / -1;
 
-    padding: 28px;
+    padding: 14px;
 
-    color: #8392a0;
-
+    color: #8b99a7;
     background: #f7f9fb;
 
-    border: 1px dashed #c8d4df;
-    border-radius: 10px;
+    border: 1px solid #e0e7ee;
+    border-radius: 8px;
 
-    text-align: center;
+    text-align: left;
 
-    font-size: 11px;
+    font-size: 10px;
 }
 
+/* =========================================================
+   DETALLE - TAMAÑO FIJO Y SCROLL
+========================================================= */
+
+.modal-reporte__dialog--detalle {
+    width: min(1180px, 100%);
+
+    height: 90vh;
+    max-height: 90vh;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+
+/* Header fijo */
+.modal-reporte__dialog--detalle > .modal-reporte__header {
+    flex-shrink: 0;
+}
+
+
+/* Navegación fija */
+.modal-reporte__dialog--detalle > .detalle-reporte-nav {
+    flex-shrink: 0;
+}
+
+
+/* El contenido ocupa el espacio restante */
+.modal-reporte__dialog--detalle > .modal-reporte__body--detalle {
+    flex: 1;
+    min-height: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* =========================================================
+   DETALLE - BLOQUES INTERNOS
+========================================================= */
+
+.detalle-reporte-seccion__bloque {
+    width: 100%;
+
+    margin-bottom: 24px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe7ef;
+    border-radius: 12px;
+
+    box-shadow:
+        0 4px 14px rgba(24, 54, 88, 0.05);
+}
+
+
+.detalle-reporte-seccion__bloque:last-child {
+    margin-bottom: 0;
+}
+
+
+/* =========================================================
+   ENCABEZADO DEL BLOQUE
+========================================================= */
+
+.detalle-reporte-seccion__bloque
+.detalle-reporte-seccion__header {
+    margin: 0;
+
+    padding: 18px 22px 16px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ffffff 0%,
+            #f7faff 100%
+        );
+
+    border-bottom: 1px solid #e8eef4;
+}
+
+
+/* =========================================================
+   CONTENIDO DEL BLOQUE
+========================================================= */
+
+.detalle-reporte-seccion__bloque
+.detalle-reporte-grid {
+    padding: 22px;
+}
 
 /* =========================================================
    RESPONSIVE

@@ -3,6 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+/* =========================================================
+   INICIALIZAR DETALLE
+========================================================= */
+
 function inicializarDetalleReporte() {
 
     const modal =
@@ -15,9 +19,9 @@ function inicializarDetalleReporte() {
     }
 
 
-    /* =========================================================
+    /* =====================================================
        ABRIR DETALLE
-    ========================================================= */
+    ===================================================== */
 
     document.addEventListener('click', (evento) => {
 
@@ -34,7 +38,6 @@ function inicializarDetalleReporte() {
         const fila =
             boton.closest('tr');
 
-
         if (!fila) {
             return;
         }
@@ -48,12 +51,15 @@ function inicializarDetalleReporte() {
     });
 
 
-    /* =========================================================
-       NAVEGACIÓN ENTRE SECCIONES
-    ========================================================= */
+    /* =====================================================
+       NAVEGACIÓN + CIERRE
+    ===================================================== */
 
     modal.addEventListener('click', (evento) => {
 
+        /*
+         * Navegación entre las 5 secciones.
+         */
         const botonSeccion =
             evento.target.closest(
                 '[data-detalle-seccion]'
@@ -76,10 +82,9 @@ function inicializarDetalleReporte() {
         }
 
 
-        /* =====================================================
-           CERRAR MODAL
-        ===================================================== */
-
+        /*
+         * Cerrar modal.
+         */
         const cerrar =
             evento.target.closest(
                 '[data-cerrar-modal]'
@@ -98,9 +103,9 @@ function inicializarDetalleReporte() {
     });
 
 
-    /* =========================================================
+    /* =====================================================
        CERRAR CON ESCAPE
-    ========================================================= */
+    ===================================================== */
 
     document.addEventListener('keydown', (evento) => {
 
@@ -141,7 +146,16 @@ function abrirDetalleReporte(
 
 
     /* =====================================================
-       DATOS DISPONIBLES ACTUALMENTE EN LA TABLA
+       LIMPIAR INFORMACIÓN ANTERIOR
+    ===================================================== */
+
+    limpiarDetalleReporte(
+        modal
+    );
+
+
+    /* =====================================================
+       DATOS TEMPORALES DISPONIBLES EN LA TABLA
     ===================================================== */
 
     const folio =
@@ -170,15 +184,18 @@ function abrirDetalleReporte(
 
 
     /* =====================================================
-       HEADER
+       HEADER DEL MODAL
     ===================================================== */
 
-    asignarTexto(
+    asignarTextoDetalle(
+        modal,
         '#detalle-meta-expediente',
         expediente
     );
 
-    asignarTexto(
+
+    asignarTextoDetalle(
+        modal,
         '#detalle-meta-estado',
         estado
     );
@@ -199,10 +216,12 @@ function abrirDetalleReporte(
 
 
     /* =====================================================
+       PASO 1
        DATOS DEL REPORTE
     ===================================================== */
 
-    asignarTexto(
+    asignarTextoDetalle(
+        modal,
         '#detalle-prefijo',
         obtenerPrefijoFolio(
             folio
@@ -210,7 +229,8 @@ function abrirDetalleReporte(
     );
 
 
-    asignarTexto(
+    asignarTextoDetalle(
+        modal,
         '#detalle-numero-folio',
         obtenerNumeroFolio(
             folio
@@ -218,65 +238,348 @@ function abrirDetalleReporte(
     );
 
 
-    asignarTexto(
+    /*
+     * Fecha de registro:
+     * todavía no viene en la tabla.
+     */
+    asignarTextoDetalle(
+        modal,
+        '#detalle-fecha-registro',
+        ''
+    );
+
+
+    /* =====================================================
+       IDENTIFICACIÓN
+    ===================================================== */
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-folio-ip',
+        ''
+    );
+
+
+    asignarTextoDetalle(
+        modal,
         '#detalle-fecha-queja',
         fechaQueja
     );
 
 
-    asignarTexto(
+    asignarTextoDetalle(
+        modal,
+        '#detalle-fecha-acuerdo',
+        ''
+    );
+
+
+    asignarTextoDetalle(
+        modal,
         '#detalle-expediente',
         expediente
     );
 
 
+    asignarTextoDetalle(
+        modal,
+        '#detalle-nomenclatura',
+        ''
+    );
+
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-no-oficio',
+        ''
+    );
+
+
     /* =====================================================
+       PASO 2
+       DATOS DE LOS HECHOS
+    ===================================================== */
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-fecha-hechos',
+        ''
+    );
+
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-hora-hechos',
+        ''
+    );
+
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-descripcion',
+        ''
+    );
+
+
+    /* =====================================================
+       UBICACIÓN
+    ===================================================== */
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-calle',
+        ''
+    );
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-numero',
+        ''
+    );
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-colonia',
+        ''
+    );
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-entre-calle',
+        ''
+    );
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-y-calle',
+        ''
+    );
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-municipio',
+        ''
+    );
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-estado',
+        ''
+    );
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-sector',
+        ''
+    );
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-cuadrante',
+        ''
+    );
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-latitud',
+        ''
+    );
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-longitud',
+        ''
+    );
+
+
+    /* =====================================================
+       PASO 3
        PERSONAL
     ===================================================== */
 
-    asignarTexto(
+    asignarTextoDetalle(
+        modal,
+        '#detalle-oficial',
+        ''
+    );
+
+
+    asignarTextoDetalle(
+        modal,
         '#detalle-area',
         area
     );
 
 
-    asignarTexto(
+    asignarTextoDetalle(
+        modal,
         '#detalle-turno',
         turno
     );
 
 
     /* =====================================================
+       UNIDAD
+    ===================================================== */
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-unidad',
+        ''
+    );
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-unidad-marca',
+        ''
+    );
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-unidad-submarca',
+        ''
+    );
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-unidad-color',
+        ''
+    );
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-unidad-estatus',
+        ''
+    );
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-unidad-servicio-adscripcion',
+        ''
+    );
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-unidad-tipo-vehiculo',
+        ''
+    );
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-unidad-origen',
+        ''
+    );
+
+
+    /* =====================================================
+       PASO 4
        QUEJOSO
     ===================================================== */
 
-    asignarTexto(
+    asignarTextoDetalle(
+        modal,
         '#detalle-quejoso',
         quejoso
     );
 
 
+    asignarTextoDetalle(
+        modal,
+        '#detalle-edad',
+        ''
+    );
+
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-genero',
+        ''
+    );
+
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-telefono',
+        ''
+    );
+
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-correo',
+        ''
+    );
+
+
     /* =====================================================
-       CLASIFICACIÓN
+       PASO 5
+       CLASIFICACIÓN Y SEGUIMIENTO
     ===================================================== */
 
-    asignarTexto(
+    asignarTextoDetalle(
+        modal,
         '#detalle-clasificacion',
         clasificacion
     );
 
 
-    /*
-     * Los demás campos todavía no existen
-     * en la tabla temporal.
-     *
-     * Se mantienen como "—" hasta
-     * conectar el detalle con la BD.
-     */
+    asignarTextoDetalle(
+        modal,
+        '#detalle-inspector',
+        ''
+    );
+
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-investigador',
+        ''
+    );
+
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-quien-emite-resolucion',
+        ''
+    );
+
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-resolucion',
+        estado
+    );
+
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-motivos',
+        ''
+    );
 
 
     /* =====================================================
-       SIEMPRE ABRIR EN "DATOS"
+       OBSERVACIONES
+    ===================================================== */
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-observaciones',
+        ''
+    );
+
+
+    /* =====================================================
+       EVIDENCIA
+    ===================================================== */
+
+    limpiarEvidenciaDetalle(
+        modal
+    );
+
+
+    /* =====================================================
+       SIEMPRE ABRIR EN PRIMERA PESTAÑA
     ===================================================== */
 
     mostrarSeccionDetalle(
@@ -367,7 +670,7 @@ function mostrarSeccionDetalle(
 
 
     /* =====================================================
-       REGRESAR SCROLL DEL BODY AL INICIO
+       REINICIAR SCROLL INTERNO
     ===================================================== */
 
     const body =
@@ -384,6 +687,80 @@ function mostrarSeccionDetalle(
         });
 
     }
+
+}
+
+
+/* =========================================================
+   LIMPIAR DETALLE
+========================================================= */
+
+function limpiarDetalleReporte(
+    modal
+) {
+
+    const campos =
+        modal.querySelectorAll(
+            '.detalle-reporte-campo strong'
+        );
+
+
+    campos.forEach((campo) => {
+
+        campo.textContent =
+            '—';
+
+    });
+
+
+    /*
+     * Prefijo fijo.
+     */
+    const prefijo =
+        modal.querySelector(
+            '#detalle-prefijo'
+        );
+
+
+    if (prefijo) {
+
+        prefijo.textContent =
+            'QJ';
+
+    }
+
+
+    limpiarEvidenciaDetalle(
+        modal
+    );
+
+}
+
+
+/* =========================================================
+   LIMPIAR EVIDENCIA
+========================================================= */
+
+function limpiarEvidenciaDetalle(
+    modal
+) {
+
+    const lista =
+        modal.querySelector(
+            '#detalle-evidencia-lista'
+        );
+
+
+    if (!lista) {
+        return;
+    }
+
+
+    lista.innerHTML = `
+        <div class="detalle-reporte-evidencia__vacio">
+            No hay evidencia fotográfica registrada.
+        </div>
+    `;
 
 }
 
@@ -446,7 +823,9 @@ function obtenerPrefijoFolio(
 
 
     if (partes.length > 1) {
+
         return partes[0];
+
     }
 
 
@@ -473,10 +852,9 @@ function obtenerNumeroFolio(
 
 
     /*
-     * Temporalmente usamos todo lo
-     * que exista después del prefijo.
+     * TEMPORAL.
      *
-     * Cuando conectemos BD se utilizará
+     * Cuando conectemos la BD utilizaremos
      * directamente numero_folio.
      */
     if (partes.length > 1) {
@@ -497,13 +875,14 @@ function obtenerNumeroFolio(
    ASIGNAR TEXTO
 ========================================================= */
 
-function asignarTexto(
+function asignarTextoDetalle(
+    modal,
     selector,
     valor
 ) {
 
     const elemento =
-        document.querySelector(
+        modal.querySelector(
             selector
         );
 
@@ -513,8 +892,13 @@ function asignarTexto(
     }
 
 
+    const texto =
+        String(
+            valor ?? ''
+        ).trim();
+
+
     elemento.textContent =
-        valor?.trim()
-        || '—';
+        texto || '—';
 
 }
