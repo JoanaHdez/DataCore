@@ -1,6 +1,6 @@
 /* =========================================================
    SISTEMA DE REPORTES - ASUNTOS INTERNOS
-   Nuevo reporte - Unidades
+   Nuevo reporte - Unidades involucradas
 ========================================================= */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -10,11 +10,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function inicializarUnidades() {
 
-    const inputOficial =
-        document.querySelector('#oficial');
+    const inputBusqueda =
+        document.querySelector('#unidad_busqueda');
 
-    const selectUnidad =
-        document.querySelector('#unidad');
+    const contenedorResultados =
+        document.querySelector('#unidad-resultados');
+
+    const contenedorSeleccionada =
+        document.querySelector('#unidad-seleccionada');
+
+    const inputParqueId =
+        document.querySelector('#unidad-parque-id');
+
+    const inputNoEconomico =
+        document.querySelector('#unidad_no_economico');
+
+    const inputPlacas =
+        document.querySelector('#unidad_placas');
 
     const inputMarca =
         document.querySelector('#unidad_marca');
@@ -28,567 +40,905 @@ function inicializarUnidades() {
     const inputEstatus =
         document.querySelector('#unidad_estatus');
 
-    const inputServicioAdscripcion =
-        document.querySelector(
-            '#unidad_servicio_adscripcion'
-        );
+    const inputServicio =
+        document.querySelector('#unidad_servicio');
 
-    const inputTipoVehiculo =
-        document.querySelector(
-            '#unidad_tipo_vehiculo'
-        );
+    const inputTipo =
+        document.querySelector('#unidad_tipo');
 
-    const inputOrigen =
+    const selectOrigen =
         document.querySelector('#unidad_origen');
+
+    const btnAgregar =
+        document.querySelector('#btn-agregar-unidad');
+
+    const contenedorAgregadas =
+        document.querySelector('#unidades-agregadas');
+
+    const tablaBody =
+        document.querySelector('#unidades-agregadas-body');
+
+    const hiddenInputs =
+        document.querySelector('#unidades-hidden-inputs');
 
 
     if (
-        !inputOficial
-        || !selectUnidad
+        !inputBusqueda
+        || !contenedorResultados
+        || !contenedorSeleccionada
+        || !inputParqueId
+        || !inputNoEconomico
+        || !inputPlacas
+        || !inputMarca
+        || !inputSubmarca
+        || !inputColor
+        || !inputEstatus
+        || !inputServicio
+        || !inputTipo
+        || !selectOrigen
+        || !btnAgregar
+        || !contenedorAgregadas
+        || !tablaBody
+        || !hiddenInputs
     ) {
         return;
     }
 
 
     /* =====================================================
-       DATOS TEMPORALES
-
-       Después serán sustituidos por consultas al backend.
+       ESTADO
     ===================================================== */
 
-    const oficiales = [
-        {
-            id: 1,
-            nombre: 'Juan Pérez López',
-        },
-        {
-            id: 2,
-            nombre: 'María Hernández García',
-        },
-        {
-            id: 3,
-            nombre: 'Carlos Ramírez Torres',
-        },
-    ];
+    const unidadesAgregadas = [];
 
-
-    const unidades = [
-        {
-            id: 101,
-            oficial_id: 1,
-
-            unidad: 'SP-101',
-
-            marca: 'Ford',
-            submarca: 'F-150',
-            color: 'Blanco',
-            estatus: 'Activa',
-
-            servicio_adscripcion:
-                'Seguridad Ciudadana',
-
-            tipo_vehiculo:
-                'Patrulla',
-
-            origen:
-                'Municipal',
-        },
-
-        {
-            id: 102,
-            oficial_id: 1,
-
-            unidad: 'SP-115',
-
-            marca: 'Nissan',
-            submarca: 'Frontier',
-            color: 'Blanco / Azul',
-            estatus: 'Activa',
-
-            servicio_adscripcion:
-                'Seguridad Ciudadana',
-
-            tipo_vehiculo:
-                'Patrulla',
-
-            origen:
-                'Municipal',
-        },
-
-        {
-            id: 201,
-            oficial_id: 2,
-
-            unidad: 'TR-204',
-
-            marca: 'Dodge',
-            submarca: 'Ram 1500',
-            color: 'Blanco',
-            estatus: 'Activa',
-
-            servicio_adscripcion:
-                'Tránsito',
-
-            tipo_vehiculo:
-                'Patrulla',
-
-            origen:
-                'Municipal',
-        },
-
-        {
-            id: 301,
-            oficial_id: 3,
-
-            unidad: 'OP-310',
-
-            marca: 'Chevrolet',
-            submarca: 'Tahoe',
-            color: 'Negro',
-            estatus: 'Mantenimiento',
-
-            servicio_adscripcion:
-                'Operaciones',
-
-            tipo_vehiculo:
-                'SUV',
-
-            origen:
-                'Municipal',
-        },
-    ];
+    let temporizadorBusqueda = null;
+    let controladorBusqueda = null;
+    let unidadSeleccionada = null;
 
 
     /* =====================================================
-       CAMBIO DE OFICIAL
+       BUSCAR
     ===================================================== */
 
-    inputOficial.addEventListener('input', () => {
+    inputBusqueda.addEventListener('input', () => {
 
-        const nombre =
-            inputOficial.value.trim();
+        const termino =
+            inputBusqueda.value.trim();
 
 
-        const oficial =
-            buscarOficialPorNombreUnidad(
-                oficiales,
-                nombre
+        unidadSeleccionada = null;
+
+        limpiarUnidadSeleccionada();
+
+
+        if (temporizadorBusqueda) {
+            clearTimeout(
+                temporizadorBusqueda
             );
+        }
 
 
-        /*
-         * Si el oficial aún no coincide
-         * con un registro válido:
-         *
-         * - limpiamos unidades
-         * - deshabilitamos el select
-         * - limpiamos datos automáticos
-         */
-        if (!oficial) {
+        if (termino.length < 1) {
 
-            limpiarSelectorUnidad(
-                selectUnidad
-            );
-
-            limpiarDatosUnidad({
-                inputMarca,
-                inputSubmarca,
-                inputColor,
-                inputEstatus,
-                inputServicioAdscripcion,
-                inputTipoVehiculo,
-                inputOrigen,
-            });
+            ocultarResultados();
 
             return;
         }
 
 
-        /*
-         * Buscamos las unidades relacionadas
-         * con el oficial seleccionado.
-         */
-        const unidadesOficial =
-            obtenerUnidadesPorOficial(
-                unidades,
-                oficial.id
+        temporizadorBusqueda =
+            window.setTimeout(
+                () => {
+                    buscarUnidades(
+                        termino
+                    );
+                },
+                300
+            );
+
+    });
+
+
+    /* =====================================================
+       CONSULTAR BACKEND
+    ===================================================== */
+
+    async function buscarUnidades(
+        termino
+    ) {
+
+        if (controladorBusqueda) {
+            controladorBusqueda.abort();
+        }
+
+
+        controladorBusqueda =
+            new AbortController();
+
+
+        try {
+
+            const baseUrl =
+                document
+                    .querySelector('base')
+                    ?.href
+                || `${window.location.origin}/`;
+
+
+            const url =
+                new URL(
+                    'asuntos-internos/reportes/unidades/buscar',
+                    baseUrl
+                );
+
+
+            url.searchParams.set(
+                'q',
+                termino
             );
 
 
-        cargarUnidadesEnSelect(
-            selectUnidad,
-            unidadesOficial
+            const respuesta =
+                await fetch(
+                    url.toString(),
+                    {
+                        method: 'GET',
+
+                        headers: {
+                            Accept:
+                                'application/json',
+                        },
+
+                        signal:
+                            controladorBusqueda.signal,
+                    }
+                );
+
+
+            if (!respuesta.ok) {
+
+                throw new Error(
+                    'No fue posible consultar las unidades.'
+                );
+
+            }
+
+
+            const datos =
+                await respuesta.json();
+
+
+            renderizarResultados(
+                Array.isArray(
+                    datos.unidades
+                )
+                    ? datos.unidades
+                    : []
+            );
+
+
+        } catch (error) {
+
+            if (
+                error.name ===
+                'AbortError'
+            ) {
+                return;
+            }
+
+
+            console.error(
+                'Error buscando unidades:',
+                error
+            );
+
+
+            mostrarMensajeResultados(
+                'No fue posible consultar las unidades.'
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       RESULTADOS
+    ===================================================== */
+
+    function renderizarResultados(
+        unidades
+    ) {
+
+        contenedorResultados.innerHTML =
+            '';
+
+
+        if (!unidades.length) {
+
+            mostrarMensajeResultados(
+                'No se encontraron unidades.'
+            );
+
+            return;
+        }
+
+
+        unidades.forEach(
+            (unidad) => {
+
+                const boton =
+                    document.createElement(
+                        'button'
+                    );
+
+
+                boton.type =
+                    'button';
+
+                boton.className =
+                    'unidad-resultados__item';
+
+
+                boton.innerHTML = `
+                    <span class="unidad-resultados__icono">
+                        U
+                    </span>
+
+                    <span class="unidad-resultados__datos">
+
+                        <strong>
+                            ${escaparHtml(
+                                unidad.no_economico
+                                || 'SIN NÚMERO'
+                            )}
+                        </strong>
+
+                        <small>
+                            Placas:
+                            ${escaparHtml(
+                                unidad.placas
+                                || '—'
+                            )}
+                        </small>
+
+                        <small>
+                            ${escaparHtml(
+                                unidad.marca
+                                || '—'
+                            )}
+                            ${escaparHtml(
+                                unidad.submarca
+                                || ''
+                            )}
+                        </small>
+
+                    </span>
+                `;
+
+
+                boton.addEventListener(
+                    'click',
+                    () => {
+
+                        seleccionarUnidad(
+                            unidad
+                        );
+
+                    }
+                );
+
+
+                contenedorResultados
+                    .appendChild(
+                        boton
+                    );
+
+            }
         );
 
 
-        limpiarDatosUnidad({
-            inputMarca,
-            inputSubmarca,
-            inputColor,
-            inputEstatus,
-            inputServicioAdscripcion,
-            inputTipoVehiculo,
-            inputOrigen,
-        });
+        contenedorResultados.hidden =
+            false;
 
-    });
+    }
+
+
+    function mostrarMensajeResultados(
+        mensaje
+    ) {
+
+        contenedorResultados.innerHTML = `
+            <div class="unidad-resultados__vacio">
+                ${escaparHtml(mensaje)}
+            </div>
+        `;
+
+
+        contenedorResultados.hidden =
+            false;
+
+    }
+
+
+    function ocultarResultados() {
+
+        contenedorResultados.hidden =
+            true;
+
+        contenedorResultados.innerHTML =
+            '';
+
+    }
 
 
     /* =====================================================
        SELECCIONAR UNIDAD
     ===================================================== */
 
-    selectUnidad.addEventListener('change', () => {
+    function seleccionarUnidad(
+        unidad
+    ) {
 
-        const idUnidad =
-            Number(selectUnidad.value);
+        unidadSeleccionada = {
+
+            id:
+                Number(unidad.id) || 0,
+
+            no_economico:
+                String(
+                    unidad.no_economico
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase(),
+
+            placas:
+                String(
+                    unidad.placas
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase(),
+
+            marca:
+                String(
+                    unidad.marca
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase(),
+
+            submarca:
+                String(
+                    unidad.submarca
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase(),
+
+            color:
+                String(
+                    unidad.color
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase(),
+
+            estatus:
+                String(
+                    unidad.estatus
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase(),
+
+            servicio:
+                String(
+                    unidad.servicio
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase(),
+
+            tipo:
+                String(
+                    unidad.tipo
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase(),
+
+            modelo:
+                String(
+                    unidad.modelo
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase(),
+
+            serie:
+                String(
+                    unidad.serie
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase(),
+
+            origen:
+                '',
+        };
 
 
-        if (!idUnidad) {
+        inputParqueId.value =
+            unidadSeleccionada.id;
 
-            limpiarDatosUnidad({
-                inputMarca,
-                inputSubmarca,
-                inputColor,
-                inputEstatus,
-                inputServicioAdscripcion,
-                inputTipoVehiculo,
-                inputOrigen,
+        inputNoEconomico.value =
+            unidadSeleccionada.no_economico;
+
+        inputPlacas.value =
+            unidadSeleccionada.placas;
+
+        inputMarca.value =
+            unidadSeleccionada.marca;
+
+        inputSubmarca.value =
+            unidadSeleccionada.submarca;
+
+        inputColor.value =
+            unidadSeleccionada.color;
+
+        inputEstatus.value =
+            unidadSeleccionada.estatus;
+
+        inputServicio.value =
+            unidadSeleccionada.servicio;
+
+        inputTipo.value =
+            unidadSeleccionada.tipo;
+
+
+        selectOrigen.value =
+            '';
+
+
+        inputBusqueda.value =
+            unidadSeleccionada.no_economico
+            || unidadSeleccionada.placas;
+
+
+        contenedorSeleccionada.hidden =
+            false;
+
+
+        ocultarResultados();
+
+    }
+
+
+    /* =====================================================
+       AGREGAR UNIDAD
+    ===================================================== */
+
+    btnAgregar.addEventListener(
+        'click',
+        () => {
+
+            if (
+                !unidadSeleccionada
+                || !unidadSeleccionada.id
+            ) {
+                return;
+            }
+
+
+            const origen =
+                String(
+                    selectOrigen.value
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            if (!origen) {
+
+                selectOrigen.focus();
+
+                return;
+            }
+
+
+            const yaExiste =
+                unidadesAgregadas.some(
+                    (unidad) =>
+                        unidad.id ===
+                        unidadSeleccionada.id
+                );
+
+
+            if (yaExiste) {
+
+                mostrarMensajeResultados(
+                    'Esta unidad ya fue agregada al reporte.'
+                );
+
+                return;
+
+            }
+
+
+            unidadesAgregadas.push({
+                ...unidadSeleccionada,
+                origen,
             });
 
-            return;
+
+            renderizarUnidadesAgregadas();
+
+            limpiarSelector();
+
         }
+    );
 
 
-        const unidad =
-            buscarUnidadPorId(
-                unidades,
-                idUnidad
-            );
+    /* =====================================================
+       TABLA
+    ===================================================== */
+
+    function renderizarUnidadesAgregadas() {
+
+        tablaBody.innerHTML =
+            '';
+
+        hiddenInputs.innerHTML =
+            '';
 
 
-        if (!unidad) {
+        unidadesAgregadas.forEach(
+            (unidad, indice) => {
 
-            limpiarDatosUnidad({
-                inputMarca,
-                inputSubmarca,
-                inputColor,
-                inputEstatus,
-                inputServicioAdscripcion,
-                inputTipoVehiculo,
-                inputOrigen,
-            });
-
-            return;
-        }
+                const fila =
+                    document.createElement(
+                        'tr'
+                    );
 
 
-        cargarDatosUnidad(
-            unidad,
-            {
-                inputMarca,
-                inputSubmarca,
-                inputColor,
-                inputEstatus,
-                inputServicioAdscripcion,
-                inputTipoVehiculo,
-                inputOrigen,
+                fila.innerHTML = `
+
+                    <td>
+
+                        <strong>
+                            ${escaparHtml(
+                                unidad.no_economico
+                                || '—'
+                            )}
+                        </strong>
+
+                        <small class="unidad-tabla__placas">
+                            Placas:
+                            ${escaparHtml(
+                                unidad.placas
+                                || '—'
+                            )}
+                        </small>
+
+                    </td>
+
+                    <td>
+                        ${escaparHtml(
+                            unidad.marca
+                            || '—'
+                        )}
+                        ${escaparHtml(
+                            unidad.submarca
+                            || ''
+                        )}
+                    </td>
+
+                    <td>
+                        ${escaparHtml(
+                            unidad.color
+                            || '—'
+                        )}
+                    </td>
+
+                    <td>
+                        ${escaparHtml(
+                            unidad.estatus
+                            || '—'
+                        )}
+                    </td>
+
+                    <td>
+                        ${escaparHtml(
+                            unidad.servicio
+                            || '—'
+                        )}
+                    </td>
+
+                    <td>
+                        ${escaparHtml(
+                            unidad.tipo
+                            || '—'
+                        )}
+                    </td>
+
+                    <td>
+                        ${escaparHtml(
+                            unidad.origen
+                            || '—'
+                        )}
+                    </td>
+
+                    <td>
+
+                        <button
+                            type="button"
+                            class="unidad-tabla__eliminar"
+                            data-eliminar-unidad="${indice}"
+                        >
+                            Quitar
+                        </button>
+
+                    </td>
+                `;
+
+
+                tablaBody.appendChild(
+                    fila
+                );
+
+
+                crearInputsOcultos(
+                    unidad,
+                    indice
+                );
+
             }
         );
 
-    });
 
-}
-
-
-/* =========================================================
-   BUSCAR OFICIAL
-========================================================= */
-
-function buscarOficialPorNombreUnidad(
-    oficiales,
-    nombre
-) {
-
-    const nombreNormalizado =
-        normalizarTextoUnidad(
-            nombre
-        );
+        contenedorAgregadas.hidden =
+            unidadesAgregadas.length === 0;
 
 
-    return oficiales.find((oficial) => {
+        contenedorAgregadas
+            .dataset
+            .totalUnidades =
+            String(
+                unidadesAgregadas.length
+            );
 
-        return normalizarTextoUnidad(
-            oficial.nombre
-        ) === nombreNormalizado;
-
-    }) || null;
-
-}
-
-
-/* =========================================================
-   OBTENER UNIDADES DEL OFICIAL
-========================================================= */
-
-function obtenerUnidadesPorOficial(
-    unidades,
-    idOficial
-) {
-
-    return unidades.filter(
-        (unidad) =>
-            Number(unidad.oficial_id)
-            === Number(idOficial)
-    );
-
-}
-
-
-/* =========================================================
-   CARGAR UNIDADES EN SELECT
-========================================================= */
-
-function cargarUnidadesEnSelect(
-    selectUnidad,
-    unidades
-) {
-
-    selectUnidad.innerHTML = '';
-
-
-    /*
-     * Opción inicial
-     */
-    const opcionInicial =
-        document.createElement('option');
-
-    opcionInicial.value = '';
-
-    opcionInicial.textContent =
-        'Selecciona una unidad';
-
-    opcionInicial.selected = true;
-
-    opcionInicial.disabled = true;
-
-
-    selectUnidad.appendChild(
-        opcionInicial
-    );
-
-
-    /*
-     * Si el oficial no tiene unidades
-     */
-    if (unidades.length === 0) {
-
-        const opcionSinResultados =
-            document.createElement('option');
-
-        opcionSinResultados.value = '';
-
-        opcionSinResultados.textContent =
-            'No hay unidades relacionadas';
-
-        opcionSinResultados.disabled = true;
-
-
-        selectUnidad.appendChild(
-            opcionSinResultados
-        );
-
-
-        selectUnidad.disabled = true;
-
-        return;
     }
 
 
-    /*
-     * Agregamos las unidades disponibles
-     */
-    unidades.forEach((unidad) => {
+    /* =====================================================
+       QUITAR UNIDAD
+    ===================================================== */
 
-        const opcion =
-            document.createElement('option');
+    tablaBody.addEventListener(
+        'click',
+        (event) => {
 
-
-        opcion.value =
-            unidad.id;
-
-
-        opcion.textContent =
-            unidad.unidad;
+            const boton =
+                event.target.closest(
+                    '[data-eliminar-unidad]'
+                );
 
 
-        selectUnidad.appendChild(
-            opcion
-        );
-
-    });
+            if (!boton) {
+                return;
+            }
 
 
-    /*
-     * Habilitamos el selector
-     */
-    selectUnidad.disabled = false;
-
-}
-
-
-/* =========================================================
-   LIMPIAR SELECTOR DE UNIDAD
-========================================================= */
-
-function limpiarSelectorUnidad(
-    selectUnidad
-) {
-
-    selectUnidad.innerHTML = '';
+            const indice =
+                Number(
+                    boton
+                        .dataset
+                        .eliminarUnidad
+                );
 
 
-    const opcion =
-        document.createElement('option');
+            if (
+                !Number.isInteger(indice)
+                || !unidadesAgregadas[indice]
+            ) {
+                return;
+            }
 
 
-    opcion.value = '';
-
-    opcion.textContent =
-        'Selecciona primero un oficial';
-
-
-    selectUnidad.appendChild(
-        opcion
-    );
+            unidadesAgregadas.splice(
+                indice,
+                1
+            );
 
 
-    selectUnidad.disabled =
-        true;
+            renderizarUnidadesAgregadas();
 
-}
-
-
-/* =========================================================
-   BUSCAR UNIDAD
-========================================================= */
-
-function buscarUnidadPorId(
-    unidades,
-    idUnidad
-) {
-
-    return unidades.find(
-        (unidad) =>
-            Number(unidad.id)
-            === Number(idUnidad)
-    ) || null;
-
-}
-
-
-/* =========================================================
-   CARGAR DATOS DE LA UNIDAD
-========================================================= */
-
-function cargarDatosUnidad(
-    unidad,
-    campos
-) {
-
-    if (campos.inputMarca) {
-        campos.inputMarca.value =
-            unidad.marca || '';
-    }
-
-
-    if (campos.inputSubmarca) {
-        campos.inputSubmarca.value =
-            unidad.submarca || '';
-    }
-
-
-    if (campos.inputColor) {
-        campos.inputColor.value =
-            unidad.color || '';
-    }
-
-
-    if (campos.inputEstatus) {
-        campos.inputEstatus.value =
-            unidad.estatus || '';
-    }
-
-
-    if (
-        campos.inputServicioAdscripcion
-    ) {
-        campos.inputServicioAdscripcion.value =
-            unidad.servicio_adscripcion
-            || '';
-    }
-
-
-    if (campos.inputTipoVehiculo) {
-        campos.inputTipoVehiculo.value =
-            unidad.tipo_vehiculo
-            || '';
-    }
-
-
-    if (campos.inputOrigen) {
-        campos.inputOrigen.value =
-            unidad.origen || '';
-    }
-
-}
-
-
-/* =========================================================
-   LIMPIAR DATOS DE LA UNIDAD
-========================================================= */
-
-function limpiarDatosUnidad(
-    campos
-) {
-
-    const listaCampos = [
-        campos.inputMarca,
-        campos.inputSubmarca,
-        campos.inputColor,
-        campos.inputEstatus,
-        campos.inputServicioAdscripcion,
-        campos.inputTipoVehiculo,
-        campos.inputOrigen,
-    ];
-
-
-    listaCampos.forEach((campo) => {
-
-        if (campo) {
-            campo.value = '';
         }
+    );
 
-    });
+
+    /* =====================================================
+       INPUTS OCULTOS
+    ===================================================== */
+
+    function crearInputsOcultos(
+        unidad,
+        indice
+    ) {
+
+        const campos = {
+
+            parque_vehicular_id:
+                unidad.id,
+
+            no_economico:
+                unidad.no_economico,
+
+            placas:
+                unidad.placas,
+
+            marca:
+                unidad.marca,
+
+            submarca:
+                unidad.submarca,
+
+            color:
+                unidad.color,
+
+            estatus:
+                unidad.estatus,
+
+            servicio:
+                unidad.servicio,
+
+            tipo:
+                unidad.tipo,
+
+            modelo:
+                unidad.modelo,
+
+            serie:
+                unidad.serie,
+
+            origen:
+                unidad.origen,
+        };
+
+
+        Object.entries(campos)
+            .forEach(
+                ([campo, valor]) => {
+
+                    const input =
+                        document.createElement(
+                            'input'
+                        );
+
+
+                    input.type =
+                        'hidden';
+
+
+                    input.name =
+                        `unidades[${indice}][${campo}]`;
+
+
+                    input.value =
+                        valor ?? '';
+
+
+                    hiddenInputs
+                        .appendChild(
+                            input
+                        );
+
+                }
+            );
+
+    }
+
+
+    /* =====================================================
+       LIMPIAR SELECTOR
+    ===================================================== */
+
+    function limpiarSelector() {
+
+        unidadSeleccionada =
+            null;
+
+
+        inputBusqueda.value =
+            '';
+
+
+        limpiarUnidadSeleccionada();
+
+        ocultarResultados();
+
+    }
+
+
+    function limpiarUnidadSeleccionada() {
+
+        inputParqueId.value =
+            '';
+
+        inputNoEconomico.value =
+            '';
+
+        inputPlacas.value =
+            '';
+
+        inputMarca.value =
+            '';
+
+        inputSubmarca.value =
+            '';
+
+        inputColor.value =
+            '';
+
+        inputEstatus.value =
+            '';
+
+        inputServicio.value =
+            '';
+
+        inputTipo.value =
+            '';
+
+        selectOrigen.value =
+            '';
+
+
+        contenedorSeleccionada.hidden =
+            true;
+
+    }
+
+
+    /* =====================================================
+       CERRAR RESULTADOS AL HACER CLICK FUERA
+    ===================================================== */
+
+    document.addEventListener(
+        'click',
+        (event) => {
+
+            if (
+                event.target === inputBusqueda
+                || contenedorResultados.contains(
+                    event.target
+                )
+            ) {
+                return;
+            }
+
+
+            ocultarResultados();
+
+        }
+    );
 
 }
 
 
 /* =========================================================
-   NORMALIZAR TEXTO
+   UTILIDADES
 ========================================================= */
 
-function normalizarTextoUnidad(
-    texto
-) {
+function escaparHtml(valor) {
 
-    return String(texto || '')
-        .trim()
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(
-            /[\u0300-\u036f]/g,
-            ''
-        );
+    return String(valor ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
 
 }

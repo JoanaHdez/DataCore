@@ -106,4 +106,9 @@ $routes->group('asuntos-internos/reportes', static function ($routes) {
         'personal/buscar',
         '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::buscarPersonal'
     );
+
+    $routes->get(
+        'unidades/buscar',
+        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::buscarUnidades'
+    );
 });

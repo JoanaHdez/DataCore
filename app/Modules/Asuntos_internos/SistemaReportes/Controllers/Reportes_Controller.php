@@ -983,4 +983,175 @@ class Reportes_Controller extends BaseController
                 ]);
         }
     }
+
+    public function buscarUnidades()
+    {
+        $termino =
+            trim(
+                (string)
+                $this->request->getGet('q')
+            );
+
+
+        if (
+            mb_strlen($termino) < 1
+        ) {
+
+            return $this->response
+                ->setJSON([
+                    'success' => true,
+                    'unidades' => [],
+                ]);
+        }
+
+
+        try {
+
+            $db =
+                \Config\Database::connect(
+                    'unidades'
+                );
+
+
+            $builder =
+                $db
+                ->table('parque_vehicular')
+                ->select([
+                    'id',
+                    'no_economico',
+                    'placas',
+                    'servicio',
+                    'estatus',
+                    'marca',
+                    'submarca',
+                    'tipo',
+                    'color',
+                    'modelo',
+                    'serie',
+                ]);
+
+
+            $builder
+                ->groupStart()
+                ->like(
+                    'no_economico',
+                    $termino
+                )
+                ->orLike(
+                    'placas',
+                    $termino
+                )
+                ->groupEnd();
+
+
+            $unidades =
+                $builder
+                ->orderBy(
+                    'no_economico',
+                    'ASC'
+                )
+                ->limit(10)
+                ->get()
+                ->getResultArray();
+
+
+            $resultado = [];
+
+
+            foreach ($unidades as $unidad) {
+
+                $resultado[] = [
+
+                    'id' =>
+                    (int) $unidad['id'],
+
+                    'no_economico' =>
+                    trim(
+                        (string)
+                        ($unidad['no_economico'] ?? '')
+                    ),
+
+                    'placas' =>
+                    trim(
+                        (string)
+                        ($unidad['placas'] ?? '')
+                    ),
+
+                    'marca' =>
+                    trim(
+                        (string)
+                        ($unidad['marca'] ?? '')
+                    ),
+
+                    'submarca' =>
+                    trim(
+                        (string)
+                        ($unidad['submarca'] ?? '')
+                    ),
+
+                    'color' =>
+                    trim(
+                        (string)
+                        ($unidad['color'] ?? '')
+                    ),
+
+                    'estatus' =>
+                    trim(
+                        (string)
+                        ($unidad['estatus'] ?? '')
+                    ),
+
+                    'servicio' =>
+                    trim(
+                        (string)
+                        ($unidad['servicio'] ?? '')
+                    ),
+
+                    'tipo' =>
+                    trim(
+                        (string)
+                        ($unidad['tipo'] ?? '')
+                    ),
+
+                    'modelo' =>
+                    trim(
+                        (string)
+                        ($unidad['modelo'] ?? '')
+                    ),
+
+                    'serie' =>
+                    trim(
+                        (string)
+                        ($unidad['serie'] ?? '')
+                    ),
+                ];
+            }
+
+
+            return $this->response
+                ->setJSON([
+                    'success' => true,
+                    'unidades' => $resultado,
+                ]);
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error buscando unidades para SistemaReportes: {mensaje}',
+                [
+                    'mensaje' =>
+                    $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'No fue posible consultar las unidades.',
+                ]);
+        }
+    }
 }

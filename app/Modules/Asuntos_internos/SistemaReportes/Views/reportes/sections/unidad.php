@@ -5,15 +5,15 @@
         <div>
 
             <span class="report-section__eyebrow">
-                Unidad relacionada
+                Unidades relacionadas
             </span>
 
             <h2 class="report-section__title">
-                Datos de la unidad
+                Unidades involucradas
             </h2>
 
             <p class="report-section__description">
-                Información de la unidad relacionada con el personal seleccionado.
+                Busca y agrega una o más unidades relacionadas con los hechos.
             </p>
 
         </div>
@@ -23,161 +23,314 @@
 
     <div class="report-section__body">
 
-        <div class="report-form-grid report-form-grid--unit">
+        <!-- =====================================================
+             BÚSQUEDA
+        ====================================================== -->
 
-            <!-- UNIDAD -->
-            <div class="report-field">
+        <div class="report-form-grid">
 
-                <label for="unidad">
-                    Unidad
+            <div class="report-field report-field--full">
+
+                <label for="unidad_busqueda">
+                    Buscar unidad
                     <span class="required">*</span>
                 </label>
 
-                <select
-                    id="unidad"
-                    name="unidad"
-                    class="report-select"
-                    required
-                    disabled
+                <input
+                    type="text"
+                    id="unidad_busqueda"
+                    class="report-input"
+                    placeholder="Busca por número económico o placas"
+                    autocomplete="off"
                 >
-                    <option value="">
-                        Selecciona primero un oficial
-                    </option>
-                </select>
 
                 <small class="report-field__help">
-                    Las unidades disponibles dependerán del oficial seleccionado.
+                    Selecciona una unidad para cargar automáticamente sus datos.
                 </small>
 
-            </div>
 
-
-            <!-- MARCA -->
-            <div class="report-field">
-
-                <label for="unidad_marca">
-                    Marca Unidad
-                </label>
-
-                <input
-                    type="text"
-                    id="unidad_marca"
-                    name="unidad_marca"
-                    class="report-input report-input--readonly"
-                    readonly
-                >
-
-            </div>
-
-
-            <!-- SUBMARCA -->
-            <div class="report-field">
-
-                <label for="unidad_submarca">
-                    SubMarca Unidad
-                </label>
-
-                <input
-                    type="text"
-                    id="unidad_submarca"
-                    name="unidad_submarca"
-                    class="report-input report-input--readonly"
-                    readonly
-                >
-
-            </div>
-
-
-            <!-- COLOR -->
-            <div class="report-field">
-
-                <label for="unidad_color">
-                    Color Unidad
-                </label>
-
-                <input
-                    type="text"
-                    id="unidad_color"
-                    name="unidad_color"
-                    class="report-input report-input--readonly"
-                    readonly
-                >
-
-            </div>
-
-
-            <!-- ESTATUS -->
-            <div class="report-field">
-
-                <label for="unidad_estatus">
-                    Estatus de la Unidad
-                </label>
-
-                <input
-                    type="text"
-                    id="unidad_estatus"
-                    name="unidad_estatus"
-                    class="report-input report-input--readonly"
-                    readonly
-                >
-
-            </div>
-
-
-            <!-- SERVICIO Y ADSCRIPCIÓN -->
-            <div class="report-field">
-
-                <label for="unidad_servicio_adscripcion">
-                    Servicio y Adscripción
-                </label>
-
-                <input
-                    type="text"
-                    id="unidad_servicio_adscripcion"
-                    name="unidad_servicio_adscripcion"
-                    class="report-input report-input--readonly"
-                    readonly
-                >
-
-            </div>
-
-
-            <!-- TIPO DE VEHÍCULO -->
-            <div class="report-field">
-
-                <label for="unidad_tipo_vehiculo">
-                    Tipo de Vehículo
-                </label>
-
-                <input
-                    type="text"
-                    id="unidad_tipo_vehiculo"
-                    name="unidad_tipo_vehiculo"
-                    class="report-input report-input--readonly"
-                    readonly
-                >
-
-            </div>
-
-
-            <!-- ORIGEN -->
-            <div class="report-field">
-
-                <label for="unidad_origen">
-                    Origen
-                </label>
-
-                <input
-                    type="text"
-                    id="unidad_origen"
-                    name="unidad_origen"
-                    class="report-input report-input--readonly"
-                    readonly
-                >
+                <!-- RESULTADOS -->
+                <div
+                    class="unidad-resultados"
+                    id="unidad-resultados"
+                    hidden
+                ></div>
 
             </div>
 
         </div>
+
+
+        <!-- =====================================================
+             UNIDAD SELECCIONADA
+        ====================================================== -->
+
+        <div
+            class="unidad-seleccionada"
+            id="unidad-seleccionada"
+            hidden
+        >
+
+            <!-- REFERENCIAS -->
+            <input
+                type="hidden"
+                id="unidad-parque-id"
+            >
+
+
+            <div class="report-form-grid report-form-grid--unit">
+
+                <!-- NÚMERO ECONÓMICO -->
+                <div class="report-field">
+
+                    <label for="unidad_no_economico">
+                        Unidad
+                    </label>
+
+                    <input
+                        type="text"
+                        id="unidad_no_economico"
+                        class="report-input report-input--readonly"
+                        readonly
+                    >
+
+                </div>
+
+
+                <!-- PLACAS -->
+                <div class="report-field">
+
+                    <label for="unidad_placas">
+                        Placas
+                    </label>
+
+                    <input
+                        type="text"
+                        id="unidad_placas"
+                        class="report-input report-input--readonly"
+                        readonly
+                    >
+
+                </div>
+
+
+                <!-- MARCA -->
+                <div class="report-field">
+
+                    <label for="unidad_marca">
+                        Marca
+                    </label>
+
+                    <input
+                        type="text"
+                        id="unidad_marca"
+                        class="report-input report-input--readonly"
+                        readonly
+                    >
+
+                </div>
+
+
+                <!-- SUBMARCA -->
+                <div class="report-field">
+
+                    <label for="unidad_submarca">
+                        Submarca
+                    </label>
+
+                    <input
+                        type="text"
+                        id="unidad_submarca"
+                        class="report-input report-input--readonly"
+                        readonly
+                    >
+
+                </div>
+
+
+                <!-- COLOR -->
+                <div class="report-field">
+
+                    <label for="unidad_color">
+                        Color
+                    </label>
+
+                    <input
+                        type="text"
+                        id="unidad_color"
+                        class="report-input report-input--readonly"
+                        readonly
+                    >
+
+                </div>
+
+
+                <!-- ESTATUS -->
+                <div class="report-field">
+
+                    <label for="unidad_estatus">
+                        Estatus de la unidad
+                    </label>
+
+                    <input
+                        type="text"
+                        id="unidad_estatus"
+                        class="report-input report-input--readonly"
+                        readonly
+                    >
+
+                </div>
+
+
+                <!-- SERVICIO -->
+                <div class="report-field">
+
+                    <label for="unidad_servicio">
+                        Servicio y adscripción
+                    </label>
+
+                    <input
+                        type="text"
+                        id="unidad_servicio"
+                        class="report-input report-input--readonly"
+                        readonly
+                    >
+
+                </div>
+
+
+                <!-- TIPO -->
+                <div class="report-field">
+
+                    <label for="unidad_tipo">
+                        Tipo de vehículo
+                    </label>
+
+                    <input
+                        type="text"
+                        id="unidad_tipo"
+                        class="report-input report-input--readonly"
+                        readonly
+                    >
+
+                </div>
+
+
+                <!-- ORIGEN -->
+                <div class="report-field">
+
+                    <label for="unidad_origen">
+                        Origen
+                    </label>
+
+                    <select
+                        id="unidad_origen"
+                        class="report-select"
+                    >
+
+                        <option value="">
+                            Selecciona
+                        </option>
+
+                        <option value="ARRENDADA">
+                            ARRENDADA
+                        </option>
+
+                        <option value="DGSC">
+                            DGSC
+                        </option>
+
+                        <option value="PROPIA">
+                            PROPIA
+                        </option>
+
+                        <option value="OTRO">
+                            OTRO
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACCIÓN -->
+            <div class="unidad-seleccionada__acciones">
+
+                <button
+                    type="button"
+                    class="button button--primary"
+                    id="btn-agregar-unidad"
+                >
+                    Agregar unidad
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             UNIDADES AGREGADAS
+        ====================================================== -->
+
+        <div
+            class="unidades-agregadas"
+            id="unidades-agregadas"
+            hidden
+        >
+
+            <div class="unidades-agregadas__header">
+
+                <div>
+
+                    <span>
+                        Unidades agregadas
+                    </span>
+
+                    <strong>
+                        Unidades relacionadas con el reporte
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="unidades-agregadas__tabla-wrapper">
+
+                <table class="unidades-agregadas__tabla">
+
+                    <thead>
+
+                        <tr>
+                            <th>Unidad</th>
+                            <th>Marca / Submarca</th>
+                            <th>Color</th>
+                            <th>Estatus</th>
+                            <th>Servicio</th>
+                            <th>Tipo</th>
+                            <th>Origen</th>
+                            <th>Acciones</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="unidades-agregadas-body"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             DATOS PARA BACKEND
+        ====================================================== -->
+
+        <div id="unidades-hidden-inputs"></div>
 
     </div>
 
