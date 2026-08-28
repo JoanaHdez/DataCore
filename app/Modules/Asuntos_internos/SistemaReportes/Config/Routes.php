@@ -8,27 +8,14 @@ use CodeIgniter\Router\RouteCollection;
 
 $routes->group('asuntos-internos/reportes', static function ($routes) {
 
+    /* =========================================================
+       RUTAS PÚBLICAS
+    ========================================================= */
+
     // Login
     $routes->get(
         '/',
         '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Inicio_Controller::index'
-    );
-
-    // Listado de reportes
-    $routes->get(
-        'listado',
-        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::index'
-    );
-
-    // Dashboard
-    $routes->get(
-        'dashboard',
-        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::dashboard'
-    );
-
-    $routes->post(
-        'dashboard/autorizar',
-        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::autorizarDashboard'
     );
 
     // Procesar inicio de sesión
@@ -37,40 +24,82 @@ $routes->group('asuntos-internos/reportes', static function ($routes) {
         '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Auth_Controller::autenticar'
     );
 
-    // Cerrar sesión
-    $routes->get(
-        'logout',
-        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Auth_Controller::logout'
-    );
 
-    // Nuevo reporte
-    $routes->get(
-        'nuevo',
-        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::nuevo'
-    );
+    /* =========================================================
+       RUTAS PROTEGIDAS
+    ========================================================= */
 
-    $routes->get(
-        'ubicacion/buscar',
-        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Ubicacion_Controller::buscar'
-    );
+    $routes->group(
+        '',
+        [
+            'filter' => 'reportesAuth',
+        ],
+        static function ($routes) {
 
-    $routes->get(
-        'ubicacion/direccion',
-        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Ubicacion_Controller::direccion'
-    );
+            // Listado de reportes
+            $routes->get(
+                'listado',
+                '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::index'
+            );
 
-    $routes->post(
-        'dashboard/exportar',
-        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::exportarDashboard'
-    );
+            // Dashboard
+            $routes->get(
+                'dashboard',
+                '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::dashboard'
+            );
 
-    $routes->post(
-        'listado/exportar',
-        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::exportarListado'
-    );
+            // Autorizar Dashboard
+            $routes->post(
+                'dashboard/autorizar',
+                '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::autorizarDashboard'
+            );
 
-    $routes->post(
-        'listado/autorizar-eliminacion',
-        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::autorizarEliminacion'
+            // Exportar Dashboard
+            $routes->post(
+                'dashboard/exportar',
+                '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::exportarDashboard'
+            );
+
+            // Cerrar sesión
+            $routes->get(
+                'logout',
+                '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Auth_Controller::logout'
+            );
+
+            // Nuevo reporte
+            $routes->get(
+                'nuevo',
+                '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::nuevo'
+            );
+
+            // Ubicación
+            $routes->get(
+                'ubicacion/buscar',
+                '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Ubicacion_Controller::buscar'
+            );
+
+            $routes->get(
+                'ubicacion/direccion',
+                '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Ubicacion_Controller::direccion'
+            );
+
+            // Exportar listado
+            $routes->post(
+                'listado/exportar',
+                '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::exportarListado'
+            );
+
+            // Autorizar eliminación
+            $routes->post(
+                'listado/autorizar-eliminacion',
+                '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::autorizarEliminacion'
+            );
+
+            // Eliminar reporte
+            $routes->post(
+                'listado/eliminar/(:num)',
+                '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::eliminarReporte/$1'
+            );
+        }
     );
 });
