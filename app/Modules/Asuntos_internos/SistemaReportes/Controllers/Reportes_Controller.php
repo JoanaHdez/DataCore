@@ -575,15 +575,15 @@ class Reportes_Controller extends BaseController
 
 
         /* =========================================================
-       CONEXIÓN DATACORE
-    ========================================================= */
+        CONEXIÓN DATACORE
+        ========================================================= */
 
         $db = \Config\Database::connect('datacore');
 
 
         /* =========================================================
-       BUSCAR REPORTE
-    ========================================================= */
+        BUSCAR REPORTE
+        ========================================================= */
 
         $reporte = $db
             ->table('ai_reportes')
@@ -619,8 +619,8 @@ class Reportes_Controller extends BaseController
 
 
         /* =========================================================
-       AUTORIZACIÓN
-    ========================================================= */
+        AUTORIZACIÓN
+        ========================================================= */
 
         $idAdministradorAutorizador = null;
 
@@ -723,8 +723,8 @@ class Reportes_Controller extends BaseController
 
 
         /* =========================================================
-       TRANSACCIÓN
-    ========================================================= */
+        TRANSACCIÓN
+        ========================================================= */
 
         $db->transBegin();
 
@@ -735,8 +735,8 @@ class Reportes_Controller extends BaseController
 
 
             /* =====================================================
-           BORRADO LÓGICO
-        ===================================================== */
+            BORRADO LÓGICO
+            ===================================================== */
 
             $db
                 ->table('ai_reportes')
@@ -750,8 +750,8 @@ class Reportes_Controller extends BaseController
 
 
             /* =====================================================
-           REGISTRO DE ELIMINACIÓN
-        ===================================================== */
+            REGISTRO DE ELIMINACIÓN
+            ===================================================== */
 
             $db
                 ->table('ai_reporte_eliminaciones')
@@ -815,13 +815,172 @@ class Reportes_Controller extends BaseController
 
 
         /* =========================================================
-       RESPUESTA
-    ========================================================= */
+        RESPUESTA
+        ========================================================= */
 
         return $this->response
             ->setJSON([
                 'success' => true,
                 'message' => 'El reporte fue eliminado correctamente.',
             ]);
+    }
+
+    public function buscarPersonal()
+    {
+        $termino =
+            trim(
+                (string)
+                $this->request->getGet('q')
+            );
+
+
+        if (
+            mb_strlen($termino) < 2
+        ) {
+
+            return $this->response
+                ->setJSON([
+                    'success' => true,
+                    'personal' => [],
+                ]);
+        }
+
+
+        try {
+
+            $db =
+                \Config\Database::connect(
+                    'plantilla'
+                );
+
+
+            $builder =
+                $db
+                ->table('plantilla')
+                ->select([
+                    'ID',
+                    'PERSCOD',
+                    'NOMBRE_COMPLETO',
+                    'NO_NOMINA',
+                    'AREA',
+                    'TURNO',
+                ])
+                ->where(
+                    'ESTADO',
+                    'ACTIVO'
+                );
+
+            $builder
+                ->groupStart()
+                ->like(
+                    'NOMBRE_COMPLETO',
+                    $termino
+                )
+                ->orLike(
+                    'NO_NOMINA',
+                    $termino
+                )
+                ->groupEnd();
+
+
+            $personal =
+                $builder
+                ->orderBy(
+                    'NOMBRE_COMPLETO',
+                    'ASC'
+                )
+                ->limit(10)
+                ->get()
+                ->getResultArray();
+
+
+            $resultado = [];
+
+
+            foreach ($personal as $persona) {
+
+                $perscod =
+                    trim(
+                        (string)
+                        ($persona['PERSCOD'] ?? '')
+                    );
+
+
+                $foto =
+                    null;
+
+
+                if ($perscod !== '') {
+
+                    $foto =
+                        'http://10.8.6.2:8083/dgsc/images/fotos/'
+                        . rawurlencode($perscod)
+                        . '/F.F.R.E.jpg';
+                }
+
+
+                $resultado[] = [
+
+                    'id' =>
+                    (int) $persona['ID'],
+
+                    'perscod' =>
+                    $perscod,
+
+                    'nombre' =>
+                    trim(
+                        (string)
+                        ($persona['NOMBRE_COMPLETO'] ?? '')
+                    ),
+
+                    'nomina' =>
+                    trim(
+                        (string)
+                        ($persona['NO_NOMINA'] ?? '')
+                    ),
+
+                    'area' =>
+                    trim(
+                        (string)
+                        ($persona['AREA'] ?? '')
+                    ),
+
+                    'turno' =>
+                    trim(
+                        (string)
+                        ($persona['TURNO'] ?? '')
+                    ),
+
+                    'foto' =>
+                    $foto,
+                ];
+            }
+
+
+            return $this->response
+                ->setJSON([
+                    'success' => true,
+                    'personal' => $resultado,
+                ]);
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error buscando personal para SistemaReportes: {mensaje}',
+                [
+                    'mensaje' =>
+                    $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'No fue posible consultar el personal.',
+                ]);
+        }
     }
 }

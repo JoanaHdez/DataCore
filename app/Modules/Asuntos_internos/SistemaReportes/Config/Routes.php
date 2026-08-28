@@ -102,4 +102,8 @@ $routes->group('asuntos-internos/reportes', static function ($routes) {
             );
         }
     );
+    $routes->get(
+        'personal/buscar',
+        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::buscarPersonal'
+    );
 });

@@ -1,0 +1,460 @@
+/* =========================================================
+   PERSONAL - RESULTADOS DE BÚSQUEDA
+========================================================= */
+
+.personal-resultados {
+    margin-top: 8px;
+
+    background: #ffffff;
+
+    border: 1px solid #d9e3eb;
+    border-radius: 10px;
+
+    box-shadow:
+        0 10px 28px rgba(31, 58, 88, 0.10);
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   ITEM
+========================================================= */
+
+.personal-resultados__item {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 12px 14px;
+
+    text-align: left;
+
+    background: #ffffff;
+
+    border: 0;
+    border-bottom: 1px solid #edf2f6;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease;
+}
+
+
+.personal-resultados__item:last-child {
+    border-bottom: 0;
+}
+
+
+.personal-resultados__item:hover {
+    background: #f5faff;
+}
+
+
+/* =========================================================
+   AVATAR
+========================================================= */
+
+.personal-resultados__avatar {
+    width: 36px;
+    height: 36px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #ffffff;
+
+    background: #1681c4;
+
+    border-radius: 50%;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   DATOS
+========================================================= */
+
+.personal-resultados__datos {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+.personal-resultados__datos strong {
+    color: #173554;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    line-height: 1.35;
+}
+
+
+.personal-resultados__datos small {
+    display: block;
+
+    color: #728596;
+
+    font-size: 9px;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   SIN RESULTADOS
+========================================================= */
+
+.personal-resultados__vacio {
+    padding: 15px;
+
+    color: #7c8f9f;
+
+    font-size: 10px;
+
+    text-align: center;
+
+    background: #f8fafc;
+}
+
+/* =========================================================
+   PERSONAL SELECCIONADO
+========================================================= */
+
+.personal-seleccionado {
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 20px;
+
+    margin-top: 18px;
+    padding: 20px;
+
+    background: #f8fbfe;
+
+    border: 1px solid #dbe6ef;
+    border-radius: 12px;
+}
+
+
+/* =========================================================
+   FOTO
+========================================================= */
+
+.personal-seleccionado__foto {
+    width: 76px;
+    height: 76px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background: #e8f3fb;
+
+    border: 1px solid #c9deec;
+    border-radius: 50%;
+}
+
+
+.personal-seleccionado__foto img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+
+.personal-seleccionado__foto span {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #1681c4;
+
+    font-size: 22px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   DATOS
+========================================================= */
+
+.personal-seleccionado__datos {
+    min-width: 0;
+}
+
+
+.personal-seleccionado__datos
+.report-form-grid {
+    gap: 16px 20px;
+}
+
+
+/* =========================================================
+   ACCIONES
+========================================================= */
+
+.personal-seleccionado__acciones {
+    grid-column: 1 / -1;
+
+    display: flex;
+    justify-content: flex-end;
+
+    padding-top: 4px;
+}
+
+
+/* =========================================================
+   PERSONAL AGREGADO
+========================================================= */
+
+.personal-agregado {
+    margin-top: 22px;
+
+    border: 1px solid #dce6ee;
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+}
+
+
+.personal-agregado__header {
+    padding: 15px 18px;
+
+    background: #f5f9fc;
+
+    border-bottom: 1px solid #e2eaf0;
+}
+
+
+.personal-agregado__header span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #1475bd;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+}
+
+
+.personal-agregado__header strong {
+    color: #173554;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   TABLA PERSONAL
+========================================================= */
+
+.personal-agregado__tabla-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+.personal-agregado__tabla {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+
+.personal-agregado__tabla th {
+    padding: 11px 14px;
+
+    color: #597087;
+
+    background: #fbfcfd;
+
+    border-bottom: 1px solid #e5edf3;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    text-align: left;
+    text-transform: uppercase;
+}
+
+
+.personal-agregado__tabla td {
+    padding: 12px 14px;
+
+    color: #29445c;
+
+    border-bottom: 1px solid #edf2f6;
+
+    font-size: 10px;
+
+    vertical-align: middle;
+}
+
+
+.personal-agregado__tabla tr:last-child td {
+    border-bottom: 0;
+}
+
+
+.personal-agregado__tabla td strong {
+    display: block;
+
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+.personal-tabla__nomina {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #8292a0;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   FOTO EN TABLA
+========================================================= */
+
+.personal-tabla__foto {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background: #e8f3fb;
+
+    border-radius: 50%;
+}
+
+
+.personal-tabla__foto img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+.personal-tabla__foto span {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #1681c4;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   QUITAR PERSONAL
+========================================================= */
+
+.personal-tabla__eliminar {
+    padding: 7px 11px;
+
+    color: #b33b35;
+
+    background: #fff6f5;
+
+    border: 1px solid #efd2cf;
+    border-radius: 6px;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.personal-tabla__eliminar:hover {
+    background: #ffefed;
+
+    border-color: #e7b9b4;
+}
+
+/* =========================================================
+   ESTADOS OCULTOS
+========================================================= */
+
+.personal-seleccionado[hidden],
+.personal-agregado[hidden],
+.personal-resultados[hidden] {
+    display: none !important;
+}
+
+
+.personal-seleccionado__foto img[hidden],
+.personal-seleccionado__foto span[hidden] {
+    display: none !important;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .personal-seleccionado {
+        grid-template-columns: 1fr;
+    }
+
+
+    .personal-seleccionado__foto {
+        margin: 0 auto;
+    }
+
+
+    .personal-seleccionado__acciones {
+        grid-column: auto;
+    }
+
+}

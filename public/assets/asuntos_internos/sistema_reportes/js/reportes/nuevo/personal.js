@@ -8,209 +8,896 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-/* =========================================================
-   INICIALIZAR
-========================================================= */
-
 function inicializarPersonalInvolucrado() {
 
-    const inputOficial =
+    const inputBusqueda =
         document.querySelector('#oficial');
 
+    const contenedorResultados =
+        document.querySelector('#personal-resultados');
+
+    const contenedorSeleccionado =
+        document.querySelector('#personal-seleccionado');
+
+    const inputPlantillaId =
+        document.querySelector('#personal-plantilla-id');
+
+    const inputPerscod =
+        document.querySelector('#personal-perscod');
+
+    const inputNombre =
+        document.querySelector('#personal-nombre');
+
     const inputArea =
-        document.querySelector('#area');
+        document.querySelector('#personal-area');
 
     const inputTurno =
-        document.querySelector('#turno');
+        document.querySelector('#personal-turno');
+
+    const foto =
+        document.querySelector('#personal-foto');
+
+    const fotoFallback =
+        document.querySelector('#personal-foto-fallback');
+
+    const btnAgregar =
+        document.querySelector('#btn-agregar-personal');
+
+    const contenedorAgregado =
+        document.querySelector('#personal-agregado');
+
+    const tablaBody =
+        document.querySelector('#personal-agregado-body');
+
+    const hiddenInputs =
+        document.querySelector('#personal-hidden-inputs');
 
 
     if (
-        !inputOficial
+        !inputBusqueda
+        || !contenedorResultados
+        || !contenedorSeleccionado
+        || !inputPlantillaId
+        || !inputPerscod
+        || !inputNombre
         || !inputArea
         || !inputTurno
+        || !btnAgregar
+        || !contenedorAgregado
+        || !tablaBody
+        || !hiddenInputs
     ) {
         return;
     }
 
 
     /* =====================================================
-       DATOS TEMPORALES
-
-       Posteriormente este catálogo será sustituido por
-       información obtenida desde la base de datos.
+       ESTADO
     ===================================================== */
 
-    const oficiales = [
-        {
-            id: 1,
-            nombre: 'Juan Pérez López',
-            area: 'Seguridad Ciudadana',
-            turno: 'Primer turno',
-        },
-        {
-            id: 2,
-            nombre: 'María Hernández García',
-            area: 'Tránsito',
-            turno: 'Segundo turno',
-        },
-        {
-            id: 3,
-            nombre: 'Carlos Ramírez Torres',
-            area: 'Operaciones',
-            turno: 'Tercer turno',
-        },
-    ];
+    const personalAgregado = [];
+
+    let temporizadorBusqueda = null;
+
+    let controladorBusqueda = null;
+
+    let personaSeleccionada = null;
 
 
     /* =====================================================
-       DETECTAR OFICIAL AUTOMÁTICAMENTE
+       BUSCAR
     ===================================================== */
 
-    inputOficial.addEventListener('input', () => {
+    inputBusqueda.addEventListener('input', () => {
 
-        const nombre =
-            inputOficial.value.trim();
+        const termino =
+            inputBusqueda.value.trim();
 
 
-        /*
-         * Si el campo queda vacío,
-         * limpiamos los datos automáticos.
-         */
-        if (!nombre) {
+        personaSeleccionada = null;
 
-            limpiarDatosOficial(
-                inputArea,
-                inputTurno
-            );
+        limpiarPersonaSeleccionada();
+
+
+        if (temporizadorBusqueda) {
+            clearTimeout(temporizadorBusqueda);
+        }
+
+
+        if (termino.length < 2) {
+
+            ocultarResultados();
 
             return;
         }
 
 
-        /*
-         * Buscamos si el nombre escrito corresponde
-         * exactamente a alguno de los oficiales.
-         */
-        const oficial =
-            buscarOficialPorNombre(
-                oficiales,
-                nombre
+        temporizadorBusqueda =
+            window.setTimeout(
+                () => {
+                    buscarPersonal(termino);
+                },
+                300
             );
-
-
-        /*
-         * Si todavía no existe coincidencia,
-         * mantenemos Área y Turno vacíos.
-         */
-        if (!oficial) {
-
-            limpiarDatosOficial(
-                inputArea,
-                inputTurno
-            );
-
-            return;
-        }
-
-
-        /*
-         * Si encontramos al oficial,
-         * cargamos sus datos automáticamente.
-         */
-        cargarDatosOficial(
-            oficial,
-            inputArea,
-            inputTurno
-        );
 
     });
 
-}
+
+    async function buscarPersonal(termino) {
+
+        if (controladorBusqueda) {
+            controladorBusqueda.abort();
+        }
 
 
-/* =========================================================
-   BUSCAR OFICIAL
-========================================================= */
-
-function buscarOficialPorNombre(
-    oficiales,
-    nombre
-) {
-
-    const nombreNormalizado =
-        normalizarTexto(nombre);
+        controladorBusqueda =
+            new AbortController();
 
 
-    return oficiales.find((oficial) => {
+        try {
 
-        const nombreOficial =
-            normalizarTexto(
-                oficial.nombre
+            const baseUrl =
+                document
+                    .querySelector('base')
+                    ?.href
+                || `${window.location.origin}/`;
+
+
+            const url =
+                new URL(
+                    'asuntos-internos/reportes/personal/buscar',
+                    baseUrl
+                );
+
+
+            url.searchParams.set(
+                'q',
+                termino
             );
 
 
-        return nombreOficial === nombreNormalizado;
-
-    }) || null;
-
-}
-
-
-/* =========================================================
-   CARGAR DATOS DEL OFICIAL
-========================================================= */
-
-function cargarDatosOficial(
-    oficial,
-    inputArea,
-    inputTurno
-) {
-
-    inputArea.value =
-        oficial.area || '';
-
-    inputTurno.value =
-        oficial.turno || '';
-
-}
+            const respuesta =
+                await fetch(
+                    url.toString(),
+                    {
+                        method: 'GET',
+                        headers: {
+                            Accept: 'application/json',
+                        },
+                        signal:
+                            controladorBusqueda.signal,
+                    }
+                );
 
 
-/* =========================================================
-   LIMPIAR DATOS DEL OFICIAL
-========================================================= */
+            if (!respuesta.ok) {
 
-function limpiarDatosOficial(
-    inputArea,
-    inputTurno
-) {
+                throw new Error(
+                    'No fue posible consultar el personal.'
+                );
 
-    inputArea.value = '';
-
-    inputTurno.value = '';
-
-}
+            }
 
 
-/* =========================================================
-   NORMALIZAR TEXTO
+            const datos =
+                await respuesta.json();
 
-   Permite comparar nombres ignorando:
-   - Mayúsculas / minúsculas
-   - Acentos
-   - Espacios al inicio o final
-========================================================= */
 
-function normalizarTexto(
-    texto
-) {
+            renderizarResultados(
+                Array.isArray(datos.personal)
+                    ? datos.personal
+                    : []
+            );
 
-    return String(texto || '')
-        .trim()
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(
-            /[\u0300-\u036f]/g,
-            ''
+
+        } catch (error) {
+
+            if (
+                error.name ===
+                'AbortError'
+            ) {
+                return;
+            }
+
+
+            console.error(
+                'Error buscando personal:',
+                error
+            );
+
+
+            mostrarMensajeResultados(
+                'No fue posible consultar el personal.'
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       RESULTADOS
+    ===================================================== */
+
+    function renderizarResultados(personal) {
+
+        contenedorResultados.innerHTML = '';
+
+
+        if (!personal.length) {
+
+            mostrarMensajeResultados(
+                'No se encontraron coincidencias.'
+            );
+
+            return;
+        }
+
+
+        personal.forEach((persona) => {
+
+            const boton =
+                document.createElement('button');
+
+
+            boton.type = 'button';
+
+            boton.className =
+                'personal-resultados__item';
+
+
+            const inicial =
+                obtenerInicial(
+                    persona.nombre
+                );
+
+
+            boton.innerHTML = `
+                <span class="personal-resultados__avatar">
+                    ${escaparHtml(inicial)}
+                </span>
+
+                <span class="personal-resultados__datos">
+
+                    <strong>
+                        ${escaparHtml(persona.nombre || 'Sin nombre')}
+                    </strong>
+
+                    <small>
+                        Nómina:
+                        ${escaparHtml(persona.nomina || '—')}
+                    </small>
+
+                    <small>
+                        ${escaparHtml(persona.area || 'Sin área')}
+                    </small>
+
+                </span>
+            `;
+
+
+            boton.addEventListener(
+                'click',
+                () => {
+                    seleccionarPersona(
+                        persona
+                    );
+                }
+            );
+
+
+            contenedorResultados
+                .appendChild(
+                    boton
+                );
+
+        });
+
+
+        contenedorResultados.hidden =
+            false;
+
+    }
+
+
+    function mostrarMensajeResultados(
+        mensaje
+    ) {
+
+        contenedorResultados.innerHTML = `
+            <div class="personal-resultados__vacio">
+                ${escaparHtml(mensaje)}
+            </div>
+        `;
+
+        contenedorResultados.hidden =
+            false;
+
+    }
+
+
+    function ocultarResultados() {
+
+        contenedorResultados.hidden =
+            true;
+
+        contenedorResultados.innerHTML =
+            '';
+
+    }
+
+
+    /* =====================================================
+       SELECCIONAR PERSONA
+    ===================================================== */
+
+    function seleccionarPersona(persona) {
+
+        personaSeleccionada = {
+            id:
+                Number(persona.id) || 0,
+
+            perscod:
+                String(
+                    persona.perscod || ''
+                ).trim(),
+
+            nombre:
+                String(
+                    persona.nombre || ''
+                ).trim(),
+
+            nomina:
+                String(
+                    persona.nomina || ''
+                ).trim(),
+
+            area:
+                String(
+                    persona.area || ''
+                ).trim(),
+
+            turno:
+                String(
+                    persona.turno || ''
+                ).trim(),
+
+            foto:
+                String(
+                    persona.foto || ''
+                ).trim(),
+        };
+
+
+        inputPlantillaId.value =
+            personaSeleccionada.id;
+
+        inputPerscod.value =
+            personaSeleccionada.perscod;
+
+        inputNombre.value =
+            personaSeleccionada.nombre;
+
+        inputArea.value =
+            personaSeleccionada.area;
+
+        /*
+         * El turno viene de plantilla,
+         * pero queda editable.
+         */
+        inputTurno.value =
+            personaSeleccionada.turno;
+
+
+        inputBusqueda.value =
+            personaSeleccionada.nombre;
+
+
+        cargarFoto(
+            personaSeleccionada
         );
+
+
+        contenedorSeleccionado.hidden =
+            false;
+
+
+        ocultarResultados();
+
+    }
+
+
+    /* =====================================================
+       FOTO
+    ===================================================== */
+
+    function cargarFoto(persona) {
+
+        const inicial =
+            obtenerInicial(
+                persona.nombre
+            );
+
+
+        if (fotoFallback) {
+
+            fotoFallback.textContent =
+                inicial;
+
+            fotoFallback.hidden =
+                false;
+
+        }
+
+
+        if (!foto) {
+            return;
+        }
+
+
+        foto.hidden = true;
+
+        foto.removeAttribute('src');
+
+
+        if (!persona.foto) {
+            return;
+        }
+
+
+        foto.onload = () => {
+
+            foto.hidden =
+                false;
+
+            if (fotoFallback) {
+                fotoFallback.hidden = true;
+            }
+
+        };
+
+
+        foto.onerror = () => {
+
+            foto.hidden =
+                true;
+
+            foto.removeAttribute(
+                'src'
+            );
+
+            if (fotoFallback) {
+                fotoFallback.hidden = false;
+            }
+
+        };
+
+
+        foto.src =
+            persona.foto;
+
+    }
+
+
+    /* =====================================================
+       AGREGAR PERSONA
+    ===================================================== */
+
+    btnAgregar.addEventListener(
+        'click',
+        () => {
+
+            if (
+                !personaSeleccionada
+                || !personaSeleccionada.id
+            ) {
+                return;
+            }
+
+
+            const turno =
+                inputTurno.value.trim();
+
+
+            /*
+             * Evitamos agregar dos veces
+             * a la misma persona.
+             */
+            const yaExiste =
+                personalAgregado.some(
+                    (persona) =>
+                        persona.id ===
+                        personaSeleccionada.id
+                );
+
+
+            if (yaExiste) {
+
+                mostrarMensajeResultados(
+                    'Esta persona ya fue agregada al reporte.'
+                );
+
+                return;
+
+            }
+
+
+            personalAgregado.push({
+                ...personaSeleccionada,
+                turno,
+            });
+
+
+            renderizarPersonalAgregado();
+
+            limpiarSelector();
+
+        }
+    );
+
+
+    /* =====================================================
+       TABLA
+    ===================================================== */
+
+    function renderizarPersonalAgregado() {
+
+        tablaBody.innerHTML = '';
+
+        hiddenInputs.innerHTML = '';
+
+
+        personalAgregado.forEach(
+            (persona, indice) => {
+
+                const fila =
+                    document.createElement(
+                        'tr'
+                    );
+
+
+                const inicial =
+                    obtenerInicial(
+                        persona.nombre
+                    );
+
+
+                const fotoHtml =
+                    persona.foto
+                        ? `
+                            <div class="personal-tabla__foto">
+
+                                <img
+                                    src="${escaparAtributo(persona.foto)}"
+                                    alt=""
+                                    onerror="
+                                        this.style.display='none';
+                                        this.nextElementSibling.style.display='flex';
+                                    "
+                                >
+
+                                <span style="display:none;">
+                                    ${escaparHtml(inicial)}
+                                </span>
+
+                            </div>
+                        `
+                        : `
+                            <div class="personal-tabla__foto">
+                                <span>
+                                    ${escaparHtml(inicial)}
+                                </span>
+                            </div>
+                        `;
+
+
+                fila.innerHTML = `
+                    <td>
+                        ${fotoHtml}
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${escaparHtml(persona.nombre)}
+                        </strong>
+
+                        <small class="personal-tabla__nomina">
+                            Nómina:
+                            ${escaparHtml(persona.nomina || '—')}
+                        </small>
+                    </td>
+
+                    <td>
+                        ${escaparHtml(persona.area || '—')}
+                    </td>
+
+                    <td>
+                        ${escaparHtml(persona.turno || '—')}
+                    </td>
+
+                    <td>
+
+                        <button
+                            type="button"
+                            class="personal-tabla__eliminar"
+                            data-eliminar-personal="${indice}"
+                        >
+                            Quitar
+                        </button>
+
+                    </td>
+                `;
+
+
+                tablaBody.appendChild(
+                    fila
+                );
+
+
+                crearInputsOcultos(
+                    persona,
+                    indice
+                );
+
+            }
+        );
+
+
+        contenedorAgregado.hidden =
+            personalAgregado.length === 0;
+
+
+        /*
+         * Para la validación de los pasos:
+         * dejamos constancia de cuántas personas
+         * existen realmente.
+         */
+        contenedorAgregado.dataset.totalPersonal =
+            String(
+                personalAgregado.length
+            );
+
+    }
+
+
+    /* =====================================================
+       QUITAR PERSONA
+    ===================================================== */
+
+    tablaBody.addEventListener(
+        'click',
+        (event) => {
+
+            const boton =
+                event.target.closest(
+                    '[data-eliminar-personal]'
+                );
+
+
+            if (!boton) {
+                return;
+            }
+
+
+            const indice =
+                Number(
+                    boton.dataset
+                        .eliminarPersonal
+                );
+
+
+            if (
+                !Number.isInteger(indice)
+                || !personalAgregado[indice]
+            ) {
+                return;
+            }
+
+
+            personalAgregado.splice(
+                indice,
+                1
+            );
+
+
+            renderizarPersonalAgregado();
+
+        }
+    );
+
+
+    /* =====================================================
+       INPUTS PARA BACKEND
+    ===================================================== */
+
+    function crearInputsOcultos(
+        persona,
+        indice
+    ) {
+
+        const campos = {
+            plantilla_id:
+                persona.id,
+
+            perscod:
+                persona.perscod,
+
+            nombre:
+                persona.nombre,
+
+            nomina:
+                persona.nomina,
+
+            area:
+                persona.area,
+
+            turno:
+                persona.turno,
+        };
+
+
+        Object.entries(campos)
+            .forEach(
+                ([campo, valor]) => {
+
+                    const input =
+                        document.createElement(
+                            'input'
+                        );
+
+
+                    input.type =
+                        'hidden';
+
+                    input.name =
+                        `personal[${indice}][${campo}]`;
+
+                    input.value =
+                        valor ?? '';
+
+
+                    hiddenInputs
+                        .appendChild(
+                            input
+                        );
+
+                }
+            );
+
+    }
+
+
+    /* =====================================================
+       LIMPIAR SELECTOR
+    ===================================================== */
+
+    function limpiarSelector() {
+
+        personaSeleccionada =
+            null;
+
+
+        inputBusqueda.value =
+            '';
+
+        limpiarPersonaSeleccionada();
+
+        ocultarResultados();
+
+    }
+
+
+    function limpiarPersonaSeleccionada() {
+
+        inputPlantillaId.value =
+            '';
+
+        inputPerscod.value =
+            '';
+
+        inputNombre.value =
+            '';
+
+        inputArea.value =
+            '';
+
+        inputTurno.value =
+            '';
+
+
+        if (foto) {
+
+            foto.hidden = true;
+
+            foto.removeAttribute(
+                'src'
+            );
+
+        }
+
+
+        if (fotoFallback) {
+
+            fotoFallback.textContent =
+                '—';
+
+            fotoFallback.hidden =
+                false;
+
+        }
+
+
+        contenedorSeleccionado.hidden =
+            true;
+
+    }
+
+
+    /* =====================================================
+       CERRAR RESULTADOS AL HACER CLICK FUERA
+    ===================================================== */
+
+    document.addEventListener(
+        'click',
+        (event) => {
+
+            if (
+                event.target === inputBusqueda
+                || contenedorResultados.contains(
+                    event.target
+                )
+            ) {
+                return;
+            }
+
+
+            ocultarResultados();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   UTILIDADES
+========================================================= */
+
+function obtenerInicial(nombre) {
+
+    const texto =
+        String(nombre || '')
+            .trim();
+
+
+    if (!texto) {
+        return '?';
+    }
+
+
+    return texto
+        .charAt(0)
+        .toUpperCase();
+
+}
+
+
+function escaparHtml(valor) {
+
+    return String(valor ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+
+}
+
+
+function escaparAtributo(valor) {
+
+    return escaparHtml(
+        valor
+    );
 
 }
