@@ -183,6 +183,7 @@ class ListadoExcelService
 
             // Unidad
             'Unidad',
+            'Placas',
             'Marca',
             'Submarca',
             'Color',
@@ -208,6 +209,12 @@ class ListadoExcelService
 
             // Información adicional
             'Observaciones',
+
+            // Último seguimiento
+            'Fecha último seguimiento',
+            'Tipo de seguimiento',
+            'Estado resultante',
+            'Observaciones del seguimiento',
         ];
 
 
@@ -397,6 +404,11 @@ class ListadoExcelService
 
                 $this->valor(
                     $reporte,
+                    'unidad_placas'
+                ),
+
+                $this->valor(
+                    $reporte,
                     'unidad_marca'
                 ),
 
@@ -504,6 +516,31 @@ class ListadoExcelService
                     $reporte,
                     'observaciones'
                 ),
+
+
+                /* ===============================
+                   ÚLTIMO SEGUIMIENTO
+                =============================== */
+
+                $this->valor(
+                    $reporte,
+                    'seguimiento_fecha'
+                ),
+
+                $this->valor(
+                    $reporte,
+                    'seguimiento_tipo'
+                ),
+
+                $this->valor(
+                    $reporte,
+                    'seguimiento_estado'
+                ),
+
+                $this->valor(
+                    $reporte,
+                    'seguimiento_observaciones'
+                ),
             ];
 
 
@@ -540,8 +577,8 @@ class ListadoExcelService
         $hoja
             ->getStyle(
                 'A1:'
-                . $ultimaColumna
-                . '1'
+                    . $ultimaColumna
+                    . '1'
             )
             ->getFont()
             ->setBold(true);
@@ -550,8 +587,8 @@ class ListadoExcelService
         $hoja
             ->getStyle(
                 'A1:'
-                . $ultimaColumna
-                . '1'
+                    . $ultimaColumna
+                    . '1'
             )
             ->getAlignment()
             ->setHorizontal(
@@ -569,8 +606,8 @@ class ListadoExcelService
         $hoja
             ->getStyle(
                 'A1:'
-                . $ultimaColumna
-                . $ultimaFila
+                    . $ultimaColumna
+                    . $ultimaFila
             )
             ->getBorders()
             ->getAllBorders()
@@ -586,8 +623,8 @@ class ListadoExcelService
         $hoja
             ->getStyle(
                 'A1:'
-                . $ultimaColumna
-                . $ultimaFila
+                    . $ultimaColumna
+                    . $ultimaFila
             )
             ->getAlignment()
             ->setVertical(
@@ -602,8 +639,8 @@ class ListadoExcelService
 
         $hoja->setAutoFilter(
             'A1:'
-            . $ultimaColumna
-            . $ultimaFila
+                . $ultimaColumna
+                . $ultimaFila
         );
 
 
@@ -712,7 +749,6 @@ class ListadoExcelService
                         $evidencia['ruta']
                         ?? $evidencia['url']
                         ?? '';
-
                 } else {
 
                     $archivo =
@@ -786,7 +822,7 @@ class ListadoExcelService
         $hoja
             ->getStyle(
                 'A1:C'
-                . $ultimaFila
+                    . $ultimaFila
             )
             ->getBorders()
             ->getAllBorders()
@@ -802,7 +838,7 @@ class ListadoExcelService
         $hoja
             ->getStyle(
                 'A1:C'
-                . $ultimaFila
+                    . $ultimaFila
             )
             ->getAlignment()
             ->setVertical(
@@ -817,7 +853,7 @@ class ListadoExcelService
 
         $hoja->setAutoFilter(
             'A1:C'
-            . $ultimaFila
+                . $ultimaFila
         );
 
 
@@ -892,9 +928,7 @@ class ListadoExcelService
          * QJ será el prefijo definido.
          */
         if (
-            ! empty(
-                $reporte['prefijo']
-            )
+            ! empty($reporte['prefijo'])
         ) {
 
             return trim(
@@ -949,9 +983,7 @@ class ListadoExcelService
     ): string {
 
         if (
-            ! empty(
-                $reporte['numero_folio']
-            )
+            ! empty($reporte['numero_folio'])
         ) {
 
             return trim(
@@ -1017,9 +1049,7 @@ class ListadoExcelService
          * Compatibilidad temporal.
          */
         if (
-            ! empty(
-                $reporte['folio']
-            )
+            ! empty($reporte['folio'])
         ) {
 
             return trim(

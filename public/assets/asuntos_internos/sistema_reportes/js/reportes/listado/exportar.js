@@ -1,7 +1,21 @@
-document.addEventListener('DOMContentLoaded', () => {
-    inicializarExportacionListado();
-});
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   Listado - Exportar Excel completo
+========================================================= */
 
+document.addEventListener(
+    'DOMContentLoaded',
+    () => {
+
+        inicializarExportacionListado();
+
+    }
+);
+
+
+/* =========================================================
+   INICIALIZAR
+========================================================= */
 
 function inicializarExportacionListado() {
 
@@ -10,331 +24,251 @@ function inicializarExportacionListado() {
             '#btn-exportar-reportes'
         );
 
+
     if (!boton) {
         return;
     }
 
 
-    boton.addEventListener('click', async () => {
+    boton.addEventListener(
+        'click',
+        async () => {
 
-        const filas =
-            obtenerFilasFiltradas();
-
-
-        if (!filas.length) {
-
-            alert(
-                'No hay reportes para exportar.'
-            );
-
-            return;
-        }
+            const textoOriginal =
+                boton.textContent;
 
 
-        const reportes =
-            filas.map(
-                convertirFilaAReporte
-            );
+            try {
+
+                /* =================================================
+                   ESTADO DEL BOTÓN
+                ================================================= */
+
+                boton.disabled =
+                    true;
 
 
-        const textoOriginal =
-            boton.textContent;
+                boton.textContent =
+                    'Generando...';
 
 
-        try {
+                /* =================================================
+                   SOLICITUD
+                ================================================= */
 
-            boton.disabled = true;
-            boton.textContent =
-                'Generando...';
+                const respuesta =
+                    await fetch(
+                        construirUrlExportacion(),
+                        {
+                            method:
+                                'POST',
+
+                            headers: {
+                                Accept:
+                                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/json',
+                            },
+
+                            credentials:
+                                'same-origin',
+                        }
+                    );
 
 
-            const datos =
-                new FormData();
+                /* =================================================
+                   ERROR
+                ================================================= */
+
+                if (!respuesta.ok) {
+
+                    let mensaje =
+                        'No fue posible generar el archivo de Excel.';
 
 
-            datos.append(
-                'reportes',
-                JSON.stringify(
-                    reportes
-                )
-            );
+                    try {
+
+                        const resultado =
+                            await respuesta.json();
 
 
-            const respuesta =
-                await fetch(
-                    '/asuntos-internos/reportes/listado/exportar',
-                    {
-                        method: 'POST',
-                        body: datos,
+                        if (
+                            resultado?.message
+                        ) {
+
+                            mensaje =
+                                resultado.message;
+
+                        }
+
+                    } catch (error) {
+
+                        /*
+                         * La respuesta no era JSON.
+                         */
+
                     }
-                );
 
 
-            if (!respuesta.ok) {
+                    throw new Error(
+                        mensaje
+                    );
 
-                let mensaje =
-                    'No fue posible generar el archivo de Excel.';
-
-
-                try {
-
-                    const resultado =
-                        await respuesta.json();
-
-
-                    if (resultado?.message) {
-                        mensaje =
-                            resultado.message;
-                    }
-
-                } catch (error) {
-                    // La respuesta no era JSON.
                 }
 
 
-                throw new Error(
-                    mensaje
+                /* =================================================
+                   ARCHIVO
+                ================================================= */
+
+                const archivo =
+                    await respuesta.blob();
+
+
+                if (
+                    !archivo
+                    || archivo.size === 0
+                ) {
+
+                    throw new Error(
+                        'El archivo generado está vacío.'
+                    );
+
+                }
+
+
+                const disposition =
+                    respuesta.headers.get(
+                        'Content-Disposition'
+                    );
+
+
+                const nombre =
+                    obtenerNombreArchivo(
+                        disposition
+                    );
+
+
+                descargarArchivo(
+                    archivo,
+                    nombre
                 );
+
+
+            } catch (error) {
+
+                console.error(
+                    'Error exportando listado:',
+                    error
+                );
+
+
+                window.alert(
+                    error.message
+                    || 'No fue posible generar el archivo de Excel.'
+                );
+
+
+            } finally {
+
+                /* =================================================
+                   RESTAURAR BOTÓN
+                ================================================= */
+
+                boton.disabled =
+                    false;
+
+
+                boton.textContent =
+                    textoOriginal;
+
             }
 
-
-            const archivo =
-                await respuesta.blob();
-
-
-            const disposition =
-                respuesta.headers.get(
-                    'Content-Disposition'
-                );
-
-
-            const nombre =
-                obtenerNombreArchivo(
-                    disposition
-                );
-
-
-            const url =
-                window.URL.createObjectURL(
-                    archivo
-                );
-
-
-            const enlace =
-                document.createElement(
-                    'a'
-                );
-
-
-            enlace.href =
-                url;
-
-
-            enlace.download =
-                nombre;
-
-
-            document.body.appendChild(
-                enlace
-            );
-
-
-            enlace.click();
-
-
-            enlace.remove();
-
-
-            window.URL.revokeObjectURL(
-                url
-            );
-
-        } catch (error) {
-
-            console.error(
-                'Error exportando listado:',
-                error
-            );
-
-
-            alert(
-                error.message
-                || 'No fue posible generar el archivo de Excel.'
-            );
-
-        } finally {
-
-            boton.disabled = false;
-
-            boton.textContent =
-                textoOriginal;
-
         }
-
-    });
+    );
 
 }
 
 
 /* =========================================================
-   OBTENER REPORTES FILTRADOS
+   URL DE EXPORTACIÓN
 ========================================================= */
 
-function obtenerFilasFiltradas() {
+function construirUrlExportacion() {
 
-    const tbody =
-        document.querySelector(
-            '#tabla-reportes-body'
-        );
+    const base =
+        document
+            .querySelector(
+                'base'
+            )
+            ?.href;
 
 
-    if (!tbody) {
-        return [];
+    if (base) {
+
+        return new URL(
+            'asuntos-internos/reportes/listado/exportar',
+            base
+        ).toString();
+
     }
 
 
-    /*
-     * Importante:
-     *
-     * No usamos únicamente las filas visibles,
-     * porque la paginación oculta las filas
-     * que pertenecen a otras páginas.
-     *
-     * filtros.js guarda el estado lógico mediante
-     * hidden, pero paginacion.js también lo modifica.
-     *
-     * Por ahora, mientras seguimos con datos temporales,
-     * tomamos todas las filas reales de la tabla.
-     *
-     * Cuando conectemos BD, exportaremos por IDs/filtros
-     * directamente desde backend.
-     */
-    return Array.from(
-        tbody.querySelectorAll('tr')
-    ).filter((fila) => {
-
-        return !fila.classList.contains(
-            'reportes-tabla__empty'
-        );
-
-    });
+    return (
+        `${window.location.origin}`
+        + '/asuntos-internos/reportes/listado/exportar'
+    );
 
 }
 
 
 /* =========================================================
-   CONVERTIR FILA A REPORTE TEMPORAL
+   DESCARGAR ARCHIVO
 ========================================================= */
 
-function convertirFilaAReporte(
-    fila
+function descargarArchivo(
+    archivo,
+    nombre
 ) {
 
-    const celdas =
-        fila.querySelectorAll('td');
+    const url =
+        window.URL.createObjectURL(
+            archivo
+        );
 
 
-    return {
-
-        /*
-         * Datos que actualmente sí existen
-         * en la tabla.
-         */
-        folio:
-            celdas[0]?.textContent.trim()
-            || '',
-
-        fecha_queja:
-            celdas[1]?.textContent.trim()
-            || '',
-
-        expediente:
-            celdas[2]?.textContent.trim()
-            || '',
-
-        clasificacion:
-            celdas[3]?.textContent.trim()
-            || '',
-
-        quejoso:
-            celdas[4]?.textContent.trim()
-            || '',
-
-        area:
-            celdas[5]?.textContent.trim()
-            || '',
-
-        turno:
-            celdas[6]?.textContent.trim()
-            || '',
-
-        resolucion:
-            celdas[7]?.textContent.trim()
-            || '',
+    const enlace =
+        document.createElement(
+            'a'
+        );
 
 
-        /*
-         * Campos preparados para el registro completo.
-         *
-         * En cuanto conectemos BD dejarán de venir
-         * vacíos y serán obtenidos desde el backend.
-         */
-        prefijo: '',
-        numero_folio: '',
-        fecha_registro: '',
+    enlace.href =
+        url;
 
-        folio_ip: '',
-        fecha_acuerdo: '',
-        nomenclatura: '',
-        no_oficio: '',
 
-        fecha_hechos: '',
-        hora_hechos: '',
-        descripcion: '',
+    enlace.download =
+        nombre;
 
-        calle: '',
-        numero: '',
-        colonia: '',
-        entre_calle: '',
-        y_calle: '',
-        municipio: '',
-        estado: '',
-        sector: '',
-        cuadrante: '',
-        latitud: '',
-        longitud: '',
 
-        oficial: '',
+    document.body.appendChild(
+        enlace
+    );
 
-        unidad: '',
-        unidad_marca: '',
-        unidad_submarca: '',
-        unidad_color: '',
-        unidad_estatus: '',
-        unidad_servicio_adscripcion: '',
-        unidad_tipo_vehiculo: '',
-        unidad_origen: '',
 
-        edad: '',
-        genero: '',
-        telefono: '',
-        correo: '',
+    enlace.click();
 
-        inspector: '',
-        investigador: '',
-        quien_emite_resolucion: '',
-        motivos: '',
 
-        observaciones: '',
+    enlace.remove();
 
-        evidencias: [],
-    };
+
+    window.URL.revokeObjectURL(
+        url
+    );
 
 }
 
 
 /* =========================================================
-   NOMBRE DEL ARCHIVO
+   OBTENER NOMBRE DEL ARCHIVO
 ========================================================= */
 
 function obtenerNombreArchivo(
@@ -350,22 +284,55 @@ function obtenerNombreArchivo(
     }
 
 
-    const coincidencia =
+    /*
+     * filename*=UTF-8''archivo.xlsx
+     */
+    const utf8 =
         contentDisposition.match(
-            /filename="?([^"]+)"?/i
+            /filename\*=UTF-8''([^;]+)/i
         );
 
 
     if (
-        !coincidencia
-        || !coincidencia[1]
+        utf8
+        && utf8[1]
     ) {
 
-        return predeterminado;
+        try {
+
+            return decodeURIComponent(
+                utf8[1]
+            );
+
+        } catch (error) {
+
+            return utf8[1];
+
+        }
 
     }
 
 
-    return coincidencia[1].trim();
+    /*
+     * filename="archivo.xlsx"
+     */
+    const normal =
+        contentDisposition.match(
+            /filename="?([^";]+)"?/i
+        );
+
+
+    if (
+        normal
+        && normal[1]
+    ) {
+
+        return normal[1]
+            .trim();
+
+    }
+
+
+    return predeterminado;
 
 }

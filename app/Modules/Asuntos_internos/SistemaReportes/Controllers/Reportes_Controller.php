@@ -11,6 +11,36 @@ use App\Controllers\BaseController;
 
 class Reportes_Controller extends BaseController
 {
+    private function agregarValorExportacion(
+        array &$valores,
+        mixed $valor
+    ): void {
+
+        $texto =
+            trim(
+                (string) (
+                    $valor
+                    ?? ''
+                )
+            );
+
+
+        if (
+            $texto === ''
+            || in_array(
+                $texto,
+                $valores,
+                true
+            )
+        ) {
+            return;
+        }
+
+
+        $valores[] =
+            $texto;
+    }
+
     public function index()
     {
         /* =========================================================
@@ -1209,41 +1239,874 @@ class Reportes_Controller extends BaseController
 
     public function exportarListado()
     {
-        $reportes =
-            $this->request->getPost(
-                'reportes'
-            );
-
-        /*
-     * Los registros vienen desde JS
-     * como JSON.
-     */
-        if (is_string($reportes)) {
-
-            $reportes =
-                json_decode(
-                    $reportes,
-                    true
-                );
-        }
-
+        /* =========================================================
+        VALIDAR SESION
+        ========================================================= */
 
         if (
-            ! is_array($reportes)
-            || empty($reportes)
+            session()->get('reportes_autenticado') !== true
+            || !session()->has('usuario_reportes')
         ) {
 
             return $this->response
-                ->setStatusCode(400)
+                ->setStatusCode(401)
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                    'No hay reportes para exportar.',
+                    'La sesion no es valida.',
                 ]);
         }
 
 
         try {
+
+            /* =====================================================
+            CONEXION DATACORE
+            ===================================================== */
+
+            $db =
+                \Config\Database::connect(
+                    'datacore'
+                );
+
+
+            /* =====================================================
+            TODOS LOS REPORTES VIGENTES
+
+            Esta exportacion NO depende de:
+            - filtros del listado
+            - fechas
+            - busqueda
+            - paginacion
+            - IDs enviados desde JavaScript
+            ===================================================== */
+
+            $reportesDb =
+                $db
+                ->table('ai_reportes')
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->orderBy(
+                    'id_reporte',
+                    'DESC'
+                )
+                ->get()
+                ->getResultArray();
+
+
+            /* =====================================================
+            IDS DE TODOS LOS REPORTES
+            ===================================================== */
+
+            $idsReales =
+                array_map(
+                    static fn($reporte) =>
+                    (int) $reporte['id_reporte'],
+                    $reportesDb
+                );
+
+
+            /* =====================================================
+            RELACIONES
+            ===================================================== */
+
+            $personalDb = [];
+            $unidadesDb = [];
+            $evidenciasDb = [];
+            $seguimientosDb = [];
+
+
+            if (!empty($idsReales)) {
+
+                /* =================================================
+                PERSONAL
+                ================================================= */
+
+                $personalDb =
+                    $db
+                    ->table('ai_reporte_personal')
+                    ->whereIn(
+                        'id_reporte',
+                        $idsReales
+                    )
+                    ->orderBy(
+                        'id_reporte',
+                        'ASC'
+                    )
+                    ->orderBy(
+                        'id_reporte_personal',
+                        'ASC'
+                    )
+                    ->get()
+                    ->getResultArray();
+
+
+                /* =================================================
+                UNIDADES
+                ================================================= */
+
+                $unidadesDb =
+                    $db
+                    ->table('ai_reporte_unidades u')
+                    ->select([
+                        'u.id_reporte_unidad',
+                        'u.id_reporte',
+                        'u.parque_vehicular_id',
+                        'u.no_economico_snapshot',
+                        'u.placas_snapshot',
+                        'u.marca_snapshot',
+                        'u.submarca_snapshot',
+                        'u.color_snapshot',
+                        'u.estatus_snapshot',
+                        'u.servicio_snapshot',
+                        'u.tipo_snapshot',
+                        'u.id_origen',
+                        'o.clave AS origen',
+                    ])
+                    ->join(
+                        'ai_cat_origen_unidad o',
+                        'o.id_origen = u.id_origen',
+                        'left'
+                    )
+                    ->whereIn(
+                        'u.id_reporte',
+                        $idsReales
+                    )
+                    ->orderBy(
+                        'u.id_reporte',
+                        'ASC'
+                    )
+                    ->orderBy(
+                        'u.id_reporte_unidad',
+                        'ASC'
+                    )
+                    ->get()
+                    ->getResultArray();
+
+
+                /* =================================================
+                EVIDENCIAS
+                ================================================= */
+
+                $evidenciasDb =
+                    $db
+                    ->table('ai_reporte_evidencias')
+                    ->whereIn(
+                        'id_reporte',
+                        $idsReales
+                    )
+                    ->where(
+                        'eliminado',
+                        0
+                    )
+                    ->orderBy(
+                        'id_reporte',
+                        'ASC'
+                    )
+                    ->orderBy(
+                        'orden',
+                        'ASC'
+                    )
+                    ->orderBy(
+                        'id_evidencia',
+                        'ASC'
+                    )
+                    ->get()
+                    ->getResultArray();
+
+
+                /* =================================================
+                SEGUIMIENTOS
+
+                Se consultan todos los seguimientos vigentes y se
+                conserva solamente el ultimo de cada reporte.
+                ================================================= */
+
+                $seguimientosDb =
+                    $db
+                    ->table('ai_reporte_seguimientos')
+                    ->select([
+                        'id_seguimiento',
+                        'id_reporte',
+                        'fecha',
+                        'tipo',
+                        'estado_resultante',
+                        'observaciones',
+                    ])
+                    ->whereIn(
+                        'id_reporte',
+                        $idsReales
+                    )
+                    ->where(
+                        'eliminado',
+                        0
+                    )
+                    ->orderBy(
+                        'fecha',
+                        'DESC'
+                    )
+                    ->orderBy(
+                        'id_seguimiento',
+                        'DESC'
+                    )
+                    ->get()
+                    ->getResultArray();
+            }
+
+
+            /* =====================================================
+            AGRUPAR PERSONAL
+            ===================================================== */
+
+            $personalPorReporte = [];
+
+
+            foreach (
+                $personalDb
+                as $persona
+            ) {
+
+                $idReporte =
+                    (int) (
+                        $persona['id_reporte']
+                        ?? 0
+                    );
+
+
+                if ($idReporte <= 0) {
+                    continue;
+                }
+
+
+                $personalPorReporte[$idReporte][] =
+                    $persona;
+            }
+
+
+            /* =====================================================
+            AGRUPAR UNIDADES
+            ===================================================== */
+
+            $unidadesPorReporte = [];
+
+
+            foreach (
+                $unidadesDb
+                as $unidad
+            ) {
+
+                $idReporte =
+                    (int) (
+                        $unidad['id_reporte']
+                        ?? 0
+                    );
+
+
+                if ($idReporte <= 0) {
+                    continue;
+                }
+
+
+                $unidadesPorReporte[$idReporte][] =
+                    $unidad;
+            }
+
+
+            /* =====================================================
+            AGRUPAR EVIDENCIAS
+            ===================================================== */
+
+            $evidenciasPorReporte = [];
+
+
+            foreach (
+                $evidenciasDb
+                as $evidencia
+            ) {
+
+                $idReporte =
+                    (int) (
+                        $evidencia['id_reporte']
+                        ?? 0
+                    );
+
+
+                if ($idReporte <= 0) {
+                    continue;
+                }
+
+
+                $nombre =
+                    trim(
+                        (string) (
+                            $evidencia['nombre_original']
+                            ?? ''
+                        )
+                    );
+
+
+                if ($nombre === '') {
+
+                    $nombre =
+                        trim(
+                            (string) (
+                                $evidencia['nombre_archivo']
+                                ?? ''
+                            )
+                        );
+                }
+
+
+                $evidenciasPorReporte[$idReporte][] = [
+
+                    'archivo' =>
+                    $nombre,
+
+                    'ruta' =>
+                    $evidencia['ruta_archivo']
+                        ?? '',
+                ];
+            }
+
+
+            /* =====================================================
+            ULTIMO SEGUIMIENTO POR REPORTE
+            ===================================================== */
+
+            $ultimoSeguimientoPorReporte = [];
+
+
+            foreach (
+                $seguimientosDb
+                as $seguimiento
+            ) {
+
+                $idReporte =
+                    (int) (
+                        $seguimiento['id_reporte']
+                        ?? 0
+                    );
+
+
+                if (
+                    $idReporte <= 0
+                    || isset(
+                        $ultimoSeguimientoPorReporte[$idReporte]
+                    )
+                ) {
+                    continue;
+                }
+
+
+                /*
+                 * La consulta ya viene ordenada del seguimiento
+                 * mas reciente al mas antiguo.
+                 */
+                $ultimoSeguimientoPorReporte[$idReporte] =
+                    $seguimiento;
+            }
+
+
+            /* =====================================================
+            PREPARAR REPORTES PARA EL EXCEL
+            ===================================================== */
+
+            $reportes = [];
+
+
+            foreach (
+                $reportesDb
+                as $reporte
+            ) {
+
+                $idReporte =
+                    (int) (
+                        $reporte['id_reporte']
+                        ?? 0
+                    );
+
+
+                $personal =
+                    $personalPorReporte[$idReporte]
+                    ?? [];
+
+
+                $unidades =
+                    $unidadesPorReporte[$idReporte]
+                    ?? [];
+
+
+                $ultimoSeguimiento =
+                    $ultimoSeguimientoPorReporte[$idReporte]
+                    ?? [];
+
+
+                /* =================================================
+                PERSONAL
+                ================================================= */
+
+                $nombresPersonal = [];
+                $areasPersonal = [];
+                $turnosPersonal = [];
+
+
+                foreach (
+                    $personal
+                    as $persona
+                ) {
+
+                    $this->agregarValorExportacion(
+                        $nombresPersonal,
+                        $persona['nombre_snapshot']
+                            ?? ''
+                    );
+
+
+                    $this->agregarValorExportacion(
+                        $areasPersonal,
+                        $persona['area_snapshot']
+                            ?? ''
+                    );
+
+
+                    $this->agregarValorExportacion(
+                        $turnosPersonal,
+                        $persona['turno_snapshot']
+                            ?? ''
+                    );
+                }
+
+
+                /* =================================================
+                UNIDADES
+                ================================================= */
+
+                $numerosUnidad = [];
+                $placasUnidad = [];
+                $marcasUnidad = [];
+                $submarcasUnidad = [];
+                $coloresUnidad = [];
+                $estatusUnidad = [];
+                $serviciosUnidad = [];
+                $tiposUnidad = [];
+                $origenesUnidad = [];
+
+
+                foreach (
+                    $unidades
+                    as $unidad
+                ) {
+
+                    $this->agregarValorExportacion(
+                        $numerosUnidad,
+                        $unidad['no_economico_snapshot']
+                            ?? ''
+                    );
+
+
+                    $this->agregarValorExportacion(
+                        $placasUnidad,
+                        $unidad['placas_snapshot']
+                            ?? ''
+                    );
+
+
+                    $this->agregarValorExportacion(
+                        $marcasUnidad,
+                        $unidad['marca_snapshot']
+                            ?? ''
+                    );
+
+
+                    $this->agregarValorExportacion(
+                        $submarcasUnidad,
+                        $unidad['submarca_snapshot']
+                            ?? ''
+                    );
+
+
+                    $this->agregarValorExportacion(
+                        $coloresUnidad,
+                        $unidad['color_snapshot']
+                            ?? ''
+                    );
+
+
+                    $this->agregarValorExportacion(
+                        $estatusUnidad,
+                        $unidad['estatus_snapshot']
+                            ?? ''
+                    );
+
+
+                    $this->agregarValorExportacion(
+                        $serviciosUnidad,
+                        $unidad['servicio_snapshot']
+                            ?? ''
+                    );
+
+
+                    $this->agregarValorExportacion(
+                        $tiposUnidad,
+                        $unidad['tipo_snapshot']
+                            ?? ''
+                    );
+
+
+                    $this->agregarValorExportacion(
+                        $origenesUnidad,
+                        $unidad['origen']
+                            ?? ''
+                    );
+                }
+
+
+                /* =================================================
+                FOLIO
+                ================================================= */
+
+                $folio =
+                    trim(
+                        (string) (
+                            $reporte['folio']
+                            ?? ''
+                        )
+                    );
+
+
+                $prefijo =
+                    'QJ';
+
+
+                $numeroFolio =
+                    $folio;
+
+
+                if (
+                    str_starts_with(
+                        $folio,
+                        'QJ-'
+                    )
+                ) {
+
+                    $numeroFolio =
+                        substr(
+                            $folio,
+                            3
+                        );
+                }
+
+
+                /* =================================================
+                DATOS PARA ListadoExcelService
+                ================================================= */
+
+                $reportes[] = [
+
+                    /* =============================================
+                    DATOS DEL REPORTE
+                    ============================================= */
+
+                    'folio' =>
+                    $folio,
+
+                    'prefijo' =>
+                    $prefijo,
+
+                    'numero_folio' =>
+                    $numeroFolio,
+
+                    'fecha_registro' =>
+                    $reporte['fecha_registro']
+                        ?? '',
+
+
+                    /* =============================================
+                    IDENTIFICACION
+                    ============================================= */
+
+                    'folio_ip' =>
+                    $reporte['folio_ip']
+                        ?? '',
+
+                    'fecha_queja' =>
+                    $reporte['fecha_queja']
+                        ?? '',
+
+                    'fecha_acuerdo' =>
+                    $reporte['fecha_acuerdo']
+                        ?? '',
+
+                    'expediente' =>
+                    $reporte['expediente']
+                        ?? '',
+
+                    'nomenclatura' =>
+                    $reporte['nomenclatura']
+                        ?? '',
+
+                    'no_oficio' =>
+                    $reporte['numero_oficio']
+                        ?? '',
+
+
+                    /* =============================================
+                    HECHOS
+                    ============================================= */
+
+                    'fecha_hechos' =>
+                    $reporte['fecha_hechos']
+                        ?? '',
+
+                    'hora_hechos' =>
+                    $reporte['hora_hechos']
+                        ?? '',
+
+                    'descripcion' =>
+                    $reporte['descripcion_hechos']
+                        ?? '',
+
+
+                    /* =============================================
+                    UBICACION
+                    ============================================= */
+
+                    'calle' =>
+                    $reporte['calle']
+                        ?? '',
+
+                    'numero' =>
+                    $reporte['numero_exterior']
+                        ?? '',
+
+                    'colonia' =>
+                    $reporte['colonia']
+                        ?? '',
+
+                    'entre_calle' =>
+                    $reporte['entre_calle']
+                        ?? '',
+
+                    'y_calle' =>
+                    $reporte['y_calle']
+                        ?? '',
+
+                    'municipio' =>
+                    $reporte['municipio']
+                        ?? '',
+
+                    'estado' =>
+                    $reporte['estado']
+                        ?? '',
+
+                    'sector' =>
+                    $reporte['sector']
+                        ?? '',
+
+                    'cuadrante' =>
+                    $reporte['cuadrante']
+                        ?? '',
+
+                    'latitud' =>
+                    $reporte['latitud']
+                        ?? '',
+
+                    'longitud' =>
+                    $reporte['longitud']
+                        ?? '',
+
+
+                    /* =============================================
+                    PERSONAL
+                    ============================================= */
+
+                    'oficial' =>
+                    implode(
+                        ' | ',
+                        $nombresPersonal
+                    ),
+
+                    'area' =>
+                    implode(
+                        ' | ',
+                        $areasPersonal
+                    ),
+
+                    'turno' =>
+                    implode(
+                        ' | ',
+                        $turnosPersonal
+                    ),
+
+
+                    /* =============================================
+                    UNIDADES
+                    ============================================= */
+
+                    'unidad' =>
+                    implode(
+                        ' | ',
+                        $numerosUnidad
+                    ),
+
+                    'unidad_placas' =>
+                    implode(
+                        ' | ',
+                        $placasUnidad
+                    ),
+
+                    'unidad_marca' =>
+                    implode(
+                        ' | ',
+                        $marcasUnidad
+                    ),
+
+                    'unidad_submarca' =>
+                    implode(
+                        ' | ',
+                        $submarcasUnidad
+                    ),
+
+                    'unidad_color' =>
+                    implode(
+                        ' | ',
+                        $coloresUnidad
+                    ),
+
+                    'unidad_estatus' =>
+                    implode(
+                        ' | ',
+                        $estatusUnidad
+                    ),
+
+                    'unidad_servicio_adscripcion' =>
+                    implode(
+                        ' | ',
+                        $serviciosUnidad
+                    ),
+
+                    'unidad_tipo_vehiculo' =>
+                    implode(
+                        ' | ',
+                        $tiposUnidad
+                    ),
+
+                    'unidad_origen' =>
+                    implode(
+                        ' | ',
+                        $origenesUnidad
+                    ),
+
+
+                    /* =============================================
+                    QUEJOSO
+                    ============================================= */
+
+                    'quejoso' =>
+                    $reporte['nombre_quejoso']
+                        ?? '',
+
+                    'edad' =>
+                    $reporte['edad_quejoso']
+                        ?? '',
+
+                    'genero' =>
+                    $reporte['genero_quejoso']
+                        ?? '',
+
+                    'telefono' =>
+                    $reporte['telefono_quejoso']
+                        ?? '',
+
+                    'correo' =>
+                    $reporte['correo_quejoso']
+                        ?? '',
+
+
+                    /* =============================================
+                    CLASIFICACION
+                    ============================================= */
+
+                    'clasificacion' =>
+                    $reporte['clasificacion']
+                        ?? '',
+
+                    'inspector' =>
+                    $reporte['inspector']
+                        ?? '',
+
+                    'investigador' =>
+                    $reporte['investigador']
+                        ?? '',
+
+                    'quien_emite_resolucion' =>
+                    $reporte['quien_emite_resolucion']
+                        ?? '',
+
+                    'resolucion' =>
+                    trim(
+                        (string) (
+                            $reporte['resolucion']
+                            ?? ''
+                        )
+                    ) !== ''
+                        ? $reporte['resolucion']
+                        : (
+                            $reporte['estado_actual']
+                            ?? ''
+                        ),
+
+                    'motivos' =>
+                    $reporte['motivos']
+                        ?? '',
+
+
+                    /* =============================================
+                    ADICIONAL
+                    ============================================= */
+
+                    'observaciones' =>
+                    $reporte['observaciones']
+                        ?? '',
+
+
+                    /* =============================================
+                    ULTIMO SEGUIMIENTO
+                    ============================================= */
+
+                    'seguimiento_fecha' =>
+                    $ultimoSeguimiento['fecha']
+                        ?? '',
+
+                    'seguimiento_tipo' =>
+                    $ultimoSeguimiento['tipo']
+                        ?? '',
+
+                    'seguimiento_estado' =>
+                    $ultimoSeguimiento['estado_resultante']
+                        ?? '',
+
+                    'seguimiento_observaciones' =>
+                    $ultimoSeguimiento['observaciones']
+                        ?? '',
+
+
+                    /* =============================================
+                    EVIDENCIAS
+                    ============================================= */
+
+                    'evidencias' =>
+                    $evidenciasPorReporte[$idReporte]
+                        ?? [],
+                ];
+            }
+
+
+            /* =====================================================
+            GENERAR EXCEL
+            ===================================================== */
 
             $servicio =
                 new ListadoExcelService();
@@ -1255,19 +2118,25 @@ class Reportes_Controller extends BaseController
                 );
 
 
+            /* =====================================================
+            DESCARGAR
+            ===================================================== */
+
             return $this->response
                 ->download(
                     $ruta,
                     null
                 )
                 ->setFileName(
-                    basename($ruta)
+                    basename(
+                        $ruta
+                    )
                 );
         } catch (\Throwable $e) {
 
             log_message(
                 'error',
-                'Error exportando listado de reportes: {mensaje}',
+                'Error exportando listado completo de reportes: {mensaje}',
                 [
                     'mensaje' =>
                     $e->getMessage(),
@@ -1283,288 +2152,6 @@ class Reportes_Controller extends BaseController
                     'No fue posible generar el archivo de Excel.',
                 ]);
         }
-    }
-
-    public function autorizarDashboard()
-    {
-        /*
-     * =========================================================
-     * SESIÓN
-     * =========================================================
-     */
-
-        if (
-            session()->get('reportes_autenticado') !== true
-            || !session()->has('usuario_reportes')
-        ) {
-
-            return $this->response
-                ->setStatusCode(401)
-                ->setJSON([
-                    'success' => false,
-                    'message' =>
-                    'La sesión no es válida.',
-                ]);
-        }
-
-
-        $usuario =
-            session()->get(
-                'usuario_reportes'
-            );
-
-
-        /*
-     * =========================================================
-     * ADMIN
-     * =========================================================
-     *
-     * El administrador ya tiene acceso directo.
-     */
-
-        if (
-            ($usuario['rol'] ?? null)
-            === 'admin'
-        ) {
-
-            return $this->response
-                ->setJSON([
-                    'success' => true,
-                    'message' =>
-                    'Acceso autorizado.',
-                ]);
-        }
-
-
-        /*
-     * =========================================================
-     * CURP ADMINISTRATIVA
-     * =========================================================
-     */
-
-        $curp =
-            strtoupper(
-                trim(
-                    (string)
-                    $this->request->getPost(
-                        'password_admin'
-                    )
-                )
-            );
-
-
-        if ($curp === '') {
-
-            return $this->response
-                ->setStatusCode(422)
-                ->setJSON([
-                    'success' => false,
-                    'message' =>
-                    'Ingresa la contraseña del administrador.',
-                ]);
-        }
-
-
-        try {
-
-            $authService =
-                new AuthService();
-
-
-            $autorizado =
-                $authService
-                ->validarAutorizacionAdmin(
-                    $curp
-                );
-        } catch (\Throwable $e) {
-
-            /*
-         * No registramos CURP ni información
-         * sensible en el log.
-         */
-            log_message(
-                'error',
-                'Error validando autorización administrativa del Dashboard: {mensaje}',
-                [
-                    'mensaje' =>
-                    $e->getMessage(),
-                ]
-            );
-
-
-            return $this->response
-                ->setStatusCode(500)
-                ->setJSON([
-                    'success' => false,
-                    'message' =>
-                    'No fue posible validar la autorización.',
-                ]);
-        }
-
-
-        if (!$autorizado) {
-
-            return $this->response
-                ->setStatusCode(403)
-                ->setJSON([
-                    'success' => false,
-                    'message' =>
-                    'Contraseña de administrador incorrecta.',
-                ]);
-        }
-
-
-        /*
-     * =========================================================
-     * AUTORIZACIÓN TEMPORAL DEL DASHBOARD
-     * =========================================================
-     *
-     * NO cambiamos:
-     *
-     * usuario_reportes['rol']
-     *
-     * El usuario continúa siendo "usuario".
-     */
-
-        session()->set(
-            'reportes_dashboard_autorizado',
-            true
-        );
-
-
-        return $this->response
-            ->setJSON([
-                'success' => true,
-                'message' =>
-                'Acceso autorizado.',
-            ]);
-    }
-
-    public function autorizarEliminacion()
-    {
-        /* =========================================================
-        VALIDAR SESIÓN
-        ========================================================= */
-
-        if (
-            session()->get('reportes_autenticado') !== true
-            || ! session()->has('usuario_reportes')
-        ) {
-
-            return $this->response
-                ->setStatusCode(401)
-                ->setJSON([
-                    'success' => false,
-                    'message' => 'La sesión no es válida.',
-                ]);
-        }
-
-
-        $usuario =
-            session()->get('usuario_reportes');
-
-
-        /* =========================================================
-        ADMIN
-        =========================================================
-        El administrador no necesita contraseña extra.
-        ========================================================= */
-
-        if (
-            ($usuario['rol'] ?? null)
-            === 'admin'
-        ) {
-
-            return $this->response
-                ->setJSON([
-                    'success' => true,
-                    'message' => 'Autorización válida.',
-                ]);
-        }
-
-
-        /* =========================================================
-        CONTRASEÑA ADMINISTRATIVA
-        ========================================================= */
-
-        $curp =
-            strtoupper(
-                trim(
-                    (string)
-                    $this->request->getPost(
-                        'password_admin'
-                    )
-                )
-            );
-
-
-        if ($curp === '') {
-
-            return $this->response
-                ->setStatusCode(422)
-                ->setJSON([
-                    'success' => false,
-                    'message' =>
-                    'Ingresa la contraseña del administrador.',
-                ]);
-        }
-
-
-        try {
-
-            $authService =
-                new \App\Modules\Asuntos_internos\SistemaReportes\Services\AuthService();
-
-
-            $autorizado =
-                $authService
-                ->validarAutorizacionAdmin(
-                    $curp
-                );
-        } catch (\Throwable $e) {
-
-            log_message(
-                'error',
-                'Error validando autorización para eliminar reporte: {mensaje}',
-                [
-                    'mensaje' =>
-                    $e->getMessage(),
-                ]
-            );
-
-
-            return $this->response
-                ->setStatusCode(500)
-                ->setJSON([
-                    'success' => false,
-                    'message' =>
-                    'No fue posible validar la autorización.',
-                ]);
-        }
-
-
-        if (!$autorizado) {
-
-            return $this->response
-                ->setStatusCode(403)
-                ->setJSON([
-                    'success' => false,
-                    'message' =>
-                    'Contraseña de administrador incorrecta.',
-                ]);
-        }
-
-
-        /* =========================================================
-        AUTORIZACIÓN CORRECTA
-        ========================================================= */
-
-        return $this->response
-            ->setJSON([
-                'success' => true,
-                'message' =>
-                'Autorización válida.',
-            ]);
     }
 
     public function eliminarReporte(int $idReporte)
