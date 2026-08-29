@@ -1962,4 +1962,420 @@ class Reportes_Controller extends BaseController
                 ]);
         }
     }
+
+    public function verEvidencia(int $idEvidencia)
+    {
+        /* =========================================================
+        VALIDAR SESIÓN
+        ========================================================= */
+
+        if (
+            session()->get('reportes_autenticado') !== true
+            || !session()->has('usuario_reportes')
+        ) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La sesión no es válida.',
+                ]);
+        }
+
+
+        if ($idEvidencia <= 0) {
+
+            return $this->response
+                ->setStatusCode(404)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La evidencia solicitada no es válida.',
+                ]);
+        }
+
+
+        try {
+
+            /* =====================================================
+            CONEXIÓN DATACORE
+            ===================================================== */
+
+            $db =
+                \Config\Database::connect(
+                    'datacore'
+                );
+
+
+            /* =====================================================
+            BUSCAR EVIDENCIA
+            ===================================================== */
+
+            $evidencia =
+                $db
+                ->table('ai_reporte_evidencias e')
+                ->select([
+                    'e.id_evidencia',
+                    'e.id_reporte',
+                    'e.nombre_original',
+                    'e.nombre_archivo',
+                    'e.ruta_archivo',
+                    'e.extension',
+                    'e.mime_type',
+                ])
+                ->join(
+                    'ai_reportes r',
+                    'r.id_reporte = e.id_reporte',
+                    'inner'
+                )
+                ->where(
+                    'e.id_evidencia',
+                    $idEvidencia
+                )
+                ->where(
+                    'e.eliminado',
+                    0
+                )
+                ->where(
+                    'r.eliminado',
+                    0
+                )
+                ->get()
+                ->getRowArray();
+
+
+            if (!$evidencia) {
+
+                return $this->response
+                    ->setStatusCode(404)
+                    ->setJSON([
+                        'success' => false,
+                        'message' =>
+                        'La evidencia no existe.',
+                    ]);
+            }
+
+
+            /* =====================================================
+            RESOLVER RUTA
+            ===================================================== */
+
+            $rutaGuardada =
+                trim(
+                    (string) (
+                        $evidencia['ruta_archivo']
+                        ?? ''
+                    )
+                );
+
+
+            if ($rutaGuardada === '') {
+
+                return $this->response
+                    ->setStatusCode(404)
+                    ->setJSON([
+                        'success' => false,
+                        'message' =>
+                        'La evidencia no tiene un archivo asociado.',
+                    ]);
+            }
+
+
+            /*
+         * Actualmente la BD guarda rutas como:
+         *
+         * writable/uploads/asuntos_internos/reportes/2/archivo.png
+         *
+         * WRITEPATH ya apunta a:
+         *
+         * C:\laragon\www\DataCore\writable\
+         *
+         * Por eso quitamos "writable/" antes
+         * de construir la ruta física.
+         */
+
+            $rutaRelativa =
+                str_replace(
+                    '\\',
+                    '/',
+                    $rutaGuardada
+                );
+
+
+            $rutaRelativa =
+                ltrim(
+                    $rutaRelativa,
+                    '/'
+                );
+
+
+            if (
+                str_starts_with(
+                    strtolower($rutaRelativa),
+                    'writable/'
+                )
+            ) {
+
+                $rutaRelativa =
+                    substr(
+                        $rutaRelativa,
+                        strlen('writable/')
+                    );
+            }
+
+
+            /*
+         * Convertimos nuevamente los separadores
+         * al formato del sistema operativo.
+         */
+
+            $rutaRelativa =
+                str_replace(
+                    '/',
+                    DIRECTORY_SEPARATOR,
+                    $rutaRelativa
+                );
+
+
+            $rutaCompleta =
+                rtrim(
+                    WRITEPATH,
+                    DIRECTORY_SEPARATOR
+                )
+                . DIRECTORY_SEPARATOR
+                . $rutaRelativa;
+
+
+            /* =====================================================
+            SEGURIDAD DE RUTA
+            ===================================================== */
+
+            $rutaReal =
+                realpath(
+                    $rutaCompleta
+                );
+
+
+            $writableReal =
+                realpath(
+                    WRITEPATH
+                );
+
+
+            if (
+                $rutaReal === false
+                || $writableReal === false
+                || !is_file($rutaReal)
+            ) {
+
+                return $this->response
+                    ->setStatusCode(404)
+                    ->setJSON([
+                        'success' => false,
+                        'message' =>
+                        'El archivo de evidencia no fue encontrado.',
+                    ]);
+            }
+
+
+            /*
+         * Nos aseguramos de que el archivo esté
+         * realmente dentro de writable/.
+         */
+
+            $prefijoWritable =
+                rtrim(
+                    $writableReal,
+                    DIRECTORY_SEPARATOR
+                )
+                . DIRECTORY_SEPARATOR;
+
+
+            if (
+                !str_starts_with(
+                    $rutaReal,
+                    $prefijoWritable
+                )
+            ) {
+
+                return $this->response
+                    ->setStatusCode(403)
+                    ->setJSON([
+                        'success' => false,
+                        'message' =>
+                        'La ruta de la evidencia no es válida.',
+                    ]);
+            }
+
+
+            /* =====================================================
+            MIME TYPE
+            ===================================================== */
+
+            $mimeType =
+                trim(
+                    (string) (
+                        $evidencia['mime_type']
+                        ?? ''
+                    )
+                );
+
+
+            /*
+         * Si por alguna razón no está registrado,
+         * lo detectamos directamente desde el archivo.
+         */
+
+            if ($mimeType === '') {
+
+                $finfo =
+                    new \finfo(
+                        FILEINFO_MIME_TYPE
+                    );
+
+
+                $mimeType =
+                    $finfo->file(
+                        $rutaReal
+                    )
+                    ?: 'application/octet-stream';
+            }
+
+
+            /* =====================================================
+            VALIDAR TIPO DE IMAGEN
+            ===================================================== */
+
+            $tiposPermitidos = [
+                'image/jpeg',
+                'image/png',
+                'image/webp',
+            ];
+
+
+            if (
+                !in_array(
+                    strtolower($mimeType),
+                    $tiposPermitidos,
+                    true
+                )
+            ) {
+
+                return $this->response
+                    ->setStatusCode(415)
+                    ->setJSON([
+                        'success' => false,
+                        'message' =>
+                        'El archivo no es una imagen permitida.',
+                    ]);
+            }
+
+
+            /* =====================================================
+            LEER ARCHIVO
+            ===================================================== */
+
+            $contenido =
+                file_get_contents(
+                    $rutaReal
+                );
+
+
+            if ($contenido === false) {
+
+                throw new \RuntimeException(
+                    'No fue posible leer el archivo de evidencia.'
+                );
+            }
+
+
+            /* =====================================================
+            NOMBRE PARA EL NAVEGADOR
+            ===================================================== */
+
+            $nombreDescarga =
+                trim(
+                    (string) (
+                        $evidencia['nombre_original']
+                        ?? ''
+                    )
+                );
+
+
+            if ($nombreDescarga === '') {
+
+                $nombreDescarga =
+                    trim(
+                        (string) (
+                            $evidencia['nombre_archivo']
+                            ?? 'evidencia'
+                        )
+                    );
+            }
+
+
+            /*
+         * Evitamos caracteres problemáticos
+         * dentro del Content-Disposition.
+         */
+
+            $nombreDescarga =
+                str_replace(
+                    [
+                        '"',
+                        "\r",
+                        "\n",
+                    ],
+                    '',
+                    basename(
+                        $nombreDescarga
+                    )
+                );
+
+
+            /* =====================================================
+            DEVOLVER IMAGEN
+            ===================================================== */
+
+            return $this->response
+                ->setHeader(
+                    'Content-Type',
+                    $mimeType
+                )
+                ->setHeader(
+                    'Content-Disposition',
+                    'inline; filename="'
+                        . $nombreDescarga
+                        . '"'
+                )
+                ->setHeader(
+                    'X-Content-Type-Options',
+                    'nosniff'
+                )
+                ->setBody(
+                    $contenido
+                );
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error mostrando evidencia {id}: {mensaje}',
+                [
+                    'id' =>
+                    $idEvidencia,
+
+                    'mensaje' =>
+                    $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'No fue posible consultar la evidencia.',
+                ]);
+        }
+    }
 }

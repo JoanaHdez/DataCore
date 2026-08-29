@@ -1095,10 +1095,6 @@ function renderizarUnidadesDetalle(
    EVIDENCIAS
 ========================================================= */
 
-/* =========================================================
-   EVIDENCIAS
-========================================================= */
-
 function renderizarEvidenciasDetalle(
     modal,
     evidencias
@@ -1132,17 +1128,29 @@ function renderizarEvidenciasDetalle(
     }
 
 
+    const baseUrl =
+        document
+            .querySelector('base')
+            ?.href
+        || `${window.location.origin}/`;
+
+
     evidencias.forEach(
         (evidencia, indice) => {
 
-            const item =
-                document.createElement(
-                    'div'
+            const idEvidencia =
+                Number(
+                    evidencia.id_evidencia
+                    || 0
                 );
 
 
-            item.className =
-                'detalle-evidencia__item';
+            if (
+                !Number.isInteger(idEvidencia)
+                || idEvidencia <= 0
+            ) {
+                return;
+            }
 
 
             const nombre =
@@ -1161,52 +1169,111 @@ function renderizarEvidenciasDetalle(
                 ).trim();
 
 
-            const extension =
-                String(
-                    evidencia.extension
-                    || ''
-                )
-                    .trim()
-                    .toUpperCase();
+            const urlImagen =
+                new URL(
+                    `asuntos-internos/reportes/evidencia/${idEvidencia}`,
+                    baseUrl
+                ).toString();
+
+
+            const item =
+                document.createElement(
+                    'div'
+                );
+
+
+            item.className =
+                'detalle-evidencia__item';
 
 
             item.innerHTML = `
 
-                <div class="detalle-evidencia__icono">
+                <button
+                    type="button"
+                    class="detalle-evidencia__preview"
+                    title="Ver evidencia"
+                >
 
-                    <span>
-                        ${escaparHtmlDetalle(
-                            extension || 'IMG'
-                        )}
-                    </span>
+                    <img
+                        src="${escaparHtmlDetalle(urlImagen)}"
+                        alt="${escaparHtmlDetalle(nombre)}"
+                        loading="lazy"
+                    >
 
-                </div>
+                </button>
 
 
                 <div class="detalle-evidencia__contenido">
 
                     <strong
                         class="detalle-evidencia__nombre"
-                        title="${escaparHtmlDetalle(nombre)}">
-
+                        title="${escaparHtmlDetalle(nombre)}"
+                    >
                         ${escaparHtmlDetalle(nombre)}
-
                     </strong>
+
 
                     <span class="detalle-evidencia__tipo">
                         ${escaparHtmlDetalle(tipo)}
                     </span>
 
+
+                    <button
+                        type="button"
+                        class="detalle-evidencia__ver"
+                    >
+                        Ver imagen
+                    </button>
+
                 </div>
 
 
                 <div class="detalle-evidencia__numero">
-
                     ${String(indice + 1).padStart(2, '0')}
-
                 </div>
 
             `;
+
+
+            const botonPreview =
+                item.querySelector(
+                    '.detalle-evidencia__preview'
+                );
+
+
+            const botonVer =
+                item.querySelector(
+                    '.detalle-evidencia__ver'
+                );
+
+
+            const abrirImagen = () => {
+
+                window.open(
+                    urlImagen,
+                    '_blank',
+                    'noopener,noreferrer'
+                );
+
+            };
+
+
+            if (botonPreview) {
+
+                botonPreview.addEventListener(
+                    'click',
+                    abrirImagen
+                );
+            }
+
+
+            if (botonVer) {
+
+                botonVer.addEventListener(
+                    'click',
+                    abrirImagen
+                );
+            }
 
 
             lista.appendChild(

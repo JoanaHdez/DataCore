@@ -121,4 +121,9 @@ $routes->group('asuntos-internos/reportes', static function ($routes) {
         'detalle/(:num)',
         '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::detalleReporte/$1'
     );
+
+    $routes->get(
+        'evidencia/(:num)',
+        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::verEvidencia/$1'
+    );
 });
