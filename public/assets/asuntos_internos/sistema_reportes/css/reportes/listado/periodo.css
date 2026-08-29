@@ -188,6 +188,28 @@
     background: #fff5f5;
 }
 
+.reportes-periodo__button--primary {
+    color: #fff;
+    background: #1584c8;
+    border-color: #1584c8;
+}
+
+
+.reportes-periodo__button--secondary {
+    color: #425b72;
+    background: #fff;
+
+    border: 1px solid #cdd9e3;
+}
+
+
+.reportes-periodo__button--secondary:hover {
+    color: #173554;
+    background: #f5f8fb;
+
+    border-color: #aebfce;
+}
+
 /* =========================================================
    RESPONSIVE
 ========================================================= */

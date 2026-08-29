@@ -1,162 +1,564 @@
-document.addEventListener('DOMContentLoaded', () => {
-    inicializarPeriodo();
-});
+document.addEventListener(
+    'DOMContentLoaded',
+    () => {
+
+        inicializarPeriodo();
+
+    }
+);
+
+
+/* =========================================================
+   INICIALIZAR
+========================================================= */
 
 function inicializarPeriodo() {
-    const fechaInicio = document.querySelector('#fecha_inicio');
-    const fechaFin = document.querySelector('#fecha_fin');
-    const botonAplicar = document.querySelector('#btn-aplicar-periodo');
 
-    if (!fechaInicio || !fechaFin || !botonAplicar) {
+    const fechaInicio =
+        document.querySelector(
+            '#fecha_inicio'
+        );
+
+
+    const fechaFin =
+        document.querySelector(
+            '#fecha_fin'
+        );
+
+
+    const botonAplicar =
+        document.querySelector(
+            '#btn-aplicar-periodo'
+        );
+
+
+    const botonLimpiar =
+        document.querySelector(
+            '#btn-limpiar-filtros'
+        );
+
+
+    if (
+        !fechaInicio
+        || !fechaFin
+        || !botonAplicar
+        || !botonLimpiar
+    ) {
         return;
     }
 
-    botonAplicar.addEventListener('click', () => {
-        const inicio = fechaInicio.value;
-        const fin = fechaFin.value;
 
-        limpiarErroresPeriodo();
+    /* =====================================================
+       APLICAR PERIODO
+    ===================================================== */
 
-        if (!inicio && !fin) {
-            mostrarErrorPeriodo(
-                'Selecciona al menos una fecha para realizar la consulta.'
+    botonAplicar.addEventListener(
+        'click',
+        () => {
+
+            const inicio =
+                fechaInicio.value;
+
+
+            const fin =
+                fechaFin.value;
+
+
+            limpiarErroresPeriodo();
+
+
+            if (
+                !inicio
+                && !fin
+            ) {
+
+                mostrarErrorPeriodo(
+                    'Selecciona al menos una fecha para realizar la consulta.'
+                );
+
+
+                return;
+            }
+
+
+            if (
+                inicio
+                && fin
+                && inicio > fin
+            ) {
+
+                mostrarErrorPeriodo(
+                    'La fecha inicial no puede ser posterior a la fecha final.'
+                );
+
+
+                return;
+            }
+
+
+            const detalle = {
+
+                fechaInicio:
+                    inicio,
+
+                fechaFin:
+                    fin,
+
+            };
+
+
+            document.dispatchEvent(
+                new CustomEvent(
+                    'periodoReportesAplicado',
+                    {
+                        detail:
+                            detalle,
+                    }
+                )
             );
 
-            return;
-        }
 
-        if (inicio && fin && inicio > fin) {
-            mostrarErrorPeriodo(
-                'La fecha inicial no puede ser posterior a la fecha final.'
+            mostrarPeriodoSeleccionado(
+                inicio,
+                fin
             );
 
-            return;
         }
+    );
 
-        const detalle = {
-            fechaInicio: inicio,
-            fechaFin: fin,
-        };
 
-        document.dispatchEvent(
-            new CustomEvent(
-                'periodoReportesAplicado',
+    /* =====================================================
+       LIMPIAR TODOS LOS FILTROS
+    ===================================================== */
+
+    botonLimpiar.addEventListener(
+        'click',
+        () => {
+
+            limpiarTodosLosFiltros(
+                fechaInicio,
+                fechaFin
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   LIMPIAR TODOS LOS FILTROS
+========================================================= */
+
+function limpiarTodosLosFiltros(
+    fechaInicio,
+    fechaFin
+) {
+
+    /* =====================================================
+       PERIODO
+    ===================================================== */
+
+    fechaInicio.value =
+        '';
+
+
+    fechaFin.value =
+        '';
+
+
+    limpiarErroresPeriodo();
+
+
+    const resultadoPeriodo =
+        document.querySelector(
+            '[data-periodo-resultado]'
+        );
+
+
+    resultadoPeriodo?.remove();
+
+
+    /* =====================================================
+       BUSCADOR GENERAL
+    ===================================================== */
+
+    const buscador =
+        document.querySelector(
+            '#filtro_busqueda'
+        );
+
+
+    if (buscador) {
+
+        buscador.value =
+            '';
+
+
+        buscador.dispatchEvent(
+            new Event(
+                'input',
                 {
-                    detail: detalle,
+                    bubbles:
+                        true,
                 }
             )
         );
 
-        mostrarPeriodoSeleccionado(
-            inicio,
-            fin
+    }
+
+
+    /* =====================================================
+       SELECTS DE FILTROS
+    ===================================================== */
+
+    const selects =
+        document.querySelectorAll(
+            `
+            .reportes-filtros select,
+            [data-filtro-reporte] select
+            `
         );
-    });
+
+
+    selects.forEach(
+        (select) => {
+
+            select.selectedIndex =
+                0;
+
+
+            select.dispatchEvent(
+                new Event(
+                    'change',
+                    {
+                        bubbles:
+                            true,
+                    }
+                )
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       INPUTS DE FILTROS
+    ===================================================== */
+
+    const inputs =
+        document.querySelectorAll(
+            `
+            .reportes-filtros
+            input:not([type="button"]):not([type="submit"]),
+
+            [data-filtro-reporte]
+            input:not([type="button"]):not([type="submit"])
+            `
+        );
+
+
+    inputs.forEach(
+        (input) => {
+
+            /*
+             * El buscador ya fue limpiado arriba.
+             */
+            if (
+                input.id ===
+                'filtro_busqueda'
+            ) {
+                return;
+            }
+
+
+            switch (
+                input.type
+            ) {
+
+                case 'checkbox':
+
+                case 'radio':
+
+                    input.checked =
+                        false;
+
+                    break;
+
+
+                default:
+
+                    input.value =
+                        '';
+
+                    break;
+
+            }
+
+
+            input.dispatchEvent(
+                new Event(
+                    'input',
+                    {
+                        bubbles:
+                            true,
+                    }
+                )
+            );
+
+
+            input.dispatchEvent(
+                new Event(
+                    'change',
+                    {
+                        bubbles:
+                            true,
+                    }
+                )
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       INFORMAR QUE YA NO HAY PERIODO
+    ===================================================== */
+
+    document.dispatchEvent(
+        new CustomEvent(
+            'periodoReportesAplicado',
+            {
+                detail: {
+
+                    fechaInicio:
+                        '',
+
+                    fechaFin:
+                        '',
+
+                },
+            }
+        )
+    );
+
+
+    /* =====================================================
+       EVENTO GLOBAL
+    ===================================================== */
+
+    /*
+     * Este evento nos servirá también para que otros
+     * módulos como filtros.js, paginacion.js o resumen.js
+     * puedan reaccionar al limpiar completamente el listado.
+     */
+
+    document.dispatchEvent(
+        new CustomEvent(
+            'filtrosReportesLimpiados'
+        )
+    );
+
 }
 
+
+/* =========================================================
+   MOSTRAR PERIODO SELECCIONADO
+========================================================= */
 
 function mostrarPeriodoSeleccionado(
     fechaInicio,
     fechaFin
 ) {
+
     const contenedor =
-        document.querySelector('.reportes-periodo');
+        document.querySelector(
+            '.reportes-periodo'
+        );
+
 
     if (!contenedor) {
         return;
     }
 
+
     let mensaje =
-        contenedor.querySelector('[data-periodo-resultado]');
+        contenedor.querySelector(
+            '[data-periodo-resultado]'
+        );
+
 
     if (!mensaje) {
-        mensaje = document.createElement('div');
+
+        mensaje =
+            document.createElement(
+                'div'
+            );
+
 
         mensaje.className =
             'reportes-periodo__resultado';
 
-        mensaje.dataset.periodoResultado = '';
+
+        mensaje.dataset.periodoResultado =
+            '';
+
 
         const body =
             contenedor.querySelector(
                 '.reportes-periodo__body'
             );
 
-        body?.after(mensaje);
+
+        body?.after(
+            mensaje
+        );
+
     }
 
-    if (fechaInicio && fechaFin) {
+
+    if (
+        fechaInicio
+        && fechaFin
+    ) {
+
         mensaje.textContent =
             `Periodo seleccionado: `
             + `${formatearFecha(fechaInicio)} al `
             + `${formatearFecha(fechaFin)}`;
 
+
         return;
     }
 
+
     if (fechaInicio) {
+
         mensaje.textContent =
             `Desde: ${formatearFecha(fechaInicio)}`;
 
+
         return;
     }
 
+
     mensaje.textContent =
         `Hasta: ${formatearFecha(fechaFin)}`;
+
 }
 
 
-function mostrarErrorPeriodo(mensaje) {
+/* =========================================================
+   ERROR
+========================================================= */
+
+function mostrarErrorPeriodo(
+    mensaje
+) {
+
     const contenedor =
-        document.querySelector('.reportes-periodo');
+        document.querySelector(
+            '.reportes-periodo'
+        );
+
 
     if (!contenedor) {
         return;
     }
 
+
     let error =
-        contenedor.querySelector('[data-periodo-error]');
+        contenedor.querySelector(
+            '[data-periodo-error]'
+        );
+
 
     if (!error) {
-        error = document.createElement('div');
+
+        error =
+            document.createElement(
+                'div'
+            );
+
 
         error.className =
             'reportes-periodo__error';
 
-        error.dataset.periodoError = '';
+
+        error.dataset.periodoError =
+            '';
+
 
         const body =
             contenedor.querySelector(
                 '.reportes-periodo__body'
             );
 
-        body?.after(error);
+
+        body?.after(
+            error
+        );
+
     }
 
-    error.textContent = mensaje;
+
+    error.textContent =
+        mensaje;
+
 }
 
+
+/* =========================================================
+   LIMPIAR ERROR
+========================================================= */
 
 function limpiarErroresPeriodo() {
+
     const error =
-        document.querySelector('[data-periodo-error]');
+        document.querySelector(
+            '[data-periodo-error]'
+        );
+
 
     error?.remove();
+
 }
 
 
-function formatearFecha(fecha) {
+/* =========================================================
+   FORMATEAR FECHA
+========================================================= */
+
+function formatearFecha(
+    fecha
+) {
+
     if (!fecha) {
         return '';
     }
 
-    const partes = fecha.split('-');
 
-    if (partes.length !== 3) {
+    const partes =
+        fecha.split(
+            '-'
+        );
+
+
+    if (
+        partes.length !== 3
+    ) {
         return fecha;
     }
 
-    const [anio, mes, dia] = partes;
+
+    const [
+        anio,
+        mes,
+        dia,
+    ] =
+        partes;
+
 
     return `${dia}/${mes}/${anio}`;
+
 }
