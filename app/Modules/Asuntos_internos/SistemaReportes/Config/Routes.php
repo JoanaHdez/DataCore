@@ -116,4 +116,9 @@ $routes->group('asuntos-internos/reportes', static function ($routes) {
         'guardar',
         '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::guardarReporte'
     );
+
+    $routes->get(
+        'detalle/(:num)',
+        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::detalleReporte/$1'
+    );
 });

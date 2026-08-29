@@ -13,44 +13,227 @@ class Reportes_Controller extends BaseController
 {
     public function index()
     {
+        /* =========================================================
+        CONEXIÓN DATACORE
+        ========================================================= */
 
-        $reportes = [
-            [
-                'folio' => 'AI-2026-001',
-                'fecha_queja' => '25/08/2026',
-                'expediente' => 'CAI/001/2026',
-                'clasificacion' => 'Queja',
-                'quejoso' => 'Ciudadano de prueba',
-                'area' => 'Seguridad Ciudadana',
-                'turno' => 'Primer turno',
-                'resolucion' => 'En proceso',
-            ],
-            [
-                'folio' => 'AI-2026-002',
-                'fecha_queja' => '24/08/2026',
-                'expediente' => 'CAI/002/2026',
-                'clasificacion' => 'Denuncia',
-                'quejoso' => 'Usuario de prueba',
-                'area' => 'Tránsito',
-                'turno' => 'Segundo turno',
-                'resolucion' => 'Finalizado',
-            ],
-            [
-                'folio' => 'AI-2026-003',
-                'fecha_queja' => '23/08/2026',
-                'expediente' => 'CAI/003/2026',
-                'clasificacion' => 'Queja',
-                'quejoso' => 'Persona de prueba',
-                'area' => 'Seguridad Ciudadana',
-                'turno' => 'Primer turno',
-                'resolucion' => 'En proceso',
-            ],
-        ];
+        $db =
+            \Config\Database::connect(
+                'datacore'
+            );
+
+
+        /* =========================================================
+        CONSULTAR REPORTES
+        ========================================================= */
+
+        $reportes =
+            $db
+            ->table('ai_reportes r')
+            ->select([
+                'r.id_reporte',
+                'r.folio',
+                'r.fecha_queja',
+                'r.expediente',
+                'r.clasificacion',
+                'r.nombre_quejoso',
+                'r.resolucion',
+                'r.estado_actual',
+                'r.created_at',
+            ])
+            ->where(
+                'r.eliminado',
+                0
+            )
+            ->orderBy(
+                'r.id_reporte',
+                'DESC'
+            )
+            ->get()
+            ->getResultArray();
+
+
+        /* =========================================================
+        PERSONAL RELACIONADO
+        ========================================================= */
+
+        foreach ($reportes as &$reporte) {
+
+            $personal =
+                $db
+                ->table('ai_reporte_personal')
+                ->select([
+                    'nombre_snapshot',
+                    'area_snapshot',
+                    'turno_snapshot',
+                ])
+                ->where(
+                    'id_reporte',
+                    $reporte['id_reporte']
+                )
+                ->orderBy(
+                    'id_reporte_personal',
+                    'ASC'
+                )
+                ->get()
+                ->getResultArray();
+
+
+            /*
+         * Conservamos todo el personal porque más adelante
+         * lo necesitaremos para detalle, filtros y edición.
+         */
+            $reporte['personal'] =
+                $personal;
+
+
+            /*
+         * Por ahora la tabla principal necesita un valor
+         * simple para Área y Turno.
+         *
+         * Si hay varias personas relacionadas, obtenemos
+         * los valores únicos y los mostramos separados.
+         */
+
+            $areas = [];
+
+            $turnos = [];
+
+
+            foreach ($personal as $persona) {
+
+                $area =
+                    trim(
+                        (string)
+                        ($persona['area_snapshot'] ?? '')
+                    );
+
+                $turno =
+                    trim(
+                        (string)
+                        ($persona['turno_snapshot'] ?? '')
+                    );
+
+
+                if (
+                    $area !== ''
+                    && !in_array(
+                        $area,
+                        $areas,
+                        true
+                    )
+                ) {
+                    $areas[] = $area;
+                }
+
+
+                if (
+                    $turno !== ''
+                    && !in_array(
+                        $turno,
+                        $turnos,
+                        true
+                    )
+                ) {
+                    $turnos[] = $turno;
+                }
+            }
+
+
+            $reporte['area'] =
+                !empty($areas)
+                ? implode(', ', $areas)
+                : '—';
+
+
+            $reporte['turno'] =
+                !empty($turnos)
+                ? implode(', ', $turnos)
+                : '—';
+
+
+            /* =====================================================
+            ADAPTAR CAMPOS A LA VISTA ACTUAL
+            ===================================================== */
+
+            $reporte['quejoso'] =
+                trim(
+                    (string)
+                    ($reporte['nombre_quejoso'] ?? '')
+                );
+
+
+            /*
+         * Mientras la tabla siga utilizando "resolucion",
+         * mostramos primero la resolución real y, si todavía
+         * no existe, utilizamos el estado actual.
+         */
+
+            $resolucion =
+                trim(
+                    (string)
+                    ($reporte['resolucion'] ?? '')
+                );
+
+
+            if ($resolucion === '') {
+
+                $resolucion =
+                    trim(
+                        (string)
+                        ($reporte['estado_actual'] ?? '')
+                    );
+            }
+
+
+            $reporte['resolucion'] =
+                $resolucion !== ''
+                ? $resolucion
+                : '—';
+
+
+            /* =====================================================
+            FECHA PARA LA VISTA
+            ===================================================== */
+
+            $fechaQueja =
+                trim(
+                    (string)
+                    ($reporte['fecha_queja'] ?? '')
+                );
+
+
+            if ($fechaQueja !== '') {
+
+                $fecha =
+                    \DateTime::createFromFormat(
+                        'Y-m-d',
+                        $fechaQueja
+                    );
+
+
+                if ($fecha !== false) {
+
+                    $reporte['fecha_queja'] =
+                        $fecha->format(
+                            'd/m/Y'
+                        );
+                }
+            }
+        }
+
+        unset($reporte);
+
+
+        /* =========================================================
+        VISTA
+        ========================================================= */
 
         return view(
             'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\index',
             [
-                'reportes' => $reportes,
+                'reportes' =>
+                $reportes,
             ]
         );
     }
@@ -253,6 +436,375 @@ class Reportes_Controller extends BaseController
                     'success' => false,
                     'message' =>
                     'No fue posible guardar el reporte.',
+                ]);
+        }
+    }
+
+    public function detalleReporte(int $idReporte)
+    {
+        /* =========================================================
+        VALIDAR SESIÓN
+        ========================================================= */
+
+        if (
+            session()->get('reportes_autenticado') !== true
+            || !session()->has('usuario_reportes')
+        ) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La sesión no es válida.',
+                ]);
+        }
+
+
+        if ($idReporte <= 0) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'El reporte solicitado no es válido.',
+                ]);
+        }
+
+
+        try {
+
+            /* =====================================================
+            DATACORE
+            ===================================================== */
+
+            $db =
+                \Config\Database::connect(
+                    'datacore'
+                );
+
+
+            /* =====================================================
+            REPORTE PRINCIPAL
+            ===================================================== */
+
+            $reporte =
+                $db
+                ->table('ai_reportes')
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->get()
+                ->getRowArray();
+
+
+            if (!$reporte) {
+
+                return $this->response
+                    ->setStatusCode(404)
+                    ->setJSON([
+                        'success' => false,
+                        'message' => 'El reporte no existe.',
+                    ]);
+            }
+
+
+            /* =====================================================
+            PERSONAL
+            ===================================================== */
+
+            $personal =
+                $db
+                ->table('ai_reporte_personal')
+                ->select([
+                    'plantilla_id',
+                    'perscod',
+                    'nombre_snapshot',
+                    'area_snapshot',
+                    'turno_snapshot',
+                ])
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->orderBy(
+                    'id_reporte_personal',
+                    'ASC'
+                )
+                ->get()
+                ->getResultArray();
+
+
+            /*
+         * La nómina no se guarda actualmente como snapshot,
+         * así que la consultamos en plantilla.
+         */
+            $dbPlantilla =
+                \Config\Database::connect(
+                    'plantilla'
+                );
+
+
+            foreach ($personal as &$persona) {
+
+                $plantillaId =
+                    (int) (
+                        $persona['plantilla_id']
+                        ?? 0
+                    );
+
+
+                $nomina =
+                    '';
+
+
+                if ($plantillaId > 0) {
+
+                    $registroPlantilla =
+                        $dbPlantilla
+                        ->table('plantilla')
+                        ->select(
+                            'NO_NOMINA'
+                        )
+                        ->where(
+                            'ID',
+                            $plantillaId
+                        )
+                        ->get()
+                        ->getRowArray();
+
+
+                    if ($registroPlantilla) {
+
+                        $nomina =
+                            trim(
+                                (string)
+                                ($registroPlantilla['NO_NOMINA'] ?? '')
+                            );
+                    }
+                }
+
+
+                $perscod =
+                    trim(
+                        (string)
+                        ($persona['perscod'] ?? '')
+                    );
+
+
+                $foto =
+                    null;
+
+
+                if ($perscod !== '') {
+
+                    $foto =
+                        'http://10.8.6.2:8083/dgsc/images/fotos/'
+                        . rawurlencode($perscod)
+                        . '/F.F.R.E.jpg';
+                }
+
+
+                $persona = [
+
+                    'id' =>
+                    $plantillaId,
+
+                    'perscod' =>
+                    $perscod,
+
+                    'nombre' =>
+                    $persona['nombre_snapshot']
+                        ?? '',
+
+                    'nomina' =>
+                    $nomina,
+
+                    'area' =>
+                    $persona['area_snapshot']
+                        ?? '',
+
+                    'turno' =>
+                    $persona['turno_snapshot']
+                        ?? '',
+
+                    'foto' =>
+                    $foto,
+
+                ];
+            }
+
+            unset($persona);
+
+
+            /* =====================================================
+            UNIDADES
+            ===================================================== */
+
+            $unidades =
+                $db
+                ->table('ai_reporte_unidades u')
+                ->select([
+                    'u.parque_vehicular_id',
+                    'u.no_economico_snapshot',
+                    'u.placas_snapshot',
+                    'u.marca_snapshot',
+                    'u.submarca_snapshot',
+                    'u.color_snapshot',
+                    'u.estatus_snapshot',
+                    'u.servicio_snapshot',
+                    'u.tipo_snapshot',
+                    'o.clave AS origen',
+                ])
+                ->join(
+                    'ai_cat_origen_unidad o',
+                    'o.id_origen = u.id_origen',
+                    'left'
+                )
+                ->where(
+                    'u.id_reporte',
+                    $idReporte
+                )
+                ->orderBy(
+                    'u.id_reporte_unidad',
+                    'ASC'
+                )
+                ->get()
+                ->getResultArray();
+
+
+            $unidades =
+                array_map(
+                    static function (array $unidad): array {
+
+                        return [
+
+                            'id' =>
+                            (int) (
+                                $unidad['parque_vehicular_id']
+                                ?? 0
+                            ),
+
+                            'no_economico' =>
+                            $unidad['no_economico_snapshot']
+                                ?? '',
+
+                            'placas' =>
+                            $unidad['placas_snapshot']
+                                ?? '',
+
+                            'marca' =>
+                            $unidad['marca_snapshot']
+                                ?? '',
+
+                            'submarca' =>
+                            $unidad['submarca_snapshot']
+                                ?? '',
+
+                            'color' =>
+                            $unidad['color_snapshot']
+                                ?? '',
+
+                            'estatus' =>
+                            $unidad['estatus_snapshot']
+                                ?? '',
+
+                            'servicio' =>
+                            $unidad['servicio_snapshot']
+                                ?? '',
+
+                            'tipo' =>
+                            $unidad['tipo_snapshot']
+                                ?? '',
+
+                            'origen' =>
+                            $unidad['origen']
+                                ?? '',
+
+                        ];
+                    },
+                    $unidades
+                );
+
+
+            /* =====================================================
+            EVIDENCIAS
+            ===================================================== */
+
+            $evidencias =
+                $db
+                ->table('ai_reporte_evidencias')
+                ->select([
+                    'id_evidencia',
+                    'nombre_original',
+                    'nombre_archivo',
+                    'ruta_archivo',
+                    'extension',
+                    'mime_type',
+                    'tamano_bytes',
+                    'orden',
+                ])
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->orderBy(
+                    'orden',
+                    'ASC'
+                )
+                ->get()
+                ->getResultArray();
+
+
+            /* =====================================================
+            RESPUESTA
+            ===================================================== */
+
+            return $this->response
+                ->setJSON([
+                    'success' => true,
+
+                    'reporte' =>
+                    $reporte,
+
+                    'personal' =>
+                    $personal,
+
+                    'unidades' =>
+                    $unidades,
+
+                    'evidencias' =>
+                    $evidencias,
+                ]);
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error consultando detalle del reporte {id}: {mensaje}',
+                [
+                    'id' =>
+                    $idReporte,
+
+                    'mensaje' =>
+                    $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'No fue posible consultar el detalle del reporte.',
                 ]);
         }
     }
