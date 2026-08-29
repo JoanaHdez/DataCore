@@ -9,10 +9,19 @@ import {
    Listado - Eliminar reporte
 ========================================================= */
 
-document.addEventListener('DOMContentLoaded', () => {
-    inicializarEliminarReporte();
-});
+document.addEventListener(
+    'DOMContentLoaded',
+    () => {
 
+        inicializarEliminarReporte();
+
+    }
+);
+
+
+/* =========================================================
+   INICIALIZAR
+========================================================= */
 
 function inicializarEliminarReporte() {
 
@@ -21,30 +30,36 @@ function inicializarEliminarReporte() {
             '.reportes-page[data-usuario-rol]'
         );
 
+
     const modalUsuario =
         document.querySelector(
             '#modal-eliminar-reporte'
         );
+
 
     const formularioUsuario =
         document.querySelector(
             '#form-eliminar-reporte'
         );
 
+
     const inputPassword =
         document.querySelector(
             '#eliminar-reporte-password'
         );
+
 
     const mensajeUsuario =
         document.querySelector(
             '#eliminar-reporte-mensaje'
         );
 
+
     const modalAdmin =
         document.querySelector(
             '#modal-confirmar-eliminacion-reporte'
         );
+
 
     const formularioAdmin =
         document.querySelector(
@@ -66,12 +81,22 @@ function inicializarEliminarReporte() {
 
 
     const rolUsuario =
-        pagina.dataset.usuarioRol
-        ?? 'usuario';
+        String(
+            pagina.dataset.usuarioRol
+            ?? 'usuario'
+        ).trim();
 
 
-    let filaActual = null;
-    let folioActual = '';
+    let filaActual =
+        null;
+
+
+    let folioActual =
+        '';
+
+
+    let idReporteActual =
+        0;
 
 
     /* =====================================================
@@ -94,10 +119,33 @@ function inicializarEliminarReporte() {
 
 
             const fila =
-                boton.closest('tr');
+                boton.closest(
+                    'tr'
+                );
 
 
             if (!fila) {
+                return;
+            }
+
+
+            const idReporte =
+                Number(
+                    boton.dataset.idReporte
+                    || fila.dataset.idReporte
+                    || 0
+                );
+
+
+            if (
+                !Number.isInteger(idReporte)
+                || idReporte <= 0
+            ) {
+
+                console.error(
+                    'No fue posible identificar el reporte a eliminar.'
+                );
+
                 return;
             }
 
@@ -106,20 +154,27 @@ function inicializarEliminarReporte() {
                 fila;
 
 
+            idReporteActual =
+                idReporte;
+
+
             folioActual =
-                boton.dataset.folio
-                || fila
-                    .querySelector('td')
-                    ?.textContent
-                    .trim()
-                || '';
+                String(
+                    boton.dataset.folio
+                    || fila
+                        .querySelector('td')
+                        ?.textContent
+                    || ''
+                ).trim();
 
 
             /* =============================================
                ADMIN
             ============================================== */
 
-            if (rolUsuario === 'admin') {
+            if (
+                rolUsuario === 'admin'
+            ) {
 
                 prepararModalConfirmacionAdmin(
                     modalAdmin,
@@ -186,8 +241,7 @@ function inicializarEliminarReporte() {
             );
 
 
-            filaActual = null;
-            folioActual = '';
+            limpiarEstado();
 
         }
     );
@@ -217,8 +271,7 @@ function inicializarEliminarReporte() {
             );
 
 
-            filaActual = null;
-            folioActual = '';
+            limpiarEstado();
 
         }
     );
@@ -232,7 +285,9 @@ function inicializarEliminarReporte() {
         'keydown',
         (evento) => {
 
-            if (evento.key !== 'Escape') {
+            if (
+                evento.key !== 'Escape'
+            ) {
                 return;
             }
 
@@ -254,8 +309,8 @@ function inicializarEliminarReporte() {
                 );
 
 
-                filaActual = null;
-                folioActual = '';
+                limpiarEstado();
+
 
                 return;
             }
@@ -272,8 +327,7 @@ function inicializarEliminarReporte() {
                 );
 
 
-                filaActual = null;
-                folioActual = '';
+                limpiarEstado();
 
             }
 
@@ -282,8 +336,8 @@ function inicializarEliminarReporte() {
 
 
     /* =====================================================
-    USUARIO NORMAL
-    VALIDAR CONTRASEÑA ADMIN
+       USUARIO NORMAL
+       AUTORIZAR + ELIMINAR REAL
     ===================================================== */
 
     formularioUsuario.addEventListener(
@@ -296,13 +350,15 @@ function inicializarEliminarReporte() {
             if (
                 !filaActual
                 || !folioActual
+                || idReporteActual <= 0
             ) {
                 return;
             }
 
 
             const password =
-                inputPassword.value.trim();
+                inputPassword.value
+                    .trim();
 
 
             if (!password) {
@@ -315,6 +371,7 @@ function inicializarEliminarReporte() {
 
 
                 inputPassword.focus();
+
 
                 return;
             }
@@ -337,8 +394,9 @@ function inicializarEliminarReporte() {
                 botonSubmit.disabled =
                     true;
 
+
                 botonSubmit.textContent =
-                    'Validando...';
+                    'Eliminando...';
 
             }
 
@@ -348,6 +406,15 @@ function inicializarEliminarReporte() {
 
 
             try {
+
+                /*
+                 * Ya no necesitamos hacer primero una
+                 * autorización separada.
+                 *
+                 * El propio endpoint eliminarReporte()
+                 * vuelve a validar la contraseña del admin
+                 * antes de hacer el borrado lógico.
+                 */
 
                 const formData =
                     new FormData();
@@ -359,95 +426,34 @@ function inicializarEliminarReporte() {
                 );
 
 
-                /*
-                 * CSRF
-                 */
-                const csrf =
-                    formularioUsuario.querySelector(
-                        'input[type="hidden"]'
+                agregarCsrf(
+                    formularioUsuario,
+                    formData
+                );
+
+
+                const resultado =
+                    await eliminarReporteBackend(
+                        idReporteActual,
+                        formData
                     );
 
 
                 if (
-                    csrf
-                    && csrf.name
-                    && csrf.value
+                    !resultado
+                    || resultado.success !== true
                 ) {
-
-                    formData.append(
-                        csrf.name,
-                        csrf.value
-                    );
-
-                }
-
-
-                const respuesta =
-                    await fetch(
-                        `${window.location.origin}/asuntos-internos/reportes/listado/autorizar-eliminacion`,
-                        {
-                            method: 'POST',
-
-                            body: formData,
-
-                            headers: {
-                                'X-Requested-With':
-                                    'XMLHttpRequest',
-                            },
-                        }
-                    );
-
-
-                let datos = null;
-
-
-                try {
-
-                    datos =
-                        await respuesta.json();
-
-                } catch {
 
                     throw new Error(
-                        'El servidor devolvió una respuesta no válida.'
+                        resultado?.message
+                        || 'No fue posible eliminar el reporte.'
                     );
-
                 }
 
-
-                /* =============================================
-                   AUTORIZACIÓN RECHAZADA
-                ============================================== */
-
-                if (
-                    !respuesta.ok
-                    || !datos.success
-                ) {
-
-                    mostrarMensajeUsuario(
-                        mensajeUsuario,
-                        datos.message
-                        ?? 'No fue posible autorizar la eliminación.',
-                        'error'
-                    );
-
-
-                    inputPassword.value =
-                        '';
-
-
-                    inputPassword.focus();
-
-                    return;
-                }
-
-
-                /* =============================================
-                   AUTORIZACIÓN CORRECTA
-                ============================================== */
 
                 const folioEliminado =
-                    folioActual;
+                    resultado.folio
+                    || folioActual;
 
 
                 eliminarFilaTemporal(
@@ -469,8 +475,7 @@ function inicializarEliminarReporte() {
                 );
 
 
-                filaActual = null;
-                folioActual = '';
+                limpiarEstado();
 
 
                 mostrarNotificacionEliminado(
@@ -481,16 +486,24 @@ function inicializarEliminarReporte() {
             } catch (error) {
 
                 console.error(
-                    'Error autorizando eliminación:',
+                    'Error eliminando reporte:',
                     error
                 );
 
 
                 mostrarMensajeUsuario(
                     mensajeUsuario,
-                    'No fue posible validar la autorización. Inténtalo nuevamente.',
+                    error.message
+                    || 'No fue posible eliminar el reporte.',
                     'error'
                 );
+
+
+                inputPassword.value =
+                    '';
+
+
+                inputPassword.focus();
 
 
             } finally {
@@ -499,6 +512,7 @@ function inicializarEliminarReporte() {
 
                     botonSubmit.disabled =
                         false;
+
 
                     botonSubmit.textContent =
                         textoOriginal;
@@ -513,12 +527,12 @@ function inicializarEliminarReporte() {
 
     /* =====================================================
        ADMIN
-       CONFIRMACIÓN DIRECTA
+       ELIMINACIÓN DIRECTA REAL
     ===================================================== */
 
     formularioAdmin.addEventListener(
         'submit',
-        (evento) => {
+        async (evento) => {
 
             evento.preventDefault();
 
@@ -526,37 +540,266 @@ function inicializarEliminarReporte() {
             if (
                 !filaActual
                 || !folioActual
+                || idReporteActual <= 0
             ) {
                 return;
             }
 
 
-            const folioEliminado =
-                folioActual;
+            const botonSubmit =
+                formularioAdmin.querySelector(
+                    'button[type="submit"]'
+                );
 
 
-            eliminarFilaTemporal(
-                filaActual
-            );
+            const textoOriginal =
+                botonSubmit
+                    ? botonSubmit.textContent
+                    : 'Eliminar reporte';
 
 
-            actualizarListadoDespuesEliminar();
+            if (botonSubmit) {
+
+                botonSubmit.disabled =
+                    true;
 
 
-            cerrarModal(
-                modalAdmin
-            );
+                botonSubmit.textContent =
+                    'Eliminando...';
+
+            }
 
 
-            filaActual = null;
-            folioActual = '';
+            try {
+
+                const formData =
+                    new FormData();
 
 
-            mostrarNotificacionEliminado(
-                folioEliminado
-            );
+                agregarCsrf(
+                    formularioAdmin,
+                    formData
+                );
+
+
+                const resultado =
+                    await eliminarReporteBackend(
+                        idReporteActual,
+                        formData
+                    );
+
+
+                if (
+                    !resultado
+                    || resultado.success !== true
+                ) {
+
+                    throw new Error(
+                        resultado?.message
+                        || 'No fue posible eliminar el reporte.'
+                    );
+                }
+
+
+                const folioEliminado =
+                    resultado.folio
+                    || folioActual;
+
+
+                eliminarFilaTemporal(
+                    filaActual
+                );
+
+
+                actualizarListadoDespuesEliminar();
+
+
+                cerrarModal(
+                    modalAdmin
+                );
+
+
+                limpiarEstado();
+
+
+                mostrarNotificacionEliminado(
+                    folioEliminado
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    'Error eliminando reporte:',
+                    error
+                );
+
+
+                window.alert(
+                    error.message
+                    || 'No fue posible eliminar el reporte.'
+                );
+
+
+            } finally {
+
+                if (botonSubmit) {
+
+                    botonSubmit.disabled =
+                        false;
+
+
+                    botonSubmit.textContent =
+                        textoOriginal;
+
+                }
+
+            }
 
         }
+    );
+
+
+    /* =====================================================
+       LIMPIAR ESTADO
+    ===================================================== */
+
+    function limpiarEstado() {
+
+        filaActual =
+            null;
+
+
+        folioActual =
+            '';
+
+
+        idReporteActual =
+            0;
+
+    }
+
+}
+
+
+/* =========================================================
+   ELIMINAR REPORTE EN BACKEND
+========================================================= */
+
+async function eliminarReporteBackend(
+    idReporte,
+    formData
+) {
+
+    const baseUrl =
+        obtenerBaseUrlEliminar();
+
+
+    const url =
+        new URL(
+            `asuntos-internos/reportes/listado/eliminar/${idReporte}`,
+            baseUrl
+        );
+
+
+    const respuesta =
+        await fetch(
+            url.toString(),
+            {
+                method:
+                    'POST',
+
+                headers: {
+                    Accept:
+                        'application/json',
+
+                    'X-Requested-With':
+                        'XMLHttpRequest',
+                },
+
+                credentials:
+                    'same-origin',
+
+                body:
+                    formData,
+            }
+        );
+
+
+    let datos =
+        null;
+
+
+    try {
+
+        datos =
+            await respuesta.json();
+
+    } catch (error) {
+
+        throw new Error(
+            'El servidor devolvió una respuesta no válida.'
+        );
+
+    }
+
+
+    if (!respuesta.ok) {
+
+        throw new Error(
+            datos?.message
+            || 'No fue posible eliminar el reporte.'
+        );
+
+    }
+
+
+    return datos;
+
+}
+
+
+/* =========================================================
+   AGREGAR CSRF
+========================================================= */
+
+function agregarCsrf(
+    formulario,
+    formData
+) {
+
+    if (
+        !formulario
+        || !(formData instanceof FormData)
+    ) {
+        return;
+    }
+
+
+    /*
+     * Buscamos únicamente un hidden con nombre.
+     * Así conservamos el comportamiento que ya
+     * tenía este módulo.
+     */
+
+    const csrf =
+        formulario.querySelector(
+            'input[type="hidden"][name]'
+        );
+
+
+    if (
+        !csrf
+        || !csrf.name
+        || !csrf.value
+    ) {
+        return;
+    }
+
+
+    formData.append(
+        csrf.name,
+        csrf.value
     );
 
 }
@@ -671,12 +914,16 @@ function limpiarModalUsuario(
     mensaje
 ) {
 
-    inputPassword.value = '';
+    inputPassword.value =
+        '';
 
 
-    mensaje.textContent = '';
+    mensaje.textContent =
+        '';
 
-    mensaje.hidden = true;
+
+    mensaje.hidden =
+        true;
 
 
     mensaje.classList.remove(
@@ -789,7 +1036,7 @@ function cerrarModal(
 
 
 /* =========================================================
-   ELIMINAR FILA TEMPORAL
+   QUITAR FILA DESPUÉS DE CONFIRMACIÓN REAL
 ========================================================= */
 
 function eliminarFilaTemporal(
@@ -800,6 +1047,16 @@ function eliminarFilaTemporal(
         return;
     }
 
+
+    /*
+     * Ojo:
+     *
+     * A estas alturas el backend ya hizo el
+     * borrado lógico real.
+     *
+     * Aquí solamente retiramos la fila de la
+     * interfaz para evitar recargar toda la página.
+     */
 
     fila.remove();
 
@@ -824,7 +1081,8 @@ function actualizarListadoDespuesEliminar() {
             new Event(
                 'input',
                 {
-                    bubbles: true,
+                    bubbles:
+                        true,
                 }
             )
         );
@@ -856,17 +1114,26 @@ function actualizarTablaVacia() {
 
     const filas =
         Array.from(
-            tbody.querySelectorAll('tr')
-        ).filter((fila) => {
+            tbody.querySelectorAll(
+                'tr'
+            )
+        )
+            .filter(
+                (fila) => {
 
-            return !fila.classList.contains(
-                'reportes-tabla__empty'
+                    return !fila
+                        .classList
+                        .contains(
+                            'reportes-tabla__empty'
+                        );
+
+                }
             );
 
-        });
 
-
-    if (filas.length > 0) {
+    if (
+        filas.length > 0
+    ) {
         return;
     }
 
@@ -925,8 +1192,12 @@ function mostrarNotificacionEliminado(
 ) {
 
     mostrarResultado({
-        tipo: 'success',
-        titulo: 'Reporte eliminado',
+        tipo:
+            'success',
+
+        titulo:
+            'Reporte eliminado',
+
         mensaje:
             `El reporte ${folio} fue eliminado correctamente.`,
     });
@@ -939,6 +1210,22 @@ function mostrarNotificacionEliminado(
 
         },
         2000
+    );
+
+}
+
+
+/* =========================================================
+   BASE URL
+========================================================= */
+
+function obtenerBaseUrlEliminar() {
+
+    return (
+        document
+            .querySelector('base')
+            ?.href
+        || `${window.location.origin}/`
     );
 
 }

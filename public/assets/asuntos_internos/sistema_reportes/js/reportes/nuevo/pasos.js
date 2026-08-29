@@ -195,6 +195,48 @@ function inicializarFormularioPorPasos() {
 
     }
 
+    /* =====================================================
+       LIMPIAR VALIDACIÓN DE FOLIO AL MODIFICARLO
+    ===================================================== */
+
+    const inputNumeroFolio =
+        formulario.querySelector(
+            '#numero_folio'
+        );
+
+
+    const mensajeFolio =
+        formulario.querySelector(
+            '#folio-validacion-mensaje'
+        );
+
+
+    if (inputNumeroFolio) {
+
+        inputNumeroFolio.addEventListener(
+            'input',
+            () => {
+
+                /*
+                 * Al cambiar el folio eliminamos cualquier
+                 * error personalizado de la consulta anterior.
+                 */
+                inputNumeroFolio.setCustomValidity(
+                    ''
+                );
+
+
+                if (mensajeFolio) {
+
+                    mensajeFolio.textContent =
+                        'Captura únicamente el número correspondiente al folio.';
+
+                }
+
+            }
+        );
+
+    }
 
     /* =====================================================
        SIGUIENTE
@@ -202,7 +244,7 @@ function inicializarFormularioPorPasos() {
 
     botonSiguiente.addEventListener(
         'click',
-        () => {
+        async () => {
 
             if (
                 guardando
@@ -224,6 +266,9 @@ function inicializarFormularioPorPasos() {
             }
 
 
+            /*
+             * Validaciones normales del paso.
+             */
             if (
                 !validarPasoActual(
                     paso
@@ -244,6 +289,26 @@ function inicializarFormularioPorPasos() {
                 )
             ) {
                 return;
+            }
+
+
+            /*
+             * PASO 1:
+             * Validar que el folio no exista
+             * previamente en la base de datos.
+             */
+            if (
+                pasoActual === 1
+            ) {
+
+                const folioDisponible =
+                    await validarFolioDisponible();
+
+
+                if (!folioDisponible) {
+                    return;
+                }
+
             }
 
 
@@ -534,7 +599,7 @@ function obtenerPaso(
 
         }
     )
-    || null;
+        || null;
 
 }
 
@@ -621,21 +686,22 @@ function validarPasoActual(
     mostrarError = true
 ) {
 
-    const camposObligatorios =
-    Array.from(
-        paso.querySelectorAll(
-            `
-            input[required]:not([data-validacion-dinamica]),
-            select[required]:not([data-validacion-dinamica]),
-            textarea[required]:not([data-validacion-dinamica])
-            `
-        )
-    );
+    const camposValidables =
+        Array.from(
+            paso.querySelectorAll(
+                `
+                input[required]:not([data-validacion-dinamica]),
+                input[type="email"]:not([data-validacion-dinamica]),
+                select[required]:not([data-validacion-dinamica]),
+                textarea[required]:not([data-validacion-dinamica])
+                `
+            )
+        );
 
 
     for (
         const campo
-        of camposObligatorios
+        of camposValidables
     ) {
 
         /*
@@ -861,9 +927,8 @@ function construirUrlGuardar() {
     }
 
 
-    return `${
-        window.location.origin
-    }/asuntos-internos/reportes/guardar`;
+    return `${window.location.origin
+        }/asuntos-internos/reportes/guardar`;
 
 }
 
@@ -940,4 +1005,145 @@ function actualizarIndicadoresGuardados(
         }
     );
 
+}
+
+async function validarFolioDisponible() {
+
+    const input =
+        document.querySelector(
+            '#numero_folio'
+        );
+
+
+    const mensaje =
+        document.querySelector(
+            '#folio-validacion-mensaje'
+        );
+
+
+    if (!input) {
+        return true;
+    }
+
+
+    const numero =
+        String(
+            input.value
+            || ''
+        ).trim();
+
+
+    if (numero === '') {
+        return false;
+    }
+
+
+    const folio =
+        `QJ-${numero}`;
+
+
+    try {
+
+        const url =
+            new URL(
+                'asuntos-internos/reportes/validar-folio',
+                `${window.location.origin}/`
+            );
+
+
+        url.searchParams.set(
+            'folio',
+            folio
+        );
+
+
+        const respuesta =
+            await fetch(
+                url.toString(),
+                {
+                    headers: {
+                        Accept:
+                            'application/json',
+                    },
+
+                    credentials:
+                        'same-origin',
+                }
+            );
+
+
+        const datos =
+            await respuesta.json();
+
+
+        if (
+            !respuesta.ok
+            || datos.success !== true
+        ) {
+
+            throw new Error(
+                datos.message
+                || 'No fue posible validar el folio.'
+            );
+        }
+
+
+        if (datos.existe) {
+
+            input.setCustomValidity(
+                'Este folio ya está registrado.'
+            );
+
+
+            if (mensaje) {
+
+                mensaje.textContent =
+                    `El folio ${folio} ya está registrado.`;
+
+            }
+
+
+            input.reportValidity();
+
+            input.focus();
+
+
+            return false;
+        }
+
+
+        input.setCustomValidity(
+            ''
+        );
+
+
+        if (mensaje) {
+
+            mensaje.textContent =
+                `El folio ${folio} está disponible.`;
+
+        }
+
+
+        return true;
+
+
+    } catch (error) {
+
+        console.error(
+            'Error validando folio:',
+            error
+        );
+
+
+        input.setCustomValidity(
+            'No fue posible validar el folio.'
+        );
+
+
+        input.reportValidity();
+
+
+        return false;
+    }
 }

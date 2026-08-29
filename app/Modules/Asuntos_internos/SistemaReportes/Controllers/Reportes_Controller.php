@@ -3151,4 +3151,93 @@ class Reportes_Controller extends BaseController
                 ]);
         }
     }
+
+    public function validarFolio()
+    {
+        if (
+            session()->get('reportes_autenticado') !== true
+            || !session()->has('usuario_reportes')
+        ) {
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La sesión no es válida.',
+                ]);
+        }
+
+
+        $folio =
+            trim(
+                (string)
+                $this->request->getGet(
+                    'folio'
+                )
+            );
+
+
+        if ($folio === '') {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'El folio es obligatorio.',
+                ]);
+        }
+
+
+        try {
+
+            $db =
+                \Config\Database::connect(
+                    'datacore'
+                );
+
+
+            $existe =
+                $db
+                ->table('ai_reportes')
+                ->select('id_reporte')
+                ->where(
+                    'folio',
+                    $folio
+                )
+                ->get()
+                ->getRowArray();
+
+
+            return $this->response
+                ->setJSON([
+                    'success' => true,
+
+                    'existe' =>
+                    !empty($existe),
+
+                    'message' =>
+                    !empty($existe)
+                        ? 'Ya existe un reporte registrado con este folio.'
+                        : 'El folio está disponible.',
+                ]);
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error validando folio de reporte: {mensaje}',
+                [
+                    'mensaje' =>
+                    $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'No fue posible validar el folio.',
+                ]);
+        }
+    }
 }

@@ -142,4 +142,9 @@ $routes->group('asuntos-internos/reportes', static function ($routes) {
         'seguimientos/(:num)',
         '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::guardarSeguimiento/$1'
     );
+
+    $routes->get(
+        'validar-folio',
+        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::validarFolio'
+    );
 });

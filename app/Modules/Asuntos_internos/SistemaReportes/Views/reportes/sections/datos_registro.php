@@ -53,7 +53,7 @@
                 <input type="text" id="numero_folio" name="numero_folio" class="report-input"
                     placeholder="Ingresa el número de folio" autocomplete="off" required>
 
-                <small class="report-field__help">
+                <small class="report-field__help" id="folio-validacion-mensaje">
                     Captura únicamente el número correspondiente al folio.
                 </small>
 
