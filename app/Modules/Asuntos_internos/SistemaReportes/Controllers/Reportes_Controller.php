@@ -474,7 +474,7 @@ class Reportes_Controller extends BaseController
         try {
 
             /* =====================================================
-            DATACORE
+            CONEXIÓN DATACORE
             ===================================================== */
 
             $db =
@@ -490,6 +490,52 @@ class Reportes_Controller extends BaseController
             $reporte =
                 $db
                 ->table('ai_reportes')
+                ->select([
+                    'id_reporte',
+                    'folio',
+                    'fecha_registro',
+                    'folio_ip',
+                    'fecha_queja',
+                    'fecha_acuerdo',
+                    'expediente',
+                    'nomenclatura',
+                    'numero_oficio',
+
+                    'fecha_hechos',
+                    'hora_hechos',
+                    'descripcion_hechos',
+
+                    'calle',
+                    'numero_exterior',
+                    'colonia',
+                    'entre_calle',
+                    'y_calle',
+                    'municipio',
+                    'estado',
+                    'sector',
+                    'cuadrante',
+                    'latitud',
+                    'longitud',
+                    'origen_ubicacion',
+
+                    'nombre_quejoso',
+                    'edad_quejoso',
+                    'genero_quejoso',
+                    'telefono_quejoso',
+                    'correo_quejoso',
+
+                    'clasificacion',
+                    'inspector',
+                    'investigador',
+                    'quien_emite_resolucion',
+                    'resolucion',
+                    'motivos',
+                    'estado_actual',
+                    'observaciones',
+
+                    'created_at',
+                    'updated_at',
+                ])
                 ->where(
                     'id_reporte',
                     $idReporte
@@ -508,7 +554,8 @@ class Reportes_Controller extends BaseController
                     ->setStatusCode(404)
                     ->setJSON([
                         'success' => false,
-                        'message' => 'El reporte no existe.',
+                        'message' =>
+                        'El reporte no existe.',
                     ]);
             }
 
@@ -517,10 +564,11 @@ class Reportes_Controller extends BaseController
             PERSONAL
             ===================================================== */
 
-            $personal =
+            $personalBD =
                 $db
                 ->table('ai_reporte_personal')
                 ->select([
+                    'id_reporte_personal',
                     'plantilla_id',
                     'perscod',
                     'nombre_snapshot',
@@ -539,22 +587,31 @@ class Reportes_Controller extends BaseController
                 ->getResultArray();
 
 
-            /*
-         * La nómina no se guarda actualmente como snapshot,
-         * así que la consultamos en plantilla.
-         */
+            $personal =
+                [];
+
+
             $dbPlantilla =
                 \Config\Database::connect(
                     'plantilla'
                 );
 
 
-            foreach ($personal as &$persona) {
+            foreach ($personalBD as $persona) {
 
                 $plantillaId =
                     (int) (
                         $persona['plantilla_id']
                         ?? 0
+                    );
+
+
+                $perscod =
+                    trim(
+                        (string) (
+                            $persona['perscod']
+                            ?? ''
+                        )
                     );
 
 
@@ -564,7 +621,7 @@ class Reportes_Controller extends BaseController
 
                 if ($plantillaId > 0) {
 
-                    $registroPlantilla =
+                    $personaPlantilla =
                         $dbPlantilla
                         ->table('plantilla')
                         ->select(
@@ -578,22 +635,17 @@ class Reportes_Controller extends BaseController
                         ->getRowArray();
 
 
-                    if ($registroPlantilla) {
+                    if ($personaPlantilla) {
 
                         $nomina =
                             trim(
-                                (string)
-                                ($registroPlantilla['NO_NOMINA'] ?? '')
+                                (string) (
+                                    $personaPlantilla['NO_NOMINA']
+                                    ?? ''
+                                )
                             );
                     }
                 }
-
-
-                $perscod =
-                    trim(
-                        (string)
-                        ($persona['perscod'] ?? '')
-                    );
 
 
                 $foto =
@@ -609,7 +661,7 @@ class Reportes_Controller extends BaseController
                 }
 
 
-                $persona = [
+                $personal[] = [
 
                     'id' =>
                     $plantillaId,
@@ -638,17 +690,16 @@ class Reportes_Controller extends BaseController
                 ];
             }
 
-            unset($persona);
-
 
             /* =====================================================
             UNIDADES
             ===================================================== */
 
-            $unidades =
+            $unidadesBD =
                 $db
                 ->table('ai_reporte_unidades u')
                 ->select([
+                    'u.id_reporte_unidad',
                     'u.parque_vehicular_id',
                     'u.no_economico_snapshot',
                     'u.placas_snapshot',
@@ -658,6 +709,7 @@ class Reportes_Controller extends BaseController
                     'u.estatus_snapshot',
                     'u.servicio_snapshot',
                     'u.tipo_snapshot',
+                    'u.id_origen',
                     'o.clave AS origen',
                 ])
                 ->join(
@@ -678,57 +730,57 @@ class Reportes_Controller extends BaseController
 
 
             $unidades =
-                array_map(
-                    static function (array $unidad): array {
+                [];
 
-                        return [
 
-                            'id' =>
-                            (int) (
-                                $unidad['parque_vehicular_id']
-                                ?? 0
-                            ),
+            foreach ($unidadesBD as $unidad) {
 
-                            'no_economico' =>
-                            $unidad['no_economico_snapshot']
-                                ?? '',
+                $unidades[] = [
 
-                            'placas' =>
-                            $unidad['placas_snapshot']
-                                ?? '',
+                    'id' =>
+                    (int) (
+                        $unidad['parque_vehicular_id']
+                        ?? 0
+                    ),
 
-                            'marca' =>
-                            $unidad['marca_snapshot']
-                                ?? '',
+                    'no_economico' =>
+                    $unidad['no_economico_snapshot']
+                        ?? '',
 
-                            'submarca' =>
-                            $unidad['submarca_snapshot']
-                                ?? '',
+                    'placas' =>
+                    $unidad['placas_snapshot']
+                        ?? '',
 
-                            'color' =>
-                            $unidad['color_snapshot']
-                                ?? '',
+                    'marca' =>
+                    $unidad['marca_snapshot']
+                        ?? '',
 
-                            'estatus' =>
-                            $unidad['estatus_snapshot']
-                                ?? '',
+                    'submarca' =>
+                    $unidad['submarca_snapshot']
+                        ?? '',
 
-                            'servicio' =>
-                            $unidad['servicio_snapshot']
-                                ?? '',
+                    'color' =>
+                    $unidad['color_snapshot']
+                        ?? '',
 
-                            'tipo' =>
-                            $unidad['tipo_snapshot']
-                                ?? '',
+                    'estatus' =>
+                    $unidad['estatus_snapshot']
+                        ?? '',
 
-                            'origen' =>
-                            $unidad['origen']
-                                ?? '',
+                    'servicio' =>
+                    $unidad['servicio_snapshot']
+                        ?? '',
 
-                        ];
-                    },
-                    $unidades
-                );
+                    'tipo' =>
+                    $unidad['tipo_snapshot']
+                        ?? '',
+
+                    'origen' =>
+                    $unidad['origen']
+                        ?? '',
+
+                ];
+            }
 
 
             /* =====================================================
@@ -747,6 +799,7 @@ class Reportes_Controller extends BaseController
                     'mime_type',
                     'tamano_bytes',
                     'orden',
+                    'created_at',
                 ])
                 ->where(
                     'id_reporte',
@@ -760,6 +813,10 @@ class Reportes_Controller extends BaseController
                     'orden',
                     'ASC'
                 )
+                ->orderBy(
+                    'id_evidencia',
+                    'ASC'
+                )
                 ->get()
                 ->getResultArray();
 
@@ -770,7 +827,9 @@ class Reportes_Controller extends BaseController
 
             return $this->response
                 ->setJSON([
-                    'success' => true,
+
+                    'success' =>
+                    true,
 
                     'reporte' =>
                     $reporte,
@@ -783,6 +842,7 @@ class Reportes_Controller extends BaseController
 
                     'evidencias' =>
                     $evidencias,
+
                 ]);
         } catch (\Throwable $e) {
 

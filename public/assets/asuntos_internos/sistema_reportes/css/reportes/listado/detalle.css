@@ -568,6 +568,246 @@
     border-top: 1px solid #e6edf3;
 }
 
+/* =========================================================
+   DETALLE - EVIDENCIAS
+========================================================= */
+
+.detalle-evidencia {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(260px, 1fr)
+        );
+
+    gap: 14px;
+
+    padding: 22px;
+}
+
+
+/* =========================================================
+   ITEM
+========================================================= */
+
+.detalle-evidencia__item {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    min-width: 0;
+
+    padding: 14px 16px;
+
+    background: #f7fafd;
+
+    border: 1px solid #dce6ef;
+    border-radius: 10px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.detalle-evidencia__item:hover {
+    border-color: #b8d5e9;
+
+    box-shadow:
+        0 5px 14px
+        rgba(20, 70, 110, 0.08);
+
+    transform:
+        translateY(-1px);
+}
+
+
+/* =========================================================
+   ICONO
+========================================================= */
+
+.detalle-evidencia__icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 48px;
+
+    width: 48px;
+    height: 48px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #e8f4fc,
+            #dceef9
+        );
+
+    border: 1px solid #c9dfef;
+    border-radius: 10px;
+}
+
+
+.detalle-evidencia__icono span {
+    color: #0877bc;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 0.5px;
+}
+
+
+/* =========================================================
+   INFORMACIÓN
+========================================================= */
+
+.detalle-evidencia__contenido {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+
+    flex: 1;
+
+    min-width: 0;
+}
+
+
+.detalle-evidencia__nombre {
+    display: block;
+
+    overflow: hidden;
+
+    color: #173554;
+
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.35;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.detalle-evidencia__tipo {
+    color: #7b8a9b;
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   NÚMERO
+========================================================= */
+
+.detalle-evidencia__numero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 30px;
+
+    width: 30px;
+    height: 30px;
+
+    color: #1475bd;
+
+    background: #eaf5fc;
+
+    border-radius: 50%;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   ESTADO VACÍO
+========================================================= */
+
+.detalle-evidencia__vacio {
+    grid-column: 1 / -1;
+
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 16px;
+
+    color: #728196;
+
+    background: #f8fafc;
+
+    border: 1px dashed #cad8e5;
+    border-radius: 10px;
+}
+
+
+.detalle-evidencia__vacio-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 38px;
+
+    width: 38px;
+    height: 38px;
+
+    color: #1475bd;
+
+    background: #e8f3fb;
+
+    border-radius: 50%;
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+
+.detalle-evidencia__vacio strong {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: #173554;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+.detalle-evidencia__vacio span {
+    display: block;
+
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .detalle-evidencia {
+        grid-template-columns: 1fr;
+
+        padding: 16px;
+    }
+
+
+    .detalle-evidencia__item {
+        padding: 12px;
+    }
+
+}
 
 /* =========================================================
    RESPONSIVE

@@ -1,10 +1,21 @@
-document.addEventListener('DOMContentLoaded', () => {
-    inicializarDetalleReporte();
-});
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   Listado - Detalle real del reporte
+========================================================= */
+
+
+document.addEventListener(
+    'DOMContentLoaded',
+    () => {
+
+        inicializarDetalleReporte();
+
+    }
+);
 
 
 /* =========================================================
-   INICIALIZAR DETALLE
+   INICIALIZAR
 ========================================================= */
 
 function inicializarDetalleReporte() {
@@ -21,12 +32,12 @@ function inicializarDetalleReporte() {
 
 
     /* =====================================================
-       ABRIR DETALLE
+       ABRIR
     ===================================================== */
 
     document.addEventListener(
         'click',
-        (evento) => {
+        async (evento) => {
 
             const boton =
                 evento.target.closest(
@@ -39,18 +50,29 @@ function inicializarDetalleReporte() {
             }
 
 
-            const fila =
-                boton.closest('tr');
+            const idReporte =
+                Number(
+                    boton.dataset.idReporte
+                    || 0
+                );
 
 
-            if (!fila) {
+            if (
+                !Number.isInteger(idReporte)
+                || idReporte <= 0
+            ) {
+
+                console.error(
+                    'El reporte no contiene un id_reporte válido.'
+                );
+
                 return;
             }
 
 
-            abrirDetalleReporte(
+            await abrirDetalleReporte(
                 modal,
-                fila
+                idReporte
             );
 
         }
@@ -58,16 +80,13 @@ function inicializarDetalleReporte() {
 
 
     /* =====================================================
-       NAVEGACIÓN + CIERRE
+       NAVEGACIÓN Y CIERRE
     ===================================================== */
 
     modal.addEventListener(
         'click',
         (evento) => {
 
-            /*
-             * Navegación entre las 5 secciones.
-             */
             const botonSeccion =
                 evento.target.closest(
                     '[data-detalle-seccion]'
@@ -76,15 +95,11 @@ function inicializarDetalleReporte() {
 
             if (botonSeccion) {
 
-                const seccion =
-                    botonSeccion
-                        .dataset
-                        .detalleSeccion;
-
-
                 mostrarSeccionDetalle(
                     modal,
-                    seccion
+                    botonSeccion
+                        .dataset
+                        .detalleSeccion
                 );
 
 
@@ -92,9 +107,6 @@ function inicializarDetalleReporte() {
             }
 
 
-            /*
-             * Cerrar modal.
-             */
             const cerrar =
                 evento.target.closest(
                     '[data-cerrar-modal]'
@@ -115,7 +127,7 @@ function inicializarDetalleReporte() {
 
 
     /* =====================================================
-       CERRAR CON ESCAPE
+       ESCAPE
     ===================================================== */
 
     document.addEventListener(
@@ -145,101 +157,210 @@ function inicializarDetalleReporte() {
    ABRIR DETALLE
 ========================================================= */
 
-function abrirDetalleReporte(
+async function abrirDetalleReporte(
     modal,
-    fila
+    idReporte
 ) {
-
-    const celdas =
-        fila.querySelectorAll('td');
-
-
-    if (celdas.length < 8) {
-        return;
-    }
-
-
-    /* =====================================================
-       LIMPIAR INFORMACIÓN ANTERIOR
-    ===================================================== */
 
     limpiarDetalleReporte(
         modal
     );
 
 
-    /* =====================================================
-       DATOS TEMPORALES DISPONIBLES EN LA TABLA
-    ===================================================== */
+    mostrarSeccionDetalle(
+        modal,
+        'datos'
+    );
+
+
+    mostrarModalDetalle(
+        modal
+    );
+
+
+    try {
+
+        const datos =
+            await consultarDetalleReporte(
+                idReporte
+            );
+
+
+        if (
+            !datos
+            || datos.success !== true
+            || !datos.reporte
+        ) {
+
+            throw new Error(
+                datos?.message
+                || 'No fue posible consultar el reporte.'
+            );
+        }
+
+
+        cargarDetalleReporte(
+            modal,
+            datos
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            'Error consultando detalle:',
+            error
+        );
+
+
+        cerrarDetalleReporte(
+            modal
+        );
+
+
+        window.alert(
+            error.message
+            || 'No fue posible consultar el detalle del reporte.'
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CONSULTAR BACKEND
+========================================================= */
+
+async function consultarDetalleReporte(
+    idReporte
+) {
+
+    const baseUrl =
+        document
+            .querySelector('base')
+            ?.href
+        || `${window.location.origin}/`;
+
+
+    const url =
+        new URL(
+            `asuntos-internos/reportes/detalle/${idReporte}`,
+            baseUrl
+        );
+
+
+    const respuesta =
+        await fetch(
+            url.toString(),
+            {
+                method: 'GET',
+
+                headers: {
+                    Accept:
+                        'application/json',
+                },
+
+                credentials:
+                    'same-origin',
+            }
+        );
+
+
+    let datos = null;
+
+
+    try {
+
+        datos =
+            await respuesta.json();
+
+    } catch (error) {
+
+        throw new Error(
+            'El servidor devolvió una respuesta no válida.'
+        );
+
+    }
+
+
+    if (
+        !respuesta.ok
+    ) {
+
+        throw new Error(
+            datos?.message
+            || 'No fue posible consultar el reporte.'
+        );
+
+    }
+
+
+    return datos;
+
+}
+
+
+/* =========================================================
+   CARGAR DETALLE COMPLETO
+========================================================= */
+
+function cargarDetalleReporte(
+    modal,
+    datos
+) {
+
+    const reporte =
+        datos.reporte
+        || {};
+
+
+    const personal =
+        Array.isArray(
+            datos.personal
+        )
+            ? datos.personal
+            : [];
+
+
+    const unidades =
+        Array.isArray(
+            datos.unidades
+        )
+            ? datos.unidades
+            : [];
+
+
+    const evidencias =
+        Array.isArray(
+            datos.evidencias
+        )
+            ? datos.evidencias
+            : [];
+
 
     const folio =
-        celdas[0]
-            .textContent
-            .trim();
-
-    const fechaQueja =
-        celdas[1]
-            .textContent
-            .trim();
-
-    const expediente =
-        celdas[2]
-            .textContent
-            .trim();
-
-    const clasificacion =
-        celdas[3]
-            .textContent
-            .trim();
-
-    const quejoso =
-        celdas[4]
-            .textContent
-            .trim();
-
-    const area =
-        celdas[5]
-            .textContent
-            .trim();
-
-    const turno =
-        celdas[6]
-            .textContent
-            .trim();
-
-    const estado =
-        celdas[7]
-            .textContent
-            .trim();
-
-
-    /*
-     * Área y turno todavía están disponibles
-     * en la tabla actual.
-     *
-     * Los mantenemos por ahora porque otras
-     * partes temporales del listado pueden
-     * seguir utilizándolos.
-     */
-    void area;
-    void turno;
+        String(
+            reporte.folio
+            || ''
+        ).trim();
 
 
     /* =====================================================
-       HEADER DEL MODAL
+       HEADER
     ===================================================== */
 
     asignarTextoDetalle(
         modal,
         '#detalle-meta-expediente',
-        expediente
+        reporte.expediente
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-meta-estado',
-        estado
+        reporte.estado_actual
     );
 
 
@@ -252,13 +373,14 @@ function abrirDetalleReporte(
     if (titulo) {
 
         titulo.textContent =
-            `Reporte ${folio}`;
+            folio
+                ? `Reporte ${folio}`
+                : 'Reporte';
 
     }
 
 
     /* =====================================================
-       PASO 1
        DATOS DEL REPORTE
     ===================================================== */
 
@@ -280,14 +402,12 @@ function abrirDetalleReporte(
     );
 
 
-    /*
-     * Fecha de registro:
-     * todavía no viene en la tabla.
-     */
     asignarTextoDetalle(
         modal,
         '#detalle-fecha-registro',
-        ''
+        formatearFechaDetalle(
+            reporte.fecha_registro
+        )
     );
 
 
@@ -298,68 +418,75 @@ function abrirDetalleReporte(
     asignarTextoDetalle(
         modal,
         '#detalle-folio-ip',
-        ''
+        reporte.folio_ip
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-fecha-queja',
-        fechaQueja
+        formatearFechaDetalle(
+            reporte.fecha_queja
+        )
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-fecha-acuerdo',
-        ''
+        formatearFechaDetalle(
+            reporte.fecha_acuerdo
+        )
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-expediente',
-        expediente
+        reporte.expediente
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-nomenclatura',
-        ''
+        reporte.nomenclatura
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-no-oficio',
-        ''
+        reporte.numero_oficio
     );
 
 
     /* =====================================================
-       PASO 2
        DATOS DE LOS HECHOS
     ===================================================== */
 
     asignarTextoDetalle(
         modal,
         '#detalle-fecha-hechos',
-        ''
+        formatearFechaDetalle(
+            reporte.fecha_hechos
+        )
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-hora-hechos',
-        ''
+        formatearHoraDetalle(
+            reporte.hora_hechos
+        )
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-descripcion',
-        ''
+        reporte.descripcion_hechos
     );
 
 
@@ -370,112 +497,83 @@ function abrirDetalleReporte(
     asignarTextoDetalle(
         modal,
         '#detalle-calle',
-        ''
+        reporte.calle
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-numero',
-        ''
+        reporte.numero_exterior
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-colonia',
-        ''
+        reporte.colonia
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-entre-calle',
-        ''
+        reporte.entre_calle
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-y-calle',
-        ''
+        reporte.y_calle
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-municipio',
-        ''
+        reporte.municipio
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-estado',
-        ''
+        reporte.estado
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-sector',
-        ''
+        reporte.sector
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-cuadrante',
-        ''
+        reporte.cuadrante
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-latitud',
-        ''
+        reporte.latitud
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-longitud',
-        ''
+        reporte.longitud
     );
 
 
     /* =====================================================
-       PASO 3
        PERSONAL Y UNIDADES
     ===================================================== */
-
-    /*
-     * TEMPORAL:
-     *
-     * El listado todavía no está conectado a la BD.
-     *
-     * Cuando conectemos el detalle real del reporte,
-     * estos arrays vendrán del backend.
-     *
-     * Por ahora, si la fila contiene:
-     *
-     * data-personal="[...]"
-     * data-unidades="[...]"
-     *
-     * se podrán renderizar desde aquí.
-     */
-
-    const personal =
-        obtenerPersonalTemporal(
-            fila
-        );
-
-
-    const unidades =
-        obtenerUnidadesTemporales(
-            fila
-        );
-
 
     renderizarPersonalDetalle(
         modal,
@@ -490,89 +588,87 @@ function abrirDetalleReporte(
 
 
     /* =====================================================
-       PASO 4
        QUEJOSO
     ===================================================== */
 
     asignarTextoDetalle(
         modal,
         '#detalle-quejoso',
-        quejoso
+        reporte.nombre_quejoso
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-edad',
-        ''
+        reporte.edad_quejoso
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-genero',
-        ''
+        reporte.genero_quejoso
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-telefono',
-        ''
+        reporte.telefono_quejoso
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-correo',
-        ''
+        reporte.correo_quejoso
     );
 
 
     /* =====================================================
-       PASO 5
-       CLASIFICACIÓN Y SEGUIMIENTO
+       CLASIFICACIÓN
     ===================================================== */
 
     asignarTextoDetalle(
         modal,
         '#detalle-clasificacion',
-        clasificacion
+        reporte.clasificacion
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-inspector',
-        ''
+        reporte.inspector
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-investigador',
-        ''
+        reporte.investigador
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-quien-emite-resolucion',
-        ''
+        reporte.quien_emite_resolucion
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-resolucion',
-        estado
+        reporte.resolucion
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-motivos',
-        ''
+        reporte.motivos
     );
 
 
@@ -583,303 +679,24 @@ function abrirDetalleReporte(
     asignarTextoDetalle(
         modal,
         '#detalle-observaciones',
-        ''
+        reporte.observaciones
     );
 
 
     /* =====================================================
-       EVIDENCIA
+       EVIDENCIAS
     ===================================================== */
 
-    limpiarEvidenciaDetalle(
-        modal
-    );
-
-
-    /* =====================================================
-       SIEMPRE ABRIR EN PRIMERA PESTAÑA
-    ===================================================== */
-
-    mostrarSeccionDetalle(
+    renderizarEvidenciasDetalle(
         modal,
-        'datos'
-    );
-
-
-    /* =====================================================
-       MOSTRAR MODAL
-    ===================================================== */
-
-    modal.classList.add(
-        'modal-reporte--visible'
-    );
-
-
-    modal.setAttribute(
-        'aria-hidden',
-        'false'
-    );
-
-
-    document.body.classList.add(
-        'modal-abierto'
+        evidencias
     );
 
 }
 
 
 /* =========================================================
-   CAMBIAR SECCIÓN
-========================================================= */
-
-function mostrarSeccionDetalle(
-    modal,
-    seccion
-) {
-
-    const botones =
-        modal.querySelectorAll(
-            '[data-detalle-seccion]'
-        );
-
-
-    const paneles =
-        modal.querySelectorAll(
-            '[data-detalle-panel]'
-        );
-
-
-    /* =====================================================
-       BOTONES
-    ===================================================== */
-
-    botones.forEach(
-        (boton) => {
-
-            const esActivo =
-                boton
-                    .dataset
-                    .detalleSeccion
-                === seccion;
-
-
-            boton.classList.toggle(
-                'detalle-reporte-nav__item--active',
-                esActivo
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       PANELES
-    ===================================================== */
-
-    paneles.forEach(
-        (panel) => {
-
-            const esActivo =
-                panel
-                    .dataset
-                    .detallePanel
-                === seccion;
-
-
-            panel.classList.toggle(
-                'detalle-reporte-seccion--active',
-                esActivo
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       REINICIAR SCROLL INTERNO
-    ===================================================== */
-
-    const body =
-        modal.querySelector(
-            '.modal-reporte__body--detalle'
-        );
-
-
-    if (body) {
-
-        body.scrollTo({
-            top: 0,
-            behavior: 'smooth',
-        });
-
-    }
-
-}
-
-
-/* =========================================================
-   LIMPIAR DETALLE
-========================================================= */
-
-function limpiarDetalleReporte(
-    modal
-) {
-
-    const campos =
-        modal.querySelectorAll(
-            '.detalle-reporte-campo strong'
-        );
-
-
-    campos.forEach(
-        (campo) => {
-
-            campo.textContent =
-                '—';
-
-        }
-    );
-
-
-    /*
-     * Prefijo fijo.
-     */
-    const prefijo =
-        modal.querySelector(
-            '#detalle-prefijo'
-        );
-
-
-    if (prefijo) {
-
-        prefijo.textContent =
-            'QJ';
-
-    }
-
-
-    /*
-     * Limpiar personal.
-     */
-    renderizarPersonalDetalle(
-        modal,
-        []
-    );
-
-
-    /*
-     * Limpiar unidades.
-     */
-    renderizarUnidadesDetalle(
-        modal,
-        []
-    );
-
-
-    /*
-     * Limpiar evidencia.
-     */
-    limpiarEvidenciaDetalle(
-        modal
-    );
-
-}
-
-
-/* =========================================================
-   PERSONAL - DATOS TEMPORALES
-========================================================= */
-
-function obtenerPersonalTemporal(
-    fila
-) {
-
-    const contenido =
-        fila.dataset.personal;
-
-
-    if (!contenido) {
-        return [];
-    }
-
-
-    try {
-
-        const personal =
-            JSON.parse(
-                contenido
-            );
-
-
-        return Array.isArray(
-            personal
-        )
-            ? personal
-            : [];
-
-
-    } catch (error) {
-
-        console.error(
-            'No fue posible leer el personal del reporte:',
-            error
-        );
-
-
-        return [];
-    }
-
-}
-
-
-/* =========================================================
-   UNIDADES - DATOS TEMPORALES
-========================================================= */
-
-function obtenerUnidadesTemporales(
-    fila
-) {
-
-    const contenido =
-        fila.dataset.unidades;
-
-
-    if (!contenido) {
-        return [];
-    }
-
-
-    try {
-
-        const unidades =
-            JSON.parse(
-                contenido
-            );
-
-
-        return Array.isArray(
-            unidades
-        )
-            ? unidades
-            : [];
-
-
-    } catch (error) {
-
-        console.error(
-            'No fue posible leer las unidades del reporte:',
-            error
-        );
-
-
-        return [];
-    }
-
-}
-
-
-/* =========================================================
-   RENDERIZAR PERSONAL
+   PERSONAL
 ========================================================= */
 
 function renderizarPersonalDetalle(
@@ -955,8 +772,7 @@ function renderizarPersonalDetalle(
                 String(
                     persona.nomina
                     || ''
-                )
-                    .trim();
+                ).trim();
 
 
             const area =
@@ -977,22 +793,17 @@ function renderizarPersonalDetalle(
                     .toUpperCase();
 
 
-            const inicial =
-                nombre
-                    ? nombre.charAt(0)
-                    : '?';
-
-
-            /*
-             * Si posteriormente el backend manda
-             * la foto en Base64 o una URL válida,
-             * este mismo render la mostrará.
-             */
             const foto =
                 String(
                     persona.foto
                     || ''
                 ).trim();
+
+
+            const inicial =
+                nombre
+                    ? nombre.charAt(0)
+                    : '?';
 
 
             const fotoHtml =
@@ -1033,13 +844,11 @@ function renderizarPersonalDetalle(
                 </td>
 
                 <td>
-
                     <strong>
                         ${escaparHtmlDetalle(
                             nombre || '—'
                         )}
                     </strong>
-
                 </td>
 
                 <td>
@@ -1073,6 +882,7 @@ function renderizarPersonalDetalle(
     vacio.hidden =
         true;
 
+
     wrapper.hidden =
         false;
 
@@ -1080,7 +890,7 @@ function renderizarPersonalDetalle(
 
 
 /* =========================================================
-   RENDERIZAR UNIDADES
+   UNIDADES
 ========================================================= */
 
 function renderizarUnidadesDetalle(
@@ -1144,84 +954,57 @@ function renderizarUnidadesDetalle(
 
 
             const noEconomico =
-                String(
+                mayusculas(
                     unidad.no_economico
-                    || ''
-                )
-                    .trim()
-                    .toUpperCase();
+                );
 
 
             const placas =
-                String(
+                mayusculas(
                     unidad.placas
-                    || ''
-                )
-                    .trim()
-                    .toUpperCase();
+                );
 
 
             const marca =
-                String(
+                mayusculas(
                     unidad.marca
-                    || ''
-                )
-                    .trim()
-                    .toUpperCase();
+                );
 
 
             const submarca =
-                String(
+                mayusculas(
                     unidad.submarca
-                    || ''
-                )
-                    .trim()
-                    .toUpperCase();
+                );
 
 
             const color =
-                String(
+                mayusculas(
                     unidad.color
-                    || ''
-                )
-                    .trim()
-                    .toUpperCase();
+                );
 
 
             const estatus =
-                String(
+                mayusculas(
                     unidad.estatus
-                    || ''
-                )
-                    .trim()
-                    .toUpperCase();
+                );
 
 
             const servicio =
-                String(
+                mayusculas(
                     unidad.servicio
-                    || ''
-                )
-                    .trim()
-                    .toUpperCase();
+                );
 
 
             const tipo =
-                String(
+                mayusculas(
                     unidad.tipo
-                    || ''
-                )
-                    .trim()
-                    .toUpperCase();
+                );
 
 
             const origen =
-                String(
+                mayusculas(
                     unidad.origen
-                    || ''
-                )
-                    .trim()
-                    .toUpperCase();
+                );
 
 
             const marcaSubmarca =
@@ -1239,16 +1022,14 @@ function renderizarUnidadesDetalle(
 
                     <strong>
                         ${escaparHtmlDetalle(
-                            noEconomico
-                            || '—'
+                            noEconomico || '—'
                         )}
                     </strong>
 
                     <small class="detalle-unidades__placas">
                         Placas:
                         ${escaparHtmlDetalle(
-                            placas
-                            || '—'
+                            placas || '—'
                         )}
                     </small>
 
@@ -1256,43 +1037,37 @@ function renderizarUnidadesDetalle(
 
                 <td>
                     ${escaparHtmlDetalle(
-                        marcaSubmarca
-                        || '—'
+                        marcaSubmarca || '—'
                     )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                        color
-                        || '—'
+                        color || '—'
                     )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                        estatus
-                        || '—'
+                        estatus || '—'
                     )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                        servicio
-                        || '—'
+                        servicio || '—'
                     )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                        tipo
-                        || '—'
+                        tipo || '—'
                     )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                        origen
-                        || '—'
+                        origen || '—'
                     )}
                 </td>
             `;
@@ -1309,8 +1084,137 @@ function renderizarUnidadesDetalle(
     vacio.hidden =
         true;
 
+
     wrapper.hidden =
         false;
+
+}
+
+
+/* =========================================================
+   EVIDENCIAS
+========================================================= */
+
+/* =========================================================
+   EVIDENCIAS
+========================================================= */
+
+function renderizarEvidenciasDetalle(
+    modal,
+    evidencias
+) {
+
+    const lista =
+        modal.querySelector(
+            '#detalle-evidencia-lista'
+        );
+
+
+    if (!lista) {
+        return;
+    }
+
+
+    lista.innerHTML =
+        '';
+
+
+    if (
+        !Array.isArray(evidencias)
+        || evidencias.length === 0
+    ) {
+
+        limpiarEvidenciaDetalle(
+            modal
+        );
+
+        return;
+    }
+
+
+    evidencias.forEach(
+        (evidencia, indice) => {
+
+            const item =
+                document.createElement(
+                    'div'
+                );
+
+
+            item.className =
+                'detalle-evidencia__item';
+
+
+            const nombre =
+                String(
+                    evidencia.nombre_original
+                    || evidencia.nombre_archivo
+                    || `Evidencia ${indice + 1}`
+                ).trim();
+
+
+            const tipo =
+                String(
+                    evidencia.mime_type
+                    || evidencia.extension
+                    || 'Imagen'
+                ).trim();
+
+
+            const extension =
+                String(
+                    evidencia.extension
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            item.innerHTML = `
+
+                <div class="detalle-evidencia__icono">
+
+                    <span>
+                        ${escaparHtmlDetalle(
+                            extension || 'IMG'
+                        )}
+                    </span>
+
+                </div>
+
+
+                <div class="detalle-evidencia__contenido">
+
+                    <strong
+                        class="detalle-evidencia__nombre"
+                        title="${escaparHtmlDetalle(nombre)}">
+
+                        ${escaparHtmlDetalle(nombre)}
+
+                    </strong>
+
+                    <span class="detalle-evidencia__tipo">
+                        ${escaparHtmlDetalle(tipo)}
+                    </span>
+
+                </div>
+
+
+                <div class="detalle-evidencia__numero">
+
+                    ${String(indice + 1).padStart(2, '0')}
+
+                </div>
+
+            `;
+
+
+            lista.appendChild(
+                item
+            );
+
+        }
+    );
 
 }
 
@@ -1335,10 +1239,54 @@ function limpiarEvidenciaDetalle(
 
 
     lista.innerHTML = `
-        <div class="detalle-reporte-evidencia__vacio">
-            No hay evidencia fotográfica registrada.
+
+        <div class="detalle-evidencia__vacio">
+
+            <div class="detalle-evidencia__vacio-icono">
+                +
+            </div>
+
+            <div>
+
+                <strong>
+                    Sin evidencia
+                </strong>
+
+                <span>
+                    No hay evidencia fotográfica registrada.
+                </span>
+
+            </div>
+
         </div>
+
     `;
+
+}
+
+
+/* =========================================================
+   MOSTRAR MODAL
+========================================================= */
+
+function mostrarModalDetalle(
+    modal
+) {
+
+    modal.classList.add(
+        'modal-reporte--visible'
+    );
+
+
+    modal.setAttribute(
+        'aria-hidden',
+        'false'
+    );
+
+
+    document.body.classList.add(
+        'modal-abierto'
+    );
 
 }
 
@@ -1386,71 +1334,314 @@ function cerrarDetalleReporte(
 
 
 /* =========================================================
-   OBTENER PREFIJO DEL FOLIO
+   CAMBIAR SECCIÓN
+========================================================= */
+
+function mostrarSeccionDetalle(
+    modal,
+    seccion
+) {
+
+    const botones =
+        modal.querySelectorAll(
+            '[data-detalle-seccion]'
+        );
+
+
+    const paneles =
+        modal.querySelectorAll(
+            '[data-detalle-panel]'
+        );
+
+
+    botones.forEach(
+        (boton) => {
+
+            const activo =
+                boton
+                    .dataset
+                    .detalleSeccion
+                === seccion;
+
+
+            boton.classList.toggle(
+                'detalle-reporte-nav__item--active',
+                activo
+            );
+
+        }
+    );
+
+
+    paneles.forEach(
+        (panel) => {
+
+            const activo =
+                panel
+                    .dataset
+                    .detallePanel
+                === seccion;
+
+
+            panel.classList.toggle(
+                'detalle-reporte-seccion--active',
+                activo
+            );
+
+        }
+    );
+
+
+    const body =
+        modal.querySelector(
+            '.modal-reporte__body--detalle'
+        );
+
+
+    if (body) {
+
+        body.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
+
+    }
+
+}
+
+
+/* =========================================================
+   LIMPIAR
+========================================================= */
+
+function limpiarDetalleReporte(
+    modal
+) {
+
+    modal
+        .querySelectorAll(
+            '.detalle-reporte-campo strong'
+        )
+        .forEach(
+            (campo) => {
+
+                campo.textContent =
+                    '—';
+
+            }
+        );
+
+
+    const titulo =
+        modal.querySelector(
+            '#modal-detalle-titulo'
+        );
+
+
+    if (titulo) {
+
+        titulo.textContent =
+            'Reporte';
+
+    }
+
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-meta-expediente',
+        ''
+    );
+
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-meta-estado',
+        ''
+    );
+
+
+    renderizarPersonalDetalle(
+        modal,
+        []
+    );
+
+
+    renderizarUnidadesDetalle(
+        modal,
+        []
+    );
+
+
+    limpiarEvidenciaDetalle(
+        modal
+    );
+
+}
+
+
+/* =========================================================
+   FECHA
+========================================================= */
+
+function formatearFechaDetalle(
+    valor
+) {
+
+    const fecha =
+        String(
+            valor || ''
+        ).trim();
+
+
+    if (!fecha) {
+        return '';
+    }
+
+
+    const coincidencia =
+        fecha.match(
+            /^(\d{4})-(\d{2})-(\d{2})$/
+        );
+
+
+    if (!coincidencia) {
+        return fecha;
+    }
+
+
+    return `${coincidencia[3]}/${coincidencia[2]}/${coincidencia[1]}`;
+
+}
+
+
+/* =========================================================
+   HORA
+========================================================= */
+
+function formatearHoraDetalle(
+    valor
+) {
+
+    const hora =
+        String(
+            valor || ''
+        ).trim();
+
+
+    if (!hora) {
+        return '';
+    }
+
+
+    return hora.length >= 5
+        ? hora.substring(0, 5)
+        : hora;
+
+}
+
+
+/* =========================================================
+   FOLIO
 ========================================================= */
 
 function obtenerPrefijoFolio(
     folio
 ) {
 
-    if (!folio) {
+    const texto =
+        String(
+            folio || ''
+        ).trim();
+
+
+    if (!texto) {
         return 'QJ';
     }
 
 
     const partes =
-        folio.split('-');
+        texto.split('-');
 
 
-    if (
-        partes.length > 1
-    ) {
-
-        return partes[0];
-
-    }
-
-
-    return 'QJ';
+    return partes.length > 1
+        ? partes[0]
+        : 'QJ';
 
 }
 
-
-/* =========================================================
-   OBTENER NÚMERO DEL FOLIO
-========================================================= */
 
 function obtenerNumeroFolio(
     folio
 ) {
 
-    if (!folio) {
+    const texto =
+        String(
+            folio || ''
+        ).trim();
+
+
+    if (!texto) {
         return '';
     }
 
 
     const partes =
-        folio.split('-');
+        texto.split('-');
 
 
-    /*
-     * TEMPORAL.
-     *
-     * Cuando conectemos la BD utilizaremos
-     * directamente numero_folio.
-     */
-    if (
-        partes.length > 1
-    ) {
+    return partes.length > 1
+        ? partes.slice(1).join('-')
+        : texto;
 
-        return partes
-            .slice(1)
-            .join('-');
+}
 
+
+/* =========================================================
+   MAYÚSCULAS
+========================================================= */
+
+function mayusculas(
+    valor
+) {
+
+    return String(
+        valor ?? ''
+    )
+        .trim()
+        .toUpperCase();
+
+}
+
+
+/* =========================================================
+   ASIGNAR TEXTO
+========================================================= */
+
+function asignarTextoDetalle(
+    modal,
+    selector,
+    valor
+) {
+
+    const elemento =
+        modal.querySelector(
+            selector
+        );
+
+
+    if (!elemento) {
+        return;
     }
 
 
-    return folio;
+    const texto =
+        String(
+            valor ?? ''
+        ).trim();
+
+
+    elemento.textContent =
+        texto || '—';
 
 }
 
@@ -1486,38 +1677,5 @@ function escaparHtmlDetalle(
             "'",
             '&#039;'
         );
-
-}
-
-
-/* =========================================================
-   ASIGNAR TEXTO
-========================================================= */
-
-function asignarTextoDetalle(
-    modal,
-    selector,
-    valor
-) {
-
-    const elemento =
-        modal.querySelector(
-            selector
-        );
-
-
-    if (!elemento) {
-        return;
-    }
-
-
-    const texto =
-        String(
-            valor ?? ''
-        ).trim();
-
-
-    elemento.textContent =
-        texto || '—';
 
 }
