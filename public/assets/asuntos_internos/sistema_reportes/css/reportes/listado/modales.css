@@ -1747,6 +1747,173 @@ body.modal-abierto {
 }
 
 /* =========================================================
+   EDITAR - EVIDENCIAS
+========================================================= */
+
+.editar-evidencia__item {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    min-width: 0;
+
+    padding: 12px;
+
+    margin-bottom: 10px;
+
+    background: #f8fbfd;
+
+    border: 1px solid #dce6ef;
+    border-radius: 10px;
+}
+
+
+.editar-evidencia__preview {
+    flex: 0 0 90px;
+
+    width: 90px;
+    height: 68px;
+
+    padding: 0;
+
+    overflow: hidden;
+
+    background: #eef4f8;
+
+    border: 1px solid #d2e0e9;
+    border-radius: 8px;
+
+    cursor: pointer;
+}
+
+
+.editar-evidencia__preview img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+.editar-evidencia__contenido {
+    display: flex;
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 4px;
+
+    min-width: 0;
+
+    flex: 1;
+}
+
+
+.editar-evidencia__nombre {
+    display: block;
+
+    width: 100%;
+
+    overflow: hidden;
+
+    color: #173554;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.editar-evidencia__tipo {
+    color: #7b8998;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+}
+
+
+.editar-evidencia__acciones {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 4px;
+}
+
+
+.editar-evidencia__accion {
+    padding: 0;
+
+    background: transparent;
+
+    border: 0;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+.editar-evidencia__accion--ver {
+    color: #1475bd;
+}
+
+
+.editar-evidencia__accion--quitar {
+    color: #c84141;
+}
+
+
+.editar-evidencia__accion:hover {
+    text-decoration: underline;
+}
+
+
+.editar-evidencia__nueva-etiqueta {
+    display: inline-flex;
+
+    margin-top: 3px;
+
+    padding: 3px 7px;
+
+    color: #1475bd;
+
+    background: #eaf5fc;
+
+    border-radius: 20px;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+}
+
+
+.editar-evidencia__vacio {
+    display: block;
+
+    padding: 15px;
+
+    color: #7b8998;
+
+    background: #f8fafc;
+
+    border: 1px dashed #ccd9e4;
+    border-radius: 9px;
+
+    font-size: 10px;
+}
+
+/* =========================================================
    RESPONSIVE
 ========================================================= */
 
