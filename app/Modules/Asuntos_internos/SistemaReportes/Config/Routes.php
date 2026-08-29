@@ -131,4 +131,15 @@ $routes->group('asuntos-internos/reportes', static function ($routes) {
         'actualizar/(:num)',
         '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::actualizarReporte/$1'
     );
+
+    $routes->get(
+        'seguimientos/(:num)',
+        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::obtenerSeguimientos/$1'
+    );
+
+
+    $routes->post(
+        'seguimientos/(:num)',
+        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::guardarSeguimiento/$1'
+    );
 });

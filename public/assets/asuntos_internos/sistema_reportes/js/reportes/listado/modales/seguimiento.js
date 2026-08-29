@@ -1,22 +1,53 @@
 /* =========================================================
    SISTEMA DE REPORTES - ASUNTOS INTERNOS
-   Listado - Seguimiento
+   Listado - Seguimiento real
 ========================================================= */
-
-document.addEventListener('DOMContentLoaded', () => {
-    inicializarSeguimientoReporte();
-});
 
 
 /*
- * Historial temporal.
+ * =========================================================
+ * MAPA / UBICACIÓN
+ * =========================================================
  *
- * Cuando conectemos la BD,
- * este Map se sustituirá por los
- * registros reales del backend.
+ * PENDIENTE.
+ *
+ * Este módulo queda preparado para que posteriormente
+ * podamos integrar la ubicación del reporte y/o un mapa
+ * dentro del seguimiento.
+ *
+ * Por ahora no se implementa para no mezclar alcances.
  */
-const seguimientosTemporales =
-    new Map();
+
+
+document.addEventListener(
+    'DOMContentLoaded',
+    () => {
+
+        inicializarSeguimientoReporte();
+
+    }
+);
+
+
+/* =========================================================
+   ESTADO DEL MÓDULO
+========================================================= */
+
+const estadoSeguimiento = {
+
+    idReporte:
+        0,
+
+    filaActual:
+        null,
+
+    reporte:
+        null,
+
+    seguimientos:
+        [],
+
+};
 
 
 /* =========================================================
@@ -30,19 +61,19 @@ function inicializarSeguimientoReporte() {
             '#modal-seguimiento-reporte'
         );
 
+
     const formulario =
         document.querySelector(
             '#form-seguimiento-reporte'
         );
 
 
-    if (!modal || !formulario) {
+    if (
+        !modal
+        || !formulario
+    ) {
         return;
     }
-
-
-    let filaActual = null;
-    let folioActual = '';
 
 
     /* =====================================================
@@ -51,7 +82,7 @@ function inicializarSeguimientoReporte() {
 
     document.addEventListener(
         'click',
-        (evento) => {
+        async (evento) => {
 
             const boton =
                 evento.target.closest(
@@ -65,7 +96,9 @@ function inicializarSeguimientoReporte() {
 
 
             const fila =
-                boton.closest('tr');
+                boton.closest(
+                    'tr'
+                );
 
 
             if (!fila) {
@@ -73,51 +106,120 @@ function inicializarSeguimientoReporte() {
             }
 
 
-            const celdas =
-                fila.querySelectorAll('td');
+            const idReporte =
+                Number(
+                    boton.dataset.idReporte
+                    || fila.dataset.idReporte
+                    || 0
+                );
 
 
-            if (celdas.length < 8) {
+            if (
+                !Number.isInteger(idReporte)
+                || idReporte <= 0
+            ) {
+
+                console.error(
+                    'No fue posible identificar el reporte.'
+                );
+
                 return;
             }
 
 
-            filaActual =
-                fila;
+            boton.disabled =
+                true;
 
 
-            folioActual =
-                celdas[0]
-                    .textContent
-                    .trim();
+            try {
+
+                /* =================================================
+                   CONSULTAR BD
+                ================================================= */
+
+                const datos =
+                    await consultarSeguimientos(
+                        idReporte
+                    );
 
 
-            /*
-             * Si la fila ya tiene historial
-             * serializado, lo recuperamos.
-             */
-            restaurarSeguimientosDesdeFila(
-                filaActual,
-                folioActual
-            );
+                if (
+                    !datos
+                    || datos.success !== true
+                    || !datos.reporte
+                ) {
+
+                    throw new Error(
+                        datos?.message
+                        || 'No fue posible consultar el seguimiento.'
+                    );
+                }
 
 
-            cargarDatosSeguimiento(
-                modal,
-                formulario,
-                filaActual
-            );
+                /* =================================================
+                   ESTADO
+                ================================================= */
+
+                estadoSeguimiento.idReporte =
+                    idReporte;
 
 
-            cargarHistorialSeguimiento(
-                modal,
-                folioActual
-            );
+                estadoSeguimiento.filaActual =
+                    fila;
 
 
-            abrirModalSeguimiento(
-                modal
-            );
+                estadoSeguimiento.reporte =
+                    datos.reporte;
+
+
+                estadoSeguimiento.seguimientos =
+                    normalizarSeguimientos(
+                        datos.seguimientos
+                    );
+
+
+                /* =================================================
+                   CARGAR MODAL
+                ================================================= */
+
+                cargarDatosSeguimiento(
+                    modal,
+                    formulario,
+                    datos.reporte
+                );
+
+
+                cargarHistorialSeguimiento(
+                    modal,
+                    estadoSeguimiento.seguimientos
+                );
+
+
+                abrirModalSeguimiento(
+                    modal
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    'Error cargando seguimiento:',
+                    error
+                );
+
+
+                window.alert(
+                    error.message
+                    || 'No fue posible consultar el seguimiento.'
+                );
+
+
+            } finally {
+
+                boton.disabled =
+                    false;
+
+            }
 
         }
     );
@@ -147,15 +249,14 @@ function inicializarSeguimientoReporte() {
             );
 
 
-            filaActual = null;
-            folioActual = '';
+            limpiarEstadoSeguimiento();
 
         }
     );
 
 
     /* =====================================================
-       CERRAR CON ESCAPE
+       ESCAPE
     ===================================================== */
 
     document.addEventListener(
@@ -174,8 +275,7 @@ function inicializarSeguimientoReporte() {
                 );
 
 
-                filaActual = null;
-                folioActual = '';
+                limpiarEstadoSeguimiento();
 
             }
 
@@ -189,20 +289,35 @@ function inicializarSeguimientoReporte() {
 
     formulario.addEventListener(
         'submit',
-        (evento) => {
+        async (evento) => {
 
             evento.preventDefault();
 
 
+            const idReporte =
+                estadoSeguimiento.idReporte;
+
+
             if (
-                !filaActual
-                || !folioActual
+                !Number.isInteger(idReporte)
+                || idReporte <= 0
             ) {
+
+                window.alert(
+                    'No fue posible identificar el reporte.'
+                );
+
                 return;
             }
 
 
-            if (!formulario.checkValidity()) {
+            /* =================================================
+               VALIDACIÓN NATIVA
+            ================================================= */
+
+            if (
+                !formulario.checkValidity()
+            ) {
 
                 formulario.reportValidity();
 
@@ -210,134 +325,449 @@ function inicializarSeguimientoReporte() {
             }
 
 
+            /* =================================================
+               DATOS
+            ================================================= */
+
             const datos =
                 new FormData(
                     formulario
                 );
 
 
-            const seguimiento = {
+            /* =================================================
+               BOTÓN
+            ================================================= */
 
-                fecha:
-                    obtenerDatoFormulario(
-                        datos,
-                        'fecha'
-                    ),
-
-                tipo:
-                    obtenerDatoFormulario(
-                        datos,
-                        'tipo'
-                    ),
-
-                estado:
-                    obtenerDatoFormulario(
-                        datos,
-                        'estado'
-                    ),
-
-                observaciones:
-                    obtenerDatoFormulario(
-                        datos,
-                        'observaciones'
-                    ),
-            };
+            const botonGuardar =
+                formulario.querySelector(
+                    '[type="submit"]'
+                );
 
 
-            /* =============================================
-               GUARDAR EN MEMORIA
-            ============================================== */
-
-            guardarSeguimientoTemporal(
-                folioActual,
-                seguimiento
-            );
+            const textoOriginal =
+                botonGuardar
+                    ? botonGuardar.innerHTML
+                    : '';
 
 
-            /*
-             * También copiamos el historial a la fila,
-             * para que Tarjeta pueda leerlo.
-             */
-            guardarSeguimientosEnFila(
-                filaActual,
-                folioActual
-            );
+            if (botonGuardar) {
+
+                botonGuardar.disabled =
+                    true;
 
 
-            /* =============================================
-               ACTUALIZAR ESTADO DE LA TABLA
-            ============================================== */
+                botonGuardar.innerHTML =
+                    'Guardando...';
 
-            actualizarEstadoReporte(
-                filaActual,
-                seguimiento.estado
-            );
+            }
 
 
-            /* =============================================
-               ACTUALIZAR HEADER DEL MODAL
-            ============================================== */
+            try {
 
-            asignarTexto(
-                modal,
-                '#seguimiento-estado-actual',
-                seguimiento.estado
-            );
+                /* =================================================
+                   GUARDAR EN BD
+                ================================================= */
 
-
-            /* =============================================
-               ACTUALIZAR HISTORIAL
-            ============================================== */
-
-            cargarHistorialSeguimiento(
-                modal,
-                folioActual
-            );
+                const resultado =
+                    await registrarSeguimiento(
+                        idReporte,
+                        datos
+                    );
 
 
-            /* =============================================
-               ACTUALIZAR LISTADO
-            ============================================== */
+                if (
+                    !resultado
+                    || resultado.success !== true
+                ) {
 
-            actualizarListadoRelacionado();
-
-
-            /* =============================================
-               EVENTO GENERAL
-            ============================================== */
-
-            document.dispatchEvent(
-                new CustomEvent(
-                    'seguimientoReporteActualizado',
-                    {
-                        detail: {
-                            folio:
-                                folioActual,
-
-                            estado:
-                                seguimiento.estado,
-
-                            seguimiento:
-                                seguimiento,
-                        },
-                    }
-                )
-            );
+                    throw new Error(
+                        resultado?.message
+                        || 'No fue posible registrar el seguimiento.'
+                    );
+                }
 
 
-            /* =============================================
-               CERRAR AUTOMÁTICAMENTE
-            ============================================== */
+                /* =================================================
+                   ACTUALIZAR ESTADO DEL REPORTE
+                ================================================= */
 
-            cerrarModalSeguimiento(
-                modal
-            );
+                const nuevoEstado =
+                    String(
+                        resultado.estado_actual
+                        || resultado.seguimiento
+                            ?.estado_resultante
+                        || ''
+                    ).trim();
 
 
-            filaActual = null;
-            folioActual = '';
+                if (
+                    estadoSeguimiento.reporte
+                ) {
+
+                    estadoSeguimiento
+                        .reporte
+                        .estado_actual =
+                        nuevoEstado;
+
+                }
+
+
+                /* =================================================
+                   ACTUALIZAR LISTADO
+                ================================================= */
+
+                if (
+                    estadoSeguimiento.filaActual
+                    && nuevoEstado
+                ) {
+
+                    actualizarEstadoReporte(
+                        estadoSeguimiento.filaActual,
+                        nuevoEstado
+                    );
+
+                }
+
+
+                /* =================================================
+                   ACTUALIZAR HEADER
+                ================================================= */
+
+                asignarTexto(
+                    modal,
+                    '#seguimiento-estado-actual',
+                    nuevoEstado
+                );
+
+
+                /* =================================================
+                   VOLVER A CONSULTAR HISTORIAL
+                ================================================= */
+
+                const datosActualizados =
+                    await consultarSeguimientos(
+                        idReporte
+                    );
+
+
+                estadoSeguimiento.reporte =
+                    datosActualizados.reporte
+                    || estadoSeguimiento.reporte;
+
+
+                estadoSeguimiento.seguimientos =
+                    normalizarSeguimientos(
+                        datosActualizados.seguimientos
+                    );
+
+
+                cargarHistorialSeguimiento(
+                    modal,
+                    estadoSeguimiento.seguimientos
+                );
+
+
+                /* =================================================
+                   LIMPIAR FORMULARIO
+                ================================================= */
+
+                prepararFormularioSeguimiento(
+                    formulario,
+                    nuevoEstado
+                );
+
+
+                /* =================================================
+                   ACTUALIZAR FILTROS
+                ================================================= */
+
+                actualizarListadoRelacionado();
+
+
+                /* =================================================
+                   EVENTO GENERAL
+                ================================================= */
+
+                document.dispatchEvent(
+                    new CustomEvent(
+                        'seguimientoReporteActualizado',
+                        {
+                            detail: {
+
+                                idReporte,
+
+                                estado:
+                                    nuevoEstado,
+
+                                seguimiento:
+                                    resultado.seguimiento
+                                    || null,
+
+                            },
+                        }
+                    )
+                );
+
+
+                /*
+                 * Dejamos el modal abierto para que el usuario
+                 * pueda ver inmediatamente el movimiento
+                 * recién registrado en el historial.
+                 *
+                 * Si después prefieres que se cierre
+                 * automáticamente, lo cambiamos.
+                 */
+
+
+            } catch (error) {
+
+                console.error(
+                    'Error registrando seguimiento:',
+                    error
+                );
+
+
+                window.alert(
+                    error.message
+                    || 'No fue posible registrar el seguimiento.'
+                );
+
+
+            } finally {
+
+                if (botonGuardar) {
+
+                    botonGuardar.disabled =
+                        false;
+
+
+                    botonGuardar.innerHTML =
+                        textoOriginal;
+
+                }
+
+            }
 
         }
+    );
+
+}
+
+
+/* =========================================================
+   CONSULTAR SEGUIMIENTOS
+========================================================= */
+
+async function consultarSeguimientos(
+    idReporte
+) {
+
+    const baseUrl =
+        obtenerBaseUrl();
+
+
+    const url =
+        new URL(
+            `asuntos-internos/reportes/seguimientos/${idReporte}`,
+            baseUrl
+        );
+
+
+    const respuesta =
+        await fetch(
+            url.toString(),
+            {
+                method:
+                    'GET',
+
+                headers: {
+                    Accept:
+                        'application/json',
+                },
+
+                credentials:
+                    'same-origin',
+            }
+        );
+
+
+    const datos =
+        await obtenerJsonRespuesta(
+            respuesta
+        );
+
+
+    if (!respuesta.ok) {
+
+        throw new Error(
+            datos?.message
+            || 'No fue posible consultar el seguimiento.'
+        );
+
+    }
+
+
+    return datos;
+
+}
+
+
+/* =========================================================
+   REGISTRAR SEGUIMIENTO
+========================================================= */
+
+async function registrarSeguimiento(
+    idReporte,
+    datos
+) {
+
+    const baseUrl =
+        obtenerBaseUrl();
+
+
+    const url =
+        new URL(
+            `asuntos-internos/reportes/seguimientos/${idReporte}`,
+            baseUrl
+        );
+
+
+    const respuesta =
+        await fetch(
+            url.toString(),
+            {
+                method:
+                    'POST',
+
+                headers: {
+                    Accept:
+                        'application/json',
+                },
+
+                credentials:
+                    'same-origin',
+
+                body:
+                    datos,
+            }
+        );
+
+
+    const resultado =
+        await obtenerJsonRespuesta(
+            respuesta
+        );
+
+
+    if (!respuesta.ok) {
+
+        throw new Error(
+            resultado?.message
+            || 'No fue posible registrar el seguimiento.'
+        );
+
+    }
+
+
+    return resultado;
+
+}
+
+
+/* =========================================================
+   JSON DE RESPUESTA
+========================================================= */
+
+async function obtenerJsonRespuesta(
+    respuesta
+) {
+
+    try {
+
+        return await respuesta.json();
+
+    } catch (error) {
+
+        throw new Error(
+            'El servidor devolvió una respuesta no válida.'
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   NORMALIZAR HISTORIAL
+========================================================= */
+
+function normalizarSeguimientos(
+    seguimientos
+) {
+
+    if (
+        !Array.isArray(
+            seguimientos
+        )
+    ) {
+        return [];
+    }
+
+
+    return seguimientos.map(
+        (seguimiento) => ({
+
+            id_seguimiento:
+                Number(
+                    seguimiento.id_seguimiento
+                    || 0
+                ),
+
+            fecha:
+                String(
+                    seguimiento.fecha
+                    || ''
+                ).trim(),
+
+            tipo:
+                String(
+                    seguimiento.tipo
+                    || ''
+                ).trim(),
+
+            /*
+             * La BD utiliza estado_resultante.
+             *
+             * Para el diseño actual seguimos utilizando
+             * internamente la propiedad "estado".
+             */
+            estado:
+                String(
+                    seguimiento.estado_resultante
+                    || seguimiento.estado
+                    || ''
+                ).trim(),
+
+            observaciones:
+                String(
+                    seguimiento.observaciones
+                    || ''
+                ).trim(),
+
+            created_by:
+                Number(
+                    seguimiento.created_by
+                    || 0
+                ),
+
+            created_at:
+                String(
+                    seguimiento.created_at
+                    || ''
+                ).trim(),
+
+        })
     );
 
 }
@@ -350,34 +780,28 @@ function inicializarSeguimientoReporte() {
 function cargarDatosSeguimiento(
     modal,
     formulario,
-    fila
+    reporte
 ) {
 
-    const celdas =
-        fila.querySelectorAll('td');
-
-
-    if (celdas.length < 8) {
-        return;
-    }
-
-
     const folio =
-        celdas[0]
-            .textContent
-            .trim();
+        String(
+            reporte.folio
+            || ''
+        ).trim();
 
 
     const expediente =
-        celdas[2]
-            .textContent
-            .trim();
+        String(
+            reporte.expediente
+            || ''
+        ).trim();
 
 
     const estado =
-        celdas[7]
-            .textContent
-            .trim();
+        String(
+            reporte.estado_actual
+            || 'Pendiente'
+        ).trim();
 
 
     /* =====================================================
@@ -393,7 +817,9 @@ function cargarDatosSeguimiento(
     if (titulo) {
 
         titulo.textContent =
-            `Seguimiento ${folio}`;
+            folio
+                ? `Seguimiento ${folio}`
+                : 'Seguimiento';
 
     }
 
@@ -424,7 +850,7 @@ function cargarDatosSeguimiento(
 
 
     /* =====================================================
-       PREPARAR FORMULARIO
+       FORMULARIO
     ===================================================== */
 
     prepararFormularioSeguimiento(
@@ -490,152 +916,12 @@ function prepararFormularioSeguimiento(
 
 
 /* =========================================================
-   GUARDAR SEGUIMIENTO TEMPORAL
-========================================================= */
-
-function guardarSeguimientoTemporal(
-    folio,
-    seguimiento
-) {
-
-    const historial =
-        seguimientosTemporales.get(
-            folio
-        )
-        || [];
-
-
-    historial.unshift({
-        ...seguimiento,
-
-        registradoEn:
-            new Date(),
-    });
-
-
-    seguimientosTemporales.set(
-        folio,
-        historial
-    );
-
-}
-
-
-/* =========================================================
-   RESTAURAR HISTORIAL DESDE FILA
-========================================================= */
-
-function restaurarSeguimientosDesdeFila(
-    fila,
-    folio
-) {
-
-    /*
-     * Si ya existe en memoria,
-     * no lo sobrescribimos.
-     */
-    if (
-        seguimientosTemporales.has(
-            folio
-        )
-    ) {
-        return;
-    }
-
-
-    if (!fila?.dataset.seguimientos) {
-        return;
-    }
-
-
-    try {
-
-        const datos =
-            JSON.parse(
-                fila.dataset.seguimientos
-            );
-
-
-        if (!Array.isArray(datos)) {
-            return;
-        }
-
-
-        seguimientosTemporales.set(
-            folio,
-            datos
-        );
-
-    } catch (error) {
-
-        console.error(
-            'No fue posible recuperar el historial temporal:',
-            error
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   GUARDAR HISTORIAL EN LA FILA
-========================================================= */
-
-function guardarSeguimientosEnFila(
-    fila,
-    folio
-) {
-
-    if (!fila) {
-        return;
-    }
-
-
-    const historial =
-        seguimientosTemporales.get(
-            folio
-        )
-        || [];
-
-
-    const datos =
-        historial.map(
-            (seguimiento) => ({
-                fecha:
-                    seguimiento.fecha
-                    || '',
-
-                tipo:
-                    seguimiento.tipo
-                    || '',
-
-                estado:
-                    seguimiento.estado
-                    || '',
-
-                observaciones:
-                    seguimiento.observaciones
-                    || '',
-            })
-        );
-
-
-    fila.dataset.seguimientos =
-        JSON.stringify(
-            datos
-        );
-
-}
-
-
-/* =========================================================
-   CARGAR HISTORIAL
+   CARGAR HISTORIAL REAL
 ========================================================= */
 
 function cargarHistorialSeguimiento(
     modal,
-    folio
+    historial
 ) {
 
     const lista =
@@ -649,21 +935,18 @@ function cargarHistorialSeguimiento(
     }
 
 
-    const historial =
-        seguimientosTemporales.get(
-            folio
-        )
-        || [];
-
-
-    lista.innerHTML = '';
+    lista.innerHTML =
+        '';
 
 
     /* =====================================================
        SIN MOVIMIENTOS
     ===================================================== */
 
-    if (!historial.length) {
+    if (
+        !Array.isArray(historial)
+        || historial.length === 0
+    ) {
 
         const vacio =
             document.createElement(
@@ -738,7 +1021,7 @@ function cargarHistorialSeguimiento(
 
 
 /* =========================================================
-   CREAR MOVIMIENTO DE HISTORIAL
+   CREAR MOVIMIENTO
 ========================================================= */
 
 function crearMovimientoHistorial(
@@ -851,8 +1134,53 @@ function crearMovimientoHistorial(
 
 
     /* =====================================================
-       ARMAR
+       FECHA DE REGISTRO
     ===================================================== */
+
+    if (
+        seguimiento.created_at
+    ) {
+
+        const metadata =
+            document.createElement(
+                'small'
+            );
+
+
+        metadata.className =
+            'seguimiento-historial__metadata';
+
+
+        metadata.textContent =
+            `Registrado: ${formatearFechaHora(
+                seguimiento.created_at
+            )}`;
+
+
+        item.appendChild(
+            header
+        );
+
+
+        item.appendChild(
+            estado
+        );
+
+
+        item.appendChild(
+            observaciones
+        );
+
+
+        item.appendChild(
+            metadata
+        );
+
+
+        return item;
+
+    }
+
 
     item.appendChild(
         header
@@ -875,7 +1203,7 @@ function crearMovimientoHistorial(
 
 
 /* =========================================================
-   ACTUALIZAR ESTADO DEL REPORTE
+   ACTUALIZAR ESTADO DEL LISTADO
 ========================================================= */
 
 function actualizarEstadoReporte(
@@ -883,11 +1211,20 @@ function actualizarEstadoReporte(
     estado
 ) {
 
+    if (!fila) {
+        return;
+    }
+
+
     const celdas =
-        fila.querySelectorAll('td');
+        fila.querySelectorAll(
+            'td'
+        );
 
 
-    if (celdas.length < 8) {
+    if (
+        celdas.length < 8
+    ) {
         return;
     }
 
@@ -896,7 +1233,8 @@ function actualizarEstadoReporte(
         celdas[7];
 
 
-    celdaEstado.innerHTML = '';
+    celdaEstado.innerHTML =
+        '';
 
 
     const etiqueta =
@@ -912,7 +1250,8 @@ function actualizarEstadoReporte(
 
 
     etiqueta.textContent =
-        estado;
+        estado
+        || 'Pendiente';
 
 
     celdaEstado.appendChild(
@@ -923,7 +1262,7 @@ function actualizarEstadoReporte(
 
 
 /* =========================================================
-   ACTUALIZAR FILTROS / RESUMEN / PAGINACIÓN
+   ACTUALIZAR FILTROS
 ========================================================= */
 
 function actualizarListadoRelacionado() {
@@ -1020,6 +1359,30 @@ function cerrarModalSeguimiento(
 
 
 /* =========================================================
+   LIMPIAR ESTADO
+========================================================= */
+
+function limpiarEstadoSeguimiento() {
+
+    estadoSeguimiento.idReporte =
+        0;
+
+
+    estadoSeguimiento.filaActual =
+        null;
+
+
+    estadoSeguimiento.reporte =
+        null;
+
+
+    estadoSeguimiento.seguimientos =
+        [];
+
+}
+
+
+/* =========================================================
    FECHA ACTUAL
 ========================================================= */
 
@@ -1064,41 +1427,84 @@ function formatearFecha(
     fecha
 ) {
 
-    if (!fecha) {
+    const valor =
+        String(
+            fecha
+            || ''
+        ).trim();
+
+
+    if (!valor) {
         return '—';
     }
 
 
-    const partes =
-        fecha.split('-');
+    const coincidencia =
+        valor.match(
+            /^(\d{4})-(\d{2})-(\d{2})/
+        );
 
 
-    if (partes.length !== 3) {
-        return fecha;
+    if (!coincidencia) {
+        return valor;
     }
 
 
-    const [
-        anio,
-        mes,
-        dia
-    ] = partes;
-
-
-    return `${dia}/${mes}/${anio}`;
+    return `${coincidencia[3]}/${coincidencia[2]}/${coincidencia[1]}`;
 
 }
 
 
 /* =========================================================
-   CLASE VISUAL DEL ESTADO
+   FORMATEAR FECHA / HORA
+========================================================= */
+
+function formatearFechaHora(
+    valor
+) {
+
+    const texto =
+        String(
+            valor
+            || ''
+        ).trim();
+
+
+    if (!texto) {
+        return '—';
+    }
+
+
+    const coincidencia =
+        texto.match(
+            /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/
+        );
+
+
+    if (!coincidencia) {
+        return texto;
+    }
+
+
+    return `${coincidencia[3]}/${coincidencia[2]}/${coincidencia[1]} ${coincidencia[4]}:${coincidencia[5]}`;
+
+}
+
+
+/* =========================================================
+   CLASE DEL ESTADO
 ========================================================= */
 
 function obtenerClaseEstado(
     estado
 ) {
 
-    switch (estado) {
+    switch (
+        String(
+            estado
+            || ''
+        ).trim()
+    ) {
 
         case 'Finalizado':
 
@@ -1115,36 +1521,6 @@ function obtenerClaseEstado(
             return 'estado--pendiente';
 
     }
-
-}
-
-
-/* =========================================================
-   OBTENER DATO DEL FORMULARIO
-========================================================= */
-
-function obtenerDatoFormulario(
-    datos,
-    nombre
-) {
-
-    const valor =
-        datos.get(
-            nombre
-        );
-
-
-    if (
-        typeof valor
-        !== 'string'
-    ) {
-
-        return '';
-
-    }
-
-
-    return valor.trim();
 
 }
 
@@ -1172,11 +1548,28 @@ function asignarTexto(
 
     const texto =
         String(
-            valor ?? ''
+            valor
+            ?? ''
         ).trim();
 
 
     elemento.textContent =
         texto || '—';
+
+}
+
+
+/* =========================================================
+   BASE URL
+========================================================= */
+
+function obtenerBaseUrl() {
+
+    return (
+        document
+            .querySelector('base')
+            ?.href
+        || `${window.location.origin}/`
+    );
 
 }

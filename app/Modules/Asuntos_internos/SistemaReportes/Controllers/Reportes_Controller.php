@@ -2598,4 +2598,557 @@ class Reportes_Controller extends BaseController
                 ]);
         }
     }
+
+    /* =========================================================
+    CONSULTAR SEGUIMIENTOS
+    ========================================================= */
+
+    public function obtenerSeguimientos(int $idReporte)
+    {
+        /* =====================================================
+        VALIDAR SESIÓN
+        ===================================================== */
+
+        if (
+            session()->get('reportes_autenticado') !== true
+            || !session()->has('usuario_reportes')
+        ) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La sesión no es válida.',
+                ]);
+        }
+
+
+        if ($idReporte <= 0) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'El reporte proporcionado no es válido.',
+                ]);
+        }
+
+
+        try {
+
+            $db =
+                \Config\Database::connect(
+                    'datacore'
+                );
+
+
+            /* =================================================
+            REPORTE
+            ================================================= */
+
+            $reporte =
+                $db
+                ->table('ai_reportes')
+                ->select([
+                    'id_reporte',
+                    'folio',
+                    'expediente',
+                    'estado_actual',
+                ])
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->get()
+                ->getRowArray();
+
+
+            if (!$reporte) {
+
+                return $this->response
+                    ->setStatusCode(404)
+                    ->setJSON([
+                        'success' => false,
+                        'message' => 'El reporte no existe.',
+                    ]);
+            }
+
+
+            /* =================================================
+            HISTORIAL
+            ================================================= */
+
+            $seguimientos =
+                $db
+                ->table('ai_reporte_seguimientos')
+                ->select([
+                    'id_seguimiento',
+                    'id_reporte',
+                    'fecha',
+                    'tipo',
+                    'estado_resultante',
+                    'observaciones',
+                    'created_by',
+                    'created_at',
+                ])
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->orderBy(
+                    'fecha',
+                    'DESC'
+                )
+                ->orderBy(
+                    'id_seguimiento',
+                    'DESC'
+                )
+                ->get()
+                ->getResultArray();
+
+
+            return $this->response
+                ->setJSON([
+                    'success' => true,
+
+                    'reporte' => $reporte,
+
+                    'seguimientos' => $seguimientos,
+                ]);
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error consultando seguimientos del reporte {id}: {mensaje}',
+                [
+                    'id' => $idReporte,
+                    'mensaje' => $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'No fue posible consultar el historial de seguimiento.',
+                ]);
+        }
+    }
+
+
+    /* =========================================================
+    REGISTRAR SEGUIMIENTO
+    ========================================================= */
+
+    public function guardarSeguimiento(int $idReporte)
+    {
+        /* =====================================================
+        VALIDAR SESIÓN
+        ===================================================== */
+
+        if (
+            session()->get('reportes_autenticado') !== true
+            || !session()->has('usuario_reportes')
+        ) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La sesión no es válida.',
+                ]);
+        }
+
+
+        $usuario =
+            session()->get(
+                'usuario_reportes'
+            );
+
+
+        $idUsuario =
+            (int) (
+                $usuario['id_usuario']
+                ?? 0
+            );
+
+
+        if ($idUsuario <= 0) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'No fue posible identificar al usuario.',
+                ]);
+        }
+
+
+        if ($idReporte <= 0) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'El reporte proporcionado no es válido.',
+                ]);
+        }
+
+
+        /* =====================================================
+        DATOS
+        ===================================================== */
+
+        $fecha =
+            trim(
+                (string)
+                $this->request->getPost(
+                    'fecha'
+                )
+            );
+
+
+        $tipo =
+            trim(
+                (string)
+                $this->request->getPost(
+                    'tipo'
+                )
+            );
+
+
+        $estado =
+            trim(
+                (string)
+                $this->request->getPost(
+                    'estado'
+                )
+            );
+
+
+        $observaciones =
+            trim(
+                (string)
+                $this->request->getPost(
+                    'observaciones'
+                )
+            );
+
+
+        /* =====================================================
+        VALIDACIONES
+        ===================================================== */
+
+        if ($fecha === '') {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'La fecha del seguimiento es obligatoria.',
+                ]);
+        }
+
+
+        $fechaObjeto =
+            \DateTime::createFromFormat(
+                'Y-m-d',
+                $fecha
+            );
+
+
+        if (
+            !$fechaObjeto
+            || $fechaObjeto->format('Y-m-d') !== $fecha
+        ) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'La fecha del seguimiento no es válida.',
+                ]);
+        }
+
+
+        if ($tipo === '') {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'El tipo de seguimiento es obligatorio.',
+                ]);
+        }
+
+
+        $estadosPermitidos = [
+            'Pendiente',
+            'En proceso',
+            'Finalizado',
+        ];
+
+
+        if (
+            !in_array(
+                $estado,
+                $estadosPermitidos,
+                true
+            )
+        ) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'El estado seleccionado no es válido.',
+                ]);
+        }
+
+
+        if ($observaciones === '') {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'Las observaciones del seguimiento son obligatorias.',
+                ]);
+        }
+
+
+        /* =====================================================
+        TRANSACCIÓN
+        ===================================================== */
+
+        $db =
+            \Config\Database::connect(
+                'datacore'
+            );
+
+
+        $db->transBegin();
+
+
+        try {
+
+            /* =================================================
+            VALIDAR REPORTE
+            ================================================= */
+
+            $reporte =
+                $db
+                ->table('ai_reportes')
+                ->select([
+                    'id_reporte',
+                    'folio',
+                    'expediente',
+                    'estado_actual',
+                ])
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->get()
+                ->getRowArray();
+
+
+            if (!$reporte) {
+
+                throw new \InvalidArgumentException(
+                    'El reporte no existe.'
+                );
+            }
+
+
+            /* =================================================
+            INSERTAR SEGUIMIENTO
+            ================================================= */
+
+            $insertado =
+                $db
+                ->table(
+                    'ai_reporte_seguimientos'
+                )
+                ->insert([
+                    'id_reporte' =>
+                    $idReporte,
+
+                    'fecha' =>
+                    $fecha,
+
+                    'tipo' =>
+                    $tipo,
+
+                    'estado_resultante' =>
+                    $estado,
+
+                    'observaciones' =>
+                    $observaciones,
+
+                    'created_by' =>
+                    $idUsuario,
+
+                    'eliminado' =>
+                    0,
+                ]);
+
+
+            if ($insertado === false) {
+
+                throw new \RuntimeException(
+                    'No fue posible registrar el seguimiento.'
+                );
+            }
+
+
+            $idSeguimiento =
+                (int)
+                $db->insertID();
+
+
+            /* =================================================
+            ACTUALIZAR ESTADO DEL REPORTE
+            ================================================= */
+
+            $actualizado =
+                $db
+                ->table('ai_reportes')
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->update([
+                    'estado_actual' =>
+                    $estado,
+
+                    'updated_by' =>
+                    $idUsuario,
+                ]);
+
+
+            if ($actualizado === false) {
+
+                throw new \RuntimeException(
+                    'No fue posible actualizar el estado del reporte.'
+                );
+            }
+
+
+            /* =================================================
+            VALIDAR TRANSACCIÓN
+            ================================================= */
+
+            if (
+                $db->transStatus()
+                === false
+            ) {
+
+                throw new \RuntimeException(
+                    'No fue posible completar el seguimiento.'
+                );
+            }
+
+
+            $db->transCommit();
+
+
+            /* =================================================
+            RESPUESTA
+            ================================================= */
+
+            return $this->response
+                ->setJSON([
+                    'success' => true,
+
+                    'message' =>
+                    'El seguimiento se registró correctamente.',
+
+                    'seguimiento' => [
+                        'id_seguimiento' =>
+                        $idSeguimiento,
+
+                        'id_reporte' =>
+                        $idReporte,
+
+                        'fecha' =>
+                        $fecha,
+
+                        'tipo' =>
+                        $tipo,
+
+                        'estado_resultante' =>
+                        $estado,
+
+                        'observaciones' =>
+                        $observaciones,
+                    ],
+
+                    'estado_actual' =>
+                    $estado,
+                ]);
+        } catch (\InvalidArgumentException $e) {
+
+            $db->transRollback();
+
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    $e->getMessage(),
+                ]);
+        } catch (\Throwable $e) {
+
+            $db->transRollback();
+
+
+            log_message(
+                'error',
+                'Error registrando seguimiento del reporte {id}: {mensaje}',
+                [
+                    'id' =>
+                    $idReporte,
+
+                    'mensaje' =>
+                    $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'No fue posible registrar el seguimiento.',
+                ]);
+        }
+    }
 }
