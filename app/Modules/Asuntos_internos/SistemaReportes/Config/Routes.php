@@ -111,4 +111,9 @@ $routes->group('asuntos-internos/reportes', static function ($routes) {
         'unidades/buscar',
         '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::buscarUnidades'
     );
+
+    $routes->post(
+        'guardar',
+        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::guardarReporte'
+    );
 });

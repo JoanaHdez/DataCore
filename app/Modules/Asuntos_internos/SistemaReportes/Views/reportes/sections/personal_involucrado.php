@@ -127,6 +127,7 @@
 
                         <label for="personal-turno">
                             Turno
+                            <span class="required">*</span>
                         </label>
 
                         <input

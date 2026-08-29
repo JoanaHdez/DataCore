@@ -117,6 +117,8 @@ function inicializarPersonalInvolucrado() {
 
         }
 
+        inputTurno.setCustomValidity('');
+
     });
 
 
@@ -313,24 +315,24 @@ function inicializarPersonalInvolucrado() {
 
                     <strong>
                         ${escaparHtml(
-                            persona.nombre
-                            || 'Sin nombre'
-                        )}
+                persona.nombre
+                || 'Sin nombre'
+            )}
                     </strong>
 
                     <small>
                         Nómina:
                         ${escaparHtml(
-                            persona.nomina
-                            || '—'
-                        )}
+                persona.nomina
+                || '—'
+            )}
                     </small>
 
                     <small>
                         ${escaparHtml(
-                            persona.area
-                            || 'Sin área'
-                        )}
+                persona.area
+                || 'Sin área'
+            )}
                     </small>
 
                 </span>
@@ -464,11 +466,13 @@ function inicializarPersonalInvolucrado() {
 
 
         /*
-         * El turno se obtiene inicialmente
-         * desde plantilla, pero permanece editable.
-         */
+ * El turno se obtiene inicialmente
+ * desde plantilla, pero permanece editable.
+ */
         inputTurno.value =
             personaSeleccionada.turno;
+
+        inputTurno.setCustomValidity('');
 
 
         inputBusqueda.value =
@@ -602,6 +606,21 @@ function inicializarPersonalInvolucrado() {
             inputTurno.value =
                 turno;
 
+            if (!turno) {
+
+                inputTurno.setCustomValidity(
+                    'El turno es obligatorio.'
+                );
+
+                inputTurno.reportValidity();
+
+                inputTurno.focus();
+
+                return;
+            }
+
+
+            inputTurno.setCustomValidity('');
 
             /*
              * Evitamos agregar dos veces
@@ -675,8 +694,8 @@ function inicializarPersonalInvolucrado() {
 
                                 <img
                                     src="${escaparAtributo(
-                                        persona.foto
-                                    )}"
+                            persona.foto
+                        )}"
                                     alt=""
                                     onerror="
                                         this.style.display='none';
@@ -711,32 +730,32 @@ function inicializarPersonalInvolucrado() {
 
                         <strong>
                             ${escaparHtml(
-                                persona.nombre
-                            )}
+                    persona.nombre
+                )}
                         </strong>
 
                         <small class="personal-tabla__nomina">
                             Nómina:
                             ${escaparHtml(
-                                persona.nomina
-                                || '—'
-                            )}
+                    persona.nomina
+                    || '—'
+                )}
                         </small>
 
                     </td>
 
                     <td>
                         ${escaparHtml(
-                            persona.area
-                            || '—'
-                        )}
+                    persona.area
+                    || '—'
+                )}
                     </td>
 
                     <td>
                         ${escaparHtml(
-                            persona.turno
-                            || '—'
-                        )}
+                    persona.turno
+                    || '—'
+                )}
                     </td>
 
                     <td>
@@ -939,6 +958,8 @@ function inicializarPersonalInvolucrado() {
 
         inputTurno.value =
             '';
+
+        inputTurno.setCustomValidity('');
 
 
         if (foto) {

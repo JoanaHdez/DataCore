@@ -5,6 +5,7 @@ namespace App\Modules\Asuntos_internos\SistemaReportes\Controllers;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardExcelService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\ListadoExcelService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\AuthService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\ReporteService;
 
 use App\Controllers\BaseController;
 
@@ -59,6 +60,201 @@ class Reportes_Controller extends BaseController
         return view(
             'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\nuevo'
         );
+    }
+
+    public function guardarReporte()
+    {
+        /* =========================================================
+        VALIDAR SESIÓN
+        ========================================================= */
+
+        if (
+            session()->get('reportes_autenticado') !== true
+            || !session()->has('usuario_reportes')
+        ) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La sesión no es válida.',
+                ]);
+        }
+
+
+        $usuario =
+            session()->get(
+                'usuario_reportes'
+            );
+
+
+        $idUsuario =
+            (int) (
+                $usuario['id_usuario']
+                ?? 0
+            );
+
+
+        if ($idUsuario <= 0) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'No fue posible identificar al usuario.',
+                ]);
+        }
+
+
+        /* =========================================================
+        DATOS DEL FORMULARIO
+        ========================================================= */
+
+        $datos =
+            $this->request
+            ->getPost();
+
+
+        /*
+     * Las relaciones múltiples llegan mediante:
+     *
+     * personal[0][...]
+     * personal[1][...]
+     *
+     * unidades[0][...]
+     * unidades[1][...]
+     */
+
+        $personal =
+            $this->request
+            ->getPost('personal');
+
+
+        $unidades =
+            $this->request
+            ->getPost('unidades');
+
+
+        if (!is_array($personal)) {
+            $personal = [];
+        }
+
+
+        if (!is_array($unidades)) {
+            $unidades = [];
+        }
+
+
+        /* =========================================================
+        EVIDENCIAS
+        ========================================================= */
+
+        $archivos = [];
+
+
+        $evidencias =
+            $this->request
+            ->getFiles();
+
+
+        if (
+            isset(
+                $evidencias['evidencia_fotografica']
+            )
+        ) {
+
+            $archivos =
+                $evidencias['evidencia_fotografica'];
+
+
+            /*
+         * CodeIgniter puede entregar un solo UploadedFile
+         * o un arreglo dependiendo del request.
+         */
+            if (!is_array($archivos)) {
+
+                $archivos = [
+                    $archivos,
+                ];
+            }
+        }
+
+
+        /* =========================================================
+        GUARDAR
+        ========================================================= */
+
+        try {
+
+            $servicio =
+                new ReporteService();
+
+
+            $resultado =
+                $servicio->guardar(
+                    $datos,
+                    $personal,
+                    $unidades,
+                    $archivos,
+                    $idUsuario
+                );
+
+
+            return $this->response
+                ->setStatusCode(201)
+                ->setJSON([
+                    'success' => true,
+
+                    'message' =>
+                    'El reporte fue guardado correctamente.',
+
+                    'id_reporte' =>
+                    $resultado['id_reporte']
+                        ?? null,
+
+                    'folio' =>
+                    $resultado['folio']
+                        ?? null,
+                ]);
+        } catch (\InvalidArgumentException $e) {
+
+            /*
+         * Error provocado por datos inválidos
+         * enviados desde el formulario.
+         */
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    $e->getMessage(),
+                ]);
+        } catch (\Throwable $e) {
+
+            /*
+         * El detalle técnico únicamente va al log.
+         * No exponemos rutas, SQL ni stack trace
+         * al navegador.
+         */
+            log_message(
+                'error',
+                'Error guardando reporte de Asuntos Internos: {mensaje}',
+                [
+                    'mensaje' =>
+                    $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'No fue posible guardar el reporte.',
+                ]);
+        }
     }
 
     public function dashboard()
