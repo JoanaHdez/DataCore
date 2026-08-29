@@ -440,6 +440,226 @@ class Reportes_Controller extends BaseController
         }
     }
 
+    public function actualizarReporte(int $idReporte)
+    {
+        /* =========================================================
+        VALIDAR SESIÓN
+        ========================================================= */
+
+        if (
+            session()->get('reportes_autenticado') !== true
+            || !session()->has('usuario_reportes')
+        ) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La sesión no es válida.',
+                ]);
+        }
+
+
+        $usuario =
+            session()->get(
+                'usuario_reportes'
+            );
+
+
+        $idUsuario =
+            (int) (
+                $usuario['id_usuario']
+                ?? 0
+            );
+
+
+        if ($idUsuario <= 0) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'No fue posible identificar al usuario.',
+                ]);
+        }
+
+
+        if ($idReporte <= 0) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'El reporte proporcionado no es válido.',
+                ]);
+        }
+
+
+        /* =========================================================
+        DATOS DEL FORMULARIO
+        ========================================================= */
+
+        $datos =
+            $this->request
+            ->getPost();
+
+
+        /* =========================================================
+        PERSONAL
+        ========================================================= */
+
+        $personal =
+            $this->request
+            ->getPost(
+                'personal'
+            );
+
+
+        if (!is_array($personal)) {
+
+            $personal = [];
+        }
+
+
+        /* =========================================================
+        UNIDADES
+        ========================================================= */
+
+        $unidades =
+            $this->request
+            ->getPost(
+                'unidades'
+            );
+
+
+        if (!is_array($unidades)) {
+
+            $unidades = [];
+        }
+
+
+        /* =========================================================
+        EVIDENCIAS A ELIMINAR
+        ========================================================= */
+
+        $evidenciasEliminadas =
+            $this->request
+            ->getPost(
+                'evidencias_eliminadas'
+            );
+
+
+        if (!is_array($evidenciasEliminadas)) {
+
+            $evidenciasEliminadas = [];
+        }
+
+
+        /* =========================================================
+        EVIDENCIAS NUEVAS
+        ========================================================= */
+
+        $archivos =
+            [];
+
+
+        $files =
+            $this->request
+            ->getFiles();
+
+
+        if (
+            isset(
+                $files['evidencia_fotografica']
+            )
+        ) {
+
+            $archivos =
+                $files['evidencia_fotografica'];
+
+
+            if (!is_array($archivos)) {
+
+                $archivos = [
+                    $archivos,
+                ];
+            }
+        }
+
+
+        /* =========================================================
+        ACTUALIZAR
+        ========================================================= */
+
+        try {
+
+            $servicio =
+                new ReporteService();
+
+
+            $resultado =
+                $servicio->actualizar(
+                    $idReporte,
+                    $datos,
+                    $personal,
+                    $unidades,
+                    $archivos,
+                    $evidenciasEliminadas,
+                    $idUsuario
+                );
+
+
+            return $this->response
+                ->setJSON([
+                    'success' => true,
+
+                    'message' =>
+                    'El reporte fue actualizado correctamente.',
+
+                    'id_reporte' =>
+                    $resultado['id_reporte']
+                        ?? $idReporte,
+
+                    'folio' =>
+                    $resultado['folio']
+                        ?? null,
+                ]);
+        } catch (\InvalidArgumentException $e) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    $e->getMessage(),
+                ]);
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error actualizando reporte {id}: {mensaje}',
+                [
+                    'id' =>
+                    $idReporte,
+
+                    'mensaje' =>
+                    $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'No fue posible actualizar el reporte.',
+                ]);
+        }
+    }
+
     public function detalleReporte(int $idReporte)
     {
         /* =========================================================

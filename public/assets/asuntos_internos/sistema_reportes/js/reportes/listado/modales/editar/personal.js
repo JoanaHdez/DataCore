@@ -282,6 +282,140 @@ export function inicializarEditarPersonal(
 
 
     /* =====================================================
+   EDITAR TURNO DE PERSONAL AGREGADO
+===================================================== */
+
+    tablaBody.addEventListener(
+        'input',
+        (evento) => {
+
+            const input =
+                evento.target.closest(
+                    '[data-editar-turno-personal]'
+                );
+
+
+            if (!input) {
+                return;
+            }
+
+
+            const indice =
+                Number(
+                    input.dataset
+                        .editarTurnoPersonal
+                );
+
+
+            if (
+                !Number.isInteger(indice)
+                || indice < 0
+                || !estadoPersonal.elementos[indice]
+            ) {
+                return;
+            }
+
+
+            const inicio =
+                input.selectionStart;
+
+
+            const fin =
+                input.selectionEnd;
+
+
+            const turno =
+                String(
+                    input.value
+                    || ''
+                ).toUpperCase();
+
+
+            input.value =
+                turno;
+
+
+            estadoPersonal
+                .elementos[indice]
+                .turno =
+                turno;
+
+
+            if (
+                inicio !== null
+                && fin !== null
+            ) {
+
+                input.setSelectionRange(
+                    inicio,
+                    fin
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       VALIDAR TURNO AL SALIR DEL CAMPO
+    ===================================================== */
+
+    tablaBody.addEventListener(
+        'blur',
+        (evento) => {
+
+            const input =
+                evento.target.closest(
+                    '[data-editar-turno-personal]'
+                );
+
+
+            if (!input) {
+                return;
+            }
+
+
+            const indice =
+                Number(
+                    input.dataset
+                        .editarTurnoPersonal
+                );
+
+
+            if (
+                !Number.isInteger(indice)
+                || indice < 0
+                || !estadoPersonal.elementos[indice]
+            ) {
+                return;
+            }
+
+
+            const turno =
+                String(
+                    input.value
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            input.value =
+                turno;
+
+
+            estadoPersonal
+                .elementos[indice]
+                .turno =
+                turno;
+
+        },
+        true
+    );
+
+
+    /* =====================================================
        CERRAR RESULTADOS AL HACER CLICK FUERA
     ===================================================== */
 
@@ -492,24 +626,24 @@ function renderizarResultadosPersonal(
 
                     <strong>
                         ${escaparHTML(
-                            persona.nombre
-                            || 'Sin nombre'
-                        )}
+                persona.nombre
+                || 'Sin nombre'
+            )}
                     </strong>
 
                     <small>
                         Nómina:
                         ${escaparHTML(
-                            persona.nomina
-                            || '—'
-                        )}
+                persona.nomina
+                || '—'
+            )}
                     </small>
 
                     <small>
                         ${escaparHTML(
-                            persona.area
-                            || 'Sin área'
-                        )}
+                persona.area
+                || 'Sin área'
+            )}
                     </small>
 
                 </span>
@@ -833,8 +967,8 @@ export function renderizarPersonalEditar(
 
                                 <img
                                     src="${escaparHTML(
-                                        persona.foto
-                                    )}"
+                            persona.foto
+                        )}"
                                     alt=""
                                     onerror="
                                         this.style.display='none';
@@ -868,32 +1002,42 @@ export function renderizarPersonalEditar(
                     <td>
                         <strong>
                             ${escaparHTML(
-                                persona.nombre
-                                || '—'
-                            )}
+                    persona.nombre
+                    || '—'
+                )}
                         </strong>
                     </td>
 
                     <td>
                         ${escaparHTML(
-                            persona.nomina
-                            || '—'
-                        )}
+                    persona.nomina
+                    || '—'
+                )}
                     </td>
 
                     <td>
                         ${escaparHTML(
-                            persona.area
-                            || '—'
-                        )}
+                    persona.area
+                    || '—'
+                )}
                     </td>
 
                     <td>
-                        ${escaparHTML(
-                            persona.turno
-                            || '—'
-                        )}
-                    </td>
+
+    <input
+        type="text"
+        class="editar-personal-tabla__turno"
+        data-editar-turno-personal="${indice}"
+        value="${escaparHTML(
+                    persona.turno
+                    || ''
+                )}"
+        placeholder="TURNO"
+        autocomplete="off"
+        required
+    >
+
+</td>
 
                     <td>
 

@@ -660,6 +660,38 @@
     border-color: #e5b4af;
 }
 
+.editar-personal-tabla__turno {
+    width: 100%;
+    min-width: 120px;
+    max-width: 180px;
+
+    padding: 7px 9px;
+
+    color: #173554;
+    background: #fff;
+
+    border: 1px solid #d4dee7;
+    border-radius: 7px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.editar-personal-tabla__turno:focus {
+    border-color: #1475bd;
+
+    box-shadow:
+        0 0 0 2px rgba(20, 117, 189, 0.1);
+}
 
 /* =========================================================
    RESPONSIVE

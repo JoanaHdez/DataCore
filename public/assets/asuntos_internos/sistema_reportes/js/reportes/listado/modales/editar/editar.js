@@ -32,6 +32,7 @@ import {
 
 import {
     inicializarEditarEvidencia,
+    obtenerEvidenciasEliminadas,
 } from './evidencia.js';
 
 import {
@@ -275,16 +276,19 @@ export function inicializarEditarReporte() {
 
 
     /* =====================================================
-       GUARDAR CAMBIOS
-       TEMPORAL POR AHORA
-    ===================================================== */
+   GUARDAR CAMBIOS
+===================================================== */
 
     formulario.addEventListener(
         'submit',
-        (evento) => {
+        async (evento) => {
 
             evento.preventDefault();
 
+
+            /* =================================================
+               REPORTE ACTUAL
+            ================================================= */
 
             const filaActual =
                 estadoEdicion.filaActual;
@@ -309,6 +313,44 @@ export function inicializarEditarReporte() {
                 || {};
 
 
+            const idReporte =
+                Number(
+                    reporteAnterior.id_reporte
+                    || filaActual.dataset.idReporte
+                    || 0
+                );
+
+
+            if (
+                !Number.isInteger(idReporte)
+                || idReporte <= 0
+            ) {
+
+                window.alert(
+                    'No fue posible identificar el reporte que deseas actualizar.'
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               VALIDACIÓN HTML
+            ================================================= */
+
+            if (
+                typeof formulario.reportValidity
+                === 'function'
+                && !formulario.reportValidity()
+            ) {
+                return;
+            }
+
+
+            /* =================================================
+               OBTENER ESTADO FINAL DEL FORMULARIO
+            ================================================= */
+
             const reporteEditado =
                 obtenerReporteDesdeFormulario(
                     formulario,
@@ -327,75 +369,362 @@ export function inicializarEditarReporte() {
                 nuevoFolio;
 
 
-            /*
-             * IMPORTANTE:
-             *
-             * Todavía NO enviamos cambios al backend.
-             *
-             * Conservamos temporalmente el comportamiento
-             * existente hasta comprobar que la carga real
-             * funciona correctamente.
-             */
+            reporteEditado.id_reporte =
+                idReporte;
 
 
             /* =================================================
-               ACTUALIZAR MAP TEMPORAL
+               FORM DATA REAL
             ================================================= */
 
-            if (
+            const datos =
+                new FormData(
+                    formulario
+                );
+
+
+            /*
+             * El folio también lo enviamos construido
+             * explícitamente.
+             */
+
+            datos.set(
+                'folio',
                 nuevoFolio
-                !== folioActual
-            ) {
+            );
 
-                reportesTemporales.delete(
-                    folioActual
+
+            /* =================================================
+               PERSONAL
+            ================================================= */
+
+            /*
+             * Eliminamos cualquier personal[] generado
+             * previamente por inputs auxiliares.
+             *
+             * Enviamos como fuente de verdad el estado final
+             * que devuelve obtenerReporteDesdeFormulario().
+             */
+
+            eliminarClavesFormData(
+                datos,
+                'personal['
+            );
+
+
+            const personal =
+                Array.isArray(
+                    reporteEditado.personal
+                )
+                    ? reporteEditado.personal
+                    : [];
+
+
+            personal.forEach(
+                (persona, indice) => {
+
+                    agregarValorFormData(
+                        datos,
+                        `personal[${indice}][plantilla_id]`,
+                        persona.plantilla_id
+                        ?? persona.id
+                    );
+
+
+                    agregarValorFormData(
+                        datos,
+                        `personal[${indice}][perscod]`,
+                        persona.perscod
+                    );
+
+
+                    agregarValorFormData(
+                        datos,
+                        `personal[${indice}][nombre]`,
+                        persona.nombre
+                    );
+
+
+                    agregarValorFormData(
+                        datos,
+                        `personal[${indice}][area]`,
+                        persona.area
+                    );
+
+
+                    agregarValorFormData(
+                        datos,
+                        `personal[${indice}][turno]`,
+                        persona.turno
+                    );
+
+                }
+            );
+
+
+            /* =================================================
+               UNIDADES
+            ================================================= */
+
+            eliminarClavesFormData(
+                datos,
+                'unidades['
+            );
+
+
+            const unidades =
+                Array.isArray(
+                    reporteEditado.unidades
+                )
+                    ? reporteEditado.unidades
+                    : [];
+
+
+            unidades.forEach(
+                (unidad, indice) => {
+
+                    agregarValorFormData(
+                        datos,
+                        `unidades[${indice}][parque_vehicular_id]`,
+                        unidad.parque_vehicular_id
+                        ?? unidad.id
+                    );
+
+
+                    agregarValorFormData(
+                        datos,
+                        `unidades[${indice}][no_economico]`,
+                        unidad.no_economico
+                    );
+
+
+                    agregarValorFormData(
+                        datos,
+                        `unidades[${indice}][placas]`,
+                        unidad.placas
+                    );
+
+
+                    agregarValorFormData(
+                        datos,
+                        `unidades[${indice}][marca]`,
+                        unidad.marca
+                    );
+
+
+                    agregarValorFormData(
+                        datos,
+                        `unidades[${indice}][submarca]`,
+                        unidad.submarca
+                    );
+
+
+                    agregarValorFormData(
+                        datos,
+                        `unidades[${indice}][color]`,
+                        unidad.color
+                    );
+
+
+                    agregarValorFormData(
+                        datos,
+                        `unidades[${indice}][estatus]`,
+                        unidad.estatus
+                    );
+
+
+                    agregarValorFormData(
+                        datos,
+                        `unidades[${indice}][servicio]`,
+                        unidad.servicio
+                    );
+
+
+                    agregarValorFormData(
+                        datos,
+                        `unidades[${indice}][tipo]`,
+                        unidad.tipo
+                    );
+
+
+                    agregarValorFormData(
+                        datos,
+                        `unidades[${indice}][origen]`,
+                        unidad.origen
+                    );
+
+                }
+            );
+
+
+            /* =================================================
+               EVIDENCIAS ELIMINADAS
+            ================================================= */
+
+            datos.delete(
+                'evidencias_eliminadas[]'
+            );
+
+
+            const evidenciasEliminadas =
+                obtenerEvidenciasEliminadas();
+
+
+            evidenciasEliminadas.forEach(
+                (idEvidencia) => {
+
+                    datos.append(
+                        'evidencias_eliminadas[]',
+                        String(
+                            idEvidencia
+                        )
+                    );
+
+                }
+            );
+
+
+            /* =================================================
+               BOTÓN GUARDAR
+            ================================================= */
+
+            const botonGuardar =
+                formulario.querySelector(
+                    '[type="submit"]'
                 );
 
 
-                reportesTemporales.set(
-                    nuevoFolio,
-                    reporteEditado
-                );
+            const textoOriginal =
+                botonGuardar
+                    ? botonGuardar.innerHTML
+                    : '';
 
-            } else {
 
-                reportesTemporales.set(
-                    folioActual,
-                    reporteEditado
-                );
+            if (botonGuardar) {
+
+                botonGuardar.disabled =
+                    true;
+
+
+                botonGuardar.innerHTML =
+                    'Guardando...';
 
             }
 
 
-            /* =================================================
-               ACTUALIZAR FILA TEMPORAL
-            ================================================= */
+            try {
 
-            actualizarFilaDesdeReporte(
-                filaActual,
-                reporteEditado
-            );
+                /* =================================================
+                   ENVIAR AL BACKEND
+                ================================================= */
 
-
-            actualizarHeaderEditar(
-                modal,
-                reporteEditado
-            );
+                const resultado =
+                    await actualizarReporteBackend(
+                        idReporte,
+                        datos
+                    );
 
 
-            actualizarListadoRelacionado();
+                if (
+                    !resultado
+                    || resultado.success !== true
+                ) {
+
+                    throw new Error(
+                        resultado?.message
+                        || 'No fue posible actualizar el reporte.'
+                    );
+
+                }
 
 
-            cerrarModalEditar(
-                modal
-            );
+                /* =================================================
+                   ACTUALIZAR ESTADO LOCAL
+                ================================================= */
+
+                const folioGuardado =
+                    resultado.folio
+                    || nuevoFolio;
 
 
-            limpiarReporteActual();
+                reporteEditado.folio =
+                    folioGuardado;
+
+
+                if (
+                    folioGuardado
+                    !== folioActual
+                ) {
+
+                    reportesTemporales.delete(
+                        folioActual
+                    );
+
+                }
+
+
+                reportesTemporales.set(
+                    folioGuardado,
+                    reporteEditado
+                );
+
+
+                /* =================================================
+                   CERRAR MODAL
+                ================================================= */
+
+                cerrarModalEditar(
+                    modal
+                );
+
+
+                limpiarReporteActual();
+
+
+                /* =================================================
+                   RECARGAR
+                ================================================= */
+
+                /*
+                 * Como el listado ya proviene de la BD,
+                 * recargamos para mostrar exactamente
+                 * lo que quedó persistido.
+                 */
+
+                window.location.reload();
+
+
+            } catch (error) {
+
+                console.error(
+                    'Error actualizando reporte:',
+                    error
+                );
+
+
+                window.alert(
+                    error.message
+                    || 'No fue posible actualizar el reporte.'
+                );
+
+
+            } finally {
+
+                if (botonGuardar) {
+
+                    botonGuardar.disabled =
+                        false;
+
+
+                    botonGuardar.innerHTML =
+                        textoOriginal;
+
+                }
+
+            }
 
         }
     );
-
 }
 
 
@@ -1093,6 +1422,163 @@ function actualizarListadoRelacionado() {
             {
                 bubbles: true,
             }
+        )
+    );
+
+}
+
+/* =========================================================
+   ACTUALIZAR REPORTE EN BACKEND
+========================================================= */
+
+async function actualizarReporteBackend(
+    idReporte,
+    datos
+) {
+
+    const baseUrl =
+        document
+            .querySelector('base')
+            ?.href
+        || `${window.location.origin}/`;
+
+
+    const url =
+        new URL(
+            `asuntos-internos/reportes/actualizar/${idReporte}`,
+            baseUrl
+        );
+
+
+    const respuesta =
+        await fetch(
+            url.toString(),
+            {
+                method:
+                    'POST',
+
+                headers: {
+                    Accept:
+                        'application/json',
+                },
+
+                credentials:
+                    'same-origin',
+
+                body:
+                    datos,
+            }
+        );
+
+
+    let resultado =
+        null;
+
+
+    try {
+
+        resultado =
+            await respuesta.json();
+
+
+    } catch (error) {
+
+        throw new Error(
+            'El servidor devolvió una respuesta no válida.'
+        );
+
+    }
+
+
+    if (!respuesta.ok) {
+
+        throw new Error(
+            resultado?.message
+            || 'No fue posible actualizar el reporte.'
+        );
+
+    }
+
+
+    return resultado;
+
+}
+
+
+/* =========================================================
+   ELIMINAR GRUPO DE FORM DATA
+========================================================= */
+
+function eliminarClavesFormData(
+    datos,
+    prefijo
+) {
+
+    const claves =
+        [];
+
+
+    for (
+        const clave
+        of datos.keys()
+    ) {
+
+        if (
+            clave.startsWith(
+                prefijo
+            )
+        ) {
+
+            claves.push(
+                clave
+            );
+
+        }
+
+    }
+
+
+    claves.forEach(
+        (clave) => {
+
+            datos.delete(
+                clave
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   AGREGAR VALOR A FORM DATA
+========================================================= */
+
+function agregarValorFormData(
+    datos,
+    nombre,
+    valor
+) {
+
+    if (
+        valor === null
+        || valor === undefined
+    ) {
+
+        datos.append(
+            nombre,
+            ''
+        );
+
+        return;
+    }
+
+
+    datos.append(
+        nombre,
+        String(
+            valor
         )
     );
 

@@ -126,4 +126,9 @@ $routes->group('asuntos-internos/reportes', static function ($routes) {
         'evidencia/(:num)',
         '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::verEvidencia/$1'
     );
+
+    $routes->post(
+        'actualizar/(:num)',
+        '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::actualizarReporte/$1'
+    );
 });
