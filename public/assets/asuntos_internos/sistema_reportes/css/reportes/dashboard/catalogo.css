@@ -1,0 +1,419 @@
+/* =========================================================
+   DASHBOARD - CATÁLOGO GENERAL
+========================================================= */
+
+.dashboard-grafica--catalogo {
+    position: relative;
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 92% 8%,
+            rgba(18, 151, 106, 0.07) 0%,
+            transparent 30%
+        ),
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #f9fcfb 100%
+        );
+
+    border: 1px solid #dfe9e4;
+    border-radius: 24px;
+
+    box-shadow:
+        0 16px 34px
+        rgba(31, 76, 59, 0.07);
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.dashboard-catalogo__encabezado {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 24px;
+
+    padding: 22px 24px 10px;
+}
+
+
+.dashboard-catalogo__encabezado-info {
+    min-width: 0;
+}
+
+
+/* =========================================================
+   TOTAL
+========================================================= */
+
+.dashboard-catalogo__total {
+    min-width: 110px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    padding: 11px 15px;
+
+    background: #eef8f4;
+
+    border: 1px solid #d9eee5;
+    border-radius: 16px;
+}
+
+
+.dashboard-catalogo__total-label {
+    color: #698078;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+
+.dashboard-catalogo__total-valor {
+    margin-top: 2px;
+
+    color: #087d59;
+
+    font-size: 27px;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+.dashboard-catalogo__total small {
+    margin-top: 3px;
+
+    color: #8a9994;
+
+    font-size: 9px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+.dashboard-catalogo__contenido {
+    display: grid;
+
+    grid-template-columns:
+        minmax(230px, 0.34fr)
+        minmax(0, 1fr);
+
+    gap: 26px;
+
+    padding: 10px 24px 24px;
+}
+
+
+/* =========================================================
+   TOP 3
+========================================================= */
+
+.dashboard-catalogo__destacados {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+
+/* =========================================================
+   ELEMENTO DESTACADO
+========================================================= */
+
+.dashboard-catalogo__destacado {
+    position: relative;
+
+    min-height: 84px;
+
+    display: grid;
+
+    grid-template-columns:
+        38px
+        minmax(0, 1fr)
+        auto;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 14px 15px;
+
+    background: rgba(248, 252, 250, 0.94);
+
+    border: 1px solid #e1ebe6;
+    border-radius: 17px;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.dashboard-catalogo__destacado:hover {
+    transform: translateY(-2px);
+
+    border-color: #cce5da;
+
+    box-shadow:
+        0 10px 20px
+        rgba(25, 95, 70, 0.08);
+}
+
+
+/* =========================================================
+   PRIMER LUGAR
+========================================================= */
+
+.dashboard-catalogo__destacado:first-child {
+    background:
+        linear-gradient(
+            145deg,
+            #0c9367 0%,
+            #087b59 100%
+        );
+
+    border-color: transparent;
+
+    box-shadow:
+        0 12px 24px
+        rgba(8, 123, 89, 0.16);
+}
+
+
+.dashboard-catalogo__destacado:first-child small,
+.dashboard-catalogo__destacado:first-child strong {
+    color: #ffffff;
+}
+
+
+.dashboard-catalogo__destacado:first-child small {
+    opacity: 0.68;
+}
+
+
+/* =========================================================
+   POSICIÓN
+========================================================= */
+
+.dashboard-catalogo__posicion {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #0b8a61;
+
+    background: #e5f5ee;
+
+    border-radius: 11px;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+.dashboard-catalogo__destacado:first-child
+.dashboard-catalogo__posicion {
+    color: #ffffff;
+
+    background:
+        rgba(255, 255, 255, 0.14);
+}
+
+
+/* =========================================================
+   TEXTO DEL TOP
+========================================================= */
+
+.dashboard-catalogo__destacado small {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #8a9994;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 0.04em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-catalogo__destacado strong {
+    display: block;
+
+    color: #354b43;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    line-height: 1.35;
+}
+
+
+/* =========================================================
+   CANTIDAD
+========================================================= */
+
+.dashboard-catalogo__cantidad {
+    color: #087d59;
+
+    font-size: 22px;
+    font-weight: 800;
+}
+
+
+.dashboard-catalogo__destacado:first-child
+.dashboard-catalogo__cantidad {
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   ÁREA DE LA GRÁFICA
+========================================================= */
+
+.dashboard-catalogo__grafica {
+    min-width: 0;
+
+    padding-left: 22px;
+
+    border-left:
+        1px solid
+        rgba(101, 132, 120, 0.13);
+}
+
+
+.dashboard-grafica__canvas--catalogo {
+    height: 420px;
+    min-height: 420px;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1050px) {
+
+    .dashboard-catalogo__contenido {
+        grid-template-columns: 1fr;
+    }
+
+
+    .dashboard-catalogo__destacados {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+
+    .dashboard-catalogo__destacado {
+        grid-template-columns:
+            34px
+            minmax(0, 1fr);
+
+        align-content: center;
+    }
+
+
+    .dashboard-catalogo__cantidad {
+        grid-column: 2;
+
+        font-size: 18px;
+    }
+
+
+    .dashboard-catalogo__grafica {
+        padding-left: 0;
+        padding-top: 20px;
+
+        border-left: 0;
+
+        border-top:
+            1px solid
+            rgba(101, 132, 120, 0.13);
+    }
+
+}
+
+
+/* =========================================================
+   MÓVIL
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .dashboard-grafica--catalogo {
+        border-radius: 18px;
+    }
+
+
+    .dashboard-catalogo__encabezado {
+        flex-direction: column;
+
+        gap: 12px;
+
+        padding: 18px 16px 8px;
+    }
+
+
+    .dashboard-catalogo__total {
+        width: 100%;
+
+        align-items: flex-start;
+    }
+
+
+    .dashboard-catalogo__contenido {
+        gap: 18px;
+
+        padding: 8px 14px 16px;
+    }
+
+
+    .dashboard-catalogo__destacados {
+        grid-template-columns: 1fr;
+    }
+
+
+    .dashboard-catalogo__destacado {
+        grid-template-columns:
+            36px
+            minmax(0, 1fr)
+            auto;
+    }
+
+
+    .dashboard-catalogo__cantidad {
+        grid-column: auto;
+
+        font-size: 20px;
+    }
+
+
+    .dashboard-grafica__canvas--catalogo {
+        height: 400px;
+        min-height: 400px;
+    }
+
+}

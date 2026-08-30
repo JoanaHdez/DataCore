@@ -2,7 +2,7 @@ document.addEventListener(
     'DOMContentLoaded',
     () => {
 
-        inicializarGraficaTurnos();
+        inicializarGraficaResoluciones();
 
     }
 );
@@ -10,14 +10,14 @@ document.addEventListener(
 
 /* =========================================================
    GRÁFICA
-   QUEJAS POR TURNO
+   RESOLUCIÓN GENERAL
 ========================================================= */
 
-function inicializarGraficaTurnos() {
+function inicializarGraficaResoluciones() {
 
     const canvas =
         document.querySelector(
-            '#grafica-turnos'
+            '#grafica-resoluciones'
         );
 
 
@@ -30,84 +30,54 @@ function inicializarGraficaTurnos() {
 
 
     /* =====================================================
-       DESTRUIR GRÁFICA PREVIA
-    ===================================================== */
-
-    const graficaExistente =
-        Chart.getChart(
-            canvas
-        );
-
-
-    if (graficaExistente) {
-
-        graficaExistente.destroy();
-
-    }
-
-
-    /* =====================================================
        DATOS TEMPORALES
        Basados en el dashboard de Excel
     ===================================================== */
 
-    const datosTurnos = [
+    const datosResoluciones = {
 
-        {
-            nombre:
-                'Segundo turno',
+        labels: [
+            'En investigación',
+            'Improcedente',
+            'El ciudadano desiste',
+            'Recomendación',
+            'Cambio de adscripción',
+            'Sanción disciplinaria',
+            'Renuncia voluntaria',
+        ],
 
-            valor:
-                82,
-        },
+        valores: [
+            204,
+            39,
+            11,
+            9,
+            6,
+            5,
+            2,
+        ],
 
-        {
-            nombre:
-                'Primer turno',
+    };
 
-            valor:
-                69,
-        },
 
-        {
-            nombre:
-                'Tercer turno',
+    /* =====================================================
+       DESCRIPCIONES COMPLETAS
+    ===================================================== */
 
-            valor:
-                47,
-        },
+    const descripciones = [
 
-        {
-            nombre:
-                'No refiere ni fecha ni horario',
+        'En investigación se solicitan los oficios correspondientes para la integración del expediente.',
 
-            valor:
-                25,
-        },
+        'Improcedente: carece de datos de prueba, se justifica el actuar de los oficiales o no presenta evidencias.',
 
-        {
-            nombre:
-                'Beta',
+        'El ciudadano desiste de la queja.',
 
-            valor:
-                24,
-        },
+        'Recomendación.',
 
-        {
-            nombre:
-                'Diario',
+        'Se realizó el cambio de adscripción del oficial.',
 
-            valor:
-                16,
-        },
+        'Se emitió sanción con base al tabulador de correctivos disciplinarios.',
 
-        {
-            nombre:
-                'Alfa',
-
-            valor:
-                13,
-        },
+        'Los oficiales firmaron su renuncia voluntaria.',
 
     ];
 
@@ -117,17 +87,16 @@ function inicializarGraficaTurnos() {
     ===================================================== */
 
     const total =
-        datosTurnos.reduce(
+        datosResoluciones.valores.reduce(
             (
                 acumulado,
-                turno
+                valor
             ) => {
 
                 return (
                     acumulado
                     + Number(
-                        turno.valor
-                        || 0
+                        valor || 0
                     )
                 );
 
@@ -138,7 +107,7 @@ function inicializarGraficaTurnos() {
 
     const totalElemento =
         document.querySelector(
-            '#turnos-total'
+            '#resoluciones-total'
         );
 
 
@@ -157,20 +126,16 @@ function inicializarGraficaTurnos() {
     ===================================================== */
 
     const porcentajes =
-        datosTurnos.map(
-            (turno) => {
+        datosResoluciones.valores.map(
+            (valor) => {
 
-                if (
-                    total <= 0
-                ) {
+                if (total <= 0) {
                     return 0;
                 }
 
 
                 return (
-                    Number(
-                        turno.valor
-                    )
+                    Number(valor)
                     / total
                 ) * 100;
 
@@ -191,50 +156,34 @@ function inicializarGraficaTurnos() {
             data: {
 
                 labels:
-                    datosTurnos.map(
-                        (turno) => {
-
-                            return (
-                                turno.nombre
-                            );
-
-                        }
-                    ),
+                    datosResoluciones.labels,
 
                 datasets: [
                     {
                         label:
-                            'Quejas',
+                            'Reportes',
 
                         data:
-                            datosTurnos.map(
-                                (turno) => {
-
-                                    return (
-                                        turno.valor
-                                    );
-
-                                }
-                            ),
+                            datosResoluciones.valores,
 
                         backgroundColor: [
-                            'rgba(8, 139, 96, 0.96)',
-                            'rgba(33, 157, 116, 0.84)',
-                            'rgba(58, 174, 136, 0.74)',
-                            'rgba(91, 186, 153, 0.66)',
-                            'rgba(112, 195, 165, 0.62)',
-                            'rgba(138, 205, 180, 0.58)',
-                            'rgba(165, 216, 197, 0.56)',
+                            'rgba(15, 148, 103, 0.95)',
+                            'rgba(58, 165, 130, 0.76)',
+                            'rgba(83, 179, 148, 0.70)',
+                            'rgba(107, 190, 160, 0.66)',
+                            'rgba(130, 200, 175, 0.62)',
+                            'rgba(153, 211, 190, 0.58)',
+                            'rgba(180, 219, 205, 0.56)',
                         ],
 
                         hoverBackgroundColor: [
-                            '#067a55',
-                            '#168e68',
-                            '#319f7b',
-                            '#4eae8d',
-                            '#69b99b',
-                            '#84c4aa',
-                            '#9dcdb9',
+                            '#087e59',
+                            '#238f6d',
+                            '#3d9f7d',
+                            '#55ad8c',
+                            '#70b99d',
+                            '#8bc5ae',
+                            '#a6d0bf',
                         ],
 
                         borderWidth:
@@ -247,18 +196,18 @@ function inicializarGraficaTurnos() {
                             12,
 
                         barPercentage:
-                            0.62,
+                            0.68,
 
                         categoryPercentage:
-                            0.72,
+                            0.76,
 
                         maxBarThickness:
-                            28,
+                            24,
+
                     },
                 ],
 
             },
-
 
             options: {
 
@@ -303,7 +252,7 @@ function inicializarGraficaTurnos() {
 
 
                 /* =================================================
-                   ESPACIADO
+                   LAYOUT
                 ================================================= */
 
                 layout: {
@@ -314,7 +263,7 @@ function inicializarGraficaTurnos() {
                             8,
 
                         right:
-                            14,
+                            16,
 
                         bottom:
                             4,
@@ -339,7 +288,7 @@ function inicializarGraficaTurnos() {
                             true,
 
                         suggestedMax:
-                            90,
+                            220,
 
                         border: {
 
@@ -354,7 +303,7 @@ function inicializarGraficaTurnos() {
                                 0,
 
                             stepSize:
-                                20,
+                                50,
 
                             padding:
                                 8,
@@ -411,7 +360,7 @@ function inicializarGraficaTurnos() {
                         ticks: {
 
                             color:
-                                '#40534c',
+                                '#42554e',
 
                             padding:
                                 10,
@@ -459,7 +408,7 @@ function inicializarGraficaTurnos() {
                             'rgba(255, 255, 255, 0.98)',
 
                         titleColor:
-                            '#31453d',
+                            '#32463e',
 
                         bodyColor:
                             '#087d59',
@@ -479,7 +428,6 @@ function inicializarGraficaTurnos() {
                         caretPadding:
                             8,
 
-
                         titleFont: {
 
                             size:
@@ -490,17 +438,15 @@ function inicializarGraficaTurnos() {
 
                         },
 
-
                         bodyFont: {
 
                             size:
                                 10,
 
                             weight:
-                                '700',
+                                '600',
 
                         },
-
 
                         callbacks: {
 
@@ -508,9 +454,15 @@ function inicializarGraficaTurnos() {
                                 elementos
                             ) {
 
-                                return (
+                                const indice =
                                     elementos[0]
-                                        ?.label
+                                        ?.dataIndex
+                                    ?? 0;
+
+
+                                return (
+                                    datosResoluciones
+                                        .labels[indice]
                                     || ''
                                 );
 
@@ -540,8 +492,22 @@ function inicializarGraficaTurnos() {
 
 
                                 return (
-                                    `${valor} quejas `
+                                    `${valor} reportes `
                                     + `(${porcentaje.toFixed(1)}%)`
+                                );
+
+                            },
+
+
+                            afterLabel(
+                                contexto
+                            ) {
+
+                                return (
+                                    descripciones[
+                                        contexto.dataIndex
+                                    ]
+                                    || ''
                                 );
 
                             },

@@ -36,11 +36,11 @@ Acceso | Sistema de Reportes
 
                 <?php if (session()->getFlashdata('error')): ?>
 
-    <div class="login-form__error">
-        <?= esc(session()->getFlashdata('error')) ?>
-    </div>
+                    <div class="login-form__error">
+                        <?= esc(session()->getFlashdata('error')) ?>
+                    </div>
 
-<?php endif; ?>
+                <?php endif; ?>
 
                 <form class="login-form" method="post" action="<?= base_url('asuntos-internos/reportes/login') ?>"
                     autocomplete="off">
@@ -59,8 +59,23 @@ Acceso | Sistema de Reportes
                                 autocomplete="off" required>
 
                             <span class="form-control__icon" aria-hidden="true">
-                                ♙
-                            </span>
+
+    <svg
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <circle
+            cx="12"
+            cy="8"
+            r="4"
+        />
+
+        <path
+            d="M5 20c0-3.8 3.1-6.8 7-6.8s7 3 7 6.8"
+        />
+    </svg>
+
+</span>
 
                         </div>
 
@@ -79,8 +94,39 @@ Acceso | Sistema de Reportes
                                 autocomplete="off" required>
 
                             <span class="form-control__icon" aria-hidden="true">
-                                ▣
-                            </span>
+
+    <svg
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <rect
+            x="3.5"
+            y="5"
+            width="17"
+            height="14"
+            rx="2"
+        />
+
+        <circle
+            cx="9"
+            cy="11"
+            r="2"
+        />
+
+        <path
+            d="M6.5 16c.5-1.7 1.5-2.6 2.5-2.6s2 .9 2.5 2.6"
+        />
+
+        <path
+            d="M14 10h3.5"
+        />
+
+        <path
+            d="M14 13h3.5"
+        />
+    </svg>
+
+</span>
 
                         </div>
 
@@ -111,8 +157,8 @@ Acceso | Sistema de Reportes
                 <div class="login__logo">
 
                     <img src="<?= base_url(
-                            'assets/asuntos_internos/sistema_reportes/img/logo.png'
-                        ) ?>" alt="Coordinación de Asuntos Internos">
+                                    'assets/asuntos_internos/sistema_reportes/img/logo.png'
+                                ) ?>" alt="Coordinación de Asuntos Internos">
 
                 </div>
 
@@ -135,25 +181,23 @@ Acceso | Sistema de Reportes
 
                     <div class="login-institucional__logos">
 
-    <img
-        src="<?= base_url(
-            'assets/asuntos_internos/sistema_reportes/img/ayuntamiento.png'
-        ) ?>"
-        alt="Ayuntamiento de Nezahualcóyotl"
-        class="login-institucional__logo login-institucional__logo--ayuntamiento"
-    >
+                        <img
+                            src="<?= base_url(
+                                        'assets/asuntos_internos/sistema_reportes/img/ayuntamiento.png'
+                                    ) ?>"
+                            alt="Ayuntamiento de Nezahualcóyotl"
+                            class="login-institucional__logo login-institucional__logo--ayuntamiento">
 
-    <span class="login-institucional__logos-separador"></span>
+                        <span class="login-institucional__logos-separador"></span>
 
-    <img
-        src="<?= base_url(
-            'assets/asuntos_internos/sistema_reportes/img/cgsc.png'
-        ) ?>"
-        alt="Comisaría General de Seguridad Ciudadana"
-        class="login-institucional__logo login-institucional__logo--comisaria"
-    >
+                        <img
+                            src="<?= base_url(
+                                        'assets/asuntos_internos/sistema_reportes/img/cgsc.png'
+                                    ) ?>"
+                            alt="Comisaría General de Seguridad Ciudadana"
+                            class="login-institucional__logo login-institucional__logo--comisaria">
 
-</div>
+                    </div>
 
                 </div>
 

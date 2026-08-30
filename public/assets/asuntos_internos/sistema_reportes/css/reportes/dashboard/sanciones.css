@@ -1,0 +1,262 @@
+/* =========================================================
+   DASHBOARD - SANCIONES DISCIPLINARIAS
+========================================================= */
+
+.dashboard-grafica--sanciones {
+    position: relative;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 12% 8%,
+            rgba(14, 151, 105, 0.07) 0%,
+            transparent 34%
+        ),
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #f9fcfb 100%
+        );
+
+    border:
+        1px solid #e0e9e5;
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 15px 34px
+        rgba(31, 76, 59, 0.07);
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.dashboard-sanciones__encabezado {
+    padding:
+        22px
+        24px
+        8px;
+}
+
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+.dashboard-sanciones__contenido {
+    display: grid;
+
+    grid-template-columns:
+        150px
+        minmax(0, 1fr);
+
+    gap: 22px;
+
+    align-items: stretch;
+
+    padding: 12px 22px 22px;
+}
+
+
+/* =========================================================
+   RESUMEN
+========================================================= */
+
+.dashboard-sanciones__resumen {
+    min-height: 220px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+    overflow: hidden;
+
+    padding: 22px 14px;
+
+    background:
+        linear-gradient(
+            155deg,
+            #173f59 0%,
+            #0d3048 100%
+        );
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 14px 28px
+        rgba(12, 48, 72, 0.16);
+
+    text-align: center;
+}
+
+.dashboard-sanciones__resumen strong {
+    margin-top: 10px;
+
+    color: #ffffff;
+
+    font-size: 38px;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+.dashboard-sanciones__resumen::after {
+    content: "";
+
+    position: absolute;
+
+    top: 20px;
+    right: 20px;
+
+    width: 52px;
+    height: 52px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255, 255, 255, 0.06);
+}
+
+
+/* =========================================================
+   TEXTO DEL RESUMEN
+========================================================= */
+
+.dashboard-sanciones__resumen-label {
+    color:
+        rgba(255, 255, 255, 0.70);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 0.06em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-sanciones__resumen-total {
+    margin:
+        12px
+        0
+        7px;
+
+    color: #ffffff;
+
+    font-size: 48px;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+.dashboard-sanciones__resumen-periodo {
+    color:
+        rgba(255, 255, 255, 0.62);
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   GRÁFICA
+========================================================= */
+
+.dashboard-sanciones__grafica {
+    min-width: 0;
+}
+
+
+.dashboard-grafica__canvas--sanciones {
+    width: 100%;
+
+    height: 245px;
+    min-height: 245px;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .dashboard-sanciones__contenido {
+        grid-template-columns: 1fr;
+    }
+
+
+    .dashboard-sanciones__resumen {
+        min-height: auto;
+
+        flex-direction: row;
+
+        justify-content: flex-start;
+
+        gap: 14px;
+
+        padding:
+            18px
+            20px;
+
+        text-align: left;
+    }
+
+
+    .dashboard-sanciones__resumen-total {
+        margin: 0;
+
+        font-size: 34px;
+    }
+
+}
+
+
+/* =========================================================
+   MÓVIL
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .dashboard-grafica--sanciones {
+        border-radius: 18px;
+    }
+
+
+    .dashboard-sanciones__encabezado {
+        padding:
+            18px
+            16px
+            8px;
+    }
+
+
+    .dashboard-sanciones__contenido {
+        gap: 14px;
+
+        padding:
+            8px
+            14px
+            16px;
+    }
+
+
+    .dashboard-sanciones__resumen {
+        border-radius: 18px;
+    }
+
+
+    .dashboard-grafica__canvas--sanciones {
+        height: 240px;
+
+        min-height: 240px;
+    }
+
+}

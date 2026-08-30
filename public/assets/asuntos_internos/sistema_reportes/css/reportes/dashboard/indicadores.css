@@ -3,7 +3,7 @@
 ========================================================= */
 
 .dashboard-indicadores {
-    margin-bottom: 24px;
+    margin-bottom: 26px;
 }
 
 
@@ -21,31 +21,42 @@
     margin-bottom: 12px;
 }
 
+
 .dashboard-indicadores__eyebrow {
     display: block;
 
-    margin-bottom: 3px;
+    margin-bottom: 4px;
 
-    color: #1681c4;
+    color: #0b8f63;
 
     font-size: 9px;
     font-weight: 800;
 
-    letter-spacing: 0.07em;
+    letter-spacing: 0.08em;
+
     text-transform: uppercase;
 }
+
 
 .dashboard-indicadores__titulo {
     margin: 0;
 
     color: #173554;
 
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 800;
 }
 
+
 .dashboard-indicadores__periodo {
-    color: #8291a0;
+    padding: 7px 10px;
+
+    color: #6f817a;
+
+    background: #eef7f3;
+
+    border: 1px solid #dcebe4;
+    border-radius: 999px;
 
     font-size: 9px;
     font-weight: 700;
@@ -71,77 +82,123 @@
 ========================================================= */
 
 .dashboard-indicador {
+    position: relative;
+
     min-width: 0;
+    min-height: 120px;
 
-    padding: 17px 18px;
+    display: flex;
+    align-items: center;
 
-    background: #ffffff;
+    gap: 14px;
 
-    border: 1px solid #e1e8ee;
-    border-radius: 9px;
+    padding: 18px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #fbfdfc 100%
+        );
+
+    border: 1px solid #dfe8e4;
+    border-radius: 18px;
+
+    box-shadow:
+        0 8px 20px
+        rgba(29, 69, 55, 0.05);
 
     transition:
         transform 0.2s ease,
-        box-shadow 0.2s ease;
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
 }
+
 
 .dashboard-indicador:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
 
     box-shadow:
-        0 6px 18px rgba(34, 61, 84, 0.07);
+        0 14px 28px
+        rgba(29, 69, 55, 0.09);
 }
 
 
 /* =========================================================
-   CABECERA DE TARJETA
+   ACENTO LATERAL
 ========================================================= */
 
-.dashboard-indicador__encabezado {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.dashboard-indicador::before {
+    content: "";
 
-    gap: 10px;
+    position: absolute;
 
-    margin-bottom: 12px;
-}
+    top: 16px;
+    bottom: 16px;
+    left: 0;
 
-.dashboard-indicador__etiqueta {
-    color: #607487;
+    width: 4px;
 
-    font-size: 10px;
-    font-weight: 800;
+    border-radius: 0 999px 999px 0;
 }
 
 
 /* =========================================================
-   PUNTO DE ESTADO
+   ICONO
 ========================================================= */
 
-.dashboard-indicador__punto {
-    width: 8px;
-    height: 8px;
+.dashboard-indicador__icono {
+    width: 44px;
+    height: 44px;
 
     flex-shrink: 0;
 
-    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
 }
 
-.dashboard-indicador__punto--total {
-    background: #1681c4;
+
+.dashboard-indicador__icono svg {
+    width: 20px;
+    height: 20px;
+
+    fill: none;
+
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
-.dashboard-indicador__punto--pendiente {
-    background: #d69c25;
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+.dashboard-indicador__contenido {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
 }
 
-.dashboard-indicador__punto--proceso {
-    background: #527da4;
-}
 
-.dashboard-indicador__punto--finalizado {
-    background: #2f9b70;
+/* =========================================================
+   ETIQUETA
+========================================================= */
+
+.dashboard-indicador__etiqueta {
+    color: #63766f;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.02em;
 }
 
 
@@ -152,20 +209,121 @@
 .dashboard-indicador__valor {
     display: block;
 
-    margin-bottom: 3px;
+    margin:
+        5px
+        0
+        4px;
 
     color: #173554;
 
-    font-size: 27px;
+    font-size: 30px;
     font-weight: 800;
 
     line-height: 1;
 }
 
+
+/* =========================================================
+   DESCRIPCIÓN
+========================================================= */
+
 .dashboard-indicador__descripcion {
-    color: #8a99a7;
+    color: #8a9994;
 
     font-size: 9px;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   TOTAL
+========================================================= */
+
+.dashboard-indicador--total {
+    background:
+        radial-gradient(
+            circle at 100% 0%,
+            rgba(24, 129, 196, 0.08) 0%,
+            transparent 48%
+        ),
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #f8fcff
+        );
+
+    border-color: #dce9f2;
+}
+
+
+.dashboard-indicador--total::before {
+    background: #1681c4;
+}
+
+
+.dashboard-indicador--total
+.dashboard-indicador__icono {
+    color: #1379b8;
+
+    background: #e8f4fb;
+}
+
+
+.dashboard-indicador--total
+.dashboard-indicador__valor {
+    color: #125a86;
+}
+
+
+/* =========================================================
+   PENDIENTE
+========================================================= */
+
+.dashboard-indicador--pendiente::before {
+    background: #d69c25;
+}
+
+
+.dashboard-indicador--pendiente
+.dashboard-indicador__icono {
+    color: #b77c10;
+
+    background: #fff5dc;
+}
+
+
+/* =========================================================
+   EN PROCESO
+========================================================= */
+
+.dashboard-indicador--proceso::before {
+    background: #527da4;
+}
+
+
+.dashboard-indicador--proceso
+.dashboard-indicador__icono {
+    color: #426f97;
+
+    background: #edf4f9;
+}
+
+
+/* =========================================================
+   FINALIZADO
+========================================================= */
+
+.dashboard-indicador--finalizado::before {
+    background: #159668;
+}
+
+
+.dashboard-indicador--finalizado
+.dashboard-indicador__icono {
+    color: #0d8a5f;
+
+    background: #e7f6ef;
 }
 
 
@@ -173,7 +331,7 @@
    RESPONSIVE
 ========================================================= */
 
-@media (max-width: 950px) {
+@media (max-width: 1050px) {
 
     .dashboard-indicadores__grid {
         grid-template-columns:
@@ -183,17 +341,31 @@
 }
 
 
-@media (max-width: 500px) {
+@media (max-width: 560px) {
 
     .dashboard-indicadores__encabezado {
         align-items: flex-start;
         flex-direction: column;
 
-        gap: 5px;
+        gap: 7px;
     }
+
 
     .dashboard-indicadores__grid {
         grid-template-columns: 1fr;
+    }
+
+
+    .dashboard-indicador {
+        min-height: 105px;
+
+        padding: 16px;
+    }
+
+
+    .dashboard-indicador__icono {
+        width: 40px;
+        height: 40px;
     }
 
 }

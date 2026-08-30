@@ -5,10 +5,13 @@
 
 import './login.js';
 import './reportes/ubicacion.js';
-import './reportes/dashboard/graficas/clasificaciones.js';
+import './reportes/dashboard/graficas/sanciones.js';
 import './reportes/dashboard/graficas/areas.js';
+import './reportes/dashboard/graficas/zonas.js';
+import './reportes/dashboard/graficas/resoluciones.js';
+import './reportes/dashboard/graficas/catalogo.js';
 import './reportes/dashboard/graficas/turnos.js';
-import './reportes/dashboard/graficas/tendencia.js';
+
 import './reportes/dashboard/exportar.js';
 import './reportes/dashboard/autorizacion.js';
 

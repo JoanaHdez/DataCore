@@ -1,31 +1,56 @@
-<section class="dashboard-grafica">
+<section class="dashboard-grafica dashboard-grafica--turnos">
 
-    <div class="dashboard-grafica__encabezado">
+    <div class="dashboard-turnos__encabezado">
 
         <div>
+
             <span class="dashboard-grafica__eyebrow">
-                Distribución
+                Distribución operativa
             </span>
 
             <h2 class="dashboard-grafica__titulo">
-                Reportes por turno
+                Quejas por turno
             </h2>
 
             <p class="dashboard-grafica__descripcion">
-                Cantidad de reportes registrados de acuerdo con el turno.
+                Distribución general de las quejas registradas
+                de acuerdo con el turno relacionado.
             </p>
+
+        </div>
+
+
+        <div class="dashboard-turnos__total">
+
+            <span>
+                Total
+            </span>
+
+            <strong id="turnos-total">
+                276
+            </strong>
+
+            <small>
+                quejas
+            </small>
+
         </div>
 
     </div>
 
 
-    <div class="dashboard-grafica__contenido">
+    <div class="dashboard-turnos__contenido">
 
-        <div class="dashboard-grafica__canvas">
+        <div
+            class="
+                dashboard-grafica__canvas
+                dashboard-grafica__canvas--turnos
+            "
+        >
 
             <canvas
                 id="grafica-turnos"
-                aria-label="Gráfica de reportes por turno"
+                aria-label="Gráfica de quejas por turno"
             ></canvas>
 
         </div>

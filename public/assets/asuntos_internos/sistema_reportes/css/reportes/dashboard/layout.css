@@ -1,0 +1,166 @@
+/* =========================================================
+   DASHBOARD
+   COMPOSICIÓN GENERAL
+========================================================= */
+
+.dashboard-layout {
+    display: flex;
+    flex-direction: column;
+
+    gap: 22px;
+
+    margin-bottom: 28px;
+}
+
+
+/* =========================================================
+   PRINCIPAL
+========================================================= */
+
+.dashboard-layout__principal {
+    width: 100%;
+}
+
+
+/* =========================================================
+   FILAS
+========================================================= */
+
+.dashboard-layout__fila {
+    display: grid;
+
+    width: 100%;
+
+    gap: 22px;
+
+    align-items: stretch;
+}
+
+
+/* =========================================================
+   ZONAS + SANCIONES
+========================================================= */
+
+.dashboard-layout__fila--zonas {
+    grid-template-columns:
+        minmax(0, 1.35fr)
+        minmax(360px, 0.85fr);
+}
+
+
+/* =========================================================
+   RESOLUCIONES + CATÁLOGO
+========================================================= */
+
+.dashboard-layout__fila--analisis {
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr);
+}
+
+
+/* =========================================================
+   TURNOS + RECIENTES
+========================================================= */
+
+.dashboard-layout__fila--operativa {
+    grid-template-columns:
+        minmax(0, 0.88fr)
+        minmax(0, 1.12fr);
+}
+
+
+/* =========================================================
+   ESTIRAR TARJETAS
+========================================================= */
+
+.dashboard-layout__fila > div {
+    min-width: 0;
+}
+
+
+.dashboard-layout__fila > div > .dashboard-grafica {
+    height: 100%;
+    margin-bottom: 0;
+}
+
+/* =========================================================
+   FILA OPERATIVA
+   TURNOS + REPORTES RECIENTES
+========================================================= */
+
+.dashboard-layout__fila--operativa {
+    align-items: stretch;
+}
+
+
+.dashboard-layout__turnos,
+.dashboard-layout__recientes {
+    display: flex;
+
+    min-width: 0;
+}
+
+
+.dashboard-layout__turnos > *,
+.dashboard-layout__recientes > * {
+    width: 100%;
+    height: 100%;
+}
+
+/* =========================================================
+   TABLET GRANDE
+========================================================= */
+
+@media (max-width: 1200px) {
+
+    .dashboard-layout__fila--zonas {
+        grid-template-columns:
+            minmax(0, 1.15fr)
+            minmax(320px, 0.85fr);
+    }
+
+
+    .dashboard-layout__fila--operativa {
+        grid-template-columns:
+            1fr
+            1fr;
+    }
+
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 950px) {
+
+    .dashboard-layout {
+        gap: 18px;
+    }
+
+
+    .dashboard-layout__fila,
+    .dashboard-layout__fila--zonas,
+    .dashboard-layout__fila--analisis,
+    .dashboard-layout__fila--operativa {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* =========================================================
+   MÓVIL
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .dashboard-layout {
+        gap: 14px;
+
+        margin-bottom: 20px;
+    }
+
+}

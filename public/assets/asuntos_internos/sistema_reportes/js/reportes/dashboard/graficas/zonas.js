@@ -2,7 +2,7 @@ document.addEventListener(
     'DOMContentLoaded',
     () => {
 
-        inicializarGraficaTurnos();
+        inicializarGraficaZonas();
 
     }
 );
@@ -10,14 +10,14 @@ document.addEventListener(
 
 /* =========================================================
    GRÁFICA
-   QUEJAS POR TURNO
+   QUEJAS POR ZONA
 ========================================================= */
 
-function inicializarGraficaTurnos() {
+function inicializarGraficaZonas() {
 
     const canvas =
         document.querySelector(
-            '#grafica-turnos'
+            '#grafica-zonas'
         );
 
 
@@ -30,86 +30,27 @@ function inicializarGraficaTurnos() {
 
 
     /* =====================================================
-       DESTRUIR GRÁFICA PREVIA
-    ===================================================== */
-
-    const graficaExistente =
-        Chart.getChart(
-            canvas
-        );
-
-
-    if (graficaExistente) {
-
-        graficaExistente.destroy();
-
-    }
-
-
-    /* =====================================================
        DATOS TEMPORALES
        Basados en el dashboard de Excel
     ===================================================== */
 
-    const datosTurnos = [
+    const datosZonas = {
 
-        {
-            nombre:
-                'Segundo turno',
+        labels: [
+            'Zona Oriente',
+            'Zona Centro',
+            'Zona Poniente',
+            'Zona Norte',
+        ],
 
-            valor:
-                82,
-        },
+        valores: [
+            45,
+            51,
+            49,
+            45,
+        ],
 
-        {
-            nombre:
-                'Primer turno',
-
-            valor:
-                69,
-        },
-
-        {
-            nombre:
-                'Tercer turno',
-
-            valor:
-                47,
-        },
-
-        {
-            nombre:
-                'No refiere ni fecha ni horario',
-
-            valor:
-                25,
-        },
-
-        {
-            nombre:
-                'Beta',
-
-            valor:
-                24,
-        },
-
-        {
-            nombre:
-                'Diario',
-
-            valor:
-                16,
-        },
-
-        {
-            nombre:
-                'Alfa',
-
-            valor:
-                13,
-        },
-
-    ];
+    };
 
 
     /* =====================================================
@@ -117,17 +58,16 @@ function inicializarGraficaTurnos() {
     ===================================================== */
 
     const total =
-        datosTurnos.reduce(
+        datosZonas.valores.reduce(
             (
                 acumulado,
-                turno
+                valor
             ) => {
 
                 return (
                     acumulado
                     + Number(
-                        turno.valor
-                        || 0
+                        valor || 0
                     )
                 );
 
@@ -138,7 +78,7 @@ function inicializarGraficaTurnos() {
 
     const totalElemento =
         document.querySelector(
-            '#turnos-total'
+            '#grafica-zonas-total'
         );
 
 
@@ -150,32 +90,6 @@ function inicializarGraficaTurnos() {
             );
 
     }
-
-
-    /* =====================================================
-       PORCENTAJES
-    ===================================================== */
-
-    const porcentajes =
-        datosTurnos.map(
-            (turno) => {
-
-                if (
-                    total <= 0
-                ) {
-                    return 0;
-                }
-
-
-                return (
-                    Number(
-                        turno.valor
-                    )
-                    / total
-                ) * 100;
-
-            }
-        );
 
 
     /* =====================================================
@@ -191,15 +105,7 @@ function inicializarGraficaTurnos() {
             data: {
 
                 labels:
-                    datosTurnos.map(
-                        (turno) => {
-
-                            return (
-                                turno.nombre
-                            );
-
-                        }
-                    ),
+                    datosZonas.labels,
 
                 datasets: [
                     {
@@ -207,34 +113,20 @@ function inicializarGraficaTurnos() {
                             'Quejas',
 
                         data:
-                            datosTurnos.map(
-                                (turno) => {
-
-                                    return (
-                                        turno.valor
-                                    );
-
-                                }
-                            ),
+                            datosZonas.valores,
 
                         backgroundColor: [
-                            'rgba(8, 139, 96, 0.96)',
-                            'rgba(33, 157, 116, 0.84)',
-                            'rgba(58, 174, 136, 0.74)',
-                            'rgba(91, 186, 153, 0.66)',
-                            'rgba(112, 195, 165, 0.62)',
-                            'rgba(138, 205, 180, 0.58)',
-                            'rgba(165, 216, 197, 0.56)',
+                            'rgba(61, 157, 128, 0.58)',
+                            'rgba(15, 151, 105, 0.95)',
+                            'rgba(70, 171, 140, 0.66)',
+                            'rgba(102, 187, 160, 0.56)',
                         ],
 
                         hoverBackgroundColor: [
-                            '#067a55',
-                            '#168e68',
-                            '#319f7b',
-                            '#4eae8d',
-                            '#69b99b',
-                            '#84c4aa',
-                            '#9dcdb9',
+                            'rgba(61, 157, 128, 0.78)',
+                            '#07885e',
+                            'rgba(70, 171, 140, 0.84)',
+                            'rgba(102, 187, 160, 0.78)',
                         ],
 
                         borderWidth:
@@ -243,22 +135,33 @@ function inicializarGraficaTurnos() {
                         borderSkipped:
                             false,
 
-                        borderRadius:
-                            12,
+                        borderRadius: {
+                            topLeft:
+                                18,
 
-                        barPercentage:
-                            0.62,
+                            topRight:
+                                18,
+
+                            bottomLeft:
+                                18,
+
+                            bottomRight:
+                                18,
+                        },
 
                         categoryPercentage:
+                            0.70,
+
+                        barPercentage:
                             0.72,
 
                         maxBarThickness:
-                            28,
+                            58,
+
                     },
                 ],
 
             },
-
 
             options: {
 
@@ -267,9 +170,6 @@ function inicializarGraficaTurnos() {
 
                 maintainAspectRatio:
                     false,
-
-                indexAxis:
-                    'y',
 
 
                 /* =================================================
@@ -303,7 +203,7 @@ function inicializarGraficaTurnos() {
 
 
                 /* =================================================
-                   ESPACIADO
+                   LAYOUT
                 ================================================= */
 
                 layout: {
@@ -311,13 +211,13 @@ function inicializarGraficaTurnos() {
                     padding: {
 
                         top:
-                            8,
+                            22,
 
                         right:
-                            14,
+                            6,
 
                         bottom:
-                            4,
+                            0,
 
                         left:
                             2,
@@ -335,65 +235,6 @@ function inicializarGraficaTurnos() {
 
                     x: {
 
-                        beginAtZero:
-                            true,
-
-                        suggestedMax:
-                            90,
-
-                        border: {
-
-                            display:
-                                false,
-
-                        },
-
-                        ticks: {
-
-                            precision:
-                                0,
-
-                            stepSize:
-                                20,
-
-                            padding:
-                                8,
-
-                            color:
-                                '#8b9994',
-
-                            font: {
-
-                                size:
-                                    9,
-
-                                weight:
-                                    '500',
-
-                            },
-
-                        },
-
-                        grid: {
-
-                            color:
-                                'rgba(103, 130, 119, 0.12)',
-
-                            borderDash: [
-                                4,
-                                5,
-                            ],
-
-                            drawTicks:
-                                false,
-
-                        },
-
-                    },
-
-
-                    y: {
-
                         border: {
 
                             display:
@@ -411,10 +252,10 @@ function inicializarGraficaTurnos() {
                         ticks: {
 
                             color:
-                                '#40534c',
+                                '#70827c',
 
                             padding:
-                                10,
+                                12,
 
                             font: {
 
@@ -430,6 +271,62 @@ function inicializarGraficaTurnos() {
 
                     },
 
+
+                    y: {
+
+                        beginAtZero:
+                            true,
+
+                        suggestedMax:
+                            60,
+
+                        border: {
+
+                            display:
+                                false,
+
+                        },
+
+                        ticks: {
+
+                            precision:
+                                0,
+
+                            stepSize:
+                                10,
+
+                            padding:
+                                8,
+
+                            color:
+                                '#94a09c',
+
+                            font: {
+
+                                size:
+                                    9,
+
+                            },
+
+                        },
+
+                        grid: {
+
+                            color:
+                                'rgba(105, 132, 121, 0.12)',
+
+                            borderDash: [
+                                4,
+                                5,
+                            ],
+
+                            drawTicks:
+                                false,
+
+                        },
+
+                    },
+
                 },
 
 
@@ -439,6 +336,10 @@ function inicializarGraficaTurnos() {
 
                 plugins: {
 
+                    /* =============================================
+                       LEYENDA
+                    ============================================= */
+
                     legend: {
 
                         display:
@@ -446,6 +347,10 @@ function inicializarGraficaTurnos() {
 
                     },
 
+
+                    /* =============================================
+                       TOOLTIP
+                    ============================================= */
 
                     tooltip: {
 
@@ -459,13 +364,13 @@ function inicializarGraficaTurnos() {
                             'rgba(255, 255, 255, 0.98)',
 
                         titleColor:
-                            '#31453d',
+                            '#344740',
 
                         bodyColor:
                             '#087d59',
 
                         borderColor:
-                            'rgba(12, 140, 96, 0.16)',
+                            'rgba(16, 137, 96, 0.16)',
 
                         borderWidth:
                             1,
@@ -479,28 +384,25 @@ function inicializarGraficaTurnos() {
                         caretPadding:
                             8,
 
-
                         titleFont: {
 
                             size:
                                 10,
 
                             weight:
-                                '700',
+                                '600',
 
                         },
-
 
                         bodyFont: {
 
                             size:
-                                10,
+                                13,
 
                             weight:
-                                '700',
+                                '800',
 
                         },
-
 
                         callbacks: {
 
@@ -521,10 +423,6 @@ function inicializarGraficaTurnos() {
                                 contexto
                             ) {
 
-                                const indice =
-                                    contexto.dataIndex;
-
-
                                 const valor =
                                     Number(
                                         contexto.raw
@@ -532,16 +430,8 @@ function inicializarGraficaTurnos() {
                                     );
 
 
-                                const porcentaje =
-                                    porcentajes[
-                                        indice
-                                    ]
-                                    ?? 0;
-
-
                                 return (
-                                    `${valor} quejas `
-                                    + `(${porcentaje.toFixed(1)}%)`
+                                    `${valor} quejas`
                                 );
 
                             },

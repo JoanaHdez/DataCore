@@ -1,125 +1,689 @@
-document.addEventListener('DOMContentLoaded', () => {
-    inicializarGraficaAreas();
-});
+document.addEventListener(
+    'DOMContentLoaded',
+    () => {
+
+        inicializarGraficaSectoresTurnos();
+
+    }
+);
 
 
-function inicializarGraficaAreas() {
+/* =========================================================
+   GRÁFICA
+   QUEJAS POR SECTORES Y TURNOS
+========================================================= */
+
+function inicializarGraficaSectoresTurnos() {
 
     const canvas =
         document.querySelector(
-            '#grafica-areas'
+            '#grafica-sectores-turnos'
         );
 
-    if (!canvas || typeof Chart === 'undefined') {
+
+    if (
+        !canvas
+        || typeof Chart === 'undefined'
+    ) {
         return;
     }
 
 
-    const datosAreas = {
-        labels: [
-            'Seguridad Ciudadana',
-            'Tránsito',
-            'Operaciones',
-            'Prevención',
-            'Administrativa',
+    /* =====================================================
+       DATOS TEMPORALES
+       Basados en el dashboard de Excel
+    ===================================================== */
+
+    const sectores = [
+        'SECTOR 1',
+        'SECTOR 2',
+        'SECTOR 3',
+        'SECTOR 4',
+        'SECTOR 5',
+        'SECTOR 6',
+        'SECTOR 7',
+        'SECTOR 8',
+        'SECTOR 9',
+        'SECTOR 10',
+        'SECTOR 11',
+        'SECTOR 12',
+        'SECTOR 13',
+        'SECTOR 14',
+        'SECTOR 15',
+        'SECTOR 16',
+        'SECTOR 17',
+        'SECTOR 18',
+    ];
+
+
+    const datos = {
+
+        primerTurno: [
+            1, 0, 1, 2, 0, 1,
+            0, 1, 1, 0, 1, 0,
+            1, 0, 1, 0, 0, 1,
         ],
 
-        valores: [
-            46,
-            31,
-            24,
-            17,
-            10,
+        segundoTurno: [
+            0, 1, 0, 1, 1, 0,
+            1, 0, 1, 1, 0, 1,
+            0, 1, 0, 1, 1, 0,
         ],
+
+        tercerTurno: [
+            0, 0, 1, 0, 0, 1,
+            0, 1, 0, 0, 1, 0,
+            0, 1, 0, 0, 1, 0,
+        ],
+
+        alfa: [
+            0, 0, 0, 1, 0, 0,
+            0, 0, 1, 0, 0, 0,
+            1, 0, 0, 1, 0, 0,
+        ],
+
+        beta: [
+            0, 0, 0, 0, 1, 0,
+            0, 0, 0, 1, 0, 0,
+            0, 1, 0, 0, 0, 1,
+        ],
+
+        diario: [
+            0, 0, 0, 0, 0, 0,
+            1, 0, 0, 0, 0, 1,
+            0, 0, 0, 0, 0, 0,
+        ],
+
+        noRefiere: [
+            0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 1, 0,
+            0, 0, 0, 0, 0, 0,
+        ],
+
     };
 
 
-    new Chart(
-        canvas,
+    /* =====================================================
+       CONFIGURACIÓN COMÚN DE BARRAS
+    ===================================================== */
+
+    const configuracionBarra = {
+
+        borderWidth:
+            0,
+
+        borderSkipped:
+            false,
+
+        borderRadius:
+            14,
+
+        categoryPercentage:
+            0.76,
+
+        barPercentage:
+            0.72,
+
+        maxBarThickness:
+            24,
+
+        hoverBorderWidth:
+            0,
+
+    };
+
+
+    /* =====================================================
+       DATASETS
+    ===================================================== */
+
+    const datasets = [
+
         {
-            type: 'bar',
+            label:
+                'Primer turno',
 
-            data: {
-                labels:
-                    datosAreas.labels,
+            data:
+                datos.primerTurno,
 
-                datasets: [
-                    {
-                        label: 'Reportes',
+            backgroundColor:
+                'rgba(69, 171, 138, 0.80)',
 
-                        data:
-                            datosAreas.valores,
+            hoverBackgroundColor:
+                '#129468',
 
-                        borderWidth: 1,
+            ...configuracionBarra,
+        },
 
-                        borderRadius: 5,
+        {
+            label:
+                'Segundo turno',
 
-                        barThickness: 22,
-                    },
-                ],
-            },
+            data:
+                datos.segundoTurno,
 
-            options: {
-                responsive: true,
+            backgroundColor:
+                'rgba(91, 184, 154, 0.72)',
 
-                maintainAspectRatio: false,
+            hoverBackgroundColor:
+                '#2b9f78',
 
-                indexAxis: 'y',
+            ...configuracionBarra,
+        },
 
-                scales: {
+        {
+            label:
+                'Tercer turno',
 
-                    x: {
-                        beginAtZero: true,
+            data:
+                datos.tercerTurno,
 
-                        ticks: {
-                            precision: 0,
+            backgroundColor:
+                'rgba(111, 193, 166, 0.66)',
 
-                            font: {
-                                size: 10,
-                            },
-                        },
+            hoverBackgroundColor:
+                '#46ab87',
 
-                        grid: {
-                            color:
-                                'rgba(120, 140, 160, 0.12)',
-                        },
-                    },
+            ...configuracionBarra,
+        },
 
-                    y: {
-                        ticks: {
-                            font: {
-                                size: 10,
-                            },
-                        },
+        {
+            label:
+                'Alfa',
 
-                        grid: {
-                            display: false,
-                        },
-                    },
+            data:
+                datos.alfa,
+
+            backgroundColor:
+                'rgba(139, 204, 182, 0.64)',
+
+            hoverBackgroundColor:
+                '#64b796',
+
+            ...configuracionBarra,
+        },
+
+        {
+            label:
+                'Beta',
+
+            data:
+                datos.beta,
+
+            backgroundColor:
+                'rgba(89, 177, 151, 0.66)',
+
+            hoverBackgroundColor:
+                '#358f70',
+
+            ...configuracionBarra,
+        },
+
+        {
+            label:
+                'Diario',
+
+            data:
+                datos.diario,
+
+            backgroundColor:
+                'rgba(61, 155, 127, 0.68)',
+
+            hoverBackgroundColor:
+                '#257d61',
+
+            ...configuracionBarra,
+        },
+
+        {
+            label:
+                'No refiere ni fecha ni horario',
+
+            data:
+                datos.noRefiere,
+
+            backgroundColor:
+                'rgba(181, 194, 188, 0.72)',
+
+            hoverBackgroundColor:
+                '#8b9d96',
+
+            ...configuracionBarra,
+        },
+
+    ];
+
+
+    /* =====================================================
+       CREAR GRÁFICA
+    ===================================================== */
+
+    const grafica =
+        new Chart(
+            canvas,
+            {
+                type:
+                    'bar',
+
+                data: {
+
+                    labels:
+                        sectores,
+
+                    datasets:
+                        datasets,
+
                 },
 
-                plugins: {
+                options: {
 
-                    legend: {
-                        display: false,
+                    responsive:
+                        true,
+
+                    maintainAspectRatio:
+                        false,
+
+
+                    /* =============================================
+                       ANIMACIÓN
+                    ============================================= */
+
+                    animation: {
+
+                        duration:
+                            700,
+
+                        easing:
+                            'easeOutQuart',
+
                     },
 
-                    tooltip: {
-                        callbacks: {
 
-                            label(context) {
+                    /* =============================================
+                       INTERACCIÓN
+                    ============================================= */
 
-                                const valor =
-                                    context.raw ?? 0;
+                    interaction: {
 
-                                return (
-                                    `Reportes: ${valor}`
-                                );
-                            },
+                        mode:
+                            'index',
+
+                        intersect:
+                            false,
+
+                    },
+
+
+                    /* =============================================
+                       ESPACIADO
+                    ============================================= */
+
+                    layout: {
+
+                        padding: {
+
+                            top:
+                                14,
+
+                            right:
+                                8,
+
+                            bottom:
+                                0,
+
+                            left:
+                                4,
+
                         },
+
                     },
+
+
+                    /* =============================================
+                       EJES
+                    ============================================= */
+
+                    scales: {
+
+                        x: {
+
+                            stacked:
+                                false,
+
+                            offset:
+                                true,
+
+                            border: {
+
+                                display:
+                                    false,
+
+                            },
+
+                            grid: {
+
+                                display:
+                                    false,
+
+                            },
+
+                            ticks: {
+
+                                autoSkip:
+                                    false,
+
+                                maxRotation:
+                                    40,
+
+                                minRotation:
+                                    40,
+
+                                padding:
+                                    10,
+
+                                color:
+                                    '#788984',
+
+                                font: {
+
+                                    size:
+                                        8,
+
+                                    weight:
+                                        '600',
+
+                                },
+
+                            },
+
+                        },
+
+
+                        y: {
+
+                            beginAtZero:
+                                true,
+
+                            suggestedMax:
+                                3,
+
+                            border: {
+
+                                display:
+                                    false,
+
+                            },
+
+                            ticks: {
+
+                                precision:
+                                    0,
+
+                                stepSize:
+                                    1,
+
+                                padding:
+                                    10,
+
+                                color:
+                                    '#8a9994',
+
+                                font: {
+
+                                    size:
+                                        9,
+
+                                    weight:
+                                        '500',
+
+                                },
+
+                            },
+
+                            grid: {
+
+                                color:
+                                    'rgba(102, 127, 118, 0.13)',
+
+                                lineWidth:
+                                    1,
+
+                                borderDash: [
+                                    4,
+                                    4,
+                                ],
+
+                                drawTicks:
+                                    false,
+
+                            },
+
+                        },
+
+                    },
+
+
+                    /* =============================================
+                       PLUGINS
+                    ============================================= */
+
+                    plugins: {
+
+                        /* =========================================
+                           LEYENDA
+                        ========================================= */
+
+                        legend: {
+
+                            display:
+                                true,
+
+                            position:
+                                'bottom',
+
+                            align:
+                                'center',
+
+                            labels: {
+
+                                usePointStyle:
+                                    true,
+
+                                pointStyle:
+                                    'circle',
+
+                                boxWidth:
+                                    7,
+
+                                boxHeight:
+                                    7,
+
+                                padding:
+                                    17,
+
+                                color:
+                                    '#667873',
+
+                                font: {
+
+                                    size:
+                                        9,
+
+                                    weight:
+                                        '600',
+
+                                },
+
+                            },
+
+                        },
+
+
+                        /* =========================================
+                           TOOLTIP
+                        ========================================= */
+
+                        tooltip: {
+
+                            enabled:
+                                true,
+
+                            displayColors:
+                                true,
+
+                            backgroundColor:
+                                'rgba(255, 255, 255, 0.98)',
+
+                            titleColor:
+                                '#2b3d38',
+
+                            bodyColor:
+                                '#53645f',
+
+                            borderColor:
+                                'rgba(24, 137, 98, 0.16)',
+
+                            borderWidth:
+                                1,
+
+                            cornerRadius:
+                                12,
+
+                            padding:
+                                12,
+
+                            boxPadding:
+                                5,
+
+                            caretPadding:
+                                10,
+
+                            titleFont: {
+
+                                size:
+                                    10,
+
+                                weight:
+                                    '700',
+
+                            },
+
+                            bodyFont: {
+
+                                size:
+                                    10,
+
+                                weight:
+                                    '600',
+
+                            },
+
+                            callbacks: {
+
+                                title(
+                                    elementos
+                                ) {
+
+                                    return (
+                                        elementos[0]
+                                            ?.label
+                                        || ''
+                                    );
+
+                                },
+
+
+                                label(
+                                    contexto
+                                ) {
+
+                                    const valor =
+                                        Number(
+                                            contexto.raw
+                                            ?? 0
+                                        );
+
+
+                                    return (
+                                        `${contexto.dataset.label}: `
+                                        + `${valor}`
+                                    );
+
+                                },
+
+                            },
+
+                        },
+
+                    },
+
                 },
-            },
+
+            }
+        );
+
+
+    /* =====================================================
+       CONTROLES SUPERIORES
+    ===================================================== */
+
+    inicializarPeriodosGrafica(
+        grafica
+    );
+
+}
+
+
+/* =========================================================
+   CONTROLES DE PERIODO
+========================================================= */
+
+function inicializarPeriodosGrafica(
+    grafica
+) {
+
+    const botones =
+        document.querySelectorAll(
+            '[data-periodo-grafica]'
+        );
+
+
+    botones.forEach(
+        (boton) => {
+
+            boton.addEventListener(
+                'click',
+                () => {
+
+                    botones.forEach(
+                        (elemento) => {
+
+                            elemento.classList.remove(
+                                'dashboard-grafica__periodo--activo'
+                            );
+
+                        }
+                    );
+
+
+                    boton.classList.add(
+                        'dashboard-grafica__periodo--activo'
+                    );
+
+
+                    /*
+                     * De momento solo actualizamos
+                     * el estado visual.
+                     *
+                     * Cuando conectemos filtros reales
+                     * usaremos el periodo seleccionado.
+                     */
+                    grafica.update();
+
+                }
+            );
+
         }
     );
+
 }

@@ -2,7 +2,7 @@ document.addEventListener(
     'DOMContentLoaded',
     () => {
 
-        inicializarGraficaTurnos();
+        inicializarGraficaSanciones();
 
     }
 );
@@ -10,14 +10,14 @@ document.addEventListener(
 
 /* =========================================================
    GRÁFICA
-   QUEJAS POR TURNO
+   SANCIONES DISCIPLINARIAS
 ========================================================= */
 
-function inicializarGraficaTurnos() {
+function inicializarGraficaSanciones() {
 
     const canvas =
         document.querySelector(
-            '#grafica-turnos'
+            '#grafica-sanciones'
         );
 
 
@@ -30,86 +30,23 @@ function inicializarGraficaTurnos() {
 
 
     /* =====================================================
-       DESTRUIR GRÁFICA PREVIA
-    ===================================================== */
-
-    const graficaExistente =
-        Chart.getChart(
-            canvas
-        );
-
-
-    if (graficaExistente) {
-
-        graficaExistente.destroy();
-
-    }
-
-
-    /* =====================================================
        DATOS TEMPORALES
        Basados en el dashboard de Excel
     ===================================================== */
 
-    const datosTurnos = [
+    const datosSanciones = {
 
-        {
-            nombre:
-                'Segundo turno',
+        labels: [
+            'Arrestos',
+            'Amonestaciones',
+        ],
 
-            valor:
-                82,
-        },
+        valores: [
+            447,
+            56,
+        ],
 
-        {
-            nombre:
-                'Primer turno',
-
-            valor:
-                69,
-        },
-
-        {
-            nombre:
-                'Tercer turno',
-
-            valor:
-                47,
-        },
-
-        {
-            nombre:
-                'No refiere ni fecha ni horario',
-
-            valor:
-                25,
-        },
-
-        {
-            nombre:
-                'Beta',
-
-            valor:
-                24,
-        },
-
-        {
-            nombre:
-                'Diario',
-
-            valor:
-                16,
-        },
-
-        {
-            nombre:
-                'Alfa',
-
-            valor:
-                13,
-        },
-
-    ];
+    };
 
 
     /* =====================================================
@@ -117,17 +54,16 @@ function inicializarGraficaTurnos() {
     ===================================================== */
 
     const total =
-        datosTurnos.reduce(
+        datosSanciones.valores.reduce(
             (
                 acumulado,
-                turno
+                valor
             ) => {
 
                 return (
                     acumulado
                     + Number(
-                        turno.valor
-                        || 0
+                        valor || 0
                     )
                 );
 
@@ -138,7 +74,7 @@ function inicializarGraficaTurnos() {
 
     const totalElemento =
         document.querySelector(
-            '#turnos-total'
+            '#sanciones-total'
         );
 
 
@@ -157,20 +93,16 @@ function inicializarGraficaTurnos() {
     ===================================================== */
 
     const porcentajes =
-        datosTurnos.map(
-            (turno) => {
+        datosSanciones.valores.map(
+            (valor) => {
 
-                if (
-                    total <= 0
-                ) {
+                if (total <= 0) {
                     return 0;
                 }
 
 
                 return (
-                    Number(
-                        turno.valor
-                    )
+                    Number(valor)
                     / total
                 ) * 100;
 
@@ -191,50 +123,24 @@ function inicializarGraficaTurnos() {
             data: {
 
                 labels:
-                    datosTurnos.map(
-                        (turno) => {
-
-                            return (
-                                turno.nombre
-                            );
-
-                        }
-                    ),
+                    datosSanciones.labels,
 
                 datasets: [
                     {
                         label:
-                            'Quejas',
+                            'Sanciones',
 
                         data:
-                            datosTurnos.map(
-                                (turno) => {
-
-                                    return (
-                                        turno.valor
-                                    );
-
-                                }
-                            ),
+                            datosSanciones.valores,
 
                         backgroundColor: [
-                            'rgba(8, 139, 96, 0.96)',
-                            'rgba(33, 157, 116, 0.84)',
-                            'rgba(58, 174, 136, 0.74)',
-                            'rgba(91, 186, 153, 0.66)',
-                            'rgba(112, 195, 165, 0.62)',
-                            'rgba(138, 205, 180, 0.58)',
-                            'rgba(165, 216, 197, 0.56)',
+                            'rgba(10, 142, 99, 0.94)',
+                            'rgba(111, 194, 165, 0.72)',
                         ],
 
                         hoverBackgroundColor: [
-                            '#067a55',
-                            '#168e68',
-                            '#319f7b',
-                            '#4eae8d',
-                            '#69b99b',
-                            '#84c4aa',
-                            '#9dcdb9',
+                            '#087b58',
+                            '#53ad8d',
                         ],
 
                         borderWidth:
@@ -244,21 +150,21 @@ function inicializarGraficaTurnos() {
                             false,
 
                         borderRadius:
-                            12,
+                            16,
 
                         barPercentage:
-                            0.62,
+                            0.56,
 
                         categoryPercentage:
                             0.72,
 
                         maxBarThickness:
-                            28,
+                            44,
+
                     },
                 ],
 
             },
-
 
             options: {
 
@@ -311,10 +217,10 @@ function inicializarGraficaTurnos() {
                     padding: {
 
                         top:
-                            8,
+                            10,
 
                         right:
-                            14,
+                            12,
 
                         bottom:
                             4,
@@ -339,7 +245,7 @@ function inicializarGraficaTurnos() {
                             true,
 
                         suggestedMax:
-                            90,
+                            500,
 
                         border: {
 
@@ -354,7 +260,7 @@ function inicializarGraficaTurnos() {
                                 0,
 
                             stepSize:
-                                20,
+                                100,
 
                             padding:
                                 8,
@@ -377,7 +283,7 @@ function inicializarGraficaTurnos() {
                         grid: {
 
                             color:
-                                'rgba(103, 130, 119, 0.12)',
+                                'rgba(104, 130, 120, 0.12)',
 
                             borderDash: [
                                 4,
@@ -411,7 +317,7 @@ function inicializarGraficaTurnos() {
                         ticks: {
 
                             color:
-                                '#40534c',
+                                '#41544d',
 
                             padding:
                                 10,
@@ -419,7 +325,7 @@ function inicializarGraficaTurnos() {
                             font: {
 
                                 size:
-                                    9,
+                                    10,
 
                                 weight:
                                     '700',
@@ -439,6 +345,10 @@ function inicializarGraficaTurnos() {
 
                 plugins: {
 
+                    /* =============================================
+                       LEYENDA
+                    ============================================= */
+
                     legend: {
 
                         display:
@@ -446,6 +356,10 @@ function inicializarGraficaTurnos() {
 
                     },
 
+
+                    /* =============================================
+                       TOOLTIP
+                    ============================================= */
 
                     tooltip: {
 
@@ -459,7 +373,7 @@ function inicializarGraficaTurnos() {
                             'rgba(255, 255, 255, 0.98)',
 
                         titleColor:
-                            '#31453d',
+                            '#354840',
 
                         bodyColor:
                             '#087d59',
@@ -479,28 +393,25 @@ function inicializarGraficaTurnos() {
                         caretPadding:
                             8,
 
-
                         titleFont: {
 
                             size:
                                 10,
 
                             weight:
-                                '700',
+                                '600',
 
                         },
-
 
                         bodyFont: {
 
                             size:
-                                10,
+                                11,
 
                             weight:
-                                '700',
+                                '800',
 
                         },
-
 
                         callbacks: {
 
@@ -540,7 +451,7 @@ function inicializarGraficaTurnos() {
 
 
                                 return (
-                                    `${valor} quejas `
+                                    `${valor} sanciones `
                                     + `(${porcentaje.toFixed(1)}%)`
                                 );
 

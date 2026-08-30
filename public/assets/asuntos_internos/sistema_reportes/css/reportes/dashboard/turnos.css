@@ -1,0 +1,176 @@
+/* =========================================================
+   DASHBOARD - QUEJAS POR TURNO
+========================================================= */
+
+.dashboard-grafica--turnos {
+    position: relative;
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 90% 10%,
+            rgba(20, 151, 107, 0.07) 0%,
+            transparent 32%
+        ),
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #f9fcfb 100%
+        );
+
+    border: 1px solid #dfe9e4;
+    border-radius: 24px;
+
+    box-shadow:
+        0 16px 34px
+        rgba(31, 76, 59, 0.07);
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.dashboard-turnos__encabezado {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 22px;
+
+    padding: 22px 24px 10px;
+}
+
+
+/* =========================================================
+   TOTAL
+========================================================= */
+
+.dashboard-turnos__total {
+    min-width: 108px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    padding: 11px 15px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #edf8f3,
+            #e5f4ed
+        );
+
+    border: 1px solid #d6ebe1;
+    border-radius: 16px;
+}
+
+
+.dashboard-turnos__total span {
+    color: #71847d;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+
+.dashboard-turnos__total strong {
+    margin-top: 2px;
+
+    color: #087d59;
+
+    font-size: 28px;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+.dashboard-turnos__total small {
+    margin-top: 3px;
+
+    color: #899892;
+
+    font-size: 9px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+.dashboard-turnos__contenido {
+    padding: 8px 24px 22px;
+}
+
+
+/* =========================================================
+   GRÁFICA
+========================================================= */
+
+.dashboard-grafica__canvas--turnos {
+    height: 300px;
+    min-height: 300px;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .dashboard-turnos__encabezado {
+        gap: 16px;
+    }
+
+
+    .dashboard-grafica__canvas--turnos {
+        height: 290px;
+        min-height: 290px;
+    }
+
+}
+
+
+/* =========================================================
+   MÓVIL
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .dashboard-grafica--turnos {
+        border-radius: 18px;
+    }
+
+
+    .dashboard-turnos__encabezado {
+        flex-direction: column;
+
+        padding: 18px 16px 8px;
+    }
+
+
+    .dashboard-turnos__total {
+        width: 100%;
+
+        align-items: flex-start;
+    }
+
+
+    .dashboard-turnos__contenido {
+        padding: 8px 14px 16px;
+    }
+
+
+    .dashboard-grafica__canvas--turnos {
+        height: 280px;
+        min-height: 280px;
+    }
+
+}

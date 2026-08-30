@@ -308,6 +308,63 @@ body {
     letter-spacing: 0.5px;
 }
 
+/* =========================================================
+   MENSAJE DE ERROR
+========================================================= */
+
+.login-form__error {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin:
+        -12px
+        0
+        18px;
+
+    padding:
+        10px
+        12px;
+
+    color: #a61b1b;
+
+    background:
+        rgba(255, 239, 239, 0.72);
+
+    border:
+        1px solid rgba(210, 73, 73, 0.28);
+
+    border-radius: 9px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    line-height: 1.4;
+}
+
+
+.login-form__error::before {
+    content: "!";
+
+    width: 19px;
+    height: 19px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #ffffff;
+
+    background: #c93434;
+
+    border-radius: 50%;
+
+    font-size: 12px;
+    font-weight: 800;
+}
 
 /* =========================================================
    INPUTS
@@ -403,20 +460,28 @@ body {
 .form-control__icon {
     position: absolute;
 
-    right: 14px;
+    right: 16px;
 
-    width: 30px;
-    height: 30px;
+    width: 24px;
+    height: 24px;
 
-    display: grid;
-
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     color: #0b65b4;
 
-    font-size: 20px;
-
     pointer-events: none;
+}
+
+.form-control__icon svg {
+    width: 19px;
+    height: 19px;
+
+    stroke: currentColor;
+    stroke-width: 1.8;
+
+    fill: none;
 }
 
 
