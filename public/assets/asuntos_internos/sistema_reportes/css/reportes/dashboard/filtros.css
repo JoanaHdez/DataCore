@@ -1,194 +1,697 @@
 /* =========================================================
-   FILTROS DEL DASHBOARD
+   DASHBOARD - FILTROS
 ========================================================= */
 
 .dashboard-filtros {
-    margin-bottom: 24px;
-    padding: 18px 20px;
+    position: relative;
 
-    background: #ffffff;
+    margin-bottom: 26px;
 
-    border: 1px solid #e1e8ee;
-    border-radius: 10px;
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 96% 0%,
+            rgba(19, 149, 103, 0.07) 0%,
+            transparent 34%
+        ),
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #fbfdfc 100%
+        );
+
+    border: 1px solid #dfe8e4;
+    border-radius: 20px;
+
+    box-shadow:
+        0 8px 22px
+        rgba(29, 69, 55, 0.045);
 }
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
 
 .dashboard-filtros__encabezado {
-    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding:
+        20px
+        22px
+        17px;
 }
+
+
+.dashboard-filtros__encabezado-principal {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+}
+
+
+.dashboard-filtros__encabezado-icono {
+    width: 40px;
+    height: 40px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #0b8d62;
+
+    background: #e9f7f1;
+
+    border: 1px solid #d5ece2;
+    border-radius: 13px;
+}
+
+
+.dashboard-filtros__encabezado-icono svg {
+    width: 18px;
+    height: 18px;
+
+    fill: none;
+
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
 
 .dashboard-filtros__eyebrow {
     display: block;
 
     margin-bottom: 3px;
 
-    color: #1681c4;
+    color: #0b8f63;
 
     font-size: 9px;
     font-weight: 800;
 
-    letter-spacing: 0.07em;
+    letter-spacing: 0.08em;
+
     text-transform: uppercase;
 }
+
 
 .dashboard-filtros__titulo {
     margin: 0;
 
     color: #173554;
 
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 800;
 }
 
 
+.dashboard-filtros__descripcion {
+    margin:
+        4px
+        0
+        0;
+
+    color: #82918c;
+
+    font-size: 9px;
+
+    line-height: 1.5;
+}
+
+
 /* =========================================================
-   CONTROLES
+   MÁS FILTROS
 ========================================================= */
 
-.dashboard-filtros__controles {
+.dashboard-filtros__mas {
+    min-height: 38px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    flex-shrink: 0;
+
+    padding:
+        0
+        13px;
+
+    color: #547068;
+
+    background: rgba(255, 255, 255, 0.8);
+
+    border: 1px solid #d5e2dc;
+    border-radius: 11px;
+
+    font-family: inherit;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.dashboard-filtros__mas:hover {
+    color: #087d59;
+
+    background: #f2f9f6;
+
+    border-color: #c4ded2;
+
+    transform: translateY(-1px);
+}
+
+
+.dashboard-filtros__mas svg {
+    width: 14px;
+    height: 14px;
+
+    fill: none;
+
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+.dashboard-filtros__mas-flecha {
+    transition: transform 0.25s ease;
+}
+
+
+.dashboard-filtros__mas[aria-expanded="true"]
+.dashboard-filtros__mas-flecha {
+    transform: rotate(180deg);
+}
+
+
+/* =========================================================
+   PRINCIPALES
+========================================================= */
+
+.dashboard-filtros__principales {
     display: grid;
 
     grid-template-columns:
-        minmax(150px, 1fr)
-        minmax(150px, 1fr)
-        minmax(180px, 1fr)
-        auto;
-
-    align-items: end;
+        repeat(4, minmax(0, 1fr));
 
     gap: 14px;
+
+    padding:
+        0
+        22px
+        20px;
 }
 
+
+/* =========================================================
+   CAMPO
+========================================================= */
+
 .dashboard-filtros__campo {
+    min-width: 0;
+
     display: flex;
     flex-direction: column;
 
     gap: 6px;
 }
 
+
 .dashboard-filtros__campo label {
-    color: #607487;
+    padding-left: 2px;
+
+    color: #61736d;
 
     font-size: 9px;
     font-weight: 800;
 }
+
+
+/* =========================================================
+   INPUTS / SELECT
+========================================================= */
 
 .dashboard-filtros__campo input,
 .dashboard-filtros__campo select {
     width: 100%;
-    height: 38px;
+    height: 42px;
 
-    padding: 0 11px;
+    padding:
+        0
+        13px;
 
-    color: #344d64;
-    background: #ffffff;
+    color: #344d45;
 
-    border: 1px solid #d8e1e9;
-    border-radius: 6px;
+    background:
+        rgba(248, 251, 250, 0.94);
+
+    border: 1px solid #d7e3dd;
+    border-radius: 11px;
+
+    outline: none;
 
     font-family: inherit;
     font-size: 10px;
 
-    outline: none;
-
     transition:
         border-color 0.2s ease,
+        background-color 0.2s ease,
         box-shadow 0.2s ease;
 }
 
+
+.dashboard-filtros__campo input:hover,
+.dashboard-filtros__campo select:hover {
+    background: #ffffff;
+
+    border-color: #bfd8cc;
+}
+
+
 .dashboard-filtros__campo input:focus,
 .dashboard-filtros__campo select:focus {
-    border-color: #1681c4;
+    background: #ffffff;
+
+    border-color: #15966a;
 
     box-shadow:
-        0 0 0 3px rgba(22, 129, 196, 0.1);
+        0 0 0 3px
+        rgba(21, 150, 106, 0.10);
+}
+
+
+.dashboard-filtros__campo select {
+    cursor: pointer;
+}
+
+
+.dashboard-filtros__campo select:disabled {
+    color: #9ba8a3;
+
+    background: #f2f5f4;
+
+    border-color: #e0e6e3;
+
+    cursor: not-allowed;
+
+    opacity: 0.78;
 }
 
 
 /* =========================================================
-   BOTONES
+   AVANZADOS
+========================================================= */
+
+.dashboard-filtros__avanzados {
+    padding:
+        3px
+        22px
+        21px;
+
+    border-top:
+        1px solid #edf2ef;
+}
+
+
+.dashboard-filtros__avanzados[hidden] {
+    display: none;
+}
+
+
+/* =========================================================
+   GRUPO
+========================================================= */
+
+.dashboard-filtros__grupo {
+    padding:
+        18px
+        0;
+
+    border-bottom:
+        1px solid #edf2ef;
+}
+
+
+.dashboard-filtros__grupo:last-child {
+    padding-bottom: 2px;
+
+    border-bottom: 0;
+}
+
+
+.dashboard-filtros__grupo-encabezado {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 12px;
+
+    color: #31594b;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.06em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-filtros__grupo-icono {
+    width: 26px;
+    height: 26px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #0c9065;
+
+    background: #ebf7f2;
+
+    border-radius: 8px;
+}
+
+
+.dashboard-filtros__grupo-icono svg {
+    width: 13px;
+    height: 13px;
+
+    fill: none;
+
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+/* =========================================================
+   GRID DE GRUPOS
+========================================================= */
+
+.dashboard-filtros__grupo-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap:
+        13px
+        14px;
+}
+
+
+/* =========================================================
+   PIE
+========================================================= */
+
+.dashboard-filtros__pie {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    padding:
+        14px
+        22px;
+
+    background:
+        rgba(247, 250, 249, 0.76);
+
+    border-top:
+        1px solid #e9efec;
+}
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+.dashboard-filtros__estado {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    color: #7c8d87;
+
+    font-size: 9px;
+    font-weight: 600;
+}
+
+
+.dashboard-filtros__estado-punto {
+    width: 7px;
+    height: 7px;
+
+    flex-shrink: 0;
+
+    background: #20a376;
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(32, 163, 118, 0.09);
+}
+
+
+/* =========================================================
+   ACCIONES
 ========================================================= */
 
 .dashboard-filtros__acciones {
     display: flex;
+    align-items: center;
 
     gap: 8px;
 }
 
+
 .dashboard-filtros__boton {
-    height: 38px;
+    height: 40px;
 
-    padding: 0 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 
-    border-radius: 6px;
+    gap: 7px;
+
+    padding:
+        0
+        15px;
+
+    border-radius: 11px;
 
     font-family: inherit;
+
     font-size: 9px;
     font-weight: 800;
 
-    cursor: pointer;
-
     white-space: nowrap;
 
+    cursor: pointer;
+
     transition:
-        background 0.2s ease,
-        border-color 0.2s ease;
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
 }
+
+
+.dashboard-filtros__boton svg {
+    width: 14px;
+    height: 14px;
+
+    fill: none;
+
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
 
 .dashboard-filtros__boton--secondary {
-    color: #607487;
+    color: #61766e;
+
     background: #ffffff;
 
-    border: 1px solid #d7e0e8;
+    border: 1px solid #d5e1dc;
 }
 
+
 .dashboard-filtros__boton--secondary:hover {
-    background: #f4f7f9;
+    color: #39594e;
+
+    background: #f4f8f6;
+
+    border-color: #c3d7ce;
+
+    transform: translateY(-1px);
 }
+
 
 .dashboard-filtros__boton--primary {
     color: #ffffff;
-    background: #1681c4;
 
-    border: 1px solid #1681c4;
+    background:
+        linear-gradient(
+            135deg,
+            #18a878,
+            #07865d
+        );
+
+    border: 1px solid #0b9165;
+
+    box-shadow:
+        0 7px 16px
+        rgba(7, 134, 93, 0.17);
 }
 
+
 .dashboard-filtros__boton--primary:hover {
-    background: #116da6;
+    background:
+        linear-gradient(
+            135deg,
+            #149b6e,
+            #067a55
+        );
+
+    box-shadow:
+        0 10px 20px
+        rgba(7, 124, 86, 0.23);
+
+    transform: translateY(-1px);
 }
 
 
 /* =========================================================
-   RESPONSIVE
+   TABLET
 ========================================================= */
 
-@media (max-width: 950px) {
+@media (max-width: 1050px) {
 
-    .dashboard-filtros__controles {
+    .dashboard-filtros__principales,
+    .dashboard-filtros__grupo-grid {
         grid-template-columns:
             repeat(2, minmax(0, 1fr));
-    }
-
-    .dashboard-filtros__acciones {
-        grid-column: 1 / -1;
     }
 
 }
 
 
-@media (max-width: 550px) {
+/* =========================================================
+   MÓVIL
+========================================================= */
 
-    .dashboard-filtros__controles {
+@media (max-width: 650px) {
+
+    .dashboard-filtros {
+        border-radius: 17px;
+    }
+
+
+    .dashboard-filtros__encabezado {
+        align-items: flex-start;
+        flex-direction: column;
+
+        padding:
+            17px
+            15px
+            15px;
+    }
+
+
+    .dashboard-filtros__mas {
+        width: 100%;
+    }
+
+
+    .dashboard-filtros__principales {
+        grid-template-columns: 1fr;
+
+        padding:
+            0
+            15px
+            17px;
+    }
+
+
+    .dashboard-filtros__avanzados {
+        padding:
+            3px
+            15px
+            17px;
+    }
+
+
+    .dashboard-filtros__grupo-grid {
         grid-template-columns: 1fr;
     }
 
-    .dashboard-filtros__acciones {
-        grid-column: auto;
 
+    .dashboard-filtros__pie {
+        align-items: stretch;
         flex-direction: column;
+
+        padding:
+            14px
+            15px;
     }
+
+
+    .dashboard-filtros__acciones {
+        display: grid;
+
+        grid-template-columns:
+            1fr
+            1fr;
+    }
+
 
     .dashboard-filtros__boton {
         width: 100%;
+    }
+
+}
+
+
+/* =========================================================
+   MÓVIL PEQUEÑO
+========================================================= */
+
+@media (max-width: 400px) {
+
+    .dashboard-filtros__acciones {
+        grid-template-columns: 1fr;
     }
 
 }
