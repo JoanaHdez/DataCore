@@ -21,6 +21,18 @@ function inicializarGraficaSanciones() {
         );
 
 
+    const estadoSinDatos =
+        document.querySelector(
+            '#sanciones-sin-datos'
+        );
+
+
+    const totalElemento =
+        document.querySelector(
+            '#sanciones-total'
+        );
+
+
     if (
         !canvas
         || typeof Chart === 'undefined'
@@ -30,8 +42,10 @@ function inicializarGraficaSanciones() {
 
 
     /* =====================================================
-       DATOS TEMPORALES
-       Basados en el dashboard de Excel
+       DATOS
+
+       La gráfica queda preparada para recibir datos
+       reales cuando se defina la fuente correspondiente.
     ===================================================== */
 
     const datosSanciones = {
@@ -42,8 +56,8 @@ function inicializarGraficaSanciones() {
         ],
 
         valores: [
-            447,
-            56,
+            0,
+            0,
         ],
 
     };
@@ -72,18 +86,63 @@ function inicializarGraficaSanciones() {
         );
 
 
-    const totalElemento =
-        document.querySelector(
-            '#sanciones-total'
-        );
-
-
     if (totalElemento) {
 
         totalElemento.textContent =
             String(
                 total
             );
+
+    }
+
+
+    /* =====================================================
+       DESTRUIR GRÁFICA PREVIA
+    ===================================================== */
+
+    const graficaExistente =
+        Chart.getChart(
+            canvas
+        );
+
+
+    if (graficaExistente) {
+
+        graficaExistente.destroy();
+
+    }
+
+
+    /* =====================================================
+       SIN INFORMACIÓN
+    ===================================================== */
+
+    if (total <= 0) {
+
+        canvas.hidden =
+            true;
+
+
+        if (estadoSinDatos) {
+
+            estadoSinDatos.hidden =
+                false;
+
+        }
+
+
+        return;
+    }
+
+
+    canvas.hidden =
+        false;
+
+
+    if (estadoSinDatos) {
+
+        estadoSinDatos.hidden =
+            true;
 
     }
 
@@ -160,11 +219,11 @@ function inicializarGraficaSanciones() {
 
                         maxBarThickness:
                             44,
-
                     },
                 ],
 
             },
+
 
             options: {
 
@@ -244,9 +303,6 @@ function inicializarGraficaSanciones() {
                         beginAtZero:
                             true,
 
-                        suggestedMax:
-                            500,
-
                         border: {
 
                             display:
@@ -258,9 +314,6 @@ function inicializarGraficaSanciones() {
 
                             precision:
                                 0,
-
-                            stepSize:
-                                100,
 
                             padding:
                                 8,
@@ -345,10 +398,6 @@ function inicializarGraficaSanciones() {
 
                 plugins: {
 
-                    /* =============================================
-                       LEYENDA
-                    ============================================= */
-
                     legend: {
 
                         display:
@@ -356,10 +405,6 @@ function inicializarGraficaSanciones() {
 
                     },
 
-
-                    /* =============================================
-                       TOOLTIP
-                    ============================================= */
 
                     tooltip: {
 
@@ -413,6 +458,7 @@ function inicializarGraficaSanciones() {
 
                         },
 
+
                         callbacks: {
 
                             title(
@@ -451,7 +497,11 @@ function inicializarGraficaSanciones() {
 
 
                                 return (
-                                    `${valor} sanciones `
+                                    `${valor} ${
+                                        valor === 1
+                                            ? 'sanción'
+                                            : 'sanciones'
+                                    } `
                                     + `(${porcentaje.toFixed(1)}%)`
                                 );
 

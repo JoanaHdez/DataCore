@@ -3,6 +3,7 @@
     <div class="dashboard-recientes__encabezado">
 
         <div>
+
             <span class="dashboard-recientes__eyebrow">
                 Actividad reciente
             </span>
@@ -14,6 +15,7 @@
             <p class="dashboard-recientes__descripcion">
                 Últimos reportes registrados en el sistema.
             </p>
+
         </div>
 
 
@@ -49,119 +51,145 @@
 
             <tbody>
 
-                <!-- TEMPORAL -->
-                <tr>
+                <?php if (!empty($reportesRecientes)): ?>
 
-                    <td>
-                        <strong>
-                            AI-2026-001
-                        </strong>
-                    </td>
+                    <?php foreach ($reportesRecientes as $reporte): ?>
 
-                    <td>
-                        25/08/2026
-                    </td>
+                        <?php
 
-                    <td>
-                        CAI/001/2026
-                    </td>
+                        /* =============================================
+                           ESTADO
+                        ============================================= */
 
-                    <td>
-                        Queja
-                    </td>
+                        $estado =
+                            trim(
+                                (string) (
+                                    $reporte['estado']
+                                    ?? ''
+                                )
+                            );
 
-                    <td>
-                        Seguridad Ciudadana
-                    </td>
 
-                    <td>
-                        <span
-                            class="
-                                dashboard-recientes__estado
-                                dashboard-recientes__estado--proceso
-                            "
+                        $claseEstado =
+                            match ($estado) {
+
+                                'Pendiente' =>
+                                    'dashboard-recientes__estado--pendiente',
+
+                                'En proceso' =>
+                                    'dashboard-recientes__estado--proceso',
+
+                                'Finalizado' =>
+                                    'dashboard-recientes__estado--finalizado',
+
+                                default =>
+                                    '',
+                            };
+
+                        ?>
+
+
+                        <tr>
+
+                            <!-- FOLIO -->
+                            <td>
+
+                                <strong>
+                                    <?= esc(
+                                        $reporte['folio']
+                                        ?: '—'
+                                    ) ?>
+                                </strong>
+
+                            </td>
+
+
+                            <!-- FECHA -->
+                            <td>
+
+                                <?= esc(
+                                    $reporte['fecha']
+                                    ?: '—'
+                                ) ?>
+
+                            </td>
+
+
+                            <!-- EXPEDIENTE -->
+                            <td>
+
+                                <?= esc(
+                                    $reporte['expediente']
+                                    ?: '—'
+                                ) ?>
+
+                            </td>
+
+
+                            <!-- CLASIFICACIÓN -->
+                            <td>
+
+                                <?= esc(
+                                    $reporte['clasificacion']
+                                    ?: '—'
+                                ) ?>
+
+                            </td>
+
+
+                            <!-- ÁREA -->
+                            <td>
+
+                                <?= esc(
+                                    $reporte['area']
+                                    ?: '—'
+                                ) ?>
+
+                            </td>
+
+
+                            <!-- ESTADO -->
+                            <td>
+
+                                <span
+                                    class="
+                                        dashboard-recientes__estado
+                                        <?= esc($claseEstado) ?>
+                                    "
+                                >
+                                    <?= esc(
+                                        $estado
+                                        ?: 'Sin estado'
+                                    ) ?>
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    <?php endforeach; ?>
+
+
+                <?php else: ?>
+
+
+                    <!-- =============================================
+                         SIN REPORTES
+                    ============================================== -->
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            class="dashboard-recientes__vacio"
                         >
-                            En proceso
-                        </span>
-                    </td>
+                            No hay reportes registrados.
+                        </td>
 
-                </tr>
-
-
-                <tr>
-
-                    <td>
-                        <strong>
-                            AI-2026-002
-                        </strong>
-                    </td>
-
-                    <td>
-                        24/08/2026
-                    </td>
-
-                    <td>
-                        CAI/002/2026
-                    </td>
-
-                    <td>
-                        Denuncia
-                    </td>
-
-                    <td>
-                        Tránsito
-                    </td>
-
-                    <td>
-                        <span
-                            class="
-                                dashboard-recientes__estado
-                                dashboard-recientes__estado--finalizado
-                            "
-                        >
-                            Finalizado
-                        </span>
-                    </td>
-
-                </tr>
+                    </tr>
 
 
-                <tr>
-
-                    <td>
-                        <strong>
-                            AI-2026-003
-                        </strong>
-                    </td>
-
-                    <td>
-                        23/08/2026
-                    </td>
-
-                    <td>
-                        CAI/003/2026
-                    </td>
-
-                    <td>
-                        Queja
-                    </td>
-
-                    <td>
-                        Operaciones
-                    </td>
-
-                    <td>
-                        <span
-                            class="
-                                dashboard-recientes__estado
-                                dashboard-recientes__estado--pendiente
-                            "
-                        >
-                            Pendiente
-                        </span>
-                    </td>
-
-                </tr>
+                <?php endif; ?>
 
             </tbody>
 

@@ -30,7 +30,7 @@
                 class="dashboard-catalogo__total-valor"
                 id="catalogo-total"
             >
-                276
+                <?= esc($clasificaciones['total'] ?? 0) ?>
             </strong>
 
             <small>
@@ -44,8 +44,13 @@
 
     <div class="dashboard-catalogo__contenido">
 
+        <!-- =================================================
+             TOP 3
+        ================================================== -->
+
         <div class="dashboard-catalogo__destacados">
 
+            <!-- PRIMER LUGAR -->
             <div class="dashboard-catalogo__destacado">
 
                 <span class="dashboard-catalogo__posicion">
@@ -53,25 +58,28 @@
                 </span>
 
                 <div>
+
                     <small>
                         Mayor incidencia
                     </small>
 
                     <strong id="catalogo-principal-nombre">
-                        Conducta institucional
+                        Sin información
                     </strong>
+
                 </div>
 
                 <span
                     class="dashboard-catalogo__cantidad"
                     id="catalogo-principal-total"
                 >
-                    103
+                    0
                 </span>
 
             </div>
 
 
+            <!-- SEGUNDO LUGAR -->
             <div class="dashboard-catalogo__destacado">
 
                 <span class="dashboard-catalogo__posicion">
@@ -79,25 +87,28 @@
                 </span>
 
                 <div>
+
                     <small>
                         Segunda incidencia
                     </small>
 
                     <strong id="catalogo-segundo-nombre">
-                        Agresiones físicas y/o verbales
+                        Sin información
                     </strong>
+
                 </div>
 
                 <span
                     class="dashboard-catalogo__cantidad"
                     id="catalogo-segundo-total"
                 >
-                    61
+                    0
                 </span>
 
             </div>
 
 
+            <!-- TERCER LUGAR -->
             <div class="dashboard-catalogo__destacado">
 
                 <span class="dashboard-catalogo__posicion">
@@ -105,26 +116,32 @@
                 </span>
 
                 <div>
+
                     <small>
                         Tercera incidencia
                     </small>
 
                     <strong id="catalogo-tercero-nombre">
-                        Omisión de apoyo
+                        Sin información
                     </strong>
+
                 </div>
 
                 <span
                     class="dashboard-catalogo__cantidad"
                     id="catalogo-tercero-total"
                 >
-                    56
+                    0
                 </span>
 
             </div>
 
         </div>
 
+
+        <!-- =================================================
+             GRÁFICA
+        ================================================== -->
 
         <div class="dashboard-catalogo__grafica">
 
@@ -147,3 +164,22 @@
     </div>
 
 </section>
+
+
+<!-- =========================================================
+     DATOS REALES DEL BACKEND
+========================================================= -->
+
+<script
+    type="application/json"
+    id="datos-grafica-catalogo"
+>
+<?= json_encode(
+    $clasificaciones ?? [
+        'clasificaciones' => [],
+        'totales' => [],
+        'total' => 0,
+    ],
+    JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+) ?>
+</script>

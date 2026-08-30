@@ -1210,14 +1210,23 @@ class Reportes_Controller extends BaseController
                 $dashboardService
                 ->obtenerQuejasPorArea();
 
-                $quejasPorTurno =
-    $dashboardService
-    ->obtenerQuejasPorTurno();
+            $quejasPorTurno =
+                $dashboardService
+                ->obtenerQuejasPorTurno();
 
-    $resoluciones =
-    $dashboardService
-    ->obtenerResoluciones();
+            $resoluciones =
+                $dashboardService
+                ->obtenerResoluciones();
 
+            $clasificaciones =
+                $dashboardService
+                ->obtenerClasificaciones();
+
+                $reportesRecientes =
+    $dashboardService
+    ->obtenerReportesRecientes(
+        6
+    );
         } catch (\Throwable $e) {
 
             log_message(
@@ -1263,16 +1272,24 @@ class Reportes_Controller extends BaseController
             ];
 
             $quejasPorTurno = [
-    'turnos' => [],
-    'totales' => [],
-    'total' => 0,
-];
+                'turnos' => [],
+                'totales' => [],
+                'total' => 0,
+            ];
 
-$resoluciones = [
-    'resoluciones' => [],
-    'totales' => [],
-    'total' => 0,
-];
+            $resoluciones = [
+                'resoluciones' => [],
+                'totales' => [],
+                'total' => 0,
+            ];
+
+            $clasificaciones = [
+                'clasificaciones' => [],
+                'totales' => [],
+                'total' => 0,
+            ];
+
+            $reportesRecientes = [];
         }
 
 
@@ -1296,10 +1313,16 @@ $resoluciones = [
                 $quejasPorArea,
 
                 'quejasPorTurno' =>
-    $quejasPorTurno,
+                $quejasPorTurno,
 
-    'resoluciones' =>
-    $resoluciones,
+                'resoluciones' =>
+                $resoluciones,
+
+                'clasificaciones' =>
+                $clasificaciones,
+
+                'reportesRecientes' =>
+    $reportesRecientes,
             ]
         );
     }

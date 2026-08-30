@@ -66,28 +66,28 @@ class DashboardService
 
         return [
             'total' =>
-                (int) (
-                    $resultado['total']
-                    ?? 0
-                ),
+            (int) (
+                $resultado['total']
+                ?? 0
+            ),
 
             'pendientes' =>
-                (int) (
-                    $resultado['pendientes']
-                    ?? 0
-                ),
+            (int) (
+                $resultado['pendientes']
+                ?? 0
+            ),
 
             'en_proceso' =>
-                (int) (
-                    $resultado['en_proceso']
-                    ?? 0
-                ),
+            (int) (
+                $resultado['en_proceso']
+                ?? 0
+            ),
 
             'finalizados' =>
-                (int) (
-                    $resultado['finalizados']
-                    ?? 0
-                ),
+            (int) (
+                $resultado['finalizados']
+                ?? 0
+            ),
         ];
     }
 
@@ -309,29 +309,21 @@ class DashboardService
 
             if (
                 isset(
-                    $combinacionesContadas[
-                        $clave
-                    ]
+                    $combinacionesContadas[$clave]
                 )
             ) {
                 continue;
             }
 
 
-            $combinacionesContadas[
-                $clave
-            ] = true;
+            $combinacionesContadas[$clave] = true;
 
 
             /* =================================================
                SUMAR
             ================================================= */
 
-            $conteos[
-                $turno
-            ][
-                $indiceSector
-            ]++;
+            $conteos[$turno][$indiceSector]++;
         }
 
 
@@ -341,10 +333,10 @@ class DashboardService
 
         return [
             'sectores' =>
-                $sectores,
+            $sectores,
 
             'turnos' =>
-                $conteos,
+            $conteos,
         ];
     }
 
@@ -378,7 +370,7 @@ class DashboardService
                         'UTF-8'
                     )
                 )
-                ?? ''
+                    ?? ''
             );
 
 
@@ -445,7 +437,7 @@ class DashboardService
                         'UTF-8'
                     )
                 )
-                ?? ''
+                    ?? ''
             );
 
 
@@ -599,9 +591,9 @@ class DashboardService
    QUEJAS POR ÁREA
 ========================================================= */
 
-public function obtenerQuejasPorArea(): array
-{
-    /*
+    public function obtenerQuejasPorArea(): array
+    {
+        /*
      * Contamos reportes, no personas.
      *
      * Si una queja tiene varias personas pertenecientes
@@ -609,71 +601,71 @@ public function obtenerQuejasPorArea(): array
      * dicha área.
      */
 
-    $registros =
-        $this->db
-        ->table('ai_reportes r')
-        ->select([
-            'r.id_reporte',
-            'p.area_snapshot AS area',
-        ])
-        ->join(
-            'ai_reporte_personal p',
-            'p.id_reporte = r.id_reporte',
-            'inner'
-        )
-        ->where(
-            'r.eliminado',
-            0
-        )
-        ->where(
-            'p.area_snapshot IS NOT NULL',
-            null,
-            false
-        )
-        ->where(
-            'p.area_snapshot !=',
-            ''
-        )
-        ->groupBy([
-            'r.id_reporte',
-            'p.area_snapshot',
-        ])
-        ->get()
-        ->getResultArray();
+        $registros =
+            $this->db
+            ->table('ai_reportes r')
+            ->select([
+                'r.id_reporte',
+                'p.area_snapshot AS area',
+            ])
+            ->join(
+                'ai_reporte_personal p',
+                'p.id_reporte = r.id_reporte',
+                'inner'
+            )
+            ->where(
+                'r.eliminado',
+                0
+            )
+            ->where(
+                'p.area_snapshot IS NOT NULL',
+                null,
+                false
+            )
+            ->where(
+                'p.area_snapshot !=',
+                ''
+            )
+            ->groupBy([
+                'r.id_reporte',
+                'p.area_snapshot',
+            ])
+            ->get()
+            ->getResultArray();
 
 
-    /* =====================================================
+        /* =====================================================
        AGRUPAR
     ===================================================== */
 
-    $conteos = [];
+        $conteos = [];
 
 
-    foreach ($registros as $registro) {
+        foreach ($registros as $registro) {
 
-        $area =
-            trim(
-                preg_replace(
-                    '/\s+/u',
-                    ' ',
-                    mb_strtoupper(
-                        (string) (
-                            $registro['area']
-                            ?? ''
-                        ),
-                        'UTF-8'
+            $area =
+                trim(
+                    preg_replace(
+                        '/\s+/u',
+                        ' ',
+                        mb_strtoupper(
+                            (string) (
+                                $registro['area']
+                                ?? ''
+                            ),
+                            'UTF-8'
+                        )
                     )
-                )
-                ?? ''
-            );
+                        ?? ''
+                );
 
 
-        if ($area === '') {
-            continue;
-        }
+            if ($area === '') {
+                continue;
+            }
 
 
-        /*
+            /*
          * Los sectores conservan también su nombre
          * institucional completo:
          *
@@ -685,68 +677,68 @@ public function obtenerQuejasPorArea(): array
          * porque esta gráfica analiza áreas.
          */
 
-        if (
-            !isset(
-                $conteos[$area]
-            )
-        ) {
+            if (
+                !isset(
+                    $conteos[$area]
+                )
+            ) {
 
-            $conteos[$area] = 0;
+                $conteos[$area] = 0;
+            }
+
+
+            $conteos[$area]++;
         }
 
 
-        $conteos[$area]++;
-    }
-
-
-    /* =====================================================
+        /* =====================================================
        ORDENAR DE MAYOR A MENOR
     ===================================================== */
 
-    arsort(
-        $conteos,
-        SORT_NUMERIC
-    );
+        arsort(
+            $conteos,
+            SORT_NUMERIC
+        );
 
 
-    /* =====================================================
+        /* =====================================================
        FORMATO PARA CHART.JS
     ===================================================== */
 
-    $areas = [];
-    $totales = [];
+        $areas = [];
+        $totales = [];
 
 
-    foreach (
-        $conteos
-        as $area => $total
-    ) {
+        foreach (
+            $conteos
+            as $area => $total
+        ) {
 
-        $areas[] =
-            $area;
-
-
-        $totales[] =
-            (int) $total;
-    }
+            $areas[] =
+                $area;
 
 
-    return [
-        'areas' =>
+            $totales[] =
+                (int) $total;
+        }
+
+
+        return [
+            'areas' =>
             $areas,
 
-        'totales' =>
+            'totales' =>
             $totales,
-    ];
-}
+        ];
+    }
 
-/* =========================================================
+    /* =========================================================
    QUEJAS POR TURNO
 ========================================================= */
 
-public function obtenerQuejasPorTurno(): array
-{
-    /*
+    public function obtenerQuejasPorTurno(): array
+    {
+        /*
      * Esta gráfica cuenta QUEJAS / REPORTES,
      * no cantidad de personas.
      *
@@ -756,42 +748,42 @@ public function obtenerQuejasPorTurno(): array
      * que tengan personal relacionado.
      */
 
-    $registros =
-        $this->db
-        ->table('ai_reportes r')
-        ->select([
-            'r.id_reporte',
-            'p.turno_snapshot AS turno',
-        ])
-        ->join(
-            'ai_reporte_personal p',
-            'p.id_reporte = r.id_reporte',
-            'inner'
-        )
-        ->where(
-            'r.eliminado',
-            0
-        )
-        ->get()
-        ->getResultArray();
+        $registros =
+            $this->db
+            ->table('ai_reportes r')
+            ->select([
+                'r.id_reporte',
+                'p.turno_snapshot AS turno',
+            ])
+            ->join(
+                'ai_reporte_personal p',
+                'p.id_reporte = r.id_reporte',
+                'inner'
+            )
+            ->where(
+                'r.eliminado',
+                0
+            )
+            ->get()
+            ->getResultArray();
 
 
-    /* =====================================================
+        /* =====================================================
        CATEGORÍAS DEL DASHBOARD
     ===================================================== */
 
-    $conteos = [
-        'Primer turno' => 0,
-        'Segundo turno' => 0,
-        'Tercer turno' => 0,
-        'Alfa' => 0,
-        'Beta' => 0,
-        'Diario' => 0,
-        'No refiere ni fecha ni horario' => 0,
-    ];
+        $conteos = [
+            'Primer turno' => 0,
+            'Segundo turno' => 0,
+            'Tercer turno' => 0,
+            'Alfa' => 0,
+            'Beta' => 0,
+            'Diario' => 0,
+            'No refiere ni fecha ni horario' => 0,
+        ];
 
 
-    /*
+        /*
      * Nos permite evitar que una misma queja
      * se cuente varias veces cuando tiene varios
      * elementos pertenecientes al mismo turno.
@@ -809,33 +801,33 @@ public function obtenerQuejasPorTurno(): array
      * No +3.
      */
 
-    $reportesContados = [];
+        $reportesContados = [];
 
 
-    foreach ($registros as $registro) {
+        foreach ($registros as $registro) {
 
-        $idReporte =
-            (int) (
-                $registro['id_reporte']
-                ?? 0
-            );
-
-
-        if ($idReporte <= 0) {
-            continue;
-        }
+            $idReporte =
+                (int) (
+                    $registro['id_reporte']
+                    ?? 0
+                );
 
 
-        $turno =
-            $this->clasificarTurnoDashboard(
-                (string) (
-                    $registro['turno']
-                    ?? ''
-                )
-            );
+            if ($idReporte <= 0) {
+                continue;
+            }
 
 
-        /*
+            $turno =
+                $this->clasificarTurnoDashboard(
+                    (string) (
+                        $registro['turno']
+                        ?? ''
+                    )
+                );
+
+
+            /*
          * Algunos turnos reales todavía no tienen
          * una regla institucional definida:
          *
@@ -848,122 +840,122 @@ public function obtenerQuejasPorTurno(): array
          * No los asignamos arbitrariamente.
          */
 
-        if (
-            $turno === null
-            || !array_key_exists(
-                $turno,
-                $conteos
-            )
-        ) {
-            continue;
+            if (
+                $turno === null
+                || !array_key_exists(
+                    $turno,
+                    $conteos
+                )
+            ) {
+                continue;
+            }
+
+
+            $clave =
+                $idReporte
+                . '|'
+                . $turno;
+
+
+            if (
+                isset(
+                    $reportesContados[$clave]
+                )
+            ) {
+                continue;
+            }
+
+
+            $reportesContados[$clave] =
+                true;
+
+
+            $conteos[$turno]++;
         }
 
 
-        $clave =
-            $idReporte
-            . '|'
-            . $turno;
-
-
-        if (
-            isset(
-                $reportesContados[$clave]
-            )
-        ) {
-            continue;
-        }
-
-
-        $reportesContados[$clave] =
-            true;
-
-
-        $conteos[$turno]++;
-    }
-
-
-    /* =====================================================
+        /* =====================================================
        RESPUESTA
     ===================================================== */
 
-    return [
-        'turnos' => [
-            'Primer turno',
-            'Segundo turno',
-            'Tercer turno',
-            'Alfa',
-            'Beta',
-            'Diario',
-            'No refiere ni fecha ni horario',
-        ],
+        return [
+            'turnos' => [
+                'Primer turno',
+                'Segundo turno',
+                'Tercer turno',
+                'Alfa',
+                'Beta',
+                'Diario',
+                'No refiere ni fecha ni horario',
+            ],
 
-        'totales' => [
-            $conteos['Primer turno'],
-            $conteos['Segundo turno'],
-            $conteos['Tercer turno'],
-            $conteos['Alfa'],
-            $conteos['Beta'],
-            $conteos['Diario'],
-            $conteos['No refiere ni fecha ni horario'],
-        ],
+            'totales' => [
+                $conteos['Primer turno'],
+                $conteos['Segundo turno'],
+                $conteos['Tercer turno'],
+                $conteos['Alfa'],
+                $conteos['Beta'],
+                $conteos['Diario'],
+                $conteos['No refiere ni fecha ni horario'],
+            ],
 
-        'total' =>
+            'total' =>
             array_sum(
                 $conteos
             ),
-    ];
-}
+        ];
+    }
 
-/* =========================================================
+    /* =========================================================
    RESOLUCIÓN GENERAL
 ========================================================= */
 
-public function obtenerResoluciones(): array
-{
-    /*
+    public function obtenerResoluciones(): array
+    {
+        /*
      * Contamos reportes vigentes agrupados por
      * la resolución registrada en ai_reportes.
      */
 
-    $registros =
-        $this->db
-        ->table('ai_reportes')
-        ->select([
-            'id_reporte',
-            'resolucion',
-        ])
-        ->where(
-            'eliminado',
-            0
-        )
-        ->get()
-        ->getResultArray();
+        $registros =
+            $this->db
+            ->table('ai_reportes')
+            ->select([
+                'id_reporte',
+                'resolucion',
+            ])
+            ->where(
+                'eliminado',
+                0
+            )
+            ->get()
+            ->getResultArray();
 
 
-    /* =====================================================
+        /* =====================================================
        AGRUPAR RESOLUCIONES
     ===================================================== */
 
-    $conteos = [];
+        $conteos = [];
 
 
-    foreach ($registros as $registro) {
+        foreach ($registros as $registro) {
 
-        $resolucion =
-            trim(
-                preg_replace(
-                    '/\s+/u',
-                    ' ',
-                    (string) (
-                        $registro['resolucion']
-                        ?? ''
+            $resolucion =
+                trim(
+                    preg_replace(
+                        '/\s+/u',
+                        ' ',
+                        (string) (
+                            $registro['resolucion']
+                            ?? ''
+                        )
                     )
-                )
-                ?? ''
-            );
+                        ?? ''
+                );
 
 
-        /*
+            /*
          * Si todavía no existe una resolución,
          * no inventamos una categoría.
          *
@@ -971,97 +963,450 @@ public function obtenerResoluciones(): array
          * pueden legítimamente no tenerla todavía.
          */
 
-        if ($resolucion === '') {
-            continue;
-        }
+            if ($resolucion === '') {
+                continue;
+            }
 
 
-        /*
+            /*
          * Normalizamos únicamente para evitar
          * duplicados provocados por diferencias
          * de mayúsculas/minúsculas.
          */
 
-        $clave =
-            mb_strtoupper(
-                $resolucion,
-                'UTF-8'
-            );
+            $clave =
+                mb_strtoupper(
+                    $resolucion,
+                    'UTF-8'
+                );
 
 
-        if (
-            !isset(
-                $conteos[$clave]
-            )
-        ) {
+            if (
+                !isset(
+                    $conteos[$clave]
+                )
+            ) {
 
-            $conteos[$clave] = [
-                'nombre' =>
+                $conteos[$clave] = [
+                    'nombre' =>
                     $resolucion,
 
-                'total' =>
+                    'total' =>
                     0,
-            ];
+                ];
+            }
 
+
+            $conteos[$clave]['total']++;
         }
 
 
-        $conteos[$clave]['total']++;
-
-    }
-
-
-    /* =====================================================
+        /* =====================================================
        ORDENAR DE MAYOR A MENOR
     ===================================================== */
 
-    uasort(
-        $conteos,
-        static function (
-            array $a,
-            array $b
-        ): int {
+        uasort(
+            $conteos,
+            static function (
+                array $a,
+                array $b
+            ): int {
 
-            return (
-                $b['total']
-                <=> $a['total']
-            );
+                return (
+                    $b['total']
+                    <=> $a['total']
+                );
+            }
+        );
 
-        }
-    );
 
-
-    /* =====================================================
+        /* =====================================================
        PREPARAR RESPUESTA
     ===================================================== */
 
-    $resoluciones = [];
-    $totales = [];
+        $resoluciones = [];
+        $totales = [];
 
 
-    foreach ($conteos as $dato) {
+        foreach ($conteos as $dato) {
 
-        $resoluciones[] =
-            $dato['nombre'];
+            $resoluciones[] =
+                $dato['nombre'];
 
 
-        $totales[] =
-            (int) $dato['total'];
+            $totales[] =
+                (int) $dato['total'];
+        }
+
+
+        return [
+            'resoluciones' =>
+            $resoluciones,
+
+            'totales' =>
+            $totales,
+
+            'total' =>
+            array_sum(
+                $totales
+            ),
+        ];
+    }
+
+    /* =========================================================
+   CATÁLOGO GENERAL
+   QUEJAS POR CLASIFICACIÓN
+========================================================= */
+
+    public function obtenerClasificaciones(): array
+    {
+        /*
+     * Contamos reportes vigentes agrupados por
+     * la clasificación registrada en ai_reportes.
+     *
+     * No utilizamos las categorías temporales del Excel:
+     * el Dashboard mostrará las clasificaciones que
+     * realmente existan en la base de datos.
+     */
+
+        $registros =
+            $this->db
+            ->table('ai_reportes')
+            ->select([
+                'id_reporte',
+                'clasificacion',
+            ])
+            ->where(
+                'eliminado',
+                0
+            )
+            ->get()
+            ->getResultArray();
+
+
+        /* =====================================================
+       AGRUPAR CLASIFICACIONES
+    ===================================================== */
+
+        $conteos = [];
+
+
+        foreach ($registros as $registro) {
+
+            $clasificacion =
+                trim(
+                    preg_replace(
+                        '/\s+/u',
+                        ' ',
+                        (string) (
+                            $registro['clasificacion']
+                            ?? ''
+                        )
+                    )
+                        ?? ''
+                );
+
+
+            /*
+         * Una clasificación vacía no representa
+         * una categoría real.
+         */
+
+            if ($clasificacion === '') {
+                continue;
+            }
+
+
+            /*
+         * Utilizamos una clave normalizada para evitar
+         * separar valores únicamente por diferencias
+         * entre mayúsculas y minúsculas.
+         *
+         * Ejemplo:
+         *
+         * Extorsión
+         * EXTORSIÓN
+         * extorsión
+         *
+         * se contabilizan como una sola clasificación.
+         */
+
+            $clave =
+                mb_strtoupper(
+                    $clasificacion,
+                    'UTF-8'
+                );
+
+
+            if (
+                !isset(
+                    $conteos[$clave]
+                )
+            ) {
+
+                $conteos[$clave] = [
+                    'nombre' =>
+                    $clasificacion,
+
+                    'total' =>
+                    0,
+                ];
+            }
+
+
+            $conteos[$clave]['total']++;
+        }
+
+
+        /* =====================================================
+       ORDENAR DE MAYOR A MENOR
+    ===================================================== */
+
+        uasort(
+            $conteos,
+            static function (
+                array $a,
+                array $b
+            ): int {
+
+                return (
+                    $b['total']
+                    <=> $a['total']
+                );
+            }
+        );
+
+
+        /* =====================================================
+       PREPARAR RESPUESTA
+    ===================================================== */
+
+        $clasificaciones = [];
+        $totales = [];
+
+
+        foreach ($conteos as $dato) {
+
+            $clasificaciones[] =
+                $dato['nombre'];
+
+
+            $totales[] =
+                (int) $dato['total'];
+        }
+
+
+        return [
+            'clasificaciones' =>
+            $clasificaciones,
+
+            'totales' =>
+            $totales,
+
+            'total' =>
+            array_sum(
+                $totales
+            ),
+        ];
+    }
+
+    /* =========================================================
+   REPORTES RECIENTES
+========================================================= */
+
+    /* =========================================================
+   REPORTES RECIENTES
+========================================================= */
+
+public function obtenerReportesRecientes(
+    int $limite = 6
+): array {
+
+    $registros =
+        $this->db
+        ->table('ai_reportes r')
+        ->select([
+            'r.id_reporte',
+            'r.folio',
+            'r.fecha_registro',
+            'r.expediente',
+            'r.clasificacion',
+            'r.estado_actual',
+        ])
+        ->where(
+            'r.eliminado',
+            0
+        )
+        ->orderBy(
+            'r.fecha_registro',
+            'DESC'
+        )
+        ->orderBy(
+            'r.id_reporte',
+            'DESC'
+        )
+        ->limit(
+            $limite
+        )
+        ->get()
+        ->getResultArray();
+
+
+    $reportes = [];
+
+
+    foreach ($registros as $registro) {
+
+        $idReporte =
+            (int) (
+                $registro['id_reporte']
+                ?? 0
+            );
+
+
+        /* =====================================================
+           ÁREA DEL PERSONAL RELACIONADO
+        ===================================================== */
+
+        $area =
+            '—';
+
+
+        if ($idReporte > 0) {
+
+            $personal =
+                $this->db
+                ->table('ai_reporte_personal')
+                ->select(
+                    'area_snapshot'
+                )
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'area_snapshot IS NOT NULL',
+                    null,
+                    false
+                )
+                ->where(
+                    'area_snapshot !=',
+                    ''
+                )
+                ->orderBy(
+                    'id_reporte_personal',
+                    'ASC'
+                )
+                ->limit(1)
+                ->get()
+                ->getRowArray();
+
+
+            if (
+                !empty(
+                    $personal['area_snapshot']
+                )
+            ) {
+
+                $area =
+                    trim(
+                        (string) $personal[
+                            'area_snapshot'
+                        ]
+                    );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           FECHA
+        ===================================================== */
+
+        $fecha =
+            $registro['fecha_registro']
+            ?? null;
+
+
+        $fechaFormateada =
+            '—';
+
+
+        if (!empty($fecha)) {
+
+            $timestamp =
+                strtotime(
+                    (string) $fecha
+                );
+
+
+            if ($timestamp !== false) {
+
+                $fechaFormateada =
+                    date(
+                        'd/m/Y',
+                        $timestamp
+                    );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           RESPUESTA
+        ===================================================== */
+
+        $reportes[] = [
+
+            'id_reporte' =>
+                $idReporte,
+
+            'folio' =>
+                trim(
+                    (string) (
+                        $registro['folio']
+                        ?? ''
+                    )
+                ),
+
+            'fecha' =>
+                $fechaFormateada,
+
+            'expediente' =>
+                trim(
+                    (string) (
+                        $registro['expediente']
+                        ?? ''
+                    )
+                ),
+
+            'clasificacion' =>
+                trim(
+                    (string) (
+                        $registro['clasificacion']
+                        ?? ''
+                    )
+                ),
+
+            'area' =>
+                $area,
+
+            'estado' =>
+                trim(
+                    (string) (
+                        $registro['estado_actual']
+                        ?? ''
+                    )
+                ),
+        ];
 
     }
 
 
-    return [
-        'resoluciones' =>
-            $resoluciones,
-
-        'totales' =>
-            $totales,
-
-        'total' =>
-            array_sum(
-                $totales
-            ),
-    ];
+    return $reportes;
 }
+
+    
 }

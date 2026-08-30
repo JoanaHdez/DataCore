@@ -21,8 +21,15 @@ function inicializarGraficaCatalogo() {
         );
 
 
+    const fuenteDatos =
+        document.querySelector(
+            '#datos-grafica-catalogo'
+        );
+
+
     if (
         !canvas
+        || !fuenteDatos
         || typeof Chart === 'undefined'
     ) {
         return;
@@ -30,109 +37,72 @@ function inicializarGraficaCatalogo() {
 
 
     /* =====================================================
-       DATOS TEMPORALES
-       Basados en el dashboard de Excel
+       DATOS REALES DEL BACKEND
     ===================================================== */
 
-    const datosCatalogo = [
+    let datosBackend;
 
-        {
-            nombre:
-                'Daño a los bienes',
 
-            valor:
-                9,
-        },
+    try {
 
-        {
-            nombre:
-                'Agresiones físicas y/o verbales',
+        datosBackend =
+            JSON.parse(
+                fuenteDatos.textContent
+                || '{}'
+            );
 
-            valor:
-                61,
-        },
+    } catch (error) {
 
-        {
-            nombre:
-                'Omisión de apoyo',
+        console.error(
+            'No fue posible interpretar los datos del catálogo general:',
+            error
+        );
 
-            valor:
-                56,
-        },
+        return;
+    }
 
-        {
-            nombre:
-                'Poner por menor en peligro o riesgo la integridad física y moral de las personas así como sus bienes',
 
-            valor:
-                1,
-        },
+    const clasificaciones =
+        Array.isArray(
+            datosBackend.clasificaciones
+        )
+            ? datosBackend.clasificaciones
+            : [];
 
-        {
-            nombre:
-                'Violencia de género',
 
-            valor:
-                1,
-        },
+    const totales =
+        Array.isArray(
+            datosBackend.totales
+        )
+            ? datosBackend.totales.map(
+                (total) =>
+                    Number(total) || 0
+            )
+            : [];
 
-        {
-            nombre:
-                'Extorsión',
 
-            valor:
-                5,
-        },
+    /* =====================================================
+       CONVERTIR AL FORMATO DE LA GRÁFICA
+    ===================================================== */
 
-        {
-            nombre:
-                'Detención ilegal',
+    const datosCatalogo =
+        clasificaciones.map(
+            (
+                nombre,
+                indice
+            ) => {
 
-            valor:
-                2,
-        },
+                return {
+                    nombre:
+                        nombre,
 
-        {
-            nombre:
-                'No abstenerse de realizar conductas que desacrediten su persona o la imagen de la institución dentro y fuera del servicio portando el uniforme institucional',
+                    valor:
+                        totales[indice]
+                        ?? 0,
+                };
 
-            valor:
-                103,
-        },
-
-        {
-            nombre:
-                'Infringir el reglamento de tránsito sin causa que lo justifique, estando franco o en servicio',
-
-            valor:
-                2,
-        },
-
-        {
-            nombre:
-                'No dirigirse con respeto, educación y profesionalismo o por alterar o incitar el orden público en el ejercicio de sus funciones al primer contacto con la ciudadanía',
-
-            valor:
-                4,
-        },
-
-        {
-            nombre:
-                'Presentar a cualquier persona ante la autoridad competente y no hacer entrega de su documentación',
-
-            valor:
-                2,
-        },
-
-        {
-            nombre:
-                'Robo',
-
-            valor:
-                30,
-        },
-
-    ];
+            }
+        );
 
 
     /* =====================================================
@@ -164,7 +134,7 @@ function inicializarGraficaCatalogo() {
        TOTAL
     ===================================================== */
 
-    const total =
+    const totalCalculado =
         datosOrdenados.reduce(
             (
                 acumulado,
@@ -182,6 +152,20 @@ function inicializarGraficaCatalogo() {
             },
             0
         );
+
+
+    const totalBackend =
+        Number(
+            datosBackend.total
+        );
+
+
+    const total =
+        Number.isFinite(
+            totalBackend
+        )
+            ? totalBackend
+            : totalCalculado;
 
 
     actualizarTexto(
@@ -252,17 +236,45 @@ function inicializarGraficaCatalogo() {
 
 
     /* =====================================================
+       DESTRUIR GRÁFICA PREVIA
+    ===================================================== */
+
+    const graficaExistente =
+        Chart.getChart(
+            canvas
+        );
+
+
+    if (graficaExistente) {
+
+        graficaExistente.destroy();
+
+    }
+
+
+    /* =====================================================
+       SIN INFORMACIÓN
+    ===================================================== */
+
+    if (
+        datosOrdenados.length === 0
+    ) {
+        return;
+    }
+
+
+    /* =====================================================
        LABELS CORTOS
     ===================================================== */
 
     const labels =
         datosOrdenados.map(
-            (
-                elemento
-            ) => {
+            (elemento) => {
 
-                return abreviarNombreCatalogo(
-                    elemento.nombre
+                return (
+                    abreviarNombreCatalogo(
+                        elemento.nombre
+                    )
                 );
 
             }
@@ -271,14 +283,94 @@ function inicializarGraficaCatalogo() {
 
     const valores =
         datosOrdenados.map(
+            (elemento) => {
+
+                return (
+                    Number(
+                        elemento.valor
+                        || 0
+                    )
+                );
+
+            }
+        );
+
+
+    /* =====================================================
+       COLORES
+    ===================================================== */
+
+    const colores =
+        datosOrdenados.map(
             (
-                elemento
+                _,
+                indice
             ) => {
 
-                return Number(
-                    elemento.valor
-                    || 0
+                if (indice === 0) {
+
+                    return (
+                        'rgba(12, 144, 99, 0.96)'
+                    );
+
+                }
+
+
+                if (indice === 1) {
+
+                    return (
+                        'rgba(45, 161, 122, 0.82)'
+                    );
+
+                }
+
+
+                if (indice === 2) {
+
+                    return (
+                        'rgba(73, 177, 140, 0.72)'
+                    );
+
+                }
+
+
+                return (
+                    'rgba(133, 198, 175, 0.54)'
                 );
+
+            }
+        );
+
+
+    const coloresHover =
+        datosOrdenados.map(
+            (
+                _,
+                indice
+            ) => {
+
+                if (indice === 0) {
+
+                    return '#087d58';
+
+                }
+
+
+                if (indice === 1) {
+
+                    return '#1f906b';
+
+                }
+
+
+                if (indice === 2) {
+
+                    return '#3c9f7d';
+
+                }
+
+
+                return '#77bfa5';
 
             }
         );
@@ -308,98 +400,10 @@ function inicializarGraficaCatalogo() {
                             valores,
 
                         backgroundColor:
-                            datosOrdenados.map(
-                                (
-                                    _,
-                                    indice
-                                ) => {
-
-                                    if (
-                                        indice === 0
-                                    ) {
-
-                                        return (
-                                            'rgba(12, 144, 99, 0.96)'
-                                        );
-
-                                    }
-
-
-                                    if (
-                                        indice === 1
-                                    ) {
-
-                                        return (
-                                            'rgba(45, 161, 122, 0.82)'
-                                        );
-
-                                    }
-
-
-                                    if (
-                                        indice === 2
-                                    ) {
-
-                                        return (
-                                            'rgba(73, 177, 140, 0.72)'
-                                        );
-
-                                    }
-
-
-                                    return (
-                                        'rgba(133, 198, 175, 0.54)'
-                                    );
-
-                                }
-                            ),
+                            colores,
 
                         hoverBackgroundColor:
-                            datosOrdenados.map(
-                                (
-                                    _,
-                                    indice
-                                ) => {
-
-                                    if (
-                                        indice === 0
-                                    ) {
-
-                                        return (
-                                            '#087d58'
-                                        );
-
-                                    }
-
-
-                                    if (
-                                        indice === 1
-                                    ) {
-
-                                        return (
-                                            '#1f906b'
-                                        );
-
-                                    }
-
-
-                                    if (
-                                        indice === 2
-                                    ) {
-
-                                        return (
-                                            '#3c9f7d'
-                                        );
-
-                                    }
-
-
-                                    return (
-                                        '#77bfa5'
-                                    );
-
-                                }
-                            ),
+                            coloresHover,
 
                         borderWidth:
                             0,
@@ -418,11 +422,11 @@ function inicializarGraficaCatalogo() {
 
                         maxBarThickness:
                             24,
-
                     },
                 ],
 
             },
+
 
             options: {
 
@@ -502,8 +506,14 @@ function inicializarGraficaCatalogo() {
                         beginAtZero:
                             true,
 
-                        suggestedMax:
-                            110,
+                        /*
+                         * Ya no usamos suggestedMax: 110
+                         * ni stepSize: 20.
+                         *
+                         * Eran valores ajustados al Excel.
+                         * Ahora Chart.js calcula la escala
+                         * con los datos reales.
+                         */
 
                         border: {
 
@@ -516,9 +526,6 @@ function inicializarGraficaCatalogo() {
 
                             precision:
                                 0,
-
-                            stepSize:
-                                20,
 
                             padding:
                                 8,
@@ -643,6 +650,7 @@ function inicializarGraficaCatalogo() {
                         caretPadding:
                             8,
 
+
                         titleFont: {
 
                             size:
@@ -653,6 +661,7 @@ function inicializarGraficaCatalogo() {
 
                         },
 
+
                         bodyFont: {
 
                             size:
@@ -662,6 +671,7 @@ function inicializarGraficaCatalogo() {
                                 '600',
 
                         },
+
 
                         callbacks: {
 
@@ -674,6 +684,13 @@ function inicializarGraficaCatalogo() {
                                         ?.dataIndex
                                     ?? 0;
 
+
+                                /*
+                                 * El tooltip siempre conserva
+                                 * la clasificación completa,
+                                 * aunque visualmente la
+                                 * abreviemos en el eje.
+                                 */
 
                                 return (
                                     datosOrdenados[
@@ -710,7 +727,11 @@ function inicializarGraficaCatalogo() {
 
 
                                 return (
-                                    `${valor} registros `
+                                    `${valor} ${
+                                        valor === 1
+                                            ? 'registro'
+                                            : 'registros'
+                                    } `
                                     + `(${porcentaje.toFixed(1)}%)`
                                 );
 
@@ -738,6 +759,15 @@ function abreviarNombreCatalogo(
     nombre
 ) {
 
+    /*
+     * Conservamos las abreviaciones que ya existían
+     * para las clasificaciones institucionales largas
+     * del Excel.
+     *
+     * Cuando aparezca cualquier clasificación nueva,
+     * se utilizará automáticamente su nombre original.
+     */
+
     const equivalencias = {
 
         'No abstenerse de realizar conductas que desacrediten su persona o la imagen de la institución dentro y fuera del servicio portando el uniforme institucional':
@@ -758,12 +788,48 @@ function abreviarNombreCatalogo(
     };
 
 
-    return (
+    if (
         equivalencias[
             nombre
         ]
-        || nombre
-    );
+    ) {
+
+        return (
+            equivalencias[
+                nombre
+            ]
+        );
+
+    }
+
+
+    /*
+     * Si llega una clasificación nueva y su nombre
+     * es demasiado largo, evitamos que destruya
+     * visualmente el eje.
+     *
+     * El nombre completo seguirá disponible
+     * en el tooltip.
+     */
+
+    if (
+        String(nombre).length
+        > 34
+    ) {
+
+        return (
+            String(nombre)
+                .substring(
+                    0,
+                    31
+                )
+            + '...'
+        );
+
+    }
+
+
+    return nombre;
 
 }
 

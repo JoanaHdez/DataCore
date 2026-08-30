@@ -183,6 +183,156 @@
 
 
 /* =========================================================
+   SANCIONES - ESTADO SIN DATOS
+========================================================= */
+
+.dashboard-sanciones__sin-datos {
+    width: 100%;
+    min-height: 230px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 14px;
+
+    padding: 24px;
+
+    color: #71847d;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(248, 252, 250, 0.96),
+            rgba(241, 249, 246, 0.92)
+        );
+
+    border: 1px dashed #cfe1d9;
+    border-radius: 16px;
+}
+
+
+/* =========================================================
+   RESPETAR ATRIBUTO HIDDEN
+========================================================= */
+
+.dashboard-sanciones__sin-datos[hidden],
+.dashboard-grafica__canvas--sanciones canvas[hidden] {
+    display: none !important;
+}
+
+
+/* =========================================================
+   ICONO
+========================================================= */
+
+.dashboard-sanciones__sin-datos-icono {
+    width: 42px;
+    height: 42px;
+
+    flex: 0 0 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #158b67;
+
+    background: #e5f5ef;
+
+    border: 1px solid #cce9de;
+    border-radius: 13px;
+}
+
+
+.dashboard-sanciones__sin-datos-icono svg {
+    width: 19px !important;
+    height: 19px !important;
+
+    display: block;
+
+    fill: none !important;
+
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+/* =========================================================
+   TEXTO
+========================================================= */
+
+.dashboard-sanciones__sin-datos > div {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+
+.dashboard-sanciones__sin-datos strong {
+    color: #40574e;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+.dashboard-sanciones__sin-datos span:not(
+    .dashboard-sanciones__sin-datos-icono
+) {
+    max-width: 330px;
+
+    color: #84958e;
+
+    font-size: 9px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   CANVAS DE SANCIONES
+========================================================= */
+
+.dashboard-grafica__canvas--sanciones {
+    position: relative;
+
+    width: 100%;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .dashboard-sanciones__sin-datos {
+        min-height: 190px;
+
+        align-items: center;
+
+        padding: 20px;
+
+        border-radius: 14px;
+    }
+
+
+    .dashboard-sanciones__sin-datos-icono {
+        width: 38px;
+        height: 38px;
+
+        flex-basis: 38px;
+    }
+
+}
+
+
+/* =========================================================
    TABLET
 ========================================================= */
 
