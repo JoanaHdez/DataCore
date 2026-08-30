@@ -27,7 +27,7 @@
             </span>
 
             <strong id="resoluciones-total">
-                276
+                <?= esc($resoluciones['total'] ?? 0) ?>
             </strong>
 
         </div>
@@ -54,3 +54,18 @@
     </div>
 
 </section>
+
+
+<script
+    type="application/json"
+    id="datos-grafica-resoluciones"
+>
+<?= json_encode(
+    $resoluciones ?? [
+        'resoluciones' => [],
+        'totales' => [],
+        'total' => 0,
+    ],
+    JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+) ?>
+</script>

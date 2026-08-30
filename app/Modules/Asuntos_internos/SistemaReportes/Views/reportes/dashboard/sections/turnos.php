@@ -27,7 +27,7 @@
             </span>
 
             <strong id="turnos-total">
-                276
+                <?= esc($quejasPorTurno['total'] ?? 0) ?>
             </strong>
 
             <small>
@@ -58,3 +58,18 @@
     </div>
 
 </section>
+
+
+<script
+    type="application/json"
+    id="datos-grafica-turnos"
+>
+<?= json_encode(
+    $quejasPorTurno ?? [
+        'turnos' => [],
+        'totales' => [],
+        'total' => 0,
+    ],
+    JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+) ?>
+</script>

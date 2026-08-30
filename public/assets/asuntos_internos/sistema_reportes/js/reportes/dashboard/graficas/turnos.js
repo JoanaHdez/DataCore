@@ -21,9 +21,93 @@ function inicializarGraficaTurnos() {
         );
 
 
+    const fuenteDatos =
+        document.querySelector(
+            '#datos-grafica-turnos'
+        );
+
+
     if (
         !canvas
+        || !fuenteDatos
         || typeof Chart === 'undefined'
+    ) {
+        return;
+    }
+
+
+    /* =====================================================
+       DATOS REALES DEL BACKEND
+    ===================================================== */
+
+    let datosBackend;
+
+
+    try {
+
+        datosBackend =
+            JSON.parse(
+                fuenteDatos.textContent
+                || '{}'
+            );
+
+    } catch (error) {
+
+        console.error(
+            'No fue posible interpretar los datos de quejas por turno:',
+            error
+        );
+
+        return;
+    }
+
+
+    const turnos =
+        Array.isArray(
+            datosBackend.turnos
+        )
+            ? datosBackend.turnos
+            : [];
+
+
+    const totales =
+        Array.isArray(
+            datosBackend.totales
+        )
+            ? datosBackend.totales.map(
+                (total) =>
+                    Number(total) || 0
+            )
+            : [];
+
+
+    /*
+     * Convertimos la respuesta del backend
+     * al formato que ya utilizaba esta gráfica.
+     */
+
+    const datosTurnos =
+        turnos.map(
+            (
+                nombre,
+                indice
+            ) => {
+
+                return {
+                    nombre:
+                        nombre,
+
+                    valor:
+                        totales[indice]
+                        ?? 0,
+                };
+
+            }
+        );
+
+
+    if (
+        datosTurnos.length === 0
     ) {
         return;
     }
@@ -47,76 +131,10 @@ function inicializarGraficaTurnos() {
 
 
     /* =====================================================
-       DATOS TEMPORALES
-       Basados en el dashboard de Excel
+       TOTAL REAL
     ===================================================== */
 
-    const datosTurnos = [
-
-        {
-            nombre:
-                'Segundo turno',
-
-            valor:
-                82,
-        },
-
-        {
-            nombre:
-                'Primer turno',
-
-            valor:
-                69,
-        },
-
-        {
-            nombre:
-                'Tercer turno',
-
-            valor:
-                47,
-        },
-
-        {
-            nombre:
-                'No refiere ni fecha ni horario',
-
-            valor:
-                25,
-        },
-
-        {
-            nombre:
-                'Beta',
-
-            valor:
-                24,
-        },
-
-        {
-            nombre:
-                'Diario',
-
-            valor:
-                16,
-        },
-
-        {
-            nombre:
-                'Alfa',
-
-            valor:
-                13,
-        },
-
-    ];
-
-
-    /* =====================================================
-       TOTAL
-    ===================================================== */
-
-    const total =
+    const totalCalculado =
         datosTurnos.reduce(
             (
                 acumulado,
@@ -134,6 +152,20 @@ function inicializarGraficaTurnos() {
             },
             0
         );
+
+
+    const totalBackend =
+        Number(
+            datosBackend.total
+        );
+
+
+    const total =
+        Number.isFinite(
+            totalBackend
+        )
+            ? totalBackend
+            : totalCalculado;
 
 
     const totalElemento =
@@ -338,8 +370,14 @@ function inicializarGraficaTurnos() {
                         beginAtZero:
                             true,
 
-                        suggestedMax:
-                            90,
+                        /*
+                         * Ya no utilizamos suggestedMax: 90,
+                         * porque ese límite pertenecía a los
+                         * datos temporales del Excel.
+                         *
+                         * Chart.js calculará la escala con
+                         * base en los datos reales.
+                         */
 
                         border: {
 
@@ -352,9 +390,6 @@ function inicializarGraficaTurnos() {
 
                             precision:
                                 0,
-
-                            stepSize:
-                                20,
 
                             padding:
                                 8,
@@ -540,7 +575,11 @@ function inicializarGraficaTurnos() {
 
 
                                 return (
-                                    `${valor} quejas `
+                                    `${valor} ${
+                                        valor === 1
+                                            ? 'queja'
+                                            : 'quejas'
+                                    } `
                                     + `(${porcentaje.toFixed(1)}%)`
                                 );
 

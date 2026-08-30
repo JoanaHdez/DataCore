@@ -59,7 +59,10 @@
 
             <button
                 type="button"
-                class="dashboard-grafica__periodo dashboard-grafica__periodo--activo"
+                class="
+                    dashboard-grafica__periodo
+                    dashboard-grafica__periodo--activo
+                "
                 data-periodo-grafica="todo"
             >
                 Todo
@@ -72,7 +75,12 @@
 
     <div class="dashboard-grafica__contenido">
 
-        <div class="dashboard-grafica__canvas dashboard-grafica__canvas--sectores">
+        <div
+            class="
+                dashboard-grafica__canvas
+                dashboard-grafica__canvas--sectores
+            "
+        >
 
             <canvas
                 id="grafica-sectores-turnos"
@@ -84,3 +92,18 @@
     </div>
 
 </section>
+
+
+<script
+    type="application/json"
+    id="datos-grafica-sectores-turnos"
+>
+<?= json_encode(
+    $sectoresTurnos ?? [
+        'sectores' => [],
+        'turnos' => [],
+    ],
+    JSON_UNESCAPED_UNICODE
+    | JSON_UNESCAPED_SLASHES
+) ?>
+</script>

@@ -6,6 +6,7 @@ use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardExcelService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\ListadoExcelService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\AuthService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\ReporteService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardService;
 
 use App\Controllers\BaseController;
 
@@ -1121,6 +1122,10 @@ class Reportes_Controller extends BaseController
 
     public function dashboard()
     {
+        /* =========================================================
+       VALIDAR SESIÓN
+    ========================================================= */
+
         if (
             session()->get('reportes_autenticado') !== true
             || !session()->has('usuario_reportes')
@@ -1138,6 +1143,10 @@ class Reportes_Controller extends BaseController
                 );
         }
 
+
+        /* =========================================================
+       USUARIO
+    ========================================================= */
 
         $usuario =
             session()->get(
@@ -1164,16 +1173,133 @@ class Reportes_Controller extends BaseController
      * requiere autorización administrativa,
      * salvo que ya haya sido autorizada.
      */
+
         $requiereAutorizacion =
             !$esAdmin
             && !$autorizacionTemporal;
 
+
+        /* =========================================================
+       DATOS DEL DASHBOARD
+    ========================================================= */
+
+        try {
+
+            $dashboardService =
+                new DashboardService();
+
+
+            /* =====================================================
+           INDICADORES
+        ===================================================== */
+
+            $indicadores =
+                $dashboardService
+                ->obtenerIndicadores();
+
+
+            /* =====================================================
+           QUEJAS POR SECTORES Y TURNOS
+        ===================================================== */
+
+            $sectoresTurnos =
+                $dashboardService
+                ->obtenerSectoresTurnos();
+
+            $quejasPorArea =
+                $dashboardService
+                ->obtenerQuejasPorArea();
+
+                $quejasPorTurno =
+    $dashboardService
+    ->obtenerQuejasPorTurno();
+
+    $resoluciones =
+    $dashboardService
+    ->obtenerResoluciones();
+
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error consultando datos del Dashboard: {mensaje}',
+                [
+                    'mensaje' =>
+                    $e->getMessage(),
+                ]
+            );
+
+
+            /*
+         * No impedimos cargar el Dashboard si ocurre
+         * un problema con las estadísticas.
+         */
+
+
+            /* =====================================================
+           VALORES POR DEFECTO - INDICADORES
+        ===================================================== */
+
+            $indicadores = [
+                'total' => 0,
+                'pendientes' => 0,
+                'en_proceso' => 0,
+                'finalizados' => 0,
+            ];
+
+
+            /* =====================================================
+           VALORES POR DEFECTO - SECTORES Y TURNOS
+        ===================================================== */
+
+            $sectoresTurnos = [
+                'sectores' => [],
+                'turnos' => [],
+            ];
+
+            $quejasPorArea = [
+                'areas' => [],
+                'totales' => [],
+            ];
+
+            $quejasPorTurno = [
+    'turnos' => [],
+    'totales' => [],
+    'total' => 0,
+];
+
+$resoluciones = [
+    'resoluciones' => [],
+    'totales' => [],
+    'total' => 0,
+];
+        }
+
+
+        /* =========================================================
+       VISTA
+    ========================================================= */
 
         return view(
             'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\index',
             [
                 'requiereAutorizacionAdmin' =>
                 $requiereAutorizacion,
+
+                'indicadores' =>
+                $indicadores,
+
+                'sectoresTurnos' =>
+                $sectoresTurnos,
+
+                'quejasPorArea' =>
+                $quejasPorArea,
+
+                'quejasPorTurno' =>
+    $quejasPorTurno,
+
+    'resoluciones' =>
+    $resoluciones,
             ]
         );
     }

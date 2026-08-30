@@ -34,73 +34,101 @@ function inicializarGraficaSectoresTurnos() {
        Basados en el dashboard de Excel
     ===================================================== */
 
-    const sectores = [
-        'SECTOR 1',
-        'SECTOR 2',
-        'SECTOR 3',
-        'SECTOR 4',
-        'SECTOR 5',
-        'SECTOR 6',
-        'SECTOR 7',
-        'SECTOR 8',
-        'SECTOR 9',
-        'SECTOR 10',
-        'SECTOR 11',
-        'SECTOR 12',
-        'SECTOR 13',
-        'SECTOR 14',
-        'SECTOR 15',
-        'SECTOR 16',
-        'SECTOR 17',
-        'SECTOR 18',
-    ];
+    /* =====================================================
+   DATOS REALES DEL BACKEND
+===================================================== */
+
+const fuenteDatos =
+    document.querySelector(
+        '#datos-grafica-sectores-turnos'
+    );
 
 
-    const datos = {
+if (!fuenteDatos) {
+    return;
+}
 
-        primerTurno: [
-            1, 0, 1, 2, 0, 1,
-            0, 1, 1, 0, 1, 0,
-            1, 0, 1, 0, 0, 1,
-        ],
 
-        segundoTurno: [
-            0, 1, 0, 1, 1, 0,
-            1, 0, 1, 1, 0, 1,
-            0, 1, 0, 1, 1, 0,
-        ],
+let datosBackend;
 
-        tercerTurno: [
-            0, 0, 1, 0, 0, 1,
-            0, 1, 0, 0, 1, 0,
-            0, 1, 0, 0, 1, 0,
-        ],
 
-        alfa: [
-            0, 0, 0, 1, 0, 0,
-            0, 0, 1, 0, 0, 0,
-            1, 0, 0, 1, 0, 0,
-        ],
+try {
 
-        beta: [
-            0, 0, 0, 0, 1, 0,
-            0, 0, 0, 1, 0, 0,
-            0, 1, 0, 0, 0, 1,
-        ],
+    datosBackend =
+        JSON.parse(
+            fuenteDatos.textContent
+            || '{}'
+        );
 
-        diario: [
-            0, 0, 0, 0, 0, 0,
-            1, 0, 0, 0, 0, 1,
-            0, 0, 0, 0, 0, 0,
-        ],
+} catch (error) {
 
-        noRefiere: [
-            0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 1, 0,
-            0, 0, 0, 0, 0, 0,
-        ],
+    console.error(
+        'No fue posible interpretar los datos de sectores y turnos:',
+        error
+    );
 
-    };
+    return;
+}
+
+
+const sectores =
+    Array.isArray(
+        datosBackend.sectores
+    )
+        ? datosBackend.sectores
+        : [];
+
+
+const turnosBackend =
+    datosBackend.turnos
+    || {};
+
+
+const datos = {
+
+    primerTurno:
+        turnosBackend[
+            'Primer turno'
+        ]
+        || [],
+
+    segundoTurno:
+        turnosBackend[
+            'Segundo turno'
+        ]
+        || [],
+
+    tercerTurno:
+        turnosBackend[
+            'Tercer turno'
+        ]
+        || [],
+
+    alfa:
+        turnosBackend[
+            'Alfa'
+        ]
+        || [],
+
+    beta:
+        turnosBackend[
+            'Beta'
+        ]
+        || [],
+
+    diario:
+        turnosBackend[
+            'Diario'
+        ]
+        || [],
+
+    noRefiere:
+        turnosBackend[
+            'No refiere ni fecha ni horario'
+        ]
+        || [],
+
+};
 
 
     /* =====================================================

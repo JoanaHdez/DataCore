@@ -21,8 +21,15 @@ function inicializarGraficaResoluciones() {
         );
 
 
+    const fuenteDatos =
+        document.querySelector(
+            '#datos-grafica-resoluciones'
+        );
+
+
     if (
         !canvas
+        || !fuenteDatos
         || typeof Chart === 'undefined'
     ) {
         return;
@@ -30,63 +37,81 @@ function inicializarGraficaResoluciones() {
 
 
     /* =====================================================
-       DATOS TEMPORALES
-       Basados en el dashboard de Excel
+       DATOS REALES DEL BACKEND
     ===================================================== */
 
+    let datosBackend;
+
+
+    try {
+
+        datosBackend =
+            JSON.parse(
+                fuenteDatos.textContent
+                || '{}'
+            );
+
+    } catch (error) {
+
+        console.error(
+            'No fue posible interpretar los datos de resoluciones:',
+            error
+        );
+
+        return;
+    }
+
+
+    const labels =
+        Array.isArray(
+            datosBackend.resoluciones
+        )
+            ? datosBackend.resoluciones
+            : [];
+
+
+    const valores =
+        Array.isArray(
+            datosBackend.totales
+        )
+            ? datosBackend.totales.map(
+                (total) =>
+                    Number(total) || 0
+            )
+            : [];
+
+
     const datosResoluciones = {
+        labels:
+            labels,
 
-        labels: [
-            'En investigación',
-            'Improcedente',
-            'El ciudadano desiste',
-            'Recomendación',
-            'Cambio de adscripción',
-            'Sanción disciplinaria',
-            'Renuncia voluntaria',
-        ],
-
-        valores: [
-            204,
-            39,
-            11,
-            9,
-            6,
-            5,
-            2,
-        ],
-
+        valores:
+            valores,
     };
 
 
     /* =====================================================
-       DESCRIPCIONES COMPLETAS
+       DESTRUIR GRÁFICA PREVIA
     ===================================================== */
 
-    const descripciones = [
+    const graficaExistente =
+        Chart.getChart(
+            canvas
+        );
 
-        'En investigación se solicitan los oficios correspondientes para la integración del expediente.',
 
-        'Improcedente: carece de datos de prueba, se justifica el actuar de los oficiales o no presenta evidencias.',
+    if (graficaExistente) {
 
-        'El ciudadano desiste de la queja.',
+        graficaExistente.destroy();
 
-        'Recomendación.',
-
-        'Se realizó el cambio de adscripción del oficial.',
-
-        'Se emitió sanción con base al tabulador de correctivos disciplinarios.',
-
-        'Los oficiales firmaron su renuncia voluntaria.',
-
-    ];
+    }
 
 
     /* =====================================================
        TOTAL
     ===================================================== */
 
-    const total =
+    const totalCalculado =
         datosResoluciones.valores.reduce(
             (
                 acumulado,
@@ -103,6 +128,20 @@ function inicializarGraficaResoluciones() {
             },
             0
         );
+
+
+    const totalBackend =
+        Number(
+            datosBackend.total
+        );
+
+
+    const total =
+        Number.isFinite(
+            totalBackend
+        )
+            ? totalBackend
+            : totalCalculado;
 
 
     const totalElemento =
@@ -122,6 +161,18 @@ function inicializarGraficaResoluciones() {
 
 
     /* =====================================================
+       SIN DATOS
+    ===================================================== */
+
+    if (
+        datosResoluciones.labels.length === 0
+        || datosResoluciones.valores.length === 0
+    ) {
+        return;
+    }
+
+
+    /* =====================================================
        PORCENTAJES
     ===================================================== */
 
@@ -129,7 +180,9 @@ function inicializarGraficaResoluciones() {
         datosResoluciones.valores.map(
             (valor) => {
 
-                if (total <= 0) {
+                if (
+                    total <= 0
+                ) {
                     return 0;
                 }
 
@@ -138,6 +191,74 @@ function inicializarGraficaResoluciones() {
                     Number(valor)
                     / total
                 ) * 100;
+
+            }
+        );
+
+
+    /* =====================================================
+       COLORES DINÁMICOS
+    ===================================================== */
+
+    const coloresBase = [
+        'rgba(15, 148, 103, 0.95)',
+        'rgba(58, 165, 130, 0.76)',
+        'rgba(83, 179, 148, 0.70)',
+        'rgba(107, 190, 160, 0.66)',
+        'rgba(130, 200, 175, 0.62)',
+        'rgba(153, 211, 190, 0.58)',
+        'rgba(180, 219, 205, 0.56)',
+    ];
+
+
+    const coloresHoverBase = [
+        '#087e59',
+        '#238f6d',
+        '#3d9f7d',
+        '#55ad8c',
+        '#70b99d',
+        '#8bc5ae',
+        '#a6d0bf',
+    ];
+
+
+    /*
+     * Ahora las resoluciones son dinámicas.
+     * Si existen más de siete categorías,
+     * reutilizamos suavemente la paleta.
+     */
+
+    const colores =
+        datosResoluciones.labels.map(
+            (
+                resolucion,
+                indice
+            ) => {
+
+                return (
+                    coloresBase[
+                        indice
+                        % coloresBase.length
+                    ]
+                );
+
+            }
+        );
+
+
+    const coloresHover =
+        datosResoluciones.labels.map(
+            (
+                resolucion,
+                indice
+            ) => {
+
+                return (
+                    coloresHoverBase[
+                        indice
+                        % coloresHoverBase.length
+                    ]
+                );
 
             }
         );
@@ -166,25 +287,11 @@ function inicializarGraficaResoluciones() {
                         data:
                             datosResoluciones.valores,
 
-                        backgroundColor: [
-                            'rgba(15, 148, 103, 0.95)',
-                            'rgba(58, 165, 130, 0.76)',
-                            'rgba(83, 179, 148, 0.70)',
-                            'rgba(107, 190, 160, 0.66)',
-                            'rgba(130, 200, 175, 0.62)',
-                            'rgba(153, 211, 190, 0.58)',
-                            'rgba(180, 219, 205, 0.56)',
-                        ],
+                        backgroundColor:
+                            colores,
 
-                        hoverBackgroundColor: [
-                            '#087e59',
-                            '#238f6d',
-                            '#3d9f7d',
-                            '#55ad8c',
-                            '#70b99d',
-                            '#8bc5ae',
-                            '#a6d0bf',
-                        ],
+                        hoverBackgroundColor:
+                            coloresHover,
 
                         borderWidth:
                             0,
@@ -208,6 +315,7 @@ function inicializarGraficaResoluciones() {
                 ],
 
             },
+
 
             options: {
 
@@ -287,8 +395,14 @@ function inicializarGraficaResoluciones() {
                         beginAtZero:
                             true,
 
-                        suggestedMax:
-                            220,
+                        /*
+                         * Eliminamos suggestedMax: 220
+                         * y stepSize: 50 porque pertenecían
+                         * a los datos del Excel.
+                         *
+                         * La escala ahora se adapta
+                         * automáticamente a los datos reales.
+                         */
 
                         border: {
 
@@ -301,9 +415,6 @@ function inicializarGraficaResoluciones() {
 
                             precision:
                                 0,
-
-                            stepSize:
-                                50,
 
                             padding:
                                 8,
@@ -372,6 +483,43 @@ function inicializarGraficaResoluciones() {
 
                                 weight:
                                     '700',
+
+                            },
+
+
+                            /*
+                             * Las resoluciones de la BD pueden
+                             * tener nombres considerablemente
+                             * más largos que los del Excel.
+                             */
+
+                            callback(
+                                value
+                            ) {
+
+                                const texto =
+                                    this.getLabelForValue(
+                                        value
+                                    );
+
+
+                                if (
+                                    texto.length
+                                    <= 30
+                                ) {
+
+                                    return texto;
+
+                                }
+
+
+                                return (
+                                    texto.substring(
+                                        0,
+                                        27
+                                    )
+                                    + '...'
+                                );
 
                             },
 
@@ -448,6 +596,7 @@ function inicializarGraficaResoluciones() {
 
                         },
 
+
                         callbacks: {
 
                             title(
@@ -459,6 +608,12 @@ function inicializarGraficaResoluciones() {
                                         ?.dataIndex
                                     ?? 0;
 
+
+                                /*
+                                 * Aunque el eje muestre el texto
+                                 * abreviado, el tooltip conserva
+                                 * la resolución completa.
+                                 */
 
                                 return (
                                     datosResoluciones
@@ -492,22 +647,12 @@ function inicializarGraficaResoluciones() {
 
 
                                 return (
-                                    `${valor} reportes `
+                                    `${valor} ${
+                                        valor === 1
+                                            ? 'reporte'
+                                            : 'reportes'
+                                    } `
                                     + `(${porcentaje.toFixed(1)}%)`
-                                );
-
-                            },
-
-
-                            afterLabel(
-                                contexto
-                            ) {
-
-                                return (
-                                    descripciones[
-                                        contexto.dataIndex
-                                    ]
-                                    || ''
                                 );
 
                             },

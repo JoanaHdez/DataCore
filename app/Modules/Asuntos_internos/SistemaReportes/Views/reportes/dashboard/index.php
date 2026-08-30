@@ -58,6 +58,13 @@ Dashboard | Asuntos Internos
 
     </div>
 
+<div class="dashboard-layout__areas">
+
+    <?= $this->include(
+        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\areas_involucradas'
+    ) ?>
+
+</div>
 
     <!-- =================================================
          FILA 1

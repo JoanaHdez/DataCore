@@ -46,7 +46,7 @@
                     class="dashboard-indicador__valor"
                     id="dashboard-total-reportes"
                 >
-                    128
+                    <?= esc($indicadores['total'] ?? 0) ?>
                 </strong>
 
                 <span class="dashboard-indicador__descripcion">
@@ -81,7 +81,7 @@
                     class="dashboard-indicador__valor"
                     id="dashboard-total-pendientes"
                 >
-                    24
+                    <?= esc($indicadores['pendientes'] ?? 0) ?>
                 </strong>
 
                 <span class="dashboard-indicador__descripcion">
@@ -118,7 +118,7 @@
                     class="dashboard-indicador__valor"
                     id="dashboard-total-proceso"
                 >
-                    67
+                    <?= esc($indicadores['en_proceso'] ?? 0) ?>
                 </strong>
 
                 <span class="dashboard-indicador__descripcion">
@@ -153,7 +153,7 @@
                     class="dashboard-indicador__valor"
                     id="dashboard-total-finalizados"
                 >
-                    37
+                    <?= esc($indicadores['finalizados'] ?? 0) ?>
                 </strong>
 
                 <span class="dashboard-indicador__descripcion">
