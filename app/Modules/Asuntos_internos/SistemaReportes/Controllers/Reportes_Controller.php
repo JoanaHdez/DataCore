@@ -1349,8 +1349,11 @@ class Reportes_Controller extends BaseController
             /* =====================================================
             FILTROS DEL DASHBOARD
 
-            Clasificación y Zona permanecen visibles en la
-            interfaz, pero están deshabilitados.
+            Zona ya se encuentra habilitada y se deriva del
+            sector institucional del personal involucrado.
+
+            Clasificación permanece visible pero deshabilitada
+            hasta contar con un catálogo institucional.
 
             Resolución ya no forma parte de los filtros porque
             es un dato abierto.
@@ -1448,6 +1451,13 @@ class Reportes_Controller extends BaseController
                     )
                 ),
 
+                'zona' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'zona'
+                    )
+                ),
+
 
                 /* =================================================
                 QUEJOSO
@@ -1494,6 +1504,10 @@ class Reportes_Controller extends BaseController
             Género / Unidad:
             se obtienen desde los datos correspondientes.
 
+            Zona:
+            utiliza las cuatro zonas institucionales definidas
+            en la interfaz y se deriva del sector.
+
             Resolución:
             ya no forma parte de las opciones de filtros.
             ===================================================== */
@@ -1529,6 +1543,7 @@ class Reportes_Controller extends BaseController
                 $dashboardService
                 ->obtenerQuejasPorArea();
 
+
             /* =====================================================
             QUEJAS POR ZONA
             ===================================================== */
@@ -1536,6 +1551,7 @@ class Reportes_Controller extends BaseController
             $quejasPorZona =
                 $dashboardService
                 ->obtenerQuejasPorZona();
+
 
             /* =====================================================
             QUEJAS POR TURNO
@@ -1674,6 +1690,7 @@ class Reportes_Controller extends BaseController
             ===================================================== */
 
             $quejasPorZona = [
+
                 'zonas' => [
                     'Zona Norte',
                     'Zona Poniente',
@@ -1688,8 +1705,11 @@ class Reportes_Controller extends BaseController
                     0,
                 ],
 
-                'total' => 0,
+                'total' =>
+                0,
+
             ];
+
 
             /* =====================================================
             VALORES POR DEFECTO - TURNOS
@@ -1935,6 +1955,13 @@ class Reportes_Controller extends BaseController
                 )
             ),
 
+            'zona' =>
+            trim(
+                (string) $this->request->getPost(
+                    'zona'
+                )
+            ),
+
 
             /* =====================================================
             QUEJOSO
@@ -1969,11 +1996,12 @@ class Reportes_Controller extends BaseController
         try {
 
             /*
-         * Ahora sí pasamos los filtros al servicio.
+         * Los filtros se entregan a DashboardExcelService.
          *
-         * DashboardExcelService los entrega a DashboardService,
-         * por lo que Excel utilizará exactamente las mismas
-         * consultas que las gráficas.
+         * DashboardExcelService los pasa posteriormente a
+         * DashboardService, por lo que el Excel debe utilizar
+         * exactamente la misma consulta filtrada que el
+         * Dashboard mostrado en pantalla.
          */
 
             $servicio =
@@ -2023,12 +2051,12 @@ class Reportes_Controller extends BaseController
                     $e->getMessage(),
 
                     /*
-                 * Los dejamos por ahora porque estamos
-                 * desarrollando y nos ayudan a localizar
-                 * rápidamente cualquier error.
+                 * Se conservan temporalmente durante desarrollo
+                 * para facilitar la localización de errores.
                  *
-                 * Antes de producción podemos retirarlos.
+                 * Antes de producción conviene retirarlos.
                  */
+
                     'archivo' =>
                     $e->getFile(),
 
@@ -5150,7 +5178,7 @@ class Reportes_Controller extends BaseController
         }
     }
 
-    
+
     public function actualizarSeguimiento(int $idSeguimiento)
     {
         /* =====================================================
@@ -6079,7 +6107,7 @@ class Reportes_Controller extends BaseController
         }
     }
 
-    
+
     public function validarFolio()
     {
         if (

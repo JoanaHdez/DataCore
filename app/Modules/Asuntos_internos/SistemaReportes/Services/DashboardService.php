@@ -39,7 +39,7 @@ class DashboardService
         $this->filtros = [
 
             /* =================================================
-               FECHAS
+            FECHAS
             ================================================= */
 
             'fecha_inicio' =>
@@ -68,7 +68,7 @@ class DashboardService
 
 
             /* =================================================
-               REPORTE
+            REPORTE
             ================================================= */
 
             'estado' =>
@@ -91,7 +91,7 @@ class DashboardService
 
 
             /* =================================================
-               PERSONAL INVOLUCRADO
+            PERSONAL INVOLUCRADO
             ================================================= */
 
             'area_personal' =>
@@ -106,9 +106,15 @@ class DashboardService
                     ?? null
             ),
 
+            'zona' =>
+            $this->limpiarFiltro(
+                $filtros['zona']
+                    ?? null
+            ),
+
 
             /* =================================================
-               QUEJOSO
+            QUEJOSO
             ================================================= */
 
             'genero' =>
@@ -119,7 +125,7 @@ class DashboardService
 
 
             /* =================================================
-               UNIDAD
+            UNIDAD
             ================================================= */
 
             'unidad' =>
@@ -127,6 +133,7 @@ class DashboardService
                 $filtros['unidad']
                     ?? null
             ),
+
         ];
     }
 
@@ -272,9 +279,6 @@ class DashboardService
             }
         }
 
-
-        /* =====================================================
-           UNIDADES INVOLUCRADAS
         /* =====================================================
            UNIDADES INSTITUCIONALES DESDE PARQUE VEHICULAR
 
@@ -503,7 +507,7 @@ class DashboardService
 
 
         /* =====================================================
-           SIEMPRE EXCLUIR ELIMINADOS
+        SIEMPRE EXCLUIR ELIMINADOS
         ===================================================== */
 
         $builder->where(
@@ -513,7 +517,7 @@ class DashboardService
 
 
         /* =====================================================
-           FECHA A ANALIZAR
+        FECHA A ANALIZAR
         ===================================================== */
 
         $tipoFecha =
@@ -561,7 +565,7 @@ class DashboardService
 
 
         /* =====================================================
-           ESTADO ACTUAL
+        ESTADO ACTUAL
         ===================================================== */
 
         if (
@@ -576,7 +580,7 @@ class DashboardService
 
 
         /* =====================================================
-           GÉNERO DEL QUEJOSO
+        GÉNERO DEL QUEJOSO
         ===================================================== */
 
         if (
@@ -591,7 +595,7 @@ class DashboardService
 
 
         /* =====================================================
-           SEGUIMIENTO
+        SEGUIMIENTO
         ===================================================== */
 
         if (
@@ -605,11 +609,11 @@ class DashboardService
 
                 $builder->where(
                     "EXISTS (
-                        SELECT 1
-                        FROM ai_reporte_seguimientos s
-                        WHERE s.id_reporte = {$prefijo}id_reporte
-                        AND s.eliminado = 0
-                    )",
+                    SELECT 1
+                    FROM ai_reporte_seguimientos s
+                    WHERE s.id_reporte = {$prefijo}id_reporte
+                    AND s.eliminado = 0
+                )",
                     null,
                     false
                 );
@@ -623,11 +627,11 @@ class DashboardService
 
                 $builder->where(
                     "NOT EXISTS (
-                        SELECT 1
-                        FROM ai_reporte_seguimientos s
-                        WHERE s.id_reporte = {$prefijo}id_reporte
-                        AND s.eliminado = 0
-                    )",
+                    SELECT 1
+                    FROM ai_reporte_seguimientos s
+                    WHERE s.id_reporte = {$prefijo}id_reporte
+                    AND s.eliminado = 0
+                )",
                     null,
                     false
                 );
@@ -636,7 +640,7 @@ class DashboardService
 
 
         /* =====================================================
-           EVIDENCIA
+        EVIDENCIA
         ===================================================== */
 
         if (
@@ -650,11 +654,11 @@ class DashboardService
 
                 $builder->where(
                     "EXISTS (
-                        SELECT 1
-                        FROM ai_reporte_evidencias e
-                        WHERE e.id_reporte = {$prefijo}id_reporte
-                        AND e.eliminado = 0
-                    )",
+                    SELECT 1
+                    FROM ai_reporte_evidencias e
+                    WHERE e.id_reporte = {$prefijo}id_reporte
+                    AND e.eliminado = 0
+                )",
                     null,
                     false
                 );
@@ -668,11 +672,11 @@ class DashboardService
 
                 $builder->where(
                     "NOT EXISTS (
-                        SELECT 1
-                        FROM ai_reporte_evidencias e
-                        WHERE e.id_reporte = {$prefijo}id_reporte
-                        AND e.eliminado = 0
-                    )",
+                    SELECT 1
+                    FROM ai_reporte_evidencias e
+                    WHERE e.id_reporte = {$prefijo}id_reporte
+                    AND e.eliminado = 0
+                )",
                     null,
                     false
                 );
@@ -681,7 +685,7 @@ class DashboardService
 
 
         /* =====================================================
-           ÁREA DEL PERSONAL INVOLUCRADO
+        ÁREA DEL PERSONAL INVOLUCRADO
         ===================================================== */
 
         if (
@@ -696,11 +700,11 @@ class DashboardService
 
             $builder->where(
                 "EXISTS (
-                    SELECT 1
-                    FROM ai_reporte_personal p_area
-                    WHERE p_area.id_reporte = {$prefijo}id_reporte
-                    AND p_area.area_snapshot = {$areaPersonal}
-                )",
+                SELECT 1
+                FROM ai_reporte_personal p_area
+                WHERE p_area.id_reporte = {$prefijo}id_reporte
+                AND p_area.area_snapshot = {$areaPersonal}
+            )",
                 null,
                 false
             );
@@ -708,10 +712,10 @@ class DashboardService
 
 
         /* =====================================================
-           TURNO DEL PERSONAL
+        TURNO DEL PERSONAL
 
-           El SELECT usa categorías analíticas del Dashboard,
-           no los textos crudos almacenados en turno_snapshot.
+        El SELECT usa categorías analíticas del Dashboard,
+        no los textos crudos almacenados en turno_snapshot.
         ===================================================== */
 
         if (
@@ -729,11 +733,11 @@ class DashboardService
 
                 $builder->where(
                     "EXISTS (
-                        SELECT 1
-                        FROM ai_reporte_personal p_turno
-                        WHERE p_turno.id_reporte = {$prefijo}id_reporte
-                        AND ({$condicionTurno})
-                    )",
+                    SELECT 1
+                    FROM ai_reporte_personal p_turno
+                    WHERE p_turno.id_reporte = {$prefijo}id_reporte
+                    AND ({$condicionTurno})
+                )",
                     null,
                     false
                 );
@@ -742,7 +746,55 @@ class DashboardService
 
 
         /* =====================================================
-           UNIDAD
+        ZONA DEL PERSONAL INVOLUCRADO
+
+        Zona no se almacena directamente en ai_reportes.
+
+        Se obtiene a partir del sector institucional contenido
+        en ai_reporte_personal.area_snapshot.
+
+        Zona Norte:
+        sectores 1 - 3
+
+        Zona Poniente:
+        sectores 4 - 7
+
+        Zona Centro:
+        sectores 8 - 10
+
+        Zona Oriente:
+        sectores 11 - 15
+        ===================================================== */
+
+        if (
+            !empty($this->filtros['zona'])
+        ) {
+
+            $condicionZona =
+                $this->obtenerCondicionSqlZona(
+                    $this->filtros['zona'],
+                    'p_zona.area_snapshot'
+                );
+
+
+            if ($condicionZona !== null) {
+
+                $builder->where(
+                    "EXISTS (
+                    SELECT 1
+                    FROM ai_reporte_personal p_zona
+                    WHERE p_zona.id_reporte = {$prefijo}id_reporte
+                    AND ({$condicionZona})
+                )",
+                    null,
+                    false
+                );
+            }
+        }
+
+
+        /* =====================================================
+        UNIDAD
         ===================================================== */
 
         if (
@@ -757,14 +809,14 @@ class DashboardService
 
             $builder->where(
                 "EXISTS (
-                    SELECT 1
-                    FROM ai_reporte_unidades u_filtro
-                    WHERE u_filtro.id_reporte = {$prefijo}id_reporte
-                    AND (
-                        u_filtro.no_economico_snapshot = {$unidad}
-                        OR u_filtro.placas_snapshot = {$unidad}
-                    )
-                )",
+                SELECT 1
+                FROM ai_reporte_unidades u_filtro
+                WHERE u_filtro.id_reporte = {$prefijo}id_reporte
+                AND (
+                    u_filtro.no_economico_snapshot = {$unidad}
+                    OR u_filtro.placas_snapshot = {$unidad}
+                )
+            )",
                 null,
                 false
             );
@@ -819,6 +871,80 @@ class DashboardService
                     OR UPPER(COALESCE({$campo}, '')) LIKE '%NO REFIERE%'
                     OR UPPER(COALESCE({$campo}, '')) LIKE '%SIN TURNO%'
                 )",
+
+            default =>
+            null,
+        };
+    }
+
+    /**
+     * Construye la condición SQL utilizada para filtrar
+     * reportes por zona institucional.
+     *
+     * La zona no se almacena directamente en la BD.
+     * Se determina a partir del sector contenido en
+     * ai_reporte_personal.area_snapshot.
+     *
+     * Distribución institucional:
+     *
+     * Zona Norte:
+     * SECTOR 01 - SECTOR 03
+     *
+     * Zona Poniente:
+     * SECTOR 04 - SECTOR 07
+     *
+     * Zona Centro:
+     * SECTOR 08 - SECTOR 10
+     *
+     * Zona Oriente:
+     * SECTOR 11 - SECTOR 15
+     */
+    private function obtenerCondicionSqlZona(
+        string $zona,
+        string $campo
+    ): ?string {
+
+        return match ($zona) {
+
+            /* =================================================
+            ZONA NORTE
+            Sectores 1, 2 y 3
+            ================================================= */
+
+            'Zona Norte' =>
+            "UPPER(TRIM(COALESCE({$campo}, '')))
+             REGEXP '^SECTOR[[:space:]]+0*(1|2|3)([^0-9]|$)'",
+
+
+            /* =================================================
+            ZONA PONIENTE
+            Sectores 4, 5, 6 y 7
+            ================================================= */
+
+            'Zona Poniente' =>
+            "UPPER(TRIM(COALESCE({$campo}, '')))
+             REGEXP '^SECTOR[[:space:]]+0*(4|5|6|7)([^0-9]|$)'",
+
+
+            /* =================================================
+            ZONA CENTRO
+            Sectores 8, 9 y 10
+            ================================================= */
+
+            'Zona Centro' =>
+            "UPPER(TRIM(COALESCE({$campo}, '')))
+             REGEXP '^SECTOR[[:space:]]+0*(8|9|10)([^0-9]|$)'",
+
+
+            /* =================================================
+            ZONA ORIENTE
+            Sectores 11, 12, 13, 14 y 15
+            ================================================= */
+
+            'Zona Oriente' =>
+            "UPPER(TRIM(COALESCE({$campo}, '')))
+             REGEXP '^SECTOR[[:space:]]+0*(11|12|13|14|15)([^0-9]|$)'",
+
 
             default =>
             null,

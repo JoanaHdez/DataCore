@@ -96,6 +96,11 @@ function inicializarFiltrosDashboard() {
             '#dashboard-turno'
         );
 
+    const zona =
+        document.querySelector(
+            '#dashboard-zona'
+        );
+
 
     /* =====================================================
        QUEJOSO
@@ -120,11 +125,10 @@ function inicializarFiltrosDashboard() {
     /* =====================================================
        AGRUPAR FILTROS ACTIVOS
 
-       Clasificación y Zona NO forman parte de este objeto.
+       Zona ya forma parte de los filtros activos.
 
-       Ambos controles permanecen visibles en la interfaz,
-       pero están deshabilitados porque todavía dependen
-       de definiciones institucionales pendientes.
+       Clasificación permanece pendiente porque todavía
+       no existe un catálogo institucional definido.
     ===================================================== */
 
     const filtros = {
@@ -140,6 +144,7 @@ function inicializarFiltrosDashboard() {
 
         areaPersonal,
         turno,
+        zona,
 
         genero,
 
@@ -396,6 +401,12 @@ function aplicarFiltrosDashboard(
         filtros.turno?.value
     );
 
+    actualizarParametro(
+        url,
+        'zona',
+        filtros.zona?.value
+    );
+
 
     /* =====================================================
        QUEJOSO
@@ -422,16 +433,15 @@ function aplicarFiltrosDashboard(
     /* =====================================================
        PARÁMETROS NO ACTIVOS
 
-       Clasificación y Zona siguen pendientes.
+       Clasificación continúa pendiente.
+
        Resolución ya no forma parte de los filtros.
 
-       Los eliminamos para evitar que una URL antigua
-       continúe afectando el Dashboard.
+       Zona YA NO se elimina porque ahora es un filtro real.
     ===================================================== */
 
     const parametrosNoActivos = [
         'clasificacion',
-        'zona',
         'resolucion',
     ];
 
@@ -530,11 +540,9 @@ function limpiarFiltrosDashboard() {
 
 
     /*
-     * Incluimos tanto los filtros actuales como los
-     * parámetros antiguos o pendientes.
-     *
-     * De esta manera Limpiar deja realmente el Dashboard
-     * en una consulta general aunque exista una URL vieja.
+     * Incluimos tanto los filtros actuales como parámetros
+     * antiguos para garantizar que el Dashboard vuelva
+     * completamente a la consulta general.
      */
 
     const parametrosDashboard = [
@@ -551,14 +559,14 @@ function limpiarFiltrosDashboard() {
 
         'area_personal',
         'turno',
+        'zona',
 
         'genero',
 
         'unidad',
 
-        /* Pendientes */
+        /* Pendiente */
         'clasificacion',
-        'zona',
 
         /* Ya retirado */
         'resolucion',
@@ -683,6 +691,13 @@ function restaurarFiltrosDesdeUrl(
         )
     );
 
+    restaurarValor(
+        filtros.zona,
+        parametros.get(
+            'zona'
+        )
+    );
+
 
     /* =====================================================
        QUEJOSO
@@ -729,8 +744,8 @@ function restaurarValor(
 
 
     /*
-     * Para los SELECT solamente restauramos el valor
-     * cuando existe realmente una opción con ese valor.
+     * Para SELECT solamente restauramos el valor cuando
+     * exista realmente una opción con ese valor.
      */
 
     if (
@@ -777,6 +792,7 @@ function existenFiltrosAvanzadosActivos() {
         'evidencia',
         'area_personal',
         'turno',
+        'zona',
         'genero',
         'unidad',
     ];
