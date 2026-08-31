@@ -5118,6 +5118,936 @@ class Reportes_Controller extends BaseController
         }
     }
 
+    
+    public function actualizarSeguimiento(int $idSeguimiento)
+    {
+        /* =====================================================
+        VALIDAR SESIÓN
+        ===================================================== */
+
+        if (
+            session()->get('reportes_autenticado') !== true
+            || !session()->has('usuario_reportes')
+        ) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La sesión no es válida.',
+                ]);
+        }
+
+
+        $usuario =
+            session()->get(
+                'usuario_reportes'
+            );
+
+
+        $idUsuario =
+            (int) (
+                $usuario['id_usuario']
+                ?? 0
+            );
+
+
+        if ($idUsuario <= 0) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'No fue posible identificar al usuario.',
+                ]);
+        }
+
+
+        if ($idSeguimiento <= 0) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'El seguimiento proporcionado no es válido.',
+                ]);
+        }
+
+
+        /* =====================================================
+        LEER DATOS PUT
+        ===================================================== */
+
+        $datos =
+            $this->request->getRawInput();
+
+
+        $fecha =
+            trim(
+                (string) (
+                    $datos['fecha']
+                    ?? ''
+                )
+            );
+
+
+        $tipo =
+            trim(
+                (string) (
+                    $datos['tipo']
+                    ?? ''
+                )
+            );
+
+
+        $estado =
+            trim(
+                (string) (
+                    $datos['estado']
+                    ?? ''
+                )
+            );
+
+
+        $observaciones =
+            trim(
+                (string) (
+                    $datos['observaciones']
+                    ?? ''
+                )
+            );
+
+
+        /*
+     * En edición utilizaremos:
+     *
+     * sancion_accion:
+     * - sin_cambio
+     * - mantener
+     * - cambiar
+     * - quitar
+     *
+     * "mantener" significa que el seguimiento ya tenía
+     * una sanción asociada y no fue modificada.
+     */
+
+        $sancionAccion =
+            trim(
+                (string) (
+                    $datos['sancion_accion']
+                    ?? 'sin_cambio'
+                )
+            );
+
+
+        $sancionTipo =
+            trim(
+                (string) (
+                    $datos['sancion_disciplinaria']
+                    ?? ''
+                )
+            );
+
+
+        $sancionOtro =
+            trim(
+                (string) (
+                    $datos['sancion_otro']
+                    ?? ''
+                )
+            );
+
+
+        /* =====================================================
+        VALIDACIONES GENERALES
+        ===================================================== */
+
+        if ($fecha === '') {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La fecha del seguimiento es obligatoria.',
+                ]);
+        }
+
+
+        $fechaObjeto =
+            \DateTime::createFromFormat(
+                'Y-m-d',
+                $fecha
+            );
+
+
+        if (
+            !$fechaObjeto
+            || $fechaObjeto->format('Y-m-d') !== $fecha
+        ) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La fecha del seguimiento no es válida.',
+                ]);
+        }
+
+
+        $tiposPermitidos = [
+            'Actualización',
+            'Investigación',
+            'Turnado',
+            'Resolución',
+            'Otro',
+        ];
+
+
+        if (
+            !in_array(
+                $tipo,
+                $tiposPermitidos,
+                true
+            )
+        ) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'El tipo de seguimiento seleccionado no es válido.',
+                ]);
+        }
+
+
+        $estadosPermitidos = [
+            'Pendiente',
+            'En proceso',
+            'Finalizado',
+        ];
+
+
+        if (
+            !in_array(
+                $estado,
+                $estadosPermitidos,
+                true
+            )
+        ) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'El estado seleccionado no es válido.',
+                ]);
+        }
+
+
+        if ($observaciones === '') {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'Las observaciones del seguimiento son obligatorias.',
+                ]);
+        }
+
+
+        $accionesPermitidas = [
+            'sin_cambio',
+            'mantener',
+            'cambiar',
+            'quitar',
+        ];
+
+
+        if (
+            !in_array(
+                $sancionAccion,
+                $accionesPermitidas,
+                true
+            )
+        ) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La acción de sanción no es válida.',
+                ]);
+        }
+
+
+        if (
+            in_array(
+                $sancionAccion,
+                [
+                    'mantener',
+                    'cambiar',
+                ],
+                true
+            )
+        ) {
+
+            $sancionesPermitidas = [
+                'Arresto',
+                'Amonestación',
+                'Otro',
+            ];
+
+
+            if (
+                !in_array(
+                    $sancionTipo,
+                    $sancionesPermitidas,
+                    true
+                )
+            ) {
+
+                return $this->response
+                    ->setStatusCode(422)
+                    ->setJSON([
+                        'success' => false,
+                        'message' => 'La sanción disciplinaria seleccionada no es válida.',
+                    ]);
+            }
+
+
+            if ($sancionTipo === 'Otro') {
+
+                if ($sancionOtro === '') {
+
+                    return $this->response
+                        ->setStatusCode(422)
+                        ->setJSON([
+                            'success' => false,
+                            'message' => 'Debes especificar la sanción disciplinaria.',
+                        ]);
+                }
+
+
+                if (
+                    mb_strlen(
+                        $sancionOtro
+                    ) > 255
+                ) {
+
+                    return $this->response
+                        ->setStatusCode(422)
+                        ->setJSON([
+                            'success' => false,
+                            'message' => 'La descripción de la sanción no puede exceder 255 caracteres.',
+                        ]);
+                }
+            } else {
+
+                $sancionOtro =
+                    null;
+            }
+        }
+
+
+        /* =====================================================
+        CONEXIÓN
+        ===================================================== */
+
+        $db =
+            \Config\Database::connect(
+                'datacore'
+            );
+
+
+        /* =====================================================
+        CONSULTAR SEGUIMIENTO
+        ===================================================== */
+
+        $seguimiento =
+            $db
+            ->table('ai_reporte_seguimientos')
+            ->where(
+                'id_seguimiento',
+                $idSeguimiento
+            )
+            ->where(
+                'eliminado',
+                0
+            )
+            ->get()
+            ->getRowArray();
+
+
+        if (!$seguimiento) {
+
+            return $this->response
+                ->setStatusCode(404)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'El seguimiento solicitado no existe.',
+                ]);
+        }
+
+
+        $idReporte =
+            (int) (
+                $seguimiento['id_reporte']
+                ?? 0
+            );
+
+
+        if ($idReporte <= 0) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'El seguimiento no está relacionado con un reporte válido.',
+                ]);
+        }
+
+
+        /* =====================================================
+        SANCIÓN ASOCIADA A ESTE SEGUIMIENTO
+        ===================================================== */
+
+        $sancionSeguimiento =
+            $db
+            ->table('ai_reporte_sanciones')
+            ->where(
+                'id_reporte',
+                $idReporte
+            )
+            ->where(
+                'id_seguimiento',
+                $idSeguimiento
+            )
+            ->where(
+                'eliminado',
+                0
+            )
+            ->orderBy(
+                'id_sancion',
+                'DESC'
+            )
+            ->limit(1)
+            ->get()
+            ->getRowArray();
+
+
+        /*
+     * Guardamos si esta sanción ES la vigente.
+     *
+     * Esto es fundamental:
+     * editar una sanción histórica NO debe volverla actual.
+     */
+
+        $sancionSeguimientoEsActual =
+            $sancionSeguimiento
+            && (int) (
+                $sancionSeguimiento['es_actual']
+                ?? 0
+            ) === 1;
+
+
+        /* =====================================================
+        TRANSACCIÓN
+        ===================================================== */
+
+        $db->transBegin();
+
+
+        try {
+
+            /* =================================================
+            ACTUALIZAR EL MISMO SEGUIMIENTO
+            ================================================= */
+
+            $actualizado =
+                $db
+                ->table('ai_reporte_seguimientos')
+                ->where(
+                    'id_seguimiento',
+                    $idSeguimiento
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->update([
+
+                    'fecha' =>
+                    $fecha,
+
+                    'tipo' =>
+                    $tipo,
+
+                    'estado_resultante' =>
+                    $estado,
+
+                    'observaciones' =>
+                    $observaciones,
+
+                    'updated_by' =>
+                    $idUsuario,
+
+                    'updated_at' =>
+                    date('Y-m-d H:i:s'),
+
+                ]);
+
+
+            if ($actualizado === false) {
+
+                throw new \RuntimeException(
+                    'No fue posible actualizar el seguimiento.'
+                );
+            }
+
+
+            /* =================================================
+            CORREGIR SANCIÓN EXISTENTE
+            ================================================= */
+
+            if (
+                $sancionSeguimiento
+                && $sancionAccion === 'cambiar'
+            ) {
+
+                $actualizarSancion =
+                    $db
+                    ->table('ai_reporte_sanciones')
+                    ->where(
+                        'id_sancion',
+                        (int) $sancionSeguimiento['id_sancion']
+                    )
+                    ->where(
+                        'id_reporte',
+                        $idReporte
+                    )
+                    ->update([
+
+                        'tipo' =>
+                        $sancionTipo,
+
+                        'descripcion_otro' =>
+                        $sancionOtro,
+
+                        /*
+                     * NO modificamos:
+                     *
+                     * origen
+                     * id_seguimiento
+                     * es_actual
+                     *
+                     * porque estamos corrigiendo el mismo
+                     * evento histórico.
+                     */
+
+                        'updated_by' =>
+                        $idUsuario,
+
+                        'updated_at' =>
+                        date('Y-m-d H:i:s'),
+
+                    ]);
+
+
+                if ($actualizarSancion === false) {
+
+                    throw new \RuntimeException(
+                        'No fue posible corregir la sanción del seguimiento.'
+                    );
+                }
+            }
+
+
+            /* =================================================
+            QUITAR SANCIÓN DE ESTE SEGUIMIENTO
+            ================================================= */
+
+            if (
+                $sancionSeguimiento
+                && $sancionAccion === 'quitar'
+            ) {
+
+                /*
+             * Estamos diciendo que este seguimiento
+             * realmente NO debió haber producido el cambio
+             * de sanción.
+             *
+             * La fila se conserva como auditoría mediante
+             * soft delete.
+             */
+
+                $eliminarSancion =
+                    $db
+                    ->table('ai_reporte_sanciones')
+                    ->where(
+                        'id_sancion',
+                        (int) $sancionSeguimiento['id_sancion']
+                    )
+                    ->update([
+
+                        'es_actual' =>
+                        0,
+
+                        'eliminado' =>
+                        1,
+
+                        'updated_by' =>
+                        $idUsuario,
+
+                        'updated_at' =>
+                        date('Y-m-d H:i:s'),
+
+                        'eliminado_at' =>
+                        date('Y-m-d H:i:s'),
+
+                        'eliminado_por' =>
+                        $idUsuario,
+
+                    ]);
+
+
+                if ($eliminarSancion === false) {
+
+                    throw new \RuntimeException(
+                        'No fue posible corregir la sanción del seguimiento.'
+                    );
+                }
+
+
+                /*
+             * Si precisamente eliminamos la sanción que era
+             * vigente, recuperamos la sanción activa anterior.
+             */
+
+                if ($sancionSeguimientoEsActual) {
+
+                    $anterior =
+                        $db
+                        ->table('ai_reporte_sanciones')
+                        ->where(
+                            'id_reporte',
+                            $idReporte
+                        )
+                        ->where(
+                            'eliminado',
+                            0
+                        )
+                        ->where(
+                            'id_sancion <',
+                            (int) $sancionSeguimiento['id_sancion']
+                        )
+                        ->orderBy(
+                            'id_sancion',
+                            'DESC'
+                        )
+                        ->limit(1)
+                        ->get()
+                        ->getRowArray();
+
+
+                    if ($anterior) {
+
+                        $db
+                            ->table('ai_reporte_sanciones')
+                            ->where(
+                                'id_sancion',
+                                (int) $anterior['id_sancion']
+                            )
+                            ->update([
+
+                                'es_actual' =>
+                                1,
+
+                                'updated_by' =>
+                                $idUsuario,
+
+                                'updated_at' =>
+                                date('Y-m-d H:i:s'),
+
+                            ]);
+                    }
+                }
+            }
+
+
+            /* =================================================
+            AGREGAR SANCIÓN A UN SEGUIMIENTO QUE NO TENÍA
+            ================================================= */
+
+            if (
+                !$sancionSeguimiento
+                && $sancionAccion === 'cambiar'
+            ) {
+
+                /*
+             * Necesitamos saber si este seguimiento es el
+             * movimiento más reciente del caso.
+             *
+             * Solamente en ese caso la sanción agregada
+             * mediante la corrección puede convertirse
+             * automáticamente en la sanción vigente.
+             */
+
+                $seguimientoMasReciente =
+                    $db
+                    ->table('ai_reporte_seguimientos')
+                    ->select([
+                        'id_seguimiento',
+                        'fecha',
+                    ])
+                    ->where(
+                        'id_reporte',
+                        $idReporte
+                    )
+                    ->where(
+                        'eliminado',
+                        0
+                    )
+                    ->orderBy(
+                        'fecha',
+                        'DESC'
+                    )
+                    ->orderBy(
+                        'id_seguimiento',
+                        'DESC'
+                    )
+                    ->limit(1)
+                    ->get()
+                    ->getRowArray();
+
+
+                $esSeguimientoMasReciente =
+                    $seguimientoMasReciente
+                    && (int) (
+                        $seguimientoMasReciente['id_seguimiento']
+                        ?? 0
+                    ) === $idSeguimiento;
+
+
+                if ($esSeguimientoMasReciente) {
+
+                    /*
+                 * La sanción vigente anterior deja de ser
+                 * actual, pero sigue en el historial.
+                 */
+
+                    $db
+                        ->table('ai_reporte_sanciones')
+                        ->where(
+                            'id_reporte',
+                            $idReporte
+                        )
+                        ->where(
+                            'es_actual',
+                            1
+                        )
+                        ->where(
+                            'eliminado',
+                            0
+                        )
+                        ->update([
+
+                            'es_actual' =>
+                            0,
+
+                            'updated_by' =>
+                            $idUsuario,
+
+                            'updated_at' =>
+                            date('Y-m-d H:i:s'),
+
+                        ]);
+                }
+
+
+                $insertarSancion =
+                    $db
+                    ->table('ai_reporte_sanciones')
+                    ->insert([
+
+                        'id_reporte' =>
+                        $idReporte,
+
+                        'tipo' =>
+                        $sancionTipo,
+
+                        'descripcion_otro' =>
+                        $sancionOtro,
+
+                        'origen' =>
+                        'seguimiento',
+
+                        'id_seguimiento' =>
+                        $idSeguimiento,
+
+                        'es_actual' =>
+                        $esSeguimientoMasReciente
+                            ? 1
+                            : 0,
+
+                        'created_by' =>
+                        $idUsuario,
+
+                        'eliminado' =>
+                        0,
+
+                    ]);
+
+
+                if ($insertarSancion === false) {
+
+                    throw new \RuntimeException(
+                        'No fue posible registrar la sanción corregida.'
+                    );
+                }
+            }
+
+
+            /* =================================================
+            ESTADO ACTUAL DEL REPORTE
+            ================================================= */
+
+            /*
+         * El estado_actual debe representar el último
+         * seguimiento cronológico, no necesariamente el
+         * seguimiento que acabamos de editar.
+         */
+
+            $ultimoSeguimiento =
+                $db
+                ->table('ai_reporte_seguimientos')
+                ->select([
+                    'id_seguimiento',
+                    'estado_resultante',
+                ])
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->orderBy(
+                    'fecha',
+                    'DESC'
+                )
+                ->orderBy(
+                    'id_seguimiento',
+                    'DESC'
+                )
+                ->limit(1)
+                ->get()
+                ->getRowArray();
+
+
+            $estadoActualReporte =
+                trim(
+                    (string) (
+                        $ultimoSeguimiento['estado_resultante']
+                        ?? $estado
+                    )
+                );
+
+
+            $actualizarReporte =
+                $db
+                ->table('ai_reportes')
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->update([
+
+                    'estado_actual' =>
+                    $estadoActualReporte,
+
+                    'updated_by' =>
+                    $idUsuario,
+
+                    'updated_at' =>
+                    date('Y-m-d H:i:s'),
+
+                ]);
+
+
+            if ($actualizarReporte === false) {
+
+                throw new \RuntimeException(
+                    'No fue posible actualizar el estado del reporte.'
+                );
+            }
+
+
+            if (
+                $db->transStatus()
+                === false
+            ) {
+
+                throw new \RuntimeException(
+                    'No fue posible completar la actualización.'
+                );
+            }
+
+
+            $db->transCommit();
+
+
+            return $this->response
+                ->setJSON([
+
+                    'success' =>
+                    true,
+
+                    'message' =>
+                    'El seguimiento se actualizó correctamente.',
+
+                    'id_reporte' =>
+                    $idReporte,
+
+                    'id_seguimiento' =>
+                    $idSeguimiento,
+
+                    'estado_actual' =>
+                    $estadoActualReporte,
+
+                ]);
+        } catch (\Throwable $e) {
+
+            $db->transRollback();
+
+
+            log_message(
+                'error',
+                'Error actualizando seguimiento {id}: {mensaje}',
+                [
+                    'id' =>
+                    $idSeguimiento,
+
+                    'mensaje' =>
+                    $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'No fue posible actualizar el seguimiento.',
+                ]);
+        }
+    }
+
+    
     public function validarFolio()
     {
         if (
