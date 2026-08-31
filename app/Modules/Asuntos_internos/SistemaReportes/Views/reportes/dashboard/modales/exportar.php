@@ -61,7 +61,7 @@
                         </h3>
 
                         <p>
-                            Elige los bloques del Dashboard que deseas incluir
+                            Elige las secciones del Dashboard que deseas incluir
                             en el archivo de Excel.
                         </p>
 
@@ -101,6 +101,7 @@
                     <!-- OPCIONES -->
                     <div class="dashboard-exportar__opciones">
 
+                        <!-- INDICADORES -->
                         <label class="dashboard-exportar__opcion">
 
                             <input
@@ -127,12 +128,13 @@
                         </label>
 
 
+                        <!-- SECTORES Y TURNOS -->
                         <label class="dashboard-exportar__opcion">
 
                             <input
                                 type="checkbox"
                                 name="secciones[]"
-                                value="clasificaciones"
+                                value="sectores_turnos"
                                 checked
                             >
 
@@ -141,11 +143,12 @@
                             <span class="dashboard-exportar__contenido">
 
                                 <strong>
-                                    Reportes por clasificación
+                                    Quejas por sectores y turnos
                                 </strong>
 
                                 <small>
-                                    Datos utilizados en la gráfica de clasificación.
+                                    Distribución de quejas entre los 15 sectores
+                                    y las categorías de turno.
                                 </small>
 
                             </span>
@@ -153,6 +156,7 @@
                         </label>
 
 
+                        <!-- ÁREAS -->
                         <label class="dashboard-exportar__opcion">
 
                             <input
@@ -167,11 +171,12 @@
                             <span class="dashboard-exportar__contenido">
 
                                 <strong>
-                                    Reportes por área
+                                    Quejas por área
                                 </strong>
 
                                 <small>
-                                    Distribución de reportes entre las áreas.
+                                    Distribución de reportes entre las áreas
+                                    involucradas.
                                 </small>
 
                             </span>
@@ -179,6 +184,7 @@
                         </label>
 
 
+                        <!-- TURNOS -->
                         <label class="dashboard-exportar__opcion">
 
                             <input
@@ -193,44 +199,19 @@
                             <span class="dashboard-exportar__contenido">
 
                                 <strong>
-                                    Reportes por turno
+                                    Quejas por turno
                                 </strong>
 
                                 <small>
-                                    Cantidad de reportes correspondiente a cada turno.
+                                    Cantidad de quejas correspondiente a cada
+                                    categoría de turno.
                                 </small>
 
                             </span>
 
                         </label>
 
-
-                        <label class="dashboard-exportar__opcion">
-
-                            <input
-                                type="checkbox"
-                                name="secciones[]"
-                                value="tendencia"
-                                checked
-                            >
-
-                            <span class="dashboard-exportar__check"></span>
-
-                            <span class="dashboard-exportar__contenido">
-
-                                <strong>
-                                    Tendencia de reportes
-                                </strong>
-
-                                <small>
-                                    Evolución de reportes durante el periodo consultado.
-                                </small>
-
-                            </span>
-
-                        </label>
-
-
+                        <!-- REPORTES RECIENTES -->
                         <label class="dashboard-exportar__opcion">
 
                             <input
@@ -249,7 +230,74 @@
                                 </strong>
 
                                 <small>
-                                    Información de los últimos reportes registrados.
+                                    Información de los últimos reportes
+                                    correspondientes a la consulta actual.
+                                </small>
+
+                            </span>
+
+                        </label>
+
+
+                        <!-- ZONA - PENDIENTE -->
+                        <label
+                            class="
+                                dashboard-exportar__opcion
+                                dashboard-exportar__opcion--deshabilitada
+                            "
+                            title="Pendiente de definir la relación oficial entre sectores y zonas"
+                        >
+
+                            <input
+                                type="checkbox"
+                                name="secciones[]"
+                                value="zonas"
+                                disabled
+                            >
+
+                            <span class="dashboard-exportar__check"></span>
+
+                            <span class="dashboard-exportar__contenido">
+
+                                <strong>
+                                    Quejas por zona
+                                </strong>
+
+                                <small>
+                                    Pendiente de relación oficial Sector → Zona.
+                                </small>
+
+                            </span>
+
+                        </label>
+
+
+                        <!-- SANCIONES - PENDIENTE -->
+                        <label
+                            class="
+                                dashboard-exportar__opcion
+                                dashboard-exportar__opcion--deshabilitada
+                            "
+                            title="Pendiente de definir la fuente oficial de sanciones disciplinarias"
+                        >
+
+                            <input
+                                type="checkbox"
+                                name="secciones[]"
+                                value="sanciones"
+                                disabled
+                            >
+
+                            <span class="dashboard-exportar__check"></span>
+
+                            <span class="dashboard-exportar__contenido">
+
+                                <strong>
+                                    Sanciones disciplinarias
+                                </strong>
+
+                                <small>
+                                    Pendiente de definir la fuente oficial de datos.
                                 </small>
 
                             </span>

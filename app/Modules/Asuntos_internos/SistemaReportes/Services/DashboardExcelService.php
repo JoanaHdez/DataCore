@@ -12,108 +12,189 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class DashboardExcelService
 {
     /**
-     * Secciones permitidas para exportación.
+     * Secciones actualmente disponibles para exportación.
+     *
+     * Zona y sanciones NO se incluyen todavía porque
+     * continúan pendientes de una fuente/regla oficial.
      */
     private const SECCIONES_PERMITIDAS = [
-        'indicadores',
-        'clasificaciones',
-        'areas',
-        'turnos',
-        'tendencia',
-        'recientes',
-    ];
+    'indicadores',
+    'sectores_turnos',
+    'areas',
+    'turnos',
+    'recientes',
+];
 
 
     /**
-     * Genera el archivo Excel temporal.
+     * Servicio que contiene exactamente la misma lógica
+     * utilizada por las gráficas del Dashboard.
      */
-    public function generar(array $secciones): string
-    {
-        $secciones = array_values(
-            array_intersect(
-                self::SECCIONES_PERMITIDAS,
-                $secciones
-            )
-        );
+    private DashboardService $dashboardService;
+
+
+    /* =========================================================
+       CONSTRUCTOR
+    ========================================================= */
+
+    public function __construct(
+        array $filtros = []
+    ) {
+
+        $this->dashboardService =
+            new DashboardService();
+
+
+        $this->dashboardService
+            ->establecerFiltros(
+                $filtros
+            );
+    }
+
+
+    /* =========================================================
+       GENERAR EXCEL
+    ========================================================= */
+
+    public function generar(
+        array $secciones
+    ): string {
+
+        /*
+         * Conservamos únicamente secciones válidas.
+         *
+         * array_intersect utiliza el orden definido en
+         * SECCIONES_PERMITIDAS para que el Excel mantenga
+         * siempre un orden consistente.
+         */
+
+        $secciones =
+            array_values(
+                array_intersect(
+                    self::SECCIONES_PERMITIDAS,
+                    $secciones
+                )
+            );
+
 
         if ($secciones === []) {
+
             throw new \InvalidArgumentException(
                 'No existen secciones válidas para exportar.'
             );
         }
 
 
-        $spreadsheet = new Spreadsheet();
+        $spreadsheet =
+            new Spreadsheet();
+
 
         /*
-         * Eliminamos la hoja creada automáticamente.
-         * Las hojas se crearán según la selección.
+         * PhpSpreadsheet crea una hoja automáticamente.
+         *
+         * La eliminamos porque nosotros crearemos únicamente
+         * las hojas seleccionadas por el usuario.
          */
-        $spreadsheet->removeSheetByIndex(0);
+
+        $spreadsheet
+            ->removeSheetByIndex(
+                0
+            );
 
 
-        foreach ($secciones as $seccion) {
+        /* =====================================================
+           CREAR HOJAS
+        ===================================================== */
+
+        foreach (
+            $secciones
+            as $seccion
+        ) {
 
             switch ($seccion) {
 
                 case 'indicadores':
+
                     $this->crearIndicadores(
                         $spreadsheet
                     );
+
                     break;
 
-                case 'clasificaciones':
-                    $this->crearClasificaciones(
+
+                case 'sectores_turnos':
+
+                    $this->crearSectoresTurnos(
                         $spreadsheet
                     );
+
                     break;
 
+
                 case 'areas':
+
                     $this->crearAreas(
                         $spreadsheet
                     );
+
                     break;
 
+
                 case 'turnos':
+
                     $this->crearTurnos(
                         $spreadsheet
                     );
-                    break;
 
-                case 'tendencia':
-                    $this->crearTendencia(
-                        $spreadsheet
-                    );
                     break;
 
                 case 'recientes':
+
                     $this->crearRecientes(
                         $spreadsheet
                     );
+
                     break;
             }
         }
 
 
-        /*
-         * Dejamos activa la primera hoja.
-         */
-        $spreadsheet->setActiveSheetIndex(0);
+        /* =====================================================
+           PRIMERA HOJA ACTIVA
+        ===================================================== */
 
+        $spreadsheet
+            ->setActiveSheetIndex(
+                0
+            );
+
+
+        /* =====================================================
+           DIRECTORIO TEMPORAL
+        ===================================================== */
 
         $directorio =
-            WRITEPATH . 'uploads/exportaciones';
+            WRITEPATH
+            . 'uploads/exportaciones';
 
-        if (! is_dir($directorio)) {
+
+        if (
+            !is_dir(
+                $directorio
+            )
+        ) {
 
             if (
-                ! mkdir(
+                !mkdir(
                     $directorio,
                     0775,
                     true
                 )
-                && ! is_dir($directorio)
+                && !is_dir(
+                    $directorio
+                )
             ) {
+
                 throw new \RuntimeException(
                     'No fue posible crear el directorio de exportaciones.'
                 );
@@ -121,10 +202,17 @@ class DashboardExcelService
         }
 
 
+        /* =====================================================
+           NOMBRE
+        ===================================================== */
+
         $nombreArchivo =
             'dashboard_reportes_'
-            . date('Ymd_His')
+            . date(
+                'Ymd_His'
+            )
             . '.xlsx';
+
 
         $ruta =
             $directorio
@@ -132,47 +220,98 @@ class DashboardExcelService
             . $nombreArchivo;
 
 
-        $writer = new Xlsx(
-            $spreadsheet
-        );
+        /* =====================================================
+           GUARDAR
+        ===================================================== */
+
+        $writer =
+            new Xlsx(
+                $spreadsheet
+            );
+
 
         $writer->save(
             $ruta
         );
 
-        $spreadsheet->disconnectWorksheets();
 
-        unset($spreadsheet);
+        $spreadsheet
+            ->disconnectWorksheets();
+
+
+        unset(
+            $spreadsheet
+        );
 
 
         return $ruta;
     }
 
 
-    /**
-     * Indicadores generales.
-     */
+    /* =========================================================
+       INDICADORES GENERALES
+    ========================================================= */
+
     private function crearIndicadores(
         Spreadsheet $spreadsheet
     ): void {
 
+        $datosDashboard =
+            $this->dashboardService
+            ->obtenerIndicadores();
+
+
+        $datos = [
+
+            [
+                'Indicador',
+                'Cantidad',
+            ],
+
+            [
+                'Total de reportes',
+                (int) (
+                    $datosDashboard['total']
+                    ?? 0
+                ),
+            ],
+
+            [
+                'Pendientes',
+                (int) (
+                    $datosDashboard['pendientes']
+                    ?? 0
+                ),
+            ],
+
+            [
+                'En proceso',
+                (int) (
+                    $datosDashboard['en_proceso']
+                    ?? 0
+                ),
+            ],
+
+            [
+                'Finalizados',
+                (int) (
+                    $datosDashboard['finalizados']
+                    ?? 0
+                ),
+            ],
+        ];
+
+
         $hoja =
-            $spreadsheet->createSheet();
+            $spreadsheet
+            ->createSheet();
+
 
         $hoja->setTitle(
             'Indicadores'
         );
 
 
-        $datos = [
-            ['Indicador', 'Cantidad'],
-            ['Total de reportes', 128],
-            ['Pendientes', 24],
-            ['En proceso', 67],
-            ['Finalizados', 37],
-        ];
-
-
         $hoja->fromArray(
             $datos,
             null,
@@ -182,33 +321,187 @@ class DashboardExcelService
 
         $this->aplicarEstiloGeneral(
             $hoja,
-            'A1:B5'
+            'A1:B'
+            . count(
+                $datos
+            )
         );
     }
 
 
-    /**
-     * Reportes por clasificación.
-     */
-    private function crearClasificaciones(
+    /* =========================================================
+       QUEJAS POR SECTORES Y TURNOS
+    ========================================================= */
+
+    private function crearSectoresTurnos(
         Spreadsheet $spreadsheet
     ): void {
 
-        $hoja =
-            $spreadsheet->createSheet();
+        $datosDashboard =
+            $this->dashboardService
+            ->obtenerSectoresTurnos();
 
-        $hoja->setTitle(
-            'Clasificaciones'
-        );
+
+        $sectores =
+            $datosDashboard['sectores']
+            ?? [];
+
+
+        $turnos =
+            $datosDashboard['turnos']
+            ?? [];
+
+
+        /*
+         * El DashboardService devuelve:
+         *
+         * turnos = [
+         *     'Primer turno' => [ ...15 valores... ],
+         *     'Segundo turno' => [ ... ],
+         *     ...
+         * ]
+         */
+
+        $nombresTurnos = [
+            'Primer turno',
+            'Segundo turno',
+            'Tercer turno',
+            'Alfa',
+            'Beta',
+            'Diario',
+            'No refiere ni fecha ni horario',
+        ];
+
+
+        $encabezado = [
+            'Sector',
+        ];
+
+
+        foreach (
+            $nombresTurnos
+            as $nombreTurno
+        ) {
+
+            $encabezado[] =
+                $nombreTurno;
+        }
+
+
+        $encabezado[] =
+            'Total por sector';
 
 
         $datos = [
-            ['Clasificación', 'Reportes'],
-            ['Queja', 58],
-            ['Denuncia', 34],
-            ['Investigación', 22],
-            ['Otro', 14],
+            $encabezado,
         ];
+
+
+        /*
+         * Totales de las columnas.
+         */
+
+        $totalesTurnos =
+            array_fill(
+                0,
+                count(
+                    $nombresTurnos
+                ),
+                0
+            );
+
+
+        $totalGeneral =
+            0;
+
+
+        foreach (
+            $sectores
+            as $indiceSector => $sector
+        ) {
+
+            $fila = [
+                $sector,
+            ];
+
+
+            $totalSector =
+                0;
+
+
+            foreach (
+                $nombresTurnos
+                as $indiceTurno => $nombreTurno
+            ) {
+
+                $cantidad =
+                    (int) (
+                        $turnos[$nombreTurno][$indiceSector]
+                        ?? 0
+                    );
+
+
+                $fila[] =
+                    $cantidad;
+
+
+                $totalSector +=
+                    $cantidad;
+
+
+                $totalesTurnos[$indiceTurno] +=
+                    $cantidad;
+            }
+
+
+            $fila[] =
+                $totalSector;
+
+
+            $totalGeneral +=
+                $totalSector;
+
+
+            $datos[] =
+                $fila;
+        }
+
+
+        /*
+         * Fila TOTAL.
+         */
+
+        $filaTotal = [
+            'TOTAL',
+        ];
+
+
+        foreach (
+            $totalesTurnos
+            as $totalTurno
+        ) {
+
+            $filaTotal[] =
+                $totalTurno;
+        }
+
+
+        $filaTotal[] =
+            $totalGeneral;
+
+
+        $datos[] =
+            $filaTotal;
+
+
+        $hoja =
+            $spreadsheet
+            ->createSheet();
+
+
+        $hoja->setTitle(
+            'Sectores y turnos'
+        );
 
 
         $hoja->fromArray(
@@ -218,36 +511,103 @@ class DashboardExcelService
         );
 
 
+        $ultimaFila =
+            count(
+                $datos
+            );
+
+
+        $ultimaColumna =
+            $hoja
+            ->getHighestColumn();
+
+
         $this->aplicarEstiloGeneral(
             $hoja,
-            'A1:B5'
+            'A1:'
+            . $ultimaColumna
+            . $ultimaFila
         );
+
+
+        /*
+         * Resaltamos la fila TOTAL.
+         */
+
+        $hoja
+            ->getStyle(
+                'A'
+                . $ultimaFila
+                . ':'
+                . $ultimaColumna
+                . $ultimaFila
+            )
+            ->getFont()
+            ->setBold(
+                true
+            );
     }
 
 
-    /**
-     * Reportes por área.
-     */
+    /* =========================================================
+       QUEJAS POR ÁREA
+    ========================================================= */
+
     private function crearAreas(
         Spreadsheet $spreadsheet
     ): void {
 
-        $hoja =
-            $spreadsheet->createSheet();
+        $datosDashboard =
+            $this->dashboardService
+            ->obtenerQuejasPorArea();
 
-        $hoja->setTitle(
-            'Areas'
-        );
+
+        $areas =
+            $datosDashboard['areas']
+            ?? [];
+
+
+        $totales =
+            $datosDashboard['totales']
+            ?? [];
 
 
         $datos = [
-            ['Área', 'Reportes'],
-            ['Seguridad Ciudadana', 46],
-            ['Tránsito', 31],
-            ['Operaciones', 24],
-            ['Prevención', 17],
-            ['Administrativa', 10],
+
+            [
+                'Área',
+                'Quejas',
+            ],
+
         ];
+
+
+        foreach (
+            $areas
+            as $indice => $area
+        ) {
+
+            $datos[] = [
+
+                $area,
+
+                (int) (
+                    $totales[$indice]
+                    ?? 0
+                ),
+
+            ];
+        }
+
+
+        $hoja =
+            $spreadsheet
+            ->createSheet();
+
+
+        $hoja->setTitle(
+            'Quejas por area'
+        );
 
 
         $hoja->fromArray(
@@ -259,32 +619,89 @@ class DashboardExcelService
 
         $this->aplicarEstiloGeneral(
             $hoja,
-            'A1:B6'
+            'A1:B'
+            . count(
+                $datos
+            )
         );
     }
 
 
-    /**
-     * Reportes por turno.
-     */
+    /* =========================================================
+       QUEJAS POR TURNO
+    ========================================================= */
+
     private function crearTurnos(
         Spreadsheet $spreadsheet
     ): void {
 
-        $hoja =
-            $spreadsheet->createSheet();
+        $datosDashboard =
+            $this->dashboardService
+            ->obtenerQuejasPorTurno();
 
-        $hoja->setTitle(
-            'Turnos'
-        );
+
+        $turnos =
+            $datosDashboard['turnos']
+            ?? [];
+
+
+        $totales =
+            $datosDashboard['totales']
+            ?? [];
 
 
         $datos = [
-            ['Turno', 'Reportes'],
-            ['Primer turno', 52],
-            ['Segundo turno', 43],
-            ['Tercer turno', 33],
+
+            [
+                'Turno',
+                'Quejas',
+            ],
+
         ];
+
+
+        foreach (
+            $turnos
+            as $indice => $turno
+        ) {
+
+            $datos[] = [
+
+                $turno,
+
+                (int) (
+                    $totales[$indice]
+                    ?? 0
+                ),
+
+            ];
+        }
+
+
+        /*
+         * Total general.
+         */
+
+        $datos[] = [
+
+            'TOTAL',
+
+            (int) (
+                $datosDashboard['total']
+                ?? 0
+            ),
+
+        ];
+
+
+        $hoja =
+            $spreadsheet
+            ->createSheet();
+
+
+        $hoja->setTitle(
+            'Quejas por turno'
+        );
 
 
         $hoja->fromArray(
@@ -294,69 +711,50 @@ class DashboardExcelService
         );
 
 
-        $this->aplicarEstiloGeneral(
-            $hoja,
-            'A1:B4'
-        );
-    }
-
-
-    /**
-     * Tendencia de reportes.
-     */
-    private function crearTendencia(
-        Spreadsheet $spreadsheet
-    ): void {
-
-        $hoja =
-            $spreadsheet->createSheet();
-
-        $hoja->setTitle(
-            'Tendencia'
-        );
-
-
-        $datos = [
-            ['Periodo', 'Reportes'],
-            ['Marzo', 14],
-            ['Abril', 19],
-            ['Mayo', 17],
-            ['Junio', 26],
-            ['Julio', 22],
-            ['Agosto', 30],
-        ];
-
-
-        $hoja->fromArray(
-            $datos,
-            null,
-            'A1'
-        );
+        $ultimaFila =
+            count(
+                $datos
+            );
 
 
         $this->aplicarEstiloGeneral(
             $hoja,
-            'A1:B7'
+            'A1:B'
+            . $ultimaFila
         );
+
+
+        $hoja
+            ->getStyle(
+                'A'
+                . $ultimaFila
+                . ':B'
+                . $ultimaFila
+            )
+            ->getFont()
+            ->setBold(
+                true
+            );
     }
 
 
-    /**
-     * Reportes recientes.
-     */
+    /* =========================================================
+       REPORTES RECIENTES
+    ========================================================= */
+
     private function crearRecientes(
         Spreadsheet $spreadsheet
     ): void {
 
-        $hoja =
-            $spreadsheet->createSheet();
-
-        $hoja->setTitle(
-            'Reportes recientes'
-        );
+        $reportes =
+            $this->dashboardService
+            ->obtenerReportesRecientes(
+                6
+            );
 
 
         $datos = [
+
             [
                 'Folio',
                 'Fecha',
@@ -365,31 +763,47 @@ class DashboardExcelService
                 'Área',
                 'Estado',
             ],
-            [
-                'AI-2026-001',
-                '25/08/2026',
-                'CAI/001/2026',
-                'Queja',
-                'Seguridad Ciudadana',
-                'En proceso',
-            ],
-            [
-                'AI-2026-002',
-                '24/08/2026',
-                'CAI/002/2026',
-                'Denuncia',
-                'Tránsito',
-                'Finalizado',
-            ],
-            [
-                'AI-2026-003',
-                '23/08/2026',
-                'CAI/003/2026',
-                'Queja',
-                'Operaciones',
-                'Pendiente',
-            ],
+
         ];
+
+
+        foreach (
+            $reportes
+            as $reporte
+        ) {
+
+            $datos[] = [
+
+                $reporte['folio']
+                ?? '',
+
+                $reporte['fecha']
+                ?? '',
+
+                $reporte['expediente']
+                ?? '',
+
+                $reporte['clasificacion']
+                ?? '',
+
+                $reporte['area']
+                ?? '',
+
+                $reporte['estado']
+                ?? '',
+
+            ];
+        }
+
+
+        $hoja =
+            $spreadsheet
+            ->createSheet();
+
+
+        $hoja->setTitle(
+            'Reportes recientes'
+        );
 
 
         $hoja->fromArray(
@@ -401,110 +815,152 @@ class DashboardExcelService
 
         $this->aplicarEstiloGeneral(
             $hoja,
-            'A1:F4'
+            'A1:F'
+            . count(
+                $datos
+            )
         );
     }
 
 
-    /**
-     * Estilo base de las hojas.
-     */
+    /* =========================================================
+       ESTILO GENERAL
+    ========================================================= */
+
     private function aplicarEstiloGeneral(
         Worksheet $hoja,
         string $rango
     ): void {
 
-        /*
-         * Encabezados.
-         */
         $ultimaColumna =
-            $hoja->getHighestColumn();
+            $hoja
+            ->getHighestColumn();
+
+
+        /* =====================================================
+           ENCABEZADO
+        ===================================================== */
 
         $hoja
             ->getStyle(
-                'A1:' . $ultimaColumna . '1'
+                'A1:'
+                . $ultimaColumna
+                . '1'
             )
             ->getFont()
-            ->setBold(true)
+            ->setBold(
+                true
+            )
             ->getColor()
-            ->setRGB('FFFFFF');
+            ->setRGB(
+                'FFFFFF'
+            );
 
 
         $hoja
             ->getStyle(
-                'A1:' . $ultimaColumna . '1'
+                'A1:'
+                . $ultimaColumna
+                . '1'
             )
             ->getFill()
             ->setFillType(
                 Fill::FILL_SOLID
             )
             ->getStartColor()
-            ->setRGB('173554');
+            ->setRGB(
+                '173554'
+            );
 
 
-        /*
-         * Bordes suaves.
-         */
+        /* =====================================================
+           BORDES
+        ===================================================== */
+
         $hoja
-            ->getStyle($rango)
+            ->getStyle(
+                $rango
+            )
             ->getBorders()
             ->getBottom()
             ->setBorderStyle(
                 Border::BORDER_THIN
             )
             ->getColor()
-            ->setRGB('E1E8EE');
+            ->setRGB(
+                'E1E8EE'
+            );
 
 
-        /*
-         * Alineación vertical.
-         */
+        /* =====================================================
+           ALINEACIÓN
+        ===================================================== */
+
         $hoja
-            ->getStyle($rango)
+            ->getStyle(
+                $rango
+            )
             ->getAlignment()
             ->setVertical(
                 Alignment::VERTICAL_CENTER
             );
 
 
-        /*
-         * Ajuste automático de columnas.
-         */
+        /* =====================================================
+           AJUSTE AUTOMÁTICO DE COLUMNAS
+        ===================================================== */
+
         foreach (
             range(
                 'A',
                 $ultimaColumna
-            ) as $columna
+            )
+            as $columna
         ) {
+
             $hoja
                 ->getColumnDimension(
                     $columna
                 )
-                ->setAutoSize(true);
+                ->setAutoSize(
+                    true
+                );
         }
 
 
-        /*
-         * Altura del encabezado.
-         */
+        /* =====================================================
+           ALTURA DEL ENCABEZADO
+        ===================================================== */
+
         $hoja
-            ->getRowDimension(1)
-            ->setRowHeight(24);
+            ->getRowDimension(
+                1
+            )
+            ->setRowHeight(
+                24
+            );
 
 
-        /*
-         * Congelamos encabezados.
-         */
-        $hoja->freezePane('A2');
+        /* =====================================================
+           CONGELAR ENCABEZADO
+        ===================================================== */
+
+        $hoja
+            ->freezePane(
+                'A2'
+            );
 
 
-        /*
-         * Autofiltro.
-         */
-        $hoja->setAutoFilter(
-            'A1:'
-            . $ultimaColumna
-            . $hoja->getHighestRow()
-        );
+        /* =====================================================
+           AUTOFILTRO
+        ===================================================== */
+
+        $hoja
+            ->setAutoFilter(
+                'A1:'
+                . $ultimaColumna
+                . $hoja
+                    ->getHighestRow()
+            );
     }
 }

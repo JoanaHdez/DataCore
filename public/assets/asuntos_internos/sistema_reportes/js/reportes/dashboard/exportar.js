@@ -1,7 +1,14 @@
-document.addEventListener('DOMContentLoaded', () => {
-    inicializarExportacionDashboard();
-});
+document.addEventListener(
+    'DOMContentLoaded',
+    () => {
+        inicializarExportacionDashboard();
+    }
+);
 
+
+/* =============================================================
+   INICIALIZAR EXPORTACIÓN
+============================================================= */
 
 function inicializarExportacionDashboard() {
 
@@ -32,13 +39,10 @@ function inicializarExportacionDashboard() {
 
 
     /*
-     * Este archivo se importa desde main.js
-     * también en vistas donde el Dashboard
-     * no está presente.
-     *
-     * Si no existen sus elementos, simplemente
-     * no inicializamos este módulo.
+     * Este archivo puede cargarse en vistas donde
+     * el Dashboard no está presente.
      */
+
     if (
         !modal
         || !botonAbrir
@@ -53,156 +57,188 @@ function inicializarExportacionDashboard() {
        ABRIR MODAL
     ========================================================= */
 
-    botonAbrir.addEventListener('click', () => {
+    botonAbrir.addEventListener(
+        'click',
+        () => {
 
-        prepararModalExportacion(
-            formulario,
-            seleccionarTodo,
-            mensaje
-        );
+            prepararModalExportacion(
+                formulario,
+                seleccionarTodo,
+                mensaje
+            );
 
-        abrirModalExportacion(
-            modal
-        );
-    });
+            abrirModalExportacion(
+                modal
+            );
+
+        }
+    );
 
 
     /* =========================================================
        CERRAR MODAL
     ========================================================= */
 
-    modal.addEventListener('click', (evento) => {
+    modal.addEventListener(
+        'click',
+        (evento) => {
 
-        const botonCerrar =
-            evento.target.closest(
-                '[data-cerrar-modal-exportar]'
+            const botonCerrar =
+                evento.target.closest(
+                    '[data-cerrar-modal-exportar]'
+                );
+
+            if (!botonCerrar) {
+                return;
+            }
+
+
+            cerrarModalExportacion(
+                modal,
+                mensaje
             );
 
-        if (!botonCerrar) {
-            return;
         }
-
-        cerrarModalExportacion(
-            modal,
-            mensaje
-        );
-    });
+    );
 
 
     /* =========================================================
        CERRAR CON ESCAPE
     ========================================================= */
 
-    document.addEventListener('keydown', (evento) => {
+    document.addEventListener(
+        'keydown',
+        (evento) => {
 
-        if (
-            evento.key === 'Escape'
-            && modal.classList.contains(
-                'modal-reporte--visible'
-            )
-        ) {
-            cerrarModalExportacion(
-                modal,
-                mensaje
-            );
+            if (
+                evento.key === 'Escape'
+                && modal.classList.contains(
+                    'modal-reporte--visible'
+                )
+            ) {
+
+                cerrarModalExportacion(
+                    modal,
+                    mensaje
+                );
+
+            }
+
         }
-    });
+    );
 
 
     /* =========================================================
        SELECCIONAR TODO
     ========================================================= */
 
-    seleccionarTodo.addEventListener('change', () => {
+    seleccionarTodo.addEventListener(
+        'change',
+        () => {
 
-        const opciones =
-            obtenerOpcionesExportacion(
-                formulario
+            const opciones =
+                obtenerOpcionesExportacion(
+                    formulario
+                );
+
+
+            opciones.forEach(
+                (opcion) => {
+
+                    opcion.checked =
+                        seleccionarTodo.checked;
+
+                }
             );
 
-        opciones.forEach((opcion) => {
 
-            opcion.checked =
-                seleccionarTodo.checked;
+            actualizarEstadoSeleccionarTodo(
+                formulario,
+                seleccionarTodo
+            );
 
-        });
 
-        actualizarEstadoSeleccionarTodo(
-            formulario,
-            seleccionarTodo
-        );
+            ocultarMensajeExportacion(
+                mensaje
+            );
 
-        ocultarMensajeExportacion(
-            mensaje
-        );
-    });
+        }
+    );
 
 
     /* =========================================================
        OPCIONES INDIVIDUALES
     ========================================================= */
 
-    formulario.addEventListener('change', (evento) => {
+    formulario.addEventListener(
+        'change',
+        (evento) => {
 
-        if (
-            !evento.target.matches(
-                'input[name="secciones[]"]'
-            )
-        ) {
-            return;
+            if (
+                !evento.target.matches(
+                    'input[name="secciones[]"]'
+                )
+            ) {
+                return;
+            }
+
+
+            actualizarEstadoSeleccionarTodo(
+                formulario,
+                seleccionarTodo
+            );
+
+
+            ocultarMensajeExportacion(
+                mensaje
+            );
+
         }
-
-        actualizarEstadoSeleccionarTodo(
-            formulario,
-            seleccionarTodo
-        );
-
-        ocultarMensajeExportacion(
-            mensaje
-        );
-    });
+    );
 
 
     /* =========================================================
        GENERAR EXCEL
     ========================================================= */
 
-    formulario.addEventListener('submit', (evento) => {
+    formulario.addEventListener(
+        'submit',
+        (evento) => {
 
-        evento.preventDefault();
-
-
-        const secciones =
-            obtenerSeccionesSeleccionadas(
-                formulario
-            );
+            evento.preventDefault();
 
 
-        /*
-         * Debe existir por lo menos
-         * una sección seleccionada.
-         */
-        if (secciones.length === 0) {
+            const secciones =
+                obtenerSeccionesSeleccionadas(
+                    formulario
+                );
 
-            mostrarMensajeExportacion(
+
+            if (
+                secciones.length === 0
+            ) {
+
+                mostrarMensajeExportacion(
+                    mensaje
+                );
+
+                return;
+            }
+
+
+            ocultarMensajeExportacion(
                 mensaje
             );
 
-            return;
+
+            enviarExportacionDashboard(
+                secciones,
+                modal,
+                mensaje
+            );
+
         }
-
-
-        ocultarMensajeExportacion(
-            mensaje
-        );
-
-
-        enviarExportacionDashboard(
-            secciones,
-            modal,
-            mensaje
-        );
-    });
+    );
 
 }
 
@@ -223,33 +259,29 @@ function prepararModalExportacion(
         );
 
 
-    /*
-     * Al abrir nuevamente el modal
-     * conservamos las selecciones existentes.
-     */
     actualizarEstadoSeleccionarTodo(
         formulario,
         seleccionarTodo
     );
 
 
-    /*
-     * Por seguridad, si no existen opciones
-     * no dejamos seleccionado "Seleccionar todo".
-     */
-    if (opciones.length === 0) {
+    if (
+        opciones.length === 0
+    ) {
 
         seleccionarTodo.checked =
             false;
 
         seleccionarTodo.indeterminate =
             false;
+
     }
 
 
     ocultarMensajeExportacion(
         mensaje
     );
+
 }
 
 
@@ -265,14 +297,17 @@ function abrirModalExportacion(
         'modal-reporte--visible'
     );
 
+
     modal.setAttribute(
         'aria-hidden',
         'false'
     );
 
+
     document.body.classList.add(
         'modal-abierto'
     );
+
 }
 
 
@@ -285,23 +320,19 @@ function cerrarModalExportacion(
     mensaje
 ) {
 
-    /*
-     * Si algún elemento dentro del modal
-     * conserva el foco, lo quitamos antes
-     * de ocultar el modal.
-     *
-     * Esto evita la advertencia de aria-hidden
-     * cuando el botón todavía conserva el foco.
-     */
     const elementoActivo =
         document.activeElement;
 
 
     if (
         elementoActivo
-        && modal.contains(elementoActivo)
+        && modal.contains(
+            elementoActivo
+        )
     ) {
+
         elementoActivo.blur();
+
     }
 
 
@@ -309,23 +340,36 @@ function cerrarModalExportacion(
         'modal-reporte--visible'
     );
 
+
     modal.setAttribute(
         'aria-hidden',
         'true'
     );
 
+
     document.body.classList.remove(
         'modal-abierto'
     );
 
+
     ocultarMensajeExportacion(
         mensaje
     );
+
 }
 
 
 /* =============================================================
-   OBTENER CHECKBOXES
+   OBTENER CHECKBOXES ACTIVOS
+
+   IMPORTANTE:
+   Ignoramos los checkbox deshabilitados.
+
+   Actualmente:
+   - zonas
+   - sanciones
+
+   no forman parte de "Seleccionar todo".
 ============================================================= */
 
 function obtenerOpcionesExportacion(
@@ -334,9 +378,10 @@ function obtenerOpcionesExportacion(
 
     return Array.from(
         formulario.querySelectorAll(
-            'input[name="secciones[]"]'
+            'input[name="secciones[]"]:not(:disabled)'
         )
     );
+
 }
 
 
@@ -350,11 +395,13 @@ function obtenerSeccionesSeleccionadas(
 
     return Array.from(
         formulario.querySelectorAll(
-            'input[name="secciones[]"]:checked'
+            'input[name="secciones[]"]:checked:not(:disabled)'
         )
     ).map(
-        (opcion) => opcion.value
+        (opcion) =>
+            opcion.value
     );
+
 }
 
 
@@ -375,14 +422,43 @@ function actualizarEstadoSeleccionarTodo(
 
     const seleccionadas =
         opciones.filter(
-            (opcion) => opcion.checked
+            (opcion) =>
+                opcion.checked
         );
 
 
-    /*
-     * Ninguna seleccionada
-     */
-    if (seleccionadas.length === 0) {
+    /* =========================================================
+       NO EXISTEN OPCIONES ACTIVAS
+    ========================================================= */
+
+    if (
+        opciones.length === 0
+    ) {
+
+        seleccionarTodo.checked =
+            false;
+
+        seleccionarTodo.indeterminate =
+            false;
+
+        seleccionarTodo.disabled =
+            true;
+
+        return;
+    }
+
+
+    seleccionarTodo.disabled =
+        false;
+
+
+    /* =========================================================
+       NINGUNA SELECCIONADA
+    ========================================================= */
+
+    if (
+        seleccionadas.length === 0
+    ) {
 
         seleccionarTodo.checked =
             false;
@@ -394,9 +470,10 @@ function actualizarEstadoSeleccionarTodo(
     }
 
 
-    /*
-     * Todas seleccionadas
-     */
+    /* =========================================================
+       TODAS SELECCIONADAS
+    ========================================================= */
+
     if (
         seleccionadas.length
         === opciones.length
@@ -412,14 +489,16 @@ function actualizarEstadoSeleccionarTodo(
     }
 
 
-    /*
-     * Solo algunas seleccionadas
-     */
+    /* =========================================================
+       SOLO ALGUNAS
+    ========================================================= */
+
     seleccionarTodo.checked =
         false;
 
     seleccionarTodo.indeterminate =
         true;
+
 }
 
 
@@ -435,8 +514,14 @@ function mostrarMensajeExportacion(
         return;
     }
 
+
+    mensaje.textContent =
+        'Selecciona al menos una sección para continuar.';
+
+
     mensaje.hidden =
         false;
+
 }
 
 
@@ -452,8 +537,85 @@ function ocultarMensajeExportacion(
         return;
     }
 
+
     mensaje.hidden =
         true;
+
+}
+
+
+/* =============================================================
+   OBTENER FILTROS ACTIVOS DEL DASHBOARD
+
+   Tomamos los filtros directamente de la URL.
+
+   Así el Excel utilizará exactamente la misma consulta
+   que actualmente está viendo el usuario.
+============================================================= */
+
+function obtenerFiltrosDashboard() {
+
+    const parametros =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const nombresPermitidos = [
+
+        /* Fechas */
+        'fecha_inicio',
+        'fecha_fin',
+        'periodo',
+        'tipo_fecha',
+
+        /* Reporte */
+        'estado_actual',
+        'seguimiento',
+        'evidencia',
+
+        /* Personal */
+        'area_personal',
+        'turno',
+
+        /* Quejoso */
+        'genero',
+
+        /* Unidad */
+        'unidad',
+
+    ];
+
+
+    const filtros =
+        {};
+
+
+    nombresPermitidos.forEach(
+        (nombre) => {
+
+            const valor =
+                parametros.get(
+                    nombre
+                );
+
+
+            if (
+                valor !== null
+                && valor.trim() !== ''
+            ) {
+
+                filtros[nombre] =
+                    valor.trim();
+
+            }
+
+        }
+    );
+
+
+    return filtros;
+
 }
 
 
@@ -481,27 +643,33 @@ async function enviarExportacionDashboard(
 
     try {
 
-        /*
-         * Evitamos múltiples exportaciones
-         * mientras se genera el archivo.
-         */
+        /* =========================================================
+           BLOQUEAR BOTÓN
+        ========================================================= */
+
         if (botonGenerar) {
 
             botonGenerar.disabled =
                 true;
 
+
             botonGenerar.textContent =
                 'Generando...';
+
         }
 
 
-        /*
-         * Construimos los datos que recibirá
-         * el Controller.
-         */
+        /* =========================================================
+           FORM DATA
+        ========================================================= */
+
         const datos =
             new FormData();
 
+
+        /* =========================================================
+           SECCIONES
+        ========================================================= */
 
         secciones.forEach(
             (seccion) => {
@@ -515,24 +683,52 @@ async function enviarExportacionDashboard(
         );
 
 
-        /*
-         * Enviamos la solicitud al backend.
-         */
+        /* =========================================================
+           FILTROS ACTIVOS
+        ========================================================= */
+
+        const filtros =
+            obtenerFiltrosDashboard();
+
+
+        Object.entries(
+            filtros
+        ).forEach(
+            ([nombre, valor]) => {
+
+                datos.append(
+                    nombre,
+                    valor
+                );
+
+            }
+        );
+
+
+        /* =========================================================
+           SOLICITUD
+        ========================================================= */
+
         const respuesta =
             await fetch(
                 '/asuntos-internos/reportes/dashboard/exportar',
                 {
-                    method: 'POST',
-                    body: datos,
+                    method:
+                        'POST',
+
+                    body:
+                        datos,
                 }
             );
 
 
-        /*
-         * Si PHP devuelve un error,
-         * intentamos recuperar el JSON.
-         */
-        if (!respuesta.ok) {
+        /* =========================================================
+           ERROR DEL BACKEND
+        ========================================================= */
+
+        if (
+            !respuesta.ok
+        ) {
 
             let resultado =
                 null;
@@ -569,18 +765,29 @@ async function enviarExportacionDashboard(
         }
 
 
-        /*
-         * El Controller devuelve un archivo
-         * binario .xlsx, no JSON.
-         */
+        /* =========================================================
+           ARCHIVO XLSX
+        ========================================================= */
+
         const archivo =
             await respuesta.blob();
 
 
-        /*
-         * Intentamos recuperar el nombre
-         * enviado por CodeIgniter.
-         */
+        if (
+            archivo.size === 0
+        ) {
+
+            throw new Error(
+                'El archivo generado está vacío.'
+            );
+
+        }
+
+
+        /* =========================================================
+           NOMBRE DEL ARCHIVO
+        ========================================================= */
+
         const disposition =
             respuesta.headers.get(
                 'Content-Disposition'
@@ -593,10 +800,10 @@ async function enviarExportacionDashboard(
             );
 
 
-        /*
-         * Creamos temporalmente una URL
-         * para descargar el Blob.
-         */
+        /* =========================================================
+           DESCARGAR
+        ========================================================= */
+
         const url =
             window.URL.createObjectURL(
                 archivo
@@ -604,11 +811,14 @@ async function enviarExportacionDashboard(
 
 
         const enlace =
-            document.createElement('a');
+            document.createElement(
+                'a'
+            );
 
 
         enlace.href =
             url;
+
 
         enlace.download =
             nombreArchivo;
@@ -625,18 +835,15 @@ async function enviarExportacionDashboard(
         enlace.remove();
 
 
-        /*
-         * Liberamos la URL temporal.
-         */
         window.URL.revokeObjectURL(
             url
         );
 
 
-        /*
-         * Cerramos el modal únicamente
-         * cuando la exportación fue correcta.
-         */
+        /* =========================================================
+           CERRAR MODAL
+        ========================================================= */
+
         cerrarModalExportacion(
             modal,
             mensaje
@@ -659,19 +866,23 @@ async function enviarExportacionDashboard(
 
     } finally {
 
-        /*
-         * Restauramos el botón.
-         */
+        /* =========================================================
+           RESTAURAR BOTÓN
+        ========================================================= */
+
         if (botonGenerar) {
 
             botonGenerar.disabled =
                 false;
 
+
             botonGenerar.textContent =
                 textoOriginal;
+
         }
 
     }
+
 }
 
 
@@ -687,21 +898,57 @@ function obtenerNombreArchivo(
         'dashboard_reportes.xlsx';
 
 
-    if (!contentDisposition) {
+    if (
+        !contentDisposition
+    ) {
 
         return nombrePredeterminado;
+
     }
 
 
     /*
-     * Soporte para:
+     * Primero intentamos formato RFC 5987:
+     *
+     * filename*=UTF-8''archivo.xlsx
+     */
+
+    const coincidenciaUtf8 =
+        contentDisposition.match(
+            /filename\*=UTF-8''([^;]+)/i
+        );
+
+
+    if (
+        coincidenciaUtf8
+        && coincidenciaUtf8[1]
+    ) {
+
+        try {
+
+            return decodeURIComponent(
+                coincidenciaUtf8[1]
+            );
+
+        } catch (error) {
+
+            return coincidenciaUtf8[1];
+
+        }
+
+    }
+
+
+    /*
+     * Formato tradicional:
      *
      * filename="archivo.xlsx"
      * filename=archivo.xlsx
      */
+
     const coincidencia =
         contentDisposition.match(
-            /filename="?([^"]+)"?/i
+            /filename="?([^";]+)"?/i
         );
 
 
@@ -711,10 +958,13 @@ function obtenerNombreArchivo(
     ) {
 
         return nombrePredeterminado;
+
     }
 
 
-    return coincidencia[1].trim();
+    return coincidencia[1]
+        .trim();
+
 }
 
 
@@ -739,4 +989,5 @@ function mostrarErrorExportacion(
 
     mensaje.hidden =
         false;
+
 }

@@ -6,6 +6,11 @@ class DashboardService
 {
     private $db;
 
+    /**
+     * Filtros activos del Dashboard.
+     */
+    private array $filtros = [];
+
 
     /* =========================================================
        CONSTRUCTOR
@@ -19,6 +24,808 @@ class DashboardService
             );
     }
 
+    /* =========================================================
+   FILTROS DEL DASHBOARD
+========================================================= */
+
+    /**
+     * Define los filtros que utilizarán todas las consultas
+     * del Dashboard.
+     */
+    public function establecerFiltros(
+        array $filtros
+    ): void {
+
+        $this->filtros = [
+
+            /* =================================================
+               FECHAS
+            ================================================= */
+
+            'fecha_inicio' =>
+                $this->limpiarFiltro(
+                    $filtros['fecha_inicio']
+                    ?? null
+                ),
+
+            'fecha_fin' =>
+                $this->limpiarFiltro(
+                    $filtros['fecha_fin']
+                    ?? null
+                ),
+
+            'periodo' =>
+                $this->limpiarFiltro(
+                    $filtros['periodo']
+                    ?? null
+                ),
+
+            'tipo_fecha' =>
+                $this->limpiarFiltro(
+                    $filtros['tipo_fecha']
+                    ?? 'registro'
+                ),
+
+
+            /* =================================================
+               REPORTE
+            ================================================= */
+
+            'estado' =>
+                $this->limpiarFiltro(
+                    $filtros['estado']
+                    ?? null
+                ),
+
+            'seguimiento' =>
+                $this->limpiarFiltro(
+                    $filtros['seguimiento']
+                    ?? null
+                ),
+
+            'evidencia' =>
+                $this->limpiarFiltro(
+                    $filtros['evidencia']
+                    ?? null
+                ),
+
+
+            /* =================================================
+               PERSONAL INVOLUCRADO
+            ================================================= */
+
+            'area_personal' =>
+                $this->limpiarFiltro(
+                    $filtros['area_personal']
+                    ?? null
+                ),
+
+            'turno' =>
+                $this->limpiarFiltro(
+                    $filtros['turno']
+                    ?? null
+                ),
+
+
+            /* =================================================
+               QUEJOSO
+            ================================================= */
+
+            'genero' =>
+                $this->limpiarFiltro(
+                    $filtros['genero']
+                    ?? null
+                ),
+
+
+            /* =================================================
+               UNIDAD
+            ================================================= */
+
+            'unidad' =>
+                $this->limpiarFiltro(
+                    $filtros['unidad']
+                    ?? null
+                ),
+        ];
+    }
+
+
+    /**
+     * Limpia valores provenientes de GET.
+     *
+     * Los valores vacíos se convierten en null para que
+     * posteriormente sea sencillo saber si un filtro está
+     * realmente activo.
+     */
+    private function limpiarFiltro(
+        mixed $valor
+    ): ?string {
+
+        if ($valor === null) {
+            return null;
+        }
+
+
+        $valor =
+            trim(
+                (string) $valor
+            );
+
+
+        return (
+            $valor !== ''
+            ? $valor
+            : null
+        );
+    }
+
+    /* =========================================================
+       OPCIONES DE FILTROS
+    ========================================================= */
+
+    public function obtenerOpcionesFiltros(): array
+    {
+        /* =====================================================
+           ÁREAS INSTITUCIONALES DESDE PLANTILLA
+
+           La plantilla es la fuente oficial del catálogo de
+           áreas. El filtro se aplica posteriormente contra
+           area_snapshot para conservar el dato histórico del
+           reporte.
+        ===================================================== */
+
+        $dbPlantilla =
+            \Config\Database::connect(
+                'plantilla'
+            );
+
+
+        $registrosAreas =
+            $dbPlantilla
+            ->table('plantilla')
+            ->select('AREA')
+            ->where('ESTADO', 'ACTIVO')
+            ->where('AREA IS NOT NULL', null, false)
+            ->where("TRIM(AREA) != ''", null, false)
+            ->groupBy('AREA')
+            ->orderBy('AREA', 'ASC')
+            ->get()
+            ->getResultArray();
+
+
+        $areas = [];
+        $areasRegistradas = [];
+
+
+        foreach ($registrosAreas as $registro) {
+
+            $valor =
+                trim(
+                    preg_replace(
+                        '/\s+/u',
+                        ' ',
+                        (string) (
+                            $registro['AREA']
+                            ?? ''
+                        )
+                    )
+                    ?? ''
+                );
+
+
+            if ($valor === '') {
+                continue;
+            }
+
+
+            $clave =
+                mb_strtoupper(
+                    $valor,
+                    'UTF-8'
+                );
+
+
+            if (isset($areasRegistradas[$clave])) {
+                continue;
+            }
+
+
+            $areasRegistradas[$clave] = true;
+            $areas[] = $valor;
+        }
+
+
+        /* =====================================================
+           GÉNEROS REGISTRADOS
+        ===================================================== */
+
+        $registrosGeneros =
+            $this->db
+            ->table('ai_reportes')
+            ->select('genero_quejoso')
+            ->where('eliminado', 0)
+            ->where('genero_quejoso IS NOT NULL', null, false)
+            ->where("TRIM(genero_quejoso) != ''", null, false)
+            ->groupBy('genero_quejoso')
+            ->orderBy('genero_quejoso', 'ASC')
+            ->get()
+            ->getResultArray();
+
+
+        $generos = [];
+
+
+        foreach ($registrosGeneros as $registro) {
+
+            $valor =
+                trim(
+                    (string) (
+                        $registro['genero_quejoso']
+                        ?? ''
+                    )
+                );
+
+
+            if ($valor !== '') {
+                $generos[] = $valor;
+            }
+        }
+
+
+        /* =====================================================
+           UNIDADES INVOLUCRADAS
+        /* =====================================================
+           UNIDADES INSTITUCIONALES DESDE PARQUE VEHICULAR
+
+           parque_vehicular es la fuente oficial del catálogo
+           de unidades disponibles para el filtro.
+
+           IMPORTANTE:
+           Este catálogo solamente llena el SELECT.
+
+           Cuando el usuario aplica el filtro, la búsqueda
+           continúa realizándose contra:
+
+           ai_reporte_unidades.no_economico_snapshot
+           ai_reporte_unidades.placas_snapshot
+
+           De esta manera conservamos el dato histórico que
+           tenía la unidad cuando fue relacionada al reporte.
+        ===================================================== */
+
+        $dbUnidades =
+            \Config\Database::connect(
+                'unidades'
+            );
+
+
+        $registrosUnidades =
+            $dbUnidades
+            ->table('parque_vehicular')
+            ->select([
+                'no_economico',
+                'placas',
+            ])
+            ->groupStart()
+                ->where(
+                    'no_economico IS NOT NULL',
+                    null,
+                    false
+                )
+                ->where(
+                    "TRIM(no_economico) != ''",
+                    null,
+                    false
+                )
+                ->orGroupStart()
+                    ->where(
+                        'placas IS NOT NULL',
+                        null,
+                        false
+                    )
+                    ->where(
+                        "TRIM(placas) != ''",
+                        null,
+                        false
+                    )
+                ->groupEnd()
+            ->groupEnd()
+            ->orderBy(
+                'no_economico',
+                'ASC'
+            )
+            ->orderBy(
+                'placas',
+                'ASC'
+            )
+            ->get()
+            ->getResultArray();
+
+
+        $unidades = [];
+
+        /*
+         * Evita repetir unidades cuando existan registros
+         * duplicados en parque_vehicular.
+         *
+         * La comparación se realiza sin distinguir
+         * mayúsculas/minúsculas.
+         */
+
+        $valoresUnidad =
+            [];
+
+
+        foreach (
+            $registrosUnidades
+            as $registro
+        ) {
+
+            $noEconomico =
+                trim(
+                    preg_replace(
+                        '/\s+/u',
+                        ' ',
+                        (string) (
+                            $registro['no_economico']
+                            ?? ''
+                        )
+                    )
+                    ?? ''
+                );
+
+
+            $placas =
+                trim(
+                    preg_replace(
+                        '/\s+/u',
+                        ' ',
+                        (string) (
+                            $registro['placas']
+                            ?? ''
+                        )
+                    )
+                    ?? ''
+                );
+
+
+            /*
+             * El valor que viaja en el filtro será:
+             *
+             * 1. Número económico, cuando exista.
+             * 2. Placas, cuando no exista número económico.
+             */
+
+            $valor =
+                $noEconomico !== ''
+                    ? $noEconomico
+                    : $placas;
+
+
+            if ($valor === '') {
+                continue;
+            }
+
+
+            $clave =
+                mb_strtoupper(
+                    $valor,
+                    'UTF-8'
+                );
+
+
+            if (
+                isset(
+                    $valoresUnidad[$clave]
+                )
+            ) {
+                continue;
+            }
+
+
+            $valoresUnidad[$clave] =
+                true;
+
+
+            /*
+             * Texto mostrado al usuario.
+             *
+             * Si existen ambos datos:
+             *
+             * 1234 · ABC-123
+             *
+             * Si solamente existe uno:
+             *
+             * 1234
+             *
+             * o
+             *
+             * ABC-123
+             */
+
+            if (
+                $noEconomico !== ''
+                && $placas !== ''
+            ) {
+
+                $texto =
+                    $noEconomico
+                    . ' · '
+                    . $placas;
+
+            } else {
+
+                $texto =
+                    $valor;
+            }
+
+
+            $unidades[] = [
+
+                'valor' =>
+                    $valor,
+
+                'texto' =>
+                    $texto,
+
+                'no_economico' =>
+                    $noEconomico,
+
+                'placas' =>
+                    $placas,
+
+            ];
+        }
+
+        return [
+            'areas' => $areas,
+            'generos' => $generos,
+            'unidades' => $unidades,
+        ];
+    }
+
+
+    /* =========================================================
+   APLICAR FILTROS COMUNES A AI_REPORTES
+========================================================= */
+
+    private function aplicarFiltrosReportes(
+        $builder,
+        string $alias = ''
+    ) {
+        $prefijo =
+            $alias !== ''
+                ? rtrim(
+                    $alias,
+                    '.'
+                ) . '.'
+                : '';
+
+
+        /* =====================================================
+           SIEMPRE EXCLUIR ELIMINADOS
+        ===================================================== */
+
+        $builder->where(
+            $prefijo . 'eliminado',
+            0
+        );
+
+
+        /* =====================================================
+           FECHA A ANALIZAR
+        ===================================================== */
+
+        $tipoFecha =
+            $this->filtros['tipo_fecha']
+            ?? 'registro';
+
+
+        $campoFecha =
+            match ($tipoFecha) {
+
+                'queja' =>
+                    $prefijo . 'fecha_queja',
+
+                'hechos' =>
+                    $prefijo . 'fecha_hechos',
+
+                'acuerdo' =>
+                    $prefijo . 'fecha_acuerdo',
+
+                default =>
+                    $prefijo . 'fecha_registro',
+            };
+
+
+        if (
+            !empty($this->filtros['fecha_inicio'])
+        ) {
+
+            $builder->where(
+                $campoFecha . ' >=',
+                $this->filtros['fecha_inicio']
+            );
+        }
+
+
+        if (
+            !empty($this->filtros['fecha_fin'])
+        ) {
+
+            $builder->where(
+                $campoFecha . ' <=',
+                $this->filtros['fecha_fin']
+            );
+        }
+
+
+        /* =====================================================
+           ESTADO ACTUAL
+        ===================================================== */
+
+        if (
+            !empty($this->filtros['estado'])
+        ) {
+
+            $builder->where(
+                $prefijo . 'estado_actual',
+                $this->filtros['estado']
+            );
+        }
+
+
+        /* =====================================================
+           GÉNERO DEL QUEJOSO
+        ===================================================== */
+
+        if (
+            !empty($this->filtros['genero'])
+        ) {
+
+            $builder->where(
+                $prefijo . 'genero_quejoso',
+                $this->filtros['genero']
+            );
+        }
+
+
+        /* =====================================================
+           SEGUIMIENTO
+        ===================================================== */
+
+        if (
+            !empty($this->filtros['seguimiento'])
+        ) {
+
+            if (
+                $this->filtros['seguimiento']
+                === 'con'
+            ) {
+
+                $builder->where(
+                    "EXISTS (
+                        SELECT 1
+                        FROM ai_reporte_seguimientos s
+                        WHERE s.id_reporte = {$prefijo}id_reporte
+                        AND s.eliminado = 0
+                    )",
+                    null,
+                    false
+                );
+            }
+
+
+            if (
+                $this->filtros['seguimiento']
+                === 'sin'
+            ) {
+
+                $builder->where(
+                    "NOT EXISTS (
+                        SELECT 1
+                        FROM ai_reporte_seguimientos s
+                        WHERE s.id_reporte = {$prefijo}id_reporte
+                        AND s.eliminado = 0
+                    )",
+                    null,
+                    false
+                );
+            }
+        }
+
+
+        /* =====================================================
+           EVIDENCIA
+        ===================================================== */
+
+        if (
+            !empty($this->filtros['evidencia'])
+        ) {
+
+            if (
+                $this->filtros['evidencia']
+                === 'con'
+            ) {
+
+                $builder->where(
+                    "EXISTS (
+                        SELECT 1
+                        FROM ai_reporte_evidencias e
+                        WHERE e.id_reporte = {$prefijo}id_reporte
+                        AND e.eliminado = 0
+                    )",
+                    null,
+                    false
+                );
+            }
+
+
+            if (
+                $this->filtros['evidencia']
+                === 'sin'
+            ) {
+
+                $builder->where(
+                    "NOT EXISTS (
+                        SELECT 1
+                        FROM ai_reporte_evidencias e
+                        WHERE e.id_reporte = {$prefijo}id_reporte
+                        AND e.eliminado = 0
+                    )",
+                    null,
+                    false
+                );
+            }
+        }
+
+
+        /* =====================================================
+           ÁREA DEL PERSONAL INVOLUCRADO
+        ===================================================== */
+
+        if (
+            !empty($this->filtros['area_personal'])
+        ) {
+
+            $areaPersonal =
+                $this->db->escape(
+                    $this->filtros['area_personal']
+                );
+
+
+            $builder->where(
+                "EXISTS (
+                    SELECT 1
+                    FROM ai_reporte_personal p_area
+                    WHERE p_area.id_reporte = {$prefijo}id_reporte
+                    AND p_area.area_snapshot = {$areaPersonal}
+                )",
+                null,
+                false
+            );
+        }
+
+
+        /* =====================================================
+           TURNO DEL PERSONAL
+
+           El SELECT usa categorías analíticas del Dashboard,
+           no los textos crudos almacenados en turno_snapshot.
+        ===================================================== */
+
+        if (
+            !empty($this->filtros['turno'])
+        ) {
+
+            $condicionTurno =
+                $this->obtenerCondicionSqlTurno(
+                    $this->filtros['turno'],
+                    'p_turno.turno_snapshot'
+                );
+
+
+            if ($condicionTurno !== null) {
+
+                $builder->where(
+                    "EXISTS (
+                        SELECT 1
+                        FROM ai_reporte_personal p_turno
+                        WHERE p_turno.id_reporte = {$prefijo}id_reporte
+                        AND ({$condicionTurno})
+                    )",
+                    null,
+                    false
+                );
+            }
+        }
+
+
+        /* =====================================================
+           UNIDAD
+        ===================================================== */
+
+        if (
+            !empty($this->filtros['unidad'])
+        ) {
+
+            $unidad =
+                $this->db->escape(
+                    $this->filtros['unidad']
+                );
+
+
+            $builder->where(
+                "EXISTS (
+                    SELECT 1
+                    FROM ai_reporte_unidades u_filtro
+                    WHERE u_filtro.id_reporte = {$prefijo}id_reporte
+                    AND (
+                        u_filtro.no_economico_snapshot = {$unidad}
+                        OR u_filtro.placas_snapshot = {$unidad}
+                    )
+                )",
+                null,
+                false
+            );
+        }
+
+
+        return $builder;
+    }
+
+
+    /* =========================================================
+       CONDICIÓN SQL PARA TURNO ANALÍTICO
+    ========================================================= */
+
+    private function obtenerCondicionSqlTurno(
+        string $turno,
+        string $campo
+    ): ?string {
+
+        return match ($turno) {
+
+            'Primer turno' =>
+                "(
+                    UPPER(COALESCE({$campo}, '')) LIKE '%PRIMERO%'
+                    OR UPPER(COALESCE({$campo}, '')) LIKE '%PRIMER %'
+                    OR UPPER(TRIM(COALESCE({$campo}, ''))) = 'PRIMER'
+                )",
+
+            'Segundo turno' =>
+                "UPPER(COALESCE({$campo}, '')) LIKE '%SEGUNDO%'",
+
+            'Tercer turno' =>
+                "(
+                    UPPER(COALESCE({$campo}, '')) LIKE '%TERCERO%'
+                    OR UPPER(COALESCE({$campo}, '')) LIKE '%TERCER %'
+                    OR UPPER(TRIM(COALESCE({$campo}, ''))) = 'TERCER'
+                )",
+
+            'Alfa' =>
+                "UPPER(COALESCE({$campo}, '')) LIKE '%ALFA%'",
+
+            'Beta' =>
+                "UPPER(COALESCE({$campo}, '')) LIKE '%BETA%'",
+
+            'Diario' =>
+                "UPPER(COALESCE({$campo}, '')) LIKE '%DIARIO%'",
+
+            'No refiere ni fecha ni horario' =>
+                "(
+                    {$campo} IS NULL
+                    OR TRIM(COALESCE({$campo}, '')) = ''
+                    OR UPPER(COALESCE({$campo}, '')) LIKE '%NO REFIERE%'
+                    OR UPPER(COALESCE({$campo}, '')) LIKE '%SIN TURNO%'
+                )",
+
+            default =>
+                null,
+        };
+    }
+
 
     /* =========================================================
        INDICADORES GENERALES
@@ -26,45 +833,60 @@ class DashboardService
 
     public function obtenerIndicadores(): array
     {
-        $resultado =
+        $builder =
             $this->db
-            ->table('ai_reportes')
+            ->table('ai_reportes r')
             ->select([
                 'COUNT(*) AS total',
 
                 "SUM(
-                    CASE
-                        WHEN estado_actual = 'Pendiente'
-                        THEN 1
-                        ELSE 0
-                    END
-                ) AS pendientes",
+                CASE
+                    WHEN r.estado_actual = 'Pendiente'
+                    THEN 1
+                    ELSE 0
+                END
+            ) AS pendientes",
 
                 "SUM(
-                    CASE
-                        WHEN estado_actual = 'En proceso'
-                        THEN 1
-                        ELSE 0
-                    END
-                ) AS en_proceso",
+                CASE
+                    WHEN r.estado_actual = 'En proceso'
+                    THEN 1
+                    ELSE 0
+                END
+            ) AS en_proceso",
 
                 "SUM(
-                    CASE
-                        WHEN estado_actual = 'Finalizado'
-                        THEN 1
-                        ELSE 0
-                    END
-                ) AS finalizados",
-            ], false)
-            ->where(
-                'eliminado',
-                0
-            )
+                CASE
+                    WHEN r.estado_actual = 'Finalizado'
+                    THEN 1
+                    ELSE 0
+                END
+            ) AS finalizados",
+            ], false);
+
+
+        /* =====================================================
+       FILTROS DEL DASHBOARD
+    ===================================================== */
+
+        $this->aplicarFiltrosReportes(
+            $builder,
+            'r'
+        );
+
+
+        /* =====================================================
+       CONSULTAR
+    ===================================================== */
+
+        $resultado =
+            $builder
             ->get()
             ->getRowArray();
 
 
         return [
+
             'total' =>
             (int) (
                 $resultado['total']
@@ -156,7 +978,7 @@ class DashboardService
            CONSULTAR REPORTES + PERSONAL
         ===================================================== */
 
-        $registros =
+        $builder =
             $this->db
             ->table('ai_reportes r')
             ->select([
@@ -168,11 +990,15 @@ class DashboardService
                 'ai_reporte_personal p',
                 'p.id_reporte = r.id_reporte',
                 'inner'
-            )
-            ->where(
-                'r.eliminado',
-                0
-            )
+            );
+
+        $this->aplicarFiltrosReportes(
+            $builder,
+            'r'
+        );
+
+        $registros =
+            $builder
             ->groupBy([
                 'r.id_reporte',
                 'p.area_snapshot',
@@ -601,7 +1427,7 @@ class DashboardService
      * dicha área.
      */
 
-        $registros =
+        $builder =
             $this->db
             ->table('ai_reportes r')
             ->select([
@@ -614,10 +1440,6 @@ class DashboardService
                 'inner'
             )
             ->where(
-                'r.eliminado',
-                0
-            )
-            ->where(
                 'p.area_snapshot IS NOT NULL',
                 null,
                 false
@@ -625,7 +1447,15 @@ class DashboardService
             ->where(
                 'p.area_snapshot !=',
                 ''
-            )
+            );
+
+        $this->aplicarFiltrosReportes(
+            $builder,
+            'r'
+        );
+
+        $registros =
+            $builder
             ->groupBy([
                 'r.id_reporte',
                 'p.area_snapshot',
@@ -748,7 +1578,7 @@ class DashboardService
      * que tengan personal relacionado.
      */
 
-        $registros =
+        $builder =
             $this->db
             ->table('ai_reportes r')
             ->select([
@@ -759,11 +1589,15 @@ class DashboardService
                 'ai_reporte_personal p',
                 'p.id_reporte = r.id_reporte',
                 'inner'
-            )
-            ->where(
-                'r.eliminado',
-                0
-            )
+            );
+
+        $this->aplicarFiltrosReportes(
+            $builder,
+            'r'
+        );
+
+        $registros =
+            $builder
             ->get()
             ->getResultArray();
 
@@ -917,20 +1751,23 @@ class DashboardService
      * la resolución registrada en ai_reportes.
      */
 
-        $registros =
+        $builder =
             $this->db
-            ->table('ai_reportes')
+            ->table('ai_reportes r')
             ->select([
-                'id_reporte',
-                'resolucion',
-            ])
-            ->where(
-                'eliminado',
-                0
-            )
+                'r.id_reporte',
+                'r.resolucion',
+            ]);
+
+        $this->aplicarFiltrosReportes(
+            $builder,
+            'r'
+        );
+
+        $registros =
+            $builder
             ->get()
             ->getResultArray();
-
 
         /* =====================================================
        AGRUPAR RESOLUCIONES
@@ -1069,17 +1906,21 @@ class DashboardService
      * realmente existan en la base de datos.
      */
 
-        $registros =
+        $builder =
             $this->db
-            ->table('ai_reportes')
+            ->table('ai_reportes r')
             ->select([
-                'id_reporte',
-                'clasificacion',
-            ])
-            ->where(
-                'eliminado',
-                0
-            )
+                'r.id_reporte',
+                'r.clasificacion',
+            ]);
+
+        $this->aplicarFiltrosReportes(
+            $builder,
+            'r'
+        );
+
+        $registros =
+            $builder
             ->get()
             ->getResultArray();
 
@@ -1218,152 +2059,148 @@ class DashboardService
    REPORTES RECIENTES
 ========================================================= */
 
-public function obtenerReportesRecientes(
-    int $limite = 6
-): array {
+    public function obtenerReportesRecientes(
+        int $limite = 6
+    ): array {
 
-    $registros =
-        $this->db
-        ->table('ai_reportes r')
-        ->select([
-            'r.id_reporte',
-            'r.folio',
-            'r.fecha_registro',
-            'r.expediente',
-            'r.clasificacion',
-            'r.estado_actual',
-        ])
-        ->where(
-            'r.eliminado',
-            0
-        )
-        ->orderBy(
-            'r.fecha_registro',
-            'DESC'
-        )
-        ->orderBy(
-            'r.id_reporte',
-            'DESC'
-        )
-        ->limit(
-            $limite
-        )
-        ->get()
-        ->getResultArray();
+        $builder =
+            $this->db
+            ->table('ai_reportes r')
+            ->select([
+                'r.id_reporte',
+                'r.folio',
+                'r.fecha_registro',
+                'r.expediente',
+                'r.clasificacion',
+                'r.estado_actual',
+            ]);
 
+        $this->aplicarFiltrosReportes(
+            $builder,
+            'r'
+        );
 
-    $reportes = [];
-
-
-    foreach ($registros as $registro) {
-
-        $idReporte =
-            (int) (
-                $registro['id_reporte']
-                ?? 0
-            );
+        $registros =
+            $builder
+            ->orderBy(
+                'r.fecha_registro',
+                'DESC'
+            )
+            ->orderBy(
+                'r.id_reporte',
+                'DESC'
+            )
+            ->limit(
+                $limite
+            )
+            ->get()
+            ->getResultArray();
 
 
-        /* =====================================================
-           ÁREA DEL PERSONAL RELACIONADO
-        ===================================================== */
-
-        $area =
-            '—';
+        $reportes = [];
 
 
-        if ($idReporte > 0) {
+        foreach ($registros as $registro) {
 
-            $personal =
-                $this->db
-                ->table('ai_reporte_personal')
-                ->select(
-                    'area_snapshot'
-                )
-                ->where(
-                    'id_reporte',
-                    $idReporte
-                )
-                ->where(
-                    'area_snapshot IS NOT NULL',
-                    null,
-                    false
-                )
-                ->where(
-                    'area_snapshot !=',
-                    ''
-                )
-                ->orderBy(
-                    'id_reporte_personal',
-                    'ASC'
-                )
-                ->limit(1)
-                ->get()
-                ->getRowArray();
-
-
-            if (
-                !empty(
-                    $personal['area_snapshot']
-                )
-            ) {
-
-                $area =
-                    trim(
-                        (string) $personal[
-                            'area_snapshot'
-                        ]
-                    );
-
-            }
-
-        }
-
-
-        /* =====================================================
-           FECHA
-        ===================================================== */
-
-        $fecha =
-            $registro['fecha_registro']
-            ?? null;
-
-
-        $fechaFormateada =
-            '—';
-
-
-        if (!empty($fecha)) {
-
-            $timestamp =
-                strtotime(
-                    (string) $fecha
+            $idReporte =
+                (int) (
+                    $registro['id_reporte']
+                    ?? 0
                 );
 
 
-            if ($timestamp !== false) {
+            /* =====================================================
+           ÁREA DEL PERSONAL RELACIONADO
+        ===================================================== */
 
-                $fechaFormateada =
-                    date(
-                        'd/m/Y',
-                        $timestamp
-                    );
+            $area =
+                '—';
 
+
+            if ($idReporte > 0) {
+
+                $personal =
+                    $this->db
+                    ->table('ai_reporte_personal')
+                    ->select(
+                        'area_snapshot'
+                    )
+                    ->where(
+                        'id_reporte',
+                        $idReporte
+                    )
+                    ->where(
+                        'area_snapshot IS NOT NULL',
+                        null,
+                        false
+                    )
+                    ->where(
+                        'area_snapshot !=',
+                        ''
+                    )
+                    ->orderBy(
+                        'id_reporte_personal',
+                        'ASC'
+                    )
+                    ->limit(1)
+                    ->get()
+                    ->getRowArray();
+
+
+                if (
+                    !empty($personal['area_snapshot'])
+                ) {
+
+                    $area =
+                        trim(
+                            (string) $personal['area_snapshot']
+                        );
+                }
             }
 
-        }
+
+            /* =====================================================
+           FECHA
+        ===================================================== */
+
+            $fecha =
+                $registro['fecha_registro']
+                ?? null;
 
 
-        /* =====================================================
+            $fechaFormateada =
+                '—';
+
+
+            if (!empty($fecha)) {
+
+                $timestamp =
+                    strtotime(
+                        (string) $fecha
+                    );
+
+
+                if ($timestamp !== false) {
+
+                    $fechaFormateada =
+                        date(
+                            'd/m/Y',
+                            $timestamp
+                        );
+                }
+            }
+
+
+            /* =====================================================
            RESPUESTA
         ===================================================== */
 
-        $reportes[] = [
+            $reportes[] = [
 
-            'id_reporte' =>
+                'id_reporte' =>
                 $idReporte,
 
-            'folio' =>
+                'folio' =>
                 trim(
                     (string) (
                         $registro['folio']
@@ -1371,10 +2208,10 @@ public function obtenerReportesRecientes(
                     )
                 ),
 
-            'fecha' =>
+                'fecha' =>
                 $fechaFormateada,
 
-            'expediente' =>
+                'expediente' =>
                 trim(
                     (string) (
                         $registro['expediente']
@@ -1382,7 +2219,7 @@ public function obtenerReportesRecientes(
                     )
                 ),
 
-            'clasificacion' =>
+                'clasificacion' =>
                 trim(
                     (string) (
                         $registro['clasificacion']
@@ -1390,23 +2227,20 @@ public function obtenerReportesRecientes(
                     )
                 ),
 
-            'area' =>
+                'area' =>
                 $area,
 
-            'estado' =>
+                'estado' =>
                 trim(
                     (string) (
                         $registro['estado_actual']
                         ?? ''
                     )
                 ),
-        ];
+            ];
+        }
 
+
+        return $reportes;
     }
-
-
-    return $reportes;
-}
-
-    
 }

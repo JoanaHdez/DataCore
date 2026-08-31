@@ -1121,51 +1121,51 @@ class Reportes_Controller extends BaseController
     }
 
     public function dashboard()
-    {
-        /* =========================================================
+{
+    /* =========================================================
        VALIDAR SESIÓN
     ========================================================= */
 
-        if (
-            session()->get('reportes_autenticado') !== true
-            || !session()->has('usuario_reportes')
-        ) {
+    if (
+        session()->get('reportes_autenticado') !== true
+        || !session()->has('usuario_reportes')
+    ) {
 
-            return redirect()
-                ->to(
-                    base_url(
-                        'asuntos-internos/reportes'
-                    )
+        return redirect()
+            ->to(
+                base_url(
+                    'asuntos-internos/reportes'
                 )
-                ->with(
-                    'error',
-                    'Inicia sesión para continuar.'
-                );
-        }
+            )
+            ->with(
+                'error',
+                'Inicia sesión para continuar.'
+            );
+    }
 
 
-        /* =========================================================
+    /* =========================================================
        USUARIO
     ========================================================= */
 
-        $usuario =
-            session()->get(
-                'usuario_reportes'
-            );
+    $usuario =
+        session()->get(
+            'usuario_reportes'
+        );
 
 
-        $esAdmin =
-            ($usuario['rol'] ?? null)
-            === 'admin';
+    $esAdmin =
+        ($usuario['rol'] ?? null)
+        === 'admin';
 
 
-        $autorizacionTemporal =
-            session()->get(
-                'reportes_dashboard_autorizado'
-            ) === true;
+    $autorizacionTemporal =
+        session()->get(
+            'reportes_dashboard_autorizado'
+        ) === true;
 
 
-        /*
+    /*
      * Admin:
      * acceso directo.
      *
@@ -1174,217 +1174,683 @@ class Reportes_Controller extends BaseController
      * salvo que ya haya sido autorizada.
      */
 
-        $requiereAutorizacion =
-            !$esAdmin
-            && !$autorizacionTemporal;
+    $requiereAutorizacion =
+        !$esAdmin
+        && !$autorizacionTemporal;
 
 
-        /* =========================================================
+    /* =========================================================
        DATOS DEL DASHBOARD
     ========================================================= */
 
-        try {
+    try {
 
-            $dashboardService =
-                new DashboardService();
+        $dashboardService =
+            new DashboardService();
 
 
-            /* =====================================================
-           INDICADORES
+        /* =====================================================
+           FILTROS DEL DASHBOARD
+
+           Clasificación y Zona permanecen visibles en la
+           interfaz, pero están deshabilitados.
+
+           Resolución ya no forma parte de los filtros porque
+           es un dato abierto.
         ===================================================== */
 
-            $indicadores =
-                $dashboardService
-                ->obtenerIndicadores();
+        $filtrosDashboard = [
+
+            /* =================================================
+               FECHAS
+            ================================================= */
+
+            'fecha_inicio' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'fecha_inicio'
+                    )
+                ),
+
+            'fecha_fin' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'fecha_fin'
+                    )
+                ),
+
+            'periodo' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'periodo'
+                    )
+                ),
+
+            'tipo_fecha' =>
+                trim(
+                    (string) (
+                        $this->request->getGet(
+                            'tipo_fecha'
+                        )
+                        ?? 'registro'
+                    )
+                ),
 
 
-            /* =====================================================
-           QUEJAS POR SECTORES Y TURNOS
+            /* =================================================
+               REPORTE
+            ================================================= */
+
+            /*
+             * El HTML / JS envía:
+             *
+             * estado_actual
+             *
+             * DashboardService utiliza internamente:
+             *
+             * estado
+             */
+
+            'estado' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'estado_actual'
+                    )
+                ),
+
+            'seguimiento' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'seguimiento'
+                    )
+                ),
+
+            'evidencia' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'evidencia'
+                    )
+                ),
+
+
+            /* =================================================
+               PERSONAL INVOLUCRADO
+            ================================================= */
+
+            'area_personal' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'area_personal'
+                    )
+                ),
+
+            'turno' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'turno'
+                    )
+                ),
+
+
+            /* =================================================
+               QUEJOSO
+            ================================================= */
+
+            'genero' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'genero'
+                    )
+                ),
+
+
+            /* =================================================
+               UNIDAD
+            ================================================= */
+
+            'unidad' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'unidad'
+                    )
+                ),
+
+        ];
+
+
+        /* =====================================================
+           ESTABLECER FILTROS
         ===================================================== */
 
-            $sectoresTurnos =
-                $dashboardService
-                ->obtenerSectoresTurnos();
-
-            $quejasPorArea =
-                $dashboardService
-                ->obtenerQuejasPorArea();
-
-            $quejasPorTurno =
-                $dashboardService
-                ->obtenerQuejasPorTurno();
-
-            $resoluciones =
-                $dashboardService
-                ->obtenerResoluciones();
-
-            $clasificaciones =
-                $dashboardService
-                ->obtenerClasificaciones();
-
-                $reportesRecientes =
-    $dashboardService
-    ->obtenerReportesRecientes(
-        6
-    );
-        } catch (\Throwable $e) {
-
-            log_message(
-                'error',
-                'Error consultando datos del Dashboard: {mensaje}',
-                [
-                    'mensaje' =>
-                    $e->getMessage(),
-                ]
+        $dashboardService
+            ->establecerFiltros(
+                $filtrosDashboard
             );
 
 
-            /*
+        /* =====================================================
+           OPCIONES DE LOS FILTROS
+
+           Área:
+           se obtiene desde la plantilla institucional.
+
+           Género / Unidad:
+           se obtienen desde los datos correspondientes.
+
+           Resolución:
+           ya no forma parte de las opciones de filtros.
+        ===================================================== */
+
+        $opcionesFiltros =
+            $dashboardService
+            ->obtenerOpcionesFiltros();
+
+
+        /* =====================================================
+           INDICADORES
+        ===================================================== */
+
+        $indicadores =
+            $dashboardService
+            ->obtenerIndicadores();
+
+
+        /* =====================================================
+           QUEJAS POR SECTORES Y TURNOS
+        ===================================================== */
+
+        $sectoresTurnos =
+            $dashboardService
+            ->obtenerSectoresTurnos();
+
+
+        /* =====================================================
+           QUEJAS POR ÁREA
+        ===================================================== */
+
+        $quejasPorArea =
+            $dashboardService
+            ->obtenerQuejasPorArea();
+
+
+        /* =====================================================
+           QUEJAS POR TURNO
+        ===================================================== */
+
+        $quejasPorTurno =
+            $dashboardService
+            ->obtenerQuejasPorTurno();
+
+
+        /* =====================================================
+           RESOLUCIONES
+
+           IMPORTANTE:
+           Se conserva la gráfica.
+
+           Resolución solamente dejó de ser un filtro.
+        ===================================================== */
+
+        $resoluciones =
+            $dashboardService
+            ->obtenerResoluciones();
+
+
+        /* =====================================================
+           CLASIFICACIONES
+
+           La gráfica continúa funcionando.
+
+           Clasificación permanece pendiente como filtro.
+        ===================================================== */
+
+        $clasificaciones =
+            $dashboardService
+            ->obtenerClasificaciones();
+
+
+        /* =====================================================
+           REPORTES RECIENTES
+        ===================================================== */
+
+        $reportesRecientes =
+            $dashboardService
+            ->obtenerReportesRecientes(
+                6
+            );
+
+    } catch (\Throwable $e) {
+
+        log_message(
+            'error',
+            'Error consultando datos del Dashboard: {mensaje}',
+            [
+                'mensaje' =>
+                    $e->getMessage(),
+            ]
+        );
+
+
+        /*
          * No impedimos cargar el Dashboard si ocurre
          * un problema con las estadísticas.
          */
 
 
-            /* =====================================================
+        /* =====================================================
+           VALORES POR DEFECTO - OPCIONES DE FILTROS
+        ===================================================== */
+
+        $opcionesFiltros = [
+
+            'areas' =>
+                [],
+
+            'generos' =>
+                [],
+
+            'unidades' =>
+                [],
+
+        ];
+
+
+        /* =====================================================
            VALORES POR DEFECTO - INDICADORES
         ===================================================== */
 
-            $indicadores = [
-                'total' => 0,
-                'pendientes' => 0,
-                'en_proceso' => 0,
-                'finalizados' => 0,
-            ];
+        $indicadores = [
+
+            'total' =>
+                0,
+
+            'pendientes' =>
+                0,
+
+            'en_proceso' =>
+                0,
+
+            'finalizados' =>
+                0,
+
+        ];
 
 
-            /* =====================================================
+        /* =====================================================
            VALORES POR DEFECTO - SECTORES Y TURNOS
         ===================================================== */
 
-            $sectoresTurnos = [
-                'sectores' => [],
-                'turnos' => [],
-            ];
+        $sectoresTurnos = [
 
-            $quejasPorArea = [
-                'areas' => [],
-                'totales' => [],
-            ];
+            'sectores' =>
+                [],
 
-            $quejasPorTurno = [
-                'turnos' => [],
-                'totales' => [],
-                'total' => 0,
-            ];
+            'turnos' =>
+                [],
 
-            $resoluciones = [
-                'resoluciones' => [],
-                'totales' => [],
-                'total' => 0,
-            ];
-
-            $clasificaciones = [
-                'clasificaciones' => [],
-                'totales' => [],
-                'total' => 0,
-            ];
-
-            $reportesRecientes = [];
-        }
+        ];
 
 
-        /* =========================================================
+        /* =====================================================
+           VALORES POR DEFECTO - ÁREAS
+        ===================================================== */
+
+        $quejasPorArea = [
+
+            'areas' =>
+                [],
+
+            'totales' =>
+                [],
+
+        ];
+
+
+        /* =====================================================
+           VALORES POR DEFECTO - TURNOS
+        ===================================================== */
+
+        $quejasPorTurno = [
+
+            'turnos' =>
+                [],
+
+            'totales' =>
+                [],
+
+            'total' =>
+                0,
+
+        ];
+
+
+        /* =====================================================
+           VALORES POR DEFECTO - RESOLUCIONES
+        ===================================================== */
+
+        $resoluciones = [
+
+            'resoluciones' =>
+                [],
+
+            'totales' =>
+                [],
+
+            'total' =>
+                0,
+
+        ];
+
+
+        /* =====================================================
+           VALORES POR DEFECTO - CLASIFICACIONES
+        ===================================================== */
+
+        $clasificaciones = [
+
+            'clasificaciones' =>
+                [],
+
+            'totales' =>
+                [],
+
+            'total' =>
+                0,
+
+        ];
+
+
+        /* =====================================================
+           REPORTES RECIENTES
+        ===================================================== */
+
+        $reportesRecientes =
+            [];
+    }
+
+
+    /* =========================================================
        VISTA
     ========================================================= */
 
-        return view(
-            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\index',
-            [
-                'requiereAutorizacionAdmin' =>
+    return view(
+        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\index',
+        [
+
+            'requiereAutorizacionAdmin' =>
                 $requiereAutorizacion,
 
-                'indicadores' =>
+
+            /* =================================================
+               FILTROS
+            ================================================= */
+
+            'opcionesFiltros' =>
+                $opcionesFiltros,
+
+
+            /* =================================================
+               DASHBOARD
+            ================================================= */
+
+            'indicadores' =>
                 $indicadores,
 
-                'sectoresTurnos' =>
+            'sectoresTurnos' =>
                 $sectoresTurnos,
 
-                'quejasPorArea' =>
+            'quejasPorArea' =>
                 $quejasPorArea,
 
-                'quejasPorTurno' =>
+            'quejasPorTurno' =>
                 $quejasPorTurno,
 
-                'resoluciones' =>
+            'resoluciones' =>
                 $resoluciones,
 
-                'clasificaciones' =>
+            'clasificaciones' =>
                 $clasificaciones,
 
-                'reportesRecientes' =>
-    $reportesRecientes,
-            ]
-        );
-    }
+            'reportesRecientes' =>
+                $reportesRecientes,
+
+        ]
+    );
+}
 
     public function exportarDashboard()
-    {
-        $secciones =
-            $this->request->getPost(
-                'secciones'
-            );
+{
+    /* =========================================================
+       SECCIONES A EXPORTAR
+    ========================================================= */
 
-        if (
-            ! is_array($secciones)
-            || empty($secciones)
-        ) {
-            return $this->response
-                ->setStatusCode(400)
-                ->setJSON([
-                    'success' => false,
-                    'message' =>
+    $secciones =
+        $this->request->getPost(
+            'secciones'
+        );
+
+
+    if (
+        !is_array($secciones)
+        || empty($secciones)
+    ) {
+
+        return $this->response
+            ->setStatusCode(400)
+            ->setJSON([
+                'success' => false,
+
+                'message' =>
                     'Selecciona al menos una sección para exportar.',
-                ]);
-        }
+            ]);
+    }
 
-        try {
 
-            $servicio =
-                new DashboardExcelService();
+    /* =========================================================
+       FILTROS ACTIVOS DEL DASHBOARD
 
-            $ruta =
-                $servicio->generar(
-                    $secciones
-                );
+       Deben corresponder con los mismos filtros utilizados
+       por el método dashboard().
 
-            return $this->response
-                ->download(
-                    $ruta,
-                    null
+       El JS los envía junto con las secciones seleccionadas.
+    ========================================================= */
+
+    $filtrosDashboard = [
+
+        /* =====================================================
+           FECHAS
+        ===================================================== */
+
+        'fecha_inicio' =>
+            trim(
+                (string) $this->request->getPost(
+                    'fecha_inicio'
                 )
-                ->setFileName(
-                    basename($ruta)
-                );
-        } catch (\Throwable $e) {
+            ),
 
-            log_message(
-                'error',
-                'Error exportando Dashboard: {mensaje}',
-                [
-                    'mensaje' => $e->getMessage(),
-                ]
+        'fecha_fin' =>
+            trim(
+                (string) $this->request->getPost(
+                    'fecha_fin'
+                )
+            ),
+
+        'periodo' =>
+            trim(
+                (string) $this->request->getPost(
+                    'periodo'
+                )
+            ),
+
+        'tipo_fecha' =>
+            trim(
+                (string) (
+                    $this->request->getPost(
+                        'tipo_fecha'
+                    )
+                    ?? 'registro'
+                )
+            ),
+
+
+        /* =====================================================
+           REPORTE
+        ===================================================== */
+
+        /*
+         * El frontend utiliza:
+         *
+         * estado_actual
+         *
+         * DashboardService utiliza internamente:
+         *
+         * estado
+         */
+
+        'estado' =>
+            trim(
+                (string) $this->request->getPost(
+                    'estado_actual'
+                )
+            ),
+
+        'seguimiento' =>
+            trim(
+                (string) $this->request->getPost(
+                    'seguimiento'
+                )
+            ),
+
+        'evidencia' =>
+            trim(
+                (string) $this->request->getPost(
+                    'evidencia'
+                )
+            ),
+
+
+        /* =====================================================
+           PERSONAL INVOLUCRADO
+        ===================================================== */
+
+        'area_personal' =>
+            trim(
+                (string) $this->request->getPost(
+                    'area_personal'
+                )
+            ),
+
+        'turno' =>
+            trim(
+                (string) $this->request->getPost(
+                    'turno'
+                )
+            ),
+
+
+        /* =====================================================
+           QUEJOSO
+        ===================================================== */
+
+        'genero' =>
+            trim(
+                (string) $this->request->getPost(
+                    'genero'
+                )
+            ),
+
+
+        /* =====================================================
+           UNIDAD
+        ===================================================== */
+
+        'unidad' =>
+            trim(
+                (string) $this->request->getPost(
+                    'unidad'
+                )
+            ),
+
+    ];
+
+
+    /* =========================================================
+       GENERAR ARCHIVO
+    ========================================================= */
+
+    try {
+
+        /*
+         * Ahora sí pasamos los filtros al servicio.
+         *
+         * DashboardExcelService los entrega a DashboardService,
+         * por lo que Excel utilizará exactamente las mismas
+         * consultas que las gráficas.
+         */
+
+        $servicio =
+            new DashboardExcelService(
+                $filtrosDashboard
             );
 
-            return $this->response
-                ->setStatusCode(500)
-                ->setJSON([
-                    'success' => false,
-                    'message' => $e->getMessage(),
-                    'archivo' => $e->getFile(),
-                    'linea' => $e->getLine(),
-                ]);
-        }
+
+        $ruta =
+            $servicio->generar(
+                $secciones
+            );
+
+
+        /* =====================================================
+           DESCARGAR
+        ===================================================== */
+
+        return $this->response
+            ->download(
+                $ruta,
+                null
+            )
+            ->setFileName(
+                basename(
+                    $ruta
+                )
+            );
+
+
+    } catch (\Throwable $e) {
+
+        log_message(
+            'error',
+            'Error exportando Dashboard: {mensaje}',
+            [
+                'mensaje' =>
+                    $e->getMessage(),
+            ]
+        );
+
+
+        return $this->response
+            ->setStatusCode(500)
+            ->setJSON([
+                'success' => false,
+
+                'message' =>
+                    $e->getMessage(),
+
+                /*
+                 * Los dejamos por ahora porque estamos
+                 * desarrollando y nos ayudan a localizar
+                 * rápidamente cualquier error.
+                 *
+                 * Antes de producción podemos retirarlos.
+                 */
+                'archivo' =>
+                    $e->getFile(),
+
+                'linea' =>
+                    $e->getLine(),
+            ]);
     }
+}
 
     public function exportarListado()
     {

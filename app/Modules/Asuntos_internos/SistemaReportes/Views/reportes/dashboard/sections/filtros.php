@@ -1,3 +1,56 @@
+<?php
+
+/* =========================================================
+   OPCIONES DINÁMICAS
+
+   Estas opciones son enviadas desde
+   DashboardService / Reportes_Controller.
+
+   Se inicializan vacías para evitar errores si alguna
+   opción todavía no está disponible.
+========================================================= */
+
+$opcionesFiltros =
+    $opcionesFiltros
+    ?? [];
+
+
+$areasFiltro =
+    $opcionesFiltros['areas']
+    ?? [];
+
+
+$generosFiltro =
+    $opcionesFiltros['generos']
+    ?? [];
+
+
+$unidadesFiltro =
+    $opcionesFiltros['unidades']
+    ?? [];
+
+
+/*
+ * Los turnos del Dashboard utilizan las mismas
+ * categorías analíticas que las gráficas.
+ *
+ * No usamos directamente todas las variantes
+ * existentes en plantilla.
+ */
+
+$turnosFiltro = [
+    'Primer turno',
+    'Segundo turno',
+    'Tercer turno',
+    'Alfa',
+    'Beta',
+    'Diario',
+    'No refiere ni fecha ni horario',
+];
+
+?>
+
+
 <section class="dashboard-filtros">
 
     <!-- =====================================================
@@ -12,12 +65,15 @@
                 class="dashboard-filtros__encabezado-icono"
                 aria-hidden="true"
             >
+
                 <svg viewBox="0 0 24 24">
                     <path d="M4 6h16"/>
                     <path d="M7 12h10"/>
                     <path d="M10 18h4"/>
                 </svg>
+
             </div>
+
 
             <div>
 
@@ -80,6 +136,51 @@
 
     <div class="dashboard-filtros__principales">
 
+        <!-- PERIODO -->
+        <div class="dashboard-filtros__campo">
+
+            <label for="dashboard-periodo">
+                Periodo rápido
+            </label>
+
+            <select
+                id="dashboard-periodo"
+                name="periodo"
+            >
+
+                <option value="actual">
+                    Mes actual
+                </option>
+
+                <option value="anterior">
+                    Mes anterior
+                </option>
+
+                <option value="trimestre">
+                    Últimos 3 meses
+                </option>
+
+                <option value="semestre">
+                    Últimos 6 meses
+                </option>
+
+                <option value="anio">
+                    Año actual
+                </option>
+
+                <option value="todo">
+                    Todo
+                </option>
+
+                <option value="personalizado">
+                    Personalizado
+                </option>
+
+            </select>
+
+        </div>
+
+
         <!-- DESDE -->
         <div class="dashboard-filtros__campo">
 
@@ -112,49 +213,6 @@
         </div>
 
 
-        <!-- PERIODO -->
-        <div class="dashboard-filtros__campo">
-
-            <label for="dashboard-periodo">
-                Periodo rápido
-            </label>
-
-            <select
-                id="dashboard-periodo"
-                name="periodo"
-            >
-                <option value="actual">
-                    Mes actual
-                </option>
-
-                <option value="anterior">
-                    Mes anterior
-                </option>
-
-                <option value="trimestre">
-                    Últimos 3 meses
-                </option>
-
-                <option value="semestre">
-                    Últimos 6 meses
-                </option>
-
-                <option value="anio">
-                    Año actual
-                </option>
-
-                <option value="todo">
-                    Todo
-                </option>
-
-                <option value="personalizado">
-                    Personalizado
-                </option>
-            </select>
-
-        </div>
-
-
         <!-- FECHA A ANALIZAR -->
         <div class="dashboard-filtros__campo">
 
@@ -166,6 +224,7 @@
                 id="dashboard-tipo-fecha"
                 name="tipo_fecha"
             >
+
                 <option value="registro">
                     Fecha de registro
                 </option>
@@ -181,6 +240,7 @@
                 <option value="acuerdo">
                     Fecha de acuerdo
                 </option>
+
             </select>
 
         </div>
@@ -198,107 +258,6 @@
         hidden
     >
 
-        <!-- =================================================
-             TERRITORIO
-        ================================================== -->
-
-        <div class="dashboard-filtros__grupo">
-
-            <div class="dashboard-filtros__grupo-encabezado">
-
-                <span class="dashboard-filtros__grupo-icono">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Z"/>
-                        <circle cx="12" cy="10" r="2"/>
-                    </svg>
-                </span>
-
-                <span>
-                    Territorio
-                </span>
-
-            </div>
-
-
-            <div class="dashboard-filtros__grupo-grid">
-
-                <div class="dashboard-filtros__campo">
-
-                    <label for="dashboard-sector">
-                        Sector / Área
-                    </label>
-
-                    <select
-                        id="dashboard-sector"
-                        name="sector"
-                    >
-                        <option value="">
-                            Todos
-                        </option>
-                    </select>
-
-                </div>
-
-
-                <div class="dashboard-filtros__campo">
-
-                    <label for="dashboard-zona">
-                        Zona
-                    </label>
-
-                    <select
-                        id="dashboard-zona"
-                        name="zona"
-                        disabled
-                        title="Pendiente de definir la relación entre sectores y zonas"
-                    >
-                        <option value="">
-                            Pendiente de configuración
-                        </option>
-                    </select>
-
-                </div>
-
-
-                <div class="dashboard-filtros__campo">
-
-                    <label for="dashboard-cuadrante">
-                        Cuadrante
-                    </label>
-
-                    <select
-                        id="dashboard-cuadrante"
-                        name="cuadrante"
-                    >
-                        <option value="">
-                            Todos
-                        </option>
-                    </select>
-
-                </div>
-
-
-                <div class="dashboard-filtros__campo">
-
-                    <label for="dashboard-colonia">
-                        Colonia
-                    </label>
-
-                    <select
-                        id="dashboard-colonia"
-                        name="colonia"
-                    >
-                        <option value="">
-                            Todas
-                        </option>
-                    </select>
-
-                </div>
-
-            </div>
-
-        </div>
-
 
         <!-- =================================================
              REPORTE
@@ -309,12 +268,14 @@
             <div class="dashboard-filtros__grupo-encabezado">
 
                 <span class="dashboard-filtros__grupo-icono">
+
                     <svg viewBox="0 0 24 24">
                         <path d="M6 3h9l3 3v15H6Z"/>
                         <path d="M15 3v4h4"/>
                         <path d="M9 11h6"/>
                         <path d="M9 15h6"/>
                     </svg>
+
                 </span>
 
                 <span>
@@ -326,6 +287,8 @@
 
             <div class="dashboard-filtros__grupo-grid">
 
+
+                <!-- ESTADO -->
                 <div class="dashboard-filtros__campo">
 
                     <label for="dashboard-estado">
@@ -336,6 +299,7 @@
                         id="dashboard-estado"
                         name="estado_actual"
                     >
+
                         <option value="">
                             Todos
                         </option>
@@ -351,47 +315,13 @@
                         <option value="Finalizado">
                             Finalizado
                         </option>
+
                     </select>
 
                 </div>
 
 
-                <div class="dashboard-filtros__campo">
-
-                    <label for="dashboard-clasificacion">
-                        Clasificación / Incidencia
-                    </label>
-
-                    <select
-                        id="dashboard-clasificacion"
-                        name="clasificacion"
-                    >
-                        <option value="">
-                            Todas
-                        </option>
-                    </select>
-
-                </div>
-
-
-                <div class="dashboard-filtros__campo">
-
-                    <label for="dashboard-resolucion">
-                        Resolución
-                    </label>
-
-                    <select
-                        id="dashboard-resolucion"
-                        name="resolucion"
-                    >
-                        <option value="">
-                            Todas
-                        </option>
-                    </select>
-
-                </div>
-
-
+                <!-- SEGUIMIENTO -->
                 <div class="dashboard-filtros__campo">
 
                     <label for="dashboard-seguimiento">
@@ -402,6 +332,7 @@
                         id="dashboard-seguimiento"
                         name="seguimiento"
                     >
+
                         <option value="">
                             Todos
                         </option>
@@ -413,11 +344,13 @@
                         <option value="sin">
                             Sin seguimiento
                         </option>
+
                     </select>
 
                 </div>
 
 
+                <!-- EVIDENCIA -->
                 <div class="dashboard-filtros__campo">
 
                     <label for="dashboard-evidencia">
@@ -428,8 +361,9 @@
                         id="dashboard-evidencia"
                         name="evidencia"
                     >
+
                         <option value="">
-                            Todos
+                            Todas
                         </option>
 
                         <option value="con">
@@ -439,40 +373,30 @@
                         <option value="sin">
                             Sin evidencia
                         </option>
+
                     </select>
 
                 </div>
 
 
+                <!-- CLASIFICACIÓN - PENDIENTE -->
                 <div class="dashboard-filtros__campo">
 
-                    <label for="dashboard-antiguedad">
-                        Antigüedad del caso
+                    <label for="dashboard-clasificacion">
+                        Clasificación
                     </label>
 
                     <select
-                        id="dashboard-antiguedad"
-                        name="antiguedad"
+                        id="dashboard-clasificacion"
+                        name="clasificacion"
+                        disabled
+                        title="Pendiente de definir el catálogo institucional de clasificación"
                     >
+
                         <option value="">
-                            Todas
+                            Pendiente de catálogo
                         </option>
 
-                        <option value="0-30">
-                            0 a 30 días
-                        </option>
-
-                        <option value="31-60">
-                            31 a 60 días
-                        </option>
-
-                        <option value="61-90">
-                            61 a 90 días
-                        </option>
-
-                        <option value="90+">
-                            Más de 90 días
-                        </option>
                     </select>
 
                 </div>
@@ -483,7 +407,7 @@
 
 
         <!-- =================================================
-             OPERACIÓN
+             PERSONAL INVOLUCRADO
         ================================================== -->
 
         <div class="dashboard-filtros__grupo">
@@ -491,14 +415,16 @@
             <div class="dashboard-filtros__grupo-encabezado">
 
                 <span class="dashboard-filtros__grupo-icono">
+
                     <svg viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="9"/>
-                        <path d="M12 7v5l3 2"/>
+                        <circle cx="12" cy="8" r="4"/>
+                        <path d="M5 21a7 7 0 0 1 14 0"/>
                     </svg>
+
                 </span>
 
                 <span>
-                    Operación
+                    Personal involucrado
                 </span>
 
             </div>
@@ -506,6 +432,42 @@
 
             <div class="dashboard-filtros__grupo-grid">
 
+
+                <!-- ÁREA INVOLUCRADA -->
+                <div class="dashboard-filtros__campo">
+
+                    <label for="dashboard-area-personal">
+                        Área involucrada
+                    </label>
+
+                    <select
+                        id="dashboard-area-personal"
+                        name="area_personal"
+                    >
+
+                        <option value="">
+                            Todas
+                        </option>
+
+                        <?php foreach (
+                            $areasFiltro
+                            as $area
+                        ): ?>
+
+                            <option
+                                value="<?= esc($area) ?>"
+                            >
+                                <?= esc($area) ?>
+                            </option>
+
+                        <?php endforeach; ?>
+
+                    </select>
+
+                </div>
+
+
+                <!-- TURNO -->
                 <div class="dashboard-filtros__campo">
 
                     <label for="dashboard-turno">
@@ -516,45 +478,24 @@
                         id="dashboard-turno"
                         name="turno"
                     >
+
                         <option value="">
                             Todos
                         </option>
-                    </select>
 
-                </div>
+                        <?php foreach (
+                            $turnosFiltro
+                            as $turno
+                        ): ?>
 
+                            <option
+                                value="<?= esc($turno) ?>"
+                            >
+                                <?= esc($turno) ?>
+                            </option>
 
-                <div class="dashboard-filtros__campo">
+                        <?php endforeach; ?>
 
-                    <label for="dashboard-area-personal">
-                        Área del personal
-                    </label>
-
-                    <select
-                        id="dashboard-area-personal"
-                        name="area_personal"
-                    >
-                        <option value="">
-                            Todas
-                        </option>
-                    </select>
-
-                </div>
-
-
-                <div class="dashboard-filtros__campo">
-
-                    <label for="dashboard-unidad">
-                        Unidad
-                    </label>
-
-                    <select
-                        id="dashboard-unidad"
-                        name="unidad"
-                    >
-                        <option value="">
-                            Todas
-                        </option>
                     </select>
 
                 </div>
@@ -565,7 +506,7 @@
 
 
         <!-- =================================================
-             RESPONSABLES
+             QUEJOSO
         ================================================== -->
 
         <div class="dashboard-filtros__grupo">
@@ -573,14 +514,16 @@
             <div class="dashboard-filtros__grupo-encabezado">
 
                 <span class="dashboard-filtros__grupo-icono">
+
                     <svg viewBox="0 0 24 24">
                         <circle cx="12" cy="8" r="4"/>
                         <path d="M5 21a7 7 0 0 1 14 0"/>
                     </svg>
+
                 </span>
 
                 <span>
-                    Responsables
+                    Quejoso
                 </span>
 
             </div>
@@ -588,55 +531,201 @@
 
             <div class="dashboard-filtros__grupo-grid">
 
+
+                <!-- GÉNERO -->
                 <div class="dashboard-filtros__campo">
 
-                    <label for="dashboard-inspector">
-                        Inspector
+                    <label for="dashboard-genero">
+                        Género
                     </label>
 
                     <select
-                        id="dashboard-inspector"
-                        name="inspector"
+                        id="dashboard-genero"
+                        name="genero"
                     >
+
                         <option value="">
                             Todos
                         </option>
+
+                        <?php foreach (
+                            $generosFiltro
+                            as $genero
+                        ): ?>
+
+                            <option
+                                value="<?= esc($genero) ?>"
+                            >
+                                <?= esc($genero) ?>
+                            </option>
+
+                        <?php endforeach; ?>
+
                     </select>
 
                 </div>
 
+            </div>
 
+        </div>
+
+
+        <!-- =================================================
+             UNIDADES
+        ================================================== -->
+
+        <div class="dashboard-filtros__grupo">
+
+            <div class="dashboard-filtros__grupo-encabezado">
+
+                <span class="dashboard-filtros__grupo-icono">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 13l2-5h14l2 5"/>
+                        <path d="M5 13h14v5H5Z"/>
+                        <circle cx="8" cy="17" r="1"/>
+                        <circle cx="16" cy="17" r="1"/>
+                    </svg>
+
+                </span>
+
+                <span>
+                    Unidades
+                </span>
+
+            </div>
+
+
+            <div class="dashboard-filtros__grupo-grid">
+
+
+                <!-- UNIDAD -->
                 <div class="dashboard-filtros__campo">
 
-                    <label for="dashboard-investigador">
-                        Investigador
+                    <label for="dashboard-unidad">
+                        Unidad involucrada
                     </label>
 
                     <select
-                        id="dashboard-investigador"
-                        name="investigador"
+                        id="dashboard-unidad"
+                        name="unidad"
                     >
+
                         <option value="">
-                            Todos
+                            Todas
                         </option>
+
+                        <?php foreach (
+                            $unidadesFiltro
+                            as $unidad
+                        ): ?>
+
+                            <?php
+
+                            if (is_array($unidad)) {
+
+                                $valorUnidad =
+                                    trim(
+                                        (string) (
+                                            $unidad['valor']
+                                            ?? $unidad['no_economico']
+                                            ?? $unidad['placas']
+                                            ?? ''
+                                        )
+                                    );
+
+
+                                $textoUnidad =
+                                    trim(
+                                        (string) (
+                                            $unidad['texto']
+                                            ?? $unidad['no_economico']
+                                            ?? $unidad['placas']
+                                            ?? $valorUnidad
+                                        )
+                                    );
+
+                            } else {
+
+                                $valorUnidad =
+                                    trim(
+                                        (string) $unidad
+                                    );
+
+
+                                $textoUnidad =
+                                    $valorUnidad;
+                            }
+
+                            ?>
+
+
+                            <?php if ($valorUnidad !== ''): ?>
+
+                                <option
+                                    value="<?= esc($valorUnidad) ?>"
+                                >
+                                    <?= esc($textoUnidad) ?>
+                                </option>
+
+                            <?php endif; ?>
+
+                        <?php endforeach; ?>
+
                     </select>
 
                 </div>
 
+            </div>
 
+        </div>
+
+
+        <!-- =================================================
+             PENDIENTES DE CONFIGURACIÓN
+        ================================================== -->
+
+        <div class="dashboard-filtros__grupo">
+
+            <div class="dashboard-filtros__grupo-encabezado">
+
+                <span class="dashboard-filtros__grupo-icono">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Z"/>
+                        <circle cx="12" cy="10" r="2"/>
+                    </svg>
+
+                </span>
+
+                <span>
+                    Configuración pendiente
+                </span>
+
+            </div>
+
+
+            <div class="dashboard-filtros__grupo-grid">
+
+
+                <!-- ZONA - PENDIENTE -->
                 <div class="dashboard-filtros__campo">
 
-                    <label for="dashboard-emite-resolucion">
-                        Emite resolución
+                    <label for="dashboard-zona">
+                        Zona
                     </label>
 
                     <select
-                        id="dashboard-emite-resolucion"
-                        name="emite_resolucion"
+                        id="dashboard-zona"
+                        name="zona"
+                        disabled
+                        title="Pendiente de definir la relación oficial entre sectores y zonas"
                     >
+
                         <option value="">
-                            Todos
+                            Pendiente de relación Sector → Zona
                         </option>
+
                     </select>
 
                 </div>
@@ -656,7 +745,9 @@
 
         <div class="dashboard-filtros__estado">
 
-            <span class="dashboard-filtros__estado-punto"></span>
+            <span
+                class="dashboard-filtros__estado-punto"
+            ></span>
 
             <span id="dashboard-filtros-estado">
                 Consulta general
@@ -688,7 +779,10 @@
                 id="dashboard-aplicar-filtros"
             >
 
-                <svg viewBox="0 0 24 24" aria-hidden="true">
+                <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                >
                     <path d="M4 6h16"/>
                     <path d="M7 12h10"/>
                     <path d="M10 18h4"/>
