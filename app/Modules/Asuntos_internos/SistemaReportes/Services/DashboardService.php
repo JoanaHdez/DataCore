@@ -25,8 +25,8 @@ class DashboardService
     }
 
     /* =========================================================
-   FILTROS DEL DASHBOARD
-========================================================= */
+    FILTROS DEL DASHBOARD
+    ========================================================= */
 
     /**
      * Define los filtros que utilizarán todas las consultas
@@ -43,28 +43,28 @@ class DashboardService
             ================================================= */
 
             'fecha_inicio' =>
-                $this->limpiarFiltro(
-                    $filtros['fecha_inicio']
+            $this->limpiarFiltro(
+                $filtros['fecha_inicio']
                     ?? null
-                ),
+            ),
 
             'fecha_fin' =>
-                $this->limpiarFiltro(
-                    $filtros['fecha_fin']
+            $this->limpiarFiltro(
+                $filtros['fecha_fin']
                     ?? null
-                ),
+            ),
 
             'periodo' =>
-                $this->limpiarFiltro(
-                    $filtros['periodo']
+            $this->limpiarFiltro(
+                $filtros['periodo']
                     ?? null
-                ),
+            ),
 
             'tipo_fecha' =>
-                $this->limpiarFiltro(
-                    $filtros['tipo_fecha']
+            $this->limpiarFiltro(
+                $filtros['tipo_fecha']
                     ?? 'registro'
-                ),
+            ),
 
 
             /* =================================================
@@ -72,22 +72,22 @@ class DashboardService
             ================================================= */
 
             'estado' =>
-                $this->limpiarFiltro(
-                    $filtros['estado']
+            $this->limpiarFiltro(
+                $filtros['estado']
                     ?? null
-                ),
+            ),
 
             'seguimiento' =>
-                $this->limpiarFiltro(
-                    $filtros['seguimiento']
+            $this->limpiarFiltro(
+                $filtros['seguimiento']
                     ?? null
-                ),
+            ),
 
             'evidencia' =>
-                $this->limpiarFiltro(
-                    $filtros['evidencia']
+            $this->limpiarFiltro(
+                $filtros['evidencia']
                     ?? null
-                ),
+            ),
 
 
             /* =================================================
@@ -95,16 +95,16 @@ class DashboardService
             ================================================= */
 
             'area_personal' =>
-                $this->limpiarFiltro(
-                    $filtros['area_personal']
+            $this->limpiarFiltro(
+                $filtros['area_personal']
                     ?? null
-                ),
+            ),
 
             'turno' =>
-                $this->limpiarFiltro(
-                    $filtros['turno']
+            $this->limpiarFiltro(
+                $filtros['turno']
                     ?? null
-                ),
+            ),
 
 
             /* =================================================
@@ -112,10 +112,10 @@ class DashboardService
             ================================================= */
 
             'genero' =>
-                $this->limpiarFiltro(
-                    $filtros['genero']
+            $this->limpiarFiltro(
+                $filtros['genero']
                     ?? null
-                ),
+            ),
 
 
             /* =================================================
@@ -123,10 +123,10 @@ class DashboardService
             ================================================= */
 
             'unidad' =>
-                $this->limpiarFiltro(
-                    $filtros['unidad']
+            $this->limpiarFiltro(
+                $filtros['unidad']
                     ?? null
-                ),
+            ),
         ];
     }
 
@@ -210,7 +210,7 @@ class DashboardService
                             ?? ''
                         )
                     )
-                    ?? ''
+                        ?? ''
                 );
 
 
@@ -308,28 +308,28 @@ class DashboardService
                 'placas',
             ])
             ->groupStart()
-                ->where(
-                    'no_economico IS NOT NULL',
-                    null,
-                    false
-                )
-                ->where(
-                    "TRIM(no_economico) != ''",
-                    null,
-                    false
-                )
-                ->orGroupStart()
-                    ->where(
-                        'placas IS NOT NULL',
-                        null,
-                        false
-                    )
-                    ->where(
-                        "TRIM(placas) != ''",
-                        null,
-                        false
-                    )
-                ->groupEnd()
+            ->where(
+                'no_economico IS NOT NULL',
+                null,
+                false
+            )
+            ->where(
+                "TRIM(no_economico) != ''",
+                null,
+                false
+            )
+            ->orGroupStart()
+            ->where(
+                'placas IS NOT NULL',
+                null,
+                false
+            )
+            ->where(
+                "TRIM(placas) != ''",
+                null,
+                false
+            )
+            ->groupEnd()
             ->groupEnd()
             ->orderBy(
                 'no_economico',
@@ -372,7 +372,7 @@ class DashboardService
                             ?? ''
                         )
                     )
-                    ?? ''
+                        ?? ''
                 );
 
 
@@ -386,7 +386,7 @@ class DashboardService
                             ?? ''
                         )
                     )
-                    ?? ''
+                        ?? ''
                 );
 
 
@@ -399,8 +399,8 @@ class DashboardService
 
             $valor =
                 $noEconomico !== ''
-                    ? $noEconomico
-                    : $placas;
+                ? $noEconomico
+                : $placas;
 
 
             if ($valor === '') {
@@ -453,7 +453,6 @@ class DashboardService
                     $noEconomico
                     . ' · '
                     . $placas;
-
             } else {
 
                 $texto =
@@ -464,16 +463,16 @@ class DashboardService
             $unidades[] = [
 
                 'valor' =>
-                    $valor,
+                $valor,
 
                 'texto' =>
-                    $texto,
+                $texto,
 
                 'no_economico' =>
-                    $noEconomico,
+                $noEconomico,
 
                 'placas' =>
-                    $placas,
+                $placas,
 
             ];
         }
@@ -487,8 +486,8 @@ class DashboardService
 
 
     /* =========================================================
-   APLICAR FILTROS COMUNES A AI_REPORTES
-========================================================= */
+    APLICAR FILTROS COMUNES A AI_REPORTES
+    ========================================================= */
 
     private function aplicarFiltrosReportes(
         $builder,
@@ -496,11 +495,11 @@ class DashboardService
     ) {
         $prefijo =
             $alias !== ''
-                ? rtrim(
-                    $alias,
-                    '.'
-                ) . '.'
-                : '';
+            ? rtrim(
+                $alias,
+                '.'
+            ) . '.'
+            : '';
 
 
         /* =====================================================
@@ -526,16 +525,16 @@ class DashboardService
             match ($tipoFecha) {
 
                 'queja' =>
-                    $prefijo . 'fecha_queja',
+                $prefijo . 'fecha_queja',
 
                 'hechos' =>
-                    $prefijo . 'fecha_hechos',
+                $prefijo . 'fecha_hechos',
 
                 'acuerdo' =>
-                    $prefijo . 'fecha_acuerdo',
+                $prefijo . 'fecha_acuerdo',
 
                 default =>
-                    $prefijo . 'fecha_registro',
+                $prefijo . 'fecha_registro',
             };
 
 
@@ -788,33 +787,33 @@ class DashboardService
         return match ($turno) {
 
             'Primer turno' =>
-                "(
+            "(
                     UPPER(COALESCE({$campo}, '')) LIKE '%PRIMERO%'
                     OR UPPER(COALESCE({$campo}, '')) LIKE '%PRIMER %'
                     OR UPPER(TRIM(COALESCE({$campo}, ''))) = 'PRIMER'
                 )",
 
             'Segundo turno' =>
-                "UPPER(COALESCE({$campo}, '')) LIKE '%SEGUNDO%'",
+            "UPPER(COALESCE({$campo}, '')) LIKE '%SEGUNDO%'",
 
             'Tercer turno' =>
-                "(
+            "(
                     UPPER(COALESCE({$campo}, '')) LIKE '%TERCERO%'
                     OR UPPER(COALESCE({$campo}, '')) LIKE '%TERCER %'
                     OR UPPER(TRIM(COALESCE({$campo}, ''))) = 'TERCER'
                 )",
 
             'Alfa' =>
-                "UPPER(COALESCE({$campo}, '')) LIKE '%ALFA%'",
+            "UPPER(COALESCE({$campo}, '')) LIKE '%ALFA%'",
 
             'Beta' =>
-                "UPPER(COALESCE({$campo}, '')) LIKE '%BETA%'",
+            "UPPER(COALESCE({$campo}, '')) LIKE '%BETA%'",
 
             'Diario' =>
-                "UPPER(COALESCE({$campo}, '')) LIKE '%DIARIO%'",
+            "UPPER(COALESCE({$campo}, '')) LIKE '%DIARIO%'",
 
             'No refiere ni fecha ni horario' =>
-                "(
+            "(
                     {$campo} IS NULL
                     OR TRIM(COALESCE({$campo}, '')) = ''
                     OR UPPER(COALESCE({$campo}, '')) LIKE '%NO REFIERE%'
@@ -822,7 +821,7 @@ class DashboardService
                 )",
 
             default =>
-                null,
+            null,
         };
     }
 
@@ -866,8 +865,8 @@ class DashboardService
 
 
         /* =====================================================
-       FILTROS DEL DASHBOARD
-    ===================================================== */
+        FILTROS DEL DASHBOARD
+        ===================================================== */
 
         $this->aplicarFiltrosReportes(
             $builder,
@@ -876,8 +875,8 @@ class DashboardService
 
 
         /* =====================================================
-       CONSULTAR
-    ===================================================== */
+        CONSULTAR
+        ===================================================== */
 
         $resultado =
             $builder
@@ -1239,6 +1238,224 @@ class DashboardService
         );
     }
 
+    /* =========================================================
+    QUEJAS POR ZONA
+
+    La zona NO se almacena en ai_reportes.
+
+    Se obtiene a partir del sector institucional registrado
+    históricamente en:
+
+    ai_reporte_personal.area_snapshot
+
+    Mapeo institucional:
+
+    SECTOR 01 - 03 → Zona Norte
+    SECTOR 04 - 07 → Zona Poniente
+    SECTOR 08 - 10 → Zona Centro
+    SECTOR 11 - 15 → Zona Oriente
+
+    IMPORTANTE:
+    Se cuentan REPORTES / QUEJAS, no personas.
+    ========================================================= */
+
+    public function obtenerQuejasPorZona(): array
+    {
+        /* =====================================================
+        ZONAS INSTITUCIONALES
+        ===================================================== */
+
+        $conteos = [
+            'Zona Norte' => 0,
+            'Zona Poniente' => 0,
+            'Zona Centro' => 0,
+            'Zona Oriente' => 0,
+        ];
+
+
+        /* =====================================================
+        CONSULTAR REPORTES + PERSONAL
+        ===================================================== */
+
+        $builder =
+            $this->db
+            ->table('ai_reportes r')
+            ->select([
+                'r.id_reporte',
+                'p.area_snapshot AS area',
+            ])
+            ->join(
+                'ai_reporte_personal p',
+                'p.id_reporte = r.id_reporte',
+                'inner'
+            );
+
+
+        /*
+     * Aplicamos todos los filtros comunes que ya tenga
+     * activos el Dashboard.
+     */
+
+        $this->aplicarFiltrosReportes(
+            $builder,
+            'r'
+        );
+
+
+        /*
+     * Una misma queja puede tener varias personas.
+     *
+     * Agrupamos inicialmente por reporte + área para reducir
+     * duplicados antes de realizar la clasificación.
+     */
+
+        $registros =
+            $builder
+            ->groupBy([
+                'r.id_reporte',
+                'p.area_snapshot',
+            ])
+            ->get()
+            ->getResultArray();
+
+
+        /* =====================================================
+        EVITAR DUPLICADOS
+
+        Si una queja tiene:
+
+        Persona A → SECTOR 01
+        Persona B → SECTOR 01
+        Persona C → SECTOR 02
+
+        Todos pertenecen a Zona Norte.
+
+        La queja cuenta solamente UNA VEZ para Zona Norte.
+        ===================================================== */
+
+        $reportesContados = [];
+
+
+        /* =====================================================
+        CONTABILIZAR
+        ===================================================== */
+
+        foreach ($registros as $registro) {
+
+            $idReporte =
+                (int) (
+                    $registro['id_reporte']
+                    ?? 0
+                );
+
+
+            if ($idReporte <= 0) {
+                continue;
+            }
+
+
+            /* =================================================
+            OBTENER SECTOR
+            ================================================= */
+
+            $sector =
+                $this->obtenerSectorDesdeArea(
+                    (string) (
+                        $registro['area']
+                        ?? ''
+                    )
+                );
+
+
+            /*
+         * Las áreas que no sean uno de los sectores 1-15
+         * no pertenecen a ninguna de estas cuatro zonas.
+         */
+
+            if ($sector === null) {
+                continue;
+            }
+
+
+            /* =================================================
+            OBTENER ZONA
+            ================================================= */
+
+            $zona =
+                $this->obtenerZonaDesdeSector(
+                    $sector
+                );
+
+
+            if (
+                $zona === null
+                || !array_key_exists(
+                    $zona,
+                    $conteos
+                )
+            ) {
+                continue;
+            }
+
+
+            /* =================================================
+            EVITAR CONTAR DOS VECES
+
+            reporte + zona
+            ================================================= */
+
+            $clave =
+                $idReporte
+                . '|'
+                . $zona;
+
+
+            if (
+                isset(
+                    $reportesContados[$clave]
+                )
+            ) {
+                continue;
+            }
+
+
+            $reportesContados[$clave] =
+                true;
+
+
+            /* =================================================
+            SUMAR QUEJA
+            ================================================= */
+
+            $conteos[$zona]++;
+        }
+
+
+        /* =====================================================
+        RESPUESTA
+        ===================================================== */
+
+        return [
+            'zonas' => [
+                'Zona Norte',
+                'Zona Poniente',
+                'Zona Centro',
+                'Zona Oriente',
+            ],
+
+            'totales' => [
+                $conteos['Zona Norte'],
+                $conteos['Zona Poniente'],
+                $conteos['Zona Centro'],
+                $conteos['Zona Oriente'],
+            ],
+
+            'total' =>
+            array_sum(
+                $conteos
+            ),
+        ];
+    }
 
     /* =========================================================
        CLASIFICAR TURNO
@@ -1248,6 +1465,102 @@ class DashboardService
 
        Las agrupamos por familia.
     ========================================================= */
+
+    /* =========================================================
+    OBTENER ZONA DESDE SECTOR
+    ========================================================= */
+
+    private function obtenerZonaDesdeSector(
+        string $sector
+    ): ?string {
+
+        /*
+     * obtenerSectorDesdeArea() nos entrega valores como:
+     *
+     * SECTOR 1
+     * SECTOR 2
+     * ...
+     * SECTOR 15
+     */
+
+        if (
+            !preg_match(
+                '/^SECTOR\s+([0-9]+)$/u',
+                trim($sector),
+                $coincidencias
+            )
+        ) {
+
+            return null;
+        }
+
+
+        $numero =
+            (int) (
+                $coincidencias[1]
+                ?? 0
+            );
+
+
+        /* =====================================================
+        ZONA NORTE
+        Sectores 1 - 3
+        ===================================================== */
+
+        if (
+            $numero >= 1
+            && $numero <= 3
+        ) {
+
+            return 'Zona Norte';
+        }
+
+
+        /* =====================================================
+        ZONA PONIENTE
+        Sectores 4 - 7
+        ===================================================== */
+
+        if (
+            $numero >= 4
+            && $numero <= 7
+        ) {
+
+            return 'Zona Poniente';
+        }
+
+
+        /* =====================================================
+        ZONA CENTRO
+        Sectores 8 - 10
+        ===================================================== */
+
+        if (
+            $numero >= 8
+            && $numero <= 10
+        ) {
+
+            return 'Zona Centro';
+        }
+
+
+        /* =====================================================
+        ZONA ORIENTE
+        Sectores 11 - 15
+        ===================================================== */
+
+        if (
+            $numero >= 11
+            && $numero <= 15
+        ) {
+
+            return 'Zona Oriente';
+        }
+
+
+        return null;
+    }
+
 
     private function clasificarTurnoDashboard(
         string $turno
@@ -1414,8 +1727,8 @@ class DashboardService
     }
 
     /* =========================================================
-   QUEJAS POR ÁREA
-========================================================= */
+    QUEJAS POR ÁREA
+    ========================================================= */
 
     public function obtenerQuejasPorArea(): array
     {
@@ -1465,8 +1778,8 @@ class DashboardService
 
 
         /* =====================================================
-       AGRUPAR
-    ===================================================== */
+        AGRUPAR
+        ===================================================== */
 
         $conteos = [];
 
@@ -1522,8 +1835,8 @@ class DashboardService
 
 
         /* =====================================================
-       ORDENAR DE MAYOR A MENOR
-    ===================================================== */
+        ORDENAR DE MAYOR A MENOR
+        ===================================================== */
 
         arsort(
             $conteos,
@@ -1532,8 +1845,8 @@ class DashboardService
 
 
         /* =====================================================
-       FORMATO PARA CHART.JS
-    ===================================================== */
+        FORMATO PARA CHART.JS
+        ===================================================== */
 
         $areas = [];
         $totales = [];
@@ -1563,8 +1876,8 @@ class DashboardService
     }
 
     /* =========================================================
-   QUEJAS POR TURNO
-========================================================= */
+    QUEJAS POR TURNO
+    ========================================================= */
 
     public function obtenerQuejasPorTurno(): array
     {
@@ -1603,8 +1916,8 @@ class DashboardService
 
 
         /* =====================================================
-       CATEGORÍAS DEL DASHBOARD
-    ===================================================== */
+        CATEGORÍAS DEL DASHBOARD
+        ===================================================== */
 
         $conteos = [
             'Primer turno' => 0,
@@ -1709,8 +2022,8 @@ class DashboardService
 
 
         /* =====================================================
-       RESPUESTA
-    ===================================================== */
+        RESPUESTA
+        ===================================================== */
 
         return [
             'turnos' => [
@@ -1741,8 +2054,8 @@ class DashboardService
     }
 
     /* =========================================================
-   RESOLUCIÓN GENERAL
-========================================================= */
+    RESOLUCIÓN GENERAL
+    ========================================================= */
 
     public function obtenerResoluciones(): array
     {
@@ -1770,8 +2083,8 @@ class DashboardService
             ->getResultArray();
 
         /* =====================================================
-       AGRUPAR RESOLUCIONES
-    ===================================================== */
+        AGRUPAR RESOLUCIONES
+        ===================================================== */
 
         $conteos = [];
 
@@ -1839,8 +2152,8 @@ class DashboardService
 
 
         /* =====================================================
-       ORDENAR DE MAYOR A MENOR
-    ===================================================== */
+        ORDENAR DE MAYOR A MENOR
+        ===================================================== */
 
         uasort(
             $conteos,
@@ -1858,8 +2171,8 @@ class DashboardService
 
 
         /* =====================================================
-       PREPARAR RESPUESTA
-    ===================================================== */
+        PREPARAR RESPUESTA
+        ===================================================== */
 
         $resoluciones = [];
         $totales = [];
@@ -1891,9 +2204,9 @@ class DashboardService
     }
 
     /* =========================================================
-   CATÁLOGO GENERAL
-   QUEJAS POR CLASIFICACIÓN
-========================================================= */
+    CATÁLOGO GENERAL
+    QUEJAS POR CLASIFICACIÓN
+    ========================================================= */
 
     public function obtenerClasificaciones(): array
     {
@@ -1926,8 +2239,8 @@ class DashboardService
 
 
         /* =====================================================
-       AGRUPAR CLASIFICACIONES
-    ===================================================== */
+        AGRUPAR CLASIFICACIONES
+        ===================================================== */
 
         $conteos = [];
 
@@ -2000,8 +2313,8 @@ class DashboardService
 
 
         /* =====================================================
-       ORDENAR DE MAYOR A MENOR
-    ===================================================== */
+        ORDENAR DE MAYOR A MENOR
+        ===================================================== */
 
         uasort(
             $conteos,
@@ -2019,8 +2332,8 @@ class DashboardService
 
 
         /* =====================================================
-       PREPARAR RESPUESTA
-    ===================================================== */
+        PREPARAR RESPUESTA
+        ===================================================== */
 
         $clasificaciones = [];
         $totales = [];
@@ -2052,12 +2365,8 @@ class DashboardService
     }
 
     /* =========================================================
-   REPORTES RECIENTES
-========================================================= */
-
-    /* =========================================================
-   REPORTES RECIENTES
-========================================================= */
+    REPORTES RECIENTES
+    ========================================================= */
 
     public function obtenerReportesRecientes(
         int $limite = 6
@@ -2110,8 +2419,8 @@ class DashboardService
 
 
             /* =====================================================
-           ÁREA DEL PERSONAL RELACIONADO
-        ===================================================== */
+            ÁREA DEL PERSONAL RELACIONADO
+            ===================================================== */
 
             $area =
                 '—';
@@ -2160,8 +2469,8 @@ class DashboardService
 
 
             /* =====================================================
-           FECHA
-        ===================================================== */
+            FECHA
+            ===================================================== */
 
             $fecha =
                 $registro['fecha_registro']
@@ -2192,8 +2501,8 @@ class DashboardService
 
 
             /* =====================================================
-           RESPUESTA
-        ===================================================== */
+            RESPUESTA
+            ===================================================== */
 
             $reportes[] = [
 

@@ -1,3 +1,9 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   Dashboard - Gráfica de zonas
+========================================================= */
+
+
 document.addEventListener(
     'DOMContentLoaded',
     () => {
@@ -30,25 +36,95 @@ function inicializarGraficaZonas() {
 
 
     /* =====================================================
-       DATOS TEMPORALES
-       Basados en el dashboard de Excel
+       DATOS REALES
     ===================================================== */
+
+    const datosElemento =
+        document.querySelector(
+            '#dashboard-datos-zonas'
+        );
+
+
+    if (!datosElemento) {
+
+        console.warn(
+            'No se encontraron los datos de la gráfica de zonas.'
+        );
+
+        return;
+    }
+
+
+    let datosServidor;
+
+
+    try {
+
+        datosServidor =
+            JSON.parse(
+                datosElemento.textContent
+                || '{}'
+            );
+
+    } catch (error) {
+
+        console.error(
+            'No fue posible interpretar los datos de zonas:',
+            error
+        );
+
+        return;
+    }
+
+
+    /* =====================================================
+       NORMALIZAR DATOS
+    ===================================================== */
+
+    const labels =
+        Array.isArray(
+            datosServidor.zonas
+        )
+            ? datosServidor.zonas.map(
+                (zona) =>
+                    String(
+                        zona
+                        || ''
+                    ).trim()
+            )
+            : [];
+
+
+    const valores =
+        Array.isArray(
+            datosServidor.totales
+        )
+            ? datosServidor.totales.map(
+                (valor) => {
+
+                    const numero =
+                        Number(
+                            valor
+                            || 0
+                        );
+
+
+                    return Number.isFinite(
+                        numero
+                    )
+                        ? numero
+                        : 0;
+
+                }
+            )
+            : [];
+
 
     const datosZonas = {
 
-        labels: [
-            'Zona Oriente',
-            'Zona Centro',
-            'Zona Poniente',
-            'Zona Norte',
-        ],
+        labels,
 
-        valores: [
-            45,
-            51,
-            49,
-            45,
-        ],
+        valores,
 
     };
 
@@ -67,7 +143,8 @@ function inicializarGraficaZonas() {
                 return (
                     acumulado
                     + Number(
-                        valor || 0
+                        valor
+                        || 0
                     )
                 );
 
@@ -99,8 +176,14 @@ function inicializarGraficaZonas() {
     new Chart(
         canvas,
         {
+
             type:
                 'bar',
+
+
+            /* =================================================
+               DATOS
+            ================================================= */
 
             data: {
 
@@ -109,11 +192,17 @@ function inicializarGraficaZonas() {
 
                 datasets: [
                     {
+
                         label:
                             'Quejas',
 
                         data:
                             datosZonas.valores,
+
+
+                        /* =========================================
+                           COLORES
+                        ========================================= */
 
                         backgroundColor: [
                             'rgba(61, 157, 128, 0.58)',
@@ -129,6 +218,11 @@ function inicializarGraficaZonas() {
                             'rgba(102, 187, 160, 0.78)',
                         ],
 
+
+                        /* =========================================
+                           BARRAS
+                        ========================================= */
+
                         borderWidth:
                             0,
 
@@ -136,6 +230,7 @@ function inicializarGraficaZonas() {
                             false,
 
                         borderRadius: {
+
                             topLeft:
                                 18,
 
@@ -147,6 +242,7 @@ function inicializarGraficaZonas() {
 
                             bottomRight:
                                 18,
+
                         },
 
                         categoryPercentage:
@@ -162,6 +258,11 @@ function inicializarGraficaZonas() {
                 ],
 
             },
+
+
+            /* =================================================
+               OPCIONES
+            ================================================= */
 
             options: {
 
@@ -233,6 +334,10 @@ function inicializarGraficaZonas() {
 
                 scales: {
 
+                    /* =============================================
+                       EJE X
+                    ============================================= */
+
                     x: {
 
                         border: {
@@ -272,13 +377,15 @@ function inicializarGraficaZonas() {
                     },
 
 
+                    /* =============================================
+                       EJE Y
+                    ============================================= */
+
                     y: {
 
                         beginAtZero:
                             true,
 
-                        suggestedMax:
-                            60,
 
                         border: {
 
@@ -287,13 +394,50 @@ function inicializarGraficaZonas() {
 
                         },
 
+
                         ticks: {
+
+                            /*
+                             * Las quejas son cantidades enteras.
+                             *
+                             * Evitamos mostrar:
+                             *
+                             * 0.1
+                             * 0.2
+                             * 0.3
+                             *
+                             * cuando solamente existen
+                             * una o dos quejas.
+                             */
 
                             precision:
                                 0,
 
-                            stepSize:
-                                10,
+
+                            callback(
+                                value
+                            ) {
+
+                                const numero =
+                                    Number(
+                                        value
+                                    );
+
+
+                                if (
+                                    Number.isInteger(
+                                        numero
+                                    )
+                                ) {
+
+                                    return numero;
+                                }
+
+
+                                return null;
+
+                            },
+
 
                             padding:
                                 8,
@@ -309,6 +453,7 @@ function inicializarGraficaZonas() {
                             },
 
                         },
+
 
                         grid: {
 
@@ -384,6 +529,7 @@ function inicializarGraficaZonas() {
                         caretPadding:
                             8,
 
+
                         titleFont: {
 
                             size:
@@ -394,6 +540,7 @@ function inicializarGraficaZonas() {
 
                         },
 
+
                         bodyFont: {
 
                             size:
@@ -403,6 +550,7 @@ function inicializarGraficaZonas() {
                                 '800',
 
                         },
+
 
                         callbacks: {
 
@@ -431,7 +579,9 @@ function inicializarGraficaZonas() {
 
 
                                 return (
-                                    `${valor} quejas`
+                                    valor === 1
+                                        ? '1 queja'
+                                        : `${valor} quejas`
                                 );
 
                             },

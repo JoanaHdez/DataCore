@@ -1529,6 +1529,13 @@ class Reportes_Controller extends BaseController
                 $dashboardService
                 ->obtenerQuejasPorArea();
 
+            /* =====================================================
+            QUEJAS POR ZONA
+            ===================================================== */
+
+            $quejasPorZona =
+                $dashboardService
+                ->obtenerQuejasPorZona();
 
             /* =====================================================
             QUEJAS POR TURNO
@@ -1663,6 +1670,28 @@ class Reportes_Controller extends BaseController
 
 
             /* =====================================================
+            VALORES POR DEFECTO - ZONAS
+            ===================================================== */
+
+            $quejasPorZona = [
+                'zonas' => [
+                    'Zona Norte',
+                    'Zona Poniente',
+                    'Zona Centro',
+                    'Zona Oriente',
+                ],
+
+                'totales' => [
+                    0,
+                    0,
+                    0,
+                    0,
+                ],
+
+                'total' => 0,
+            ];
+
+            /* =====================================================
             VALORES POR DEFECTO - TURNOS
             ===================================================== */
 
@@ -1757,6 +1786,9 @@ class Reportes_Controller extends BaseController
 
                 'quejasPorArea' =>
                 $quejasPorArea,
+
+                'quejasPorZona' =>
+                $quejasPorZona,
 
                 'quejasPorTurno' =>
                 $quejasPorTurno,
