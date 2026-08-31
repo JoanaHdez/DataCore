@@ -211,8 +211,8 @@ class ReporteService
     }
 
     /* =========================================================
-   ACTUALIZAR REPORTE COMPLETO
-========================================================= */
+    ACTUALIZAR REPORTE COMPLETO
+    ========================================================= */
 
     public function actualizar(
         int $idReporte,
@@ -241,8 +241,8 @@ class ReporteService
 
 
         /* =====================================================
-       VALIDAR REPORTE
-    ===================================================== */
+        VALIDAR REPORTE
+        ===================================================== */
 
         $reporteActual =
             $this->db
@@ -277,13 +277,8 @@ class ReporteService
         try {
 
             /* =================================================
-           PREPARAR DATOS PRINCIPALES
-        ================================================= */
-
-            /*
-         * Reutilizamos exactamente las mismas
-         * validaciones utilizadas al registrar.
-         */
+            PREPARAR DATOS PRINCIPALES
+            ================================================= */
 
             $datosReporte =
                 $this->prepararDatosReporte(
@@ -297,8 +292,6 @@ class ReporteService
          *
          * created_by
          * eliminado
-         *
-         * En cambio registramos updated_by.
          */
 
             unset(
@@ -312,8 +305,8 @@ class ReporteService
 
 
             /* =================================================
-           ACTUALIZAR REPORTE
-        ================================================= */
+            ACTUALIZAR REPORTE
+            ================================================= */
 
             $actualizado =
                 $this->reporteModel
@@ -332,18 +325,8 @@ class ReporteService
 
 
             /* =================================================
-           PERSONAL
-        ================================================= */
-
-            /*
-         * Para esta primera implementación sustituimos
-         * las relaciones actuales por el estado final
-         * enviado desde el formulario.
-         *
-         * Los datos son snapshots, por lo que este flujo
-         * mantiene exactamente lo que quedó seleccionado
-         * durante la edición.
-         */
+            PERSONAL
+            ================================================= */
 
             $this->db
                 ->table('ai_reporte_personal')
@@ -361,8 +344,8 @@ class ReporteService
 
 
             /* =================================================
-           UNIDADES
-        ================================================= */
+            UNIDADES
+            ================================================= */
 
             $this->db
                 ->table('ai_reporte_unidades')
@@ -380,8 +363,29 @@ class ReporteService
 
 
             /* =================================================
-           EVIDENCIAS ELIMINADAS
-        ================================================= */
+            SANCIÓN DISCIPLINARIA
+
+            IMPORTANTE:
+            Editar solamente corrige la sanción vigente.
+
+            NO crea:
+            - seguimiento;
+            - nueva sanción histórica.
+
+            Los acontecimientos nuevos se registrarán
+            posteriormente desde Seguimiento.
+            ================================================= */
+
+            $this->corregirSancionDesdeEdicion(
+                $idReporte,
+                $datos,
+                $idUsuario
+            );
+
+
+            /* =================================================
+            EVIDENCIAS ELIMINADAS
+            ================================================= */
 
             $this->marcarEvidenciasEliminadas(
                 $idReporte,
@@ -391,8 +395,8 @@ class ReporteService
 
 
             /* =================================================
-           EVIDENCIAS NUEVAS
-        ================================================= */
+            EVIDENCIAS NUEVAS
+            ================================================= */
 
             $rutasCreadas =
                 $this->guardarEvidencias(
@@ -403,8 +407,8 @@ class ReporteService
 
 
             /* =================================================
-           VALIDAR TRANSACCIÓN
-        ================================================= */
+            VALIDAR TRANSACCIÓN
+            ================================================= */
 
             if (
                 $this->db->transStatus()
@@ -438,9 +442,8 @@ class ReporteService
 
 
             /*
-         * Si durante la edición se alcanzaron
-         * a crear archivos nuevos pero la BD
-         * hizo rollback, eliminamos esos archivos.
+         * Si se alcanzaron a crear archivos nuevos,
+         * pero la transacción falló, los eliminamos.
          */
 
             foreach (
@@ -1163,6 +1166,376 @@ class ReporteService
         }
     }
 
+    /* =========================================================
+    CORREGIR SANCIÓN DESDE EDITAR
+    ========================================================= */
+
+    protected function corregirSancionDesdeEdicion(
+        int $idReporte,
+        array $datos,
+        int $idUsuario
+    ): void {
+
+        /* =====================================================
+        ¿REALMENTE FUE MODIFICADA?
+        ===================================================== */
+
+        $modificada =
+            trim(
+                (string) (
+                    $datos['sancion_modificada']
+                    ?? '0'
+                )
+            );
+
+
+        if ($modificada !== '1') {
+
+            return;
+        }
+
+
+        /* =====================================================
+        VALIDAR ORIGEN DEL CAMBIO
+        ===================================================== */
+
+        $origenCambio =
+            trim(
+                (string) (
+                    $datos['sancion_origen_cambio']
+                    ?? ''
+                )
+            );
+
+
+        if ($origenCambio !== 'edicion') {
+
+            throw new \InvalidArgumentException(
+                'El origen de la modificación de la sanción no es válido.'
+            );
+        }
+
+
+        /* =====================================================
+        VALORES NUEVOS
+        ===================================================== */
+
+        $tipo =
+            trim(
+                (string) (
+                    $datos['sancion_disciplinaria']
+                    ?? ''
+                )
+            );
+
+
+        $descripcionOtro =
+            trim(
+                (string) (
+                    $datos['sancion_otro']
+                    ?? ''
+                )
+            );
+
+
+        /* =====================================================
+        SANCIÓN ACTUAL
+        ===================================================== */
+
+        $sancionActual =
+            $this->db
+            ->table(
+                'ai_reporte_sanciones'
+            )
+            ->where(
+                'id_reporte',
+                $idReporte
+            )
+            ->where(
+                'es_actual',
+                1
+            )
+            ->where(
+                'eliminado',
+                0
+            )
+            ->orderBy(
+                'id_sancion',
+                'DESC'
+            )
+            ->get()
+            ->getRowArray();
+
+
+        /* =====================================================
+        SIN SANCIÓN
+
+        Si antes existía una sanción pero el usuario
+        confirma que fue una captura incorrecta,
+        la retiramos como sanción vigente.
+        ===================================================== */
+
+        if ($tipo === '') {
+
+            if (!$sancionActual) {
+
+                return;
+            }
+
+
+            $actualizado =
+                $this->db
+                ->table(
+                    'ai_reporte_sanciones'
+                )
+                ->where(
+                    'id_sancion',
+                    (int) $sancionActual['id_sancion']
+                )
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->update([
+
+                    'es_actual' =>
+                    0,
+
+                    'updated_by' =>
+                    $idUsuario,
+
+                    'updated_at' =>
+                    date(
+                        'Y-m-d H:i:s'
+                    ),
+
+                    /*
+                 * Al tratarse de una corrección que elimina
+                 * una sanción capturada por error, dejamos
+                 * el registro como eliminado lógicamente.
+                 */
+
+                    'eliminado' =>
+                    1,
+
+                    'eliminado_at' =>
+                    date(
+                        'Y-m-d H:i:s'
+                    ),
+
+                    'eliminado_por' =>
+                    $idUsuario,
+
+                ]);
+
+
+            if ($actualizado === false) {
+
+                throw new \RuntimeException(
+                    'No fue posible retirar la sanción disciplinaria.'
+                );
+            }
+
+
+            return;
+        }
+
+
+        /* =====================================================
+        VALIDAR CATÁLOGO
+        ===================================================== */
+
+        $tiposPermitidos = [
+            'Arresto',
+            'Amonestación',
+            'Otro',
+        ];
+
+
+        if (
+            !in_array(
+                $tipo,
+                $tiposPermitidos,
+                true
+            )
+        ) {
+
+            throw new \InvalidArgumentException(
+                'La sanción disciplinaria seleccionada no es válida.'
+            );
+        }
+
+
+        /* =====================================================
+        VALIDAR "OTRO"
+        ===================================================== */
+
+        if ($tipo === 'Otro') {
+
+            if ($descripcionOtro === '') {
+
+                throw new \InvalidArgumentException(
+                    'Debes especificar la sanción disciplinaria.'
+                );
+            }
+
+
+            if (
+                mb_strlen(
+                    $descripcionOtro
+                ) > 255
+            ) {
+
+                throw new \InvalidArgumentException(
+                    'La descripción de la sanción no puede exceder 255 caracteres.'
+                );
+            }
+        } else {
+
+            /*
+         * Arresto y Amonestación jamás deben conservar
+         * texto residual de "Otro".
+         */
+
+            $descripcionOtro =
+                null;
+        }
+
+
+        /* =====================================================
+        NO EXISTÍA SANCIÓN
+
+        Por ejemplo:
+
+        Sin sanción
+                ↓ corrección
+        Arresto
+
+        Como no existe fila anterior, creamos una.
+        ===================================================== */
+
+        if (!$sancionActual) {
+
+            $insertado =
+                $this->db
+                ->table(
+                    'ai_reporte_sanciones'
+                )
+                ->insert([
+
+                    'id_reporte' =>
+                    $idReporte,
+
+                    'tipo' =>
+                    $tipo,
+
+                    'descripcion_otro' =>
+                    $descripcionOtro,
+
+                    'origen' =>
+                    'edicion',
+
+                    'id_seguimiento' =>
+                    null,
+
+                    'es_actual' =>
+                    1,
+
+                    'created_by' =>
+                    $idUsuario,
+
+                    'eliminado' =>
+                    0,
+
+                ]);
+
+
+            if ($insertado === false) {
+
+                throw new \RuntimeException(
+                    'No fue posible registrar la sanción disciplinaria.'
+                );
+            }
+
+
+            return;
+        }
+
+
+        /* =====================================================
+        YA EXISTÍA SANCIÓN
+
+        Es una CORRECCIÓN, no un acontecimiento nuevo.
+
+        Por lo tanto actualizamos la misma fila.
+        ===================================================== */
+
+        $datosActualizacion = [
+
+            'tipo' =>
+            $tipo,
+
+            'descripcion_otro' =>
+            $descripcionOtro,
+
+            'updated_by' =>
+            $idUsuario,
+
+            'updated_at' =>
+            date(
+                'Y-m-d H:i:s'
+            ),
+
+        ];
+
+
+        /*
+     * MUY IMPORTANTE:
+     *
+     * NO cambiamos "origen".
+     *
+     * Si la sanción originalmente nació en Seguimiento,
+     * debe continuar indicando que provino de Seguimiento.
+     *
+     * Editar solamente está corrigiendo el contenido.
+     */
+
+
+        $actualizado =
+            $this->db
+            ->table(
+                'ai_reporte_sanciones'
+            )
+            ->where(
+                'id_sancion',
+                (int) $sancionActual['id_sancion']
+            )
+            ->where(
+                'id_reporte',
+                $idReporte
+            )
+            ->where(
+                'es_actual',
+                1
+            )
+            ->where(
+                'eliminado',
+                0
+            )
+            ->update(
+                $datosActualizacion
+            );
+
+
+        if ($actualizado === false) {
+
+            throw new \RuntimeException(
+                'No fue posible corregir la sanción disciplinaria.'
+            );
+        }
+    }
+
+    
     /* =========================================================
        UNIDADES
     ========================================================= */

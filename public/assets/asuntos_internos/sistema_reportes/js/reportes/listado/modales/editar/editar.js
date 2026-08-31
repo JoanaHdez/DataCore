@@ -38,8 +38,16 @@ import {
 import {
     cargarReporteEnFormulario,
     obtenerReporteDesdeFormulario,
-    actualizarFilaDesdeReporte,
 } from './formulario.js';
+
+import {
+    inicializarEditarSancion,
+    cargarSancionEditar,
+    validarSancionEditar,
+    sancionFueModificada,
+    obtenerSancionEditar,
+    obtenerTextoSancionEditar,
+} from './sanciones.js';
 
 
 /* =========================================================
@@ -90,6 +98,11 @@ export function inicializarEditarReporte() {
     inicializarEditarEvidencia(
         modal,
         formulario
+    );
+
+
+    inicializarEditarSancion(
+        modal
     );
 
 
@@ -144,11 +157,6 @@ export function inicializarEditarReporte() {
             }
 
 
-            /*
-             * Evitamos abrir el modal con información
-             * anterior mientras consultamos la BD.
-             */
-
             boton.disabled =
                 true;
 
@@ -198,12 +206,6 @@ export function inicializarEditarReporte() {
                 );
 
 
-                /*
-                 * Conservamos temporalmente el objeto porque
-                 * el flujo actual de formulario todavía lo usa
-                 * al obtener los cambios.
-                 */
-
                 reportesTemporales.set(
                     reporte.folio,
                     reporte
@@ -218,6 +220,20 @@ export function inicializarEditarReporte() {
                     modal,
                     formulario,
                     reporte
+                );
+
+
+                /*
+                 * La sanción se carga directamente desde
+                 * la respuesta real del backend.
+                 *
+                 * Así evitamos que pueda perderse durante
+                 * la adaptación del objeto del reporte.
+                 */
+
+                cargarSancionEditar(
+                    modal,
+                    datos.sancion
                 );
 
 
@@ -268,7 +284,6 @@ export function inicializarEditarReporte() {
 
                 boton.disabled =
                     false;
-
             }
 
         }
@@ -276,8 +291,8 @@ export function inicializarEditarReporte() {
 
 
     /* =====================================================
-   GUARDAR CAMBIOS
-===================================================== */
+       GUARDAR CAMBIOS
+    ===================================================== */
 
     formulario.addEventListener(
         'submit',
@@ -348,6 +363,91 @@ export function inicializarEditarReporte() {
 
 
             /* =================================================
+               VALIDAR SANCIÓN
+            ================================================= */
+
+            if (
+                !validarSancionEditar(
+                    modal
+                )
+            ) {
+                return;
+            }
+
+
+            /* =================================================
+               DETECTAR CAMBIO DE SANCIÓN
+            ================================================= */
+
+            const cambioSancion =
+                sancionFueModificada(
+                    modal
+                );
+
+
+            if (cambioSancion) {
+
+                const sancionNueva =
+                    obtenerSancionEditar(
+                        modal
+                    );
+
+
+                const sancionAnterior =
+                    reporteAnterior.sancion
+                    || null;
+
+
+                const textoAnterior =
+                    obtenerTextoSancionEditar(
+                        sancionAnterior
+                    );
+
+
+                const textoNuevo =
+                    obtenerTextoSancionEditar(
+                        sancionNueva
+                    );
+
+
+                /*
+                 * TEMPORAL:
+                 *
+                 * Esto nos permite probar primero el flujo.
+                 *
+                 * Posteriormente lo sustituiremos por el modal
+                 * institucional con:
+                 *
+                 * - Cancelar
+                 * - Corregir sanción
+                 * - Ir a seguimiento
+                 */
+
+                const continuar =
+                    window.confirm(
+                        'Estás modificando la sanción disciplinaria registrada actualmente.'
+                        + '\n\n'
+                        + `Sanción actual: ${textoAnterior}`
+                        + '\n'
+                        + `Nuevo valor: ${textoNuevo}`
+                        + '\n\n'
+                        + 'Si se trata de una corrección de captura, puedes continuar desde Editar.'
+                        + '\n\n'
+                        + 'Si corresponde a una nueva sanción derivada del seguimiento del caso, debe registrarse desde Seguimiento.'
+                        + '\n\n'
+                        + 'Aceptar = continuar como corrección.'
+                        + '\n'
+                        + 'Cancelar = no guardar el cambio.'
+                    );
+
+
+                if (!continuar) {
+                    return;
+                }
+            }
+
+
+            /* =================================================
                OBTENER ESTADO FINAL DEL FORMULARIO
             ================================================= */
 
@@ -355,6 +455,17 @@ export function inicializarEditarReporte() {
                 obtenerReporteDesdeFormulario(
                     formulario,
                     reporteAnterior
+                );
+
+
+            /*
+             * Conservamos también en el objeto local
+             * la sanción seleccionada.
+             */
+
+            reporteEditado.sancion =
+                obtenerSancionEditar(
+                    modal
                 );
 
 
@@ -395,16 +506,52 @@ export function inicializarEditarReporte() {
 
 
             /* =================================================
-               PERSONAL
+               SANCIÓN DISCIPLINARIA
             ================================================= */
 
+            datos.set(
+                'sancion_modificada',
+                cambioSancion
+                    ? '1'
+                    : '0'
+            );
+
+
+            datos.set(
+                'sancion_origen_cambio',
+                cambioSancion
+                    ? 'edicion'
+                    : ''
+            );
+
+
             /*
-             * Eliminamos cualquier personal[] generado
-             * previamente por inputs auxiliares.
-             *
-             * Enviamos como fuente de verdad el estado final
-             * que devuelve obtenerReporteDesdeFormulario().
+             * Forzamos los valores finales por seguridad.
              */
+
+            const sancionFinal =
+                obtenerSancionEditar(
+                    modal
+                );
+
+
+            datos.set(
+                'sancion_disciplinaria',
+                sancionFinal.tipo
+                || ''
+            );
+
+
+            datos.set(
+                'sancion_otro',
+                sancionFinal.descripcion_otro
+                || ''
+            );
+
+
+            /* =================================================
+               PERSONAL
+            ================================================= */
 
             eliminarClavesFormData(
                 datos,
@@ -608,7 +755,6 @@ export function inicializarEditarReporte() {
 
                 botonGuardar.innerHTML =
                     'Guardando...';
-
             }
 
 
@@ -634,7 +780,6 @@ export function inicializarEditarReporte() {
                         resultado?.message
                         || 'No fue posible actualizar el reporte.'
                     );
-
                 }
 
 
@@ -659,7 +804,6 @@ export function inicializarEditarReporte() {
                     reportesTemporales.delete(
                         folioActual
                     );
-
                 }
 
 
@@ -684,12 +828,6 @@ export function inicializarEditarReporte() {
                 /* =================================================
                    RECARGAR
                 ================================================= */
-
-                /*
-                 * Como el listado ya proviene de la BD,
-                 * recargamos para mostrar exactamente
-                 * lo que quedó persistido.
-                 */
 
                 window.location.reload();
 
@@ -718,7 +856,6 @@ export function inicializarEditarReporte() {
 
                     botonGuardar.innerHTML =
                         textoOriginal;
-
                 }
 
             }
@@ -782,7 +919,6 @@ async function consultarReporteEditar(
         throw new Error(
             'El servidor devolvió una respuesta no válida.'
         );
-
     }
 
 
@@ -792,12 +928,10 @@ async function consultarReporteEditar(
             datos?.message
             || 'No fue posible consultar el reporte.'
         );
-
     }
 
 
     return datos;
-
 }
 
 
@@ -1122,6 +1256,64 @@ function construirReporteEditar(
                 origen.investigador
             ),
 
+
+        /* =====================================================
+           SANCIÓN DISCIPLINARIA
+        ===================================================== */
+
+        sancion:
+            datos.sancion
+            && typeof datos.sancion === 'object'
+                ? {
+
+                    ...datos.sancion,
+
+                    tipo:
+                        valorEditar(
+                            datos.sancion.tipo
+                        ),
+
+                    descripcion_otro:
+                        valorEditar(
+                            datos.sancion.descripcion_otro
+                        ),
+
+                    origen:
+                        valorEditar(
+                            datos.sancion.origen
+                        ),
+
+                    fecha_actualizacion:
+                        valorEditar(
+                            datos.sancion.fecha_actualizacion
+                        ),
+
+                    actualizada_desde_seguimiento:
+                        datos.sancion
+                            .actualizada_desde_seguimiento
+                        === true,
+
+                    id_sancion:
+                        Number(
+                            datos.sancion.id_sancion
+                            || 0
+                        ),
+
+                    id_seguimiento:
+                        datos.sancion.id_seguimiento
+                        !== null
+                        && datos.sancion.id_seguimiento
+                        !== undefined
+                            ? Number(
+                                datos.sancion.id_seguimiento
+                                || 0
+                            )
+                            : null,
+
+                }
+                : null,
+
+
         quien_emite_resolucion:
             valorEditar(
                 origen.quien_emite_resolucion
@@ -1167,9 +1359,7 @@ function construirReporteEditar(
                     })
                 )
                 : [],
-
     };
-
 }
 
 
@@ -1217,9 +1407,7 @@ function actualizarHeaderEditar(
             folio
                 ? `Editar ${folio}`
                 : 'Editar reporte';
-
     }
-
 }
 
 
@@ -1249,7 +1437,6 @@ function obtenerPrefijoEditar(
     return partes.length > 1
         ? partes[0]
         : 'QJ';
-
 }
 
 
@@ -1282,7 +1469,6 @@ function obtenerNumeroFolioEditar(
     return partes
         .slice(1)
         .join('-');
-
 }
 
 
@@ -1305,12 +1491,6 @@ function convertirFechaEditar(
     }
 
 
-    /*
-     * Los input[type="date"] esperan:
-     *
-     * YYYY-MM-DD
-     */
-
     const coincidencia =
         fecha.match(
             /^(\d{4})-(\d{2})-(\d{2})/
@@ -1320,14 +1500,8 @@ function convertirFechaEditar(
     if (coincidencia) {
 
         return `${coincidencia[1]}-${coincidencia[2]}-${coincidencia[3]}`;
-
     }
 
-
-    /*
-     * También aceptamos DD/MM/YYYY
-     * por compatibilidad.
-     */
 
     const fechaVisual =
         fecha.match(
@@ -1338,12 +1512,10 @@ function convertirFechaEditar(
     if (fechaVisual) {
 
         return `${fechaVisual[3]}-${fechaVisual[2]}-${fechaVisual[1]}`;
-
     }
 
 
     return '';
-
 }
 
 
@@ -1372,7 +1544,6 @@ function convertirHoraEditar(
             5
         )
         : hora;
-
 }
 
 
@@ -1395,37 +1566,8 @@ function valorEditar(
     return String(
         valor
     ).trim();
-
 }
 
-
-/* =========================================================
-   ACTUALIZAR LISTADO
-========================================================= */
-
-function actualizarListadoRelacionado() {
-
-    const busqueda =
-        document.querySelector(
-            '#filtro_busqueda'
-        );
-
-
-    if (!busqueda) {
-        return;
-    }
-
-
-    busqueda.dispatchEvent(
-        new Event(
-            'input',
-            {
-                bubbles: true,
-            }
-        )
-    );
-
-}
 
 /* =========================================================
    ACTUALIZAR REPORTE EN BACKEND
@@ -1480,13 +1622,11 @@ async function actualizarReporteBackend(
         resultado =
             await respuesta.json();
 
-
     } catch (error) {
 
         throw new Error(
             'El servidor devolvió una respuesta no válida.'
         );
-
     }
 
 
@@ -1496,12 +1636,10 @@ async function actualizarReporteBackend(
             resultado?.message
             || 'No fue posible actualizar el reporte.'
         );
-
     }
 
 
     return resultado;
-
 }
 
 
@@ -1532,9 +1670,7 @@ function eliminarClavesFormData(
             claves.push(
                 clave
             );
-
         }
-
     }
 
 
@@ -1547,7 +1683,6 @@ function eliminarClavesFormData(
 
         }
     );
-
 }
 
 
@@ -1581,5 +1716,4 @@ function agregarValorFormData(
             valor
         )
     );
-
 }
