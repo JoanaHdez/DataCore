@@ -19,6 +19,29 @@
  */
 
 
+/* =========================================================
+   ESTADO DEL MÓDULO
+========================================================= */
+
+const estadoSeguimiento = {
+
+    idReporte: 0,
+
+    filaActual: null,
+
+    reporte: null,
+
+    sancionActual: null,
+
+    seguimientos: [],
+
+};
+
+
+/* =========================================================
+   INICIALIZACIÓN
+========================================================= */
+
 document.addEventListener(
     'DOMContentLoaded',
     () => {
@@ -27,27 +50,6 @@ document.addEventListener(
 
     }
 );
-
-
-/* =========================================================
-   ESTADO DEL MÓDULO
-========================================================= */
-
-const estadoSeguimiento = {
-
-    idReporte:
-        0,
-
-    filaActual:
-        null,
-
-    reporte:
-        null,
-
-    seguimientos:
-        [],
-
-};
 
 
 /* =========================================================
@@ -74,6 +76,11 @@ function inicializarSeguimientoReporte() {
     ) {
         return;
     }
+
+
+    inicializarSancionSeguimiento(
+        modal
+    );
 
 
     /* =====================================================
@@ -133,10 +140,6 @@ function inicializarSeguimientoReporte() {
 
             try {
 
-                /* =================================================
-                   CONSULTAR BD
-                ================================================= */
-
                 const datos =
                     await consultarSeguimientos(
                         idReporte
@@ -156,10 +159,6 @@ function inicializarSeguimientoReporte() {
                 }
 
 
-                /* =================================================
-                   ESTADO
-                ================================================= */
-
                 estadoSeguimiento.idReporte =
                     idReporte;
 
@@ -172,20 +171,23 @@ function inicializarSeguimientoReporte() {
                     datos.reporte;
 
 
+                estadoSeguimiento.sancionActual =
+                    normalizarSancion(
+                        datos.sancion
+                    );
+
+
                 estadoSeguimiento.seguimientos =
                     normalizarSeguimientos(
                         datos.seguimientos
                     );
 
 
-                /* =================================================
-                   CARGAR MODAL
-                ================================================= */
-
                 cargarDatosSeguimiento(
                     modal,
                     formulario,
-                    datos.reporte
+                    datos.reporte,
+                    estadoSeguimiento.sancionActual
                 );
 
 
@@ -312,6 +314,19 @@ function inicializarSeguimientoReporte() {
 
 
             /* =================================================
+               VALIDACIÓN SANCIÓN
+            ================================================= */
+
+            if (
+                !validarSancionSeguimiento(
+                    modal
+                )
+            ) {
+                return;
+            }
+
+
+            /* =================================================
                VALIDACIÓN NATIVA
             ================================================= */
 
@@ -326,6 +341,55 @@ function inicializarSeguimientoReporte() {
 
 
             /* =================================================
+               SANCIÓN SELECCIONADA
+            ================================================= */
+
+            const sancionSeleccionada =
+                obtenerSancionSeleccionada(
+                    modal
+                );
+
+
+            const hayCambioSancion =
+                existeCambioRealSancion(
+                    estadoSeguimiento.sancionActual,
+                    sancionSeleccionada
+                );
+
+
+            /* =================================================
+               CONFIRMACIÓN DE CAMBIO DE SANCIÓN
+            ================================================= */
+
+            if (hayCambioSancion) {
+
+                const textoActual =
+                    obtenerTextoSancion(
+                        estadoSeguimiento.sancionActual
+                    );
+
+
+                const textoNueva =
+                    obtenerTextoSancion(
+                        sancionSeleccionada
+                    );
+
+
+                const confirmado =
+                    window.confirm(
+                        `La sanción seleccionada no coincide con la sanción actualmente registrada: ${textoActual}.\n\n`
+                        + `Si continúas, la sanción vigente cambiará a ${textoNueva} y el cambio quedará registrado en este seguimiento.`
+                    );
+
+
+                if (!confirmado) {
+                    return;
+                }
+
+            }
+
+
+            /* =================================================
                DATOS
             ================================================= */
 
@@ -333,6 +397,33 @@ function inicializarSeguimientoReporte() {
                 new FormData(
                     formulario
                 );
+
+
+            /*
+             * Si el usuario seleccionó exactamente la misma
+             * sanción vigente, la convertimos a "Sin cambio".
+             *
+             * El backend también valida esto, pero así evitamos
+             * enviar información innecesaria.
+             */
+
+            if (
+                sancionSeleccionada.tipo
+                && !hayCambioSancion
+            ) {
+
+                datos.set(
+                    'sancion_disciplinaria',
+                    ''
+                );
+
+
+                datos.set(
+                    'sancion_otro',
+                    ''
+                );
+
+            }
 
 
             /* =================================================
@@ -389,7 +480,7 @@ function inicializarSeguimientoReporte() {
 
 
                 /* =================================================
-                   ACTUALIZAR ESTADO DEL REPORTE
+                   ACTUALIZAR ESTADO
                 ================================================= */
 
                 const nuevoEstado =
@@ -431,18 +522,7 @@ function inicializarSeguimientoReporte() {
 
 
                 /* =================================================
-                   ACTUALIZAR HEADER
-                ================================================= */
-
-                asignarTexto(
-                    modal,
-                    '#seguimiento-estado-actual',
-                    nuevoEstado
-                );
-
-
-                /* =================================================
-                   VOLVER A CONSULTAR HISTORIAL
+                   VOLVER A CONSULTAR
                 ================================================= */
 
                 const datosActualizados =
@@ -451,9 +531,27 @@ function inicializarSeguimientoReporte() {
                     );
 
 
+                if (
+                    !datosActualizados
+                    || datosActualizados.success !== true
+                ) {
+
+                    throw new Error(
+                        datosActualizados?.message
+                        || 'El seguimiento fue registrado, pero no fue posible actualizar la información del modal.'
+                    );
+                }
+
+
                 estadoSeguimiento.reporte =
                     datosActualizados.reporte
                     || estadoSeguimiento.reporte;
+
+
+                estadoSeguimiento.sancionActual =
+                    normalizarSancion(
+                        datosActualizados.sancion
+                    );
 
 
                 estadoSeguimiento.seguimientos =
@@ -461,6 +559,29 @@ function inicializarSeguimientoReporte() {
                         datosActualizados.seguimientos
                     );
 
+
+                /* =================================================
+                   ACTUALIZAR HEADER
+                ================================================= */
+
+                asignarTexto(
+                    modal,
+                    '#seguimiento-estado-actual',
+                    estadoSeguimiento.reporte
+                        ?.estado_actual
+                    || nuevoEstado
+                );
+
+
+                cargarSancionActual(
+                    modal,
+                    estadoSeguimiento.sancionActual
+                );
+
+
+                /* =================================================
+                   ACTUALIZAR HISTORIAL
+                ================================================= */
 
                 cargarHistorialSeguimiento(
                     modal,
@@ -474,7 +595,14 @@ function inicializarSeguimientoReporte() {
 
                 prepararFormularioSeguimiento(
                     formulario,
-                    nuevoEstado
+                    estadoSeguimiento.reporte
+                        ?.estado_actual
+                    || nuevoEstado
+                );
+
+
+                actualizarCampoOtroSancion(
+                    modal
                 );
 
 
@@ -500,6 +628,15 @@ function inicializarSeguimientoReporte() {
                                 estado:
                                     nuevoEstado,
 
+                                sancion:
+                                    estadoSeguimiento
+                                        .sancionActual,
+
+                                sancionModificada:
+                                    resultado
+                                        .sancion_modificada
+                                    === true,
+
                                 seguimiento:
                                     resultado.seguimiento
                                     || null,
@@ -508,16 +645,6 @@ function inicializarSeguimientoReporte() {
                         }
                     )
                 );
-
-
-                /*
-                 * Dejamos el modal abierto para que el usuario
-                 * pueda ver inmediatamente el movimiento
-                 * recién registrado en el historial.
-                 *
-                 * Si después prefieres que se cierre
-                 * automáticamente, lo cambiamos.
-                 */
 
 
             } catch (error) {
@@ -551,6 +678,571 @@ function inicializarSeguimientoReporte() {
 
         }
     );
+
+}
+
+
+/* =========================================================
+   SANCIÓN - INICIALIZAR
+========================================================= */
+
+function inicializarSancionSeguimiento(
+    modal
+) {
+
+    const select =
+        modal.querySelector(
+            '#seguimiento-sancion'
+        );
+
+
+    if (!select) {
+        return;
+    }
+
+
+    select.addEventListener(
+        'change',
+        () => {
+
+            actualizarCampoOtroSancion(
+                modal
+            );
+
+        }
+    );
+
+
+    actualizarCampoOtroSancion(
+        modal
+    );
+
+}
+
+
+/* =========================================================
+   SANCIÓN - CAMPO OTRO
+========================================================= */
+
+function actualizarCampoOtroSancion(
+    modal
+) {
+
+    const select =
+        modal.querySelector(
+            '#seguimiento-sancion'
+        );
+
+
+    const contenedor =
+        modal.querySelector(
+            '#seguimiento-campo-sancion-otro'
+        );
+
+
+    const input =
+        modal.querySelector(
+            '#seguimiento-sancion-otro'
+        );
+
+
+    if (
+        !select
+        || !contenedor
+        || !input
+    ) {
+        return;
+    }
+
+
+    const mostrar =
+        select.value === 'Otro';
+
+
+    if (mostrar) {
+
+        contenedor.hidden =
+            false;
+
+
+        /*
+         * Igual que en Editar:
+         * evitamos que CSS con display interfiera
+         * con el atributo hidden.
+         */
+
+        contenedor.style
+            .removeProperty(
+                'display'
+            );
+
+
+        input.disabled =
+            false;
+
+
+        input.required =
+            true;
+
+
+        return;
+    }
+
+
+    contenedor.hidden =
+        true;
+
+
+    contenedor.style
+        .setProperty(
+            'display',
+            'none',
+            'important'
+        );
+
+
+    input.disabled =
+        true;
+
+
+    input.required =
+        false;
+
+
+    input.value =
+        '';
+
+}
+
+
+/* =========================================================
+   SANCIÓN - VALIDAR
+========================================================= */
+
+function validarSancionSeguimiento(
+    modal
+) {
+
+    const select =
+        modal.querySelector(
+            '#seguimiento-sancion'
+        );
+
+
+    const inputOtro =
+        modal.querySelector(
+            '#seguimiento-sancion-otro'
+        );
+
+
+    if (!select) {
+        return true;
+    }
+
+
+    const tipo =
+        String(
+            select.value
+            || ''
+        ).trim();
+
+
+    if (tipo !== 'Otro') {
+        return true;
+    }
+
+
+    const descripcion =
+        String(
+            inputOtro?.value
+            || ''
+        ).trim();
+
+
+    if (!descripcion) {
+
+        window.alert(
+            'Debes especificar la sanción disciplinaria.'
+        );
+
+
+        inputOtro?.focus();
+
+
+        return false;
+    }
+
+
+    if (descripcion.length > 255) {
+
+        window.alert(
+            'La descripción de la sanción no puede exceder 255 caracteres.'
+        );
+
+
+        inputOtro?.focus();
+
+
+        return false;
+    }
+
+
+    return true;
+
+}
+
+
+/* =========================================================
+   SANCIÓN - OBTENER SELECCIONADA
+========================================================= */
+
+function obtenerSancionSeleccionada(
+    modal
+) {
+
+    const tipo =
+        String(
+            modal.querySelector(
+                '#seguimiento-sancion'
+            )?.value
+            || ''
+        ).trim();
+
+
+    const descripcionOtro =
+        tipo === 'Otro'
+            ? String(
+                modal.querySelector(
+                    '#seguimiento-sancion-otro'
+                )?.value
+                || ''
+            ).trim()
+            : '';
+
+
+    return {
+
+        tipo,
+
+        descripcion_otro:
+            descripcionOtro,
+
+        texto:
+            tipo === 'Otro'
+                ? descripcionOtro
+                : tipo,
+
+    };
+
+}
+
+
+/* =========================================================
+   SANCIÓN - NORMALIZAR
+========================================================= */
+
+function normalizarSancion(
+    sancion
+) {
+
+    if (
+        !sancion
+        || typeof sancion !== 'object'
+    ) {
+        return null;
+    }
+
+
+    const tipo =
+        String(
+            sancion.tipo
+            || ''
+        ).trim();
+
+
+    if (!tipo) {
+        return null;
+    }
+
+
+    const descripcionOtro =
+        String(
+            sancion.descripcion_otro
+            || ''
+        ).trim();
+
+
+    let texto =
+        String(
+            sancion.texto
+            || ''
+        ).trim();
+
+
+    if (!texto) {
+
+        texto =
+            tipo === 'Otro'
+                ? descripcionOtro
+                : tipo;
+
+    }
+
+
+    return {
+
+        id_sancion:
+            Number(
+                sancion.id_sancion
+                || 0
+            ),
+
+        tipo,
+
+        descripcion_otro:
+            descripcionOtro,
+
+        texto,
+
+        origen:
+            String(
+                sancion.origen
+                || ''
+            ).trim(),
+
+        id_seguimiento:
+            sancion.id_seguimiento
+                ? Number(
+                    sancion.id_seguimiento
+                )
+                : null,
+
+        actualizada_desde_seguimiento:
+            sancion.actualizada_desde_seguimiento
+            === true,
+
+        fecha_actualizacion:
+            String(
+                sancion.fecha_actualizacion
+                || ''
+            ).trim(),
+
+        es_actual:
+            sancion.es_actual === true
+            || Number(
+                sancion.es_actual
+                || 0
+            ) === 1,
+
+    };
+
+}
+
+
+/* =========================================================
+   SANCIÓN - COMPARAR
+========================================================= */
+
+function existeCambioRealSancion(
+    sancionActual,
+    sancionSeleccionada
+) {
+
+    /*
+     * Vacío significa "Sin cambio".
+     */
+
+    if (
+        !sancionSeleccionada
+        || !sancionSeleccionada.tipo
+    ) {
+        return false;
+    }
+
+
+    /*
+     * No había sanción y ahora sí.
+     */
+
+    if (!sancionActual) {
+        return true;
+    }
+
+
+    if (
+        sancionActual.tipo
+        !== sancionSeleccionada.tipo
+    ) {
+        return true;
+    }
+
+
+    if (
+        sancionSeleccionada.tipo === 'Otro'
+    ) {
+
+        return normalizarTextoComparacion(
+            sancionActual.descripcion_otro
+        ) !== normalizarTextoComparacion(
+            sancionSeleccionada.descripcion_otro
+        );
+
+    }
+
+
+    return false;
+
+}
+
+
+/* =========================================================
+   NORMALIZAR TEXTO PARA COMPARACIÓN
+========================================================= */
+
+function normalizarTextoComparacion(
+    valor
+) {
+
+    return String(
+        valor
+        || ''
+    )
+        .trim()
+        .replace(
+            /\s+/g,
+            ' '
+        )
+        .toLocaleLowerCase(
+            'es-MX'
+        );
+
+}
+
+
+/* =========================================================
+   SANCIÓN - TEXTO
+========================================================= */
+
+function obtenerTextoSancion(
+    sancion
+) {
+
+    if (
+        !sancion
+        || !sancion.tipo
+    ) {
+        return 'Sin sanción registrada';
+    }
+
+
+    if (
+        sancion.tipo === 'Otro'
+    ) {
+
+        return String(
+            sancion.descripcion_otro
+            || sancion.texto
+            || 'Otra sanción'
+        ).trim();
+
+    }
+
+
+    return String(
+        sancion.tipo
+    ).trim();
+
+}
+
+
+/* =========================================================
+   SANCIÓN - CARGAR ACTUAL
+========================================================= */
+
+function cargarSancionActual(
+    modal,
+    sancion
+) {
+
+    const elemento =
+        modal.querySelector(
+            '#seguimiento-sancion-actual'
+        );
+
+
+    const origen =
+        modal.querySelector(
+            '#seguimiento-sancion-origen'
+        );
+
+
+    if (elemento) {
+
+        elemento.textContent =
+            obtenerTextoSancion(
+                sancion
+            );
+
+    }
+
+
+    if (!origen) {
+        return;
+    }
+
+
+    origen.hidden =
+        true;
+
+
+    origen.style
+        .setProperty(
+            'display',
+            'none',
+            'important'
+        );
+
+
+    origen.textContent =
+        '';
+
+
+    if (
+        !sancion
+        || sancion.origen !== 'seguimiento'
+    ) {
+        return;
+    }
+
+
+    let texto =
+        'Actualizada desde seguimiento';
+
+
+    if (
+        sancion.fecha_actualizacion
+    ) {
+
+        texto +=
+            ` el ${formatearFecha(
+                sancion.fecha_actualizacion
+            )}`;
+
+    }
+
+
+    origen.textContent =
+        texto;
+
+
+    origen.hidden =
+        false;
+
+
+    origen.style
+        .removeProperty(
+            'display'
+        );
 
 }
 
@@ -736,12 +1428,6 @@ function normalizarSeguimientos(
                     || ''
                 ).trim(),
 
-            /*
-             * La BD utiliza estado_resultante.
-             *
-             * Para el diseño actual seguimos utilizando
-             * internamente la propiedad "estado".
-             */
             estado:
                 String(
                     seguimiento.estado_resultante
@@ -767,6 +1453,11 @@ function normalizarSeguimientos(
                     || ''
                 ).trim(),
 
+            sancion:
+                normalizarSancion(
+                    seguimiento.sancion
+                ),
+
         })
     );
 
@@ -780,7 +1471,8 @@ function normalizarSeguimientos(
 function cargarDatosSeguimiento(
     modal,
     formulario,
-    reporte
+    reporte,
+    sancionActual
 ) {
 
     const folio =
@@ -849,6 +1541,12 @@ function cargarDatosSeguimiento(
     );
 
 
+    cargarSancionActual(
+        modal,
+        sancionActual
+    );
+
+
     /* =====================================================
        FORMULARIO
     ===================================================== */
@@ -856,6 +1554,11 @@ function cargarDatosSeguimiento(
     prepararFormularioSeguimiento(
         formulario,
         estado
+    );
+
+
+    actualizarCampoOtroSancion(
+        modal
     );
 
 }
@@ -883,6 +1586,20 @@ function prepararFormularioSeguimiento(
         formulario.querySelector(
             '#seguimiento-estado'
         );
+
+
+    const idEdicion =
+        formulario.querySelector(
+            '#seguimiento-id-edicion'
+        );
+
+
+    if (idEdicion) {
+
+        idEdicion.value =
+            '';
+
+    }
 
 
     if (fecha) {
@@ -916,7 +1633,7 @@ function prepararFormularioSeguimiento(
 
 
 /* =========================================================
-   CARGAR HISTORIAL REAL
+   CARGAR HISTORIAL
 ========================================================= */
 
 function cargarHistorialSeguimiento(
@@ -938,10 +1655,6 @@ function cargarHistorialSeguimiento(
     lista.innerHTML =
         '';
 
-
-    /* =====================================================
-       SIN MOVIMIENTOS
-    ===================================================== */
 
     if (
         !Array.isArray(historial)
@@ -997,10 +1710,6 @@ function cargarHistorialSeguimiento(
     }
 
 
-    /* =====================================================
-       MOVIMIENTOS
-    ===================================================== */
-
     historial.forEach(
         (seguimiento) => {
 
@@ -1036,6 +1745,13 @@ function crearMovimientoHistorial(
 
     item.className =
         'seguimiento-historial__item';
+
+
+    item.dataset.idSeguimiento =
+        String(
+            seguimiento.id_seguimiento
+            || ''
+        );
 
 
     /* =====================================================
@@ -1134,6 +1850,83 @@ function crearMovimientoHistorial(
 
 
     /* =====================================================
+       ARMAR
+    ===================================================== */
+
+    item.appendChild(
+        header
+    );
+
+
+    item.appendChild(
+        estado
+    );
+
+
+    item.appendChild(
+        observaciones
+    );
+
+
+    /* =====================================================
+       CAMBIO DE SANCIÓN
+    ===================================================== */
+
+    if (
+        seguimiento.sancion
+        && seguimiento.sancion.tipo
+    ) {
+
+        const cambioSancion =
+            document.createElement(
+                'div'
+            );
+
+
+        cambioSancion.className =
+            'seguimiento-historial__sancion';
+
+
+        const etiqueta =
+            document.createElement(
+                'strong'
+            );
+
+
+        etiqueta.textContent =
+            'Cambio de sanción disciplinaria';
+
+
+        const valor =
+            document.createElement(
+                'span'
+            );
+
+
+        valor.textContent =
+            obtenerTextoSancion(
+                seguimiento.sancion
+            );
+
+
+        cambioSancion.appendChild(
+            etiqueta
+        );
+
+
+        cambioSancion.appendChild(
+            valor
+        );
+
+
+        item.appendChild(
+            cambioSancion
+        );
+
+    }
+
+
+    /* =====================================================
        FECHA DE REGISTRO
     ===================================================== */
 
@@ -1158,43 +1951,10 @@ function crearMovimientoHistorial(
 
 
         item.appendChild(
-            header
-        );
-
-
-        item.appendChild(
-            estado
-        );
-
-
-        item.appendChild(
-            observaciones
-        );
-
-
-        item.appendChild(
             metadata
         );
 
-
-        return item;
-
     }
-
-
-    item.appendChild(
-        header
-    );
-
-
-    item.appendChild(
-        estado
-    );
-
-
-    item.appendChild(
-        observaciones
-    );
 
 
     return item;
@@ -1373,6 +2133,10 @@ function limpiarEstadoSeguimiento() {
 
 
     estadoSeguimiento.reporte =
+        null;
+
+
+    estadoSeguimiento.sancionActual =
         null;
 
 

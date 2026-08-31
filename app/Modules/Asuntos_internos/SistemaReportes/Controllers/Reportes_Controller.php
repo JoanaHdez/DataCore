@@ -3955,10 +3955,6 @@ class Reportes_Controller extends BaseController
         }
     }
 
-    /* =========================================================
-    CONSULTAR SEGUIMIENTOS
-    ========================================================= */
-
     public function obtenerSeguimientos(int $idReporte)
     {
         /* =====================================================
@@ -3991,6 +3987,10 @@ class Reportes_Controller extends BaseController
 
 
         try {
+
+            /* =================================================
+            CONEXIÓN DATACORE
+            ================================================= */
 
             $db =
                 \Config\Database::connect(
@@ -4035,6 +4035,138 @@ class Reportes_Controller extends BaseController
 
 
             /* =================================================
+            SANCIÓN VIGENTE
+            ================================================= */
+
+            $filaSancion =
+                $db
+                ->table('ai_reporte_sanciones')
+                ->select([
+                    'id_sancion',
+                    'id_reporte',
+                    'tipo',
+                    'descripcion_otro',
+                    'origen',
+                    'id_seguimiento',
+                    'es_actual',
+                    'created_at',
+                    'updated_at',
+                ])
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'es_actual',
+                    1
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->orderBy(
+                    'id_sancion',
+                    'DESC'
+                )
+                ->limit(1)
+                ->get()
+                ->getRowArray();
+
+
+            $sancion =
+                null;
+
+
+            if ($filaSancion) {
+
+                $tipo =
+                    trim(
+                        (string) (
+                            $filaSancion['tipo']
+                            ?? ''
+                        )
+                    );
+
+
+                $descripcionOtro =
+                    trim(
+                        (string) (
+                            $filaSancion['descripcion_otro']
+                            ?? ''
+                        )
+                    );
+
+
+                $texto =
+                    $tipo;
+
+
+                if (
+                    $tipo === 'Otro'
+                    && $descripcionOtro !== ''
+                ) {
+
+                    $texto =
+                        $descripcionOtro;
+                }
+
+
+                $origen =
+                    trim(
+                        (string) (
+                            $filaSancion['origen']
+                            ?? ''
+                        )
+                    );
+
+
+                $fechaActualizacion =
+                    $filaSancion['updated_at']
+                    ?? $filaSancion['created_at']
+                    ?? null;
+
+
+                $sancion = [
+
+                    'id_sancion' =>
+                    (int) (
+                        $filaSancion['id_sancion']
+                        ?? 0
+                    ),
+
+                    'tipo' =>
+                    $tipo,
+
+                    'descripcion_otro' =>
+                    $descripcionOtro,
+
+                    'texto' =>
+                    $texto !== ''
+                        ? $texto
+                        : 'Sin sanción registrada',
+
+                    'origen' =>
+                    $origen,
+
+                    'id_seguimiento' =>
+                    !empty($filaSancion['id_seguimiento'])
+                        ? (int) $filaSancion['id_seguimiento']
+                        : null,
+
+                    'actualizada_desde_seguimiento' =>
+                    $origen === 'seguimiento',
+
+                    'fecha_actualizacion' =>
+                    $fechaActualizacion,
+
+                    'es_actual' =>
+                    true,
+
+                ];
+            }
+
+
+            /* =================================================
             HISTORIAL
             ================================================= */
 
@@ -4071,13 +4203,149 @@ class Reportes_Controller extends BaseController
                 ->getResultArray();
 
 
+            /* =================================================
+            SANCIÓN RELACIONADA CON CADA SEGUIMIENTO
+            ================================================= */
+
+            foreach (
+                $seguimientos
+                as &$seguimiento
+            ) {
+
+                $idSeguimiento =
+                    (int) (
+                        $seguimiento['id_seguimiento']
+                        ?? 0
+                    );
+
+
+                $seguimiento['sancion'] =
+                    null;
+
+
+                if ($idSeguimiento <= 0) {
+                    continue;
+                }
+
+
+                $sancionSeguimiento =
+                    $db
+                    ->table('ai_reporte_sanciones')
+                    ->select([
+                        'id_sancion',
+                        'tipo',
+                        'descripcion_otro',
+                        'es_actual',
+                    ])
+                    ->where(
+                        'id_reporte',
+                        $idReporte
+                    )
+                    ->where(
+                        'id_seguimiento',
+                        $idSeguimiento
+                    )
+                    ->where(
+                        'eliminado',
+                        0
+                    )
+                    ->orderBy(
+                        'id_sancion',
+                        'DESC'
+                    )
+                    ->limit(1)
+                    ->get()
+                    ->getRowArray();
+
+
+                if (!$sancionSeguimiento) {
+                    continue;
+                }
+
+
+                $tipoSeguimiento =
+                    trim(
+                        (string) (
+                            $sancionSeguimiento['tipo']
+                            ?? ''
+                        )
+                    );
+
+
+                $otroSeguimiento =
+                    trim(
+                        (string) (
+                            $sancionSeguimiento['descripcion_otro']
+                            ?? ''
+                        )
+                    );
+
+
+                $textoSeguimiento =
+                    $tipoSeguimiento;
+
+
+                if (
+                    $tipoSeguimiento === 'Otro'
+                    && $otroSeguimiento !== ''
+                ) {
+
+                    $textoSeguimiento =
+                        $otroSeguimiento;
+                }
+
+
+                $seguimiento['sancion'] = [
+
+                    'id_sancion' =>
+                    (int) (
+                        $sancionSeguimiento['id_sancion']
+                        ?? 0
+                    ),
+
+                    'tipo' =>
+                    $tipoSeguimiento,
+
+                    'descripcion_otro' =>
+                    $otroSeguimiento,
+
+                    'texto' =>
+                    $textoSeguimiento,
+
+                    'es_actual' =>
+                    (int) (
+                        $sancionSeguimiento['es_actual']
+                        ?? 0
+                    ) === 1,
+
+                ];
+            }
+
+
+            unset(
+                $seguimiento
+            );
+
+
+            /* =================================================
+            RESPUESTA
+            ================================================= */
+
             return $this->response
                 ->setJSON([
-                    'success' => true,
 
-                    'reporte' => $reporte,
+                    'success' =>
+                    true,
 
-                    'seguimientos' => $seguimientos,
+                    'reporte' =>
+                    $reporte,
+
+                    'sancion' =>
+                    $sancion,
+
+                    'seguimientos' =>
+                    $seguimientos,
+
                 ]);
         } catch (\Throwable $e) {
 
@@ -4085,8 +4353,11 @@ class Reportes_Controller extends BaseController
                 'error',
                 'Error consultando seguimientos del reporte {id}: {mensaje}',
                 [
-                    'id' => $idReporte,
-                    'mensaje' => $e->getMessage(),
+                    'id' =>
+                    $idReporte,
+
+                    'mensaje' =>
+                    $e->getMessage(),
                 ]
             );
 
@@ -4096,15 +4367,10 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                    'No fue posible consultar el historial de seguimiento.',
+                    'No fue posible consultar los seguimientos del reporte.',
                 ]);
         }
     }
-
-
-    /* =========================================================
-    REGISTRAR SEGUIMIENTO
-    ========================================================= */
 
     public function guardarSeguimiento(int $idReporte)
     {
@@ -4164,7 +4430,7 @@ class Reportes_Controller extends BaseController
 
 
         /* =====================================================
-        DATOS
+        DATOS DEL SEGUIMIENTO
         ===================================================== */
 
         $fecha =
@@ -4204,7 +4470,29 @@ class Reportes_Controller extends BaseController
 
 
         /* =====================================================
-        VALIDACIONES
+        SANCIÓN
+        ===================================================== */
+
+        $sancionTipo =
+            trim(
+                (string)
+                $this->request->getPost(
+                    'sancion_disciplinaria'
+                )
+            );
+
+
+        $sancionOtro =
+            trim(
+                (string)
+                $this->request->getPost(
+                    'sancion_otro'
+                )
+            );
+
+
+        /* =====================================================
+        VALIDAR FECHA
         ===================================================== */
 
         if ($fecha === '') {
@@ -4241,17 +4529,40 @@ class Reportes_Controller extends BaseController
         }
 
 
-        if ($tipo === '') {
+        /* =====================================================
+        VALIDAR TIPO DE SEGUIMIENTO
+        ===================================================== */
+
+        $tiposPermitidos = [
+            'Actualización',
+            'Investigación',
+            'Turnado',
+            'Resolución',
+            'Otro',
+        ];
+
+
+        if (
+            !in_array(
+                $tipo,
+                $tiposPermitidos,
+                true
+            )
+        ) {
 
             return $this->response
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                    'El tipo de seguimiento es obligatorio.',
+                    'El tipo de seguimiento seleccionado no es válido.',
                 ]);
         }
 
+
+        /* =====================================================
+        VALIDAR ESTADO
+        ===================================================== */
 
         $estadosPermitidos = [
             'Pendiente',
@@ -4278,6 +4589,10 @@ class Reportes_Controller extends BaseController
         }
 
 
+        /* =====================================================
+        VALIDAR OBSERVACIONES
+        ===================================================== */
+
         if ($observaciones === '') {
 
             return $this->response
@@ -4291,7 +4606,72 @@ class Reportes_Controller extends BaseController
 
 
         /* =====================================================
-        TRANSACCIÓN
+        VALIDAR SANCIÓN
+        ===================================================== */
+
+        $sancionesPermitidas = [
+            '',
+            'Arresto',
+            'Amonestación',
+            'Otro',
+        ];
+
+
+        if (
+            !in_array(
+                $sancionTipo,
+                $sancionesPermitidas,
+                true
+            )
+        ) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'La sanción disciplinaria seleccionada no es válida.',
+                ]);
+        }
+
+
+        if ($sancionTipo === 'Otro') {
+
+            if ($sancionOtro === '') {
+
+                return $this->response
+                    ->setStatusCode(422)
+                    ->setJSON([
+                        'success' => false,
+                        'message' =>
+                        'Debes especificar la sanción disciplinaria.',
+                    ]);
+            }
+
+
+            if (
+                mb_strlen(
+                    $sancionOtro
+                ) > 255
+            ) {
+
+                return $this->response
+                    ->setStatusCode(422)
+                    ->setJSON([
+                        'success' => false,
+                        'message' =>
+                        'La descripción de la sanción no puede exceder 255 caracteres.',
+                    ]);
+            }
+        } else {
+
+            $sancionOtro =
+                null;
+        }
+
+
+        /* =====================================================
+        CONEXIÓN DATACORE
         ===================================================== */
 
         $db =
@@ -4300,43 +4680,143 @@ class Reportes_Controller extends BaseController
             );
 
 
+        /* =====================================================
+        VALIDAR REPORTE
+        ===================================================== */
+
+        $reporte =
+            $db
+            ->table('ai_reportes')
+            ->select([
+                'id_reporte',
+                'folio',
+                'expediente',
+                'estado_actual',
+            ])
+            ->where(
+                'id_reporte',
+                $idReporte
+            )
+            ->where(
+                'eliminado',
+                0
+            )
+            ->get()
+            ->getRowArray();
+
+
+        if (!$reporte) {
+
+            return $this->response
+                ->setStatusCode(404)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'El reporte no existe.',
+                ]);
+        }
+
+
+        /* =====================================================
+        CONSULTAR SANCIÓN VIGENTE
+        ===================================================== */
+
+        $sancionActual =
+            $db
+            ->table('ai_reporte_sanciones')
+            ->select([
+                'id_sancion',
+                'tipo',
+                'descripcion_otro',
+                'origen',
+                'id_seguimiento',
+                'es_actual',
+            ])
+            ->where(
+                'id_reporte',
+                $idReporte
+            )
+            ->where(
+                'es_actual',
+                1
+            )
+            ->where(
+                'eliminado',
+                0
+            )
+            ->orderBy(
+                'id_sancion',
+                'DESC'
+            )
+            ->limit(1)
+            ->get()
+            ->getRowArray();
+
+
+        /* =====================================================
+        DETERMINAR SI REALMENTE CAMBIA LA SANCIÓN
+        ===================================================== */
+
+        $hayCambioSancion =
+            false;
+
+
+        if ($sancionTipo !== '') {
+
+            if (!$sancionActual) {
+
+                $hayCambioSancion =
+                    true;
+            } else {
+
+                $tipoActual =
+                    trim(
+                        (string) (
+                            $sancionActual['tipo']
+                            ?? ''
+                        )
+                    );
+
+
+                $otroActual =
+                    trim(
+                        (string) (
+                            $sancionActual['descripcion_otro']
+                            ?? ''
+                        )
+                    );
+
+
+                if (
+                    $tipoActual !== $sancionTipo
+                ) {
+
+                    $hayCambioSancion =
+                        true;
+                } elseif (
+                    $sancionTipo === 'Otro'
+                    && mb_strtolower(
+                        trim($otroActual)
+                    ) !== mb_strtolower(
+                        trim((string) $sancionOtro)
+                    )
+                ) {
+
+                    $hayCambioSancion =
+                        true;
+                }
+            }
+        }
+
+
+        /* =====================================================
+        TRANSACCIÓN
+        ===================================================== */
+
         $db->transBegin();
 
 
         try {
-
-            /* =================================================
-            VALIDAR REPORTE
-            ================================================= */
-
-            $reporte =
-                $db
-                ->table('ai_reportes')
-                ->select([
-                    'id_reporte',
-                    'folio',
-                    'expediente',
-                    'estado_actual',
-                ])
-                ->where(
-                    'id_reporte',
-                    $idReporte
-                )
-                ->where(
-                    'eliminado',
-                    0
-                )
-                ->get()
-                ->getRowArray();
-
-
-            if (!$reporte) {
-
-                throw new \InvalidArgumentException(
-                    'El reporte no existe.'
-                );
-            }
-
 
             /* =================================================
             INSERTAR SEGUIMIENTO
@@ -4348,6 +4828,7 @@ class Reportes_Controller extends BaseController
                     'ai_reporte_seguimientos'
                 )
                 ->insert([
+
                     'id_reporte' =>
                     $idReporte,
 
@@ -4368,6 +4849,7 @@ class Reportes_Controller extends BaseController
 
                     'eliminado' =>
                     0,
+
                 ]);
 
 
@@ -4382,6 +4864,119 @@ class Reportes_Controller extends BaseController
             $idSeguimiento =
                 (int)
                 $db->insertID();
+
+
+            if ($idSeguimiento <= 0) {
+
+                throw new \RuntimeException(
+                    'No fue posible identificar el seguimiento registrado.'
+                );
+            }
+
+
+            /* =================================================
+            CAMBIO DE SANCIÓN
+            ================================================= */
+
+            if ($hayCambioSancion) {
+
+                /* =============================================
+                SANCIÓN ANTERIOR DEJA DE SER ACTUAL
+                ============================================= */
+
+                if ($sancionActual) {
+
+                    $desactivada =
+                        $db
+                        ->table(
+                            'ai_reporte_sanciones'
+                        )
+                        ->where(
+                            'id_sancion',
+                            (int) $sancionActual['id_sancion']
+                        )
+                        ->where(
+                            'id_reporte',
+                            $idReporte
+                        )
+                        ->where(
+                            'es_actual',
+                            1
+                        )
+                        ->where(
+                            'eliminado',
+                            0
+                        )
+                        ->update([
+
+                            'es_actual' =>
+                            0,
+
+                            'updated_by' =>
+                            $idUsuario,
+
+                            'updated_at' =>
+                            date(
+                                'Y-m-d H:i:s'
+                            ),
+
+                        ]);
+
+
+                    if ($desactivada === false) {
+
+                        throw new \RuntimeException(
+                            'No fue posible actualizar la sanción anterior.'
+                        );
+                    }
+                }
+
+
+                /* =============================================
+                NUEVA SANCIÓN VIGENTE
+                ============================================= */
+
+                $nuevaSancion =
+                    $db
+                    ->table(
+                        'ai_reporte_sanciones'
+                    )
+                    ->insert([
+
+                        'id_reporte' =>
+                        $idReporte,
+
+                        'tipo' =>
+                        $sancionTipo,
+
+                        'descripcion_otro' =>
+                        $sancionOtro,
+
+                        'origen' =>
+                        'seguimiento',
+
+                        'id_seguimiento' =>
+                        $idSeguimiento,
+
+                        'es_actual' =>
+                        1,
+
+                        'created_by' =>
+                        $idUsuario,
+
+                        'eliminado' =>
+                        0,
+
+                    ]);
+
+
+                if ($nuevaSancion === false) {
+
+                    throw new \RuntimeException(
+                        'No fue posible registrar la nueva sanción disciplinaria.'
+                    );
+                }
+            }
 
 
             /* =================================================
@@ -4400,11 +4995,18 @@ class Reportes_Controller extends BaseController
                     0
                 )
                 ->update([
+
                     'estado_actual' =>
                     $estado,
 
                     'updated_by' =>
                     $idUsuario,
+
+                    'updated_at' =>
+                    date(
+                        'Y-m-d H:i:s'
+                    ),
+
                 ]);
 
 
@@ -4440,12 +5042,15 @@ class Reportes_Controller extends BaseController
 
             return $this->response
                 ->setJSON([
-                    'success' => true,
+
+                    'success' =>
+                    true,
 
                     'message' =>
                     'El seguimiento se registró correctamente.',
 
                     'seguimiento' => [
+
                         'id_seguimiento' =>
                         $idSeguimiento,
 
@@ -4463,10 +5068,15 @@ class Reportes_Controller extends BaseController
 
                         'observaciones' =>
                         $observaciones,
+
                     ],
 
                     'estado_actual' =>
                     $estado,
+
+                    'sancion_modificada' =>
+                    $hayCambioSancion,
+
                 ]);
         } catch (\InvalidArgumentException $e) {
 
