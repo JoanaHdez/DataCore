@@ -27,6 +27,7 @@ import './reportes/nuevo/pasos.js';
 import './reportes/nuevo/personal.js';
 import './reportes/nuevo/unidades.js';
 import './reportes/nuevo/evidencia.js';
+import './reportes/nuevo/sanciones.js';
 
 /* =========================================================
    REPORTES - LISTADO

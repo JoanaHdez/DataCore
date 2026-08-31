@@ -57,6 +57,24 @@
         </div>
 
 
+        <!-- SANCIÓN DISCIPLINARIA -->
+        <div class="detalle-reporte-campo">
+
+            <span>
+                Sanción disciplinaria
+            </span>
+
+            <strong id="detalle-sancion-disciplinaria">
+                Sin sanción registrada
+            </strong>
+
+            <small id="detalle-sancion-origen" class="detalle-reporte-campo__aviso" hidden>
+                Actualizada desde seguimiento
+            </small>
+
+        </div>
+
+
         <!-- QUIÉN EMITE LA RESOLUCIÓN -->
         <div class="detalle-reporte-campo">
 

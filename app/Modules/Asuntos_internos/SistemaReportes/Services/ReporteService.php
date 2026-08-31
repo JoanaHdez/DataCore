@@ -126,6 +126,17 @@ class ReporteService
 
 
             /* =================================================
+            SANCIÓN DISCIPLINARIA
+            ================================================= */
+
+            $this->guardarSancionInicial(
+                $idReporte,
+                $datos,
+                $idUsuario
+            );
+
+
+            /* =================================================
                EVIDENCIAS
             ================================================= */
 
@@ -1012,6 +1023,145 @@ class ReporteService
         }
     }
 
+    /* =========================================================
+    SANCIÓN DISCIPLINARIA INICIAL
+    ========================================================= */
+
+    protected function guardarSancionInicial(
+        int $idReporte,
+        array $datos,
+        int $idUsuario
+    ): void {
+
+        $tipo =
+            trim(
+                (string) (
+                    $datos['sancion_disciplinaria']
+                    ?? ''
+                )
+            );
+
+
+        /*
+     * La sanción es opcional.
+     *
+     * Si el reporte todavía no tiene una sanción,
+     * no generamos ningún registro.
+     */
+        if ($tipo === '') {
+            return;
+        }
+
+
+        /* =====================================================
+        VALIDAR CATÁLOGO
+        ===================================================== */
+
+        $tiposPermitidos = [
+            'Arresto',
+            'Amonestación',
+            'Otro',
+        ];
+
+
+        if (
+            !in_array(
+                $tipo,
+                $tiposPermitidos,
+                true
+            )
+        ) {
+
+            throw new \InvalidArgumentException(
+                'La sanción disciplinaria seleccionada no es válida.'
+            );
+        }
+
+
+        /* =====================================================
+        DESCRIPCIÓN PARA "OTRO"
+        ===================================================== */
+
+        $descripcionOtro = null;
+
+
+        if ($tipo === 'Otro') {
+
+            $descripcionOtro =
+                trim(
+                    (string) (
+                        $datos['sancion_otro']
+                        ?? ''
+                    )
+                );
+
+
+            if ($descripcionOtro === '') {
+
+                throw new \InvalidArgumentException(
+                    'Debes especificar la sanción disciplinaria.'
+                );
+            }
+
+
+            if (
+                mb_strlen(
+                    $descripcionOtro
+                ) > 255
+            ) {
+
+                throw new \InvalidArgumentException(
+                    'La descripción de la sanción no puede exceder 255 caracteres.'
+                );
+            }
+        }
+
+
+        /* =====================================================
+        GUARDAR
+        ===================================================== */
+
+        $insertado =
+            $this->db
+            ->table(
+                'ai_reporte_sanciones'
+            )
+            ->insert([
+
+                'id_reporte' =>
+                $idReporte,
+
+                'tipo' =>
+                $tipo,
+
+                'descripcion_otro' =>
+                $descripcionOtro,
+
+                'origen' =>
+                'registro',
+
+                'id_seguimiento' =>
+                null,
+
+                'es_actual' =>
+                1,
+
+                'created_by' =>
+                $idUsuario,
+
+                'eliminado' =>
+                0,
+
+            ]);
+
+
+        if ($insertado === false) {
+
+            throw new \RuntimeException(
+                'No fue posible guardar la sanción disciplinaria.'
+            );
+        }
+    }
 
     /* =========================================================
        UNIDADES
@@ -1475,54 +1625,53 @@ class ReporteService
    MARCAR EVIDENCIAS COMO ELIMINADAS
 ========================================================= */
 
-protected function marcarEvidenciasEliminadas(
-    int $idReporte,
-    array $evidencias,
-    int $idUsuario
-): void {
+    protected function marcarEvidenciasEliminadas(
+        int $idReporte,
+        array $evidencias,
+        int $idUsuario
+    ): void {
 
-    if (empty($evidencias)) {
-        return;
-    }
-
-
-    $ids =
-        [];
-
-
-    foreach (
-        $evidencias
-        as $idEvidencia
-    ) {
-
-        $idEvidencia =
-            (int) $idEvidencia;
-
-
-        if (
-            $idEvidencia <= 0
-            || in_array(
-                $idEvidencia,
-                $ids,
-                true
-            )
-        ) {
-            continue;
+        if (empty($evidencias)) {
+            return;
         }
 
 
-        $ids[] =
-            $idEvidencia;
-
-    }
+        $ids =
+            [];
 
 
-    if (empty($ids)) {
-        return;
-    }
+        foreach (
+            $evidencias
+            as $idEvidencia
+        ) {
+
+            $idEvidencia =
+                (int) $idEvidencia;
 
 
-    /*
+            if (
+                $idEvidencia <= 0
+                || in_array(
+                    $idEvidencia,
+                    $ids,
+                    true
+                )
+            ) {
+                continue;
+            }
+
+
+            $ids[] =
+                $idEvidencia;
+        }
+
+
+        if (empty($ids)) {
+            return;
+        }
+
+
+        /*
      * IMPORTANTE:
      *
      * Además de comprobar el id_evidencia,
@@ -1533,8 +1682,8 @@ protected function marcarEvidenciasEliminadas(
      * a otro reporte.
      */
 
-    $actualizado =
-        $this->db
+        $actualizado =
+            $this->db
             ->table(
                 'ai_reporte_evidencias'
             )
@@ -1553,27 +1702,26 @@ protected function marcarEvidenciasEliminadas(
             ->update([
 
                 'eliminado' =>
-                    1,
+                1,
 
                 'eliminado_at' =>
-                    date(
-                        'Y-m-d H:i:s'
-                    ),
+                date(
+                    'Y-m-d H:i:s'
+                ),
 
                 'eliminado_por' =>
-                    $idUsuario,
+                $idUsuario,
 
             ]);
 
 
-    if ($actualizado === false) {
+        if ($actualizado === false) {
 
-        throw new \RuntimeException(
-            'No fue posible actualizar las evidencias eliminadas.'
-        );
+            throw new \RuntimeException(
+                'No fue posible actualizar las evidencias eliminadas.'
+            );
+        }
     }
-
-}
 
 
     /* =========================================================

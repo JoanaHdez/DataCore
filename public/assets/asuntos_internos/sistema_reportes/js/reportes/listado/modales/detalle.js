@@ -339,6 +339,13 @@ function cargarDetalleReporte(
             : [];
 
 
+    const sancion =
+        datos.sancion
+            && typeof datos.sancion === 'object'
+            ? datos.sancion
+            : null;
+
+
     const folio =
         String(
             reporte.folio
@@ -651,6 +658,11 @@ function cargarDetalleReporte(
     );
 
 
+    renderizarSancionDetalle(
+        modal,
+        sancion
+    );
+
     asignarTextoDetalle(
         modal,
         '#detalle-quien-emite-resolucion',
@@ -692,6 +704,134 @@ function cargarDetalleReporte(
         evidencias
     );
 
+}
+
+
+/* =========================================================
+   SANCIÓN DISCIPLINARIA
+========================================================= */
+
+function renderizarSancionDetalle(
+    modal,
+    sancion
+) {
+
+    const campoSancion =
+        modal.querySelector(
+            '#detalle-sancion-disciplinaria'
+        );
+
+
+    const avisoOrigen =
+        modal.querySelector(
+            '#detalle-sancion-origen'
+        );
+
+
+    if (campoSancion) {
+
+        let texto =
+            'Sin sanción registrada';
+
+
+        if (
+            sancion
+            && typeof sancion === 'object'
+        ) {
+
+            const textoBackend =
+                String(
+                    sancion.texto
+                    || ''
+                ).trim();
+
+
+            const tipo =
+                String(
+                    sancion.tipo
+                    || ''
+                ).trim();
+
+
+            const descripcionOtro =
+                String(
+                    sancion.descripcion_otro
+                    || ''
+                ).trim();
+
+
+            /*
+             * El backend ya entrega "texto",
+             * pero mantenemos respaldo por seguridad.
+             */
+            if (textoBackend) {
+
+                texto =
+                    textoBackend;
+
+            } else if (
+                tipo === 'Otro'
+                && descripcionOtro
+            ) {
+
+                texto =
+                    descripcionOtro;
+
+            } else if (tipo) {
+
+                texto =
+                    tipo;
+            }
+        }
+
+
+        campoSancion.textContent =
+            texto;
+    }
+
+
+    if (!avisoOrigen) {
+        return;
+    }
+
+
+    /*
+     * El aviso solamente aparece cuando
+     * la sanción vigente proviene de Seguimiento.
+     */
+    const desdeSeguimiento =
+        sancion
+        && sancion.actualizada_desde_seguimiento === true;
+
+
+    if (!desdeSeguimiento) {
+
+        avisoOrigen.hidden =
+            true;
+
+        avisoOrigen.textContent =
+            '';
+
+
+        return;
+    }
+
+
+    const fecha =
+        String(
+            sancion.fecha_actualizacion
+            || ''
+        ).trim();
+
+
+    avisoOrigen.textContent =
+        fecha
+            ? `Actualizada desde seguimiento el ${fecha}`
+            : 'Actualizada desde seguimiento';
+
+
+    avisoOrigen.hidden =
+        false;
 }
 
 
@@ -846,27 +986,27 @@ function renderizarPersonalDetalle(
                 <td>
                     <strong>
                         ${escaparHtmlDetalle(
-                            nombre || '—'
-                        )}
+                nombre || '—'
+            )}
                     </strong>
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                        nomina || '—'
-                    )}
+                nomina || '—'
+            )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                        area || '—'
-                    )}
+                area || '—'
+            )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                        turno || '—'
-                    )}
+                turno || '—'
+            )}
                 </td>
             `;
 
@@ -1022,53 +1162,53 @@ function renderizarUnidadesDetalle(
 
                     <strong>
                         ${escaparHtmlDetalle(
-                            noEconomico || '—'
-                        )}
+                noEconomico || '—'
+            )}
                     </strong>
 
                     <small class="detalle-unidades__placas">
                         Placas:
                         ${escaparHtmlDetalle(
-                            placas || '—'
-                        )}
+                placas || '—'
+            )}
                     </small>
 
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                        marcaSubmarca || '—'
-                    )}
+                marcaSubmarca || '—'
+            )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                        color || '—'
-                    )}
+                color || '—'
+            )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                        estatus || '—'
-                    )}
+                estatus || '—'
+            )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                        servicio || '—'
-                    )}
+                servicio || '—'
+            )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                        tipo || '—'
-                    )}
+                tipo || '—'
+            )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                        origen || '—'
-                    )}
+                origen || '—'
+            )}
                 </td>
             `;
 
@@ -1498,6 +1638,20 @@ function limpiarDetalleReporte(
             }
         );
 
+        const avisoSancion =
+            modal.querySelector(
+                '#detalle-sancion-origen'
+            );
+
+
+        if (avisoSancion) {
+
+            avisoSancion.hidden =
+                true;
+
+            avisoSancion.textContent =
+                '';
+        }
 
     const titulo =
         modal.querySelector(

@@ -49,6 +49,7 @@
 
             </div>
 
+
             <!-- INVESTIGADOR -->
             <div class="report-field">
 
@@ -60,6 +61,34 @@
                     placeholder="Ingresa el nombre del investigador" autocomplete="off">
 
             </div>
+
+
+            <!-- SANCIÓN DISCIPLINARIA -->
+            <div class="report-field">
+                <label for="sancion_disciplinaria">
+                    Sanción disciplinaria
+                </label>
+
+                <select id="sancion_disciplinaria" name="sancion_disciplinaria" class="report-select">
+                    <option value="">Sin sanción</option>
+                    <option value="Arresto">Arresto</option>
+                    <option value="Amonestación">Amonestación</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+
+            <!-- OTRA SANCIÓN -->
+            <div class="report-field" id="campo-sancion-otro" hidden>
+                <label for="sancion_otro">
+                    Especifique la sanción
+                    <span class="required">*</span>
+                </label>
+
+                <input type="text" id="sancion_otro" name="sancion_otro" class="report-input"
+                    placeholder="Ingresa la sanción correspondiente" autocomplete="off" maxlength="255" disabled>
+            </div>
+
 
             <!-- QUIÉN EMITE LA RESOLUCIÓN -->
             <div class="report-field">
@@ -73,6 +102,7 @@
 
             </div>
 
+
             <!-- RESOLUCIÓN -->
             <div class="report-field report-field--full">
 
@@ -85,6 +115,7 @@
 
             </div>
 
+
             <!-- MOTIVOS -->
             <div class="report-field report-field--full">
 
@@ -96,7 +127,6 @@
                     placeholder="Ingresa los motivos"></textarea>
 
             </div>
-
 
         </div>
 
