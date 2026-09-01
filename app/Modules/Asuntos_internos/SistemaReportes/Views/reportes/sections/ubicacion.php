@@ -13,7 +13,8 @@
             </h2>
 
             <p class="report-section__description">
-                Selecciona la ubicación en el mapa para completar automáticamente la dirección.
+                Busca una dirección, selecciona un punto en el mapa
+                o captura el domicilio manualmente.
             </p>
 
         </div>
@@ -28,6 +29,7 @@
             <!-- =====================================================
                  BUSCADOR
             ====================================================== -->
+
             <div class="report-field report-field--full">
 
                 <label for="ubicacion_busqueda">
@@ -38,23 +40,29 @@
                     placeholder="Busca una calle, colonia o dirección" autocomplete="off">
 
                 <small class="report-field__help">
-                    También puedes seleccionar directamente un punto en el mapa.
+                    También puedes seleccionar directamente un punto
+                    en el mapa.
                 </small>
 
             </div>
 
+
             <!-- =====================================================
                  MAPA
             ====================================================== -->
-            <div id="mapa-ubicacion" class="report-location__map"></div>
+
+            <div id="mapa-ubicacion" class="report-location__map"
+                aria-label="Mapa para seleccionar la ubicación de los hechos"></div>
 
 
             <!-- =====================================================
-                 DIRECCIÓN DESGLOSADA
+                 DIRECCIÓN
             ====================================================== -->
+
             <div class="report-form-grid report-location__fields">
 
                 <!-- CALLE -->
+
                 <div class="report-field">
 
                     <label for="calle">
@@ -68,6 +76,7 @@
 
 
                 <!-- NÚMERO EXTERIOR -->
+
                 <div class="report-field">
 
                     <label for="numero">
@@ -81,6 +90,7 @@
 
 
                 <!-- COLONIA -->
+
                 <div class="report-field">
 
                     <label for="colonia">
@@ -94,6 +104,7 @@
 
 
                 <!-- ENTRE CALLE -->
+
                 <div class="report-field">
 
                     <label for="entre_calle">
@@ -108,6 +119,7 @@
 
 
                 <!-- Y CALLE -->
+
                 <div class="report-field">
 
                     <label for="y_calle">
@@ -121,6 +133,7 @@
 
 
                 <!-- MUNICIPIO -->
+
                 <div class="report-field">
 
                     <label for="municipio">
@@ -134,6 +147,7 @@
 
 
                 <!-- ESTADO -->
+
                 <div class="report-field">
 
                     <label for="estado">
@@ -147,6 +161,7 @@
 
 
                 <!-- SECTOR -->
+
                 <div class="report-field">
 
                     <label for="sector">
@@ -160,6 +175,7 @@
 
 
                 <!-- CUADRANTE -->
+
                 <div class="report-field">
 
                     <label for="cuadrante">
@@ -171,19 +187,75 @@
 
                 </div>
 
+
+                <!-- ID CUADRA / CALLE -->
+
+                <div class="report-field">
+
+                    <label for="id_cuadra">
+                        ID de cuadra / calle
+                    </label>
+
+                    <input type="text" id="id_cuadra" name="id_cuadra" class="report-input" autocomplete="off" readonly>
+
+                </div>
+
+
+                <!-- LATITUD -->
+
+                <div class="report-field">
+
+                    <label for="latitud_visible">
+                        Latitud (X)
+                    </label>
+
+                    <input type="text" id="latitud_visible" class="report-input" readonly>
+
+                </div>
+
+
+                <!-- LONGITUD -->
+
+                <div class="report-field">
+
+                    <label for="longitud_visible">
+                        Longitud (Y)
+                    </label>
+
+                    <input type="text" id="longitud_visible" class="report-input" readonly>
+
+                </div>
+
+
+                <!-- COORDENADAS -->
+
+                <div class="report-field report-field--full">
+
+                    <label for="coordenadas">
+                        Coordenadas
+                    </label>
+
+                    <input type="text" id="coordenadas" name="coordenadas" class="report-input" readonly>
+
+                </div>
+
             </div>
 
 
             <!-- =====================================================
-                 COORDENADAS
+                 DATOS OCULTOS REALES
             ====================================================== -->
 
             <input type="hidden" id="latitud" name="latitud" required>
 
             <input type="hidden" id="longitud" name="longitud" required>
 
+            <input type="hidden" id="origen_ubicacion" name="origen_ubicacion" value="manual">
+
         </div>
 
     </div>
 
 </section>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxfm6rP0X1P2_6p2YdMIfkuTGFpQwBu6A"></script>

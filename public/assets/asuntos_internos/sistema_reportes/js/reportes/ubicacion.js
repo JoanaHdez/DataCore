@@ -1,103 +1,205 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener(
+    'DOMContentLoaded',
+    () => {
+
+        inicializarUbicacionGoogleMaps();
+
+    }
+);
+
+
+/* =============================================================
+   UBICACIÓN
+   GOOGLE MAPS + BASE TERRITORIAL
+============================================================= */
+
+function inicializarUbicacionGoogleMaps() {
 
     /* =========================================================
        ELEMENTOS
     ========================================================= */
 
     const contenedorMapa =
-        document.querySelector('#mapa-ubicacion');
+        document.querySelector(
+            '#mapa-ubicacion'
+        );
 
     const inputBusqueda =
-        document.querySelector('#ubicacion_busqueda');
+        document.querySelector(
+            '#ubicacion_busqueda'
+        );
 
-    if (!contenedorMapa || typeof L === 'undefined') {
+    const inputCalle =
+        document.querySelector(
+            '#calle'
+        );
+
+    const inputNumero =
+        document.querySelector(
+            '#numero'
+        );
+
+    const inputColonia =
+        document.querySelector(
+            '#colonia'
+        );
+
+    const inputEntreCalle =
+        document.querySelector(
+            '#entre_calle'
+        );
+
+    const inputYCalle =
+        document.querySelector(
+            '#y_calle'
+        );
+
+    const inputMunicipio =
+        document.querySelector(
+            '#municipio'
+        );
+
+    const inputEstado =
+        document.querySelector(
+            '#estado'
+        );
+
+    const inputSector =
+        document.querySelector(
+            '#sector'
+        );
+
+    const inputCuadrante =
+        document.querySelector(
+            '#cuadrante'
+        );
+
+    const inputIdCuadra =
+        document.querySelector(
+            '#id_cuadra'
+        );
+
+    const inputLatitud =
+        document.querySelector(
+            '#latitud'
+        );
+
+    const inputLongitud =
+        document.querySelector(
+            '#longitud'
+        );
+
+    const inputLatitudVisible =
+        document.querySelector(
+            '#latitud_visible'
+        );
+
+    const inputLongitudVisible =
+        document.querySelector(
+            '#longitud_visible'
+        );
+
+    const inputCoordenadas =
+        document.querySelector(
+            '#coordenadas'
+        );
+
+    const inputOrigen =
+        document.querySelector(
+            '#origen_ubicacion'
+        );
+
+
+    if (!contenedorMapa) {
         return;
     }
 
 
     /* =========================================================
-       CONFIGURACIÓN INICIAL
+       VALIDAR GOOGLE MAPS
     ========================================================= */
 
-    const coordenadasNeza = [
-        19.4006,
-        -99.0148
-    ];
+    if (
+        typeof google === 'undefined'
+        || !google.maps
+    ) {
 
-    const mapa = L
-        .map(contenedorMapa)
-        .setView(
-            coordenadasNeza,
-            13
+        console.error(
+            'Google Maps no se encuentra disponible.'
+        );
+
+        return;
+    }
+
+
+    /* =========================================================
+       CONFIGURACIÓN
+    ========================================================= */
+
+    const CENTRO = {
+        lat: 19.40874,
+        lng: -99.01825,
+    };
+
+
+    const mapa =
+        new google.maps.Map(
+            contenedorMapa,
+            {
+                center: CENTRO,
+                zoom: 16,
+                mapTypeControl: false,
+                streetViewControl: false,
+                fullscreenControl: true,
+                clickableIcons: false,
+                gestureHandling: 'greedy',
+            }
         );
 
 
-    /* =========================================================
-       OPENSTREETMAP
-    ========================================================= */
-
-    L.tileLayer(
-        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        {
-            maxZoom: 19,
-            attribution:
-                '&copy; OpenStreetMap contributors'
-        }
-    ).addTo(mapa);
+    const geocoder =
+        new google.maps.Geocoder();
 
 
-    /* =========================================================
-       MARCADOR
-    ========================================================= */
+    let marcador =
+        new google.maps.Marker(
+            {
+                map: mapa,
+                visible: false,
+                draggable: true,
+                title: 'Ubicación de los hechos',
+            }
+        );
 
-    let marcador = null;
+
+    let secuencia =
+        0;
+
+    let actualizandoAutomaticamente =
+        false;
+
+    let temporizadorManual =
+        null;
 
 
     /* =========================================================
        CLIC EN MAPA
     ========================================================= */
 
-    mapa.on('click', async (evento) => {
+    mapa.addListener(
+        'click',
+        (evento) => {
 
-        const latitud =
-            evento.latlng.lat;
-
-        const longitud =
-            evento.latlng.lng;
-
-        await seleccionarUbicacion(
-            latitud,
-            longitud,
-            true
-        );
-
-    });
-
-
-    /* =========================================================
-       BUSCADOR
-       Enter para buscar
-    ========================================================= */
-
-    inputBusqueda?.addEventListener(
-        'keydown',
-        async (evento) => {
-
-            if (evento.key !== 'Enter') {
+            if (!evento.latLng) {
                 return;
             }
 
-            evento.preventDefault();
 
-            const termino =
-                inputBusqueda.value.trim();
-
-            if (!termino) {
-                return;
-            }
-
-            await buscarUbicacion(
-                termino
+            seleccionarPunto(
+                evento.latLng.lat(),
+                evento.latLng.lng(),
+                'mapa',
+                false
             );
 
         }
@@ -105,152 +207,731 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     /* =========================================================
-       SELECCIONAR UBICACIÓN
+       ARRASTRAR MARCADOR
     ========================================================= */
 
-    async function seleccionarUbicacion(
-        latitud,
-        longitud,
-        centrarMapa = false
-    ) {
+    marcador.addListener(
+        'dragend',
+        (evento) => {
 
-        if (!marcador) {
+            if (!evento.latLng) {
+                return;
+            }
 
-            marcador = L.marker(
-                [latitud, longitud]
-            ).addTo(mapa);
 
-        } else {
-
-            marcador.setLatLng(
-                [latitud, longitud]
+            seleccionarPunto(
+                evento.latLng.lat(),
+                evento.latLng.lng(),
+                'mapa',
+                false
             );
 
         }
+    );
 
 
-        if (centrarMapa) {
+    /* =========================================================
+       BUSCADOR
+    ========================================================= */
 
-            mapa.panTo(
-                [latitud, longitud]
+    inputBusqueda?.addEventListener(
+        'keydown',
+        (evento) => {
+
+            if (evento.key !== 'Enter') {
+                return;
+            }
+
+
+            evento.preventDefault();
+
+            buscarDireccion();
+
+        }
+    );
+
+
+    /* =========================================================
+       CAPTURA MANUAL
+    ========================================================= */
+
+    const camposManual = [
+        inputCalle,
+        inputNumero,
+        inputColonia,
+        inputMunicipio,
+        inputEstado,
+    ];
+
+
+    camposManual.forEach(
+        (campo) => {
+
+            campo?.addEventListener(
+                'input',
+                () => {
+
+                    if (actualizandoAutomaticamente) {
+                        return;
+                    }
+
+
+                    establecerOrigen(
+                        'manual'
+                    );
+
+
+                    if (temporizadorManual) {
+
+                        clearTimeout(
+                            temporizadorManual
+                        );
+
+                    }
+
+
+                    temporizadorManual =
+                        setTimeout(
+                            () => {
+
+                                buscarDireccionManual();
+
+                            },
+                            900
+                        );
+
+                }
             );
 
         }
-
-
-        guardarCoordenadas(
-            latitud,
-            longitud
-        );
-
-
-        await obtenerDireccionDesdeCoordenadas(
-            latitud,
-            longitud
-        );
-
-    }
+    );
 
 
     /* =========================================================
        BUSCAR DIRECCIÓN
     ========================================================= */
 
-    async function buscarUbicacion(
-        termino
+    function buscarDireccion() {
+
+        const termino =
+            inputBusqueda?.value.trim()
+            ?? '';
+
+
+        if (!termino) {
+            return;
+        }
+
+
+        let consulta =
+            termino;
+
+
+        if (
+            !/nezahualc[oó]yotl/i.test(
+                consulta
+            )
+        ) {
+
+            consulta +=
+                ', Nezahualcóyotl, Estado de México, México';
+
+        }
+
+
+        geocoder.geocode(
+            {
+                address: consulta,
+            },
+            (
+                resultados,
+                status
+            ) => {
+
+                if (
+                    status !== 'OK'
+                    || !resultados
+                    || !resultados[0]
+                ) {
+
+                    console.warn(
+                        'No se encontró la dirección.'
+                    );
+
+                    return;
+                }
+
+
+                const ubicacion =
+                    resultados[0]
+                        .geometry
+                        .location;
+
+
+                seleccionarPunto(
+                    ubicacion.lat(),
+                    ubicacion.lng(),
+                    'busqueda',
+                    true
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       BÚSQUEDA DESDE CAMPOS MANUALES
+    ========================================================= */
+
+    function buscarDireccionManual() {
+
+        const calle =
+            inputCalle?.value.trim()
+            ?? '';
+
+        const numero =
+            inputNumero?.value.trim()
+            ?? '';
+
+        const colonia =
+            inputColonia?.value.trim()
+            ?? '';
+
+        const municipio =
+            inputMunicipio?.value.trim()
+            ?? '';
+
+        const estado =
+            inputEstado?.value.trim()
+            ?? '';
+
+
+        if (
+            calle === ''
+            || (
+                colonia === ''
+                && municipio === ''
+            )
+        ) {
+            return;
+        }
+
+
+        const consulta =
+            [
+                calle,
+                numero,
+                colonia,
+                municipio || 'Nezahualcóyotl',
+                estado || 'Estado de México',
+                'México',
+            ]
+                .filter(Boolean)
+                .join(', ');
+
+
+        geocoder.geocode(
+            {
+                address: consulta,
+            },
+            (
+                resultados,
+                status
+            ) => {
+
+                if (
+                    status !== 'OK'
+                    || !resultados
+                    || !resultados[0]
+                ) {
+                    return;
+                }
+
+
+                const ubicacion =
+                    resultados[0]
+                        .geometry
+                        .location;
+
+
+                seleccionarPunto(
+                    ubicacion.lat(),
+                    ubicacion.lng(),
+                    'manual',
+                    true
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       SELECCIONAR PUNTO
+    ========================================================= */
+
+    function seleccionarPunto(
+        latitud,
+        longitud,
+        origen,
+        centrar
+    ) {
+
+        const posicion = {
+            lat: Number(latitud),
+            lng: Number(longitud),
+        };
+
+
+        if (
+            Number.isNaN(posicion.lat)
+            || Number.isNaN(posicion.lng)
+        ) {
+            return;
+        }
+
+
+        const miSecuencia =
+            ++secuencia;
+
+
+        guardarCoordenadas(
+            posicion.lat,
+            posicion.lng
+        );
+
+
+        establecerOrigen(
+            origen
+        );
+
+
+        marcador.setPosition(
+            posicion
+        );
+
+        marcador.setVisible(
+            true
+        );
+
+
+        if (centrar) {
+
+            mapa.panTo(
+                posicion
+            );
+
+            mapa.setZoom(
+                18
+            );
+
+        }
+
+
+        completarGoogle(
+            posicion,
+            miSecuencia
+        );
+
+
+        completarTerritorio(
+            posicion.lat,
+            posicion.lng,
+            miSecuencia
+        );
+
+    }
+
+
+    /* =========================================================
+       GOOGLE MAPS
+       DOMICILIO POSTAL
+    ========================================================= */
+
+    function completarGoogle(
+        posicion,
+        miSecuencia
+    ) {
+
+        geocoder.geocode(
+            {
+                location:
+                    posicion,
+            },
+            (
+                resultados,
+                status
+            ) => {
+
+                if (
+                    miSecuencia !== secuencia
+                    || status !== 'OK'
+                    || !resultados
+                    || !resultados[0]
+                ) {
+                    return;
+                }
+
+
+                const resultado =
+                    resultados[0];
+
+
+                const componentes =
+                    resultado.address_components
+                    ?? [];
+
+
+                const calle =
+                    obtenerComponente(
+                        componentes,
+                        [
+                            'route',
+                        ]
+                    );
+
+
+                const numero =
+                    obtenerComponente(
+                        componentes,
+                        [
+                            'street_number',
+                        ]
+                    );
+
+
+                const colonia =
+                    obtenerComponente(
+                        componentes,
+                        [
+                            'sublocality_level_1',
+                            'sublocality_level_2',
+                            'sublocality',
+                            'neighborhood',
+                        ]
+                    );
+
+
+                const municipio =
+                    obtenerComponente(
+                        componentes,
+                        [
+                            'locality',
+                            'administrative_area_level_2',
+                            'administrative_area_level_3',
+                        ]
+                    );
+
+
+                const estado =
+                    obtenerComponente(
+                        componentes,
+                        [
+                            'administrative_area_level_1',
+                        ]
+                    );
+
+
+                actualizandoAutomaticamente =
+                    true;
+
+
+                try {
+
+                    if (
+                        inputBusqueda
+                        && resultado.formatted_address
+                    ) {
+
+                        inputBusqueda.value =
+                            resultado.formatted_address;
+
+                    }
+
+
+                    /*
+                     * Google llena principalmente:
+                     *
+                     * número
+                     * municipio
+                     * estado
+                     *
+                     * Calle y colonia podrán ser reemplazadas
+                     * posteriormente por la base territorial.
+                     */
+
+                    if (
+                        !inputCalle?.value
+                        && calle
+                    ) {
+
+                        llenarCampo(
+                            inputCalle,
+                            calle
+                        );
+
+                    }
+
+
+                    llenarCampo(
+                        inputNumero,
+                        numero
+                    );
+
+
+                    if (
+                        !inputColonia?.value
+                        && colonia
+                    ) {
+
+                        llenarCampo(
+                            inputColonia,
+                            colonia
+                        );
+
+                    }
+
+
+                    llenarCampo(
+                        inputMunicipio,
+                        municipio
+                    );
+
+
+                    llenarCampo(
+                        inputEstado,
+                        estado
+                    );
+
+                } finally {
+
+                    actualizandoAutomaticamente =
+                        false;
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       BASE TERRITORIAL
+    ========================================================= */
+
+    async function completarTerritorio(
+        latitud,
+        longitud,
+        miSecuencia
     ) {
 
         try {
 
-            /*
-             * Agregamos Nezahualcóyotl para dar prioridad
-             * a resultados dentro del municipio.
-             */
-            const consulta =
-                `${termino}, Nezahualcóyotl, Estado de México, México`;
+            const base =
+                document.querySelector(
+                    'base'
+                )?.href
+                || window.location.origin + '/';
+
 
             const url =
-                'https://nominatim.openstreetmap.org/search'
-                + '?format=jsonv2'
-                + '&addressdetails=1'
-                + '&limit=1'
-                + '&countrycodes=mx'
-                + `&q=${encodeURIComponent(consulta)}`;
+                new URL(
+                    'asuntos-internos/reportes/ubicacion/territorio',
+                    base
+                );
 
 
-            const respuesta = await fetch(
-                url,
-                {
-                    headers: {
-                        'Accept-Language': 'es'
-                    }
-                }
+            url.searchParams.set(
+                'lat',
+                String(latitud)
             );
+
+
+            url.searchParams.set(
+                'lng',
+                String(longitud)
+            );
+
+
+            const respuesta =
+                await fetch(
+                    url.toString(),
+                    {
+                        headers: {
+                            Accept:
+                                'application/json',
+                        },
+
+                        credentials:
+                            'same-origin',
+                    }
+                );
+
+
+            const datos =
+                await respuesta.json();
+
+
+            if (
+                miSecuencia !== secuencia
+            ) {
+                return;
+            }
 
 
             if (!respuesta.ok) {
 
                 throw new Error(
-                    'No fue posible buscar la ubicación.'
+                    datos?.message
+                    || 'No fue posible consultar el territorio.'
                 );
 
             }
 
 
-            const resultados =
-                await respuesta.json();
+            actualizandoAutomaticamente =
+                true;
 
 
-            if (
-                !Array.isArray(resultados)
-                || resultados.length === 0
-            ) {
+            try {
 
-                console.warn(
-                    'No se encontraron resultados para:',
-                    termino
-                );
+                if (datos.matched) {
 
-                return;
+                    llenarCampo(
+                        inputSector,
+                        normalizarMayusculas(
+                            datos.sector
+                        )
+                    );
+
+
+                    llenarCampo(
+                        inputCuadrante,
+                        normalizarMayusculas(
+                            datos.cuadrante
+                        )
+                    );
+
+
+                    llenarCampo(
+                        inputIdCuadra,
+                        datos.id_cuadra
+                        ?? ''
+                    );
+
+
+                    if (datos.calle) {
+
+                        llenarCampo(
+                            inputCalle,
+                            normalizarMayusculas(
+                                datos.calle
+                            )
+                        );
+
+                    }
+
+
+                    if (datos.colonia) {
+
+                        llenarCampo(
+                            inputColonia,
+                            normalizarMayusculas(
+                                datos.colonia
+                            )
+                        );
+
+                    }
+
+
+                    if (datos.entre_calle) {
+
+                        llenarCampo(
+                            inputEntreCalle,
+                            normalizarMayusculas(
+                                datos.entre_calle
+                            )
+                        );
+
+                    }
+
+
+                    if (datos.y_calle) {
+
+                        llenarCampo(
+                            inputYCalle,
+                            normalizarMayusculas(
+                                datos.y_calle
+                            )
+                        );
+
+                    }
+
+                } else {
+
+                    /*
+                     * Comportamiento del archivo territorial
+                     * proporcionado.
+                     */
+
+                    llenarCampo(
+                        inputSector,
+                        'FORÁNEO'
+                    );
+
+
+                    llenarCampo(
+                        inputCuadrante,
+                        'FORÁNEO'
+                    );
+
+
+                    llenarCampo(
+                        inputIdCuadra,
+                        ''
+                    );
+
+                }
+
+            } finally {
+
+                actualizandoAutomaticamente =
+                    false;
 
             }
-
-
-            const resultado =
-                resultados[0];
-
-
-            const latitud =
-                Number(resultado.lat);
-
-            const longitud =
-                Number(resultado.lon);
-
-
-            if (
-                Number.isNaN(latitud)
-                || Number.isNaN(longitud)
-            ) {
-                return;
-            }
-
-
-            mapa.setView(
-                [latitud, longitud],
-                17
-            );
-
-
-            await seleccionarUbicacion(
-                latitud,
-                longitud
-            );
 
         } catch (error) {
 
             console.error(
-                'Error buscando ubicación:',
+                'Error consultando información territorial:',
                 error
+            );
+
+
+            /*
+             * No eliminamos el domicilio de Google.
+             * Solo limpiamos información territorial.
+             */
+
+            llenarCampo(
+                inputSector,
+                ''
+            );
+
+
+            llenarCampo(
+                inputCuadrante,
+                ''
+            );
+
+
+            llenarCampo(
+                inputIdCuadra,
+                ''
             );
 
         }
@@ -259,7 +940,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     /* =========================================================
-       GUARDAR COORDENADAS
+       COMPONENTE GOOGLE
+    ========================================================= */
+
+    function obtenerComponente(
+        componentes,
+        tipos
+    ) {
+
+        for (
+            const tipo
+            of tipos
+        ) {
+
+            const encontrado =
+                componentes.find(
+                    (componente) =>
+                        Array.isArray(
+                            componente.types
+                        )
+                        && componente.types.includes(
+                            tipo
+                        )
+                );
+
+
+            if (encontrado) {
+
+                return (
+                    encontrado.long_name
+                    ?? ''
+                );
+
+            }
+
+        }
+
+
+        return '';
+
+    }
+
+
+    /* =========================================================
+       COORDENADAS
     ========================================================= */
 
     function guardarCoordenadas(
@@ -267,217 +991,158 @@ document.addEventListener('DOMContentLoaded', () => {
         longitud
     ) {
 
-        const inputLatitud =
-            document.querySelector(
-                '#latitud'
-            );
-
-        const inputLongitud =
-            document.querySelector(
-                '#longitud'
+        const lat =
+            Number(
+                latitud
+            ).toFixed(
+                6
             );
 
 
-        if (inputLatitud) {
+        const lng =
+            Number(
+                longitud
+            ).toFixed(
+                6
+            );
 
-            inputLatitud.value =
-                Number(latitud).toFixed(7);
 
-        }
+        llenarCampo(
+            inputLatitud,
+            lat
+        );
 
 
-        if (inputLongitud) {
+        llenarCampo(
+            inputLongitud,
+            lng
+        );
 
-            inputLongitud.value =
-                Number(longitud).toFixed(7);
 
-        }
+        llenarCampo(
+            inputLatitudVisible,
+            lat
+        );
+
+
+        llenarCampo(
+            inputLongitudVisible,
+            lng
+        );
+
+
+        llenarCampo(
+            inputCoordenadas,
+            `${lat}, ${lng}`
+        );
 
     }
 
 
     /* =========================================================
-       AJUSTAR MAPA
+       ORIGEN
     ========================================================= */
 
-    window.setTimeout(() => {
+    function establecerOrigen(
+        origen
+    ) {
 
-        mapa.invalidateSize();
-
-    }, 100);
-
-});
-
-
-/* =============================================================
-   GEOCODIFICACIÓN INVERSA
-   Coordenadas -> dirección
-============================================================= */
-
-async function obtenerDireccionDesdeCoordenadas(
-    latitud,
-    longitud
-) {
-
-    try {
-
-        const url =
-            'https://nominatim.openstreetmap.org/reverse'
-            + '?format=jsonv2'
-            + `&lat=${encodeURIComponent(latitud)}`
-            + `&lon=${encodeURIComponent(longitud)}`
-            + '&addressdetails=1'
-            + '&zoom=18';
+        const permitidos = [
+            'manual',
+            'busqueda',
+            'mapa',
+        ];
 
 
-        const respuesta = await fetch(
-            url,
-            {
-                headers: {
-                    'Accept-Language': 'es'
-                }
-            }
+        llenarCampo(
+            inputOrigen,
+            permitidos.includes(
+                origen
+            )
+                ? origen
+                : 'manual'
         );
 
+    }
 
-        if (!respuesta.ok) {
 
-            throw new Error(
-                'No fue posible consultar la dirección.'
-            );
+    /* =========================================================
+       UTILIDADES
+    ========================================================= */
 
+    function llenarCampo(
+        campo,
+        valor
+    ) {
+
+        if (!campo) {
+            return;
         }
 
 
-        const datos =
-            await respuesta.json();
-
-
-        const direccion =
-            datos.address ?? {};
-
-
-        /* =====================================================
-           DIRECCIÓN COMPLETA
-        ===================================================== */
-
-        llenarCampo(
-            '#ubicacion',
-            datos.display_name ?? ''
-        );
-
-
-        /* =====================================================
-           CALLE
-        ===================================================== */
-
-        llenarCampo(
-            '#calle',
-
-            direccion.road
-                ?? direccion.pedestrian
-                ?? direccion.residential
-                ?? direccion.footway
-                ?? direccion.path
-                ?? direccion.cycleway
-                ?? ''
-        );
-
-
-        /* =====================================================
-           NÚMERO EXTERIOR
-        ===================================================== */
-
-        llenarCampo(
-            '#numero',
-            direccion.house_number
-                ?? ''
-        );
-
-
-        /* =====================================================
-           COLONIA
-        ===================================================== */
-
-        llenarCampo(
-            '#colonia',
-
-            direccion.neighbourhood
-                ?? direccion.suburb
-                ?? direccion.quarter
-                ?? direccion.residential
-                ?? ''
-        );
-
-
-        /* =====================================================
-           CIUDAD / MUNICIPIO
-        ===================================================== */
-
-        llenarCampo(
-            '#municipio',
-
-            direccion.city
-                ?? direccion.town
-                ?? direccion.municipality
-                ?? direccion.city_district
-                ?? direccion.county
-                ?? ''
-        );
-
-
-        /* =====================================================
-           ESTADO
-        ===================================================== */
-
-        llenarCampo(
-            '#estado',
-            direccion.state
-                ?? ''
-        );
-
-
-        /*
-         * Estos campos se conservan manuales por ahora:
-         *
-         * #entre_calle
-         * #y_calle
-         * #sector
-         * #cuadrante
-         *
-         * Nominatim no garantiza esa información y Sector /
-         * Cuadrante necesitan la cartografía institucional.
-         */
-
-    } catch (error) {
-
-        console.error(
-            'Error obteniendo dirección:',
-            error
-        );
+        campo.value =
+            valor == null
+                ? ''
+                : String(
+                    valor
+                );
 
     }
 
-}
 
+    function normalizarMayusculas(
+        valor
+    ) {
 
-/* =============================================================
-   LLENAR CAMPO
-============================================================= */
+        return String(
+            valor ?? ''
+        )
+            .replace(
+                /\s+/g,
+                ' '
+            )
+            .trim()
+            .toLocaleUpperCase(
+                'es-MX'
+            );
 
-function llenarCampo(
-    selector,
-    valor
-) {
-
-    const campo =
-        document.querySelector(selector);
-
-    if (!campo) {
-        return;
     }
 
-    campo.value =
-        valor ?? '';
+
+    /* =========================================================
+       COORDENADAS EXISTENTES
+    ========================================================= */
+
+    const latitudInicial =
+        Number(
+            inputLatitud?.value
+        );
+
+    const longitudInicial =
+        Number(
+            inputLongitud?.value
+        );
+
+
+    if (
+        inputLatitud?.value
+        && inputLongitud?.value
+        && !Number.isNaN(
+            latitudInicial
+        )
+        && !Number.isNaN(
+            longitudInicial
+        )
+    ) {
+
+        seleccionarPunto(
+            latitudInicial,
+            longitudInicial,
+            inputOrigen?.value
+            || 'manual',
+            true
+        );
+
+    }
 
 }

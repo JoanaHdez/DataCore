@@ -83,6 +83,11 @@ $routes->group('asuntos-internos/reportes', static function ($routes) {
                 '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Ubicacion_Controller::direccion'
             );
 
+            $routes->get(
+                'ubicacion/territorio',
+                '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Ubicacion_Controller::territorio'
+            );
+
             // Exportar listado
             $routes->post(
                 'listado/exportar',
