@@ -12,19 +12,59 @@ class ReportesAuthFilter implements FilterInterface
         RequestInterface $request,
         $arguments = null
     ) {
-        if (
-            session()->get('reportes_autenticado') !== true
-            || !session()->has('usuario_reportes')
-        ) {
-            return redirect()
-                ->to(base_url('asuntos-internos/reportes'))
-                ->with(
-                    'error',
-                    'Inicia sesión para continuar.'
-                );
+        $sesionValida =
+            session()->get('reportes_autenticado') === true
+            && session()->has('usuario_reportes');
+
+
+        if ($sesionValida) {
+            return null;
         }
 
-        return null;
+
+        /* =====================================================
+           PETICIONES QUE ESPERAN JSON
+        ===================================================== */
+
+        $accept =
+            strtolower(
+                (string) $request->getHeaderLine('Accept')
+            );
+
+
+        $esPeticionJson =
+            str_contains(
+                $accept,
+                'application/json'
+            );
+
+
+        if ($esPeticionJson) {
+
+            return service('response')
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                        'La sesión ha expirado. Inicia sesión nuevamente.',
+                ]);
+        }
+
+
+        /* =====================================================
+           NAVEGACIÓN NORMAL
+        ===================================================== */
+
+        return redirect()
+            ->to(
+                base_url(
+                    'asuntos-internos/reportes'
+                )
+            )
+            ->with(
+                'error',
+                'Inicia sesión para continuar.'
+            );
     }
 
 
