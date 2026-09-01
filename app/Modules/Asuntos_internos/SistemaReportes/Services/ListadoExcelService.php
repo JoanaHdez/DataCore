@@ -173,8 +173,10 @@ class ListadoExcelService
             'Estado',
             'Sector',
             'Cuadrante',
+            'ID de cuadra / calle',
             'Latitud',
             'Longitud',
+            'Origen de ubicación',
 
             // Personal
             'Oficial',
@@ -364,12 +366,22 @@ class ListadoExcelService
 
                 $this->valor(
                     $reporte,
+                    'id_cuadra'
+                ),
+
+                $this->valor(
+                    $reporte,
                     'latitud'
                 ),
 
                 $this->valor(
                     $reporte,
                     'longitud'
+                ),
+
+                $this->valor(
+                    $reporte,
+                    'origen_ubicacion'
                 ),
 
 

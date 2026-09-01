@@ -2765,12 +2765,20 @@ class Reportes_Controller extends BaseController
                     $reporte['cuadrante']
                         ?? '',
 
+                    'id_cuadra' =>
+                    $reporte['id_cuadra']
+                        ?? '',
+
                     'latitud' =>
                     $reporte['latitud']
                         ?? '',
 
                     'longitud' =>
                     $reporte['longitud']
+                        ?? '',
+
+                    'origen_ubicacion' =>
+                    $reporte['origen_ubicacion']
                         ?? '',
 
 
