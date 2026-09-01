@@ -201,28 +201,28 @@
                 </div>
 
 
-                <!-- LATITUD -->
-
-                <div class="report-field">
-
-                    <label for="latitud_visible">
-                        Latitud (X)
-                    </label>
-
-                    <input type="text" id="latitud_visible" class="report-input" readonly>
-
-                </div>
-
-
-                <!-- LONGITUD -->
+                <!-- LONGITUD / X -->
 
                 <div class="report-field">
 
                     <label for="longitud_visible">
-                        Longitud (Y)
+                        Longitud (X)
                     </label>
 
                     <input type="text" id="longitud_visible" class="report-input" readonly>
+
+                </div>
+
+
+                <!-- LATITUD / Y -->
+
+                <div class="report-field">
+
+                    <label for="latitud_visible">
+                        Latitud (Y)
+                    </label>
+
+                    <input type="text" id="latitud_visible" class="report-input" readonly>
 
                 </div>
 
@@ -237,6 +237,10 @@
 
                     <input type="text" id="coordenadas" name="coordenadas" class="report-input" readonly>
 
+                    <small class="report-field__help">
+                        Formato: latitud, longitud.
+                    </small>
+
                 </div>
 
             </div>
@@ -244,6 +248,9 @@
 
             <!-- =====================================================
                  DATOS OCULTOS REALES
+
+                 Estos son los valores que se envían al backend
+                 y posteriormente se guardan en ai_reportes.
             ====================================================== -->
 
             <input type="hidden" id="latitud" name="latitud" required>
@@ -257,5 +264,10 @@
     </div>
 
 </section>
+
+
+<!-- =============================================================
+     GOOGLE MAPS
+============================================================= -->
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxfm6rP0X1P2_6p2YdMIfkuTGFpQwBu6A"></script>

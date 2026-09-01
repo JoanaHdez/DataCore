@@ -323,6 +323,121 @@ function inicializarUbicacionGoogleMaps() {
         }
 
 
+        /* =========================================================
+           DETECTAR SI EL USUARIO ESCRIBIÓ COORDENADAS
+    
+           Formatos aceptados:
+    
+           LATITUD, LONGITUD
+           19.4332090, -98.9486140
+    
+           LONGITUD, LATITUD
+           -98.9486140, 19.4332090
+        ========================================================= */
+
+        const coincidenciaCoordenadas =
+            termino.match(
+                /^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/
+            );
+
+
+        if (coincidenciaCoordenadas) {
+
+            const valor1 =
+                Number(
+                    coincidenciaCoordenadas[1]
+                );
+
+            const valor2 =
+                Number(
+                    coincidenciaCoordenadas[2]
+                );
+
+
+            let latitud = null;
+            let longitud = null;
+
+
+            /*
+             * Caso normal de Google Maps:
+             *
+             * LATITUD, LONGITUD
+             *
+             * Ejemplo:
+             * 19.4332090, -98.9486140
+             */
+
+            if (
+                valor1 >= -90
+                && valor1 <= 90
+                && valor2 >= -180
+                && valor2 <= 180
+            ) {
+
+                latitud =
+                    valor1;
+
+                longitud =
+                    valor2;
+
+            }
+
+
+            /*
+             * Si el primer valor no puede ser latitud,
+             * intentamos interpretarlo como:
+             *
+             * LONGITUD, LATITUD
+             *
+             * Ejemplo:
+             * -98.9486140, 19.4332090
+             */
+
+            if (
+                (
+                    valor1 < -90
+                    || valor1 > 90
+                )
+                && valor1 >= -180
+                && valor1 <= 180
+                && valor2 >= -90
+                && valor2 <= 90
+            ) {
+
+                longitud =
+                    valor1;
+
+                latitud =
+                    valor2;
+
+            }
+
+
+            if (
+                latitud !== null
+                && longitud !== null
+            ) {
+
+                seleccionarPunto(
+                    latitud,
+                    longitud,
+                    'busqueda',
+                    true
+                );
+
+                return;
+            }
+
+        }
+
+
+        /* =========================================================
+           BÚSQUEDA NORMAL POR DIRECCIÓN
+    
+           Si no son coordenadas, conservamos exactamente
+           el funcionamiento que ya existía.
+        ========================================================= */
+
         let consulta =
             termino;
 
@@ -469,6 +584,73 @@ function inicializarUbicacionGoogleMaps() {
     }
 
 
+    function limpiarDatosUbicacionAutomatica() {
+
+        actualizandoAutomaticamente =
+            true;
+
+
+        try {
+
+            llenarCampo(
+                inputCalle,
+                ''
+            );
+
+            llenarCampo(
+                inputNumero,
+                ''
+            );
+
+            llenarCampo(
+                inputColonia,
+                ''
+            );
+
+            llenarCampo(
+                inputEntreCalle,
+                ''
+            );
+
+            llenarCampo(
+                inputYCalle,
+                ''
+            );
+
+            llenarCampo(
+                inputMunicipio,
+                ''
+            );
+
+            llenarCampo(
+                inputEstado,
+                ''
+            );
+
+            llenarCampo(
+                inputSector,
+                ''
+            );
+
+            llenarCampo(
+                inputCuadrante,
+                ''
+            );
+
+            llenarCampo(
+                inputIdCuadra,
+                ''
+            );
+
+        } finally {
+
+            actualizandoAutomaticamente =
+                false;
+
+        }
+
+    }
+
     /* =========================================================
        SELECCIONAR PUNTO
     ========================================================= */
@@ -491,6 +673,27 @@ function inicializarUbicacionGoogleMaps() {
             || Number.isNaN(posicion.lng)
         ) {
             return;
+        }
+
+
+        /*
+         * Si la ubicación viene del buscador
+         * o directamente del mapa, eliminamos
+         * los datos automáticos de la ubicación
+         * anterior antes de cargar los nuevos.
+         *
+         * NO hacemos esto para captura manual,
+         * porque borraríamos lo que el usuario
+         * acaba de escribir.
+         */
+
+        if (
+            origen === 'busqueda'
+            || origen === 'mapa'
+        ) {
+
+            limpiarDatosUbicacionAutomatica();
+
         }
 
 
@@ -991,11 +1194,18 @@ function inicializarUbicacionGoogleMaps() {
         longitud
     ) {
 
+        /* =====================================================
+           PRECISIÓN
+    
+           Conservamos 7 decimales para evitar perder
+           precisión entre Google Maps y la base de datos.
+        ===================================================== */
+
         const lat =
             Number(
                 latitud
             ).toFixed(
-                6
+                7
             );
 
 
@@ -1003,9 +1213,13 @@ function inicializarUbicacionGoogleMaps() {
             Number(
                 longitud
             ).toFixed(
-                6
+                7
             );
 
+
+        /* =====================================================
+           CAMPOS QUE SE GUARDAN EN BD
+        ===================================================== */
 
         llenarCampo(
             inputLatitud,
@@ -1019,17 +1233,35 @@ function inicializarUbicacionGoogleMaps() {
         );
 
 
-        llenarCampo(
-            inputLatitudVisible,
-            lat
-        );
-
+        /* =====================================================
+           CAMPOS VISIBLES
+    
+           X = LONGITUD
+           Y = LATITUD
+        ===================================================== */
 
         llenarCampo(
             inputLongitudVisible,
             lng
         );
 
+
+        llenarCampo(
+            inputLatitudVisible,
+            lat
+        );
+
+
+        /* =====================================================
+           COORDENADAS
+    
+           Para Google Maps conservamos el formato habitual:
+    
+           LATITUD, LONGITUD
+    
+           Ejemplo:
+           19.4332090, -98.9486140
+        ===================================================== */
 
         llenarCampo(
             inputCoordenadas,
