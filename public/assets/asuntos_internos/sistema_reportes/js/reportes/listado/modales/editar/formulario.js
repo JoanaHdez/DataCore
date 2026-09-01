@@ -145,12 +145,17 @@ export function crearReporteTemporalDesdeFila(
         cuadrante:
             '',
 
+        id_cuadra:
+            '',
+
         latitud:
             '',
 
         longitud:
             '',
 
+        origen_ubicacion:
+            '',
 
         /* PERSONAL */
 
@@ -336,7 +341,7 @@ export function cargarReporteEnFormulario(
 
 
     /* =====================================================
-       UBICACIÓN
+    UBICACIÓN
     ===================================================== */
 
     asignarValorEditar(
@@ -395,6 +400,12 @@ export function cargarReporteEnFormulario(
 
     asignarValorEditar(
         modal,
+        '#editar-id-cuadra',
+        reporte.id_cuadra
+    );
+
+    asignarValorEditar(
+        modal,
         '#editar-latitud',
         reporte.latitud
     );
@@ -405,6 +416,58 @@ export function cargarReporteEnFormulario(
         reporte.longitud
     );
 
+    asignarValorEditar(
+        modal,
+        '#editar-origen-ubicacion',
+        reporte.origen_ubicacion
+    );
+
+
+    /*
+    * Coordenadas visibles.
+    *
+    * X = Longitud
+    * Y = Latitud
+    */
+
+    asignarValorEditar(
+        modal,
+        '#editar-longitud-visible',
+        reporte.longitud
+    );
+
+    asignarValorEditar(
+        modal,
+        '#editar-latitud-visible',
+        reporte.latitud
+    );
+
+
+    const latitudEditar =
+        String(
+            reporte.latitud
+            || ''
+        ).trim();
+
+
+    const longitudEditar =
+        String(
+            reporte.longitud
+            || ''
+        ).trim();
+
+
+    const coordenadasEditar =
+        latitudEditar && longitudEditar
+            ? `${latitudEditar}, ${longitudEditar}`
+            : '';
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-coordenadas',
+        coordenadasEditar
+    );
 
     /* =====================================================
        PERSONAL
@@ -603,8 +666,10 @@ export function obtenerReporteDesdeFormulario(
         'estado',
         'sector',
         'cuadrante',
+        'id_cuadra',
         'latitud',
         'longitud',
+        'origen_ubicacion',
 
         'quejoso',
         'edad',

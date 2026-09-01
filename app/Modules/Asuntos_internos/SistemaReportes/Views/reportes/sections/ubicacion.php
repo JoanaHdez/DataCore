@@ -109,11 +109,9 @@
 
                     <label for="entre_calle">
                         Entre calle
-                        <span class="required">*</span>
                     </label>
 
-                    <input type="text" id="entre_calle" name="entre_calle" class="report-input" autocomplete="off"
-                        required>
+                    <input type="text" id="entre_calle" name="entre_calle" class="report-input" autocomplete="off">
 
                 </div>
 
@@ -124,10 +122,9 @@
 
                     <label for="y_calle">
                         Y calle
-                        <span class="required">*</span>
                     </label>
 
-                    <input type="text" id="y_calle" name="y_calle" class="report-input" autocomplete="off" required>
+                    <input type="text" id="y_calle" name="y_calle" class="report-input" autocomplete="off">
 
                 </div>
 

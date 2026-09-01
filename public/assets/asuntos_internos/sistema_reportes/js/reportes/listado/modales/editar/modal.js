@@ -166,6 +166,21 @@ export function mostrarSeccionEditar(
         }
     );
 
+    /* =====================================================
+    ACTUALIZAR MAPA DE UBICACIÓN
+    ===================================================== */
+
+    if (
+        seccion === 'hechos'
+    ) {
+
+        window.dispatchEvent(
+            new CustomEvent(
+                'editar:ubicacion-visible'
+            )
+        );
+
+    }
 
     /* =====================================================
        REINICIAR SCROLL

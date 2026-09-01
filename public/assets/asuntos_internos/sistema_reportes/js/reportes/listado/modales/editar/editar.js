@@ -41,6 +41,10 @@ import {
 } from './formulario.js';
 
 import {
+    inicializarUbicacionEditar,
+} from './ubicacion.js';
+
+import {
     inicializarEditarSancion,
     cargarSancionEditar,
     validarSancionEditar,
@@ -102,6 +106,11 @@ export function inicializarEditarReporte() {
 
 
     inicializarEditarSancion(
+        modal
+    );
+
+
+    inicializarUbicacionEditar(
         modal
     );
 
@@ -220,6 +229,15 @@ export function inicializarEditarReporte() {
                     modal,
                     formulario,
                     reporte
+                );
+
+
+                /* =================================================
+                UBICACIÓN / GOOGLE MAPS
+                ================================================= */
+
+                inicializarUbicacionEditar(
+                    modal
                 );
 
 
@@ -1092,6 +1110,11 @@ function construirReporteEditar(
         cuadrante:
             valorEditar(
                 origen.cuadrante
+            ),
+
+        id_cuadra:
+            valorEditar(
+                origen.id_cuadra
             ),
 
         latitud:

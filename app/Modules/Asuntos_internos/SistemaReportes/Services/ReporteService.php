@@ -642,18 +642,16 @@ class ReporteService
 
 
             'entre_calle' =>
-            $this->valorRequerido(
-                $datos,
-                'entre_calle',
-                'La primera entre calle es obligatoria.'
+            $this->valorNullable(
+                $datos['entre_calle']
+                    ?? null
             ),
 
 
             'y_calle' =>
-            $this->valorRequerido(
-                $datos,
-                'y_calle',
-                'La segunda entre calle es obligatoria.'
+            $this->valorNullable(
+                $datos['y_calle']
+                    ?? null
             ),
 
 

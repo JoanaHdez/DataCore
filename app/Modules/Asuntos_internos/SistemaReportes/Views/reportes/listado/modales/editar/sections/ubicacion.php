@@ -13,7 +13,33 @@
     </div>
 
 
+    <!-- =====================================================
+         BUSCADOR DE UBICACIÓN
+    ====================================================== -->
+    <div class="editar-reporte-campo editar-reporte-campo--completo">
+
+        <label for="editar-ubicacion-busqueda">
+            Buscar ubicación
+        </label>
+
+        <input type="text" id="editar-ubicacion-busqueda" autocomplete="off"
+            placeholder="Escribe una dirección o pega coordenadas">
+
+    </div>
+
+
+    <!-- =====================================================
+         MAPA
+    ====================================================== -->
+    <div id="editar-mapa-ubicacion" class="mapa-ubicacion"
+        aria-label="Mapa para seleccionar la ubicación de los hechos"></div>
+
+
+    <!-- =====================================================
+         DATOS DE LA UBICACIÓN
+    ====================================================== -->
     <div class="editar-reporte-grid">
+
 
         <!-- CALLE -->
         <div class="editar-reporte-campo">
@@ -59,10 +85,9 @@
 
             <label for="editar-entre-calle">
                 Entre calle
-                <span class="required">*</span>
             </label>
 
-            <input type="text" id="editar-entre-calle" name="entre_calle" autocomplete="off" required>
+            <input type="text" id="editar-entre-calle" name="entre_calle" autocomplete="off">
 
         </div>
 
@@ -72,10 +97,9 @@
 
             <label for="editar-y-calle">
                 Y calle
-                <span class="required">*</span>
             </label>
 
-            <input type="text" id="editar-y-calle" name="y_calle" autocomplete="off" required>
+            <input type="text" id="editar-y-calle" name="y_calle" autocomplete="off">
 
         </div>
 
@@ -111,10 +135,9 @@
 
             <label for="editar-sector">
                 Sector
-                <span class="required">*</span>
             </label>
 
-            <input type="text" id="editar-sector" name="sector" autocomplete="off" required>
+            <input type="text" id="editar-sector" name="sector" autocomplete="off" readonly>
 
         </div>
 
@@ -124,19 +147,77 @@
 
             <label for="editar-cuadrante">
                 Cuadrante
-                <span class="required">*</span>
             </label>
 
-            <input type="text" id="editar-cuadrante" name="cuadrante" autocomplete="off" required>
+            <input type="text" id="editar-cuadrante" name="cuadrante" autocomplete="off" readonly>
+
+        </div>
+
+
+        <!-- ID DE CUADRA / CALLE -->
+        <div class="editar-reporte-campo">
+
+            <label for="editar-id-cuadra">
+                ID de cuadra / calle
+            </label>
+
+            <input type="text" id="editar-id-cuadra" name="id_cuadra" autocomplete="off" readonly>
+
+        </div>
+
+
+        <!-- LONGITUD X -->
+        <div class="editar-reporte-campo">
+
+            <label for="editar-longitud-visible">
+                Longitud (X)
+            </label>
+
+            <input type="text" id="editar-longitud-visible" autocomplete="off" readonly>
+
+        </div>
+
+
+        <!-- LATITUD Y -->
+        <div class="editar-reporte-campo">
+
+            <label for="editar-latitud-visible">
+                Latitud (Y)
+            </label>
+
+            <input type="text" id="editar-latitud-visible" autocomplete="off" readonly>
+
+        </div>
+
+
+        <!-- COORDENADAS -->
+        <div class="editar-reporte-campo">
+
+            <label for="editar-coordenadas">
+                Coordenadas
+            </label>
+
+            <input type="text" id="editar-coordenadas" autocomplete="off" readonly>
 
         </div>
 
     </div>
 
 
-    <!-- COORDENADAS -->
+    <!-- =====================================================
+         DATOS QUE SE GUARDAN EN BD
+    ====================================================== -->
+
     <input type="hidden" id="editar-latitud" name="latitud">
 
     <input type="hidden" id="editar-longitud" name="longitud">
 
+    <input type="hidden" id="editar-origen-ubicacion" name="origen_ubicacion">
+
 </div>
+
+<!-- =============================================================
+     GOOGLE MAPS
+============================================================= -->
+
+<script src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY"></script>
