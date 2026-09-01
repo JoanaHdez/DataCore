@@ -141,6 +141,20 @@
         </div>
 
 
+        <!-- ID DE CUADRA / CALLE -->
+        <div class="detalle-reporte-campo">
+
+            <span>
+                ID de cuadra / calle
+            </span>
+
+            <strong id="detalle-id-cuadra">
+                —
+            </strong>
+
+        </div>
+
+
         <!-- LATITUD -->
         <div class="detalle-reporte-campo">
 

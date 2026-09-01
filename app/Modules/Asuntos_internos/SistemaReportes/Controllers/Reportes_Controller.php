@@ -765,6 +765,7 @@ class Reportes_Controller extends BaseController
                     'estado',
                     'sector',
                     'cuadrante',
+                    'id_cuadra',
                     'latitud',
                     'longitud',
                     'origen_ubicacion',

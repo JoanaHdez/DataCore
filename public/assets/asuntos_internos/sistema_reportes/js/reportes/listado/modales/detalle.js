@@ -566,6 +566,13 @@ function cargarDetalleReporte(
 
     asignarTextoDetalle(
         modal,
+        '#detalle-id-cuadra',
+        reporte.id_cuadra
+    );
+
+
+    asignarTextoDetalle(
+        modal,
         '#detalle-latitud',
         reporte.latitud
     );
