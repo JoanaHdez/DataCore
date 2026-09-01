@@ -213,13 +213,10 @@
                         </label>
 
 
-                        <!-- SANCIONES - PENDIENTE -->
-                        <label class="
-                                dashboard-exportar__opcion
-                                dashboard-exportar__opcion--deshabilitada
-                            " title="Pendiente de definir la fuente oficial de sanciones disciplinarias">
+                        <!-- SANCIONES -->
+                        <label class="dashboard-exportar__opcion">
 
-                            <input type="checkbox" name="secciones[]" value="sanciones" disabled>
+                            <input type="checkbox" name="secciones[]" value="sanciones" checked>
 
                             <span class="dashboard-exportar__check"></span>
 
@@ -230,7 +227,8 @@
                                 </strong>
 
                                 <small>
-                                    Pendiente de definir la fuente oficial de datos.
+                                    Distribución de las sanciones disciplinarias
+                                    vigentes registradas en los reportes.
                                 </small>
 
                             </span>

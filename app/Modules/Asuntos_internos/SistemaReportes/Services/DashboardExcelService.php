@@ -17,12 +17,16 @@ class DashboardExcelService
      * Zona y sanciones NO se incluyen todavía porque
      * continúan pendientes de una fuente/regla oficial.
      */
+    /**
+     * Secciones actualmente disponibles para exportación.
+     */
     private const SECCIONES_PERMITIDAS = [
         'indicadores',
         'sectores_turnos',
         'areas',
         'zonas',
         'turnos',
+        'sanciones',
         'recientes',
     ];
 
@@ -158,6 +162,13 @@ class DashboardExcelService
 
                     break;
 
+                case 'sanciones':
+
+                    $this->crearSanciones(
+                        $spreadsheet
+                    );
+
+                    break;
 
                 case 'recientes':
 
@@ -889,6 +900,147 @@ class DashboardExcelService
             );
     }
 
+
+    /* =========================================================
+   SANCIONES DISCIPLINARIAS
+========================================================= */
+
+    private function crearSanciones(
+        Spreadsheet $spreadsheet
+    ): void {
+
+        /*
+     * Utilizamos exactamente la misma información
+     * que alimenta la gráfica de Sanciones
+     * disciplinarias del Dashboard.
+     *
+     * DashboardService se encarga de:
+     *
+     * - aplicar todos los filtros activos;
+     * - consultar ai_reporte_sanciones;
+     * - considerar únicamente sanciones actuales;
+     * - excluir sanciones eliminadas;
+     * - agrupar Arresto, Amonestación y Otro;
+     * - evitar duplicados.
+     */
+
+        $datosDashboard =
+            $this->dashboardService
+            ->obtenerSanciones();
+
+
+        $tipos =
+            $datosDashboard['tipos']
+            ?? [];
+
+
+        $totales =
+            $datosDashboard['totales']
+            ?? [];
+
+
+        /* =====================================================
+       PREPARAR DATOS
+    ===================================================== */
+
+        $datos = [
+
+            [
+                'Sanción disciplinaria',
+                'Cantidad',
+            ],
+
+        ];
+
+
+        foreach (
+            $tipos
+            as $indice => $tipo
+        ) {
+
+            $datos[] = [
+
+                $tipo,
+
+                (int) (
+                    $totales[$indice]
+                    ?? 0
+                ),
+
+            ];
+        }
+
+
+        /* =====================================================
+       TOTAL GENERAL
+    ===================================================== */
+
+        $datos[] = [
+
+            'TOTAL',
+
+            (int) (
+                $datosDashboard['total']
+                ?? 0
+            ),
+
+        ];
+
+
+        /* =====================================================
+       CREAR HOJA
+    ===================================================== */
+
+        $hoja =
+            $spreadsheet
+            ->createSheet();
+
+
+        $hoja->setTitle(
+            'Sanciones'
+        );
+
+
+        $hoja->fromArray(
+            $datos,
+            null,
+            'A1'
+        );
+
+
+        /* =====================================================
+       ESTILO GENERAL
+    ===================================================== */
+
+        $ultimaFila =
+            count(
+                $datos
+            );
+
+
+        $this->aplicarEstiloGeneral(
+            $hoja,
+            'A1:B'
+                . $ultimaFila
+        );
+
+
+        /* =====================================================
+       RESALTAR TOTAL
+    ===================================================== */
+
+        $hoja
+            ->getStyle(
+                'A'
+                    . $ultimaFila
+                    . ':B'
+                    . $ultimaFila
+            )
+            ->getFont()
+            ->setBold(
+                true
+            );
+    }
 
     /* =========================================================
        REPORTES RECIENTES
