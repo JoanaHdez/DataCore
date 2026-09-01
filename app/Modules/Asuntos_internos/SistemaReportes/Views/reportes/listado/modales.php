@@ -21,3 +21,7 @@
 <?= $this->include(
     'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\confirmar_eliminacion'
 ) ?>
+
+<?= $this->include(
+    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\exportar'
+) ?>
