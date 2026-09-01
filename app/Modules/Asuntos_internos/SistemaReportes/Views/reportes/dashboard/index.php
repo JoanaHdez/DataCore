@@ -40,114 +40,114 @@ Dashboard | Asuntos Internos
 
 
             <!-- =====================================================
-     DASHBOARD - COMPOSICIÓN DE GRÁFICAS
-===================================================== -->
+                DASHBOARD - COMPOSICIÓN DE GRÁFICAS
+            ===================================================== -->
 
-<div class="dashboard-layout">
-
-
-    <!-- =================================================
-         PRINCIPAL
-    ================================================== -->
-
-    <div class="dashboard-layout__principal">
-
-        <?= $this->include(
-            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\areas'
-        ) ?>
-
-    </div>
-
-<div class="dashboard-layout__areas">
-
-    <?= $this->include(
-        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\areas_involucradas'
-    ) ?>
-
-</div>
-
-    <!-- =================================================
-         FILA 1
-         ZONAS + SANCIONES
-    ================================================== -->
-
-    <div class="dashboard-layout__fila dashboard-layout__fila--zonas">
-
-        <div class="dashboard-layout__zona">
-
-            <?= $this->include(
-                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\zonas'
-            ) ?>
-
-        </div>
+            <div class="dashboard-layout">
 
 
-        <div class="dashboard-layout__sanciones">
+                <!-- =================================================
+                    PRINCIPAL
+                ================================================== -->
 
-            <?= $this->include(
-                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\sanciones'
-            ) ?>
+                <div class="dashboard-layout__principal">
 
-        </div>
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\areas'
+                    ) ?>
 
-    </div>
+                </div>
 
+                <div class="dashboard-layout__areas">
 
-    <!-- =================================================
-         FILA 2
-         RESOLUCIONES + CATÁLOGO
-    ================================================== -->
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\areas_involucradas'
+                    ) ?>
 
-    <div class="dashboard-layout__fila dashboard-layout__fila--analisis">
+                </div>
 
-        <div class="dashboard-layout__resoluciones">
+                <!-- =================================================
+                    FILA 1
+                    ZONAS + SANCIONES
+                ================================================== -->
 
-            <?= $this->include(
-                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\resoluciones'
-            ) ?>
+                <div class="dashboard-layout__fila dashboard-layout__fila--zonas">
 
-        </div>
+                    <div class="dashboard-layout__zona">
 
+                        <?= $this->include(
+                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\zonas'
+                        ) ?>
 
-        <div class="dashboard-layout__catalogo">
-
-            <?= $this->include(
-                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\catalogo'
-            ) ?>
-
-        </div>
-
-    </div>
+                    </div>
 
 
-    <!-- =================================================
-         FILA 3
-         TURNOS + RECIENTES
-    ================================================== -->
+                    <div class="dashboard-layout__sanciones">
 
-    <div class="dashboard-layout__fila dashboard-layout__fila--operativa">
+                        <?= $this->include(
+                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\sanciones'
+                        ) ?>
 
-        <div class="dashboard-layout__turnos">
+                    </div>
 
-            <?= $this->include(
-                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\turnos'
-            ) ?>
-
-        </div>
+                </div>
 
 
-        <div class="dashboard-layout__recientes">
+                <!-- =================================================
+                    FILA 2
+                    RESOLUCIONES + CATÁLOGO
+                ================================================== -->
 
-            <?= $this->include(
-                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\recientes'
-            ) ?>
+                <div class="dashboard-layout__fila dashboard-layout__fila--analisis">
 
-        </div>
+                    <div class="dashboard-layout__resoluciones">
 
-    </div>
+                        <?= $this->include(
+                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\resoluciones'
+                        ) ?>
+
+                    </div>
 
 
-</div>
+                    <div class="dashboard-layout__catalogo">
+
+                        <?= $this->include(
+                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\catalogo'
+                        ) ?>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                    FILA 3
+                    TURNOS + RECIENTES
+                ================================================== -->
+
+                <div class="dashboard-layout__fila dashboard-layout__fila--operativa">
+
+                    <div class="dashboard-layout__turnos">
+
+                        <?= $this->include(
+                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\turnos'
+                        ) ?>
+
+                    </div>
+
+
+                    <div class="dashboard-layout__recientes">
+
+                        <?= $this->include(
+                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\recientes'
+                        ) ?>
+
+                    </div>
+
+                </div>
+
+
+            </div>
 
         </div>
 

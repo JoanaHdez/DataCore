@@ -1,20 +1,9 @@
-<div
-    class="modal-reporte"
-    id="modal-exportar-dashboard"
-    aria-hidden="true"
->
+<div class="modal-reporte" id="modal-exportar-dashboard" aria-hidden="true">
 
-    <div
-        class="modal-reporte__overlay"
-        data-cerrar-modal-exportar
-    ></div>
+    <div class="modal-reporte__overlay" data-cerrar-modal-exportar></div>
 
-    <div
-        class="modal-reporte__dialog modal-reporte__dialog--exportar"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-exportar-dashboard-titulo"
-    >
+    <div class="modal-reporte__dialog modal-reporte__dialog--exportar" role="dialog" aria-modal="true"
+        aria-labelledby="modal-exportar-dashboard-titulo">
 
         <!-- HEADER -->
         <div class="modal-reporte__header">
@@ -25,21 +14,13 @@
                     Exportación de información
                 </span>
 
-                <h2
-                    class="modal-reporte__title"
-                    id="modal-exportar-dashboard-titulo"
-                >
+                <h2 class="modal-reporte__title" id="modal-exportar-dashboard-titulo">
                     Exportar a Excel
                 </h2>
 
             </div>
 
-            <button
-                type="button"
-                class="modal-reporte__close"
-                data-cerrar-modal-exportar
-                aria-label="Cerrar"
-            >
+            <button type="button" class="modal-reporte__close" data-cerrar-modal-exportar aria-label="Cerrar">
                 ×
             </button>
 
@@ -69,17 +50,12 @@
 
 
                     <!-- SELECCIONAR TODO -->
-                    <label
-                        class="
+                    <label class="
                             dashboard-exportar__opcion
                             dashboard-exportar__opcion--principal
-                        "
-                    >
+                        ">
 
-                        <input
-                            type="checkbox"
-                            id="exportar-seleccionar-todo"
-                        >
+                        <input type="checkbox" id="exportar-seleccionar-todo">
 
                         <span class="dashboard-exportar__check"></span>
 
@@ -104,12 +80,7 @@
                         <!-- INDICADORES -->
                         <label class="dashboard-exportar__opcion">
 
-                            <input
-                                type="checkbox"
-                                name="secciones[]"
-                                value="indicadores"
-                                checked
-                            >
+                            <input type="checkbox" name="secciones[]" value="indicadores" checked>
 
                             <span class="dashboard-exportar__check"></span>
 
@@ -131,12 +102,7 @@
                         <!-- SECTORES Y TURNOS -->
                         <label class="dashboard-exportar__opcion">
 
-                            <input
-                                type="checkbox"
-                                name="secciones[]"
-                                value="sectores_turnos"
-                                checked
-                            >
+                            <input type="checkbox" name="secciones[]" value="sectores_turnos" checked>
 
                             <span class="dashboard-exportar__check"></span>
 
@@ -159,12 +125,7 @@
                         <!-- ÁREAS -->
                         <label class="dashboard-exportar__opcion">
 
-                            <input
-                                type="checkbox"
-                                name="secciones[]"
-                                value="areas"
-                                checked
-                            >
+                            <input type="checkbox" name="secciones[]" value="areas" checked>
 
                             <span class="dashboard-exportar__check"></span>
 
@@ -187,12 +148,7 @@
                         <!-- TURNOS -->
                         <label class="dashboard-exportar__opcion">
 
-                            <input
-                                type="checkbox"
-                                name="secciones[]"
-                                value="turnos"
-                                checked
-                            >
+                            <input type="checkbox" name="secciones[]" value="turnos" checked>
 
                             <span class="dashboard-exportar__check"></span>
 
@@ -214,12 +170,7 @@
                         <!-- REPORTES RECIENTES -->
                         <label class="dashboard-exportar__opcion">
 
-                            <input
-                                type="checkbox"
-                                name="secciones[]"
-                                value="recientes"
-                                checked
-                            >
+                            <input type="checkbox" name="secciones[]" value="recientes" checked>
 
                             <span class="dashboard-exportar__check"></span>
 
@@ -239,21 +190,10 @@
                         </label>
 
 
-                        <!-- ZONA - PENDIENTE -->
-                        <label
-                            class="
-                                dashboard-exportar__opcion
-                                dashboard-exportar__opcion--deshabilitada
-                            "
-                            title="Pendiente de definir la relación oficial entre sectores y zonas"
-                        >
+                        <!-- ZONAS -->
+                        <label class="dashboard-exportar__opcion">
 
-                            <input
-                                type="checkbox"
-                                name="secciones[]"
-                                value="zonas"
-                                disabled
-                            >
+                            <input type="checkbox" name="secciones[]" value="zonas" checked>
 
                             <span class="dashboard-exportar__check"></span>
 
@@ -264,7 +204,8 @@
                                 </strong>
 
                                 <small>
-                                    Pendiente de relación oficial Sector → Zona.
+                                    Distribución de quejas entre las zonas Norte,
+                                    Poniente, Centro y Oriente.
                                 </small>
 
                             </span>
@@ -273,20 +214,12 @@
 
 
                         <!-- SANCIONES - PENDIENTE -->
-                        <label
-                            class="
+                        <label class="
                                 dashboard-exportar__opcion
                                 dashboard-exportar__opcion--deshabilitada
-                            "
-                            title="Pendiente de definir la fuente oficial de sanciones disciplinarias"
-                        >
+                            " title="Pendiente de definir la fuente oficial de sanciones disciplinarias">
 
-                            <input
-                                type="checkbox"
-                                name="secciones[]"
-                                value="sanciones"
-                                disabled
-                            >
+                            <input type="checkbox" name="secciones[]" value="sanciones" disabled>
 
                             <span class="dashboard-exportar__check"></span>
 
@@ -308,11 +241,7 @@
 
 
                     <!-- MENSAJE -->
-                    <div
-                        class="dashboard-exportar__mensaje"
-                        id="exportar-dashboard-mensaje"
-                        hidden
-                    >
+                    <div class="dashboard-exportar__mensaje" id="exportar-dashboard-mensaje" hidden>
                         Selecciona al menos una sección para continuar.
                     </div>
 
@@ -324,25 +253,17 @@
             <!-- FOOTER -->
             <div class="modal-reporte__footer">
 
-                <button
-                    type="button"
-                    class="
+                <button type="button" class="
                         modal-reporte__button
                         modal-reporte__button--secondary
-                    "
-                    data-cerrar-modal-exportar
-                >
+                    " data-cerrar-modal-exportar>
                     Cancelar
                 </button>
 
-                <button
-                    type="submit"
-                    class="
+                <button type="submit" class="
                         modal-reporte__button
                         modal-reporte__button--primary
-                    "
-                    id="btn-generar-excel"
-                >
+                    " id="btn-generar-excel">
                     Generar Excel
                 </button>
 

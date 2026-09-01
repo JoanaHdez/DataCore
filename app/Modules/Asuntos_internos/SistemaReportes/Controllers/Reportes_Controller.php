@@ -1497,19 +1497,6 @@ class Reportes_Controller extends BaseController
 
             /* =====================================================
             OPCIONES DE LOS FILTROS
-
-            Área:
-            se obtiene desde la plantilla institucional.
-
-            Género / Unidad:
-            se obtienen desde los datos correspondientes.
-
-            Zona:
-            utiliza las cuatro zonas institucionales definidas
-            en la interfaz y se deriva del sector.
-
-            Resolución:
-            ya no forma parte de las opciones de filtros.
             ===================================================== */
 
             $opcionesFiltros =
@@ -1560,6 +1547,18 @@ class Reportes_Controller extends BaseController
             $quejasPorTurno =
                 $dashboardService
                 ->obtenerQuejasPorTurno();
+
+
+            /* =====================================================
+            SANCIONES DISCIPLINARIAS
+
+            Se utiliza únicamente la sanción actual
+            de cada reporte.
+            ===================================================== */
+
+            $sanciones =
+                $dashboardService
+                ->obtenerSanciones();
 
 
             /* =====================================================
@@ -1730,6 +1729,30 @@ class Reportes_Controller extends BaseController
 
 
             /* =====================================================
+            VALORES POR DEFECTO - SANCIONES
+            ===================================================== */
+
+            $sanciones = [
+
+                'tipos' => [
+                    'Arresto',
+                    'Amonestación',
+                    'Otro',
+                ],
+
+                'totales' => [
+                    0,
+                    0,
+                    0,
+                ],
+
+                'total' =>
+                0,
+
+            ];
+
+
+            /* =====================================================
             VALORES POR DEFECTO - RESOLUCIONES
             ===================================================== */
 
@@ -1795,8 +1818,8 @@ class Reportes_Controller extends BaseController
 
 
                 /* =================================================
-                DASHBOARD
-                ================================================= */
+               DASHBOARD
+            ================================================= */
 
                 'indicadores' =>
                 $indicadores,
@@ -1812,6 +1835,9 @@ class Reportes_Controller extends BaseController
 
                 'quejasPorTurno' =>
                 $quejasPorTurno,
+
+                'sanciones' =>
+                $sanciones,
 
                 'resoluciones' =>
                 $resoluciones,

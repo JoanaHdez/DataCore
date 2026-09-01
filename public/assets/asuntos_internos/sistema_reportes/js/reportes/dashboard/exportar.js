@@ -543,7 +543,6 @@ function ocultarMensajeExportacion(
 
 }
 
-
 /* =============================================================
    OBTENER FILTROS ACTIVOS DEL DASHBOARD
 
@@ -577,6 +576,7 @@ function obtenerFiltrosDashboard() {
         /* Personal */
         'area_personal',
         'turno',
+        'zona',
 
         /* Quejoso */
         'genero',
@@ -617,7 +617,6 @@ function obtenerFiltrosDashboard() {
     return filtros;
 
 }
-
 
 /* =============================================================
    ENVIAR EXPORTACIÓN AL BACKEND

@@ -18,12 +18,13 @@ class DashboardExcelService
      * continúan pendientes de una fuente/regla oficial.
      */
     private const SECCIONES_PERMITIDAS = [
-    'indicadores',
-    'sectores_turnos',
-    'areas',
-    'turnos',
-    'recientes',
-];
+        'indicadores',
+        'sectores_turnos',
+        'areas',
+        'zonas',
+        'turnos',
+        'recientes',
+    ];
 
 
     /**
@@ -140,6 +141,15 @@ class DashboardExcelService
                     break;
 
 
+                case 'zonas':
+
+                    $this->crearZonas(
+                        $spreadsheet
+                    );
+
+                    break;
+
+
                 case 'turnos':
 
                     $this->crearTurnos(
@@ -147,6 +157,7 @@ class DashboardExcelService
                     );
 
                     break;
+
 
                 case 'recientes':
 
@@ -322,9 +333,9 @@ class DashboardExcelService
         $this->aplicarEstiloGeneral(
             $hoja,
             'A1:B'
-            . count(
-                $datos
-            )
+                . count(
+                    $datos
+                )
         );
     }
 
@@ -525,8 +536,8 @@ class DashboardExcelService
         $this->aplicarEstiloGeneral(
             $hoja,
             'A1:'
-            . $ultimaColumna
-            . $ultimaFila
+                . $ultimaColumna
+                . $ultimaFila
         );
 
 
@@ -537,10 +548,10 @@ class DashboardExcelService
         $hoja
             ->getStyle(
                 'A'
-                . $ultimaFila
-                . ':'
-                . $ultimaColumna
-                . $ultimaFila
+                    . $ultimaFila
+                    . ':'
+                    . $ultimaColumna
+                    . $ultimaFila
             )
             ->getFont()
             ->setBold(
@@ -620,12 +631,153 @@ class DashboardExcelService
         $this->aplicarEstiloGeneral(
             $hoja,
             'A1:B'
-            . count(
-                $datos
-            )
+                . count(
+                    $datos
+                )
         );
     }
 
+
+    /* =========================================================
+    QUEJAS POR ZONA
+    ========================================================= */
+
+    private function crearZonas(
+        Spreadsheet $spreadsheet
+    ): void {
+
+        /*
+     * Utilizamos exactamente la misma información
+     * que alimenta la gráfica "Quejas por zona"
+     * del Dashboard.
+     *
+     * DashboardService se encarga de:
+     *
+     * - aplicar los filtros activos;
+     * - obtener el sector histórico desde
+     *   ai_reporte_personal.area_snapshot;
+     * - convertir el sector a su zona institucional;
+     * - contar reportes / quejas y no personas;
+     * - evitar duplicados dentro de una misma zona.
+     */
+
+        $datosDashboard =
+            $this->dashboardService
+            ->obtenerQuejasPorZona();
+
+
+        $zonas =
+            $datosDashboard['zonas']
+            ?? [];
+
+
+        $totales =
+            $datosDashboard['totales']
+            ?? [];
+
+
+        /* =====================================================
+        PREPARAR DATOS
+        ===================================================== */
+
+        $datos = [
+
+            [
+                'Zona',
+                'Quejas',
+            ],
+
+        ];
+
+
+        foreach (
+            $zonas
+            as $indice => $zona
+        ) {
+
+            $datos[] = [
+
+                $zona,
+
+                (int) (
+                    $totales[$indice]
+                    ?? 0
+                ),
+
+            ];
+        }
+
+
+        /* =====================================================
+        TOTAL GENERAL
+        ===================================================== */
+
+        $datos[] = [
+
+            'TOTAL',
+
+            (int) (
+                $datosDashboard['total']
+                ?? 0
+            ),
+
+        ];
+
+
+        /* =====================================================
+        CREAR HOJA
+        ===================================================== */
+
+        $hoja =
+            $spreadsheet
+            ->createSheet();
+
+
+        $hoja->setTitle(
+            'Quejas por zona'
+        );
+
+
+        $hoja->fromArray(
+            $datos,
+            null,
+            'A1'
+        );
+
+
+        /* =====================================================
+        ESTILO GENERAL
+        ===================================================== */
+
+        $ultimaFila =
+            count(
+                $datos
+            );
+
+
+        $this->aplicarEstiloGeneral(
+            $hoja,
+            'A1:B'
+                . $ultimaFila
+        );
+
+
+        /* =====================================================
+        RESALTAR TOTAL
+        ===================================================== */
+
+        $hoja
+            ->getStyle(
+                'A'
+                    . $ultimaFila
+                    . ':B'
+                    . $ultimaFila
+            )
+            ->getFont()
+            ->setBold(
+                true
+            );
+    }
 
     /* =========================================================
        QUEJAS POR TURNO
@@ -720,16 +872,16 @@ class DashboardExcelService
         $this->aplicarEstiloGeneral(
             $hoja,
             'A1:B'
-            . $ultimaFila
+                . $ultimaFila
         );
 
 
         $hoja
             ->getStyle(
                 'A'
-                . $ultimaFila
-                . ':B'
-                . $ultimaFila
+                    . $ultimaFila
+                    . ':B'
+                    . $ultimaFila
             )
             ->getFont()
             ->setBold(
@@ -775,22 +927,22 @@ class DashboardExcelService
             $datos[] = [
 
                 $reporte['folio']
-                ?? '',
+                    ?? '',
 
                 $reporte['fecha']
-                ?? '',
+                    ?? '',
 
                 $reporte['expediente']
-                ?? '',
+                    ?? '',
 
                 $reporte['clasificacion']
-                ?? '',
+                    ?? '',
 
                 $reporte['area']
-                ?? '',
+                    ?? '',
 
                 $reporte['estado']
-                ?? '',
+                    ?? '',
 
             ];
         }
@@ -816,9 +968,9 @@ class DashboardExcelService
         $this->aplicarEstiloGeneral(
             $hoja,
             'A1:F'
-            . count(
-                $datos
-            )
+                . count(
+                    $datos
+                )
         );
     }
 
@@ -844,8 +996,8 @@ class DashboardExcelService
         $hoja
             ->getStyle(
                 'A1:'
-                . $ultimaColumna
-                . '1'
+                    . $ultimaColumna
+                    . '1'
             )
             ->getFont()
             ->setBold(
@@ -860,8 +1012,8 @@ class DashboardExcelService
         $hoja
             ->getStyle(
                 'A1:'
-                . $ultimaColumna
-                . '1'
+                    . $ultimaColumna
+                    . '1'
             )
             ->getFill()
             ->setFillType(
@@ -958,8 +1110,8 @@ class DashboardExcelService
         $hoja
             ->setAutoFilter(
                 'A1:'
-                . $ultimaColumna
-                . $hoja
+                    . $ultimaColumna
+                    . $hoja
                     ->getHighestRow()
             );
     }

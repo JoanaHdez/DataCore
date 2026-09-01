@@ -1584,6 +1584,238 @@ class DashboardService
     }
 
     /* =========================================================
+    SANCIONES DISCIPLINARIAS
+
+    Se contabiliza únicamente la sanción ACTUAL
+    de cada reporte.
+
+    No se incluye el historial de sanciones.
+
+    Fuente:
+    ai_reporte_sanciones
+
+    Reglas:
+    - es_actual = 1
+    - eliminado = 0
+    - se cuentan reportes / sanciones actuales
+    - se respetan todos los filtros del Dashboard
+    ========================================================= */
+
+    public function obtenerSanciones(): array
+    {
+        /* =====================================================
+        CATEGORÍAS
+        ===================================================== */
+
+        $conteos = [
+            'Arresto' => 0,
+            'Amonestación' => 0,
+            'Otro' => 0,
+        ];
+
+
+        /* =====================================================
+        CONSULTAR REPORTES + SANCIÓN ACTUAL
+        ===================================================== */
+
+        $builder =
+            $this->db
+            ->table('ai_reportes r')
+            ->select([
+                'r.id_reporte',
+                's.id_sancion',
+                's.tipo',
+            ])
+            ->join(
+                'ai_reporte_sanciones s',
+                's.id_reporte = r.id_reporte',
+                'inner'
+            )
+            ->where(
+                's.es_actual',
+                1
+            )
+            ->where(
+                's.eliminado',
+                0
+            );
+
+
+        /* =====================================================
+        FILTROS DEL DASHBOARD
+
+        De esta forma la gráfica de sanciones responde
+        exactamente a los mismos filtros que las demás.
+        ===================================================== */
+
+        $this->aplicarFiltrosReportes(
+            $builder,
+            'r'
+        );
+
+
+        /* =====================================================
+        CONSULTAR
+        ===================================================== */
+
+        $registros =
+            $builder
+            ->get()
+            ->getResultArray();
+
+
+        /* =====================================================
+        EVITAR DUPLICADOS
+
+        Aunque la regla de negocio establece una sola
+        sanción actual por reporte, protegemos el Dashboard
+        ante posibles inconsistencias históricas.
+
+        La unidad de conteo será:
+
+        reporte + tipo de sanción
+        ===================================================== */
+
+        $reportesContados = [];
+
+
+        /* =====================================================
+        CONTABILIZAR
+        ===================================================== */
+
+        foreach ($registros as $registro) {
+
+            $idReporte =
+                (int) (
+                    $registro['id_reporte']
+                    ?? 0
+                );
+
+
+            if ($idReporte <= 0) {
+                continue;
+            }
+
+
+            /* =================================================
+            NORMALIZAR TIPO
+            ================================================= */
+
+            $tipoOriginal =
+                trim(
+                    (string) (
+                        $registro['tipo']
+                        ?? ''
+                    )
+                );
+
+
+            if ($tipoOriginal === '') {
+                continue;
+            }
+
+
+            $tipoNormalizado =
+                mb_strtoupper(
+                    $tipoOriginal,
+                    'UTF-8'
+                );
+
+
+            /* =================================================
+            CLASIFICAR
+            ================================================= */
+
+            $tipo =
+                match ($tipoNormalizado) {
+
+                    'ARRESTO' =>
+                    'Arresto',
+
+                    'AMONESTACIÓN',
+                    'AMONESTACION' =>
+                    'Amonestación',
+
+                    'OTRO' =>
+                    'Otro',
+
+                    default =>
+                    null,
+                };
+
+
+            /*
+         * No inventamos categorías para valores
+         * que no pertenezcan al catálogo oficial.
+         */
+
+            if (
+                $tipo === null
+                || !array_key_exists(
+                    $tipo,
+                    $conteos
+                )
+            ) {
+                continue;
+            }
+
+
+            /* =================================================
+            EVITAR DUPLICADOS
+            ================================================= */
+
+            $clave =
+                $idReporte
+                . '|'
+                . $tipo;
+
+
+            if (
+                isset(
+                    $reportesContados[$clave]
+                )
+            ) {
+                continue;
+            }
+
+
+            $reportesContados[$clave] =
+                true;
+
+
+            /* =================================================
+            SUMAR
+            ================================================= */
+
+            $conteos[$tipo]++;
+        }
+
+
+        /* =====================================================
+        RESPUESTA
+        ===================================================== */
+
+        return [
+            'tipos' => [
+                'Arresto',
+                'Amonestación',
+                'Otro',
+            ],
+
+            'totales' => [
+                $conteos['Arresto'],
+                $conteos['Amonestación'],
+                $conteos['Otro'],
+            ],
+
+            'total' =>
+            array_sum(
+                $conteos
+            ),
+        ];
+    }
+
+    /* =========================================================
        CLASIFICAR TURNO
 
        IMPORTANTE:

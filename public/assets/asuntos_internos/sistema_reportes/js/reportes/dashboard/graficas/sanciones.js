@@ -33,6 +33,12 @@ function inicializarGraficaSanciones() {
         );
 
 
+    const datosElemento =
+        document.querySelector(
+            '#dashboard-datos-sanciones'
+        );
+
+
     if (
         !canvas
         || typeof Chart === 'undefined'
@@ -42,29 +48,93 @@ function inicializarGraficaSanciones() {
 
 
     /* =====================================================
-       DATOS
-
-       La gráfica queda preparada para recibir datos
-       reales cuando se defina la fuente correspondiente.
+       DATOS DEL BACKEND
     ===================================================== */
+
+    let datosBackend = {
+        tipos: [],
+        totales: [],
+        total: 0,
+    };
+
+
+    if (datosElemento) {
+
+        try {
+
+            datosBackend =
+                JSON.parse(
+                    datosElemento.textContent
+                    || '{}'
+                );
+
+        } catch (error) {
+
+            console.error(
+                'No fue posible leer los datos de sanciones:',
+                error
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       NORMALIZAR DATOS
+    ===================================================== */
+
+    const tipos =
+        Array.isArray(
+            datosBackend.tipos
+        )
+            ? datosBackend.tipos
+            : [];
+
+
+    const totales =
+        Array.isArray(
+            datosBackend.totales
+        )
+            ? datosBackend.totales.map(
+                (valor) =>
+                    Number(valor || 0)
+            )
+            : [];
+
+
+    /*
+     * Garantizamos que cada tipo tenga
+     * un valor numérico correspondiente.
+     */
+
+    const valores =
+        tipos.map(
+            (tipo, indice) =>
+                Number(
+                    totales[indice]
+                    ?? 0
+                )
+        );
+
 
     const datosSanciones = {
 
-        labels: [
-            'Arrestos',
-            'Amonestaciones',
-        ],
+        labels:
+            tipos,
 
-        valores: [
-            0,
-            0,
-        ],
+        valores:
+            valores,
 
     };
 
 
     /* =====================================================
        TOTAL
+
+       Lo calculamos nuevamente en JavaScript para que
+       la cifra mostrada siempre coincida exactamente
+       con las barras renderizadas.
     ===================================================== */
 
     const total =
@@ -117,7 +187,10 @@ function inicializarGraficaSanciones() {
        SIN INFORMACIÓN
     ===================================================== */
 
-    if (total <= 0) {
+    if (
+        total <= 0
+        || datosSanciones.labels.length === 0
+    ) {
 
         canvas.hidden =
             true;
@@ -195,11 +268,13 @@ function inicializarGraficaSanciones() {
                         backgroundColor: [
                             'rgba(10, 142, 99, 0.94)',
                             'rgba(111, 194, 165, 0.72)',
+                            'rgba(42, 92, 78, 0.76)',
                         ],
 
                         hoverBackgroundColor: [
                             '#087b58',
                             '#53ad8d',
+                            '#245f50',
                         ],
 
                         borderWidth:
