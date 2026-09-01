@@ -511,7 +511,7 @@ class ReporteService
         return [
 
             /* =================================================
-               DATOS DEL REPORTE
+            DATOS DEL REPORTE
             ================================================= */
 
             'folio' =>
@@ -578,7 +578,7 @@ class ReporteService
 
 
             /* =================================================
-               DATOS DE LOS HECHOS
+            DATOS DE LOS HECHOS
             ================================================= */
 
             'fecha_hechos' =>
@@ -611,7 +611,7 @@ class ReporteService
 
 
             /* =================================================
-               UBICACIÓN
+            UBICACIÓN
             ================================================= */
 
             'calle' =>
@@ -689,6 +689,20 @@ class ReporteService
             ),
 
 
+            /* =================================================
+            ID TERRITORIAL
+
+            Proviene de:
+            prevencion_delito.getDireccionData()
+            ================================================= */
+
+            'id_cuadra' =>
+            $this->valorNullable(
+                $datos['id_cuadra']
+                    ?? null
+            ),
+
+
             'latitud' =>
             $this->decimalNullable(
                 $datos['latitud']
@@ -711,7 +725,7 @@ class ReporteService
 
 
             /* =================================================
-               QUEJOSO
+            QUEJOSO
             ================================================= */
 
             'nombre_quejoso' =>
@@ -767,7 +781,7 @@ class ReporteService
 
 
             /* =================================================
-               CLASIFICACIÓN
+            CLASIFICACIÓN
             ================================================= */
 
             'clasificacion' =>
@@ -829,7 +843,7 @@ class ReporteService
 
 
             /* =================================================
-               AUDITORÍA
+            AUDITORÍA
             ================================================= */
 
             'created_by' =>
@@ -841,7 +855,6 @@ class ReporteService
 
         ];
     }
-
 
     /* =========================================================
        PERSONAL
@@ -1535,7 +1548,7 @@ class ReporteService
         }
     }
 
-    
+
     /* =========================================================
        UNIDADES
     ========================================================= */
@@ -1995,8 +2008,8 @@ class ReporteService
 
 
     /* =========================================================
-   MARCAR EVIDENCIAS COMO ELIMINADAS
-========================================================= */
+    MARCAR EVIDENCIAS COMO ELIMINADAS
+    ========================================================= */
 
     protected function marcarEvidenciasEliminadas(
         int $idReporte,

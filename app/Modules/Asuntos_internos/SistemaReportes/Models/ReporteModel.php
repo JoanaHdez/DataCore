@@ -27,9 +27,11 @@ class ReporteModel extends Model
         'expediente',
         'nomenclatura',
         'numero_oficio',
+
         'fecha_hechos',
         'hora_hechos',
         'descripcion_hechos',
+
         'calle',
         'numero_exterior',
         'colonia',
@@ -39,14 +41,17 @@ class ReporteModel extends Model
         'estado',
         'sector',
         'cuadrante',
+        'id_cuadra',
         'latitud',
         'longitud',
         'origen_ubicacion',
+
         'nombre_quejoso',
         'edad_quejoso',
         'genero_quejoso',
         'telefono_quejoso',
         'correo_quejoso',
+
         'clasificacion',
         'inspector',
         'investigador',
@@ -55,8 +60,10 @@ class ReporteModel extends Model
         'motivos',
         'estado_actual',
         'observaciones',
+
         'created_by',
         'updated_by',
+
         'eliminado',
         'eliminado_at',
         'eliminado_por',
