@@ -11,12 +11,12 @@
     </title>
 
     <link rel="icon" type="image/png" href="<?= base_url(
-            'assets/asuntos_internos/sistema_reportes/img/favicon.png'
-        ) ?>">
+                                                'assets/asuntos_internos/sistema_reportes/img/favicon.png'
+                                            ) ?>">
 
     <link rel="stylesheet" href="<?= base_url(
-        'assets/asuntos_internos/sistema_reportes/css/app.css'
-    ) ?>">
+                                        'assets/asuntos_internos/sistema_reportes/css/app.css'
+                                    ) ?>">
 
 </head>
 
@@ -25,16 +25,21 @@
     <?= $this->renderSection('content') ?>
 
     <?= $this->include(
-    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\components\resultado'
-) ?>
+        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\components\resultado'
+    ) ?>
+
+    
+    <?= $this->include(
+        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\components\modal-confirmar'
+    ) ?>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script type="module" src="<?= base_url(
-        'assets/asuntos_internos/sistema_reportes/js/main.js'
-    ) ?>"></script>
+                                    'assets/asuntos_internos/sistema_reportes/js/main.js'
+                                ) ?>"></script>
 
 </body>
 

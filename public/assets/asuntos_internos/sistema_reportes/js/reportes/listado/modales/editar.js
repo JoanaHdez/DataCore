@@ -7,7 +7,6 @@ import {
     inicializarEditarReporte,
 } from './editar/editar.js';
 
-
 document.addEventListener(
     'DOMContentLoaded',
     () => {

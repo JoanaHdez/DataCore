@@ -49,3 +49,4 @@ import './reportes/listado/modales/eliminar.js';
 
 
 import './reportes/notificaciones/resultado.js';
+import './reportes/notificaciones/confirmacion.js';

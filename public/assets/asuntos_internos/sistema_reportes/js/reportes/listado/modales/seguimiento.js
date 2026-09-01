@@ -1,3 +1,12 @@
+import {
+    mostrarResultado,
+    cerrarResultado,
+} from '../../notificaciones/resultado.js';
+
+import {
+    confirmarAccion,
+} from '../../notificaciones/confirmacion.js';
+
 /* =========================================================
    SISTEMA DE REPORTES - ASUNTOS INTERNOS
    Listado - Seguimiento
@@ -568,12 +577,27 @@ async function procesarNuevoSeguimiento(
 
 
         const confirmado =
-            window.confirm(
-                `La sanción seleccionada no coincide con la registrada actualmente.\n\n`
-                + `Sanción actual: ${textoActual}\n`
-                + `Nueva sanción: ${textoNuevo}\n\n`
-                + '¿Deseas actualizar la sanción como parte de este seguimiento?'
-            );
+            await confirmarAccion({
+
+                titulo:
+                    'Confirmar cambio de sanción',
+
+                mensaje:
+                    'La sanción seleccionada no coincide con la registrada actualmente.'
+                    + '\n\n'
+                    + `Sanción actual: ${textoActual}`
+                    + '\n'
+                    + `Nueva sanción: ${textoNuevo}`
+                    + '\n\n'
+                    + '¿Deseas actualizar la sanción como parte de este seguimiento?',
+
+                textoConfirmar:
+                    'Continuar',
+
+                textoCancelar:
+                    'Cancelar',
+
+            });
 
 
         if (!confirmado) {
@@ -700,6 +724,27 @@ async function procesarNuevoSeguimiento(
         );
 
 
+        /* =================================================
+           RESULTADO
+        ================================================= */
+
+        mostrarResultado({
+            tipo: 'success',
+            titulo: 'Seguimiento registrado',
+            mensaje: 'El seguimiento se registró correctamente.',
+        });
+
+
+        window.setTimeout(
+            () => {
+
+                cerrarResultado();
+
+            },
+            1800
+        );
+
+
     } catch (error) {
 
         console.error(
@@ -730,7 +775,6 @@ async function procesarNuevoSeguimiento(
     }
 
 }
-
 
 /* =========================================================
    INICIAR EDICIÓN
@@ -1007,6 +1051,7 @@ async function procesarEdicionSeguimiento(
         }
     );
 
+
     /* =====================================================
        CONFIRMAR CORRECCIÓN DE SANCIÓN
     ===================================================== */
@@ -1028,13 +1073,29 @@ async function procesarEdicionSeguimiento(
 
 
         const confirmado =
-            window.confirm(
-                `Estás corrigiendo la sanción asociada a este seguimiento.\n\n`
-                + `Valor registrado: ${textoAnterior}\n`
-                + `Valor corregido: ${textoNuevo}\n\n`
-                + 'Esta acción corrige el movimiento existente y no crea un seguimiento nuevo.\n\n'
-                + '¿Deseas continuar?'
-            );
+            await confirmarAccion({
+
+                titulo:
+                    'Confirmar corrección de sanción',
+
+                mensaje:
+                    'Estás corrigiendo la sanción asociada a este seguimiento.'
+                    + '\n\n'
+                    + `Valor registrado: ${textoAnterior}`
+                    + '\n'
+                    + `Valor corregido: ${textoNuevo}`
+                    + '\n\n'
+                    + 'Esta acción corrige el movimiento existente y no crea un seguimiento nuevo.'
+                    + '\n\n'
+                    + '¿Deseas continuar?',
+
+                textoConfirmar:
+                    'Continuar',
+
+                textoCancelar:
+                    'Cancelar',
+
+            });
 
 
         if (!confirmado) {
@@ -1044,16 +1105,34 @@ async function procesarEdicionSeguimiento(
     }
 
 
+    /* =====================================================
+       CONFIRMAR ELIMINACIÓN DE SANCIÓN DEL MOVIMIENTO
+    ===================================================== */
+
     if (
         accionSancion === 'quitar'
     ) {
 
         const confirmado =
-            window.confirm(
-                'Este seguimiento tiene una sanción asociada.\n\n'
-                + 'Si continúas, se corregirá el movimiento indicando que este seguimiento no produjo un cambio de sanción.\n\n'
-                + '¿Deseas continuar?'
-            );
+            await confirmarAccion({
+
+                titulo:
+                    'Confirmar corrección de sanción',
+
+                mensaje:
+                    'Este seguimiento tiene una sanción asociada.'
+                    + '\n\n'
+                    + 'Si continúas, se corregirá el movimiento indicando que este seguimiento no produjo un cambio de sanción.'
+                    + '\n\n'
+                    + '¿Deseas continuar?',
+
+                textoConfirmar:
+                    'Continuar',
+
+                textoCancelar:
+                    'Cancelar',
+
+            });
 
 
         if (!confirmado) {
@@ -1182,6 +1261,7 @@ async function procesarEdicionSeguimiento(
             }
         );
 
+
         console.log(
             'EDITANDO SEGUIMIENTO',
             {
@@ -1200,6 +1280,7 @@ async function procesarEdicionSeguimiento(
                     idSeguimiento,
             }
         );
+
 
         const resultado =
             await actualizarSeguimientoBackend(
@@ -1270,6 +1351,27 @@ async function procesarEdicionSeguimiento(
         );
 
 
+        /* =================================================
+           RESULTADO
+        ================================================= */
+
+        mostrarResultado({
+            tipo: 'success',
+            titulo: 'Seguimiento actualizado',
+            mensaje: 'Los cambios del seguimiento se guardaron correctamente.',
+        });
+
+
+        window.setTimeout(
+            () => {
+
+                cerrarResultado();
+
+            },
+            1800
+        );
+
+
     } catch (error) {
 
         console.error(
@@ -1300,7 +1402,6 @@ async function procesarEdicionSeguimiento(
     }
 
 }
-
 
 /* =========================================================
    DETERMINAR ACCIÓN DE SANCIÓN EN EDICIÓN

@@ -53,6 +53,13 @@ import {
     obtenerTextoSancionEditar,
 } from './sanciones.js';
 
+import {
+    mostrarResultado,
+} from '../../../notificaciones/resultado.js';
+
+import {
+    confirmarAccion,
+} from '../../../notificaciones/confirmacion.js';
 
 /* =========================================================
    INICIALIZAR
@@ -442,21 +449,27 @@ export function inicializarEditarReporte() {
                  */
 
                 const continuar =
-                    window.confirm(
-                        'Estás modificando la sanción disciplinaria registrada actualmente.'
-                        + '\n\n'
-                        + `Sanción actual: ${textoAnterior}`
-                        + '\n'
-                        + `Nuevo valor: ${textoNuevo}`
-                        + '\n\n'
-                        + 'Si se trata de una corrección de captura, puedes continuar desde Editar.'
-                        + '\n\n'
-                        + 'Si corresponde a una nueva sanción derivada del seguimiento del caso, debe registrarse desde Seguimiento.'
-                        + '\n\n'
-                        + 'Aceptar = continuar como corrección.'
-                        + '\n'
-                        + 'Cancelar = no guardar el cambio.'
-                    );
+                    await confirmarAccion({
+                        titulo:
+                            'Confirmar cambio de sanción',
+
+                        mensaje:
+                            'Estás modificando la sanción disciplinaria registrada actualmente.'
+                            + '\n\n'
+                            + `Sanción actual: ${textoAnterior}`
+                            + '\n'
+                            + `Nueva sanción: ${textoNuevo}`
+                            + '\n\n'
+                            + 'Si se trata de una corrección de captura, puedes continuar desde Editar.'
+                            + '\n\n'
+                            + 'Si corresponde a una nueva sanción derivada del seguimiento del caso, debe registrarse desde Seguimiento.',
+
+                        textoConfirmar:
+                            'Continuar',
+
+                        textoCancelar:
+                            'Cancelar',
+                    });
 
 
                 if (!continuar) {
@@ -844,10 +857,28 @@ export function inicializarEditarReporte() {
 
 
                 /* =================================================
-                   RECARGAR
+                RESULTADO
                 ================================================= */
 
-                window.location.reload();
+                mostrarResultado({
+                    tipo: 'success',
+                    titulo: 'Reporte actualizado',
+                    mensaje: 'Los cambios del reporte se guardaron correctamente.',
+                });
+
+
+                /* =================================================
+                RECARGAR
+                ================================================= */
+
+                window.setTimeout(
+                    () => {
+
+                        window.location.reload();
+
+                    },
+                    1800
+                );
 
 
             } catch (error) {
