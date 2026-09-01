@@ -13,9 +13,12 @@ class ListadoExcelService
     /**
      * Genera el Excel completo de reportes.
      */
-    public function generar(array $reportes): string
-    {
-        $spreadsheet = new Spreadsheet();
+    public function generar(
+        array $reportes
+    ): string {
+
+        $spreadsheet =
+            new Spreadsheet();
 
 
         /* =====================================================
@@ -23,11 +26,14 @@ class ListadoExcelService
         ===================================================== */
 
         $hojaReportes =
-            $spreadsheet->getActiveSheet();
+            $spreadsheet
+            ->getActiveSheet();
 
-        $hojaReportes->setTitle(
-            'Reportes'
-        );
+
+        $hojaReportes
+            ->setTitle(
+                'Reportes'
+            );
 
 
         $this->crearHojaReportes(
@@ -37,16 +43,39 @@ class ListadoExcelService
 
 
         /* =====================================================
+           HOJA DE SEGUIMIENTOS
+        ===================================================== */
+
+        $hojaSeguimientos =
+            $spreadsheet
+            ->createSheet();
+
+
+        $hojaSeguimientos
+            ->setTitle(
+                'Seguimientos'
+            );
+
+
+        $this->crearHojaSeguimientos(
+            $hojaSeguimientos,
+            $reportes
+        );
+
+
+        /* =====================================================
            HOJA DE EVIDENCIAS
         ===================================================== */
 
         $hojaEvidencias =
-            $spreadsheet->createSheet();
+            $spreadsheet
+            ->createSheet();
 
 
-        $hojaEvidencias->setTitle(
-            'Evidencias'
-        );
+        $hojaEvidencias
+            ->setTitle(
+                'Evidencias'
+            );
 
 
         $this->crearHojaEvidencias(
@@ -58,7 +87,11 @@ class ListadoExcelService
         /*
          * Dejamos abierta la hoja principal.
          */
-        $spreadsheet->setActiveSheetIndex(0);
+
+        $spreadsheet
+            ->setActiveSheetIndex(
+                0
+            );
 
 
         /* =====================================================
@@ -66,10 +99,15 @@ class ListadoExcelService
         ===================================================== */
 
         $directorio =
-            WRITEPATH . 'exports/';
+            WRITEPATH
+            . 'exports/';
 
 
-        if (! is_dir($directorio)) {
+        if (
+            !is_dir(
+                $directorio
+            )
+        ) {
 
             $creado =
                 mkdir(
@@ -79,7 +117,12 @@ class ListadoExcelService
                 );
 
 
-            if (! $creado && ! is_dir($directorio)) {
+            if (
+                !$creado
+                && !is_dir(
+                    $directorio
+                )
+            ) {
 
                 throw new \RuntimeException(
                     'No fue posible crear el directorio de exportaciones.'
@@ -94,7 +137,9 @@ class ListadoExcelService
 
         $nombreArchivo =
             'reportes_asuntos_internos_'
-            . date('Ymd_His')
+            . date(
+                'Ymd_His'
+            )
             . '.xlsx';
 
 
@@ -121,9 +166,14 @@ class ListadoExcelService
         /*
          * Liberamos memoria.
          */
-        $spreadsheet->disconnectWorksheets();
 
-        unset($spreadsheet);
+        $spreadsheet
+            ->disconnectWorksheets();
+
+
+        unset(
+            $spreadsheet
+        );
 
 
         return $ruta;
@@ -145,78 +195,146 @@ class ListadoExcelService
 
         $columnas = [
 
-            // Datos del reporte
+            /* =================================================
+               DATOS DEL REPORTE
+            ================================================= */
+
             'Prefijo',
+
             'Número de folio',
+
             'Fecha de registro',
 
-            // Identificación
+
+            /* =================================================
+               IDENTIFICACIÓN
+            ================================================= */
+
             'Folio IP',
+
             'Fecha de queja',
+
             'Fecha de acuerdo',
+
             'Expediente',
+
             'Nomenclatura',
+
             'No. de oficio',
 
-            // Datos de los hechos
+
+            /* =================================================
+               DATOS DE LOS HECHOS
+            ================================================= */
+
             'Fecha de los hechos',
+
             'Hora de los hechos',
+
             'Descripción',
 
-            // Ubicación
-            'Calle',
-            'Número',
-            'Colonia',
-            'Entre calle',
-            'Y calle',
-            'Municipio',
-            'Estado',
-            'Sector',
-            'Cuadrante',
-            'ID de cuadra / calle',
-            'Latitud',
-            'Longitud',
-            'Origen de ubicación',
 
-            // Personal
+            /* =================================================
+               UBICACIÓN
+            ================================================= */
+
+            'Calle',
+
+            'Número',
+
+            'Colonia',
+
+            'Entre calle',
+
+            'Y calle',
+
+            'Municipio',
+
+            'Estado',
+
+            'Sector',
+
+            'Cuadrante',
+
+            'ID de cuadra / calle',
+
+            'Latitud',
+
+            'Longitud',
+
+
+            /* =================================================
+               PERSONAL
+            ================================================= */
+
             'Oficial',
+
             'Área',
+
             'Turno',
 
-            // Unidad
+
+            /* =================================================
+               UNIDAD
+            ================================================= */
+
             'Unidad',
+
             'Placas',
+
             'Marca',
+
             'Submarca',
+
             'Color',
+
             'Estatus de unidad',
+
             'Servicio / Adscripción',
+
             'Tipo de vehículo',
+
             'Origen',
 
-            // Quejoso
+
+            /* =================================================
+               QUEJOSO
+            ================================================= */
+
             'Quejoso',
+
             'Edad',
+
             'Género',
+
             'Teléfono',
+
             'Correo electrónico',
 
-            // Clasificación
+
+            /* =================================================
+               CLASIFICACIÓN
+            ================================================= */
+
             'Clasificación',
+
             'Inspector',
+
             'Investigador',
+
             'Quién emite resolución',
+
             'Resolución',
+
             'Motivos',
 
-            // Información adicional
+
+            /* =================================================
+               INFORMACIÓN ADICIONAL
+            ================================================= */
+
             'Observaciones',
 
-            // Último seguimiento
-            'Fecha último seguimiento',
-            'Tipo de seguimiento',
-            'Estado resultante',
-            'Observaciones del seguimiento',
         ];
 
 
@@ -235,16 +353,20 @@ class ListadoExcelService
            REGISTROS
         ===================================================== */
 
-        $fila = 2;
+        $fila =
+            2;
 
 
-        foreach ($reportes as $reporte) {
+        foreach (
+            $reportes
+            as $reporte
+        ) {
 
             $datos = [
 
-                /* ===============================
+                /* =============================================
                    DATOS DEL REPORTE
-                =============================== */
+                ============================================= */
 
                 $this->obtenerPrefijo(
                     $reporte
@@ -260,9 +382,9 @@ class ListadoExcelService
                 ),
 
 
-                /* ===============================
+                /* =============================================
                    IDENTIFICACIÓN
-                =============================== */
+                ============================================= */
 
                 $this->valor(
                     $reporte,
@@ -295,9 +417,9 @@ class ListadoExcelService
                 ),
 
 
-                /* ===============================
+                /* =============================================
                    DATOS DE LOS HECHOS
-                =============================== */
+                ============================================= */
 
                 $this->valor(
                     $reporte,
@@ -315,9 +437,9 @@ class ListadoExcelService
                 ),
 
 
-                /* ===============================
+                /* =============================================
                    UBICACIÓN
-                =============================== */
+                ============================================= */
 
                 $this->valor(
                     $reporte,
@@ -379,15 +501,10 @@ class ListadoExcelService
                     'longitud'
                 ),
 
-                $this->valor(
-                    $reporte,
-                    'origen_ubicacion'
-                ),
 
-
-                /* ===============================
+                /* =============================================
                    PERSONAL
-                =============================== */
+                ============================================= */
 
                 $this->valor(
                     $reporte,
@@ -405,9 +522,9 @@ class ListadoExcelService
                 ),
 
 
-                /* ===============================
+                /* =============================================
                    UNIDAD
-                =============================== */
+                ============================================= */
 
                 $this->valor(
                     $reporte,
@@ -455,9 +572,9 @@ class ListadoExcelService
                 ),
 
 
-                /* ===============================
+                /* =============================================
                    QUEJOSO
-                =============================== */
+                ============================================= */
 
                 $this->valor(
                     $reporte,
@@ -485,9 +602,9 @@ class ListadoExcelService
                 ),
 
 
-                /* ===============================
+                /* =============================================
                    CLASIFICACIÓN
-                =============================== */
+                ============================================= */
 
                 $this->valor(
                     $reporte,
@@ -520,39 +637,15 @@ class ListadoExcelService
                 ),
 
 
-                /* ===============================
+                /* =============================================
                    INFORMACIÓN ADICIONAL
-                =============================== */
+                ============================================= */
 
                 $this->valor(
                     $reporte,
                     'observaciones'
                 ),
 
-
-                /* ===============================
-                   ÚLTIMO SEGUIMIENTO
-                =============================== */
-
-                $this->valor(
-                    $reporte,
-                    'seguimiento_fecha'
-                ),
-
-                $this->valor(
-                    $reporte,
-                    'seguimiento_tipo'
-                ),
-
-                $this->valor(
-                    $reporte,
-                    'seguimiento_estado'
-                ),
-
-                $this->valor(
-                    $reporte,
-                    'seguimiento_observaciones'
-                ),
             ];
 
 
@@ -572,13 +665,15 @@ class ListadoExcelService
         ===================================================== */
 
         $ultimaColumna =
-            $hoja->getHighestColumn();
+            $hoja
+            ->getHighestColumn();
 
 
         $ultimaFila =
             max(
                 1,
-                $hoja->getHighestRow()
+                $hoja
+                    ->getHighestRow()
             );
 
 
@@ -593,7 +688,9 @@ class ListadoExcelService
                     . '1'
             )
             ->getFont()
-            ->setBold(true);
+            ->setBold(
+                true
+            );
 
 
         $hoja
@@ -642,7 +739,9 @@ class ListadoExcelService
             ->setVertical(
                 Alignment::VERTICAL_TOP
             )
-            ->setWrapText(true);
+            ->setWrapText(
+                true
+            );
 
 
         /* =====================================================
@@ -670,8 +769,12 @@ class ListadoExcelService
         ===================================================== */
 
         $hoja
-            ->getRowDimension(1)
-            ->setRowHeight(30);
+            ->getRowDimension(
+                1
+            )
+            ->setRowHeight(
+                30
+            );
 
 
         /* =====================================================
@@ -704,24 +807,38 @@ class ListadoExcelService
                 ->getColumnDimension(
                     $columna
                 )
-                ->setAutoSize(true);
+                ->setAutoSize(
+                    true
+                );
         }
     }
 
 
     /* =========================================================
-       HOJA DE EVIDENCIAS
+       HOJA DE SEGUIMIENTOS
     ========================================================= */
 
-    private function crearHojaEvidencias(
+    private function crearHojaSeguimientos(
         $hoja,
         array $reportes
     ): void {
 
+        /* =====================================================
+           ENCABEZADOS
+        ===================================================== */
+
         $encabezados = [
+
             'Folio',
-            'Archivo',
-            'Ruta / URL',
+
+            'Fecha',
+
+            'Tipo de seguimiento',
+
+            'Estado resultante',
+
+            'Observaciones',
+
         ];
 
 
@@ -732,54 +849,82 @@ class ListadoExcelService
         );
 
 
-        $fila = 2;
+        /* =====================================================
+           REGISTROS
+        ===================================================== */
+
+        $fila =
+            2;
 
 
-        foreach ($reportes as $reporte) {
+        foreach (
+            $reportes
+            as $reporte
+        ) {
 
-            $evidencias =
-                $reporte['evidencias']
+            $seguimientos =
+                $reporte['seguimientos']
                 ?? [];
 
 
-            if (! is_array($evidencias)) {
+            if (
+                !is_array(
+                    $seguimientos
+                )
+            ) {
                 continue;
             }
 
 
-            foreach ($evidencias as $evidencia) {
+            foreach (
+                $seguimientos
+                as $seguimiento
+            ) {
 
-                if (is_array($evidencia)) {
-
-                    $archivo =
-                        $evidencia['archivo']
-                        ?? $evidencia['nombre']
-                        ?? '';
-
-
-                    $ruta =
-                        $evidencia['ruta']
-                        ?? $evidencia['url']
-                        ?? '';
-                } else {
-
-                    $archivo =
-                        (string) $evidencia;
-
-
-                    $ruta = '';
+                if (
+                    !is_array(
+                        $seguimiento
+                    )
+                ) {
+                    continue;
                 }
 
 
                 $hoja->fromArray(
                     [
+
                         $this->obtenerFolioCompleto(
                             $reporte
                         ),
 
-                        $archivo,
+                        trim(
+                            (string) (
+                                $seguimiento['fecha']
+                                ?? ''
+                            )
+                        ),
 
-                        $ruta,
+                        trim(
+                            (string) (
+                                $seguimiento['tipo']
+                                ?? ''
+                            )
+                        ),
+
+                        trim(
+                            (string) (
+                                $seguimiento['estado_resultante']
+                                ?? ''
+                            )
+                        ),
+
+                        trim(
+                            (string) (
+                                $seguimiento['observaciones']
+                                ?? ''
+                            )
+                        ),
+
                     ],
                     null,
                     'A' . $fila
@@ -798,7 +943,273 @@ class ListadoExcelService
         $ultimaFila =
             max(
                 1,
-                $hoja->getHighestRow()
+                $hoja
+                    ->getHighestRow()
+            );
+
+
+        /* =====================================================
+           ENCABEZADOS
+        ===================================================== */
+
+        $hoja
+            ->getStyle(
+                'A1:E1'
+            )
+            ->getFont()
+            ->setBold(
+                true
+            );
+
+
+        $hoja
+            ->getStyle(
+                'A1:E1'
+            )
+            ->getAlignment()
+            ->setHorizontal(
+                Alignment::HORIZONTAL_CENTER
+            )
+            ->setVertical(
+                Alignment::VERTICAL_CENTER
+            );
+
+
+        /* =====================================================
+           BORDES
+        ===================================================== */
+
+        $hoja
+            ->getStyle(
+                'A1:E'
+                    . $ultimaFila
+            )
+            ->getBorders()
+            ->getAllBorders()
+            ->setBorderStyle(
+                Border::BORDER_THIN
+            );
+
+
+        /* =====================================================
+           ALINEACIÓN
+        ===================================================== */
+
+        $hoja
+            ->getStyle(
+                'A1:E'
+                    . $ultimaFila
+            )
+            ->getAlignment()
+            ->setVertical(
+                Alignment::VERTICAL_TOP
+            )
+            ->setWrapText(
+                true
+            );
+
+
+        /* =====================================================
+           FILTROS
+        ===================================================== */
+
+        $hoja->setAutoFilter(
+            'A1:E'
+                . $ultimaFila
+        );
+
+
+        /* =====================================================
+           CONGELAR ENCABEZADO
+        ===================================================== */
+
+        $hoja->freezePane(
+            'A2'
+        );
+
+
+        /* =====================================================
+           ALTURA DEL ENCABEZADO
+        ===================================================== */
+
+        $hoja
+            ->getRowDimension(
+                1
+            )
+            ->setRowHeight(
+                30
+            );
+
+
+        /* =====================================================
+           TAMAÑO DE COLUMNAS
+        ===================================================== */
+
+        $hoja
+            ->getColumnDimension(
+                'A'
+            )
+            ->setAutoSize(
+                true
+            );
+
+
+        $hoja
+            ->getColumnDimension(
+                'B'
+            )
+            ->setAutoSize(
+                true
+            );
+
+
+        $hoja
+            ->getColumnDimension(
+                'C'
+            )
+            ->setAutoSize(
+                true
+            );
+
+
+        $hoja
+            ->getColumnDimension(
+                'D'
+            )
+            ->setAutoSize(
+                true
+            );
+
+
+        /*
+         * Observaciones puede contener
+         * bastante texto.
+         */
+
+        $hoja
+            ->getColumnDimension(
+                'E'
+            )
+            ->setWidth(
+                60
+            );
+    }
+
+
+    /* =========================================================
+       HOJA DE EVIDENCIAS
+    ========================================================= */
+
+    private function crearHojaEvidencias(
+        $hoja,
+        array $reportes
+    ): void {
+
+        $encabezados = [
+
+            'Folio',
+
+            'Archivo',
+
+            'Ruta / URL',
+
+        ];
+
+
+        $hoja->fromArray(
+            $encabezados,
+            null,
+            'A1'
+        );
+
+
+        $fila =
+            2;
+
+
+        foreach (
+            $reportes
+            as $reporte
+        ) {
+
+            $evidencias =
+                $reporte['evidencias']
+                ?? [];
+
+
+            if (
+                !is_array(
+                    $evidencias
+                )
+            ) {
+                continue;
+            }
+
+
+            foreach (
+                $evidencias
+                as $evidencia
+            ) {
+
+                if (
+                    is_array(
+                        $evidencia
+                    )
+                ) {
+
+                    $archivo =
+                        $evidencia['archivo']
+                        ?? $evidencia['nombre']
+                        ?? '';
+
+
+                    $ruta =
+                        $evidencia['ruta']
+                        ?? $evidencia['url']
+                        ?? '';
+                } else {
+
+                    $archivo =
+                        (string)
+                        $evidencia;
+
+
+                    $ruta =
+                        '';
+                }
+
+
+                $hoja->fromArray(
+                    [
+
+                        $this->obtenerFolioCompleto(
+                            $reporte
+                        ),
+
+                        $archivo,
+
+                        $ruta,
+
+                    ],
+                    null,
+                    'A' . $fila
+                );
+
+
+                $fila++;
+            }
+        }
+
+
+        /* =====================================================
+           DIMENSIONES
+        ===================================================== */
+
+        $ultimaFila =
+            max(
+                1,
+                $hoja
+                    ->getHighestRow()
             );
 
 
@@ -811,7 +1222,9 @@ class ListadoExcelService
                 'A1:C1'
             )
             ->getFont()
-            ->setBold(true);
+            ->setBold(
+                true
+            );
 
 
         $hoja
@@ -856,7 +1269,9 @@ class ListadoExcelService
             ->setVertical(
                 Alignment::VERTICAL_TOP
             )
-            ->setWrapText(true);
+            ->setWrapText(
+                true
+            );
 
 
         /* =====================================================
@@ -883,18 +1298,30 @@ class ListadoExcelService
         ===================================================== */
 
         $hoja
-            ->getColumnDimension('A')
-            ->setAutoSize(true);
+            ->getColumnDimension(
+                'A'
+            )
+            ->setAutoSize(
+                true
+            );
 
 
         $hoja
-            ->getColumnDimension('B')
-            ->setAutoSize(true);
+            ->getColumnDimension(
+                'B'
+            )
+            ->setAutoSize(
+                true
+            );
 
 
         $hoja
-            ->getColumnDimension('C')
-            ->setWidth(60);
+            ->getColumnDimension(
+                'C'
+            )
+            ->setWidth(
+                60
+            );
     }
 
 
@@ -913,8 +1340,12 @@ class ListadoExcelService
 
 
         if (
-            is_array($valor)
-            || is_object($valor)
+            is_array(
+                $valor
+            )
+            || is_object(
+                $valor
+            )
         ) {
 
             return '';
@@ -922,7 +1353,8 @@ class ListadoExcelService
 
 
         return trim(
-            (string) $valor
+            (string)
+            $valor
         );
     }
 
@@ -939,8 +1371,9 @@ class ListadoExcelService
          * Cuando tengamos los registros reales,
          * QJ será el prefijo definido.
          */
+
         if (
-            ! empty($reporte['prefijo'])
+            !empty($reporte['prefijo'])
         ) {
 
             return trim(
@@ -954,6 +1387,7 @@ class ListadoExcelService
          * Compatibilidad temporal con
          * AI-2026-001.
          */
+
         $folio =
             $this->valor(
                 $reporte,
@@ -961,7 +1395,8 @@ class ListadoExcelService
             );
 
 
-        if (! $folio) {
+        if (!$folio) {
+
             return 'QJ';
         }
 
@@ -974,8 +1409,9 @@ class ListadoExcelService
 
 
         if (
-            count($partes)
-            > 1
+            count(
+                $partes
+            ) > 1
         ) {
 
             return $partes[0];
@@ -995,7 +1431,7 @@ class ListadoExcelService
     ): string {
 
         if (
-            ! empty($reporte['numero_folio'])
+            !empty($reporte['numero_folio'])
         ) {
 
             return trim(
@@ -1009,6 +1445,7 @@ class ListadoExcelService
          * Compatibilidad temporal con
          * AI-2026-001.
          */
+
         $folio =
             $this->valor(
                 $reporte,
@@ -1016,7 +1453,8 @@ class ListadoExcelService
             );
 
 
-        if (! $folio) {
+        if (!$folio) {
+
             return '';
         }
 
@@ -1029,8 +1467,9 @@ class ListadoExcelService
 
 
         if (
-            count($partes)
-            <= 1
+            count(
+                $partes
+            ) <= 1
         ) {
 
             return $folio;
@@ -1060,8 +1499,9 @@ class ListadoExcelService
         /*
          * Compatibilidad temporal.
          */
+
         if (
-            ! empty($reporte['folio'])
+            !empty($reporte['folio'])
         ) {
 
             return trim(

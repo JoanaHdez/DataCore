@@ -2428,10 +2428,10 @@ class Reportes_Controller extends BaseController
 
 
             /* =====================================================
-            ULTIMO SEGUIMIENTO POR REPORTE
+            SEGUIMIENTOS POR REPORTE
             ===================================================== */
 
-            $ultimoSeguimientoPorReporte = [];
+            $seguimientosPorReporte = [];
 
 
             foreach (
@@ -2446,21 +2446,12 @@ class Reportes_Controller extends BaseController
                     );
 
 
-                if (
-                    $idReporte <= 0
-                    || isset(
-                        $ultimoSeguimientoPorReporte[$idReporte]
-                    )
-                ) {
+                if ($idReporte <= 0) {
                     continue;
                 }
 
 
-                /*
-                 * La consulta ya viene ordenada del seguimiento
-                 * mas reciente al mas antiguo.
-                 */
-                $ultimoSeguimientoPorReporte[$idReporte] =
+                $seguimientosPorReporte[$idReporte][] =
                     $seguimiento;
             }
 
@@ -2492,12 +2483,6 @@ class Reportes_Controller extends BaseController
                 $unidades =
                     $unidadesPorReporte[$idReporte]
                     ?? [];
-
-
-                $ultimoSeguimiento =
-                    $ultimoSeguimientoPorReporte[$idReporte]
-                    ?? [];
-
 
                 /* =================================================
                 PERSONAL
@@ -2777,11 +2762,6 @@ class Reportes_Controller extends BaseController
                     $reporte['longitud']
                         ?? '',
 
-                    'origen_ubicacion' =>
-                    $reporte['origen_ubicacion']
-                        ?? '',
-
-
                     /* =============================================
                     PERSONAL
                     ============================================= */
@@ -2935,27 +2915,13 @@ class Reportes_Controller extends BaseController
                     $reporte['observaciones']
                         ?? '',
 
-
                     /* =============================================
-                    ULTIMO SEGUIMIENTO
+                    SEGUIMIENTOS
                     ============================================= */
 
-                    'seguimiento_fecha' =>
-                    $ultimoSeguimiento['fecha']
-                        ?? '',
-
-                    'seguimiento_tipo' =>
-                    $ultimoSeguimiento['tipo']
-                        ?? '',
-
-                    'seguimiento_estado' =>
-                    $ultimoSeguimiento['estado_resultante']
-                        ?? '',
-
-                    'seguimiento_observaciones' =>
-                    $ultimoSeguimiento['observaciones']
-                        ?? '',
-
+                    'seguimientos' =>
+                    $seguimientosPorReporte[$idReporte]
+                        ?? [],
 
                     /* =============================================
                     EVIDENCIAS
