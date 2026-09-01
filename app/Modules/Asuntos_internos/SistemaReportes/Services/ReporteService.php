@@ -1858,23 +1858,35 @@ class ReporteService
 
 
             /* =================================================
-               MIME
+            MIME
             ================================================= */
 
             $mime =
-                (string)
-                $archivo->getMimeType();
+                strtolower(
+                    trim(
+                        (string)
+                        $archivo->getMimeType()
+                    )
+                );
+
+
+            $mimesPermitidos = [
+                'image/jpeg',
+                'image/png',
+                'image/webp',
+            ];
 
 
             if (
-                !str_starts_with(
+                !in_array(
                     $mime,
-                    'image/'
+                    $mimesPermitidos,
+                    true
                 )
             ) {
 
                 throw new \InvalidArgumentException(
-                    'Las evidencias deben ser archivos de imagen.'
+                    'Las evidencias deben ser imágenes JPG, JPEG, PNG o WEBP.'
                 );
             }
 
