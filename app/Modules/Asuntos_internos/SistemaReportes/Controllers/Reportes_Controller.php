@@ -2067,6 +2067,22 @@ class Reportes_Controller extends BaseController
                     $e->getMessage(),
                 ]
             );
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error exportando Dashboard: {mensaje} en {archivo}:{linea}',
+                [
+                    'mensaje' =>
+                    $e->getMessage(),
+
+                    'archivo' =>
+                    $e->getFile(),
+
+                    'linea' =>
+                    $e->getLine(),
+                ]
+            );
 
 
             return $this->response
@@ -2075,20 +2091,7 @@ class Reportes_Controller extends BaseController
                     'success' => false,
 
                     'message' =>
-                    $e->getMessage(),
-
-                    /*
-                 * Se conservan temporalmente durante desarrollo
-                 * para facilitar la localización de errores.
-                 *
-                 * Antes de producción conviene retirarlos.
-                 */
-
-                    'archivo' =>
-                    $e->getFile(),
-
-                    'linea' =>
-                    $e->getLine(),
+                    'No fue posible generar el archivo de Excel.',
                 ]);
         }
     }
@@ -2109,7 +2112,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'La sesion no es valida.',
+                    'La sesion no es valida.',
                 ]);
         }
 
@@ -2201,9 +2204,7 @@ class Reportes_Controller extends BaseController
 
 
             if (
-                empty(
-                    $secciones
-                )
+                empty($secciones)
             ) {
 
                 return $this->response
@@ -2211,7 +2212,7 @@ class Reportes_Controller extends BaseController
                     ->setJSON([
                         'success' => false,
                         'message' =>
-                            'Selecciona al menos una sección para exportar.',
+                        'Selecciona al menos una sección para exportar.',
                     ]);
             }
 
@@ -2297,7 +2298,7 @@ class Reportes_Controller extends BaseController
             $idsReales =
                 array_map(
                     static fn($reporte) =>
-                        (int) $reporte['id_reporte'],
+                    (int) $reporte['id_reporte'],
                     $reportesDb
                 );
 
@@ -2320,9 +2321,7 @@ class Reportes_Controller extends BaseController
 
 
             if (
-                !empty(
-                    $idsReales
-                )
+                !empty($idsReales)
             ) {
 
                 /* =================================================
@@ -2603,10 +2602,10 @@ class Reportes_Controller extends BaseController
                 $evidenciasPorReporte[$idReporte][] = [
 
                     'archivo' =>
-                        $nombre,
+                    $nombre,
 
                     'ruta' =>
-                        $evidencia['ruta_archivo']
+                    $evidencia['ruta_archivo']
                         ?? '',
 
                 ];
@@ -2697,21 +2696,21 @@ class Reportes_Controller extends BaseController
                     $this->agregarValorExportacion(
                         $nombresPersonal,
                         $persona['nombre_snapshot']
-                        ?? ''
+                            ?? ''
                     );
 
 
                     $this->agregarValorExportacion(
                         $areasPersonal,
                         $persona['area_snapshot']
-                        ?? ''
+                            ?? ''
                     );
 
 
                     $this->agregarValorExportacion(
                         $turnosPersonal,
                         $persona['turno_snapshot']
-                        ?? ''
+                            ?? ''
                     );
                 }
 
@@ -2756,63 +2755,63 @@ class Reportes_Controller extends BaseController
                     $this->agregarValorExportacion(
                         $numerosUnidad,
                         $unidad['no_economico_snapshot']
-                        ?? ''
+                            ?? ''
                     );
 
 
                     $this->agregarValorExportacion(
                         $placasUnidad,
                         $unidad['placas_snapshot']
-                        ?? ''
+                            ?? ''
                     );
 
 
                     $this->agregarValorExportacion(
                         $marcasUnidad,
                         $unidad['marca_snapshot']
-                        ?? ''
+                            ?? ''
                     );
 
 
                     $this->agregarValorExportacion(
                         $submarcasUnidad,
                         $unidad['submarca_snapshot']
-                        ?? ''
+                            ?? ''
                     );
 
 
                     $this->agregarValorExportacion(
                         $coloresUnidad,
                         $unidad['color_snapshot']
-                        ?? ''
+                            ?? ''
                     );
 
 
                     $this->agregarValorExportacion(
                         $estatusUnidad,
                         $unidad['estatus_snapshot']
-                        ?? ''
+                            ?? ''
                     );
 
 
                     $this->agregarValorExportacion(
                         $serviciosUnidad,
                         $unidad['servicio_snapshot']
-                        ?? ''
+                            ?? ''
                     );
 
 
                     $this->agregarValorExportacion(
                         $tiposUnidad,
                         $unidad['tipo_snapshot']
-                        ?? ''
+                            ?? ''
                     );
 
 
                     $this->agregarValorExportacion(
                         $origenesUnidad,
                         $unidad['origen']
-                        ?? ''
+                            ?? ''
                     );
                 }
 
@@ -2864,16 +2863,16 @@ class Reportes_Controller extends BaseController
                     ============================================= */
 
                     'folio' =>
-                        $folio,
+                    $folio,
 
                     'prefijo' =>
-                        $prefijo,
+                    $prefijo,
 
                     'numero_folio' =>
-                        $numeroFolio,
+                    $numeroFolio,
 
                     'fecha_registro' =>
-                        $reporte['fecha_registro']
+                    $reporte['fecha_registro']
                         ?? '',
 
 
@@ -2882,27 +2881,27 @@ class Reportes_Controller extends BaseController
                     ============================================= */
 
                     'folio_ip' =>
-                        $reporte['folio_ip']
+                    $reporte['folio_ip']
                         ?? '',
 
                     'fecha_queja' =>
-                        $reporte['fecha_queja']
+                    $reporte['fecha_queja']
                         ?? '',
 
                     'fecha_acuerdo' =>
-                        $reporte['fecha_acuerdo']
+                    $reporte['fecha_acuerdo']
                         ?? '',
 
                     'expediente' =>
-                        $reporte['expediente']
+                    $reporte['expediente']
                         ?? '',
 
                     'nomenclatura' =>
-                        $reporte['nomenclatura']
+                    $reporte['nomenclatura']
                         ?? '',
 
                     'no_oficio' =>
-                        $reporte['numero_oficio']
+                    $reporte['numero_oficio']
                         ?? '',
 
 
@@ -2911,15 +2910,15 @@ class Reportes_Controller extends BaseController
                     ============================================= */
 
                     'fecha_hechos' =>
-                        $reporte['fecha_hechos']
+                    $reporte['fecha_hechos']
                         ?? '',
 
                     'hora_hechos' =>
-                        $reporte['hora_hechos']
+                    $reporte['hora_hechos']
                         ?? '',
 
                     'descripcion' =>
-                        $reporte['descripcion_hechos']
+                    $reporte['descripcion_hechos']
                         ?? '',
 
 
@@ -2928,51 +2927,51 @@ class Reportes_Controller extends BaseController
                     ============================================= */
 
                     'calle' =>
-                        $reporte['calle']
+                    $reporte['calle']
                         ?? '',
 
                     'numero' =>
-                        $reporte['numero_exterior']
+                    $reporte['numero_exterior']
                         ?? '',
 
                     'colonia' =>
-                        $reporte['colonia']
+                    $reporte['colonia']
                         ?? '',
 
                     'entre_calle' =>
-                        $reporte['entre_calle']
+                    $reporte['entre_calle']
                         ?? '',
 
                     'y_calle' =>
-                        $reporte['y_calle']
+                    $reporte['y_calle']
                         ?? '',
 
                     'municipio' =>
-                        $reporte['municipio']
+                    $reporte['municipio']
                         ?? '',
 
                     'estado' =>
-                        $reporte['estado']
+                    $reporte['estado']
                         ?? '',
 
                     'sector' =>
-                        $reporte['sector']
+                    $reporte['sector']
                         ?? '',
 
                     'cuadrante' =>
-                        $reporte['cuadrante']
+                    $reporte['cuadrante']
                         ?? '',
 
                     'id_cuadra' =>
-                        $reporte['id_cuadra']
+                    $reporte['id_cuadra']
                         ?? '',
 
                     'latitud' =>
-                        $reporte['latitud']
+                    $reporte['latitud']
                         ?? '',
 
                     'longitud' =>
-                        $reporte['longitud']
+                    $reporte['longitud']
                         ?? '',
 
 
@@ -2981,22 +2980,22 @@ class Reportes_Controller extends BaseController
                     ============================================= */
 
                     'oficial' =>
-                        implode(
-                            ' | ',
-                            $nombresPersonal
-                        ),
+                    implode(
+                        ' | ',
+                        $nombresPersonal
+                    ),
 
                     'area' =>
-                        implode(
-                            ' | ',
-                            $areasPersonal
-                        ),
+                    implode(
+                        ' | ',
+                        $areasPersonal
+                    ),
 
                     'turno' =>
-                        implode(
-                            ' | ',
-                            $turnosPersonal
-                        ),
+                    implode(
+                        ' | ',
+                        $turnosPersonal
+                    ),
 
 
                     /* =============================================
@@ -3004,58 +3003,58 @@ class Reportes_Controller extends BaseController
                     ============================================= */
 
                     'unidad' =>
-                        implode(
-                            ' | ',
-                            $numerosUnidad
-                        ),
+                    implode(
+                        ' | ',
+                        $numerosUnidad
+                    ),
 
                     'unidad_placas' =>
-                        implode(
-                            ' | ',
-                            $placasUnidad
-                        ),
+                    implode(
+                        ' | ',
+                        $placasUnidad
+                    ),
 
                     'unidad_marca' =>
-                        implode(
-                            ' | ',
-                            $marcasUnidad
-                        ),
+                    implode(
+                        ' | ',
+                        $marcasUnidad
+                    ),
 
                     'unidad_submarca' =>
-                        implode(
-                            ' | ',
-                            $submarcasUnidad
-                        ),
+                    implode(
+                        ' | ',
+                        $submarcasUnidad
+                    ),
 
                     'unidad_color' =>
-                        implode(
-                            ' | ',
-                            $coloresUnidad
-                        ),
+                    implode(
+                        ' | ',
+                        $coloresUnidad
+                    ),
 
                     'unidad_estatus' =>
-                        implode(
-                            ' | ',
-                            $estatusUnidad
-                        ),
+                    implode(
+                        ' | ',
+                        $estatusUnidad
+                    ),
 
                     'unidad_servicio_adscripcion' =>
-                        implode(
-                            ' | ',
-                            $serviciosUnidad
-                        ),
+                    implode(
+                        ' | ',
+                        $serviciosUnidad
+                    ),
 
                     'unidad_tipo_vehiculo' =>
-                        implode(
-                            ' | ',
-                            $tiposUnidad
-                        ),
+                    implode(
+                        ' | ',
+                        $tiposUnidad
+                    ),
 
                     'unidad_origen' =>
-                        implode(
-                            ' | ',
-                            $origenesUnidad
-                        ),
+                    implode(
+                        ' | ',
+                        $origenesUnidad
+                    ),
 
 
                     /* =============================================
@@ -3063,23 +3062,23 @@ class Reportes_Controller extends BaseController
                     ============================================= */
 
                     'quejoso' =>
-                        $reporte['nombre_quejoso']
+                    $reporte['nombre_quejoso']
                         ?? '',
 
                     'edad' =>
-                        $reporte['edad_quejoso']
+                    $reporte['edad_quejoso']
                         ?? '',
 
                     'genero' =>
-                        $reporte['genero_quejoso']
+                    $reporte['genero_quejoso']
                         ?? '',
 
                     'telefono' =>
-                        $reporte['telefono_quejoso']
+                    $reporte['telefono_quejoso']
                         ?? '',
 
                     'correo' =>
-                        $reporte['correo_quejoso']
+                    $reporte['correo_quejoso']
                         ?? '',
 
 
@@ -3088,36 +3087,36 @@ class Reportes_Controller extends BaseController
                     ============================================= */
 
                     'clasificacion' =>
-                        $reporte['clasificacion']
+                    $reporte['clasificacion']
                         ?? '',
 
                     'inspector' =>
-                        $reporte['inspector']
+                    $reporte['inspector']
                         ?? '',
 
                     'investigador' =>
-                        $reporte['investigador']
+                    $reporte['investigador']
                         ?? '',
 
                     'quien_emite_resolucion' =>
-                        $reporte['quien_emite_resolucion']
+                    $reporte['quien_emite_resolucion']
                         ?? '',
 
                     'resolucion' =>
-                        trim(
-                            (string) (
-                                $reporte['resolucion']
-                                ?? ''
-                            )
-                        ) !== ''
-                            ? $reporte['resolucion']
-                            : (
-                                $reporte['estado_actual']
-                                ?? ''
-                            ),
+                    trim(
+                        (string) (
+                            $reporte['resolucion']
+                            ?? ''
+                        )
+                    ) !== ''
+                        ? $reporte['resolucion']
+                        : (
+                            $reporte['estado_actual']
+                            ?? ''
+                        ),
 
                     'motivos' =>
-                        $reporte['motivos']
+                    $reporte['motivos']
                         ?? '',
 
 
@@ -3126,7 +3125,7 @@ class Reportes_Controller extends BaseController
                     ============================================= */
 
                     'observaciones' =>
-                        $reporte['observaciones']
+                    $reporte['observaciones']
                         ?? '',
 
 
@@ -3135,7 +3134,7 @@ class Reportes_Controller extends BaseController
                     ============================================= */
 
                     'seguimientos' =>
-                        $seguimientosPorReporte[$idReporte]
+                    $seguimientosPorReporte[$idReporte]
                         ?? [],
 
 
@@ -3144,7 +3143,7 @@ class Reportes_Controller extends BaseController
                     ============================================= */
 
                     'evidencias' =>
-                        $evidenciasPorReporte[$idReporte]
+                    $evidenciasPorReporte[$idReporte]
                         ?? [],
 
                 ];
@@ -3180,8 +3179,6 @@ class Reportes_Controller extends BaseController
                         $ruta
                     )
                 );
-
-
         } catch (\Throwable $e) {
 
             log_message(
@@ -3189,7 +3186,7 @@ class Reportes_Controller extends BaseController
                 'Error exportando listado completo de reportes: {mensaje}',
                 [
                     'mensaje' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
                 ]
             );
 
@@ -3199,7 +3196,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'No fue posible generar el archivo de Excel.',
+                    'No fue posible generar el archivo de Excel.',
                 ]);
         }
     }
