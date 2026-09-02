@@ -38,27 +38,32 @@ function inicializarFiltrosDashboard() {
 
 
     /* =====================================================
-       FECHAS
+       FECHA DE REGISTRO
     ===================================================== */
 
-    const fechaInicio =
+    const fechaRegistroInicio =
         document.querySelector(
-            '#dashboard-fecha-inicio'
+            '#dashboard-fecha-registro-inicio'
         );
 
-    const fechaFin =
+    const fechaRegistroFin =
         document.querySelector(
-            '#dashboard-fecha-fin'
+            '#dashboard-fecha-registro-fin'
         );
 
-    const periodo =
+
+    /* =====================================================
+       FECHA DE LA QUEJA
+    ===================================================== */
+
+    const fechaQuejaInicio =
         document.querySelector(
-            '#dashboard-periodo'
+            '#dashboard-fecha-queja-inicio'
         );
 
-    const tipoFecha =
+    const fechaQuejaFin =
         document.querySelector(
-            '#dashboard-tipo-fecha'
+            '#dashboard-fecha-queja-fin'
         );
 
 
@@ -76,11 +81,6 @@ function inicializarFiltrosDashboard() {
             '#dashboard-seguimiento'
         );
 
-    const evidencia =
-        document.querySelector(
-            '#dashboard-evidencia'
-        );
-
 
     /* =====================================================
        PERSONAL INVOLUCRADO
@@ -96,19 +96,9 @@ function inicializarFiltrosDashboard() {
             '#dashboard-turno'
         );
 
-    const zona =
+    const sector =
         document.querySelector(
-            '#dashboard-zona'
-        );
-
-
-    /* =====================================================
-       QUEJOSO
-    ===================================================== */
-
-    const genero =
-        document.querySelector(
-            '#dashboard-genero'
+            '#dashboard-sector'
         );
 
 
@@ -123,35 +113,27 @@ function inicializarFiltrosDashboard() {
 
 
     /* =====================================================
-       AGRUPAR FILTROS ACTIVOS
-
-       Zona ya forma parte de los filtros activos.
-
-       Clasificación permanece pendiente porque todavía
-       no existe un catálogo institucional definido.
+       AGRUPAR FILTROS
     ===================================================== */
 
     const filtros = {
 
-        fechaInicio,
-        fechaFin,
-        periodo,
-        tipoFecha,
+        fechaRegistroInicio,
+        fechaRegistroFin,
+
+        fechaQuejaInicio,
+        fechaQuejaFin,
 
         estado,
         seguimiento,
-        evidencia,
 
         areaPersonal,
         turno,
-        zona,
-
-        genero,
+        sector,
 
         unidad,
 
     };
-
 
     /* =====================================================
        RESTAURAR DESDE URL
@@ -204,82 +186,19 @@ function inicializarFiltrosDashboard() {
 
 
     /* =====================================================
-       PERIODO RÁPIDO
-    ===================================================== */
-
-    if (periodo) {
-
-        periodo.addEventListener(
-            'change',
-            () => {
-
-                aplicarPeriodoRapido(
-                    periodo.value,
-                    fechaInicio,
-                    fechaFin
-                );
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       FECHAS MANUALES = PERSONALIZADO
-    ===================================================== */
-
-    if (fechaInicio) {
-
-        fechaInicio.addEventListener(
-            'change',
-            () => {
-
-                marcarPeriodoPersonalizado(
-                    periodo
-                );
-
-            }
-        );
-
-    }
-
-
-    if (fechaFin) {
-
-        fechaFin.addEventListener(
-            'change',
-            () => {
-
-                marcarPeriodoPersonalizado(
-                    periodo
-                );
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
        APLICAR
     ===================================================== */
 
-    if (botonAplicar) {
+    botonAplicar.addEventListener(
+    'click',
+    () => {
 
-        botonAplicar.addEventListener(
-            'click',
-            () => {
-
-                aplicarFiltrosDashboard(
-                    filtros
-                );
-
-            }
+        aplicarFiltrosDashboard(
+            filtros
         );
 
     }
-
+);
 
     /* =====================================================
        LIMPIAR
@@ -300,7 +219,7 @@ function inicializarFiltrosDashboard() {
 
 
     /* =====================================================
-       ABRIR PANEL SI EXISTEN FILTROS AVANZADOS ACTIVOS
+       ABRIR PANEL SI HAY FILTROS AVANZADOS ACTIVOS
     ===================================================== */
 
     if (
@@ -334,31 +253,36 @@ function aplicarFiltrosDashboard(
 
 
     /* =====================================================
-       FECHAS
+       FECHA DE REGISTRO
     ===================================================== */
 
     actualizarParametro(
         url,
-        'fecha_inicio',
-        filtros.fechaInicio?.value
+        'fecha_registro_inicio',
+        filtros.fechaRegistroInicio?.value
     );
 
     actualizarParametro(
         url,
-        'fecha_fin',
-        filtros.fechaFin?.value
+        'fecha_registro_fin',
+        filtros.fechaRegistroFin?.value
+    );
+
+
+    /* =====================================================
+       FECHA DE LA QUEJA
+    ===================================================== */
+
+    actualizarParametro(
+        url,
+        'fecha_queja_inicio',
+        filtros.fechaQuejaInicio?.value
     );
 
     actualizarParametro(
         url,
-        'periodo',
-        filtros.periodo?.value
-    );
-
-    actualizarParametro(
-        url,
-        'tipo_fecha',
-        filtros.tipoFecha?.value
+        'fecha_queja_fin',
+        filtros.fechaQuejaFin?.value
     );
 
 
@@ -376,12 +300,6 @@ function aplicarFiltrosDashboard(
         url,
         'seguimiento',
         filtros.seguimiento?.value
-    );
-
-    actualizarParametro(
-        url,
-        'evidencia',
-        filtros.evidencia?.value
     );
 
 
@@ -403,19 +321,8 @@ function aplicarFiltrosDashboard(
 
     actualizarParametro(
         url,
-        'zona',
-        filtros.zona?.value
-    );
-
-
-    /* =====================================================
-       QUEJOSO
-    ===================================================== */
-
-    actualizarParametro(
-        url,
-        'genero',
-        filtros.genero?.value
+        'sector',
+        filtros.sector?.value
     );
 
 
@@ -431,48 +338,39 @@ function aplicarFiltrosDashboard(
 
 
     /* =====================================================
-       PARÁMETROS NO ACTIVOS
+       ELIMINAR PARÁMETROS RETIRADOS / ANTIGUOS
 
-       Clasificación continúa pendiente.
-
-       Resolución ya no forma parte de los filtros.
-
-       Zona YA NO se elimina porque ahora es un filtro real.
+       Esto evita que una URL anterior conserve filtros
+       que ya no existen en la interfaz.
     ===================================================== */
 
-    const parametrosNoActivos = [
+    const parametrosRetirados = [
+
+        /* Filtros retirados */
+        'fecha_inicio',
+        'fecha_fin',
+        'periodo',
+        'tipo_fecha',
+        'evidencia',
+        'genero',
+        'zona',
+
+        /* Pendiente */
         'clasificacion',
+
+        /* Filtros retirados anteriormente */
         'resolucion',
-    ];
-
-
-    parametrosNoActivos.forEach(
-        parametro => {
-
-            url.searchParams.delete(
-                parametro
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       ELIMINAR PARÁMETROS ANTIGUOS
-    ===================================================== */
-
-    const parametrosAntiguos = [
-        'sector',
         'cuadrante',
         'colonia',
         'antiguedad',
         'inspector',
         'investigador',
         'emite_resolucion',
+
     ];
 
 
-    parametrosAntiguos.forEach(
+    parametrosRetirados.forEach(
         parametro => {
 
             url.searchParams.delete(
@@ -540,39 +438,42 @@ function limpiarFiltrosDashboard() {
 
 
     /*
-     * Incluimos tanto los filtros actuales como parámetros
-     * antiguos para garantizar que el Dashboard vuelva
-     * completamente a la consulta general.
+     * Se eliminan tanto los filtros actuales como
+     * cualquier parámetro perteneciente a versiones
+     * anteriores del Dashboard.
      */
 
     const parametrosDashboard = [
 
         /* Actuales */
+        'fecha_registro_inicio',
+        'fecha_registro_fin',
+        'fecha_queja_inicio',
+        'fecha_queja_fin',
+
+        'estado_actual',
+        'seguimiento',
+
+        'area_personal',
+        'turno',
+        'sector',
+
+        'unidad',
+
+        /* Retirados */
         'fecha_inicio',
         'fecha_fin',
         'periodo',
         'tipo_fecha',
-
-        'estado_actual',
-        'seguimiento',
         'evidencia',
-
-        'area_personal',
-        'turno',
-        'zona',
-
         'genero',
-
-        'unidad',
+        'zona',
 
         /* Pendiente */
         'clasificacion',
 
-        /* Ya retirado */
+        /* Versiones anteriores */
         'resolucion',
-
-        /* Versión anterior */
-        'sector',
         'cuadrante',
         'colonia',
         'antiguedad',
@@ -615,34 +516,39 @@ function restaurarFiltrosDesdeUrl(
 
 
     /* =====================================================
-       FECHAS
+       FECHA DE REGISTRO
     ===================================================== */
 
     restaurarValor(
-        filtros.fechaInicio,
+        filtros.fechaRegistroInicio,
         parametros.get(
-            'fecha_inicio'
+            'fecha_registro_inicio'
         )
     );
 
     restaurarValor(
-        filtros.fechaFin,
+        filtros.fechaRegistroFin,
         parametros.get(
-            'fecha_fin'
+            'fecha_registro_fin'
+        )
+    );
+
+
+    /* =====================================================
+       FECHA DE LA QUEJA
+    ===================================================== */
+
+    restaurarValor(
+        filtros.fechaQuejaInicio,
+        parametros.get(
+            'fecha_queja_inicio'
         )
     );
 
     restaurarValor(
-        filtros.periodo,
+        filtros.fechaQuejaFin,
         parametros.get(
-            'periodo'
-        )
-    );
-
-    restaurarValor(
-        filtros.tipoFecha,
-        parametros.get(
-            'tipo_fecha'
+            'fecha_queja_fin'
         )
     );
 
@@ -662,13 +568,6 @@ function restaurarFiltrosDesdeUrl(
         filtros.seguimiento,
         parametros.get(
             'seguimiento'
-        )
-    );
-
-    restaurarValor(
-        filtros.evidencia,
-        parametros.get(
-            'evidencia'
         )
     );
 
@@ -692,21 +591,9 @@ function restaurarFiltrosDesdeUrl(
     );
 
     restaurarValor(
-        filtros.zona,
+        filtros.sector,
         parametros.get(
-            'zona'
-        )
-    );
-
-
-    /* =====================================================
-       QUEJOSO
-    ===================================================== */
-
-    restaurarValor(
-        filtros.genero,
-        parametros.get(
-            'genero'
+            'sector'
         )
     );
 
@@ -744,8 +631,8 @@ function restaurarValor(
 
 
     /*
-     * Para SELECT solamente restauramos el valor cuando
-     * exista realmente una opción con ese valor.
+     * Para SELECT solamente restauramos el valor
+     * cuando exista realmente una opción con ese valor.
      */
 
     if (
@@ -787,14 +674,14 @@ function existenFiltrosAvanzadosActivos() {
 
 
     const filtrosAvanzados = [
+
         'estado_actual',
         'seguimiento',
-        'evidencia',
         'area_personal',
         'turno',
-        'zona',
-        'genero',
+        'sector',
         'unidad',
+
     ];
 
 
@@ -814,260 +701,6 @@ function existenFiltrosAvanzadosActivos() {
 
         }
     );
-
-}
-
-
-/* =========================================================
-   PERIODO RÁPIDO
-========================================================= */
-
-function aplicarPeriodoRapido(
-    periodo,
-    fechaInicio,
-    fechaFin
-) {
-
-    if (
-        !fechaInicio
-        || !fechaFin
-    ) {
-        return;
-    }
-
-
-    /* =====================================================
-       PERSONALIZADO
-    ===================================================== */
-
-    if (
-        periodo === 'personalizado'
-    ) {
-        return;
-    }
-
-
-    /* =====================================================
-       TODO
-    ===================================================== */
-
-    if (
-        periodo === 'todo'
-    ) {
-
-        fechaInicio.value = '';
-        fechaFin.value = '';
-
-        return;
-    }
-
-
-    const hoy =
-        new Date();
-
-
-    let inicio =
-        new Date(
-            hoy
-        );
-
-
-    let fin =
-        new Date(
-            hoy
-        );
-
-
-    /* =====================================================
-       MES ACTUAL
-    ===================================================== */
-
-    if (
-        periodo === 'actual'
-    ) {
-
-        inicio =
-            new Date(
-                hoy.getFullYear(),
-                hoy.getMonth(),
-                1
-            );
-
-        fin =
-            new Date(
-                hoy.getFullYear(),
-                hoy.getMonth() + 1,
-                0
-            );
-
-    }
-
-
-    /* =====================================================
-       MES ANTERIOR
-    ===================================================== */
-
-    else if (
-        periodo === 'anterior'
-    ) {
-
-        inicio =
-            new Date(
-                hoy.getFullYear(),
-                hoy.getMonth() - 1,
-                1
-            );
-
-        fin =
-            new Date(
-                hoy.getFullYear(),
-                hoy.getMonth(),
-                0
-            );
-
-    }
-
-
-    /* =====================================================
-       ÚLTIMOS 3 MESES
-    ===================================================== */
-
-    else if (
-        periodo === 'trimestre'
-    ) {
-
-        inicio =
-            new Date(
-                hoy.getFullYear(),
-                hoy.getMonth() - 2,
-                1
-            );
-
-        fin =
-            new Date(
-                hoy
-            );
-
-    }
-
-
-    /* =====================================================
-       ÚLTIMOS 6 MESES
-    ===================================================== */
-
-    else if (
-        periodo === 'semestre'
-    ) {
-
-        inicio =
-            new Date(
-                hoy.getFullYear(),
-                hoy.getMonth() - 5,
-                1
-            );
-
-        fin =
-            new Date(
-                hoy
-            );
-
-    }
-
-
-    /* =====================================================
-       AÑO ACTUAL
-    ===================================================== */
-
-    else if (
-        periodo === 'anio'
-    ) {
-
-        inicio =
-            new Date(
-                hoy.getFullYear(),
-                0,
-                1
-            );
-
-        fin =
-            new Date(
-                hoy.getFullYear(),
-                11,
-                31
-            );
-
-    }
-
-
-    else {
-        return;
-    }
-
-
-    fechaInicio.value =
-        formatearFechaDashboard(
-            inicio
-        );
-
-
-    fechaFin.value =
-        formatearFechaDashboard(
-            fin
-        );
-
-}
-
-
-/* =========================================================
-   FECHAS MANUALES = PERSONALIZADO
-========================================================= */
-
-function marcarPeriodoPersonalizado(
-    periodo
-) {
-
-    if (!periodo) {
-        return;
-    }
-
-
-    periodo.value =
-        'personalizado';
-
-}
-
-
-/* =========================================================
-   FORMATEAR FECHA YYYY-MM-DD
-========================================================= */
-
-function formatearFechaDashboard(
-    fecha
-) {
-
-    const anio =
-        fecha.getFullYear();
-
-
-    const mes =
-        String(
-            fecha.getMonth() + 1
-        ).padStart(
-            2,
-            '0'
-        );
-
-
-    const dia =
-        String(
-            fecha.getDate()
-        ).padStart(
-            2,
-            '0'
-        );
-
-
-    return `${anio}-${mes}-${dia}`;
 
 }
 

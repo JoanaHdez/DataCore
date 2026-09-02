@@ -1362,128 +1362,111 @@ class Reportes_Controller extends BaseController
 
             $filtrosDashboard = [
 
-                /* =================================================
-                FECHAS
-                ================================================= */
+    /* =================================================
+       FECHA DE REGISTRO
+    ================================================= */
 
-                'fecha_inicio' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'fecha_inicio'
-                    )
-                ),
+    'fecha_registro_inicio' =>
+        trim(
+            (string) $this->request->getGet(
+                'fecha_registro_inicio'
+            )
+        ),
 
-                'fecha_fin' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'fecha_fin'
-                    )
-                ),
-
-                'periodo' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'periodo'
-                    )
-                ),
-
-                'tipo_fecha' =>
-                trim(
-                    (string) (
-                        $this->request->getGet(
-                            'tipo_fecha'
-                        )
-                        ?? 'registro'
-                    )
-                ),
+    'fecha_registro_fin' =>
+        trim(
+            (string) $this->request->getGet(
+                'fecha_registro_fin'
+            )
+        ),
 
 
-                /* =================================================
-                REPORTE
-                ================================================= */
+    /* =================================================
+       FECHA DE LA QUEJA
+    ================================================= */
 
-                /*
-             * El HTML / JS envía:
-             *
-             * estado_actual
-             *
-             * DashboardService utiliza internamente:
-             *
-             * estado
-             */
+    'fecha_queja_inicio' =>
+        trim(
+            (string) $this->request->getGet(
+                'fecha_queja_inicio'
+            )
+        ),
 
-                'estado' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'estado_actual'
-                    )
-                ),
-
-                'seguimiento' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'seguimiento'
-                    )
-                ),
-
-                'evidencia' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'evidencia'
-                    )
-                ),
+    'fecha_queja_fin' =>
+        trim(
+            (string) $this->request->getGet(
+                'fecha_queja_fin'
+            )
+        ),
 
 
-                /* =================================================
-                PERSONAL INVOLUCRADO
-                ================================================= */
+    /* =================================================
+       REPORTE
+    ================================================= */
 
-                'area_personal' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'area_personal'
-                    )
-                ),
+    /*
+     * El frontend utiliza:
+     *
+     * estado_actual
+     *
+     * DashboardService utiliza internamente:
+     *
+     * estado
+     */
 
-                'turno' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'turno'
-                    )
-                ),
+    'estado' =>
+        trim(
+            (string) $this->request->getGet(
+                'estado_actual'
+            )
+        ),
 
-                'zona' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'zona'
-                    )
-                ),
-
-
-                /* =================================================
-                QUEJOSO
-                ================================================= */
-
-                'genero' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'genero'
-                    )
-                ),
+    'seguimiento' =>
+        trim(
+            (string) $this->request->getGet(
+                'seguimiento'
+            )
+        ),
 
 
-                /* =================================================
-                UNIDAD
-                ================================================= */
+    /* =================================================
+       PERSONAL INVOLUCRADO
+    ================================================= */
 
-                'unidad' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'unidad'
-                    )
-                ),
+    'area_personal' =>
+        trim(
+            (string) $this->request->getGet(
+                'area_personal'
+            )
+        ),
 
-            ];
+    'turno' =>
+        trim(
+            (string) $this->request->getGet(
+                'turno'
+            )
+        ),
+
+    'sector' =>
+        trim(
+            (string) $this->request->getGet(
+                'sector'
+            )
+        ),
+
+
+    /* =================================================
+       UNIDAD
+    ================================================= */
+
+    'unidad' =>
+        trim(
+            (string) $this->request->getGet(
+                'unidad'
+            )
+        ),
+
+];
 
 
             /* =====================================================
@@ -1854,49 +1837,150 @@ class Reportes_Controller extends BaseController
     }
 
     /* =========================================================
-   AUTORIZAR DASHBOARD
-========================================================= */
+    AUTORIZAR DASHBOARD
+    ========================================================= */
 
-public function autorizarDashboard()
-{
-    /* =====================================================
-       VALIDAR SESIÓN
-    ===================================================== */
+    public function autorizarDashboard()
+    {
+        /* =====================================================
+        VALIDAR SESIÓN
+        ===================================================== */
 
-    if (
-        session()->get('reportes_autenticado') !== true
-        || !session()->has('usuario_reportes')
-    ) {
+        if (
+            session()->get('reportes_autenticado') !== true
+            || !session()->has('usuario_reportes')
+        ) {
 
-        return $this->response
-            ->setStatusCode(401)
-            ->setJSON([
-                'success' => false,
-                'message' => 'La sesión no es válida.',
-            ]);
-    }
-
-
-    /* =====================================================
-       USUARIO ACTUAL
-    ===================================================== */
-
-    $usuario =
-        session()->get(
-            'usuario_reportes'
-        );
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La sesión no es válida.',
+                ]);
+        }
 
 
-    $rol =
-        $usuario['rol']
-        ?? 'usuario';
+        /* =====================================================
+        USUARIO ACTUAL
+        ===================================================== */
+
+        $usuario =
+            session()->get(
+                'usuario_reportes'
+            );
 
 
-    /*
-     * Si ya es administrador,
-     * no necesita autorización adicional.
-     */
-    if ($rol === 'admin') {
+        $rol =
+            $usuario['rol']
+            ?? 'usuario';
+
+
+        /*
+        * Si ya es administrador,
+        * no necesita autorización adicional.
+        */
+        if ($rol === 'admin') {
+
+            session()->set(
+                'reportes_dashboard_autorizado',
+                true
+            );
+
+
+            return $this->response
+                ->setJSON([
+                    'success' => true,
+                    'message' => 'Acceso autorizado.',
+                ]);
+        }
+
+
+        /* =====================================================
+        CONTRASEÑA ADMINISTRATIVA
+        ===================================================== */
+
+        $passwordAdmin =
+            strtoupper(
+                trim(
+                    (string)
+                    $this->request
+                        ->getPost(
+                            'password_admin'
+                        )
+                )
+            );
+
+
+        if ($passwordAdmin === '') {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                        'Ingresa la contraseña del administrador.',
+                ]);
+        }
+
+
+        /* =====================================================
+        VALIDAR AUTORIZACIÓN
+        ===================================================== */
+
+        try {
+
+            $authService =
+                new AuthService();
+
+
+            $autorizado =
+                $authService
+                    ->validarAutorizacionAdmin(
+                        $passwordAdmin
+                    );
+
+
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error validando autorización administrativa para Dashboard: {mensaje}',
+                [
+                    'mensaje' =>
+                        $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                        'No fue posible validar la autorización.',
+                ]);
+        }
+
+
+        /* =====================================================
+        CONTRASEÑA INCORRECTA
+        ===================================================== */
+
+        if (!$autorizado) {
+
+            return $this->response
+                ->setStatusCode(403)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                        'Contraseña de administrador incorrecta.',
+                ]);
+        }
+
+
+        /* =====================================================
+        AUTORIZACIÓN CORRECTA
+        ===================================================== */
 
         session()->set(
             'reportes_dashboard_autorizado',
@@ -1907,111 +1991,10 @@ public function autorizarDashboard()
         return $this->response
             ->setJSON([
                 'success' => true,
-                'message' => 'Acceso autorizado.',
-            ]);
-    }
-
-
-    /* =====================================================
-       CONTRASEÑA ADMINISTRATIVA
-    ===================================================== */
-
-    $passwordAdmin =
-        strtoupper(
-            trim(
-                (string)
-                $this->request
-                    ->getPost(
-                        'password_admin'
-                    )
-            )
-        );
-
-
-    if ($passwordAdmin === '') {
-
-        return $this->response
-            ->setStatusCode(422)
-            ->setJSON([
-                'success' => false,
                 'message' =>
-                    'Ingresa la contraseña del administrador.',
+                    'Acceso autorizado.',
             ]);
     }
-
-
-    /* =====================================================
-       VALIDAR AUTORIZACIÓN
-    ===================================================== */
-
-    try {
-
-        $authService =
-            new AuthService();
-
-
-        $autorizado =
-            $authService
-                ->validarAutorizacionAdmin(
-                    $passwordAdmin
-                );
-
-
-    } catch (\Throwable $e) {
-
-        log_message(
-            'error',
-            'Error validando autorización administrativa para Dashboard: {mensaje}',
-            [
-                'mensaje' =>
-                    $e->getMessage(),
-            ]
-        );
-
-
-        return $this->response
-            ->setStatusCode(500)
-            ->setJSON([
-                'success' => false,
-                'message' =>
-                    'No fue posible validar la autorización.',
-            ]);
-    }
-
-
-    /* =====================================================
-       CONTRASEÑA INCORRECTA
-    ===================================================== */
-
-    if (!$autorizado) {
-
-        return $this->response
-            ->setStatusCode(403)
-            ->setJSON([
-                'success' => false,
-                'message' =>
-                    'Contraseña de administrador incorrecta.',
-            ]);
-    }
-
-
-    /* =====================================================
-       AUTORIZACIÓN CORRECTA
-    ===================================================== */
-
-    session()->set(
-        'reportes_dashboard_autorizado',
-        true
-    );
-
-
-    return $this->response
-        ->setJSON([
-            'success' => true,
-            'message' =>
-                'Acceso autorizado.',
-        ]);
-}
 
     public function exportarDashboard()
     {

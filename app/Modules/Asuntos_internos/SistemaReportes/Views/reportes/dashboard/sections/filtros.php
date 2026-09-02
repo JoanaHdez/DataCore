@@ -5,9 +5,6 @@
 
    Estas opciones son enviadas desde
    DashboardService / Reportes_Controller.
-
-   Se inicializan vacías para evitar errores si alguna
-   opción todavía no está disponible.
 ========================================================= */
 
 $opcionesFiltros =
@@ -20,23 +17,14 @@ $areasFiltro =
     ?? [];
 
 
-$generosFiltro =
-    $opcionesFiltros['generos']
-    ?? [];
-
-
 $unidadesFiltro =
     $opcionesFiltros['unidades']
     ?? [];
 
 
-/*
- * Los turnos del Dashboard utilizan las mismas
- * categorías analíticas que las gráficas.
- *
- * No usamos directamente todas las variantes
- * existentes en plantilla.
- */
+/* =========================================================
+   TURNOS ANALÍTICOS
+========================================================= */
 
 $turnosFiltro = [
     'Primer turno',
@@ -49,22 +37,27 @@ $turnosFiltro = [
 ];
 
 
-/*
- * Las zonas del Dashboard se derivan del sector
- * institucional asociado al personal involucrado.
- *
- * SECTOR 01 - 03 → Zona Norte
- * SECTOR 04 - 07 → Zona Poniente
- * SECTOR 08 - 10 → Zona Centro
- * SECTOR 11 - 15 → Zona Oriente
- */
+/* =========================================================
+   SECTORES INSTITUCIONALES
+========================================================= */
 
-$zonasFiltro = [
-    'Zona Norte',
-    'Zona Poniente',
-    'Zona Centro',
-    'Zona Oriente',
-];
+$sectoresFiltro = [];
+
+for (
+    $numero = 1;
+    $numero <= 15;
+    $numero++
+) {
+
+    $sectoresFiltro[] =
+        'SECTOR '
+        . str_pad(
+            (string) $numero,
+            2,
+            '0',
+            STR_PAD_LEFT
+        );
+}
 
 ?>
 
@@ -79,14 +72,15 @@ $zonasFiltro = [
 
         <div class="dashboard-filtros__encabezado-principal">
 
-            <div class="dashboard-filtros__encabezado-icono" aria-hidden="true">
+            <div
+                class="dashboard-filtros__encabezado-icono"
+                aria-hidden="true"
+            >
 
                 <svg viewBox="0 0 24 24">
 
                     <path d="M4 6h16" />
-
                     <path d="M7 12h10" />
-
                     <path d="M10 18h4" />
 
                 </svg>
@@ -114,15 +108,22 @@ $zonasFiltro = [
         </div>
 
 
-        <button type="button" class="dashboard-filtros__mas" id="dashboard-mas-filtros" aria-expanded="false"
-            aria-controls="dashboard-filtros-avanzados">
+        <button
+            type="button"
+            class="dashboard-filtros__mas"
+            id="dashboard-mas-filtros"
+            aria-expanded="false"
+            aria-controls="dashboard-filtros-avanzados"
+        >
 
-            <svg class="dashboard-filtros__mas-icono" viewBox="0 0 24 24" aria-hidden="true">
+            <svg
+                class="dashboard-filtros__mas-icono"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+            >
 
                 <path d="M4 6h16" />
-
                 <path d="M7 12h10" />
-
                 <path d="M10 18h4" />
 
             </svg>
@@ -131,7 +132,11 @@ $zonasFiltro = [
                 Más filtros
             </span>
 
-            <svg class="dashboard-filtros__mas-flecha" viewBox="0 0 24 24" aria-hidden="true">
+            <svg
+                class="dashboard-filtros__mas-flecha"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+            >
 
                 <path d="m8 10 4 4 4-4" />
 
@@ -149,109 +154,77 @@ $zonasFiltro = [
     <div class="dashboard-filtros__principales">
 
         <!-- =================================================
-             PERIODO
+             FECHA DE REGISTRO - DESDE
         ================================================== -->
 
         <div class="dashboard-filtros__campo">
 
-            <label for="dashboard-periodo">
-                Periodo rápido
+            <label for="dashboard-fecha-registro-inicio">
+                Registro desde
             </label>
 
-            <select id="dashboard-periodo" name="periodo">
-
-                <option value="actual">
-                    Mes actual
-                </option>
-
-                <option value="anterior">
-                    Mes anterior
-                </option>
-
-                <option value="trimestre">
-                    Últimos 3 meses
-                </option>
-
-                <option value="semestre">
-                    Últimos 6 meses
-                </option>
-
-                <option value="anio">
-                    Año actual
-                </option>
-
-                <option value="todo">
-                    Todo
-                </option>
-
-                <option value="personalizado">
-                    Personalizado
-                </option>
-
-            </select>
+            <input
+                type="date"
+                id="dashboard-fecha-registro-inicio"
+                name="fecha_registro_inicio"
+            >
 
         </div>
 
 
         <!-- =================================================
-             DESDE
+             FECHA DE REGISTRO - HASTA
         ================================================== -->
 
         <div class="dashboard-filtros__campo">
 
-            <label for="dashboard-fecha-inicio">
-                Desde
+            <label for="dashboard-fecha-registro-fin">
+                Registro hasta
             </label>
 
-            <input type="date" id="dashboard-fecha-inicio" name="fecha_inicio">
+            <input
+                type="date"
+                id="dashboard-fecha-registro-fin"
+                name="fecha_registro_fin"
+            >
 
         </div>
 
 
         <!-- =================================================
-             HASTA
+             FECHA DE QUEJA - DESDE
         ================================================== -->
 
         <div class="dashboard-filtros__campo">
 
-            <label for="dashboard-fecha-fin">
-                Hasta
+            <label for="dashboard-fecha-queja-inicio">
+                Queja desde
             </label>
 
-            <input type="date" id="dashboard-fecha-fin" name="fecha_fin">
+            <input
+                type="date"
+                id="dashboard-fecha-queja-inicio"
+                name="fecha_queja_inicio"
+            >
 
         </div>
 
 
         <!-- =================================================
-             FECHA A ANALIZAR
+             FECHA DE QUEJA - HASTA
         ================================================== -->
 
         <div class="dashboard-filtros__campo">
 
-            <label for="dashboard-tipo-fecha">
-                Fecha a analizar
+            <label for="dashboard-fecha-queja-fin">
+                Queja hasta
             </label>
 
-            <select id="dashboard-tipo-fecha" name="tipo_fecha">
-
-                <option value="registro">
-                    Fecha de registro
-                </option>
-
-                <option value="queja">
-                    Fecha de queja
-                </option>
-
-                <option value="hechos">
-                    Fecha de los hechos
-                </option>
-
-                <option value="acuerdo">
-                    Fecha de acuerdo
-                </option>
-
-            </select>
+            <input
+                type="date"
+                id="dashboard-fecha-queja-fin"
+                name="fecha_queja_fin"
+            >
 
         </div>
 
@@ -262,7 +235,11 @@ $zonasFiltro = [
          FILTROS AVANZADOS
     ====================================================== -->
 
-    <div class="dashboard-filtros__avanzados" id="dashboard-filtros-avanzados" hidden>
+    <div
+        class="dashboard-filtros__avanzados"
+        id="dashboard-filtros-avanzados"
+        hidden
+    >
 
 
         <!-- =================================================
@@ -278,11 +255,8 @@ $zonasFiltro = [
                     <svg viewBox="0 0 24 24">
 
                         <path d="M6 3h9l3 3v15H6Z" />
-
                         <path d="M15 3v4h4" />
-
                         <path d="M9 11h6" />
-
                         <path d="M9 15h6" />
 
                     </svg>
@@ -298,7 +272,6 @@ $zonasFiltro = [
 
             <div class="dashboard-filtros__grupo-grid">
 
-
                 <!-- =========================================
                      ESTADO
                 ========================================== -->
@@ -309,7 +282,10 @@ $zonasFiltro = [
                         Estado del reporte
                     </label>
 
-                    <select id="dashboard-estado" name="estado_actual">
+                    <select
+                        id="dashboard-estado"
+                        name="estado_actual"
+                    >
 
                         <option value="">
                             Todos
@@ -342,7 +318,10 @@ $zonasFiltro = [
                         Seguimiento
                     </label>
 
-                    <select id="dashboard-seguimiento" name="seguimiento">
+                    <select
+                        id="dashboard-seguimiento"
+                        name="seguimiento"
+                    >
 
                         <option value="">
                             Todos
@@ -362,35 +341,6 @@ $zonasFiltro = [
 
 
                 <!-- =========================================
-                     EVIDENCIA
-                ========================================== -->
-
-                <div class="dashboard-filtros__campo">
-
-                    <label for="dashboard-evidencia">
-                        Evidencia
-                    </label>
-
-                    <select id="dashboard-evidencia" name="evidencia">
-
-                        <option value="">
-                            Todas
-                        </option>
-
-                        <option value="con">
-                            Con evidencia
-                        </option>
-
-                        <option value="sin">
-                            Sin evidencia
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- =========================================
                      CLASIFICACIÓN - PENDIENTE
                 ========================================== -->
 
@@ -400,8 +350,12 @@ $zonasFiltro = [
                         Clasificación
                     </label>
 
-                    <select id="dashboard-clasificacion" name="clasificacion" disabled
-                        title="Pendiente de definir el catálogo institucional de clasificación">
+                    <select
+                        id="dashboard-clasificacion"
+                        name="clasificacion"
+                        disabled
+                        title="Pendiente de definir el catálogo institucional de clasificación"
+                    >
 
                         <option value="">
                             Pendiente de catálogo
@@ -445,7 +399,6 @@ $zonasFiltro = [
 
             <div class="dashboard-filtros__grupo-grid">
 
-
                 <!-- =========================================
                      ÁREA INVOLUCRADA
                 ========================================== -->
@@ -456,7 +409,10 @@ $zonasFiltro = [
                         Área involucrada
                     </label>
 
-                    <select id="dashboard-area-personal" name="area_personal">
+                    <select
+                        id="dashboard-area-personal"
+                        name="area_personal"
+                    >
 
                         <option value="">
                             Todas
@@ -468,12 +424,11 @@ $zonasFiltro = [
                             as $area
                         ): ?>
 
-                        <option value="<?= esc($area) ?>">
-                            <?= esc($area) ?>
-                        </option>
+                            <option value="<?= esc($area) ?>">
+                                <?= esc($area) ?>
+                            </option>
 
                         <?php endforeach; ?>
-
 
                     </select>
 
@@ -490,7 +445,10 @@ $zonasFiltro = [
                         Turno
                     </label>
 
-                    <select id="dashboard-turno" name="turno">
+                    <select
+                        id="dashboard-turno"
+                        name="turno"
+                    >
 
                         <option value="">
                             Todos
@@ -502,12 +460,11 @@ $zonasFiltro = [
                             as $turno
                         ): ?>
 
-                        <option value="<?= esc($turno) ?>">
-                            <?= esc($turno) ?>
-                        </option>
+                            <option value="<?= esc($turno) ?>">
+                                <?= esc($turno) ?>
+                            </option>
 
                         <?php endforeach; ?>
-
 
                     </select>
 
@@ -515,84 +472,19 @@ $zonasFiltro = [
 
 
                 <!-- =========================================
-                     ZONA
+                     SECTOR
                 ========================================== -->
 
                 <div class="dashboard-filtros__campo">
 
-                    <label for="dashboard-zona">
-                        Zona
+                    <label for="dashboard-sector">
+                        Sector
                     </label>
 
-                    <select id="dashboard-zona" name="zona">
-
-                        <option value="">
-                            Todas
-                        </option>
-
-
-                        <?php foreach (
-                            $zonasFiltro
-                            as $zona
-                        ): ?>
-
-                        <option value="<?= esc($zona) ?>">
-                            <?= esc($zona) ?>
-                        </option>
-
-                        <?php endforeach; ?>
-
-
-                    </select>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- =================================================
-             QUEJOSO
-        ================================================== -->
-
-        <div class="dashboard-filtros__grupo">
-
-            <div class="dashboard-filtros__grupo-encabezado">
-
-                <span class="dashboard-filtros__grupo-icono">
-
-                    <svg viewBox="0 0 24 24">
-
-                        <circle cx="12" cy="8" r="4" />
-
-                        <path d="M5 21a7 7 0 0 1 14 0" />
-
-                    </svg>
-
-                </span>
-
-                <span>
-                    Quejoso
-                </span>
-
-            </div>
-
-
-            <div class="dashboard-filtros__grupo-grid">
-
-
-                <!-- =========================================
-                     GÉNERO
-                ========================================== -->
-
-                <div class="dashboard-filtros__campo">
-
-                    <label for="dashboard-genero">
-                        Género
-                    </label>
-
-                    <select id="dashboard-genero" name="genero">
+                    <select
+                        id="dashboard-sector"
+                        name="sector"
+                    >
 
                         <option value="">
                             Todos
@@ -600,16 +492,15 @@ $zonasFiltro = [
 
 
                         <?php foreach (
-                            $generosFiltro
-                            as $genero
+                            $sectoresFiltro
+                            as $sector
                         ): ?>
 
-                        <option value="<?= esc($genero) ?>">
-                            <?= esc($genero) ?>
-                        </option>
+                            <option value="<?= esc($sector) ?>">
+                                <?= esc($sector) ?>
+                            </option>
 
                         <?php endforeach; ?>
-
 
                     </select>
 
@@ -653,7 +544,6 @@ $zonasFiltro = [
 
             <div class="dashboard-filtros__grupo-grid">
 
-
                 <!-- =========================================
                      UNIDAD
                 ========================================== -->
@@ -664,7 +554,10 @@ $zonasFiltro = [
                         Unidad involucrada
                     </label>
 
-                    <select id="dashboard-unidad" name="unidad">
+                    <select
+                        id="dashboard-unidad"
+                        name="unidad"
+                    >
 
                         <option value="">
                             Todas
@@ -677,7 +570,7 @@ $zonasFiltro = [
                         ): ?>
 
 
-                        <?php
+                            <?php
 
                             if (is_array($unidad)) {
 
@@ -718,19 +611,18 @@ $zonasFiltro = [
                             ?>
 
 
-                        <?php if (
+                            <?php if (
                                 $valorUnidad !== ''
                             ): ?>
 
-                        <option value="<?= esc($valorUnidad) ?>">
-                            <?= esc($textoUnidad) ?>
-                        </option>
+                                <option value="<?= esc($valorUnidad) ?>">
+                                    <?= esc($textoUnidad) ?>
+                                </option>
 
-                        <?php endif; ?>
+                            <?php endif; ?>
 
 
                         <?php endforeach; ?>
-
 
                     </select>
 
@@ -762,20 +654,31 @@ $zonasFiltro = [
 
         <div class="dashboard-filtros__acciones">
 
-            <button type="button" class="
+            <button
+                type="button"
+                class="
                     dashboard-filtros__boton
                     dashboard-filtros__boton--secondary
-                " id="dashboard-limpiar-filtros">
+                "
+                id="dashboard-limpiar-filtros"
+            >
                 Limpiar
             </button>
 
 
-            <button type="button" class="
+            <button
+                type="button"
+                class="
                     dashboard-filtros__boton
                     dashboard-filtros__boton--primary
-                " id="dashboard-aplicar-filtros">
+                "
+                id="dashboard-aplicar-filtros"
+            >
 
-                <svg viewBox="0 0 24 24" aria-hidden="true">
+                <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                >
 
                     <path d="M4 6h16" />
 

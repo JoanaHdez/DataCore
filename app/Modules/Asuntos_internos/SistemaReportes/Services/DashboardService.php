@@ -33,38 +33,43 @@ class DashboardService
      * del Dashboard.
      */
     public function establecerFiltros(
-        array $filtros
+    array $filtros
     ): void {
 
         $this->filtros = [
 
             /* =================================================
-            FECHAS
+            FECHA DE REGISTRO
             ================================================= */
 
-            'fecha_inicio' =>
-            $this->limpiarFiltro(
-                $filtros['fecha_inicio']
+            'fecha_registro_inicio' =>
+                $this->limpiarFiltro(
+                    $filtros['fecha_registro_inicio']
                     ?? null
-            ),
+                ),
 
-            'fecha_fin' =>
-            $this->limpiarFiltro(
-                $filtros['fecha_fin']
+            'fecha_registro_fin' =>
+                $this->limpiarFiltro(
+                    $filtros['fecha_registro_fin']
                     ?? null
-            ),
+                ),
 
-            'periodo' =>
-            $this->limpiarFiltro(
-                $filtros['periodo']
+
+            /* =================================================
+            FECHA DE LA QUEJA
+            ================================================= */
+
+            'fecha_queja_inicio' =>
+                $this->limpiarFiltro(
+                    $filtros['fecha_queja_inicio']
                     ?? null
-            ),
+                ),
 
-            'tipo_fecha' =>
-            $this->limpiarFiltro(
-                $filtros['tipo_fecha']
-                    ?? 'registro'
-            ),
+            'fecha_queja_fin' =>
+                $this->limpiarFiltro(
+                    $filtros['fecha_queja_fin']
+                    ?? null
+                ),
 
 
             /* =================================================
@@ -72,22 +77,16 @@ class DashboardService
             ================================================= */
 
             'estado' =>
-            $this->limpiarFiltro(
-                $filtros['estado']
+                $this->limpiarFiltro(
+                    $filtros['estado']
                     ?? null
-            ),
+                ),
 
             'seguimiento' =>
-            $this->limpiarFiltro(
-                $filtros['seguimiento']
+                $this->limpiarFiltro(
+                    $filtros['seguimiento']
                     ?? null
-            ),
-
-            'evidencia' =>
-            $this->limpiarFiltro(
-                $filtros['evidencia']
-                    ?? null
-            ),
+                ),
 
 
             /* =================================================
@@ -95,33 +94,22 @@ class DashboardService
             ================================================= */
 
             'area_personal' =>
-            $this->limpiarFiltro(
-                $filtros['area_personal']
+                $this->limpiarFiltro(
+                    $filtros['area_personal']
                     ?? null
-            ),
+                ),
 
             'turno' =>
-            $this->limpiarFiltro(
-                $filtros['turno']
+                $this->limpiarFiltro(
+                    $filtros['turno']
                     ?? null
-            ),
+                ),
 
-            'zona' =>
-            $this->limpiarFiltro(
-                $filtros['zona']
+            'sector' =>
+                $this->limpiarFiltro(
+                    $filtros['sector']
                     ?? null
-            ),
-
-
-            /* =================================================
-            QUEJOSO
-            ================================================= */
-
-            'genero' =>
-            $this->limpiarFiltro(
-                $filtros['genero']
-                    ?? null
-            ),
+                ),
 
 
             /* =================================================
@@ -129,10 +117,10 @@ class DashboardService
             ================================================= */
 
             'unidad' =>
-            $this->limpiarFiltro(
-                $filtros['unidad']
+                $this->limpiarFiltro(
+                    $filtros['unidad']
                     ?? null
-            ),
+                ),
 
         ];
     }
@@ -517,49 +505,61 @@ class DashboardService
 
 
         /* =====================================================
-        FECHA A ANALIZAR
+        FECHA DE REGISTRO
         ===================================================== */
 
-        $tipoFecha =
-            $this->filtros['tipo_fecha']
-            ?? 'registro';
-
-
-        $campoFecha =
-            match ($tipoFecha) {
-
-                'queja' =>
-                $prefijo . 'fecha_queja',
-
-                'hechos' =>
-                $prefijo . 'fecha_hechos',
-
-                'acuerdo' =>
-                $prefijo . 'fecha_acuerdo',
-
-                default =>
-                $prefijo . 'fecha_registro',
-            };
-
-
         if (
-            !empty($this->filtros['fecha_inicio'])
+            !empty(
+                $this->filtros['fecha_registro_inicio']
+            )
         ) {
 
             $builder->where(
-                $campoFecha . ' >=',
-                $this->filtros['fecha_inicio']
+                $prefijo . 'fecha_registro >=',
+                $this->filtros['fecha_registro_inicio']
             );
         }
 
 
         if (
-            !empty($this->filtros['fecha_fin'])
+            !empty(
+                $this->filtros['fecha_registro_fin']
+            )
         ) {
 
             $builder->where(
-                $campoFecha . ' <=',
-                $this->filtros['fecha_fin']
+                $prefijo . 'fecha_registro <=',
+                $this->filtros['fecha_registro_fin']
+            );
+        }
+
+
+        /* =====================================================
+        FECHA DE LA QUEJA
+        ===================================================== */
+
+        if (
+            !empty(
+                $this->filtros['fecha_queja_inicio']
+            )
+        ) {
+
+            $builder->where(
+                $prefijo . 'fecha_queja >=',
+                $this->filtros['fecha_queja_inicio']
+            );
+        }
+
+
+        if (
+            !empty(
+                $this->filtros['fecha_queja_fin']
+            )
+        ) {
+
+            $builder->where(
+                $prefijo . 'fecha_queja <=',
+                $this->filtros['fecha_queja_fin']
             );
         }
 
@@ -575,21 +575,6 @@ class DashboardService
             $builder->where(
                 $prefijo . 'estado_actual',
                 $this->filtros['estado']
-            );
-        }
-
-
-        /* =====================================================
-        GÉNERO DEL QUEJOSO
-        ===================================================== */
-
-        if (
-            !empty($this->filtros['genero'])
-        ) {
-
-            $builder->where(
-                $prefijo . 'genero_quejoso',
-                $this->filtros['genero']
             );
         }
 
@@ -631,51 +616,6 @@ class DashboardService
                     FROM ai_reporte_seguimientos s
                     WHERE s.id_reporte = {$prefijo}id_reporte
                     AND s.eliminado = 0
-                )",
-                    null,
-                    false
-                );
-            }
-        }
-
-
-        /* =====================================================
-        EVIDENCIA
-        ===================================================== */
-
-        if (
-            !empty($this->filtros['evidencia'])
-        ) {
-
-            if (
-                $this->filtros['evidencia']
-                === 'con'
-            ) {
-
-                $builder->where(
-                    "EXISTS (
-                    SELECT 1
-                    FROM ai_reporte_evidencias e
-                    WHERE e.id_reporte = {$prefijo}id_reporte
-                    AND e.eliminado = 0
-                )",
-                    null,
-                    false
-                );
-            }
-
-
-            if (
-                $this->filtros['evidencia']
-                === 'sin'
-            ) {
-
-                $builder->where(
-                    "NOT EXISTS (
-                    SELECT 1
-                    FROM ai_reporte_evidencias e
-                    WHERE e.id_reporte = {$prefijo}id_reporte
-                    AND e.eliminado = 0
                 )",
                     null,
                     false
@@ -746,50 +686,73 @@ class DashboardService
 
 
         /* =====================================================
-        ZONA DEL PERSONAL INVOLUCRADO
-
-        Zona no se almacena directamente en ai_reportes.
-
-        Se obtiene a partir del sector institucional contenido
-        en ai_reporte_personal.area_snapshot.
-
-        Zona Norte:
-        sectores 1 - 3
-
-        Zona Poniente:
-        sectores 4 - 7
-
-        Zona Centro:
-        sectores 8 - 10
-
-        Zona Oriente:
-        sectores 11 - 15
+        SECTOR DEL PERSONAL INVOLUCRADO
         ===================================================== */
 
         if (
-            !empty($this->filtros['zona'])
+            !empty(
+                $this->filtros['sector']
+            )
         ) {
 
-            $condicionZona =
-                $this->obtenerCondicionSqlZona(
-                    $this->filtros['zona'],
-                    'p_zona.area_snapshot'
+            $sector =
+                trim(
+                    (string)
+                    $this->filtros['sector']
                 );
 
 
-            if ($condicionZona !== null) {
+            /*
+            * El selector envía valores como:
+            *
+            * SECTOR 01
+            * SECTOR 02
+            * ...
+            * SECTOR 15
+            */
 
-                $builder->where(
-                    "EXISTS (
-                    SELECT 1
-                    FROM ai_reporte_personal p_zona
-                    WHERE p_zona.id_reporte = {$prefijo}id_reporte
-                    AND ({$condicionZona})
-                )",
-                    null,
-                    false
-                );
+            if (
+                preg_match(
+                    '/^SECTOR\s+0*([0-9]+)$/i',
+                    $sector,
+                    $coincidencias
+                )
+            ) {
+
+                $numeroSector =
+                    (int) (
+                        $coincidencias[1]
+                        ?? 0
+                    );
+
+
+                if (
+                    $numeroSector >= 1
+                    && $numeroSector <= 15
+                ) {
+
+                    $builder->where(
+                        "EXISTS (
+                            SELECT 1
+                            FROM ai_reporte_personal p_sector
+                            WHERE p_sector.id_reporte = {$prefijo}id_reporte
+                            AND UPPER(
+                                TRIM(
+                                    COALESCE(
+                                        p_sector.area_snapshot,
+                                        ''
+                                    )
+                                )
+                            ) REGEXP '^SECTOR[[:space:]]+0*{$numeroSector}([^0-9]|$)'
+                        )",
+                        null,
+                        false
+                    );
+
+                }
+
             }
+
         }
 
 
