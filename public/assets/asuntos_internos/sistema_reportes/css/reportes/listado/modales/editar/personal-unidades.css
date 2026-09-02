@@ -694,6 +694,33 @@
 }
 
 /* =========================================================
+   TEXTOS DE AYUDA
+========================================================= */
+
+.editar-reporte-campo__help {
+    display: block;
+
+    margin-top: 8px;
+    margin-bottom: 2px;
+
+    color: #708295;
+
+    font-size: 10px;
+    font-weight: 500;
+
+    line-height: 1.45;
+}
+
+
+/* Separación adicional antes de resultados de búsqueda */
+.editar-reporte-campo__help
++ .editar-personal-resultados,
+.editar-reporte-campo__help
++ .editar-unidad-resultados {
+    margin-top: 10px;
+}
+
+/* =========================================================
    RESPONSIVE
 ========================================================= */
 
