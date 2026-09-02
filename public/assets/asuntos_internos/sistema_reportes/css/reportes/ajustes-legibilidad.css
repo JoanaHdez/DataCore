@@ -1,0 +1,73 @@
+/* =========================================================
+   PRUEBA DE CARGA - AJUSTES DE LEGIBILIDAD
+   TAMAÑOS EXAGERADOS INTENCIONALMENTE
+========================================================= */
+
+.reportes-page__eyebrow {
+    font-size: 30px !important;
+}
+
+.reportes-page__description {
+    font-size: 30px !important;
+}
+
+
+/* HEADER */
+
+.report-header__title span {
+    font-size: 30px !important;
+}
+
+.report-header__user-data span {
+    font-size: 30px !important;
+}
+
+.report-header__user-data strong {
+    font-size: 30px !important;
+}
+
+.report-header__user-data small {
+    font-size: 30px !important;
+}
+
+.report-nav__link {
+    font-size: 30px !important;
+}
+
+.report-nav__logout {
+    font-size: 30px !important;
+}
+
+
+/* PASOS */
+
+.report-steps__item span {
+    font-size: 30px !important;
+}
+
+.report-steps__item strong {
+    font-size: 30px !important;
+}
+
+
+/* NUEVO REPORTE */
+
+.report-section__eyebrow {
+    font-size: 30px !important;
+}
+
+.report-section__description {
+    font-size: 30px !important;
+}
+
+.report-subsection__eyebrow {
+    font-size: 30px !important;
+}
+
+.report-subsection__title {
+    font-size: 30px !important;
+}
+
+.report-subsection__description {
+    font-size: 30px !important;
+}
