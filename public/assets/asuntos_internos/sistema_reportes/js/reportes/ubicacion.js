@@ -934,7 +934,7 @@ function inicializarUbicacionGoogleMaps() {
 
         try {
 
-            const base =
+            /* const base =
                 document.querySelector(
                     'base'
                 )?.href
@@ -945,8 +945,14 @@ function inicializarUbicacionGoogleMaps() {
                 new URL(
                     'asuntos-internos/reportes/ubicacion/territorio',
                     base
-                );
+                ); */
 
+
+            const url =
+                new URL(
+                    'DataCore/public/asuntos-internos/reportes/ubicacion/territorio',
+                    `${window.location.origin}/`
+                );
 
             url.searchParams.set(
                 'lat',

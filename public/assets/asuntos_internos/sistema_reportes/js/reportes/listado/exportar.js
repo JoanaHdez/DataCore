@@ -750,7 +750,7 @@ async function enviarExportacionListado(
    URL DE EXPORTACIÓN
 ========================================================= */
 
-function construirUrlExportacion() {
+/* function construirUrlExportacion() {
 
     const base =
         document
@@ -775,8 +775,16 @@ function construirUrlExportacion() {
         + '/asuntos-internos/reportes/listado/exportar'
     );
 
-}
+} */
 
+function construirUrlExportacion() {
+
+    return new URL(
+        'DataCore/public/asuntos-internos/reportes/listado/exportar',
+        `${window.location.origin}/`
+    ).toString();
+
+}
 
 /* =========================================================
    DESCARGAR ARCHIVO

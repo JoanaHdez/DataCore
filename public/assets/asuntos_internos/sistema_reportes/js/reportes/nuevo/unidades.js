@@ -158,7 +158,7 @@ function inicializarUnidades() {
 
         try {
 
-            const baseUrl =
+            /* const baseUrl =
                 document
                     .querySelector('base')
                     ?.href
@@ -169,7 +169,13 @@ function inicializarUnidades() {
                 new URL(
                     'asuntos-internos/reportes/unidades/buscar',
                     baseUrl
-                );
+                ); */
+
+                const url =
+    new URL(
+        'DataCore/public/asuntos-internos/reportes/unidades/buscar',
+        `${window.location.origin}/`
+    );
 
 
             url.searchParams.set(

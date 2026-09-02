@@ -236,7 +236,7 @@ async function consultarDetalleReporte(
     idReporte
 ) {
 
-    const baseUrl =
+    /* const baseUrl =
         document
             .querySelector('base')
             ?.href
@@ -247,8 +247,13 @@ async function consultarDetalleReporte(
         new URL(
             `asuntos-internos/reportes/detalle/${idReporte}`,
             baseUrl
-        );
+        ); */
 
+const url =
+    new URL(
+        `DataCore/public/asuntos-internos/reportes/detalle/${idReporte}`,
+        `${window.location.origin}/`
+    );
 
     const respuesta =
         await fetch(
@@ -1275,12 +1280,12 @@ function renderizarEvidenciasDetalle(
     }
 
 
-    const baseUrl =
+  /*   const baseUrl =
         document
             .querySelector('base')
             ?.href
         || `${window.location.origin}/`;
-
+ */
 
     evidencias.forEach(
         (evidencia, indice) => {
@@ -1316,11 +1321,17 @@ function renderizarEvidenciasDetalle(
                 ).trim();
 
 
-            const urlImagen =
+            /* const urlImagen =
                 new URL(
                     `asuntos-internos/reportes/evidencia/${idEvidencia}`,
                     baseUrl
-                ).toString();
+                ).toString(); */
+
+                const urlImagen =
+    new URL(
+        `DataCore/public/asuntos-internos/reportes/evidencia/${idEvidencia}`,
+        `${window.location.origin}/`
+    ).toString();
 
 
             const item =

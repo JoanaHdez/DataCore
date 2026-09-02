@@ -2065,6 +2065,30 @@ body.modal-abierto {
     font-size: 10px;
 }
 
+
+/* =========================================================
+   TARJETA - ÚLTIMO SEGUIMIENTO
+========================================================= */
+
+.tarjeta-reporte__seguimiento strong,
+.tarjeta-reporte__seguimiento span,
+.tarjeta-reporte__seguimiento p {
+    display: block;
+}
+
+.tarjeta-reporte__seguimiento strong {
+    margin-bottom: 6px;
+}
+
+.tarjeta-reporte__seguimiento span {
+    margin-bottom: 6px;
+}
+
+.tarjeta-reporte__seguimiento p {
+    margin: 0;
+}
+
+
 /* =========================================================
    RESPONSIVE
 ========================================================= */

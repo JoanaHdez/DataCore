@@ -3569,7 +3569,7 @@ function asignarTexto(
    BASE URL
 ========================================================= */
 
-function obtenerBaseUrl() {
+/* function obtenerBaseUrl() {
 
     return (
         document
@@ -3577,5 +3577,12 @@ function obtenerBaseUrl() {
             ?.href
         || `${window.location.origin}/`
     );
+
+} */
+
+
+function obtenerBaseUrl() {
+
+    return `${window.location.origin}/DataCore/public/`;
 
 }

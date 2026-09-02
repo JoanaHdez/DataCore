@@ -518,8 +518,11 @@ function inicializarFormularioPorPasos() {
                         resultado.message
                         || 'El reporte se registró correctamente.',
 
-                    url:
-                        '/asuntos-internos/reportes/listado',
+                    /* url:
+                        '/asuntos-internos/reportes/listado', */
+
+                        url:
+    '/DataCore/public/asuntos-internos/reportes/listado',
 
                     duracion:
                         2000,
@@ -803,7 +806,7 @@ function validarRelacionesDelPaso(
 
 
     /* =====================================================
-       PERSONAL
+       PERSONAL-------------
     ===================================================== */
 
     const personal =
@@ -862,7 +865,7 @@ function validarRelacionesDelPaso(
 
 
     /* =====================================================
-       UNIDADES
+       UNIDADES----------
     ===================================================== */
 
     const unidades =
@@ -909,7 +912,7 @@ function validarRelacionesDelPaso(
    URL GUARDAR
 ========================================================= */
 
-function construirUrlGuardar() {
+/* function construirUrlGuardar() {
 
     const base =
         document
@@ -930,8 +933,16 @@ function construirUrlGuardar() {
     return `${window.location.origin
         }/asuntos-internos/reportes/guardar`;
 
-}
+} */
 
+function construirUrlGuardar() {
+
+    return new URL(
+        'DataCore/public/asuntos-internos/reportes/guardar',
+        `${window.location.origin}/`
+    ).toString();
+
+}
 
 /* =========================================================
    ESTADO BOTÓN GUARDAR
@@ -1044,11 +1055,17 @@ async function validarFolioDisponible() {
 
     try {
 
-        const url =
+        /* const url =
             new URL(
                 'asuntos-internos/reportes/validar-folio',
                 `${window.location.origin}/`
-            );
+            ); */
+
+const url =
+    new URL(
+        'DataCore/public/asuntos-internos/reportes/validar-folio',
+        `${window.location.origin}/`
+    );
 
 
         url.searchParams.set(

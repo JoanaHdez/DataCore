@@ -306,7 +306,7 @@ async function buscarUnidades(
 
     try {
 
-        const baseUrl =
+        /* const baseUrl =
             document
                 .querySelector('base')
                 ?.href
@@ -317,7 +317,13 @@ async function buscarUnidades(
             new URL(
                 'asuntos-internos/reportes/unidades/buscar',
                 baseUrl
-            );
+            ); */
+
+            const url =
+    new URL(
+        'DataCore/public/asuntos-internos/reportes/unidades/buscar',
+        `${window.location.origin}/`
+    );
 
 
         url.searchParams.set(

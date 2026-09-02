@@ -1219,7 +1219,7 @@ function mostrarNotificacionEliminado(
    BASE URL
 ========================================================= */
 
-function obtenerBaseUrlEliminar() {
+/* function obtenerBaseUrlEliminar() {
 
     return (
         document
@@ -1227,5 +1227,11 @@ function obtenerBaseUrlEliminar() {
             ?.href
         || `${window.location.origin}/`
     );
+
+} */
+
+function obtenerBaseUrlEliminar() {
+
+    return `${window.location.origin}/DataCore/public/`;
 
 }

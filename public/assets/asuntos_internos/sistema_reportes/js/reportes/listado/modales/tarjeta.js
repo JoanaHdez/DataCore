@@ -829,7 +829,7 @@ async function obtenerJsonTarjeta(
    BASE URL
 ========================================================= */
 
-function obtenerBaseUrlTarjeta() {
+/* function obtenerBaseUrlTarjeta() {
 
     return (
         document
@@ -837,5 +837,12 @@ function obtenerBaseUrlTarjeta() {
             ?.href
         || `${window.location.origin}/`
     );
+
+} */
+
+
+function obtenerBaseUrlTarjeta() {
+
+    return `${window.location.origin}/DataCore/public/`;
 
 }

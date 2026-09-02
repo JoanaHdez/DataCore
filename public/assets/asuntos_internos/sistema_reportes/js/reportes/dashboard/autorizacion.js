@@ -221,7 +221,7 @@ function inicializarAutorizacionAdmin() {
                 }
 
 
-                const respuesta =
+                /* const respuesta =
                     await fetch(
                         `${window.location.origin}/asuntos-internos/reportes/dashboard/autorizar`,
                         {
@@ -234,8 +234,22 @@ function inicializarAutorizacionAdmin() {
                                     'XMLHttpRequest',
                             },
                         }
-                    );
+                    ); */
 
+                    const respuesta =
+    await fetch(
+        `${window.location.origin}/DataCore/public/asuntos-internos/reportes/dashboard/autorizar`,
+        {
+            method: 'POST',
+
+            body: formData,
+
+            headers: {
+                'X-Requested-With':
+                    'XMLHttpRequest',
+            },
+        }
+    );
 
                 let datos = null;
 
@@ -395,18 +409,19 @@ function prepararAutorizacionDashboard(
    SALIR DEL DASHBOARD RESTRINGIDO
 ========================================================= */
 
-function salirDashboardRestringido() {
-
-    /*
-     * Si no existe autorización, el usuario no permanece
-     * en el Dashboard.
-     */
+/* function salirDashboardRestringido() {
 
     window.location.href =
         `${window.location.origin}/asuntos-internos/reportes/listado`;
 
-}
+} */
 
+function salirDashboardRestringido() {
+
+    window.location.href =
+        `${window.location.origin}/DataCore/public/asuntos-internos/reportes/listado`;
+
+}
 
 /* =========================================================
    MOSTRAR MENSAJE

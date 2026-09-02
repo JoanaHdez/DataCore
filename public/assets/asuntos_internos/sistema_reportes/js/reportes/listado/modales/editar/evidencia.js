@@ -161,11 +161,11 @@ function renderizarEvidenciasExistentes(
     }
 
 
-    const baseUrl =
+    /* const baseUrl =
         document
             .querySelector('base')
             ?.href
-        || `${window.location.origin}/`;
+        || `${window.location.origin}/`; */
 
 
     visibles.forEach(
@@ -202,13 +202,19 @@ function renderizarEvidenciasExistentes(
                 ).trim();
 
 
-            const urlImagen =
+            /* const urlImagen =
                 new URL(
                     `asuntos-internos/reportes/evidencia/${idEvidencia}`,
                     baseUrl
-                ).toString();
+                ).toString(); */
 
+const urlImagen =
+    new URL(
+        `DataCore/public/asuntos-internos/reportes/evidencia/${idEvidencia}`,
+        `${window.location.origin}/`
+    ).toString();
 
+    
             const item =
                 document.createElement(
                     'div'

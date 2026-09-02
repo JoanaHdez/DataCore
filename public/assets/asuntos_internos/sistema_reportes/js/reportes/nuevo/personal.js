@@ -184,7 +184,7 @@ function inicializarPersonalInvolucrado() {
 
         try {
 
-            const baseUrl =
+            /* const baseUrl =
                 document
                     .querySelector('base')
                     ?.href
@@ -195,7 +195,13 @@ function inicializarPersonalInvolucrado() {
                 new URL(
                     'asuntos-internos/reportes/personal/buscar',
                     baseUrl
-                );
+                ); */
+
+                const url =
+    new URL(
+        'DataCore/public/asuntos-internos/reportes/personal/buscar',
+        `${window.location.origin}/`
+    );
 
 
             url.searchParams.set(

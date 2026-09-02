@@ -16,14 +16,6 @@
             </p>
         </div>
 
-        <button
-            type="button"
-            class="reportes-filtros__clear"
-            id="btn-limpiar-filtros"
-        >
-            Limpiar filtros
-        </button>
-
     </div>
 
 

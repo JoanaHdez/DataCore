@@ -68,7 +68,7 @@ function imprimirTarjeta(
     /*
      * URL absoluta del CSS de impresión.
      */
-    const baseUrl =
+    /* const baseUrl =
         `${window.location.origin}/`;
 
     const cssImpresion =
@@ -76,7 +76,18 @@ function imprimirTarjeta(
         + 'assets/asuntos_internos/'
         + 'sistema_reportes/css/'
         + 'reportes/listado/'
-        + 'imprimir-tarjeta.css';
+        + 'imprimir-tarjeta.css'; */
+
+
+        const baseUrl =
+    `${window.location.origin}/DataCore/public/`;
+
+const cssImpresion =
+    `${baseUrl}`
+    + 'assets/asuntos_internos/'
+    + 'sistema_reportes/css/'
+    + 'reportes/listado/'
+    + 'imprimir-tarjeta.css';
 
 
     /*

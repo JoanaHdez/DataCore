@@ -1853,6 +1853,166 @@ class Reportes_Controller extends BaseController
         );
     }
 
+    /* =========================================================
+   AUTORIZAR DASHBOARD
+========================================================= */
+
+public function autorizarDashboard()
+{
+    /* =====================================================
+       VALIDAR SESIÓN
+    ===================================================== */
+
+    if (
+        session()->get('reportes_autenticado') !== true
+        || !session()->has('usuario_reportes')
+    ) {
+
+        return $this->response
+            ->setStatusCode(401)
+            ->setJSON([
+                'success' => false,
+                'message' => 'La sesión no es válida.',
+            ]);
+    }
+
+
+    /* =====================================================
+       USUARIO ACTUAL
+    ===================================================== */
+
+    $usuario =
+        session()->get(
+            'usuario_reportes'
+        );
+
+
+    $rol =
+        $usuario['rol']
+        ?? 'usuario';
+
+
+    /*
+     * Si ya es administrador,
+     * no necesita autorización adicional.
+     */
+    if ($rol === 'admin') {
+
+        session()->set(
+            'reportes_dashboard_autorizado',
+            true
+        );
+
+
+        return $this->response
+            ->setJSON([
+                'success' => true,
+                'message' => 'Acceso autorizado.',
+            ]);
+    }
+
+
+    /* =====================================================
+       CONTRASEÑA ADMINISTRATIVA
+    ===================================================== */
+
+    $passwordAdmin =
+        strtoupper(
+            trim(
+                (string)
+                $this->request
+                    ->getPost(
+                        'password_admin'
+                    )
+            )
+        );
+
+
+    if ($passwordAdmin === '') {
+
+        return $this->response
+            ->setStatusCode(422)
+            ->setJSON([
+                'success' => false,
+                'message' =>
+                    'Ingresa la contraseña del administrador.',
+            ]);
+    }
+
+
+    /* =====================================================
+       VALIDAR AUTORIZACIÓN
+    ===================================================== */
+
+    try {
+
+        $authService =
+            new AuthService();
+
+
+        $autorizado =
+            $authService
+                ->validarAutorizacionAdmin(
+                    $passwordAdmin
+                );
+
+
+    } catch (\Throwable $e) {
+
+        log_message(
+            'error',
+            'Error validando autorización administrativa para Dashboard: {mensaje}',
+            [
+                'mensaje' =>
+                    $e->getMessage(),
+            ]
+        );
+
+
+        return $this->response
+            ->setStatusCode(500)
+            ->setJSON([
+                'success' => false,
+                'message' =>
+                    'No fue posible validar la autorización.',
+            ]);
+    }
+
+
+    /* =====================================================
+       CONTRASEÑA INCORRECTA
+    ===================================================== */
+
+    if (!$autorizado) {
+
+        return $this->response
+            ->setStatusCode(403)
+            ->setJSON([
+                'success' => false,
+                'message' =>
+                    'Contraseña de administrador incorrecta.',
+            ]);
+    }
+
+
+    /* =====================================================
+       AUTORIZACIÓN CORRECTA
+    ===================================================== */
+
+    session()->set(
+        'reportes_dashboard_autorizado',
+        true
+    );
+
+
+    return $this->response
+        ->setJSON([
+            'success' => true,
+            'message' =>
+                'Acceso autorizado.',
+        ]);
+}
+
     public function exportarDashboard()
     {
         /* =========================================================

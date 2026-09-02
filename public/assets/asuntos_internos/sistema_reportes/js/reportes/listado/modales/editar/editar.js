@@ -922,7 +922,7 @@ async function consultarReporteEditar(
     idReporte
 ) {
 
-    const baseUrl =
+    /* const baseUrl =
         document
             .querySelector('base')
             ?.href
@@ -934,7 +934,13 @@ async function consultarReporteEditar(
             `asuntos-internos/reportes/detalle/${idReporte}`,
             baseUrl
         );
+ */
 
+        const url =
+    new URL(
+        `DataCore/public/asuntos-internos/reportes/detalle/${idReporte}`,
+        `${window.location.origin}/`
+    );
 
     const respuesta =
         await fetch(
@@ -1632,7 +1638,7 @@ async function actualizarReporteBackend(
     datos
 ) {
 
-    const baseUrl =
+    /* const baseUrl =
         document
             .querySelector('base')
             ?.href
@@ -1644,8 +1650,14 @@ async function actualizarReporteBackend(
             `asuntos-internos/reportes/actualizar/${idReporte}`,
             baseUrl
         );
+ */
 
-
+        const url =
+    new URL(
+        `DataCore/public/asuntos-internos/reportes/actualizar/${idReporte}`,
+        `${window.location.origin}/`
+    );
+    
     const respuesta =
         await fetch(
             url.toString(),

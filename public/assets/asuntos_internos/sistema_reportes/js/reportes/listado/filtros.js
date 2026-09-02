@@ -3,9 +3,14 @@
    Listado - Filtros
 ========================================================= */
 
-document.addEventListener('DOMContentLoaded', () => {
-    inicializarFiltrosReportes();
-});
+document.addEventListener(
+    'DOMContentLoaded',
+    () => {
+
+        inicializarFiltrosReportes();
+
+    }
+);
 
 
 /* =========================================================
@@ -19,35 +24,42 @@ function inicializarFiltrosReportes() {
             '.reportes-tabla__table'
         );
 
+
     const tbody =
         document.querySelector(
             '#tabla-reportes-body'
         );
+
 
     const inputBusqueda =
         document.querySelector(
             '#filtro_busqueda'
         );
 
+
     const filtroClasificacion =
         document.querySelector(
             '#filtro_clasificacion'
         );
+
 
     const filtroArea =
         document.querySelector(
             '#filtro_area'
         );
 
+
     const filtroTurno =
         document.querySelector(
             '#filtro_turno'
         );
 
+
     const filtroResolucion =
         document.querySelector(
             '#filtro_resolucion'
         );
+
 
     const botonLimpiar =
         document.querySelector(
@@ -65,37 +77,51 @@ function inicializarFiltrosReportes() {
         || !filtroResolucion
         || !botonLimpiar
     ) {
+
         return;
+
     }
 
 
-    /*
-     * Estado actual del periodo.
-     */
+    /* =====================================================
+       ESTADO ACTUAL DEL PERIODO
+    ===================================================== */
+
     const periodo = {
-        inicio: '',
-        fin: '',
+
+        inicio:
+            '',
+
+        fin:
+            '',
+
     };
 
 
-    /*
-     * Obtenemos únicamente filas reales,
-     * ignorando la fila "No hay reportes".
-     */
+    /* =====================================================
+       OBTENER FILAS REALES
+    ===================================================== */
+
     const obtenerFilas = () => {
 
         return Array.from(
-            tbody.querySelectorAll('tr')
-        ).filter((fila) => {
-
-            return !fila.classList.contains(
-                'reportes-tabla__empty'
+            tbody.querySelectorAll(
+                'tr'
             )
-            && !fila.classList.contains(
-                'reportes-tabla__empty--filtros'
-            );
+        ).filter(
+            (fila) => {
 
-        });
+                return (
+                    !fila.classList.contains(
+                        'reportes-tabla__empty'
+                    )
+                    && !fila.classList.contains(
+                        'reportes-tabla__empty--filtros'
+                    )
+                );
+
+            }
+        );
 
     };
 
@@ -107,6 +133,7 @@ function inicializarFiltrosReportes() {
     cargarOpcionesFiltros(
         obtenerFilas(),
         {
+
             clasificacion:
                 filtroClasificacion,
 
@@ -118,6 +145,7 @@ function inicializarFiltrosReportes() {
 
             resolucion:
                 filtroResolucion,
+
         }
     );
 
@@ -163,128 +191,152 @@ function inicializarFiltrosReportes() {
             );
 
 
-        let visibles = 0;
+        let visibles =
+            0;
 
 
-        filas.forEach((fila) => {
+        filas.forEach(
+            (fila) => {
 
-            const celdas =
-                fila.querySelectorAll('td');
-
-
-            if (celdas.length < 8) {
-
-                fila.hidden = true;
-
-                return;
-            }
+                const celdas =
+                    fila.querySelectorAll(
+                        'td'
+                    );
 
 
-            /* =============================================
-               DATOS DE LA FILA
-            ============================================== */
+                if (
+                    celdas.length < 8
+                ) {
 
-            const fechaQueja =
-                convertirFechaTabla(
-                    celdas[1].textContent.trim()
-                );
+                    fila.hidden =
+                        true;
 
+                    return;
 
-            const clasificacionFila =
-                normalizarTexto(
-                    celdas[3].textContent
-                );
+                }
 
 
-            const areaFila =
-                normalizarTexto(
-                    celdas[5].textContent
-                );
+                /* =============================================
+                   DATOS DE LA FILA
+                ============================================== */
+
+                const fechaQueja =
+                    convertirFechaTabla(
+                        celdas[1]
+                            .textContent
+                            .trim()
+                    );
 
 
-            const turnoFila =
-                normalizarTexto(
-                    celdas[6].textContent
-                );
+                const clasificacionFila =
+                    normalizarTexto(
+                        celdas[3]
+                            .textContent
+                    );
 
 
-            const resolucionFila =
-                normalizarTexto(
-                    celdas[7].textContent
-                );
+                const areaFila =
+                    normalizarTexto(
+                        celdas[5]
+                            .textContent
+                    );
 
 
-            /*
-             * La búsqueda general revisa
-             * toda la información visible
-             * de la fila.
-             */
-            const textoFila =
-                normalizarTexto(
-                    fila.textContent
-                );
+                const turnoFila =
+                    normalizarTexto(
+                        celdas[6]
+                            .textContent
+                    );
 
 
-            /* =============================================
-               VALIDACIONES
-            ============================================== */
-
-            const coincideBusqueda =
-                !busqueda
-                || textoFila.includes(
-                    busqueda
-                );
+                const resolucionFila =
+                    normalizarTexto(
+                        celdas[7]
+                            .textContent
+                    );
 
 
-            const coincideClasificacion =
-                !clasificacion
-                || clasificacionFila
+                /*
+                 * La búsqueda general revisa
+                 * toda la información visible
+                 * de la fila.
+                 */
+
+                const textoFila =
+                    normalizarTexto(
+                        fila.textContent
+                    );
+
+
+                /* =============================================
+                   VALIDACIONES
+                ============================================== */
+
+                const coincideBusqueda =
+                    !busqueda
+                    || textoFila.includes(
+                        busqueda
+                    );
+
+
+                const coincideClasificacion =
+                    !clasificacion
+                    || clasificacionFila
                     === clasificacion;
 
 
-            const coincideArea =
-                !area
-                || areaFila === area;
+                const coincideArea =
+                    !area
+                    || areaFila
+                    === area;
 
 
-            const coincideTurno =
-                !turno
-                || turnoFila === turno;
+                const coincideTurno =
+                    !turno
+                    || turnoFila
+                    === turno;
 
 
-            const coincideResolucion =
-                !resolucion
-                || resolucionFila
+                const coincideResolucion =
+                    !resolucion
+                    || resolucionFila
                     === resolucion;
 
 
-            const coincidePeriodo =
-                validarPeriodoFila(
-                    fechaQueja,
-                    periodo.inicio,
-                    periodo.fin
-                );
+                const coincidePeriodo =
+                    validarPeriodoFila(
+                        fechaQueja,
+                        periodo.inicio,
+                        periodo.fin
+                    );
 
 
-            const mostrar =
-                coincideBusqueda
-                && coincideClasificacion
-                && coincideArea
-                && coincideTurno
-                && coincideResolucion
-                && coincidePeriodo;
+                const mostrar =
+                    coincideBusqueda
+                    && coincideClasificacion
+                    && coincideArea
+                    && coincideTurno
+                    && coincideResolucion
+                    && coincidePeriodo;
 
 
-            fila.hidden =
-                !mostrar;
+                fila.hidden =
+                    !mostrar;
 
 
-            if (mostrar) {
-                visibles++;
+                if (mostrar) {
+
+                    visibles++;
+
+                }
+
             }
+        );
 
-        });
 
+        /* =================================================
+           ESTADO VACÍO
+        ================================================= */
 
         actualizarEstadoVacio(
             tbody,
@@ -292,22 +344,29 @@ function inicializarFiltrosReportes() {
         );
 
 
-        /* =============================================
+        /* =================================================
            NOTIFICAR AL RESTO DE MÓDULOS
-        ============================================== */
+        ================================================= */
 
         document.dispatchEvent(
             new CustomEvent(
                 'reportesFiltradosActualizados',
                 {
+
                     detail: {
-                        total: visibles,
-                        filas: obtenerFilas()
-                            .filter(
-                                (fila) =>
-                                    !fila.hidden
-                            ),
+
+                        total:
+                            visibles,
+
+                        filas:
+                            obtenerFilas()
+                                .filter(
+                                    (fila) =>
+                                        !fila.hidden
+                                ),
+
                     },
+
                 }
             )
         );
@@ -362,12 +421,14 @@ function inicializarFiltrosReportes() {
         (evento) => {
 
             periodo.inicio =
-                evento.detail?.fechaInicio
+                evento.detail
+                    ?.fechaInicio
                 || '';
 
 
             periodo.fin =
-                evento.detail?.fechaFin
+                evento.detail
+                    ?.fechaFin
                 || '';
 
 
@@ -383,27 +444,60 @@ function inicializarFiltrosReportes() {
 
     botonLimpiar.addEventListener(
         'click',
-        () => {
+        (evento) => {
 
-            inputBusqueda.value = '';
-
-            filtroClasificacion.value = '';
-            filtroArea.value = '';
-            filtroTurno.value = '';
-            filtroResolucion.value = '';
+            evento.preventDefault();
 
 
-            /*
-             * También limpiamos el periodo.
-             */
-            periodo.inicio = '';
-            periodo.fin = '';
+            /* =============================================
+               BÚSQUEDA
+            ============================================== */
 
+            inputBusqueda.value =
+                '';
+
+
+            /* =============================================
+               SELECTS
+            ============================================== */
+
+            filtroClasificacion.selectedIndex =
+                0;
+
+
+            filtroArea.selectedIndex =
+                0;
+
+
+            filtroTurno.selectedIndex =
+                0;
+
+
+            filtroResolucion.selectedIndex =
+                0;
+
+
+            /* =============================================
+               PERIODO INTERNO
+            ============================================== */
+
+            periodo.inicio =
+                '';
+
+
+            periodo.fin =
+                '';
+
+
+            /* =============================================
+               CAMPOS DEL PERIODO
+            ============================================== */
 
             const fechaInicio =
                 document.querySelector(
                     '#fecha_inicio'
                 );
+
 
             const fechaFin =
                 document.querySelector(
@@ -412,18 +506,25 @@ function inicializarFiltrosReportes() {
 
 
             if (fechaInicio) {
-                fechaInicio.value = '';
+
+                fechaInicio.value =
+                    '';
+
             }
 
 
             if (fechaFin) {
-                fechaFin.value = '';
+
+                fechaFin.value =
+                    '';
+
             }
 
 
-            /*
-             * Quitamos mensajes del periodo.
-             */
+            /* =============================================
+               MENSAJES DEL PERIODO
+            ============================================== */
+
             document
                 .querySelector(
                     '[data-periodo-resultado]'
@@ -437,6 +538,10 @@ function inicializarFiltrosReportes() {
                 )
                 ?.remove();
 
+
+            /* =============================================
+               MOSTRAR NUEVAMENTE LOS REGISTROS
+            ============================================== */
 
             aplicarFiltros();
 
@@ -465,51 +570,62 @@ function cargarOpcionesFiltros(
     const clasificaciones =
         new Set();
 
+
     const areas =
         new Set();
 
+
     const turnos =
         new Set();
+
 
     const resoluciones =
         new Set();
 
 
-    filas.forEach((fila) => {
+    filas.forEach(
+        (fila) => {
 
-        const celdas =
-            fila.querySelectorAll('td');
+            const celdas =
+                fila.querySelectorAll(
+                    'td'
+                );
 
 
-        if (celdas.length < 8) {
-            return;
+            if (
+                celdas.length < 8
+            ) {
+
+                return;
+
+            }
+
+
+            agregarValorSet(
+                clasificaciones,
+                celdas[3].textContent
+            );
+
+
+            agregarValorSet(
+                areas,
+                celdas[5].textContent
+            );
+
+
+            agregarValorSet(
+                turnos,
+                celdas[6].textContent
+            );
+
+
+            agregarValorSet(
+                resoluciones,
+                celdas[7].textContent
+            );
+
         }
-
-
-        agregarValorSet(
-            clasificaciones,
-            celdas[3].textContent
-        );
-
-
-        agregarValorSet(
-            areas,
-            celdas[5].textContent
-        );
-
-
-        agregarValorSet(
-            turnos,
-            celdas[6].textContent
-        );
-
-
-        agregarValorSet(
-            resoluciones,
-            celdas[7].textContent
-        );
-
-    });
+    );
 
 
     agregarOpcionesSelect(
@@ -548,12 +664,15 @@ function agregarValorSet(
 ) {
 
     const texto =
-        String(valor || '')
-            .trim();
+        String(
+            valor || ''
+        ).trim();
 
 
     if (!texto) {
+
         return;
+
     }
 
 
@@ -574,46 +693,54 @@ function agregarOpcionesSelect(
 ) {
 
     if (!select) {
+
         return;
+
     }
 
 
     const lista =
-        Array.from(valores)
+        Array.from(
+            valores
+        )
             .sort(
                 (a, b) =>
                     a.localeCompare(
                         b,
                         'es',
                         {
+
                             sensitivity:
                                 'base',
+
                         }
                     )
             );
 
 
-    lista.forEach((valor) => {
+    lista.forEach(
+        (valor) => {
 
-        const option =
-            document.createElement(
-                'option'
+            const option =
+                document.createElement(
+                    'option'
+                );
+
+
+            option.value =
+                valor;
+
+
+            option.textContent =
+                valor;
+
+
+            select.appendChild(
+                option
             );
 
-
-        option.value =
-            valor;
-
-
-        option.textContent =
-            valor;
-
-
-        select.appendChild(
-            option
-        );
-
-    });
+        }
+    );
 
 }
 
@@ -632,6 +759,7 @@ function validarPeriodoFila(
      * Si no existe periodo,
      * todas las filas cumplen.
      */
+
     if (
         !fechaInicio
         && !fechaFin
@@ -646,8 +774,11 @@ function validarPeriodoFila(
      * Si la fila no tiene una fecha válida,
      * no puede pertenecer al periodo.
      */
+
     if (!fechaFila) {
+
         return false;
+
     }
 
 
@@ -686,26 +817,35 @@ function convertirFechaTabla(
 ) {
 
     if (!fecha) {
+
         return '';
+
     }
 
 
     const partes =
         fecha
             .trim()
-            .split('/');
+            .split(
+                '/'
+            );
 
 
-    if (partes.length !== 3) {
+    if (
+        partes.length !== 3
+    ) {
+
         return '';
+
     }
 
 
     const [
         dia,
         mes,
-        anio
-    ] = partes;
+        anio,
+    ] =
+        partes;
 
 
     return `${anio}-${mes}-${dia}`;
@@ -728,7 +868,9 @@ function actualizarEstadoVacio(
         );
 
 
-    if (totalVisible > 0) {
+    if (
+        totalVisible > 0
+    ) {
 
         existente?.remove();
 
@@ -741,6 +883,7 @@ function actualizarEstadoVacio(
      * Si la tabla ya viene vacía desde PHP,
      * no agregamos otro mensaje.
      */
+
     const vacioOriginal =
         tbody.querySelector(
             '.reportes-tabla__empty'
@@ -748,12 +891,16 @@ function actualizarEstadoVacio(
 
 
     if (vacioOriginal) {
+
         return;
+
     }
 
 
     if (existente) {
+
         return;
+
     }
 
 
@@ -768,6 +915,7 @@ function actualizarEstadoVacio(
 
 
     fila.innerHTML = `
+
         <td colspan="9">
 
             <div class="reportes-tabla__empty-content">
@@ -783,6 +931,7 @@ function actualizarEstadoVacio(
             </div>
 
         </td>
+
     `;
 
 
@@ -801,10 +950,14 @@ function normalizarTexto(
     texto
 ) {
 
-    return String(texto || '')
+    return String(
+        texto || ''
+    )
         .trim()
         .toLowerCase()
-        .normalize('NFD')
+        .normalize(
+            'NFD'
+        )
         .replace(
             /[\u0300-\u036f]/g,
             ''

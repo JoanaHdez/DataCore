@@ -472,7 +472,7 @@ async function buscarPersonal(
 
     try {
 
-        const baseUrl =
+        /* const baseUrl =
             document
                 .querySelector('base')
                 ?.href
@@ -483,7 +483,13 @@ async function buscarPersonal(
             new URL(
                 'asuntos-internos/reportes/personal/buscar',
                 baseUrl
-            );
+            ); */
+
+            const url =
+    new URL(
+        'DataCore/public/asuntos-internos/reportes/personal/buscar',
+        `${window.location.origin}/`
+    );
 
 
         url.searchParams.set(

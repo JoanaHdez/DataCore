@@ -980,7 +980,7 @@ export function inicializarUbicacionEditar(
 
         try {
 
-            const base =
+            /* const base =
                 document.querySelector(
                     'base'
                 )?.href
@@ -991,8 +991,13 @@ export function inicializarUbicacionEditar(
                 new URL(
                     'asuntos-internos/reportes/ubicacion/territorio',
                     base
-                );
+                ); */
 
+const url =
+    new URL(
+        'DataCore/public/asuntos-internos/reportes/ubicacion/territorio',
+        `${window.location.origin}/`
+    );
 
             url.searchParams.set(
                 'lat',
@@ -1333,95 +1338,93 @@ export function inicializarUbicacionEditar(
 
     function actualizarDesdeFormulario() {
 
-        const latitudInicial =
-            Number(
-                inputLatitud?.value
-            );
-
-        const longitudInicial =
-            Number(
-                inputLongitud?.value
-            );
-
-
-        if (
+    const latitudInicial =
+        Number(
             inputLatitud?.value
-            && inputLongitud?.value
-            && !Number.isNaN(
-                latitudInicial
-            )
-            && !Number.isNaN(
-                longitudInicial
-            )
-        ) {
+        );
 
-            const posicion = {
-                lat:
-                    latitudInicial,
-
-                lng:
-                    longitudInicial,
-            };
+    const longitudInicial =
+        Number(
+            inputLongitud?.value
+        );
 
 
-            marcador.setPosition(
-                posicion
-            );
+    if (
+        inputLatitud?.value
+        && inputLongitud?.value
+        && !Number.isNaN(
+            latitudInicial
+        )
+        && !Number.isNaN(
+            longitudInicial
+        )
+    ) {
 
-            marcador.setVisible(
-                true
-            );
-
-
-            mapa.setCenter(
-                posicion
-            );
-
-            mapa.setZoom(
-                18
-            );
-
-
-            guardarCoordenadas(
+        const posicion = {
+            lat:
                 latitudInicial,
-                longitudInicial
-            );
+
+            lng:
+                longitudInicial,
+        };
 
 
-            /*
-             * IMPORTANTE:
-             *
-             * Al abrir Editar NO consultamos nuevamente
-             * Google ni la base territorial.
-             *
-             * Solo colocamos el marcador utilizando las
-             * coordenadas que ya están guardadas.
-             *
-             * Así abrir el modal no modifica los datos
-             * existentes del reporte.
-             */
+        marcador.setPosition(
+            posicion
+        );
 
-        } else {
-
-            marcador.setVisible(
-                false
-            );
+        marcador.setVisible(
+            true
+        );
 
 
-            mapa.setCenter(
-                CENTRO
-            );
+        mapa.setCenter(
+            posicion
+        );
 
-            mapa.setZoom(
-                16
-            );
-
-        }
+        mapa.setZoom(
+            18
+        );
 
 
-        redibujarMapa();
+        guardarCoordenadas(
+            latitudInicial,
+            longitudInicial
+        );
+
+
+        const miSecuencia =
+            ++secuencia;
+
+
+        completarTerritorio(
+            latitudInicial,
+            longitudInicial,
+            miSecuencia
+        );
+
+
+    } else {
+
+        marcador.setVisible(
+            false
+        );
+
+
+        mapa.setCenter(
+            CENTRO
+        );
+
+        mapa.setZoom(
+            16
+        );
 
     }
+
+
+    redibujarMapa();
+
+}
 
 
     /* =========================================================
