@@ -220,4 +220,3 @@
      GOOGLE MAPS
 ============================================================= -->
 
-<script src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY"></script>

@@ -122,6 +122,8 @@
             enctype="multipart/form-data"
             novalidate>
 
+            <?= csrf_field() ?>
+            
             <div class="modal-reporte__body modal-reporte__body--editar">
 
 

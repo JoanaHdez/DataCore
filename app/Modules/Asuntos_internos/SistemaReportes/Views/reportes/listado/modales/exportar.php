@@ -37,6 +37,8 @@
         ====================================================== -->
 
         <form id="form-exportar-listado">
+            
+            <?= csrf_field() ?>
 
             <div class="modal-reporte__body">
 

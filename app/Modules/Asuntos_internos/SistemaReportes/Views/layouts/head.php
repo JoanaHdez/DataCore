@@ -10,9 +10,8 @@
         <?= $this->renderSection('title') ?: 'Sistema de Reportes | Asuntos Internos' ?>
     </title>
 
-    <link rel="icon" type="image/png" href="<?= base_url(
-                                                'assets/asuntos_internos/sistema_reportes/img/favicon.png'
-                                            ) ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('assets/asuntos_internos/sistema_reportes/img/logo.png'
+                                ) ?>" alt="Coordinación de Asuntos Internos">
 
     <link rel="stylesheet" href="<?= base_url(
                                         'assets/asuntos_internos/sistema_reportes/css/app.css'

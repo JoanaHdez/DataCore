@@ -41,6 +41,8 @@
 
         <form id="form-confirmar-eliminacion-reporte" novalidate>
 
+        <?= csrf_field() ?>
+        
             <div class="modal-reporte__body">
 
                 <div class="modal-reporte__alert modal-reporte__alert--danger">

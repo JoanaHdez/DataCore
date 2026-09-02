@@ -48,7 +48,6 @@
 @import url('./reportes/listado/modales.css');
 
 
-@import url('./reportes/componentes/notificaciones.css');
 @import url('./reportes/componentes/resultado.css');
 @import url('./reportes/componentes/confirmacion.css');
 /*
@@ -58,4 +57,3 @@
 @import url('./components/tables.css');
 */
 
-@import url('./exportar.css');

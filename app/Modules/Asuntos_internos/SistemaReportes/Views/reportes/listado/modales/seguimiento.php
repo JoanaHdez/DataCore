@@ -2,12 +2,8 @@
 
     <div class="modal-reporte__overlay" data-cerrar-modal-seguimiento></div>
 
-    <div
-        class="modal-reporte__dialog modal-reporte__dialog--seguimiento"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-seguimiento-titulo"
-    >
+    <div class="modal-reporte__dialog modal-reporte__dialog--seguimiento" role="dialog" aria-modal="true"
+        aria-labelledby="modal-seguimiento-titulo">
 
         <!-- =====================================================
              HEADER
@@ -26,12 +22,7 @@
 
             </div>
 
-            <button
-                type="button"
-                class="modal-reporte__close"
-                data-cerrar-modal-seguimiento
-                aria-label="Cerrar"
-            >
+            <button type="button" class="modal-reporte__close" data-cerrar-modal-seguimiento aria-label="Cerrar">
                 ×
             </button>
 
@@ -41,11 +32,10 @@
         <!-- =====================================================
              FORMULARIO
         ====================================================== -->
-        <form
-            class="modal-reporte__form modal-reporte__form--seguimiento"
-            id="form-seguimiento-reporte"
-        >
+        <form class="modal-reporte__form modal-reporte__form--seguimiento" id="form-seguimiento-reporte">
 
+            <?= csrf_field() ?>
+            
             <div class="modal-reporte__body modal-reporte__body--seguimiento">
 
                 <!-- =================================================
@@ -103,12 +93,8 @@
                             Sin sanción registrada
                         </strong>
 
-                        <small
-                            id="seguimiento-sancion-origen"
-                            class="editar-reporte-campo__aviso"
-                            hidden
-                            style="display: none;"
-                        ></small>
+                        <small id="seguimiento-sancion-origen" class="editar-reporte-campo__aviso" hidden
+                            style="display: none;"></small>
 
                     </div>
 
@@ -137,12 +123,7 @@
                         Se utilizará después para Editar seguimiento.
                         Por ahora permanece vacío.
                     -->
-                    <input
-                        type="hidden"
-                        id="seguimiento-id-edicion"
-                        name="id_seguimiento_edicion"
-                        value=""
-                    >
+                    <input type="hidden" id="seguimiento-id-edicion" name="id_seguimiento_edicion" value="">
 
 
                     <div class="seguimiento-reporte-grid">
@@ -154,12 +135,7 @@
                                 Fecha
                             </label>
 
-                            <input
-                                type="date"
-                                id="seguimiento-fecha"
-                                name="fecha"
-                                required
-                            >
+                            <input type="date" id="seguimiento-fecha" name="fecha" required>
 
                         </div>
 
@@ -171,11 +147,7 @@
                                 Tipo de seguimiento
                             </label>
 
-                            <select
-                                id="seguimiento-tipo"
-                                name="tipo"
-                                required
-                            >
+                            <select id="seguimiento-tipo" name="tipo" required>
 
                                 <option value="">
                                     Selecciona
@@ -213,11 +185,7 @@
                                 Estado resultante
                             </label>
 
-                            <select
-                                id="seguimiento-estado"
-                                name="estado"
-                                required
-                            >
+                            <select id="seguimiento-estado" name="estado" required>
 
                                 <option value="">
                                     Selecciona
@@ -249,10 +217,7 @@
                                 Sanción disciplinaria
                             </label>
 
-                            <select
-                                id="seguimiento-sancion"
-                                name="sancion_disciplinaria"
-                            >
+                            <select id="seguimiento-sancion" name="sancion_disciplinaria">
 
                                 <option value="">
                                     Sin cambio
@@ -273,34 +238,25 @@
                             </select>
 
                             <small>
-                                Selecciona una opción únicamente si la sanción vigente cambia como resultado de este seguimiento.
+                                Selecciona una opción únicamente si la sanción vigente cambia como resultado de este
+                                seguimiento.
                             </small>
 
                         </div>
 
 
                         <!-- ESPECIFICAR OTRO -->
-                        <div
-                            class="editar-reporte-campo editar-reporte-campo--full"
-                            id="seguimiento-campo-sancion-otro"
-                            hidden
-                            style="display: none;"
-                        >
+                        <div class="editar-reporte-campo editar-reporte-campo--full" id="seguimiento-campo-sancion-otro"
+                            hidden style="display: none;">
 
                             <label for="seguimiento-sancion-otro">
                                 Especifique la sanción
                                 <span class="required">*</span>
                             </label>
 
-                            <input
-                                type="text"
-                                id="seguimiento-sancion-otro"
-                                name="sancion_otro"
-                                placeholder="Ingresa la sanción correspondiente"
-                                autocomplete="off"
-                                maxlength="255"
-                                disabled
-                            >
+                            <input type="text" id="seguimiento-sancion-otro" name="sancion_otro"
+                                placeholder="Ingresa la sanción correspondiente" autocomplete="off" maxlength="255"
+                                disabled>
 
                         </div>
 
@@ -312,14 +268,9 @@
                                 Observaciones
                             </label>
 
-                            <textarea
-                                id="seguimiento-observaciones"
-                                name="observaciones"
-                                class="seguimiento-reporte__textarea"
-                                rows="5"
-                                placeholder="Describe el seguimiento realizado..."
-                                required
-                            ></textarea>
+                            <textarea id="seguimiento-observaciones" name="observaciones"
+                                class="seguimiento-reporte__textarea" rows="5"
+                                placeholder="Describe el seguimiento realizado..." required></textarea>
 
                         </div>
 
@@ -327,17 +278,10 @@
 
 
                     <!-- Preparado para Editar seguimiento -->
-                    <div
-                        id="seguimiento-acciones-edicion"
-                        hidden
-                        style="display: none;"
-                    >
+                    <div id="seguimiento-acciones-edicion" hidden style="display: none;">
 
-                        <button
-                            type="button"
-                            id="seguimiento-cancelar-edicion"
-                            class="modal-reporte__button modal-reporte__button--secondary"
-                        >
+                        <button type="button" id="seguimiento-cancelar-edicion"
+                            class="modal-reporte__button modal-reporte__button--secondary">
                             Cancelar edición
                         </button>
 
@@ -368,10 +312,7 @@
                     </div>
 
 
-                    <div
-                        class="seguimiento-historial__lista"
-                        id="seguimiento-historial-lista"
-                    >
+                    <div class="seguimiento-historial__lista" id="seguimiento-historial-lista">
 
                         <div class="seguimiento-historial__vacio">
 
@@ -397,19 +338,13 @@
             ====================================================== -->
             <div class="modal-reporte__footer">
 
-                <button
-                    type="button"
-                    class="modal-reporte__button modal-reporte__button--secondary"
-                    data-cerrar-modal-seguimiento
-                >
+                <button type="button" class="modal-reporte__button modal-reporte__button--secondary"
+                    data-cerrar-modal-seguimiento>
                     Cancelar
                 </button>
 
-                <button
-                    type="submit"
-                    id="seguimiento-boton-guardar"
-                    class="modal-reporte__button modal-reporte__button--primary"
-                >
+                <button type="submit" id="seguimiento-boton-guardar"
+                    class="modal-reporte__button modal-reporte__button--primary">
                     Registrar seguimiento
                 </button>
 
