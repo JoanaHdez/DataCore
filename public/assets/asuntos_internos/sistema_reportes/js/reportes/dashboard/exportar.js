@@ -562,26 +562,43 @@ function obtenerFiltrosDashboard() {
 
     const nombresPermitidos = [
 
-        /* Fechas */
-        'fecha_inicio',
-        'fecha_fin',
-        'periodo',
-        'tipo_fecha',
+        /* =====================================================
+           FECHA DE REGISTRO
+        ===================================================== */
 
-        /* Reporte */
+        'fecha_registro_inicio',
+        'fecha_registro_fin',
+
+
+        /* =====================================================
+           FECHA DE LA QUEJA
+        ===================================================== */
+
+        'fecha_queja_inicio',
+        'fecha_queja_fin',
+
+
+        /* =====================================================
+           REPORTE
+        ===================================================== */
+
         'estado_actual',
         'seguimiento',
-        'evidencia',
 
-        /* Personal */
+
+        /* =====================================================
+           PERSONAL INVOLUCRADO
+        ===================================================== */
+
         'area_personal',
         'turno',
-        'zona',
+        'sector',
 
-        /* Quejoso */
-        'genero',
 
-        /* Unidad */
+        /* =====================================================
+           UNIDAD
+        ===================================================== */
+
         'unidad',
 
     ];
@@ -708,7 +725,7 @@ async function enviarExportacionDashboard(
            SOLICITUD
         ========================================================= */
 
-        const respuesta =
+        /* const respuesta =
             await fetch(
                 '/asuntos-internos/reportes/dashboard/exportar',
                 {
@@ -718,7 +735,19 @@ async function enviarExportacionDashboard(
                     body:
                         datos,
                 }
-            );
+            ); */
+
+            const respuesta =
+    await fetch(
+        `${window.location.origin}/DataCore/public/asuntos-internos/reportes/dashboard/exportar`,
+        {
+            method:
+                'POST',
+
+            body:
+                datos,
+        }
+    );
 
 
         /* =========================================================

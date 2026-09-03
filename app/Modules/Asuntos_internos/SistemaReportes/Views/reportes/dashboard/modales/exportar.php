@@ -167,45 +167,22 @@
 
                         </label>
 
-                        <!-- REPORTES RECIENTES -->
+                        <!-- SECTORES -->
                         <label class="dashboard-exportar__opcion">
 
-                            <input type="checkbox" name="secciones[]" value="recientes" checked>
+                            <input type="checkbox" name="secciones[]" value="sectores" checked>
 
                             <span class="dashboard-exportar__check"></span>
 
                             <span class="dashboard-exportar__contenido">
 
                                 <strong>
-                                    Reportes recientes
+                                    Quejas por sector
                                 </strong>
 
                                 <small>
-                                    Información de los últimos reportes
-                                    correspondientes a la consulta actual.
-                                </small>
-
-                            </span>
-
-                        </label>
-
-
-                        <!-- ZONAS -->
-                        <label class="dashboard-exportar__opcion">
-
-                            <input type="checkbox" name="secciones[]" value="zonas" checked>
-
-                            <span class="dashboard-exportar__check"></span>
-
-                            <span class="dashboard-exportar__contenido">
-
-                                <strong>
-                                    Quejas por zona
-                                </strong>
-
-                                <small>
-                                    Distribución de quejas entre las zonas Norte,
-                                    Poniente, Centro y Oriente.
+                                    Distribución de quejas entre los 15 sectores
+                                    institucionales.
                                 </small>
 
                             </span>

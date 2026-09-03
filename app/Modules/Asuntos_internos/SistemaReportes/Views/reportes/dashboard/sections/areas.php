@@ -19,73 +19,17 @@
 
         </div>
 
-
-        <div
-            class="dashboard-grafica__periodos"
-            aria-label="Periodo de visualización"
-        >
-
-            <button
-                type="button"
-                class="dashboard-grafica__periodo"
-                data-periodo-grafica="1m"
-            >
-                1M
-            </button>
-
-            <button
-                type="button"
-                class="dashboard-grafica__periodo"
-                data-periodo-grafica="3m"
-            >
-                3M
-            </button>
-
-            <button
-                type="button"
-                class="dashboard-grafica__periodo"
-                data-periodo-grafica="6m"
-            >
-                6M
-            </button>
-
-            <button
-                type="button"
-                class="dashboard-grafica__periodo"
-                data-periodo-grafica="1a"
-            >
-                1A
-            </button>
-
-            <button
-                type="button"
-                class="
-                    dashboard-grafica__periodo
-                    dashboard-grafica__periodo--activo
-                "
-                data-periodo-grafica="todo"
-            >
-                Todo
-            </button>
-
-        </div>
-
     </div>
 
 
     <div class="dashboard-grafica__contenido">
 
-        <div
-            class="
+        <div class="
                 dashboard-grafica__canvas
                 dashboard-grafica__canvas--sectores
-            "
-        >
+            ">
 
-            <canvas
-                id="grafica-sectores-turnos"
-                aria-label="Gráfica de quejas por sectores y turnos"
-            ></canvas>
+            <canvas id="grafica-sectores-turnos" aria-label="Gráfica de quejas por sectores y turnos"></canvas>
 
         </div>
 
@@ -94,10 +38,7 @@
 </section>
 
 
-<script
-    type="application/json"
-    id="datos-grafica-sectores-turnos"
->
+<script type="application/json" id="datos-grafica-sectores-turnos">
 <?= json_encode(
     $sectoresTurnos ?? [
         'sectores' => [],

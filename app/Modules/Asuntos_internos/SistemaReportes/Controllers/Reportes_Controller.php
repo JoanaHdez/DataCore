@@ -1362,111 +1362,111 @@ class Reportes_Controller extends BaseController
 
             $filtrosDashboard = [
 
-    /* =================================================
-       FECHA DE REGISTRO
-    ================================================= */
+                /* =================================================
+                FECHA DE REGISTRO
+                ================================================= */
 
-    'fecha_registro_inicio' =>
-        trim(
-            (string) $this->request->getGet(
-                'fecha_registro_inicio'
-            )
-        ),
+                            'fecha_registro_inicio' =>
+                            trim(
+                                (string) $this->request->getGet(
+                                    'fecha_registro_inicio'
+                                )
+                            ),
 
-    'fecha_registro_fin' =>
-        trim(
-            (string) $this->request->getGet(
-                'fecha_registro_fin'
-            )
-        ),
-
-
-    /* =================================================
-       FECHA DE LA QUEJA
-    ================================================= */
-
-    'fecha_queja_inicio' =>
-        trim(
-            (string) $this->request->getGet(
-                'fecha_queja_inicio'
-            )
-        ),
-
-    'fecha_queja_fin' =>
-        trim(
-            (string) $this->request->getGet(
-                'fecha_queja_fin'
-            )
-        ),
+                            'fecha_registro_fin' =>
+                            trim(
+                                (string) $this->request->getGet(
+                                    'fecha_registro_fin'
+                                )
+                            ),
 
 
-    /* =================================================
-       REPORTE
-    ================================================= */
+                /* =================================================
+                FECHA DE LA QUEJA
+                ================================================= */
 
-    /*
-     * El frontend utiliza:
-     *
-     * estado_actual
-     *
-     * DashboardService utiliza internamente:
-     *
-     * estado
-     */
+                            'fecha_queja_inicio' =>
+                            trim(
+                                (string) $this->request->getGet(
+                                    'fecha_queja_inicio'
+                                )
+                            ),
 
-    'estado' =>
-        trim(
-            (string) $this->request->getGet(
-                'estado_actual'
-            )
-        ),
-
-    'seguimiento' =>
-        trim(
-            (string) $this->request->getGet(
-                'seguimiento'
-            )
-        ),
+                            'fecha_queja_fin' =>
+                            trim(
+                                (string) $this->request->getGet(
+                                    'fecha_queja_fin'
+                                )
+                            ),
 
 
-    /* =================================================
-       PERSONAL INVOLUCRADO
-    ================================================= */
+                /* =================================================
+                REPORTE
+                ================================================= */
 
-    'area_personal' =>
-        trim(
-            (string) $this->request->getGet(
-                'area_personal'
-            )
-        ),
+                            /*
+                * El frontend utiliza:
+                *
+                * estado_actual
+                *
+                * DashboardService utiliza internamente:
+                *
+                * estado
+                */
 
-    'turno' =>
-        trim(
-            (string) $this->request->getGet(
-                'turno'
-            )
-        ),
+                            'estado' =>
+                            trim(
+                                (string) $this->request->getGet(
+                                    'estado_actual'
+                                )
+                            ),
 
-    'sector' =>
-        trim(
-            (string) $this->request->getGet(
-                'sector'
-            )
-        ),
+                            'seguimiento' =>
+                            trim(
+                                (string) $this->request->getGet(
+                                    'seguimiento'
+                                )
+                            ),
 
 
-    /* =================================================
-       UNIDAD
-    ================================================= */
+                /* =================================================
+                PERSONAL INVOLUCRADO
+                ================================================= */
 
-    'unidad' =>
-        trim(
-            (string) $this->request->getGet(
-                'unidad'
-            )
-        ),
+                            'area_personal' =>
+                            trim(
+                                (string) $this->request->getGet(
+                                    'area_personal'
+                                )
+                            ),
 
-];
+                            'turno' =>
+                            trim(
+                                (string) $this->request->getGet(
+                                    'turno'
+                                )
+                            ),
+
+                            'sector' =>
+                            trim(
+                                (string) $this->request->getGet(
+                                    'sector'
+                                )
+                            ),
+
+
+                /* =================================================
+                UNIDAD
+                ================================================= */
+
+                            'unidad' =>
+                            trim(
+                                (string) $this->request->getGet(
+                                    'unidad'
+                                )
+                            ),
+
+                        ];
 
 
             /* =====================================================
@@ -1918,7 +1918,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'Ingresa la contraseña del administrador.',
+                    'Ingresa la contraseña del administrador.',
                 ]);
         }
 
@@ -1935,11 +1935,9 @@ class Reportes_Controller extends BaseController
 
             $autorizado =
                 $authService
-                    ->validarAutorizacionAdmin(
-                        $passwordAdmin
-                    );
-
-
+                ->validarAutorizacionAdmin(
+                    $passwordAdmin
+                );
         } catch (\Throwable $e) {
 
             log_message(
@@ -1947,7 +1945,7 @@ class Reportes_Controller extends BaseController
                 'Error validando autorización administrativa para Dashboard: {mensaje}',
                 [
                     'mensaje' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
                 ]
             );
 
@@ -1957,7 +1955,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'No fue posible validar la autorización.',
+                    'No fue posible validar la autorización.',
                 ]);
         }
 
@@ -1973,7 +1971,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'Contraseña de administrador incorrecta.',
+                    'Contraseña de administrador incorrecta.',
                 ]);
         }
 
@@ -1992,7 +1990,7 @@ class Reportes_Controller extends BaseController
             ->setJSON([
                 'success' => true,
                 'message' =>
-                    'Acceso autorizado.',
+                'Acceso autorizado.',
             ]);
     }
 
@@ -2019,7 +2017,7 @@ class Reportes_Controller extends BaseController
                     'success' => false,
 
                     'message' =>
-                    'Selecciona al menos una sección para exportar.',
+                        'Selecciona al menos una sección para exportar.',
                 ]);
         }
 
@@ -2036,39 +2034,41 @@ class Reportes_Controller extends BaseController
         $filtrosDashboard = [
 
             /* =====================================================
-            FECHAS
+            FECHA DE REGISTRO
             ===================================================== */
 
-            'fecha_inicio' =>
-            trim(
-                (string) $this->request->getPost(
-                    'fecha_inicio'
-                )
-            ),
-
-            'fecha_fin' =>
-            trim(
-                (string) $this->request->getPost(
-                    'fecha_fin'
-                )
-            ),
-
-            'periodo' =>
-            trim(
-                (string) $this->request->getPost(
-                    'periodo'
-                )
-            ),
-
-            'tipo_fecha' =>
-            trim(
-                (string) (
-                    $this->request->getPost(
-                        'tipo_fecha'
+            'fecha_registro_inicio' =>
+                trim(
+                    (string) $this->request->getPost(
+                        'fecha_registro_inicio'
                     )
-                    ?? 'registro'
-                )
-            ),
+                ),
+
+            'fecha_registro_fin' =>
+                trim(
+                    (string) $this->request->getPost(
+                        'fecha_registro_fin'
+                    )
+                ),
+
+
+            /* =====================================================
+            FECHA DE LA QUEJA
+            ===================================================== */
+
+            'fecha_queja_inicio' =>
+                trim(
+                    (string) $this->request->getPost(
+                        'fecha_queja_inicio'
+                    )
+                ),
+
+            'fecha_queja_fin' =>
+                trim(
+                    (string) $this->request->getPost(
+                        'fecha_queja_fin'
+                    )
+                ),
 
 
             /* =====================================================
@@ -2076,35 +2076,28 @@ class Reportes_Controller extends BaseController
             ===================================================== */
 
             /*
-         * El frontend utiliza:
-         *
-         * estado_actual
-         *
-         * DashboardService utiliza internamente:
-         *
-         * estado
-         */
+            * El frontend envía:
+            *
+            * estado_actual
+            *
+            * DashboardService utiliza:
+            *
+            * estado
+            */
 
             'estado' =>
-            trim(
-                (string) $this->request->getPost(
-                    'estado_actual'
-                )
-            ),
+                trim(
+                    (string) $this->request->getPost(
+                        'estado_actual'
+                    )
+                ),
 
             'seguimiento' =>
-            trim(
-                (string) $this->request->getPost(
-                    'seguimiento'
-                )
-            ),
-
-            'evidencia' =>
-            trim(
-                (string) $this->request->getPost(
-                    'evidencia'
-                )
-            ),
+                trim(
+                    (string) $this->request->getPost(
+                        'seguimiento'
+                    )
+                ),
 
 
             /* =====================================================
@@ -2112,37 +2105,25 @@ class Reportes_Controller extends BaseController
             ===================================================== */
 
             'area_personal' =>
-            trim(
-                (string) $this->request->getPost(
-                    'area_personal'
-                )
-            ),
+                trim(
+                    (string) $this->request->getPost(
+                        'area_personal'
+                    )
+                ),
 
             'turno' =>
-            trim(
-                (string) $this->request->getPost(
-                    'turno'
-                )
-            ),
+                trim(
+                    (string) $this->request->getPost(
+                        'turno'
+                    )
+                ),
 
-            'zona' =>
-            trim(
-                (string) $this->request->getPost(
-                    'zona'
-                )
-            ),
-
-
-            /* =====================================================
-            QUEJOSO
-            ===================================================== */
-
-            'genero' =>
-            trim(
-                (string) $this->request->getPost(
-                    'genero'
-                )
-            ),
+            'sector' =>
+                trim(
+                    (string) $this->request->getPost(
+                        'sector'
+                    )
+                ),
 
 
             /* =====================================================
@@ -2150,11 +2131,11 @@ class Reportes_Controller extends BaseController
             ===================================================== */
 
             'unidad' =>
-            trim(
-                (string) $this->request->getPost(
-                    'unidad'
-                )
-            ),
+                trim(
+                    (string) $this->request->getPost(
+                        'unidad'
+                    )
+                ),
 
         ];
 
@@ -2166,13 +2147,13 @@ class Reportes_Controller extends BaseController
         try {
 
             /*
-         * Los filtros se entregan a DashboardExcelService.
-         *
-         * DashboardExcelService los pasa posteriormente a
-         * DashboardService, por lo que el Excel debe utilizar
-         * exactamente la misma consulta filtrada que el
-         * Dashboard mostrado en pantalla.
-         */
+            * Los filtros se entregan a DashboardExcelService.
+            *
+            * DashboardExcelService los pasa a DashboardService.
+            *
+            * De esta manera el Excel utiliza los mismos filtros
+            * que actualmente están aplicados en el Dashboard.
+            */
 
             $servicio =
                 new DashboardExcelService(
@@ -2184,6 +2165,21 @@ class Reportes_Controller extends BaseController
                 $servicio->generar(
                     $secciones
                 );
+
+
+            /* =====================================================
+            VALIDAR ARCHIVO
+            ===================================================== */
+
+            if (
+                !$ruta
+                || !is_file($ruta)
+            ) {
+
+                throw new \RuntimeException(
+                    'El archivo de Excel no fue generado correctamente.'
+                );
+            }
 
 
             /* =====================================================
@@ -2200,33 +2196,33 @@ class Reportes_Controller extends BaseController
                         $ruta
                     )
                 );
+
+
         } catch (\Throwable $e) {
 
-            log_message(
-                'error',
-                'Error exportando Dashboard: {mensaje}',
-                [
-                    'mensaje' =>
-                    $e->getMessage(),
-                ]
-            );
-        } catch (\Throwable $e) {
+            /* =====================================================
+            LOG
+            ===================================================== */
 
             log_message(
                 'error',
                 'Error exportando Dashboard: {mensaje} en {archivo}:{linea}',
                 [
                     'mensaje' =>
-                    $e->getMessage(),
+                        $e->getMessage(),
 
                     'archivo' =>
-                    $e->getFile(),
+                        $e->getFile(),
 
                     'linea' =>
-                    $e->getLine(),
+                        $e->getLine(),
                 ]
             );
 
+
+            /* =====================================================
+            RESPUESTA
+            ===================================================== */
 
             return $this->response
                 ->setStatusCode(500)
@@ -2234,7 +2230,7 @@ class Reportes_Controller extends BaseController
                     'success' => false,
 
                     'message' =>
-                    'No fue posible generar el archivo de Excel.',
+                        'No fue posible generar el archivo de Excel.',
                 ]);
         }
     }

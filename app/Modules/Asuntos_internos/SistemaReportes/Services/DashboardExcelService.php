@@ -21,13 +21,12 @@ class DashboardExcelService
      * Secciones actualmente disponibles para exportación.
      */
     private const SECCIONES_PERMITIDAS = [
-        'indicadores',
-        'sectores_turnos',
-        'areas',
-        'zonas',
-        'turnos',
-        'sanciones',
-        'recientes',
+    'indicadores',
+    'sectores_turnos',
+    'areas',
+    'sectores',
+    'turnos',
+    'sanciones',
     ];
 
 
@@ -140,14 +139,14 @@ class DashboardExcelService
 
                     $this->crearAreas(
                         $spreadsheet
-                    );
+                    );  
 
                     break;
 
 
-                case 'zonas':
+                case 'sectores':
 
-                    $this->crearZonas(
+                    $this->crearSectores(
                         $spreadsheet
                     );
 
@@ -165,14 +164,6 @@ class DashboardExcelService
                 case 'sanciones':
 
                     $this->crearSanciones(
-                        $spreadsheet
-                    );
-
-                    break;
-
-                case 'recientes':
-
-                    $this->crearRecientes(
                         $spreadsheet
                     );
 
@@ -650,72 +641,89 @@ class DashboardExcelService
 
 
     /* =========================================================
-    QUEJAS POR ZONA
+    QUEJAS POR SECTOR
     ========================================================= */
 
-    private function crearZonas(
+    private function crearSectores(
         Spreadsheet $spreadsheet
     ): void {
 
         /*
-     * Utilizamos exactamente la misma información
-     * que alimenta la gráfica "Quejas por zona"
-     * del Dashboard.
-     *
-     * DashboardService se encarga de:
-     *
-     * - aplicar los filtros activos;
-     * - obtener el sector histórico desde
-     *   ai_reporte_personal.area_snapshot;
-     * - convertir el sector a su zona institucional;
-     * - contar reportes / quejas y no personas;
-     * - evitar duplicados dentro de una misma zona.
-     */
+        * Reutilizamos la misma información institucional
+        * utilizada por "Sectores y turnos".
+        *
+        * DashboardService se encarga de:
+        *
+        * - aplicar los filtros activos;
+        * - obtener el sector desde area_snapshot;
+        * - clasificar los turnos;
+        * - evitar duplicados por reporte + sector + turno.
+        */
 
         $datosDashboard =
             $this->dashboardService
-            ->obtenerQuejasPorZona();
+            ->obtenerSectoresTurnos();
 
 
-        $zonas =
-            $datosDashboard['zonas']
+        $sectores =
+            $datosDashboard['sectores']
             ?? [];
 
 
-        $totales =
-            $datosDashboard['totales']
+        $turnos =
+            $datosDashboard['turnos']
             ?? [];
 
-
-        /* =====================================================
-        PREPARAR DATOS
-        ===================================================== */
 
         $datos = [
 
             [
-                'Zona',
+                'Sector',
                 'Quejas',
             ],
 
         ];
 
 
+        $totalGeneral =
+            0;
+
+
         foreach (
-            $zonas
-            as $indice => $zona
+            $sectores
+            as $indiceSector => $sector
         ) {
+
+            $totalSector =
+                0;
+
+
+            foreach (
+                $turnos
+                as $cantidadesTurno
+            ) {
+
+                $totalSector +=
+                    (int) (
+                        $cantidadesTurno[$indiceSector]
+                        ?? 0
+                    );
+
+            }
+
 
             $datos[] = [
 
-                $zona,
+                $sector,
 
-                (int) (
-                    $totales[$indice]
-                    ?? 0
-                ),
+                $totalSector,
 
             ];
+
+
+            $totalGeneral +=
+                $totalSector;
+
         }
 
 
@@ -727,10 +735,7 @@ class DashboardExcelService
 
             'TOTAL',
 
-            (int) (
-                $datosDashboard['total']
-                ?? 0
-            ),
+            $totalGeneral,
 
         ];
 
@@ -745,7 +750,7 @@ class DashboardExcelService
 
 
         $hoja->setTitle(
-            'Quejas por zona'
+            'Quejas por sector'
         );
 
 
