@@ -73,13 +73,17 @@ Dashboard | Asuntos Internos
 
                 <div class="dashboard-layout__fila dashboard-layout__fila--zonas">
 
-                    <div class="dashboard-layout__zona">
+                     <?php
+    /*
+    <div class="dashboard-layout__zona">
 
-                        <?= $this->include(
-                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\zonas'
-                        ) ?>
+        <?= $this->include(
+            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\zonas'
+        ) ?>
 
-                    </div>
+    </div>
+    */
+    ?>
 
 
                     <div class="dashboard-layout__sanciones">
@@ -109,13 +113,17 @@ Dashboard | Asuntos Internos
                     </div>
 
 
-                    <div class="dashboard-layout__catalogo">
+                    <?php
+    /*
+    <div class="dashboard-layout__catalogo">
 
-                        <?= $this->include(
-                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\catalogo'
-                        ) ?>
+        <?= $this->include(
+            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\catalogo'
+        ) ?>
 
-                    </div>
+    </div>
+    */
+    ?>
 
                 </div>
 
