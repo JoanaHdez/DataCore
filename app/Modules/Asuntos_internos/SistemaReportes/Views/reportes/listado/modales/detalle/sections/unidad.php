@@ -17,19 +17,23 @@
          CONTENEDOR
     ====================================================== -->
 
-    <div
-        class="detalle-unidades"
-        id="detalle-unidades"
-    >
+    <div class="detalle-unidades" id="detalle-unidades">
+
+
+        <!-- =================================================
+             SIN UNIDAD / OFICINA
+        ================================================== -->
+
+        <div class="detalle-unidades__vacio" id="detalle-unidades-sin-unidad" hidden>
+            Sin unidad / Oficina
+        </div>
+
 
         <!-- =================================================
              ESTADO VACÍO
         ================================================== -->
 
-        <div
-            class="detalle-unidades__vacio"
-            id="detalle-unidades-vacio"
-        >
+        <div class="detalle-unidades__vacio" id="detalle-unidades-vacio">
             No hay unidades relacionadas con este reporte.
         </div>
 
@@ -38,11 +42,7 @@
              TABLA
         ================================================== -->
 
-        <div
-            class="detalle-unidades__tabla-wrapper"
-            id="detalle-unidades-tabla-wrapper"
-            hidden
-        >
+        <div class="detalle-unidades__tabla-wrapper" id="detalle-unidades-tabla-wrapper" hidden>
 
             <table class="detalle-unidades__tabla">
 
@@ -55,7 +55,6 @@
                         <th>Estatus</th>
                         <th>Servicio</th>
                         <th>Tipo</th>
-                        <th>Origen</th>
                     </tr>
 
                 </thead>

@@ -249,11 +249,11 @@ async function consultarDetalleReporte(
             baseUrl
         ); */
 
-const url =
-    new URL(
-        `DataCore/public/asuntos-internos/reportes/detalle/${idReporte}`,
-        `${window.location.origin}/`
-    );
+    const url =
+        new URL(
+            `DataCore/public/asuntos-internos/reportes/detalle/${idReporte}`,
+            `${window.location.origin}/`
+        );
 
     const respuesta =
         await fetch(
@@ -602,9 +602,9 @@ function cargarDetalleReporte(
 
     renderizarUnidadesDetalle(
         modal,
-        unidades
+        unidades,
+        reporte.modalidad_unidad
     );
-
 
     /* =====================================================
        QUEJOSO
@@ -1047,12 +1047,19 @@ function renderizarPersonalDetalle(
 
 function renderizarUnidadesDetalle(
     modal,
-    unidades
+    unidades,
+    modalidadUnidad = 'CON_UNIDAD'
 ) {
 
     const vacio =
         modal.querySelector(
             '#detalle-unidades-vacio'
+        );
+
+
+    const sinUnidad =
+        modal.querySelector(
+            '#detalle-unidades-sin-unidad'
         );
 
 
@@ -1070,6 +1077,7 @@ function renderizarUnidadesDetalle(
 
     if (
         !vacio
+        || !sinUnidad
         || !wrapper
         || !body
     ) {
@@ -1079,6 +1087,45 @@ function renderizarUnidadesDetalle(
 
     body.innerHTML =
         '';
+
+
+    const modalidad =
+        String(
+            modalidadUnidad
+            || 'CON_UNIDAD'
+        )
+            .trim()
+            .toUpperCase();
+
+
+    /* =====================================================
+       SIN UNIDAD / OFICINA
+    ===================================================== */
+
+    if (
+        modalidad ===
+        'SIN_UNIDAD_OFICINA'
+    ) {
+
+        sinUnidad.hidden =
+            false;
+
+        vacio.hidden =
+            true;
+
+        wrapper.hidden =
+            true;
+
+        return;
+    }
+
+
+    /* =====================================================
+       CON UNIDAD
+    ===================================================== */
+
+    sinUnidad.hidden =
+        true;
 
 
     if (
@@ -1153,12 +1200,6 @@ function renderizarUnidadesDetalle(
                 );
 
 
-            const origen =
-                mayusculas(
-                    unidad.origen
-                );
-
-
             const marcaSubmarca =
                 [
                     marca,
@@ -1174,53 +1215,47 @@ function renderizarUnidadesDetalle(
 
                     <strong>
                         ${escaparHtmlDetalle(
-                noEconomico || '—'
-            )}
+                            noEconomico || '—'
+                        )}
                     </strong>
 
                     <small class="detalle-unidades__placas">
                         Placas:
                         ${escaparHtmlDetalle(
-                placas || '—'
-            )}
+                            placas || '—'
+                        )}
                     </small>
 
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                marcaSubmarca || '—'
-            )}
+                        marcaSubmarca || '—'
+                    )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                color || '—'
-            )}
+                        color || '—'
+                    )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                estatus || '—'
-            )}
+                        estatus || '—'
+                    )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                servicio || '—'
-            )}
+                        servicio || '—'
+                    )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                tipo || '—'
-            )}
-                </td>
-
-                <td>
-                    ${escaparHtmlDetalle(
-                origen || '—'
-            )}
+                        tipo || '—'
+                    )}
                 </td>
             `;
 
@@ -1236,12 +1271,10 @@ function renderizarUnidadesDetalle(
     vacio.hidden =
         true;
 
-
     wrapper.hidden =
         false;
 
 }
-
 
 /* =========================================================
    EVIDENCIAS
@@ -1280,12 +1313,12 @@ function renderizarEvidenciasDetalle(
     }
 
 
-  /*   const baseUrl =
-        document
-            .querySelector('base')
-            ?.href
-        || `${window.location.origin}/`;
- */
+    /*   const baseUrl =
+          document
+              .querySelector('base')
+              ?.href
+          || `${window.location.origin}/`;
+   */
 
     evidencias.forEach(
         (evidencia, indice) => {
@@ -1327,11 +1360,11 @@ function renderizarEvidenciasDetalle(
                     baseUrl
                 ).toString(); */
 
-                const urlImagen =
-    new URL(
-        `DataCore/public/asuntos-internos/reportes/evidencia/${idEvidencia}`,
-        `${window.location.origin}/`
-    ).toString();
+            const urlImagen =
+                new URL(
+                    `DataCore/public/asuntos-internos/reportes/evidencia/${idEvidencia}`,
+                    `${window.location.origin}/`
+                ).toString();
 
 
             const item =
@@ -1656,20 +1689,20 @@ function limpiarDetalleReporte(
             }
         );
 
-        const avisoSancion =
-            modal.querySelector(
-                '#detalle-sancion-origen'
-            );
+    const avisoSancion =
+        modal.querySelector(
+            '#detalle-sancion-origen'
+        );
 
 
-        if (avisoSancion) {
+    if (avisoSancion) {
 
-            avisoSancion.hidden =
-                true;
+        avisoSancion.hidden =
+            true;
 
-            avisoSancion.textContent =
-                '';
-        }
+        avisoSancion.textContent =
+            '';
+    }
 
     const titulo =
         modal.querySelector(
@@ -1707,7 +1740,8 @@ function limpiarDetalleReporte(
 
     renderizarUnidadesDetalle(
         modal,
-        []
+        [],
+        'CON_UNIDAD'
     );
 
 

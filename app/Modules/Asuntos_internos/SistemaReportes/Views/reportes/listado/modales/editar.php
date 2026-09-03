@@ -1,23 +1,15 @@
-<div
-    class="modal-reporte"
-    id="modal-editar-reporte"
-    aria-hidden="true">
+<div class="modal-reporte" id="modal-editar-reporte" aria-hidden="true">
 
     <!-- =====================================================
          OVERLAY
     ====================================================== -->
-    <div
-        class="modal-reporte__overlay"
-        data-cerrar-modal-editar></div>
+    <div class="modal-reporte__overlay" data-cerrar-modal-editar></div>
 
 
     <!-- =====================================================
          MODAL
     ====================================================== -->
-    <div
-        class="modal-reporte__dialog modal-reporte__dialog--editar"
-        role="dialog"
-        aria-modal="true"
+    <div class="modal-reporte__dialog modal-reporte__dialog--editar" role="dialog" aria-modal="true"
         aria-labelledby="modal-editar-titulo">
 
         <!-- =================================================
@@ -31,9 +23,7 @@
                     Modificación del registro
                 </span>
 
-                <h2
-                    class="modal-reporte__title"
-                    id="modal-editar-titulo">
+                <h2 class="modal-reporte__title" id="modal-editar-titulo">
                     Editar reporte
                 </h2>
 
@@ -59,11 +49,7 @@
             </div>
 
 
-            <button
-                type="button"
-                class="modal-reporte__close"
-                data-cerrar-modal-editar
-                aria-label="Cerrar">
+            <button type="button" class="modal-reporte__close" data-cerrar-modal-editar aria-label="Cerrar">
                 ×
             </button>
 
@@ -75,38 +61,24 @@
         ================================================== -->
         <nav class="detalle-reporte-nav">
 
-            <button
-                type="button"
-                class="detalle-reporte-nav__item detalle-reporte-nav__item--active"
+            <button type="button" class="detalle-reporte-nav__item detalle-reporte-nav__item--active"
                 data-editar-seccion="datos">
                 Datos del reporte
             </button>
 
-            <button
-                type="button"
-                class="detalle-reporte-nav__item"
-                data-editar-seccion="hechos">
+            <button type="button" class="detalle-reporte-nav__item" data-editar-seccion="hechos">
                 Datos de los hechos
             </button>
 
-            <button
-                type="button"
-                class="detalle-reporte-nav__item"
-                data-editar-seccion="personal">
+            <button type="button" class="detalle-reporte-nav__item" data-editar-seccion="personal">
                 Personal y unidades
             </button>
 
-            <button
-                type="button"
-                class="detalle-reporte-nav__item"
-                data-editar-seccion="quejoso">
+            <button type="button" class="detalle-reporte-nav__item" data-editar-seccion="quejoso">
                 Datos del quejoso
             </button>
 
-            <button
-                type="button"
-                class="detalle-reporte-nav__item"
-                data-editar-seccion="clasificacion">
+            <button type="button" class="detalle-reporte-nav__item" data-editar-seccion="clasificacion">
                 Clasificación y seguimiento
             </button>
 
@@ -116,14 +88,11 @@
         <!-- =================================================
              FORMULARIO
         ================================================== -->
-        <form
-            class="modal-reporte__form modal-reporte__form--editar"
-            id="form-editar-reporte"
-            enctype="multipart/form-data"
-            novalidate>
+        <form class="modal-reporte__form modal-reporte__form--editar" id="form-editar-reporte"
+            enctype="multipart/form-data" novalidate>
 
             <?= csrf_field() ?>
-            
+
             <div class="modal-reporte__body modal-reporte__body--editar">
 
 
@@ -131,9 +100,7 @@
                      PASO 1
                      DATOS DEL REPORTE
                 ========================================== -->
-                <section
-                    class="detalle-reporte-seccion detalle-reporte-seccion--active"
-                    data-editar-panel="datos">
+                <section class="detalle-reporte-seccion detalle-reporte-seccion--active" data-editar-panel="datos">
 
                     <?= $this->include(
                         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\datos_registro'
@@ -150,9 +117,7 @@
      PASO 2
      DATOS DE LOS HECHOS
 ========================================== -->
-                <section
-                    class="detalle-reporte-seccion"
-                    data-editar-panel="hechos">
+                <section class="detalle-reporte-seccion" data-editar-panel="hechos">
 
                     <?= $this->include(
                         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\datos_hechos'
@@ -169,9 +134,7 @@
                      PASO 3
                      PERSONAL Y UNIDADES
                 ========================================== -->
-                <section
-                    class="detalle-reporte-seccion"
-                    data-editar-panel="personal">
+                <section class="detalle-reporte-seccion" data-editar-panel="personal">
 
                     <?= $this->include(
                         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\personal'
@@ -189,9 +152,7 @@
                      DATOS DEL QUEJOSO
                 ========================================== -->
 
-                <section
-                    class="detalle-reporte-seccion"
-                    data-editar-panel="quejoso">
+                <section class="detalle-reporte-seccion" data-editar-panel="quejoso">
 
                     <?= $this->include(
                         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\datos_quejoso'
@@ -204,9 +165,7 @@
                      PASO 5
                      CLASIFICACIÓN Y SEGUIMIENTO
                 ========================================== -->
-                <section
-                    class="detalle-reporte-seccion"
-                    data-editar-panel="clasificacion">
+                <section class="detalle-reporte-seccion" data-editar-panel="clasificacion">
 
                     <?= $this->include(
                         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\clasificacion'
@@ -229,16 +188,12 @@
             ================================================== -->
             <div class="modal-reporte__footer">
 
-                <button
-                    type="button"
-                    class="modal-reporte__button modal-reporte__button--secondary"
+                <button type="button" class="modal-reporte__button modal-reporte__button--secondary"
                     data-cerrar-modal-editar>
                     Cancelar
                 </button>
 
-                <button
-                    type="submit"
-                    class="modal-reporte__button modal-reporte__button--primary">
+                <button type="submit" class="modal-reporte__button modal-reporte__button--primary">
                     Guardar cambios
                 </button>
 

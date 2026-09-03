@@ -272,32 +272,32 @@ class Reportes_Controller extends BaseController
 
         $registrosSectores =
             $dbPlantilla
-                ->table('plantilla')
-                ->select('AREA')
-                ->where(
-                    'ESTADO',
-                    'ACTIVO'
-                )
-                ->where(
-                    'AREA IS NOT NULL',
-                    null,
-                    false
-                )
-                ->where(
-                    "TRIM(AREA) != ''",
-                    null,
-                    false
-                )
-                ->like(
-                    'AREA',
-                    'SECTOR',
-                    'after'
-                )
-                ->groupBy(
-                    'AREA'
-                )
-                ->get()
-                ->getResultArray();
+            ->table('plantilla')
+            ->select('AREA')
+            ->where(
+                'ESTADO',
+                'ACTIVO'
+            )
+            ->where(
+                'AREA IS NOT NULL',
+                null,
+                false
+            )
+            ->where(
+                "TRIM(AREA) != ''",
+                null,
+                false
+            )
+            ->like(
+                'AREA',
+                'SECTOR',
+                'after'
+            )
+            ->groupBy(
+                'AREA'
+            )
+            ->get()
+            ->getResultArray();
 
 
         $sectoresEncontrados =
@@ -322,7 +322,7 @@ class Reportes_Controller extends BaseController
                             'UTF-8'
                         )
                     )
-                    ?? ''
+                        ?? ''
                 );
 
 
@@ -359,9 +359,7 @@ class Reportes_Controller extends BaseController
                 );
 
 
-            $sectoresEncontrados[
-                $numeroSector
-            ] =
+            $sectoresEncontrados[$numeroSector] =
                 $sector;
         }
 
@@ -392,10 +390,10 @@ class Reportes_Controller extends BaseController
             'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\index',
             [
                 'reportes' =>
-                    $reportes,
+                $reportes,
 
                 'sectores' =>
-                    $sectores,
+                $sectores,
             ]
         );
     }
@@ -915,6 +913,7 @@ class Reportes_Controller extends BaseController
                     'motivos',
                     'estado_actual',
                     'observaciones',
+                    'modalidad_unidad',
 
                     'created_at',
                     'updated_at',
@@ -1092,14 +1091,7 @@ class Reportes_Controller extends BaseController
                     'u.estatus_snapshot',
                     'u.servicio_snapshot',
                     'u.tipo_snapshot',
-                    'u.id_origen',
-                    'o.clave AS origen',
                 ])
-                ->join(
-                    'ai_cat_origen_unidad o',
-                    'o.id_origen = u.id_origen',
-                    'left'
-                )
                 ->where(
                     'u.id_reporte',
                     $idReporte
@@ -1157,11 +1149,6 @@ class Reportes_Controller extends BaseController
                     'tipo' =>
                     $unidad['tipo_snapshot']
                         ?? '',
-
-                    'origen' =>
-                    $unidad['origen']
-                        ?? '',
-
                 ];
             }
 
@@ -1497,45 +1484,45 @@ class Reportes_Controller extends BaseController
                 FECHA DE REGISTRO
                 ================================================= */
 
-                            'fecha_registro_inicio' =>
-                            trim(
-                                (string) $this->request->getGet(
-                                    'fecha_registro_inicio'
-                                )
-                            ),
+                'fecha_registro_inicio' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'fecha_registro_inicio'
+                    )
+                ),
 
-                            'fecha_registro_fin' =>
-                            trim(
-                                (string) $this->request->getGet(
-                                    'fecha_registro_fin'
-                                )
-                            ),
+                'fecha_registro_fin' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'fecha_registro_fin'
+                    )
+                ),
 
 
                 /* =================================================
                 FECHA DE LA QUEJA
                 ================================================= */
 
-                            'fecha_queja_inicio' =>
-                            trim(
-                                (string) $this->request->getGet(
-                                    'fecha_queja_inicio'
-                                )
-                            ),
+                'fecha_queja_inicio' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'fecha_queja_inicio'
+                    )
+                ),
 
-                            'fecha_queja_fin' =>
-                            trim(
-                                (string) $this->request->getGet(
-                                    'fecha_queja_fin'
-                                )
-                            ),
+                'fecha_queja_fin' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'fecha_queja_fin'
+                    )
+                ),
 
 
                 /* =================================================
                 REPORTE
                 ================================================= */
 
-                            /*
+                /*
                 * El frontend utiliza:
                 *
                 * estado_actual
@@ -1545,59 +1532,59 @@ class Reportes_Controller extends BaseController
                 * estado
                 */
 
-                            'estado' =>
-                            trim(
-                                (string) $this->request->getGet(
-                                    'estado_actual'
-                                )
-                            ),
+                'estado' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'estado_actual'
+                    )
+                ),
 
-                            'seguimiento' =>
-                            trim(
-                                (string) $this->request->getGet(
-                                    'seguimiento'
-                                )
-                            ),
+                'seguimiento' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'seguimiento'
+                    )
+                ),
 
 
                 /* =================================================
                 PERSONAL INVOLUCRADO
                 ================================================= */
 
-                            'area_personal' =>
-                            trim(
-                                (string) $this->request->getGet(
-                                    'area_personal'
-                                )
-                            ),
+                'area_personal' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'area_personal'
+                    )
+                ),
 
-                            'turno' =>
-                            trim(
-                                (string) $this->request->getGet(
-                                    'turno'
-                                )
-                            ),
+                'turno' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'turno'
+                    )
+                ),
 
-                            'sector' =>
-                            trim(
-                                (string) $this->request->getGet(
-                                    'sector'
-                                )
-                            ),
+                'sector' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'sector'
+                    )
+                ),
 
 
                 /* =================================================
                 UNIDAD
                 ================================================= */
 
-                            'unidad' =>
-                            trim(
-                                (string) $this->request->getGet(
-                                    'unidad'
-                                )
-                            ),
+                'unidad' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'unidad'
+                    )
+                ),
 
-                        ];
+            ];
 
 
             /* =====================================================
@@ -2148,7 +2135,7 @@ class Reportes_Controller extends BaseController
                     'success' => false,
 
                     'message' =>
-                        'Selecciona al menos una sección para exportar.',
+                    'Selecciona al menos una sección para exportar.',
                 ]);
         }
 
@@ -2169,18 +2156,18 @@ class Reportes_Controller extends BaseController
             ===================================================== */
 
             'fecha_registro_inicio' =>
-                trim(
-                    (string) $this->request->getPost(
-                        'fecha_registro_inicio'
-                    )
-                ),
+            trim(
+                (string) $this->request->getPost(
+                    'fecha_registro_inicio'
+                )
+            ),
 
             'fecha_registro_fin' =>
-                trim(
-                    (string) $this->request->getPost(
-                        'fecha_registro_fin'
-                    )
-                ),
+            trim(
+                (string) $this->request->getPost(
+                    'fecha_registro_fin'
+                )
+            ),
 
 
             /* =====================================================
@@ -2188,18 +2175,18 @@ class Reportes_Controller extends BaseController
             ===================================================== */
 
             'fecha_queja_inicio' =>
-                trim(
-                    (string) $this->request->getPost(
-                        'fecha_queja_inicio'
-                    )
-                ),
+            trim(
+                (string) $this->request->getPost(
+                    'fecha_queja_inicio'
+                )
+            ),
 
             'fecha_queja_fin' =>
-                trim(
-                    (string) $this->request->getPost(
-                        'fecha_queja_fin'
-                    )
-                ),
+            trim(
+                (string) $this->request->getPost(
+                    'fecha_queja_fin'
+                )
+            ),
 
 
             /* =====================================================
@@ -2217,18 +2204,18 @@ class Reportes_Controller extends BaseController
             */
 
             'estado' =>
-                trim(
-                    (string) $this->request->getPost(
-                        'estado_actual'
-                    )
-                ),
+            trim(
+                (string) $this->request->getPost(
+                    'estado_actual'
+                )
+            ),
 
             'seguimiento' =>
-                trim(
-                    (string) $this->request->getPost(
-                        'seguimiento'
-                    )
-                ),
+            trim(
+                (string) $this->request->getPost(
+                    'seguimiento'
+                )
+            ),
 
 
             /* =====================================================
@@ -2236,25 +2223,25 @@ class Reportes_Controller extends BaseController
             ===================================================== */
 
             'area_personal' =>
-                trim(
-                    (string) $this->request->getPost(
-                        'area_personal'
-                    )
-                ),
+            trim(
+                (string) $this->request->getPost(
+                    'area_personal'
+                )
+            ),
 
             'turno' =>
-                trim(
-                    (string) $this->request->getPost(
-                        'turno'
-                    )
-                ),
+            trim(
+                (string) $this->request->getPost(
+                    'turno'
+                )
+            ),
 
             'sector' =>
-                trim(
-                    (string) $this->request->getPost(
-                        'sector'
-                    )
-                ),
+            trim(
+                (string) $this->request->getPost(
+                    'sector'
+                )
+            ),
 
 
             /* =====================================================
@@ -2262,11 +2249,11 @@ class Reportes_Controller extends BaseController
             ===================================================== */
 
             'unidad' =>
-                trim(
-                    (string) $this->request->getPost(
-                        'unidad'
-                    )
-                ),
+            trim(
+                (string) $this->request->getPost(
+                    'unidad'
+                )
+            ),
 
         ];
 
@@ -2327,8 +2314,6 @@ class Reportes_Controller extends BaseController
                         $ruta
                     )
                 );
-
-
         } catch (\Throwable $e) {
 
             /* =====================================================
@@ -2340,13 +2325,13 @@ class Reportes_Controller extends BaseController
                 'Error exportando Dashboard: {mensaje} en {archivo}:{linea}',
                 [
                     'mensaje' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
 
                     'archivo' =>
-                        $e->getFile(),
+                    $e->getFile(),
 
                     'linea' =>
-                        $e->getLine(),
+                    $e->getLine(),
                 ]
             );
 
@@ -2361,7 +2346,7 @@ class Reportes_Controller extends BaseController
                     'success' => false,
 
                     'message' =>
-                        'No fue posible generar el archivo de Excel.',
+                    'No fue posible generar el archivo de Excel.',
                 ]);
         }
     }
