@@ -121,7 +121,8 @@ class ReporteService
 
             $this->guardarUnidades(
                 $idReporte,
-                $unidades
+                $unidades,
+                $datosReporte['modalidad_unidad']
             );
 
 
@@ -358,9 +359,9 @@ class ReporteService
 
             $this->guardarUnidades(
                 $idReporte,
-                $unidades
+                $unidades,
+                $datosReporte['modalidad_unidad']
             );
-
 
             /* =================================================
             SANCIÓN DISCIPLINARIA
@@ -837,6 +838,17 @@ class ReporteService
             $this->valorNullable(
                 $datos['observaciones']
                     ?? null
+            ),
+
+
+            /* =================================================
+            MODALIDAD DE UNIDAD
+            ================================================= */
+
+            'modalidad_unidad' =>
+            $this->normalizarModalidadUnidad(
+                $datos['modalidad_unidad']
+                    ?? 'CON_UNIDAD'
             ),
 
 
@@ -1548,13 +1560,53 @@ class ReporteService
 
 
     /* =========================================================
-       UNIDADES
+    UNIDADES
     ========================================================= */
 
     protected function guardarUnidades(
         int $idReporte,
-        array $unidades
+        array $unidades,
+        string $modalidadUnidad
     ): void {
+
+        /* =====================================================
+        SIN UNIDAD / OFICINA
+        ===================================================== */
+
+        if (
+            $modalidadUnidad ===
+            'SIN_UNIDAD_OFICINA'
+        ) {
+
+            /*
+            * El usuario indicó expresamente que el personal
+            * involucrado no cuenta con una unidad vehicular.
+            *
+            * Por lo tanto:
+            *
+            * - no exigimos unidades;
+            * - no insertamos unidades ficticias;
+            * - no utilizamos parque_vehicular_id = 0.
+            */
+
+            return;
+        }
+
+
+        /* =====================================================
+        CON UNIDAD
+        ===================================================== */
+
+        if (
+            $modalidadUnidad !==
+            'CON_UNIDAD'
+        ) {
+
+            throw new \InvalidArgumentException(
+                'La modalidad de unidad seleccionada no es válida.'
+            );
+        }
+
 
         if (
             empty($unidades)
@@ -1613,13 +1665,6 @@ class ReporteService
             ) {
                 continue;
             }
-
-
-            $idOrigen =
-                $this->resolverOrigenUnidad(
-                    $unidad['origen']
-                        ?? null
-                );
 
 
             $insertado =
@@ -1689,10 +1734,6 @@ class ReporteService
                             ?? null
                     ),
 
-
-                    'id_origen' =>
-                    $idOrigen,
-
                 ]);
 
 
@@ -1709,66 +1750,6 @@ class ReporteService
             $idsRegistrados[] =
                 $parqueId;
         }
-    }
-
-
-    /* =========================================================
-       RESOLVER ORIGEN DE UNIDAD
-    ========================================================= */
-
-    protected function resolverOrigenUnidad(
-        mixed $origen
-    ): ?int {
-
-        $clave =
-            strtoupper(
-                trim(
-                    (string)
-                    $origen
-                )
-            );
-
-
-        if (
-            $clave === ''
-        ) {
-
-            return null;
-        }
-
-
-        $registro =
-            $this->db
-            ->table(
-                'ai_cat_origen_unidad'
-            )
-            ->select(
-                'id_origen'
-            )
-            ->where(
-                'clave',
-                $clave
-            )
-            ->where(
-                'activo',
-                1
-            )
-            ->get()
-            ->getRowArray();
-
-
-        if (
-            !$registro
-        ) {
-
-            throw new \InvalidArgumentException(
-                'El origen de una de las unidades no es válido.'
-            );
-        }
-
-
-        return (int)
-        $registro['id_origen'];
     }
 
 
@@ -2456,6 +2437,46 @@ class ReporteService
         };
     }
 
+
+    /* =========================================================
+    MODALIDAD DE UNIDAD
+    ========================================================= */
+
+    protected function normalizarModalidadUnidad(
+        mixed $valor
+    ): string {
+
+        $modalidad =
+            strtoupper(
+                trim(
+                    (string)
+                    ($valor ?? '')
+                )
+            );
+
+
+        $permitidas = [
+            'CON_UNIDAD',
+            'SIN_UNIDAD_OFICINA',
+        ];
+
+
+        if (
+            !in_array(
+                $modalidad,
+                $permitidas,
+                true
+            )
+        ) {
+
+            throw new \InvalidArgumentException(
+                'La modalidad de unidad seleccionada no es válida.'
+            );
+        }
+
+
+        return $modalidad;
+    }
 
     /* =========================================================
        ORIGEN DE UBICACIÓN

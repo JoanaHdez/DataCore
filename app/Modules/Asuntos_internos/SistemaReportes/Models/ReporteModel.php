@@ -60,6 +60,7 @@ class ReporteModel extends Model
         'motivos',
         'estado_actual',
         'observaciones',
+        'modalidad_unidad',
 
         'created_by',
         'updated_by',

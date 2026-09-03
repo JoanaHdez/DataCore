@@ -10,6 +10,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function inicializarUnidades() {
 
+    /* =====================================================
+       MODALIDAD
+    ===================================================== */
+
+    const modalidadConUnidad =
+        document.querySelector('#modalidad-con-unidad');
+
+    const modalidadSinUnidad =
+        document.querySelector('#modalidad-sin-unidad');
+
+    const contenedorConUnidad =
+        document.querySelector('#contenedor-unidades-con-unidad');
+
+    const contenedorSinUnidad =
+        document.querySelector('#unidad-sin-unidad');
+
+
+    /* =====================================================
+       BÚSQUEDA Y SELECCIÓN
+    ===================================================== */
+
     const inputBusqueda =
         document.querySelector('#unidad_busqueda');
 
@@ -46,9 +67,6 @@ function inicializarUnidades() {
     const inputTipo =
         document.querySelector('#unidad_tipo');
 
-    const selectOrigen =
-        document.querySelector('#unidad_origen');
-
     const btnAgregar =
         document.querySelector('#btn-agregar-unidad');
 
@@ -63,7 +81,11 @@ function inicializarUnidades() {
 
 
     if (
-        !inputBusqueda
+        !modalidadConUnidad
+        || !modalidadSinUnidad
+        || !contenedorConUnidad
+        || !contenedorSinUnidad
+        || !inputBusqueda
         || !contenedorResultados
         || !contenedorSeleccionada
         || !inputParqueId
@@ -75,7 +97,6 @@ function inicializarUnidades() {
         || !inputEstatus
         || !inputServicio
         || !inputTipo
-        || !selectOrigen
         || !btnAgregar
         || !contenedorAgregadas
         || !tablaBody
@@ -97,46 +118,148 @@ function inicializarUnidades() {
 
 
     /* =====================================================
-       BUSCAR
+       MODALIDAD DE UNIDAD
     ===================================================== */
 
-    inputBusqueda.addEventListener('input', () => {
+    modalidadConUnidad.addEventListener(
+        'change',
+        () => {
 
-        const termino =
-            inputBusqueda.value.trim();
+            if (!modalidadConUnidad.checked) {
+                return;
+            }
+
+            activarConUnidad();
+
+        }
+    );
 
 
-        unidadSeleccionada = null;
+    modalidadSinUnidad.addEventListener(
+        'change',
+        () => {
 
-        limpiarUnidadSeleccionada();
+            if (!modalidadSinUnidad.checked) {
+                return;
+            }
+
+            activarSinUnidad();
+
+        }
+    );
 
 
+    function activarConUnidad() {
+
+        contenedorConUnidad.hidden =
+            false;
+
+        contenedorSinUnidad.hidden =
+            true;
+    }
+
+
+    function activarSinUnidad() {
+
+        /* Cancelar búsqueda pendiente */
         if (temporizadorBusqueda) {
+
             clearTimeout(
                 temporizadorBusqueda
             );
+
+            temporizadorBusqueda =
+                null;
         }
 
 
-        if (termino.length < 1) {
+        /* Cancelar petición activa */
+        if (controladorBusqueda) {
 
-            ocultarResultados();
+            controladorBusqueda.abort();
 
-            return;
+            controladorBusqueda =
+                null;
         }
 
 
-        temporizadorBusqueda =
-            window.setTimeout(
-                () => {
-                    buscarUnidades(
-                        termino
-                    );
-                },
-                300
-            );
+        /* Limpiar selección */
+        limpiarSelector();
 
-    });
+
+        /* Eliminar unidades agregadas */
+        unidadesAgregadas.splice(
+            0,
+            unidadesAgregadas.length
+        );
+
+
+        renderizarUnidadesAgregadas();
+
+
+        /* Ocultar bloque de unidades */
+        contenedorConUnidad.hidden =
+            true;
+
+        contenedorSinUnidad.hidden =
+            false;
+    }
+
+
+    /* =====================================================
+       BUSCAR
+    ===================================================== */
+
+    inputBusqueda.addEventListener(
+        'input',
+        () => {
+
+            if (!modalidadConUnidad.checked) {
+                return;
+            }
+
+
+            const termino =
+                inputBusqueda.value.trim();
+
+
+            unidadSeleccionada =
+                null;
+
+
+            limpiarUnidadSeleccionada();
+
+
+            if (temporizadorBusqueda) {
+
+                clearTimeout(
+                    temporizadorBusqueda
+                );
+            }
+
+
+            if (termino.length < 1) {
+
+                ocultarResultados();
+
+                return;
+            }
+
+
+            temporizadorBusqueda =
+                window.setTimeout(
+                    () => {
+
+                        buscarUnidades(
+                            termino
+                        );
+
+                    },
+                    300
+                );
+
+        }
+    );
 
 
     /* =====================================================
@@ -147,7 +270,13 @@ function inicializarUnidades() {
         termino
     ) {
 
+        if (!modalidadConUnidad.checked) {
+            return;
+        }
+
+
         if (controladorBusqueda) {
+
             controladorBusqueda.abort();
         }
 
@@ -158,24 +287,11 @@ function inicializarUnidades() {
 
         try {
 
-            /* const baseUrl =
-                document
-                    .querySelector('base')
-                    ?.href
-                || `${window.location.origin}/`;
-
-
             const url =
                 new URL(
-                    'asuntos-internos/reportes/unidades/buscar',
-                    baseUrl
-                ); */
-
-                const url =
-    new URL(
-        'DataCore/public/asuntos-internos/reportes/unidades/buscar',
-        `${window.location.origin}/`
-    );
+                    'DataCore/public/asuntos-internos/reportes/unidades/buscar',
+                    `${window.location.origin}/`
+                );
 
 
             url.searchParams.set(
@@ -206,7 +322,6 @@ function inicializarUnidades() {
                 throw new Error(
                     'No fue posible consultar las unidades.'
                 );
-
             }
 
 
@@ -295,28 +410,28 @@ function inicializarUnidades() {
 
                         <strong>
                             ${escaparHtml(
-                                unidad.no_economico
-                                || 'SIN NÚMERO'
-                            )}
+                    unidad.no_economico
+                    || 'SIN NÚMERO'
+                )}
                         </strong>
 
                         <small>
                             Placas:
                             ${escaparHtml(
-                                unidad.placas
-                                || '—'
-                            )}
+                    unidad.placas
+                    || '—'
+                )}
                         </small>
 
                         <small>
                             ${escaparHtml(
-                                unidad.marca
-                                || '—'
-                            )}
+                    unidad.marca
+                    || '—'
+                )}
                             ${escaparHtml(
-                                unidad.submarca
-                                || ''
-                            )}
+                    unidad.submarca
+                    || ''
+                )}
                         </small>
 
                     </span>
@@ -386,10 +501,17 @@ function inicializarUnidades() {
         unidad
     ) {
 
+        if (!modalidadConUnidad.checked) {
+            return;
+        }
+
+
         unidadSeleccionada = {
 
             id:
-                Number(unidad.id) || 0,
+                Number(
+                    unidad.id
+                ) || 0,
 
             no_economico:
                 String(
@@ -471,8 +593,6 @@ function inicializarUnidades() {
                     .trim()
                     .toUpperCase(),
 
-            origen:
-                '',
         };
 
 
@@ -504,10 +624,6 @@ function inicializarUnidades() {
             unidadSeleccionada.tipo;
 
 
-        selectOrigen.value =
-            '';
-
-
         inputBusqueda.value =
             unidadSeleccionada.no_economico
             || unidadSeleccionada.placas;
@@ -530,27 +646,15 @@ function inicializarUnidades() {
         'click',
         () => {
 
-            if (
-                !unidadSeleccionada
-                || !unidadSeleccionada.id
-            ) {
+            if (!modalidadConUnidad.checked) {
                 return;
             }
 
 
-            const origen =
-                String(
-                    selectOrigen.value
-                    || ''
-                )
-                    .trim()
-                    .toUpperCase();
-
-
-            if (!origen) {
-
-                selectOrigen.focus();
-
+            if (
+                !unidadSeleccionada
+                || !unidadSeleccionada.id
+            ) {
                 return;
             }
 
@@ -570,13 +674,11 @@ function inicializarUnidades() {
                 );
 
                 return;
-
             }
 
 
             unidadesAgregadas.push({
                 ...unidadSeleccionada,
-                origen,
             });
 
 
@@ -616,65 +718,58 @@ function inicializarUnidades() {
 
                         <strong>
                             ${escaparHtml(
-                                unidad.no_economico
-                                || '—'
-                            )}
+                    unidad.no_economico
+                    || '—'
+                )}
                         </strong>
 
                         <small class="unidad-tabla__placas">
                             Placas:
                             ${escaparHtml(
-                                unidad.placas
-                                || '—'
-                            )}
+                    unidad.placas
+                    || '—'
+                )}
                         </small>
 
                     </td>
 
                     <td>
                         ${escaparHtml(
-                            unidad.marca
-                            || '—'
-                        )}
+                    unidad.marca
+                    || '—'
+                )}
                         ${escaparHtml(
-                            unidad.submarca
-                            || ''
-                        )}
+                    unidad.submarca
+                    || ''
+                )}
                     </td>
 
                     <td>
                         ${escaparHtml(
-                            unidad.color
-                            || '—'
-                        )}
+                    unidad.color
+                    || '—'
+                )}
                     </td>
 
                     <td>
                         ${escaparHtml(
-                            unidad.estatus
-                            || '—'
-                        )}
+                    unidad.estatus
+                    || '—'
+                )}
                     </td>
 
                     <td>
                         ${escaparHtml(
-                            unidad.servicio
-                            || '—'
-                        )}
+                    unidad.servicio
+                    || '—'
+                )}
                     </td>
 
                     <td>
                         ${escaparHtml(
-                            unidad.tipo
-                            || '—'
-                        )}
-                    </td>
-
-                    <td>
-                        ${escaparHtml(
-                            unidad.origen
-                            || '—'
-                        )}
+                    unidad.tipo
+                    || '—'
+                )}
                     </td>
 
                     <td>
@@ -747,7 +842,9 @@ function inicializarUnidades() {
 
 
             if (
-                !Number.isInteger(indice)
+                !Number.isInteger(
+                    indice
+                )
                 || !unidadesAgregadas[indice]
             ) {
                 return;
@@ -810,12 +907,12 @@ function inicializarUnidades() {
             serie:
                 unidad.serie,
 
-            origen:
-                unidad.origen,
         };
 
 
-        Object.entries(campos)
+        Object.entries(
+            campos
+        )
             .forEach(
                 ([campo, valor]) => {
 
@@ -898,9 +995,6 @@ function inicializarUnidades() {
         inputTipo.value =
             '';
 
-        selectOrigen.value =
-            '';
-
 
         contenedorSeleccionada.hidden =
             true;
@@ -917,7 +1011,8 @@ function inicializarUnidades() {
         (event) => {
 
             if (
-                event.target === inputBusqueda
+                event.target ===
+                inputBusqueda
                 || contenedorResultados.contains(
                     event.target
                 )
@@ -931,6 +1026,21 @@ function inicializarUnidades() {
         }
     );
 
+
+    /* =====================================================
+       ESTADO INICIAL
+    ===================================================== */
+
+    if (modalidadSinUnidad.checked) {
+
+        activarSinUnidad();
+
+    } else {
+
+        activarConUnidad();
+
+    }
+
 }
 
 
@@ -940,11 +1050,28 @@ function inicializarUnidades() {
 
 function escaparHtml(valor) {
 
-    return String(valor ?? '')
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
+    return String(
+        valor ?? ''
+    )
+        .replaceAll(
+            '&',
+            '&amp;'
+        )
+        .replaceAll(
+            '<',
+            '&lt;'
+        )
+        .replaceAll(
+            '>',
+            '&gt;'
+        )
+        .replaceAll(
+            '"',
+            '&quot;'
+        )
+        .replaceAll(
+            "'",
+            '&#039;'
+        );
 
 }

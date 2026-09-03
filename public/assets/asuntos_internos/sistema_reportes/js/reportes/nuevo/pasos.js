@@ -865,8 +865,87 @@ function validarRelacionesDelPaso(
 
 
     /* =====================================================
-       UNIDADES----------
+    MODALIDAD DE UNIDAD
     ===================================================== */
+
+    const modalidadUnidad =
+        formulario.querySelector(
+            'input[name="modalidad_unidad"]:checked'
+        );
+
+
+    if (
+        !modalidadUnidad
+    ) {
+
+        mostrarResultadoYRedirigir({
+
+            tipo:
+                'error',
+
+            titulo:
+                'Modalidad requerida',
+
+            mensaje:
+                'Selecciona si el personal cuenta con unidad o se encuentra en oficina.',
+
+            duracion:
+                3000,
+
+        });
+
+
+        return false;
+    }
+
+
+    /* =====================================================
+    SIN UNIDAD / OFICINA
+    ===================================================== */
+
+    if (
+        modalidadUnidad.value ===
+        'SIN_UNIDAD_OFICINA'
+    ) {
+
+        /*
+        * En esta modalidad no se requiere ninguna
+        * unidad vehicular relacionada.
+        */
+
+        return true;
+    }
+
+
+    /* =====================================================
+    CON UNIDAD
+    ===================================================== */
+
+    if (
+        modalidadUnidad.value !==
+        'CON_UNIDAD'
+    ) {
+
+        mostrarResultadoYRedirigir({
+
+            tipo:
+                'error',
+
+            titulo:
+                'Modalidad no válida',
+
+            mensaje:
+                'La modalidad de unidad seleccionada no es válida.',
+
+            duracion:
+                3000,
+
+        });
+
+
+        return false;
+    }
+
 
     const unidades =
         formulario.querySelectorAll(
@@ -874,10 +953,6 @@ function validarRelacionesDelPaso(
         );
 
 
-    /*
-     * De acuerdo con el diseño actual, la unidad
-     * también está marcada como requerida.
-     */
     if (
         unidades.length === 0
     ) {
