@@ -300,6 +300,34 @@ function inicializarGraficaCatalogo() {
        COLORES
     ===================================================== */
 
+    const paletaCatalogo = [
+        'rgba(28, 78, 121, 0.92)',   // Azul profundo
+        'rgba(44, 104, 165, 0.86)',  // Azul institucional
+        'rgba(72, 137, 190, 0.82)',  // Azul medio
+        'rgba(76, 101, 168, 0.78)',  // Índigo
+        'rgba(105, 91, 168, 0.74)',  // Violeta azulado
+        'rgba(62, 137, 151, 0.76)',  // Azul petróleo
+        'rgba(103, 157, 194, 0.72)', // Azul cielo
+        'rgba(125, 116, 181, 0.70)', // Lavanda
+        'rgba(92, 126, 163, 0.70)',  // Azul grisáceo
+        'rgba(139, 164, 190, 0.66)', // Azul suave
+    ];
+
+
+    const paletaCatalogoHover = [
+        '#174568',
+        '#245c94',
+        '#3b7faf',
+        '#405a99',
+        '#5b4f96',
+        '#347987',
+        '#568ead',
+        '#6d63a2',
+        '#536f8e',
+        '#7893ad',
+    ];
+
+
     const colores =
         datosOrdenados.map(
             (
@@ -307,35 +335,11 @@ function inicializarGraficaCatalogo() {
                 indice
             ) => {
 
-                if (indice === 0) {
-
-                    return (
-                        'rgba(12, 144, 99, 0.96)'
-                    );
-
-                }
-
-
-                if (indice === 1) {
-
-                    return (
-                        'rgba(45, 161, 122, 0.82)'
-                    );
-
-                }
-
-
-                if (indice === 2) {
-
-                    return (
-                        'rgba(73, 177, 140, 0.72)'
-                    );
-
-                }
-
-
                 return (
-                    'rgba(133, 198, 175, 0.54)'
+                    paletaCatalogo[
+                        indice
+                        % paletaCatalogo.length
+                    ]
                 );
 
             }
@@ -349,28 +353,12 @@ function inicializarGraficaCatalogo() {
                 indice
             ) => {
 
-                if (indice === 0) {
-
-                    return '#087d58';
-
-                }
-
-
-                if (indice === 1) {
-
-                    return '#1f906b';
-
-                }
-
-
-                if (indice === 2) {
-
-                    return '#3c9f7d';
-
-                }
-
-
-                return '#77bfa5';
+                return (
+                    paletaCatalogoHover[
+                        indice
+                        % paletaCatalogoHover.length
+                    ]
+                );
 
             }
         );

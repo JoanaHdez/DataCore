@@ -250,23 +250,23 @@ function inicializarGraficaTurnos() {
                             ),
 
                         backgroundColor: [
-                            'rgba(8, 139, 96, 0.96)',
-                            'rgba(33, 157, 116, 0.84)',
-                            'rgba(58, 174, 136, 0.74)',
-                            'rgba(91, 186, 153, 0.66)',
-                            'rgba(112, 195, 165, 0.62)',
-                            'rgba(138, 205, 180, 0.58)',
-                            'rgba(165, 216, 197, 0.56)',
+                            'rgba(47, 111, 164, 0.88)',   // Azul
+                            'rgba(53, 151, 151, 0.82)',   // Turquesa
+                            'rgba(116, 94, 164, 0.80)',   // Violeta
+                            'rgba(211, 158, 72, 0.82)',   // Ámbar
+                            'rgba(202, 105, 96, 0.78)',   // Coral
+                            'rgba(77, 137, 116, 0.78)',   // Verde salvia
+                            'rgba(132, 145, 160, 0.72)',  // Gris azulado
                         ],
 
                         hoverBackgroundColor: [
-                            '#067a55',
-                            '#168e68',
-                            '#319f7b',
-                            '#4eae8d',
-                            '#69b99b',
-                            '#84c4aa',
-                            '#9dcdb9',
+                            '#285f8c',
+                            '#2d8585',
+                            '#65518f',
+                            '#b98535',
+                            '#b75b54',
+                            '#3f7864',
+                            '#738190',
                         ],
 
                         borderWidth:

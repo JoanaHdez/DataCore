@@ -204,18 +204,18 @@ function inicializarGraficaZonas() {
                            COLORES
                         ========================================= */
 
-                        backgroundColor: [
-                            'rgba(61, 157, 128, 0.58)',
-                            'rgba(15, 151, 105, 0.95)',
-                            'rgba(70, 171, 140, 0.66)',
-                            'rgba(102, 187, 160, 0.56)',
+                        bbackgroundColor: [
+                            'rgba(55, 112, 165, 0.84)',   // Azul
+                            'rgba(52, 151, 151, 0.82)',   // Turquesa
+                            'rgba(211, 158, 72, 0.82)',   // Ámbar
+                            'rgba(202, 105, 96, 0.80)',   // Coral
                         ],
 
                         hoverBackgroundColor: [
-                            'rgba(61, 157, 128, 0.78)',
-                            '#07885e',
-                            'rgba(70, 171, 140, 0.84)',
-                            'rgba(102, 187, 160, 0.78)',
+                            '#2d6498',
+                            '#2c8585',
+                            '#b98535',
+                            '#b75b54',
                         ],
 
 

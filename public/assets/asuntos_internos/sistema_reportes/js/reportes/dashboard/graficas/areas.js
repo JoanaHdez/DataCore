@@ -167,119 +167,119 @@ const datos = {
 
     const datasets = [
 
-        {
-            label:
-                'Primer turno',
+    {
+        label:
+            'Primer turno',
 
-            data:
-                datos.primerTurno,
+        data:
+            datos.primerTurno,
 
-            backgroundColor:
-                'rgba(69, 171, 138, 0.80)',
+        backgroundColor:
+            'rgba(30, 88, 138, 0.88)',
 
-            hoverBackgroundColor:
-                '#129468',
+        hoverBackgroundColor:
+            '#174a78',
 
-            ...configuracionBarra,
-        },
+        ...configuracionBarra,
+    },
 
-        {
-            label:
-                'Segundo turno',
+    {
+        label:
+            'Segundo turno',
 
-            data:
-                datos.segundoTurno,
+        data:
+            datos.segundoTurno,
 
-            backgroundColor:
-                'rgba(91, 184, 154, 0.72)',
+        backgroundColor:
+            'rgba(48, 126, 184, 0.82)',
 
-            hoverBackgroundColor:
-                '#2b9f78',
+        hoverBackgroundColor:
+            '#2670aa',
 
-            ...configuracionBarra,
-        },
+        ...configuracionBarra,
+    },
 
-        {
-            label:
-                'Tercer turno',
+    {
+        label:
+            'Tercer turno',
 
-            data:
-                datos.tercerTurno,
+        data:
+            datos.tercerTurno,
 
-            backgroundColor:
-                'rgba(111, 193, 166, 0.66)',
+        backgroundColor:
+            'rgba(78, 157, 207, 0.78)',
 
-            hoverBackgroundColor:
-                '#46ab87',
+        hoverBackgroundColor:
+            '#3d8fc4',
 
-            ...configuracionBarra,
-        },
+        ...configuracionBarra,
+    },
 
-        {
-            label:
-                'Alfa',
+    {
+        label:
+            'Alfa',
 
-            data:
-                datos.alfa,
+        data:
+            datos.alfa,
 
-            backgroundColor:
-                'rgba(139, 204, 182, 0.64)',
+        backgroundColor:
+            'rgba(89, 112, 176, 0.78)',
 
-            hoverBackgroundColor:
-                '#64b796',
+        hoverBackgroundColor:
+            '#485f9f',
 
-            ...configuracionBarra,
-        },
+        ...configuracionBarra,
+    },
 
-        {
-            label:
-                'Beta',
+    {
+        label:
+            'Beta',
 
-            data:
-                datos.beta,
+        data:
+            datos.beta,
 
-            backgroundColor:
-                'rgba(89, 177, 151, 0.66)',
+        backgroundColor:
+            'rgba(111, 92, 168, 0.72)',
 
-            hoverBackgroundColor:
-                '#358f70',
+        hoverBackgroundColor:
+            '#625092',
 
-            ...configuracionBarra,
-        },
+        ...configuracionBarra,
+    },
 
-        {
-            label:
-                'Diario',
+    {
+        label:
+            'Diario',
 
-            data:
-                datos.diario,
+        data:
+            datos.diario,
 
-            backgroundColor:
-                'rgba(61, 155, 127, 0.68)',
+        backgroundColor:
+            'rgba(71, 146, 158, 0.74)',
 
-            hoverBackgroundColor:
-                '#257d61',
+        hoverBackgroundColor:
+            '#397f8b',
 
-            ...configuracionBarra,
-        },
+        ...configuracionBarra,
+    },
 
-        {
-            label:
-                'No refiere ni fecha ni horario',
+    {
+        label:
+            'No refiere ni fecha ni horario',
 
-            data:
-                datos.noRefiere,
+        data:
+            datos.noRefiere,
 
-            backgroundColor:
-                'rgba(181, 194, 188, 0.72)',
+        backgroundColor:
+            'rgba(145, 158, 172, 0.68)',
 
-            hoverBackgroundColor:
-                '#8b9d96',
+        hoverBackgroundColor:
+            '#788896',
 
-            ...configuracionBarra,
-        },
+        ...configuracionBarra,
+    },
 
-    ];
+];
 
 
     /* =====================================================

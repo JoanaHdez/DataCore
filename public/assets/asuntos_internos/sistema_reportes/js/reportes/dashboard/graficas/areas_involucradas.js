@@ -150,50 +150,41 @@ function inicializarGraficaAreasInvolucradas() {
     ===================================================== */
 
     const colores =
-        totalesMostrados.map(
-            (
-                total,
-                indice
-            ) => {
+    totalesMostrados.map(
+        (
+            total,
+            indice
+        ) => {
 
-                /*
-                 * Damos mayor protagonismo
-                 * a las primeras posiciones.
-                 */
-
-                if (indice === 0) {
-
-                    return (
-                        'rgba(7, 148, 104, 0.96)'
-                    );
-
-                }
-
-
-                if (indice === 1) {
-
-                    return (
-                        'rgba(41, 169, 128, 0.82)'
-                    );
-
-                }
-
-
-                if (indice === 2) {
-
-                    return (
-                        'rgba(78, 184, 148, 0.72)'
-                    );
-
-                }
-
+            if (indice === 0) {
 
                 return (
-                    'rgba(126, 199, 174, 0.58)'
+                    'rgba(23, 73, 122, 0.96)'
                 );
-
             }
-        );
+
+
+            if (indice === 1) {
+
+                return (
+                    'rgba(37, 99, 160, 0.84)'
+                );
+            }
+
+
+            if (indice === 2) {
+
+                return (
+                    'rgba(64, 132, 190, 0.74)'
+                );
+            }
+
+
+            return (
+                'rgba(116, 169, 211, 0.58)'
+            );
+        }
+    );
 
 
     const coloresHover =
@@ -204,25 +195,23 @@ function inicializarGraficaAreasInvolucradas() {
             ) => {
 
                 if (indice === 0) {
-                    return '#067c58';
+                    return '#123f6b';
                 }
 
 
                 if (indice === 1) {
-                    return '#15966a';
+                    return '#1d5d99';
                 }
 
 
                 if (indice === 2) {
-                    return '#32a97f';
+                    return '#347db8';
                 }
 
 
-                return '#69b99b';
-
+                return '#659ecb';
             }
         );
-
 
     /* =====================================================
        GRÁFICA

@@ -266,15 +266,15 @@ function inicializarGraficaSanciones() {
                             datosSanciones.valores,
 
                         backgroundColor: [
-                            'rgba(10, 142, 99, 0.94)',
-                            'rgba(111, 194, 165, 0.72)',
-                            'rgba(42, 92, 78, 0.76)',
+                            'rgba(211, 158, 72, 0.86)',
+                            'rgba(202, 105, 96, 0.82)',
+                            'rgba(120, 91, 153, 0.82)',
                         ],
 
                         hoverBackgroundColor: [
-                            '#087b58',
-                            '#53ad8d',
-                            '#245f50',
+                            '#b98535',
+                            '#b75b54',
+                            '#674c86',
                         ],
 
                         borderWidth:
