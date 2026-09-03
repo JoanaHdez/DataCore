@@ -1,7 +1,16 @@
-document.addEventListener('DOMContentLoaded', () => {
-    inicializarLimpiarReporte();
-});
+document.addEventListener(
+    'DOMContentLoaded',
+    () => {
 
+        inicializarLimpiarReporte();
+
+    }
+);
+
+
+/* =========================================================
+   INICIALIZAR LIMPIEZA DEL PASO ACTUAL
+========================================================= */
 
 function inicializarLimpiarReporte() {
 
@@ -16,66 +25,204 @@ function inicializarLimpiarReporte() {
         );
 
 
-    if (!formulario || !botonLimpiar) {
+    if (
+        !formulario
+        || !botonLimpiar
+    ) {
         return;
     }
 
 
-    botonLimpiar.addEventListener('click', () => {
+    botonLimpiar.addEventListener(
+        'click',
+        () => {
 
-        /*
-         * Esperamos a que el reset nativo
-         * del formulario termine.
-         */
-        setTimeout(() => {
+            const pasoActual =
+                formulario.querySelector(
+                    '.report-step--active'
+                );
 
-            restaurarDatosAutomaticos(
-                formulario
+
+            if (!pasoActual) {
+                return;
+            }
+
+
+            const numeroPaso =
+                Number(
+                    pasoActual.dataset.step
+                    || 0
+                );
+
+
+            limpiarPasoActual(
+                pasoActual
             );
 
-            limpiarDatosUnidad(
-                formulario
+
+            restaurarDatosAutomaticosPaso(
+                pasoActual,
+                numeroPaso
             );
 
-        }, 0);
 
-    });
+            restaurarEstadoEspecialPaso(
+                formulario,
+                pasoActual,
+                numeroPaso
+            );
+
+        }
+    );
 }
 
 
 /* =========================================================
-   RESTAURAR DATOS AUTOMÁTICOS
+   LIMPIAR ÚNICAMENTE EL PASO ACTUAL
 ========================================================= */
 
-function restaurarDatosAutomaticos(
-    formulario
+function limpiarPasoActual(
+    paso
+) {
+
+    const campos =
+        paso.querySelectorAll(
+            'input, select, textarea'
+        );
+
+
+    campos.forEach(
+        (campo) => {
+
+            /*
+             * No modificamos botones.
+             */
+            if (
+                campo.type === 'button'
+                || campo.type === 'submit'
+                || campo.type === 'reset'
+            ) {
+                return;
+            }
+
+
+            /*
+             * Checkbox y radio.
+             */
+            if (
+                campo.type === 'checkbox'
+                || campo.type === 'radio'
+            ) {
+
+                campo.checked = false;
+
+                return;
+            }
+
+
+            /*
+             * Archivos.
+             */
+            if (
+                campo.type === 'file'
+            ) {
+
+                campo.value = '';
+
+                return;
+            }
+
+
+            /*
+             * Select.
+             */
+            if (
+                campo.tagName === 'SELECT'
+            ) {
+
+                campo.selectedIndex = 0;
+
+                return;
+            }
+
+
+            /*
+             * Inputs y textarea.
+             */
+            campo.value = '';
+
+        }
+    );
+}
+
+
+/* =========================================================
+   RESTAURAR DATOS AUTOMÁTICOS DEL PASO
+========================================================= */
+
+function restaurarDatosAutomaticosPaso(
+    paso,
+    numeroPaso
 ) {
 
     /*
-     * Prefijo fijo
+     * PASO 1
+     * Prefijo fijo y fecha actual.
      */
-    const prefijo =
-        formulario.querySelector(
-            '#prefijo_folio'
-        );
+    if (numeroPaso === 1) {
 
-    if (prefijo) {
-        prefijo.value = 'QJ';
+        const prefijo =
+            paso.querySelector(
+                '#prefijo_folio'
+            );
+
+        if (prefijo) {
+            prefijo.value = 'QJ';
+        }
+
+
+        const fechaRegistro =
+            paso.querySelector(
+                '#fecha_registro'
+            );
+
+        if (fechaRegistro) {
+
+            fechaRegistro.value =
+                obtenerFechaActual();
+
+        }
+
     }
 
+}
+
+
+/* =========================================================
+   RESTAURAR ESTADOS ESPECIALES
+========================================================= */
+
+function restaurarEstadoEspecialPaso(
+    formulario,
+    paso,
+    numeroPaso
+) {
 
     /*
-     * Fecha actual
+     * PASO 3
+     * Personal y unidades.
+     *
+     * La unidad depende del oficial seleccionado,
+     * por lo que debe regresar a su estado inicial.
      */
-    const fechaRegistro =
-        formulario.querySelector(
-            '#fecha_registro'
+    if (numeroPaso === 3) {
+
+        limpiarDatosUnidad(
+            paso
         );
 
-    if (fechaRegistro) {
-        fechaRegistro.value =
-            obtenerFechaActual();
     }
+
 }
 
 
@@ -84,7 +231,7 @@ function restaurarDatosAutomaticos(
 ========================================================= */
 
 function limpiarDatosUnidad(
-    formulario
+    contenedor
 ) {
 
     /*
@@ -92,7 +239,7 @@ function limpiarDatosUnidad(
      * del oficial.
      */
     const area =
-        formulario.querySelector(
+        contenedor.querySelector(
             '#area'
         );
 
@@ -105,7 +252,7 @@ function limpiarDatosUnidad(
      * Unidad
      */
     const unidad =
-        formulario.querySelector(
+        contenedor.querySelector(
             '#unidad'
         );
 
@@ -120,6 +267,7 @@ function limpiarDatosUnidad(
         unidad.value = '';
 
         unidad.disabled = true;
+
     }
 
 
@@ -142,7 +290,7 @@ function limpiarDatosUnidad(
         (selector) => {
 
             const campo =
-                formulario.querySelector(
+                contenedor.querySelector(
                     selector
                 );
 
@@ -152,6 +300,7 @@ function limpiarDatosUnidad(
 
         }
     );
+
 }
 
 
@@ -169,18 +318,27 @@ function obtenerFechaActual() {
     const dia =
         String(
             fecha.getDate()
-        ).padStart(2, '0');
+        ).padStart(
+            2,
+            '0'
+        );
 
 
     const mes =
         String(
             fecha.getMonth() + 1
-        ).padStart(2, '0');
+        ).padStart(
+            2,
+            '0'
+        );
 
 
     const anio =
         fecha.getFullYear();
 
 
-    return `${dia}/${mes}/${anio}`;
+    return (
+        `${dia}/${mes}/${anio}`
+    );
+
 }

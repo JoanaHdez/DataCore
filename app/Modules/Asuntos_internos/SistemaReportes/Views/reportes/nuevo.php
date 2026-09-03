@@ -151,8 +151,8 @@ Nuevo reporte | Asuntos Internos
 
             <div class="report-step-actions__right">
 
-                <button type="reset" class="button button--secondary" id="btn-limpiar-reporte">
-                    Limpiar formulario
+                <button type="button" class="button button--secondary" id="btn-limpiar-reporte">
+                    Limpiar sección
                 </button>
 
                 <button type="button" class="button button--primary" id="btn-step-siguiente">
