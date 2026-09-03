@@ -21,6 +21,7 @@ import {
 
 import {
     inicializarEditarUnidades,
+    establecerModalidadUnidadEditar,
 } from './unidades.js';
 
 import {
@@ -60,6 +61,7 @@ import {
 import {
     confirmarAccion,
 } from '../../../notificaciones/confirmacion.js';
+
 
 /* =========================================================
    INICIALIZAR
@@ -238,6 +240,11 @@ export function inicializarEditarReporte() {
                     reporte
                 );
 
+
+                establecerModalidadUnidadEditar(
+                    modal,
+                    reporte.modalidad_unidad
+                );
 
                 /* =================================================
                 UBICACIÓN / GOOGLE MAPS
@@ -723,14 +730,6 @@ export function inicializarEditarReporte() {
                         `unidades[${indice}][tipo]`,
                         unidad.tipo
                     );
-
-
-                    agregarValorFormData(
-                        datos,
-                        `unidades[${indice}][origen]`,
-                        unidad.origen
-                    );
-
                 }
             );
 
@@ -936,11 +935,11 @@ async function consultarReporteEditar(
         );
  */
 
-        const url =
-    new URL(
-        `DataCore/public/asuntos-internos/reportes/detalle/${idReporte}`,
-        `${window.location.origin}/`
-    );
+    const url =
+        new URL(
+            `DataCore/public/asuntos-internos/reportes/detalle/${idReporte}`,
+            `${window.location.origin}/`
+        );
 
     const respuesta =
         await fetch(
@@ -1207,8 +1206,14 @@ function construirReporteEditar(
 
 
         /* =====================================================
-           UNIDADES
+        UNIDADES
         ===================================================== */
+
+        modalidad_unidad:
+            valorEditar(
+                origen.modalidad_unidad
+                || 'CON_UNIDAD'
+            ),
 
         unidades:
             Array.isArray(
@@ -1256,11 +1261,6 @@ function construirReporteEditar(
                         tipo:
                             valorEditar(
                                 unidad.tipo
-                            ),
-
-                        origen:
-                            valorEditar(
-                                unidad.origen
                             ),
                     })
                 )
@@ -1323,7 +1323,7 @@ function construirReporteEditar(
 
         sancion:
             datos.sancion
-            && typeof datos.sancion === 'object'
+                && typeof datos.sancion === 'object'
                 ? {
 
                     ...datos.sancion,
@@ -1361,9 +1361,9 @@ function construirReporteEditar(
 
                     id_seguimiento:
                         datos.sancion.id_seguimiento
-                        !== null
-                        && datos.sancion.id_seguimiento
-                        !== undefined
+                            !== null
+                            && datos.sancion.id_seguimiento
+                            !== undefined
                             ? Number(
                                 datos.sancion.id_seguimiento
                                 || 0
@@ -1652,12 +1652,12 @@ async function actualizarReporteBackend(
         );
  */
 
-        const url =
-    new URL(
-        `DataCore/public/asuntos-internos/reportes/actualizar/${idReporte}`,
-        `${window.location.origin}/`
-    );
-    
+    const url =
+        new URL(
+            `DataCore/public/asuntos-internos/reportes/actualizar/${idReporte}`,
+            `${window.location.origin}/`
+        );
+
     const respuesta =
         await fetch(
             url.toString(),

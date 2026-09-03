@@ -393,6 +393,155 @@
     border-color: #e7b9b4;
 }
 
+/* =========================================================
+   MODALIDAD DE UNIDAD
+========================================================= */
+
+.unidad-modalidad {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin-top: 6px;
+}
+
+
+.unidad-modalidad__opcion {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    min-height: 40px;
+
+    padding: 9px 13px;
+
+    color: #40586d;
+
+    background: #ffffff;
+
+    border: 1px solid #d5e0e9;
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.unidad-modalidad__opcion:hover {
+    background: #f5faff;
+
+    border-color: #b9d7ea;
+}
+
+
+.unidad-modalidad__opcion input[type="radio"] {
+    width: 16px;
+    height: 16px;
+
+    min-width: 16px;
+    min-height: 16px;
+
+    margin: 0;
+
+    padding: 0;
+
+    flex: 0 0 16px;
+
+    accent-color: #1681c4;
+
+    box-shadow: none;
+}
+
+
+.unidad-modalidad__opcion:has(
+    input[type="radio"]:checked
+) {
+    color: #0f6298;
+
+    background: #eef8fe;
+
+    border-color: #79bce4;
+
+    box-shadow:
+        0 0 0 2px rgba(22, 129, 196, 0.07);
+}
+
+
+.unidad-modalidad__opcion span {
+    line-height: 1.2;
+}
+
+
+/* =========================================================
+   ESTADO SIN UNIDAD / OFICINA
+========================================================= */
+
+.unidad-sin-unidad {
+    margin-top: 16px;
+
+    padding: 15px 16px;
+
+    background: #f6faff;
+
+    border: 1px solid #d5e7f3;
+    border-radius: 10px;
+}
+
+
+.unidad-sin-unidad[hidden] {
+    display: none !important;
+}
+
+
+.unidad-sin-unidad__contenido {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+
+.unidad-sin-unidad__contenido strong {
+    color: #173554;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+.unidad-sin-unidad__contenido p {
+    margin: 0;
+
+    color: #6f8293;
+
+    font-size: 10px;
+    line-height: 1.45;
+}
+
+/* =========================================================
+   SEPARACIÓN ENTRE AYUDA Y BÚSQUEDA DE UNIDAD
+========================================================= */
+
+/* =========================================================
+   SEPARACIÓN ENTRE AYUDA Y BÚSQUEDA DE UNIDAD
+========================================================= */
+
+.unidad-modalidad
+~ .report-field__help {
+    margin-top: 10px;
+    margin-bottom: 14px;
+}
 
 /* =========================================================
    RESPONSIVE
@@ -419,5 +568,14 @@
     .unidades-agregadas__tabla {
         min-width: 850px;
     }
+
+    .unidad-modalidad {
+    flex-direction: column;
+}
+
+
+.unidad-modalidad__opcion {
+    width: 100%;
+}
 
 }

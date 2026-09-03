@@ -40,14 +40,19 @@ export function inicializarEditarUnidades(
             '#btn-editar-agregar-unidad'
         );
 
-    const selectOrigen =
-        modal.querySelector(
-            '#editar-unidad-origen'
-        );
-
     const tablaBody =
         modal.querySelector(
             '#editar-unidades-agregadas-body'
+        );
+
+    const modalidadConUnidad =
+        modal.querySelector(
+            '#editar-modalidad-con-unidad'
+        );
+
+    const modalidadSinUnidad =
+        modal.querySelector(
+            '#editar-modalidad-sin-unidad'
         );
 
 
@@ -55,11 +60,78 @@ export function inicializarEditarUnidades(
         !inputBusqueda
         || !resultados
         || !btnAgregar
-        || !selectOrigen
         || !tablaBody
+        || !modalidadConUnidad
+        || !modalidadSinUnidad
     ) {
         return;
     }
+
+
+    /* =====================================================
+       MODALIDAD
+    ===================================================== */
+
+    modalidadConUnidad.addEventListener(
+        'change',
+        () => {
+
+            if (!modalidadConUnidad.checked) {
+                return;
+            }
+
+            mostrarModalidadUnidadEditar(
+                modal,
+                'CON_UNIDAD'
+            );
+
+        }
+    );
+
+
+    modalidadSinUnidad.addEventListener(
+        'change',
+        () => {
+
+            if (!modalidadSinUnidad.checked) {
+                return;
+            }
+
+
+            /*
+             * Si cambia a Sin unidad / Oficina,
+             * eliminamos las unidades que estuvieran
+             * relacionadas en el formulario.
+             */
+
+            estadoUnidades.elementos.splice(
+                0,
+                estadoUnidades.elementos.length
+            );
+
+
+            establecerUnidadSeleccionada(
+                null
+            );
+
+
+            limpiarSelectorUnidad(
+                modal
+            );
+
+
+            renderizarUnidadesEditar(
+                modal
+            );
+
+
+            mostrarModalidadUnidadEditar(
+                modal,
+                'SIN_UNIDAD_OFICINA'
+            );
+
+        }
+    );
 
 
     /* =====================================================
@@ -69,6 +141,13 @@ export function inicializarEditarUnidades(
     inputBusqueda.addEventListener(
         'input',
         () => {
+
+            if (
+                !modalidadConUnidad.checked
+            ) {
+                return;
+            }
+
 
             const termino =
                 inputBusqueda.value.trim();
@@ -135,6 +214,13 @@ export function inicializarEditarUnidades(
         'click',
         () => {
 
+            if (
+                !modalidadConUnidad.checked
+            ) {
+                return;
+            }
+
+
             const unidad =
                 estadoUnidades.seleccionada;
 
@@ -143,23 +229,6 @@ export function inicializarEditarUnidades(
                 !unidad
                 || !unidad.id
             ) {
-                return;
-            }
-
-
-            const origen =
-                String(
-                    selectOrigen.value
-                    || ''
-                )
-                    .trim()
-                    .toUpperCase();
-
-
-            if (!origen) {
-
-                selectOrigen.focus();
-
                 return;
             }
 
@@ -188,7 +257,6 @@ export function inicializarEditarUnidades(
 
             agregarUnidad({
                 ...unidad,
-                origen,
             });
 
 
@@ -250,7 +318,7 @@ export function inicializarEditarUnidades(
 
 
     /* =====================================================
-       CERRAR RESULTADOS AL HACER CLICK FUERA
+       CERRAR RESULTADOS
     ===================================================== */
 
     document.addEventListener(
@@ -274,6 +342,104 @@ export function inicializarEditarUnidades(
 
         }
     );
+
+}
+
+/* =========================================================
+   ESTABLECER MODALIDAD DE UNIDAD
+========================================================= */
+
+export function establecerModalidadUnidadEditar(
+    modal,
+    modalidad
+) {
+
+    const valor =
+        String(
+            modalidad || 'CON_UNIDAD'
+        )
+            .trim()
+            .toUpperCase();
+
+
+    const conUnidad =
+        modal.querySelector(
+            '#editar-modalidad-con-unidad'
+        );
+
+    const sinUnidad =
+        modal.querySelector(
+            '#editar-modalidad-sin-unidad'
+        );
+
+
+    if (
+        !conUnidad
+        || !sinUnidad
+    ) {
+        return;
+    }
+
+
+    const esSinUnidad =
+        valor ===
+        'SIN_UNIDAD_OFICINA';
+
+
+    conUnidad.checked =
+        !esSinUnidad;
+
+    sinUnidad.checked =
+        esSinUnidad;
+
+
+    mostrarModalidadUnidadEditar(
+        modal,
+        esSinUnidad
+            ? 'SIN_UNIDAD_OFICINA'
+            : 'CON_UNIDAD'
+    );
+
+}
+
+/* =========================================================
+   MOSTRAR MODALIDAD DE UNIDAD
+========================================================= */
+
+function mostrarModalidadUnidadEditar(
+    modal,
+    modalidad
+) {
+
+    const contenedorConUnidad =
+        modal.querySelector(
+            '#editar-contenedor-unidades-con-unidad'
+        );
+
+    const contenedorSinUnidad =
+        modal.querySelector(
+            '#editar-unidad-sin-unidad'
+        );
+
+
+    if (
+        !contenedorConUnidad
+        || !contenedorSinUnidad
+    ) {
+        return;
+    }
+
+
+    const esSinUnidad =
+        modalidad ===
+        'SIN_UNIDAD_OFICINA';
+
+
+    contenedorConUnidad.hidden =
+        esSinUnidad;
+
+    contenedorSinUnidad.hidden =
+        !esSinUnidad;
 
 }
 
@@ -319,11 +485,11 @@ async function buscarUnidades(
                 baseUrl
             ); */
 
-            const url =
-    new URL(
-        'DataCore/public/asuntos-internos/reportes/unidades/buscar',
-        `${window.location.origin}/`
-    );
+        const url =
+            new URL(
+                'DataCore/public/asuntos-internos/reportes/unidades/buscar',
+                `${window.location.origin}/`
+            );
 
 
         url.searchParams.set(
@@ -460,28 +626,28 @@ function renderizarResultadosUnidad(
 
                     <strong>
                         ${escaparHTML(
-                            unidad.no_economico
-                            || 'SIN NÚMERO'
-                        )}
+                unidad.no_economico
+                || 'SIN NÚMERO'
+            )}
                     </strong>
 
                     <small>
                         Placas:
                         ${escaparHTML(
-                            unidad.placas
-                            || '—'
-                        )}
+                unidad.placas
+                || '—'
+            )}
                     </small>
 
                     <small>
                         ${escaparHTML(
-                            unidad.marca
-                            || '—'
-                        )}
+                unidad.marca
+                || '—'
+            )}
                         ${escaparHTML(
-                            unidad.submarca
-                            || ''
-                        )}
+                unidad.submarca
+                || ''
+            )}
                     </small>
 
                 </span>
@@ -523,6 +689,20 @@ function seleccionarUnidad(
     modal,
     unidad
 ) {
+
+    const modalidad =
+        modal.querySelector(
+            '#editar-modalidad-con-unidad'
+        );
+
+
+    if (
+        !modalidad
+        || !modalidad.checked
+    ) {
+        return;
+    }
+
 
     const unidadNormalizada = {
 
@@ -580,9 +760,6 @@ function seleccionarUnidad(
             normalizarMayuscula(
                 unidad.serie
             ),
-
-        origen:
-            '',
 
     };
 
@@ -648,12 +825,6 @@ function seleccionarUnidad(
 
     asignarValorEditar(
         modal,
-        '#editar-unidad-origen',
-        ''
-    );
-
-    asignarValorEditar(
-        modal,
         '#editar-unidad-busqueda',
         unidadNormalizada.no_economico
         || unidadNormalizada.placas
@@ -679,7 +850,6 @@ function seleccionarUnidad(
     );
 
 }
-
 
 /* =========================================================
    RENDER UNIDADES AGREGADAS
@@ -737,65 +907,58 @@ export function renderizarUnidadesEditar(
 
                         <strong>
                             ${escaparHTML(
-                                unidad.no_economico
-                                || '—'
-                            )}
+                    unidad.no_economico
+                    || '—'
+                )}
                         </strong>
 
                         <small class="editar-unidad-tabla__placas">
                             Placas:
                             ${escaparHTML(
-                                unidad.placas
-                                || '—'
-                            )}
+                    unidad.placas
+                    || '—'
+                )}
                         </small>
 
                     </td>
 
                     <td>
                         ${escaparHTML(
-                            unidad.marca
-                            || '—'
-                        )}
+                    unidad.marca
+                    || '—'
+                )}
                         ${escaparHTML(
-                            unidad.submarca
-                            || ''
-                        )}
+                    unidad.submarca
+                    || ''
+                )}
                     </td>
 
                     <td>
                         ${escaparHTML(
-                            unidad.color
-                            || '—'
-                        )}
+                    unidad.color
+                    || '—'
+                )}
                     </td>
 
                     <td>
                         ${escaparHTML(
-                            unidad.estatus
-                            || '—'
-                        )}
+                    unidad.estatus
+                    || '—'
+                )}
                     </td>
 
                     <td>
                         ${escaparHTML(
-                            unidad.servicio
-                            || '—'
-                        )}
+                    unidad.servicio
+                    || '—'
+                )}
                     </td>
 
                     <td>
                         ${escaparHTML(
-                            unidad.tipo
-                            || '—'
-                        )}
-                    </td>
-
-                    <td>
-                        ${escaparHTML(
-                            unidad.origen
-                            || '—'
-                        )}
+                    unidad.tipo
+                    || '—'
+                )}
                     </td>
 
                     <td>
@@ -839,7 +1002,6 @@ export function renderizarUnidadesEditar(
         );
 
 }
-
 
 /* =========================================================
    INPUTS OCULTOS
@@ -886,9 +1048,6 @@ function crearInputsOcultosUnidad(
         serie:
             unidad.serie,
 
-        origen:
-            unidad.origen,
-
     };
 
 
@@ -921,8 +1080,6 @@ function crearInputsOcultosUnidad(
     );
 
 }
-
-
 /* =========================================================
    LIMPIAR SELECTOR
 ========================================================= */
@@ -973,7 +1130,6 @@ function limpiarUnidadSeleccionada(
         '#editar-unidad-estatus',
         '#editar-unidad-servicio',
         '#editar-unidad-tipo',
-        '#editar-unidad-origen',
     ].forEach(
         (selector) => {
 

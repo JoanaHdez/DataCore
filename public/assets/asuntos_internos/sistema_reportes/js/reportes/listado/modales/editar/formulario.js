@@ -30,6 +30,7 @@ import {
 import {
     renderizarUnidadesEditar,
     limpiarSelectorUnidad,
+    establecerModalidadUnidadEditar,
 } from './unidades.js';
 
 import {
@@ -493,7 +494,7 @@ export function cargarReporteEnFormulario(
 
 
     /* =====================================================
-       UNIDADES
+    UNIDADES
     ===================================================== */
 
     establecerUnidades(
@@ -507,6 +508,12 @@ export function cargarReporteEnFormulario(
 
     limpiarSelectorUnidad(
         modal
+    );
+
+
+    establecerModalidadUnidadEditar(
+        modal,
+        reporte.modalidad_unidad
     );
 
 
@@ -670,6 +677,7 @@ export function obtenerReporteDesdeFormulario(
         'latitud',
         'longitud',
         'origen_ubicacion',
+        'modalidad_unidad',
 
         'quejoso',
         'edad',
@@ -844,7 +852,7 @@ export function actualizarFilaDesdeReporte(
         Array.isArray(
             reporte.personal
         )
-        && reporte.personal.length > 0
+            && reporte.personal.length > 0
             ? reporte.personal[0]
             : null;
 
@@ -917,9 +925,13 @@ export function limpiarFormularioEditar(
     ).forEach(
         (campo) => {
 
+            /* =================================================
+               ARCHIVOS
+            ================================================= */
+
             if (
                 campo instanceof
-                    HTMLInputElement
+                HTMLInputElement
                 && campo.type === 'file'
             ) {
 
@@ -929,6 +941,49 @@ export function limpiarFormularioEditar(
                 return;
             }
 
+
+            /* =================================================
+               RADIO BUTTONS
+            ================================================= */
+
+            if (
+                campo instanceof
+                HTMLInputElement
+                && campo.type === 'radio'
+            ) {
+
+                /*
+                 * No modificamos .value porque contiene
+                 * CON_UNIDAD / SIN_UNIDAD_OFICINA.
+                 */
+
+                campo.checked =
+                    false;
+
+                return;
+            }
+
+
+            /* =================================================
+               CHECKBOXES
+            ================================================= */
+
+            if (
+                campo instanceof
+                HTMLInputElement
+                && campo.type === 'checkbox'
+            ) {
+
+                campo.checked =
+                    false;
+
+                return;
+            }
+
+
+            /* =================================================
+               RESTO DE CAMPOS
+            ================================================= */
 
             campo.value =
                 '';
