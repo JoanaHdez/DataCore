@@ -257,6 +257,134 @@ class Reportes_Controller extends BaseController
 
 
         /* =========================================================
+        SECTORES DISPONIBLES
+
+        El catálogo se obtiene directamente desde plantilla
+        para mostrar todos los sectores existentes, aunque
+        todavía no tengan reportes relacionados.
+        ========================================================= */
+
+        $dbPlantilla =
+            \Config\Database::connect(
+                'plantilla'
+            );
+
+
+        $registrosSectores =
+            $dbPlantilla
+                ->table('plantilla')
+                ->select('AREA')
+                ->where(
+                    'ESTADO',
+                    'ACTIVO'
+                )
+                ->where(
+                    'AREA IS NOT NULL',
+                    null,
+                    false
+                )
+                ->where(
+                    "TRIM(AREA) != ''",
+                    null,
+                    false
+                )
+                ->like(
+                    'AREA',
+                    'SECTOR',
+                    'after'
+                )
+                ->groupBy(
+                    'AREA'
+                )
+                ->get()
+                ->getResultArray();
+
+
+        $sectoresEncontrados =
+            [];
+
+
+        foreach (
+            $registrosSectores
+            as $registro
+        ) {
+
+            $area =
+                trim(
+                    preg_replace(
+                        '/\s+/u',
+                        ' ',
+                        mb_strtoupper(
+                            (string) (
+                                $registro['AREA']
+                                ?? ''
+                            ),
+                            'UTF-8'
+                        )
+                    )
+                    ?? ''
+                );
+
+
+            if (
+                !preg_match(
+                    '/^SECTOR\s+0*([0-9]+)/u',
+                    $area,
+                    $coincidencias
+                )
+            ) {
+                continue;
+            }
+
+
+            $numeroSector =
+                (int) (
+                    $coincidencias[1]
+                    ?? 0
+                );
+
+
+            if ($numeroSector <= 0) {
+                continue;
+            }
+
+
+            $sector =
+                'SECTOR '
+                . str_pad(
+                    (string) $numeroSector,
+                    2,
+                    '0',
+                    STR_PAD_LEFT
+                );
+
+
+            $sectoresEncontrados[
+                $numeroSector
+            ] =
+                $sector;
+        }
+
+
+        /*
+        * Ordenamos numéricamente:
+        *
+        * SECTOR 01
+        * SECTOR 02
+        * ...
+        */
+        ksort(
+            $sectoresEncontrados,
+            SORT_NUMERIC
+        );
+
+
+        $sectores =
+            array_values(
+                $sectoresEncontrados
+            );
+
+        /* =========================================================
         VISTA
         ========================================================= */
 
@@ -264,7 +392,10 @@ class Reportes_Controller extends BaseController
             'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\index',
             [
                 'reportes' =>
-                $reportes,
+                    $reportes,
+
+                'sectores' =>
+                    $sectores,
             ]
         );
     }

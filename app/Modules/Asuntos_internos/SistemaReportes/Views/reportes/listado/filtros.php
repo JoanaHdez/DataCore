@@ -39,20 +39,29 @@
         </div>
 
 
-        <!-- CLASIFICACIÓN -->
+        <!-- SECTOR -->
         <div class="reportes-filtros__field">
 
-            <label for="filtro_clasificacion">
-                Clasificación
+            <label for="filtro_sector">
+                Sector
             </label>
 
             <select
-                id="filtro_clasificacion"
+                id="filtro_sector"
                 class="reportes-filtros__select"
             >
                 <option value="">
-                    Todas
+                    Todos
                 </option>
+
+                <?php foreach (($sectores ?? []) as $sector): ?>
+
+                    <option value="<?= esc($sector) ?>">
+                        <?= esc($sector) ?>
+                    </option>
+
+                <?php endforeach; ?>
+
             </select>
 
         </div>
@@ -110,6 +119,19 @@
                 <option value="">
                     Todas
                 </option>
+
+                <option value="Pendiente">
+                    Pendiente
+                </option>
+
+                <option value="En proceso">
+                    En proceso
+                </option>
+
+                <option value="Finalizado">
+                    Finalizado
+                </option>
+
             </select>
 
         </div>

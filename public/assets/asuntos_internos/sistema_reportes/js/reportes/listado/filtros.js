@@ -37,9 +37,9 @@ function inicializarFiltrosReportes() {
         );
 
 
-    const filtroClasificacion =
+    const filtroSector =
         document.querySelector(
-            '#filtro_clasificacion'
+            '#filtro_sector'
         );
 
 
@@ -71,7 +71,7 @@ function inicializarFiltrosReportes() {
         !tabla
         || !tbody
         || !inputBusqueda
-        || !filtroClasificacion
+        || !filtroSector
         || !filtroArea
         || !filtroTurno
         || !filtroResolucion
@@ -127,25 +127,26 @@ function inicializarFiltrosReportes() {
 
 
     /* =====================================================
-       CARGAR OPCIONES DE LOS SELECT
+       CARGAR OPCIONES DINÁMICAS
+
+       Sector:
+       viene desde PHP / base de datos.
+
+       Resolución:
+       tiene opciones fijas desde PHP.
+
+       Área y Turno:
+       se obtienen de los reportes existentes.
     ===================================================== */
 
     cargarOpcionesFiltros(
         obtenerFilas(),
         {
-
-            clasificacion:
-                filtroClasificacion,
-
             area:
                 filtroArea,
 
             turno:
                 filtroTurno,
-
-            resolucion:
-                filtroResolucion,
-
         }
     );
 
@@ -167,9 +168,9 @@ function inicializarFiltrosReportes() {
             );
 
 
-        const clasificacion =
-            normalizarTexto(
-                filtroClasificacion.value
+        const sector =
+            normalizarSector(
+                filtroSector.value
             );
 
 
@@ -228,17 +229,30 @@ function inicializarFiltrosReportes() {
                     );
 
 
-                const clasificacionFila =
-                    normalizarTexto(
-                        celdas[3]
+                const areaTexto =
+                    String(
+                        celdas[5]
                             .textContent
+                        || ''
                     );
 
 
                 const areaFila =
                     normalizarTexto(
-                        celdas[5]
-                            .textContent
+                        areaTexto
+                    );
+
+
+                /*
+                 * Un reporte puede contener más de una persona
+                 * involucrada.
+                 *
+                 * Por ello obtenemos todos los sectores
+                 * encontrados dentro del área mostrada.
+                 */
+                const sectoresFila =
+                    obtenerSectoresDesdeArea(
+                        areaTexto
                     );
 
 
@@ -279,10 +293,11 @@ function inicializarFiltrosReportes() {
                     );
 
 
-                const coincideClasificacion =
-                    !clasificacion
-                    || clasificacionFila
-                    === clasificacion;
+                const coincideSector =
+                    !sector
+                    || sectoresFila.includes(
+                        sector
+                    );
 
 
                 const coincideArea =
@@ -313,7 +328,7 @@ function inicializarFiltrosReportes() {
 
                 const mostrar =
                     coincideBusqueda
-                    && coincideClasificacion
+                    && coincideSector
                     && coincideArea
                     && coincideTurno
                     && coincideResolucion
@@ -388,7 +403,7 @@ function inicializarFiltrosReportes() {
        SELECTS
     ===================================================== */
 
-    filtroClasificacion.addEventListener(
+    filtroSector.addEventListener(
         'change',
         aplicarFiltros
     );
@@ -461,7 +476,7 @@ function inicializarFiltrosReportes() {
                SELECTS
             ============================================== */
 
-            filtroClasificacion.selectedIndex =
+            filtroSector.selectedIndex =
                 0;
 
 
@@ -560,6 +575,13 @@ function inicializarFiltrosReportes() {
 
 /* =========================================================
    CARGAR OPCIONES DE FILTROS
+
+   Área y Turno se generan a partir de los reportes
+   existentes en la tabla.
+
+   Sector viene desde la BD mediante PHP.
+
+   Resolución tiene opciones fijas en PHP.
 ========================================================= */
 
 function cargarOpcionesFiltros(
@@ -567,19 +589,11 @@ function cargarOpcionesFiltros(
     filtros
 ) {
 
-    const clasificaciones =
-        new Set();
-
-
     const areas =
         new Set();
 
 
     const turnos =
-        new Set();
-
-
-    const resoluciones =
         new Set();
 
 
@@ -602,12 +616,6 @@ function cargarOpcionesFiltros(
 
 
             agregarValorSet(
-                clasificaciones,
-                celdas[3].textContent
-            );
-
-
-            agregarValorSet(
                 areas,
                 celdas[5].textContent
             );
@@ -618,19 +626,7 @@ function cargarOpcionesFiltros(
                 celdas[6].textContent
             );
 
-
-            agregarValorSet(
-                resoluciones,
-                celdas[7].textContent
-            );
-
         }
-    );
-
-
-    agregarOpcionesSelect(
-        filtros.clasificacion,
-        clasificaciones
     );
 
 
@@ -645,10 +641,168 @@ function cargarOpcionesFiltros(
         turnos
     );
 
+}
 
-    agregarOpcionesSelect(
-        filtros.resolucion,
-        resoluciones
+
+/* =========================================================
+   OBTENER SECTORES DESDE EL ÁREA DEL PERSONAL
+
+   Detecta valores como:
+
+   SECTOR 1
+   SECTOR 01
+   SECTOR 05 CAMPESTRE
+
+   Si un reporte tiene personal de distintos sectores,
+   conserva todos los sectores encontrados.
+========================================================= */
+
+function obtenerSectoresDesdeArea(
+    texto
+) {
+
+    const valor =
+        String(
+            texto || ''
+        )
+            .toUpperCase()
+            .normalize(
+                'NFD'
+            )
+            .replace(
+                /[\u0300-\u036f]/g,
+                ''
+            );
+
+
+    const sectores =
+        [];
+
+
+    const expresion =
+        /SECTOR\s+0*([0-9]+)/g;
+
+
+    let coincidencia;
+
+
+    while (
+        (
+            coincidencia =
+                expresion.exec(
+                    valor
+                )
+        ) !== null
+    ) {
+
+        const numero =
+            Number(
+                coincidencia[1]
+            );
+
+
+        if (
+            !Number.isInteger(
+                numero
+            )
+            || numero <= 0
+        ) {
+
+            continue;
+
+        }
+
+
+        const sector =
+            normalizarSector(
+                `SECTOR ${numero}`
+            );
+
+
+        if (
+            sector
+            && !sectores.includes(
+                sector
+            )
+        ) {
+
+            sectores.push(
+                sector
+            );
+
+        }
+
+    }
+
+
+    return sectores;
+
+}
+
+
+/* =========================================================
+   NORMALIZAR SECTOR
+
+   SECTOR 1  -> sector 01
+   SECTOR 01 -> sector 01
+========================================================= */
+
+function normalizarSector(
+    valor
+) {
+
+    const texto =
+        normalizarTexto(
+            valor
+        );
+
+
+    if (!texto) {
+
+        return '';
+
+    }
+
+
+    const coincidencia =
+        texto.match(
+            /sector\s+0*([0-9]+)/
+        );
+
+
+    if (!coincidencia) {
+
+        return texto;
+
+    }
+
+
+    const numero =
+        Number(
+            coincidencia[1]
+        );
+
+
+    if (
+        !Number.isInteger(
+            numero
+        )
+        || numero <= 0
+    ) {
+
+        return texto;
+
+    }
+
+
+    return (
+        'sector '
+        + String(
+            numero
+        ).padStart(
+            2,
+            '0'
+        )
     );
 
 }
