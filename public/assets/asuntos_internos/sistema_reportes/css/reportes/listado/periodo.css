@@ -129,13 +129,15 @@
 
 
 /* =========================================================
-   BOTÓN
+   BOTONES
 ========================================================= */
 
 .reportes-periodo__actions {
     display: flex;
     align-items: flex-end;
+    gap: 16px;
 }
+
 
 .reportes-periodo__button {
     min-width: 140px;

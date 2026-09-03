@@ -28,13 +28,8 @@
                 Buscar
             </label>
 
-            <input
-                type="search"
-                id="filtro_busqueda"
-                class="reportes-filtros__input"
-                placeholder="Folio, expediente, ubicación, quejoso..."
-                autocomplete="off"
-            >
+            <input type="search" id="filtro_busqueda" class="reportes-filtros__input"
+                placeholder="Folio, expediente, ubicación, quejoso..." autocomplete="off">
 
         </div>
 
@@ -46,19 +41,16 @@
                 Sector
             </label>
 
-            <select
-                id="filtro_sector"
-                class="reportes-filtros__select"
-            >
+            <select id="filtro_sector" class="reportes-filtros__select">
                 <option value="">
                     Todos
                 </option>
 
                 <?php foreach (($sectores ?? []) as $sector): ?>
 
-                    <option value="<?= esc($sector) ?>">
-                        <?= esc($sector) ?>
-                    </option>
+                <option value="<?= esc($sector) ?>">
+                    <?= esc($sector) ?>
+                </option>
 
                 <?php endforeach; ?>
 
@@ -74,10 +66,7 @@
                 Área
             </label>
 
-            <select
-                id="filtro_area"
-                class="reportes-filtros__select"
-            >
+            <select id="filtro_area" class="reportes-filtros__select">
                 <option value="">
                     Todas
                 </option>
@@ -93,10 +82,7 @@
                 Turno
             </label>
 
-            <select
-                id="filtro_turno"
-                class="reportes-filtros__select"
-            >
+            <select id="filtro_turno" class="reportes-filtros__select">
                 <option value="">
                     Todos
                 </option>
@@ -112,10 +98,7 @@
                 Resolución
             </label>
 
-            <select
-                id="filtro_resolucion"
-                class="reportes-filtros__select"
-            >
+            <select id="filtro_resolucion" class="reportes-filtros__select">
                 <option value="">
                     Todas
                 </option>
