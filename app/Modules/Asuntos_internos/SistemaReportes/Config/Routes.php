@@ -98,12 +98,18 @@ $routes->group(
 
 
                 /* =================================================
-                   VALIDAR FOLIO
+                FOLIOS
                 ================================================= */
 
                 $routes->get(
                     'validar-folio',
                     '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::validarFolio'
+                );
+
+
+                $routes->get(
+                    'previsualizar-folio',
+                    '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::previsualizarFolio'
                 );
 
 

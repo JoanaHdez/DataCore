@@ -19,6 +19,8 @@ class ReporteModel extends Model
     protected $protectFields = true;
 
     protected $allowedFields = [
+        'tipo_registro',
+        'numero_folio',
         'folio',
         'fecha_registro',
         'folio_ip',

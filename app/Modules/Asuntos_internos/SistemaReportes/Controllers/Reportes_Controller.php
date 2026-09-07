@@ -7,6 +7,7 @@ use App\Modules\Asuntos_internos\SistemaReportes\Services\ListadoExcelService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\AuthService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\ReporteService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\FolioService;
 
 use App\Controllers\BaseController;
 
@@ -403,6 +404,112 @@ class Reportes_Controller extends BaseController
         return view(
             'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\nuevo'
         );
+    }
+
+    public function previsualizarFolio()
+    {
+        /* =========================================================
+        VALIDAR SESIÓN
+        ========================================================= */
+
+        if (
+            session()->get('reportes_autenticado') !== true
+            || !session()->has('usuario_reportes')
+        ) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La sesión no es válida.',
+                ]);
+        }
+
+
+        /* =========================================================
+        TIPO DE REGISTRO
+        ========================================================= */
+
+        $tipoRegistro =
+            strtoupper(
+                trim(
+                    (string) (
+                        $this->request
+                            ->getGet(
+                                'tipo_registro'
+                            )
+                        ?? 'QUEJA'
+                    )
+                )
+            );
+
+
+        /* =========================================================
+        PREVISUALIZAR FOLIO
+        ========================================================= */
+
+        try {
+
+            $servicio =
+                new FolioService();
+
+
+            $resultado =
+                $servicio->previsualizar(
+                    $tipoRegistro
+                );
+
+
+            return $this->response
+                ->setJSON([
+                    'success' =>
+                        true,
+
+                    'tipo_registro' =>
+                        $resultado['tipo_registro']
+                        ?? $tipoRegistro,
+
+                    'numero_folio' =>
+                        $resultado['numero_folio']
+                        ?? null,
+
+                    'folio' =>
+                        $resultado['folio']
+                        ?? null,
+
+                    'nomenclatura' =>
+                        $resultado['nomenclatura']
+                        ?? null,
+                ]);
+
+        } catch (\InvalidArgumentException $e) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ]);
+
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error previsualizando folio de Asuntos Internos: {mensaje}',
+                [
+                    'mensaje' =>
+                        $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'No fue posible consultar el siguiente folio.',
+                ]);
+        }
     }
 
     public function guardarReporte()

@@ -6,6 +6,7 @@ use App\Modules\Asuntos_internos\SistemaReportes\Models\ReporteModel;
 use App\Modules\Asuntos_internos\SistemaReportes\Models\ReportePersonalModel;
 use App\Modules\Asuntos_internos\SistemaReportes\Models\ReporteUnidadModel;
 use App\Modules\Asuntos_internos\SistemaReportes\Models\ReporteEvidenciaModel;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\FolioService;
 use CodeIgniter\Database\BaseConnection;
 
 class ReporteService
@@ -20,6 +21,7 @@ class ReporteService
 
     protected ReporteEvidenciaModel $evidenciaModel;
 
+    protected FolioService $folioService;
 
     public function __construct()
     {
@@ -43,6 +45,11 @@ class ReporteService
 
         $this->evidenciaModel =
             new ReporteEvidenciaModel();
+
+        $this->folioService =
+            new FolioService(
+                $this->db
+            );
     }
 
 
@@ -51,11 +58,11 @@ class ReporteService
     ========================================================= */
 
     public function guardar(
-        array $datos,
-        array $personal,
-        array $unidades,
-        array $archivos,
-        int $idUsuario
+    array $datos,
+    array $personal,
+    array $unidades,
+    array $archivos,
+    int $idUsuario
     ): array {
 
         if ($idUsuario <= 0) {
@@ -75,7 +82,7 @@ class ReporteService
         try {
 
             /* =================================================
-               REPORTE PRINCIPAL
+            PREPARAR DATOS DEL REPORTE
             ================================================= */
 
             $datosReporte =
@@ -85,12 +92,43 @@ class ReporteService
                 );
 
 
+            /* =================================================
+            GENERAR FOLIO AUTOMÁTICO
+            ================================================= */
+
+            $folioGenerado =
+                $this->folioService
+                    ->generar(
+                        'QUEJA'
+                    );
+
+
+            $datosReporte['tipo_registro'] =
+                $folioGenerado['tipo_registro'];
+
+
+            $datosReporte['numero_folio'] =
+                $folioGenerado['numero_folio'];
+
+
+            $datosReporte['folio'] =
+                $folioGenerado['folio'];
+
+
+            $datosReporte['nomenclatura'] =
+                $folioGenerado['nomenclatura'];
+
+
+            /* =================================================
+            GUARDAR REPORTE
+            ================================================= */
+
             $idReporte =
                 $this->reporteModel
-                ->insert(
-                    $datosReporte,
-                    true
-                );
+                    ->insert(
+                        $datosReporte,
+                        true
+                    );
 
 
             if (!$idReporte) {
@@ -106,7 +144,7 @@ class ReporteService
 
 
             /* =================================================
-               PERSONAL
+            PERSONAL
             ================================================= */
 
             $this->guardarPersonal(
@@ -116,7 +154,7 @@ class ReporteService
 
 
             /* =================================================
-               UNIDADES
+            UNIDADES
             ================================================= */
 
             $this->guardarUnidades(
@@ -138,7 +176,7 @@ class ReporteService
 
 
             /* =================================================
-               EVIDENCIAS
+            EVIDENCIAS
             ================================================= */
 
             $rutasCreadas =
@@ -150,7 +188,7 @@ class ReporteService
 
 
             /* =================================================
-               VALIDAR TRANSACCIÓN
+            VALIDAR TRANSACCIÓN
             ================================================= */
 
             if (
@@ -170,25 +208,36 @@ class ReporteService
             return [
 
                 'success' =>
-                true,
+                    true,
 
                 'id_reporte' =>
-                $idReporte,
+                    $idReporte,
+
+                'tipo_registro' =>
+                    $datosReporte['tipo_registro'],
+
+                'numero_folio' =>
+                    $datosReporte['numero_folio'],
 
                 'folio' =>
-                $datosReporte['folio'],
+                    $datosReporte['folio'],
+
+                'nomenclatura' =>
+                    $datosReporte['nomenclatura'],
 
             ];
+
         } catch (\Throwable $e) {
 
             $this->db->transRollback();
 
 
             /*
-             * Si alcanzamos a mover archivos físicos,
-             * pero la transacción no se completó,
-             * eliminamos esos archivos.
-             */
+            * Si alcanzamos a mover archivos físicos,
+            * pero la transacción no se completó,
+            * eliminamos esos archivos.
+            */
+
             foreach (
                 $rutasCreadas
                 as $ruta
@@ -216,13 +265,13 @@ class ReporteService
     ========================================================= */
 
     public function actualizar(
-        int $idReporte,
-        array $datos,
-        array $personal,
-        array $unidades,
-        array $archivos,
-        array $evidenciasEliminadas,
-        int $idUsuario
+    int $idReporte,
+    array $datos,
+    array $personal,
+    array $unidades,
+    array $archivos,
+    array $evidenciasEliminadas,
+    int $idUsuario
     ): array {
 
         if ($idReporte <= 0) {
@@ -247,17 +296,19 @@ class ReporteService
 
         $reporteActual =
             $this->db
-            ->table('ai_reportes')
-            ->where(
-                'id_reporte',
-                $idReporte
-            )
-            ->where(
-                'eliminado',
-                0
-            )
-            ->get()
-            ->getRowArray();
+                ->table(
+                    'ai_reportes'
+                )
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->get()
+                ->getRowArray();
 
 
         if (!$reporteActual) {
@@ -268,8 +319,7 @@ class ReporteService
         }
 
 
-        $rutasCreadas =
-            [];
+        $rutasCreadas = [];
 
 
         $this->db->transBegin();
@@ -289,15 +339,17 @@ class ReporteService
 
 
             /*
-         * En una edición NO debemos modificar:
-         *
-         * created_by
-         * eliminado
-         */
+            * En edición nunca modificamos datos
+            * propios de la creación del registro.
+            */
 
             unset(
                 $datosReporte['created_by'],
-                $datosReporte['eliminado']
+                $datosReporte['eliminado'],
+                $datosReporte['tipo_registro'],
+                $datosReporte['numero_folio'],
+                $datosReporte['folio'],
+                $datosReporte['nomenclatura']
             );
 
 
@@ -311,10 +363,10 @@ class ReporteService
 
             $actualizado =
                 $this->reporteModel
-                ->update(
-                    $idReporte,
-                    $datosReporte
-                );
+                    ->update(
+                        $idReporte,
+                        $datosReporte
+                    );
 
 
             if ($actualizado === false) {
@@ -330,7 +382,9 @@ class ReporteService
             ================================================= */
 
             $this->db
-                ->table('ai_reporte_personal')
+                ->table(
+                    'ai_reporte_personal'
+                )
                 ->where(
                     'id_reporte',
                     $idReporte
@@ -349,7 +403,9 @@ class ReporteService
             ================================================= */
 
             $this->db
-                ->table('ai_reporte_unidades')
+                ->table(
+                    'ai_reporte_unidades'
+                )
                 ->where(
                     'id_reporte',
                     $idReporte
@@ -363,18 +419,9 @@ class ReporteService
                 $datosReporte['modalidad_unidad']
             );
 
+
             /* =================================================
             SANCIÓN DISCIPLINARIA
-
-            IMPORTANTE:
-            Editar solamente corrige la sanción vigente.
-
-            NO crea:
-            - seguimiento;
-            - nueva sanción histórica.
-
-            Los acontecimientos nuevos se registrarán
-            posteriormente desde Seguimiento.
             ================================================= */
 
             $this->corregirSancionDesdeEdicion(
@@ -428,24 +475,39 @@ class ReporteService
             return [
 
                 'success' =>
-                true,
+                    true,
 
                 'id_reporte' =>
-                $idReporte,
+                    $idReporte,
 
+                /*
+                * Conservamos siempre el folio original.
+                */
                 'folio' =>
-                $datosReporte['folio'],
+                    (string) (
+                        $reporteActual['folio']
+                        ?? ''
+                    ),
+
+                'numero_folio' =>
+                    isset(
+                        $reporteActual['numero_folio']
+                    )
+                        ? (int) $reporteActual['numero_folio']
+                        : null,
+
+                'tipo_registro' =>
+                    (string) (
+                        $reporteActual['tipo_registro']
+                        ?? 'QUEJA'
+                    ),
 
             ];
+
         } catch (\Throwable $e) {
 
             $this->db->transRollback();
 
-
-            /*
-         * Si se alcanzaron a crear archivos nuevos,
-         * pero la transacción falló, los eliminamos.
-         */
 
             foreach (
                 $rutasCreadas
@@ -474,40 +536,9 @@ class ReporteService
     ========================================================= */
 
     protected function prepararDatosReporte(
-        array $datos,
-        int $idUsuario
+    array $datos,
+    int $idUsuario
     ): array {
-
-        $folio =
-            trim(
-                (string)
-                ($datos['folio'] ?? '')
-            );
-
-
-        if ($folio === '') {
-
-            $folio =
-                $this->construirFolio(
-
-                    $datos['prefijo']
-                        ?? $datos['prefijo_folio']
-                        ?? 'QJ',
-
-                    $datos['numero_folio']
-                        ?? ''
-
-                );
-        }
-
-
-        if ($folio === '') {
-
-            throw new \InvalidArgumentException(
-                'El folio es obligatorio.'
-            );
-        }
-
 
         return [
 
@@ -515,67 +546,54 @@ class ReporteService
             DATOS DEL REPORTE
             ================================================= */
 
-            'folio' =>
-            $folio,
-
-
             'fecha_registro' =>
-            $this->normalizarFecha(
-                $this->valorRequerido(
-                    $datos,
-                    'fecha_registro',
-                    'La fecha de registro es obligatoria.'
-                )
-            ),
+                $this->normalizarFecha(
+                    $this->valorRequerido(
+                        $datos,
+                        'fecha_registro',
+                        'La fecha de registro es obligatoria.'
+                    )
+                ),
 
 
             'folio_ip' =>
-            $this->valorNullable(
-                $datos['folio_ip']
-                    ?? null
-            ),
+                $this->valorNullable(
+                    $datos['folio_ip']
+                        ?? null
+                ),
 
 
             'fecha_queja' =>
-            $this->normalizarFecha(
-                $this->valorRequerido(
-                    $datos,
-                    'fecha_queja',
-                    'La fecha de la queja es obligatoria.'
-                )
-            ),
+                $this->normalizarFecha(
+                    $this->valorRequerido(
+                        $datos,
+                        'fecha_queja',
+                        'La fecha de la queja es obligatoria.'
+                    )
+                ),
 
 
             'fecha_acuerdo' =>
-            $this->normalizarFechaNullable(
-                $datos['fecha_acuerdo']
-                    ?? null
-            ),
+                $this->normalizarFechaNullable(
+                    $datos['fecha_acuerdo']
+                        ?? null
+                ),
 
 
             'expediente' =>
-            $this->valorRequerido(
-                $datos,
-                'expediente',
-                'El expediente es obligatorio.'
-            ),
-
-
-            'nomenclatura' =>
-            $this->valorNullable(
-                $datos['nomenclatura']
-                    ?? null
-            ),
+                $this->valorRequerido(
+                    $datos,
+                    'expediente',
+                    'El expediente es obligatorio.'
+                ),
 
 
             'numero_oficio' =>
-            $this->valorNullable(
-
-                $datos['no_oficio']
-                    ?? $datos['numero_oficio']
-                    ?? null
-
-            ),
+                $this->valorNullable(
+                    $datos['no_oficio']
+                        ?? $datos['numero_oficio']
+                        ?? null
+                ),
 
 
             /* =================================================
@@ -583,32 +601,32 @@ class ReporteService
             ================================================= */
 
             'fecha_hechos' =>
-            $this->normalizarFecha(
-                $this->valorRequerido(
-                    $datos,
-                    'fecha_hechos',
-                    'La fecha de los hechos es obligatoria.'
-                )
-            ),
+                $this->normalizarFecha(
+                    $this->valorRequerido(
+                        $datos,
+                        'fecha_hechos',
+                        'La fecha de los hechos es obligatoria.'
+                    )
+                ),
 
 
             'hora_hechos' =>
-            $this->valorRequerido(
-                $datos,
-                'hora_hechos',
-                'La hora de los hechos es obligatoria.'
-            ),
+                $this->valorRequerido(
+                    $datos,
+                    'hora_hechos',
+                    'La hora de los hechos es obligatoria.'
+                ),
 
 
             'descripcion_hechos' =>
-            $this->valorRequeridoAlternativo(
-                $datos,
-                [
-                    'descripcion_hechos',
-                    'descripcion',
-                ],
-                'La descripción de los hechos es obligatoria.'
-            ),
+                $this->valorRequeridoAlternativo(
+                    $datos,
+                    [
+                        'descripcion_hechos',
+                        'descripcion',
+                    ],
+                    'La descripción de los hechos es obligatoria.'
+                ),
 
 
             /* =================================================
@@ -616,111 +634,104 @@ class ReporteService
             ================================================= */
 
             'calle' =>
-            $this->valorRequerido(
-                $datos,
-                'calle',
-                'La calle es obligatoria.'
-            ),
+                $this->valorRequerido(
+                    $datos,
+                    'calle',
+                    'La calle es obligatoria.'
+                ),
 
 
             'numero_exterior' =>
-            $this->valorRequeridoAlternativo(
-                $datos,
-                [
-                    'numero_exterior',
-                    'numero',
-                ],
-                'El número exterior es obligatorio.'
-            ),
+                $this->valorRequeridoAlternativo(
+                    $datos,
+                    [
+                        'numero_exterior',
+                        'numero',
+                    ],
+                    'El número exterior es obligatorio.'
+                ),
 
 
             'colonia' =>
-            $this->valorRequerido(
-                $datos,
-                'colonia',
-                'La colonia es obligatoria.'
-            ),
+                $this->valorRequerido(
+                    $datos,
+                    'colonia',
+                    'La colonia es obligatoria.'
+                ),
 
 
             'entre_calle' =>
-            $this->valorNullable(
-                $datos['entre_calle']
-                    ?? null
-            ),
+                $this->valorNullable(
+                    $datos['entre_calle']
+                        ?? null
+                ),
 
 
             'y_calle' =>
-            $this->valorNullable(
-                $datos['y_calle']
-                    ?? null
-            ),
+                $this->valorNullable(
+                    $datos['y_calle']
+                        ?? null
+                ),
 
 
             'municipio' =>
-            $this->valorRequerido(
-                $datos,
-                'municipio',
-                'El municipio es obligatorio.'
-            ),
+                $this->valorRequerido(
+                    $datos,
+                    'municipio',
+                    'El municipio es obligatorio.'
+                ),
 
 
             'estado' =>
-            $this->valorRequerido(
-                $datos,
-                'estado',
-                'El estado es obligatorio.'
-            ),
+                $this->valorRequerido(
+                    $datos,
+                    'estado',
+                    'El estado es obligatorio.'
+                ),
 
 
             'sector' =>
-            $this->valorRequerido(
-                $datos,
-                'sector',
-                'El sector es obligatorio.'
-            ),
+                $this->valorRequerido(
+                    $datos,
+                    'sector',
+                    'El sector es obligatorio.'
+                ),
 
 
             'cuadrante' =>
-            $this->valorRequerido(
-                $datos,
-                'cuadrante',
-                'El cuadrante es obligatorio.'
-            ),
+                $this->valorRequerido(
+                    $datos,
+                    'cuadrante',
+                    'El cuadrante es obligatorio.'
+                ),
 
-
-            /* =================================================
-            ID TERRITORIAL
-
-            Proviene de:
-            prevencion_delito.getDireccionData()
-            ================================================= */
 
             'id_cuadra' =>
-            $this->valorNullable(
-                $datos['id_cuadra']
-                    ?? null
-            ),
+                $this->valorNullable(
+                    $datos['id_cuadra']
+                        ?? null
+                ),
 
 
             'latitud' =>
-            $this->decimalNullable(
-                $datos['latitud']
-                    ?? null
-            ),
+                $this->decimalNullable(
+                    $datos['latitud']
+                        ?? null
+                ),
 
 
             'longitud' =>
-            $this->decimalNullable(
-                $datos['longitud']
-                    ?? null
-            ),
+                $this->decimalNullable(
+                    $datos['longitud']
+                        ?? null
+                ),
 
 
             'origen_ubicacion' =>
-            $this->normalizarOrigenUbicacion(
-                $datos['origen_ubicacion']
-                    ?? null
-            ),
+                $this->normalizarOrigenUbicacion(
+                    $datos['origen_ubicacion']
+                        ?? null
+                ),
 
 
             /* =================================================
@@ -728,55 +739,49 @@ class ReporteService
             ================================================= */
 
             'nombre_quejoso' =>
-            $this->valorRequeridoAlternativo(
-                $datos,
-                [
-                    'nombre_quejoso',
-                    'quejoso',
-                ],
-                'El nombre del quejoso es obligatorio.'
-            ),
+                $this->valorRequeridoAlternativo(
+                    $datos,
+                    [
+                        'nombre_quejoso',
+                        'quejoso',
+                    ],
+                    'El nombre del quejoso es obligatorio.'
+                ),
 
 
             'edad_quejoso' =>
-            $this->edadValida(
-
-                $datos['edad_quejoso']
-                    ?? $datos['edad']
-                    ?? null
-
-            ),
+                $this->edadValida(
+                    $datos['edad_quejoso']
+                        ?? $datos['edad']
+                        ?? null
+                ),
 
 
             'genero_quejoso' =>
-            $this->valorRequeridoAlternativo(
-                $datos,
-                [
-                    'genero_quejoso',
-                    'genero',
-                ],
-                'El género del quejoso es obligatorio.'
-            ),
+                $this->valorRequeridoAlternativo(
+                    $datos,
+                    [
+                        'genero_quejoso',
+                        'genero',
+                    ],
+                    'El género del quejoso es obligatorio.'
+                ),
 
 
             'telefono_quejoso' =>
-            $this->valorNullable(
-
-                $datos['telefono_quejoso']
-                    ?? $datos['telefono']
-                    ?? null
-
-            ),
+                $this->valorNullable(
+                    $datos['telefono_quejoso']
+                        ?? $datos['telefono']
+                        ?? null
+                ),
 
 
             'correo_quejoso' =>
-            $this->valorNullable(
-
-                $datos['correo_quejoso']
-                    ?? $datos['correo']
-                    ?? null
-
-            ),
+                $this->valorNullable(
+                    $datos['correo_quejoso']
+                        ?? $datos['correo']
+                        ?? null
+                ),
 
 
             /* =================================================
@@ -784,61 +789,61 @@ class ReporteService
             ================================================= */
 
             'clasificacion' =>
-            $this->valorRequerido(
-                $datos,
-                'clasificacion',
-                'La clasificación es obligatoria.'
-            ),
+                $this->valorRequerido(
+                    $datos,
+                    'clasificacion',
+                    'La clasificación es obligatoria.'
+                ),
 
 
             'inspector' =>
-            $this->valorRequerido(
-                $datos,
-                'inspector',
-                'El inspector es obligatorio.'
-            ),
+                $this->valorRequerido(
+                    $datos,
+                    'inspector',
+                    'El inspector es obligatorio.'
+                ),
 
 
             'investigador' =>
-            $this->valorNullable(
-                $datos['investigador']
-                    ?? null
-            ),
+                $this->valorNullable(
+                    $datos['investigador']
+                        ?? null
+                ),
 
 
             'quien_emite_resolucion' =>
-            $this->valorNullable(
-                $datos['quien_emite_resolucion']
-                    ?? null
-            ),
+                $this->valorNullable(
+                    $datos['quien_emite_resolucion']
+                        ?? null
+                ),
 
 
             'resolucion' =>
-            $this->valorNullable(
-                $datos['resolucion']
-                    ?? null
-            ),
+                $this->valorNullable(
+                    $datos['resolucion']
+                        ?? null
+                ),
 
 
             'motivos' =>
-            $this->valorNullable(
-                $datos['motivos']
-                    ?? null
-            ),
+                $this->valorNullable(
+                    $datos['motivos']
+                        ?? null
+                ),
 
 
             'estado_actual' =>
-            $this->normalizarEstadoActual(
-                $datos['estado_actual']
-                    ?? 'Pendiente'
-            ),
+                $this->normalizarEstadoActual(
+                    $datos['estado_actual']
+                        ?? 'Pendiente'
+                ),
 
 
             'observaciones' =>
-            $this->valorNullable(
-                $datos['observaciones']
-                    ?? null
-            ),
+                $this->valorNullable(
+                    $datos['observaciones']
+                        ?? null
+                ),
 
 
             /* =================================================
@@ -846,10 +851,10 @@ class ReporteService
             ================================================= */
 
             'modalidad_unidad' =>
-            $this->normalizarModalidadUnidad(
-                $datos['modalidad_unidad']
-                    ?? 'CON_UNIDAD'
-            ),
+                $this->normalizarModalidadUnidad(
+                    $datos['modalidad_unidad']
+                        ?? 'CON_UNIDAD'
+                ),
 
 
             /* =================================================
@@ -857,11 +862,11 @@ class ReporteService
             ================================================= */
 
             'created_by' =>
-            $idUsuario,
+                $idUsuario,
 
 
             'eliminado' =>
-            0,
+                0,
 
         ];
     }
@@ -2523,53 +2528,5 @@ class ReporteService
 
 
         return $origen;
-    }
-
-
-    /* =========================================================
-       CONSTRUIR FOLIO
-    ========================================================= */
-
-    protected function construirFolio(
-        mixed $prefijo,
-        mixed $numero
-    ): string {
-
-        $prefijo =
-            strtoupper(
-                trim(
-                    (string)
-                    $prefijo
-                )
-            );
-
-
-        $numero =
-            trim(
-                (string)
-                $numero
-            );
-
-
-        if (
-            $prefijo === ''
-        ) {
-
-            $prefijo =
-                'QJ';
-        }
-
-
-        if (
-            $numero === ''
-        ) {
-
-            return '';
-        }
-
-
-        return $prefijo
-            . '-'
-            . $numero;
     }
 }

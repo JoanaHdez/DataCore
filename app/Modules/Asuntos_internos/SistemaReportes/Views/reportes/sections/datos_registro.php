@@ -25,36 +25,18 @@
 
         <div class="report-form-grid">
 
-            <!-- QJ -->
-            <div class="report-field">
-
-                <label for="prefijo_folio">
-                    Prefijo
-                </label>
-
-                <input type="text" id="prefijo_folio" name="prefijo_folio" class="report-input report-input--readonly"
-                    value="QJ" readonly>
-
-                <small class="report-field__help">
-                    Identificador fijo del tipo de registro.
-                </small>
-
-            </div>
-
-
             <!-- NÚMERO DE FOLIO -->
             <div class="report-field">
 
-                <label for="numero_folio">
+                <label for="folio_visual">
                     Número de folio
-                    <span class="required">*</span>
                 </label>
 
-                <input type="text" id="numero_folio" name="numero_folio" class="report-input"
-                    placeholder="Ingresa el número de folio" autocomplete="off" required>
+                <input type="text" id="folio_visual" class="report-input report-input--readonly"
+                    value="QJ- — Automático" readonly>
 
-                <small class="report-field__help" id="folio-validacion-mensaje">
-                    Captura únicamente el número correspondiente al folio.
+                <small class="report-field__help">
+                    El consecutivo se asignará automáticamente al guardar.
                 </small>
 
             </div>

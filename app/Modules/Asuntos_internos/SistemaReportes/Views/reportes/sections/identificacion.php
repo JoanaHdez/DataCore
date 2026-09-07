@@ -83,8 +83,12 @@
                     Nomenclatura
                 </label>
 
-                <input type="text" id="nomenclatura" name="nomenclatura" class="report-input"
-                    placeholder="Ingresa la nomenclatura">
+                <input type="text" id="nomenclatura" name="nomenclatura" class="report-input report-input--readonly"
+                    value="CGSC/CAI/QJ/ — Automático" readonly>
+
+                <small class="report-field__help">
+                    Se genera automáticamente con el número de folio asignado.
+                </small>
 
             </div>
 

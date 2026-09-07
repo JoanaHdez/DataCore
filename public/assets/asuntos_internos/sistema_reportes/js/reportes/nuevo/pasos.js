@@ -196,49 +196,6 @@ function inicializarFormularioPorPasos() {
     }
 
     /* =====================================================
-       LIMPIAR VALIDACIÓN DE FOLIO AL MODIFICARLO
-    ===================================================== */
-
-    const inputNumeroFolio =
-        formulario.querySelector(
-            '#numero_folio'
-        );
-
-
-    const mensajeFolio =
-        formulario.querySelector(
-            '#folio-validacion-mensaje'
-        );
-
-
-    if (inputNumeroFolio) {
-
-        inputNumeroFolio.addEventListener(
-            'input',
-            () => {
-
-                /*
-                 * Al cambiar el folio eliminamos cualquier
-                 * error personalizado de la consulta anterior.
-                 */
-                inputNumeroFolio.setCustomValidity(
-                    ''
-                );
-
-
-                if (mensajeFolio) {
-
-                    mensajeFolio.textContent =
-                        'Captura únicamente el número correspondiente al folio.';
-
-                }
-
-            }
-        );
-
-    }
-
-    /* =====================================================
        SIGUIENTE
     ===================================================== */
 
@@ -290,27 +247,6 @@ function inicializarFormularioPorPasos() {
             ) {
                 return;
             }
-
-
-            /*
-             * PASO 1:
-             * Validar que el folio no exista
-             * previamente en la base de datos.
-             */
-            if (
-                pasoActual === 1
-            ) {
-
-                const folioDisponible =
-                    await validarFolioDisponible();
-
-
-                if (!folioDisponible) {
-                    return;
-                }
-
-            }
-
 
             pasosCompletados.add(
                 pasoActual
@@ -518,11 +454,8 @@ function inicializarFormularioPorPasos() {
                         resultado.message
                         || 'El reporte se registró correctamente.',
 
-                    /* url:
-                        '/asuntos-internos/reportes/listado', */
-
                         url:
-    '/DataCore/public/asuntos-internos/reportes/listado',
+                        '/DataCore/public/asuntos-internos/reportes/listado',
 
                     duracion:
                         2000,
@@ -570,6 +503,15 @@ function inicializarFormularioPorPasos() {
             }
 
         }
+    );
+
+
+    /* =====================================================
+    PREVISUALIZAR FOLIO AUTOMÁTICO
+    ===================================================== */
+
+    cargarPrevisualizacionFolio(
+        formulario
     );
 
 
@@ -631,6 +573,7 @@ function validarFormularioCompleto(
          * Primero validamos los campos
          * HTML requeridos.
          */
+
         if (
             !validarPasoActual(
                 paso,
@@ -647,14 +590,18 @@ function validarFormularioCompleto(
                 valido: false,
                 paso: numeroPaso,
             };
-
         }
 
 
         /*
          * Después validamos las relaciones
-         * dinámicas.
+         * dinámicas:
+         *
+         * - personal;
+         * - modalidad de unidad;
+         * - unidades.
          */
+
         if (
             !validarRelacionesDelPaso(
                 numeroPaso,
@@ -666,9 +613,7 @@ function validarFormularioCompleto(
                 valido: false,
                 paso: numeroPaso,
             };
-
         }
-
     }
 
 
@@ -676,7 +621,6 @@ function validarFormularioCompleto(
         valido: true,
         paso: null,
     };
-
 }
 
 
@@ -984,31 +928,166 @@ function validarRelacionesDelPaso(
 
 
 /* =========================================================
-   URL GUARDAR
+   PREVISUALIZAR FOLIO
 ========================================================= */
 
-/* function construirUrlGuardar() {
+async function cargarPrevisualizacionFolio(
+    formulario
+) {
 
-    const base =
-        document
-            .querySelector('base')
-            ?.href;
+    const inputFolio =
+        formulario.querySelector(
+            '#folio_visual'
+        );
 
 
-    if (base) {
+    const inputNomenclatura =
+        formulario.querySelector(
+            '#nomenclatura'
+        );
 
-        return new URL(
-            'asuntos-internos/reportes/guardar',
-            base
-        ).toString();
 
+    if (
+        !inputFolio
+        || !inputNomenclatura
+    ) {
+
+        console.warn(
+            'No se encontraron los campos visuales del folio automático.'
+        );
+
+        return;
     }
 
 
-    return `${window.location.origin
-        }/asuntos-internos/reportes/guardar`;
+    try {
 
-} */
+        /* =====================================================
+           ENDPOINT
+        ===================================================== */
+
+        const url =
+            new URL(
+                'DataCore/public/asuntos-internos/reportes/previsualizar-folio',
+                `${window.location.origin}/`
+            );
+
+
+        url.searchParams.set(
+            'tipo_registro',
+            'QUEJA'
+        );
+
+
+        /* =====================================================
+           CONSULTAR
+        ===================================================== */
+
+        const respuesta =
+            await fetch(
+                url.toString(),
+                {
+                    method:
+                        'GET',
+
+                    headers: {
+                        Accept:
+                            'application/json',
+                    },
+
+                    credentials:
+                        'same-origin',
+                }
+            );
+
+
+        let resultado =
+            null;
+
+
+        try {
+
+            resultado =
+                await respuesta.json();
+
+        } catch (error) {
+
+            throw new Error(
+                'El servidor devolvió una respuesta no válida al consultar el folio.'
+            );
+        }
+
+
+        if (
+            !respuesta.ok
+            || resultado?.success !== true
+        ) {
+
+            throw new Error(
+                resultado?.message
+                || 'No fue posible consultar el siguiente folio.'
+            );
+        }
+
+
+        /* =====================================================
+           MOSTRAR FOLIO
+        ===================================================== */
+
+        const folio =
+            String(
+                resultado.folio
+                || ''
+            ).trim();
+
+
+        const nomenclatura =
+            String(
+                resultado.nomenclatura
+                || ''
+            ).trim();
+
+
+        if (
+            folio === ''
+            || nomenclatura === ''
+        ) {
+
+            throw new Error(
+                'El servidor no devolvió un folio válido.'
+            );
+        }
+
+
+        inputFolio.value =
+            folio;
+
+
+        inputNomenclatura.value =
+            nomenclatura;
+
+
+    } catch (error) {
+
+        console.error(
+            'Error previsualizando folio:',
+            error
+        );
+
+
+        inputFolio.value =
+            'QJ- — No disponible';
+
+
+        inputNomenclatura.value =
+            'CGSC/CAI/QJ/ — No disponible';
+    }
+}
+
+
+/* =========================================================
+   URL GUARDAR
+========================================================= */
 
 function construirUrlGuardar() {
 
@@ -1091,151 +1170,4 @@ function actualizarIndicadoresGuardados(
         }
     );
 
-}
-
-async function validarFolioDisponible() {
-
-    const input =
-        document.querySelector(
-            '#numero_folio'
-        );
-
-
-    const mensaje =
-        document.querySelector(
-            '#folio-validacion-mensaje'
-        );
-
-
-    if (!input) {
-        return true;
-    }
-
-
-    const numero =
-        String(
-            input.value
-            || ''
-        ).trim();
-
-
-    if (numero === '') {
-        return false;
-    }
-
-
-    const folio =
-        `QJ-${numero}`;
-
-
-    try {
-
-        /* const url =
-            new URL(
-                'asuntos-internos/reportes/validar-folio',
-                `${window.location.origin}/`
-            ); */
-
-const url =
-    new URL(
-        'DataCore/public/asuntos-internos/reportes/validar-folio',
-        `${window.location.origin}/`
-    );
-
-
-        url.searchParams.set(
-            'folio',
-            folio
-        );
-
-
-        const respuesta =
-            await fetch(
-                url.toString(),
-                {
-                    headers: {
-                        Accept:
-                            'application/json',
-                    },
-
-                    credentials:
-                        'same-origin',
-                }
-            );
-
-
-        const datos =
-            await respuesta.json();
-
-
-        if (
-            !respuesta.ok
-            || datos.success !== true
-        ) {
-
-            throw new Error(
-                datos.message
-                || 'No fue posible validar el folio.'
-            );
-        }
-
-
-        if (datos.existe) {
-
-            input.setCustomValidity(
-                'Este folio ya está registrado.'
-            );
-
-
-            if (mensaje) {
-
-                mensaje.textContent =
-                    `El folio ${folio} ya está registrado.`;
-
-            }
-
-
-            input.reportValidity();
-
-            input.focus();
-
-
-            return false;
-        }
-
-
-        input.setCustomValidity(
-            ''
-        );
-
-
-        if (mensaje) {
-
-            mensaje.textContent =
-                `El folio ${folio} está disponible.`;
-
-        }
-
-
-        return true;
-
-
-    } catch (error) {
-
-        console.error(
-            'Error validando folio:',
-            error
-        );
-
-
-        input.setCustomValidity(
-            'No fue posible validar el folio.'
-        );
-
-
-        input.reportValidity();
-
-
-        return false;
-    }
 }
