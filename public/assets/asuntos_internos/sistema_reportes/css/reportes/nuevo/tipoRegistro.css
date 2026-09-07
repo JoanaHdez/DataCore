@@ -1,0 +1,257 @@
+/* =========================================================
+   SELECTOR INICIAL DE TIPO DE REGISTRO
+========================================================= */
+
+.tipo-registro-modal {
+    position: fixed;
+    inset: 0;
+
+    z-index: 2000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+}
+
+
+.tipo-registro-modal[hidden] {
+    display: none !important;
+}
+
+
+/* =========================================================
+   FONDO
+========================================================= */
+
+.tipo-registro-modal__overlay {
+    position: absolute;
+    inset: 0;
+
+    background:
+        rgba(7, 31, 61, 0.58);
+
+    backdrop-filter:
+        blur(3px);
+}
+
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+.tipo-registro-modal__contenido {
+    position: relative;
+    z-index: 1;
+
+    width: min(720px, 100%);
+
+    padding: 32px;
+
+    background: #ffffff;
+
+    border: 1px solid #dce6ef;
+    border-radius: 18px;
+
+    box-shadow:
+        0 24px 60px rgba(8, 35, 67, 0.22);
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.tipo-registro-modal__header {
+    margin-bottom: 26px;
+
+    text-align: center;
+}
+
+
+.tipo-registro-modal__eyebrow {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #0f70b5;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
+
+
+.tipo-registro-modal__titulo {
+    margin: 0;
+
+    color: #0f2d52;
+
+    font-size: 24px;
+    font-weight: 800;
+
+    line-height: 1.2;
+}
+
+
+.tipo-registro-modal__descripcion {
+    margin:
+        8px 0 0;
+
+    color: #6c7f91;
+
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   OPCIONES
+========================================================= */
+
+.tipo-registro-modal__opciones {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+
+/* =========================================================
+   TARJETA
+========================================================= */
+
+.tipo-registro-card {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 16px;
+
+    padding: 20px;
+
+    text-align: left;
+
+    background: #ffffff;
+
+    border: 1px solid #d8e3ec;
+    border-radius: 14px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 24px rgba(20, 55, 90, 0.06);
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.tipo-registro-card:hover {
+    transform:
+        translateY(-2px);
+
+    background:
+        #f7fbff;
+
+    border-color:
+        #8fc7ea;
+
+    box-shadow:
+        0 14px 30px rgba(20, 75, 120, 0.12);
+}
+
+
+/* =========================================================
+   ICONO
+========================================================= */
+
+.tipo-registro-card__icono {
+    width: 54px;
+    height: 54px;
+
+    flex: 0 0 54px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #ffffff;
+
+    background:
+        #147abd;
+
+    border-radius: 12px;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    letter-spacing: 0.5px;
+}
+
+
+/* =========================================================
+   TEXTO
+========================================================= */
+
+.tipo-registro-card__contenido {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+.tipo-registro-card__contenido strong {
+    color: #173554;
+
+    font-size: 15px;
+    font-weight: 800;
+}
+
+
+.tipo-registro-card__contenido span {
+    color: #718397;
+
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .tipo-registro-modal {
+        padding: 16px;
+    }
+
+
+    .tipo-registro-modal__contenido {
+        padding: 24px 18px;
+    }
+
+
+    .tipo-registro-modal__opciones {
+        grid-template-columns: 1fr;
+    }
+
+
+    .tipo-registro-modal__titulo {
+        font-size: 20px;
+    }
+
+}

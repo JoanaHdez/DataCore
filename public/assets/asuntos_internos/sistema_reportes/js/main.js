@@ -22,12 +22,29 @@ import './reportes/dashboard/autorizacion.js';
    REPORTES - NUEVO
 ========================================================= */
 
+import './reportes/nuevo/tipoRegistro.js';
+
 import './reportes/nuevo/limpiar.js';
+
 import './reportes/nuevo/pasos.js';
+
 import './reportes/nuevo/personal.js';
+
 import './reportes/nuevo/unidades.js';
+
 import './reportes/nuevo/evidencia.js';
+
 import './reportes/nuevo/sanciones.js';
+
+
+/* =========================================================
+   REPORTES - NUEVO - FELICITACIONES
+========================================================= */
+
+import './reportes/nuevo/felicitaciones/personal.js';
+
+import './reportes/nuevo/felicitaciones/formulario.js';
+
 
 /* =========================================================
    REPORTES - LISTADO

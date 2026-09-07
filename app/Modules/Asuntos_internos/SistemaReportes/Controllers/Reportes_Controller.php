@@ -8,6 +8,7 @@ use App\Modules\Asuntos_internos\SistemaReportes\Services\AuthService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\ReporteService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\FolioService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\FelicitacionService;
 
 use App\Controllers\BaseController;
 
@@ -707,6 +708,146 @@ class Reportes_Controller extends BaseController
         }
     }
 
+    public function guardarFelicitacion()
+    {
+        /* =========================================================
+        VALIDAR SESIÓN
+        ========================================================= */
+
+        if (
+            session()->get('reportes_autenticado') !== true
+            || !session()->has('usuario_reportes')
+        ) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La sesión no es válida.',
+                ]);
+        }
+
+
+        $usuario =
+            session()->get(
+                'usuario_reportes'
+            );
+
+
+        $idUsuario =
+            (int) (
+                $usuario['id_usuario']
+                ?? 0
+            );
+
+
+        if ($idUsuario <= 0) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'No fue posible identificar al usuario.',
+                ]);
+        }
+
+
+        /* =========================================================
+        DATOS DEL FORMULARIO
+        ========================================================= */
+
+        $datos =
+            $this->request
+                ->getPost();
+
+
+        $personal =
+            $this->request
+                ->getPost(
+                    'personal'
+                );
+
+
+        if (!is_array($personal)) {
+
+            $personal = [];
+        }
+
+
+        /* =========================================================
+        GUARDAR
+        ========================================================= */
+
+        try {
+
+            $servicio =
+                new FelicitacionService();
+
+
+            $resultado =
+                $servicio->guardar(
+                    $datos,
+                    $personal,
+                    $idUsuario
+                );
+
+
+            return $this->response
+                ->setStatusCode(201)
+                ->setJSON([
+                    'success' =>
+                        true,
+
+                    'message' =>
+                        'La felicitación fue guardada correctamente.',
+
+                    'id_felicitacion' =>
+                        $resultado['id_felicitacion']
+                        ?? null,
+
+                    'numero_folio' =>
+                        $resultado['numero_folio']
+                        ?? null,
+
+                    'folio' =>
+                        $resultado['folio']
+                        ?? null,
+
+                    'nomenclatura' =>
+                        $resultado['nomenclatura']
+                        ?? null,
+                ]);
+
+        } catch (\InvalidArgumentException $e) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ]);
+
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error guardando felicitación de Asuntos Internos: {mensaje}',
+                [
+                    'mensaje' =>
+                        $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'No fue posible guardar la felicitación.',
+                ]);
+        }
+    }
+    
     public function actualizarReporte(int $idReporte)
     {
         /* =========================================================
@@ -2060,10 +2201,6 @@ class Reportes_Controller extends BaseController
             ]
         );
     }
-
-    /* =========================================================
-    AUTORIZAR DASHBOARD
-    ========================================================= */
 
     public function autorizarDashboard()
     {

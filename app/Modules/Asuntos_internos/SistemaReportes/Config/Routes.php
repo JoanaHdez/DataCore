@@ -97,6 +97,11 @@ $routes->group(
                 );
 
 
+                $routes->post(
+                    'felicitaciones/guardar',
+                    '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::guardarFelicitacion'
+                );
+
                 /* =================================================
                 FOLIOS
                 ================================================= */
