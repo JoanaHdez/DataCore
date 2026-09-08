@@ -1,0 +1,240 @@
+/* =========================================================
+   FELICITACIONES
+   FORMULARIO
+========================================================= */
+
+
+/* =========================================================
+   PASOS
+========================================================= */
+
+.report-steps {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+/* =========================================================
+   PASO BASE
+========================================================= */
+
+.report-steps__item {
+    min-width: 220px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px 16px;
+
+    background: #f5f8fb;
+
+    border: 1px solid #dce5ed;
+    border-radius: 8px;
+
+    color: #6d8092;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.report-steps__item > span {
+    width: 26px;
+    height: 26px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 26px;
+
+    background: #e5edf4;
+
+    border-radius: 50%;
+
+    color: #6e8091;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+.report-steps__item > strong {
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   PASO ACTIVO
+========================================================= */
+
+.report-steps__item--active {
+    color: #075a91;
+
+    background: #eef8ff;
+
+    border-color: #66b9eb;
+}
+
+
+.report-steps__item--active > span {
+    color: #ffffff;
+
+    background: #0879bd;
+}
+
+
+/* =========================================================
+   PASO COMPLETADO
+========================================================= */
+
+.report-steps__item--completed {
+    color: #087348;
+
+    background: #eefbf5;
+
+    border-color: #72cfaa;
+}
+
+
+.report-steps__item--completed > span {
+    color: #ffffff;
+
+    background: #149667;
+}
+
+
+/* =========================================================
+   PANELES
+========================================================= */
+
+.felicitacion-paso[hidden] {
+    display: none !important;
+}
+
+
+/* =========================================================
+   ACCIONES DE PASOS
+========================================================= */
+
+.felicitacion-paso .report-step-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+/* =========================================================
+   PASO 1
+   Limpiar | Siguiente
+========================================================= */
+
+.felicitacion-paso
+.report-step-actions:not(:has(#btn-anterior-felicitacion)) {
+    justify-content: flex-end;
+}
+
+
+.felicitacion-paso
+.report-step-actions:not(:has(#btn-anterior-felicitacion))
+.report-step-actions__right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+/* =========================================================
+   PASO 2
+   Anterior
+   Limpiar | Guardar
+========================================================= */
+
+.felicitacion-paso
+.report-step-actions:has(#btn-anterior-felicitacion) {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+}
+
+
+#btn-anterior-felicitacion {
+    justify-self: start;
+}
+
+
+.felicitacion-paso
+.report-step-actions:has(#btn-anterior-felicitacion)
+.report-step-actions__right {
+    justify-self: end;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+/* =========================================================
+   TAMAÑO DE BOTONES
+========================================================= */
+
+.felicitacion-paso
+.report-step-actions .button {
+    width: auto !important;
+
+    min-width: 150px;
+    max-width: 220px;
+
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .report-steps {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+
+    .report-steps__item {
+        width: 100%;
+        min-width: 0;
+    }
+
+
+    .felicitacion-paso
+    .report-step-actions,
+    .felicitacion-paso
+    .report-step-actions:has(#btn-anterior-felicitacion) {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+
+    .felicitacion-paso
+    .report-step-actions__right {
+        width: 100%;
+
+        flex-direction: column;
+    }
+
+
+    .felicitacion-paso
+    .report-step-actions .button {
+        width: 100% !important;
+        max-width: none;
+    }
+
+}

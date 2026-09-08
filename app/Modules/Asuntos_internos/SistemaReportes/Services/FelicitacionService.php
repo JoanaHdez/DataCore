@@ -50,10 +50,17 @@ class FelicitacionService
     public function guardar(
         array $datos,
         array $personal,
+        array $unidades,
         int $idUsuario
     ): array {
 
-        if ($idUsuario <= 0) {
+        /* =====================================================
+           USUARIO
+        ===================================================== */
+
+        if (
+            $idUsuario <= 0
+        ) {
 
             throw new \RuntimeException(
                 'No fue posible identificar al usuario que registra la felicitación.'
@@ -61,13 +68,25 @@ class FelicitacionService
         }
 
 
-        if (empty($personal)) {
+        /* =====================================================
+           PERSONAL
+        ===================================================== */
+
+        if (
+            empty(
+                $personal
+            )
+        ) {
 
             throw new \InvalidArgumentException(
                 'Debes agregar al menos una persona a la felicitación.'
             );
         }
 
+
+        /* =====================================================
+           NOMBRE DEL FELICITANTE
+        ===================================================== */
 
         $nombreFelicitante =
             trim(
@@ -78,13 +97,19 @@ class FelicitacionService
             );
 
 
-        if ($nombreFelicitante === '') {
+        if (
+            $nombreFelicitante === ''
+        ) {
 
             throw new \InvalidArgumentException(
                 'El nombre de la persona que da la felicitación es obligatorio.'
             );
         }
 
+
+        /* =====================================================
+           RAZÓN
+        ===================================================== */
 
         $razonFelicitacion =
             trim(
@@ -95,7 +120,9 @@ class FelicitacionService
             );
 
 
-        if ($razonFelicitacion === '') {
+        if (
+            $razonFelicitacion === ''
+        ) {
 
             throw new \InvalidArgumentException(
                 'La razón de la felicitación es obligatoria.'
@@ -103,12 +130,86 @@ class FelicitacionService
         }
 
 
+        /* =====================================================
+           FECHA
+        ===================================================== */
+
         $fechaRegistro =
             $this->normalizarFecha(
                 $datos['fecha_registro']
                 ?? null
             );
 
+
+        /* =====================================================
+           MODALIDAD DE UNIDAD
+        ===================================================== */
+
+        $modalidadUnidad =
+            strtoupper(
+                trim(
+                    (string) (
+                        $datos['modalidad_unidad']
+                        ?? 'CON_UNIDAD'
+                    )
+                )
+            );
+
+
+        $modalidadesPermitidas = [
+            'CON_UNIDAD',
+            'SIN_UNIDAD_OFICINA',
+        ];
+
+
+        if (
+            !in_array(
+                $modalidadUnidad,
+                $modalidadesPermitidas,
+                true
+            )
+        ) {
+
+            throw new \InvalidArgumentException(
+                'La modalidad de unidad seleccionada no es válida.'
+            );
+        }
+
+
+        /* =====================================================
+           VALIDAR UNIDADES
+        ===================================================== */
+
+        if (
+            $modalidadUnidad === 'CON_UNIDAD'
+            && empty(
+                $unidades
+            )
+        ) {
+
+            throw new \InvalidArgumentException(
+                'Debes agregar al menos una unidad o seleccionar "Sin unidad / Oficina".'
+            );
+        }
+
+
+        /*
+         * Si el usuario seleccionó Sin unidad / Oficina,
+         * ignoramos cualquier unidad recibida accidentalmente.
+         */
+
+        if (
+            $modalidadUnidad === 'SIN_UNIDAD_OFICINA'
+        ) {
+
+            $unidades =
+                [];
+        }
+
+
+        /* =====================================================
+           INICIAR TRANSACCIÓN
+        ===================================================== */
 
         $this->db->transBegin();
 
@@ -159,7 +260,9 @@ class FelicitacionService
                     );
 
 
-            if (!$idFelicitacion) {
+            if (
+                !$idFelicitacion
+            ) {
 
                 throw new \RuntimeException(
                     'No fue posible guardar la felicitación.'
@@ -182,6 +285,21 @@ class FelicitacionService
 
 
             /* =================================================
+               GUARDAR UNIDADES
+            ================================================= */
+
+            if (
+                $modalidadUnidad === 'CON_UNIDAD'
+            ) {
+
+                $this->guardarUnidades(
+                    $idFelicitacion,
+                    $unidades
+                );
+            }
+
+
+            /* =================================================
                VALIDAR TRANSACCIÓN
             ================================================= */
 
@@ -196,11 +314,14 @@ class FelicitacionService
             }
 
 
+            /* =================================================
+               CONFIRMAR
+            ================================================= */
+
             $this->db->transCommit();
 
 
             return [
-
                 'success' =>
                     true,
 
@@ -216,6 +337,7 @@ class FelicitacionService
                 'nomenclatura' =>
                     $folioGenerado['nomenclatura'],
             ];
+
 
         } catch (\Throwable $e) {
 
@@ -316,13 +438,272 @@ class FelicitacionService
                     ]);
 
 
-            if ($insertado === false) {
+            if (
+                $insertado === false
+            ) {
 
                 throw new \RuntimeException(
                     'No fue posible guardar el personal relacionado con la felicitación.'
                 );
             }
         }
+    }
+
+
+    /* =========================================================
+       GUARDAR UNIDADES
+    ========================================================= */
+
+    protected function guardarUnidades(
+        int $idFelicitacion,
+        array $unidades
+    ): void {
+
+        if (
+            empty(
+                $unidades
+            )
+        ) {
+
+            throw new \InvalidArgumentException(
+                'Debes agregar al menos una unidad a la felicitación.'
+            );
+        }
+
+
+        $idsRegistrados =
+            [];
+
+
+        foreach (
+            $unidades
+            as $unidad
+        ) {
+
+            if (
+                !is_array(
+                    $unidad
+                )
+            ) {
+                continue;
+            }
+
+
+            /* =================================================
+               ID DE PARQUE VEHICULAR
+            ================================================= */
+
+            $parqueId =
+                (int) (
+                    $unidad['parque_vehicular_id']
+                    ?? $unidad['id']
+                    ?? 0
+                );
+
+
+            if (
+                $parqueId <= 0
+            ) {
+
+                throw new \InvalidArgumentException(
+                    'Existe una unidad relacionada sin identificador válido.'
+                );
+            }
+
+
+            /* =================================================
+               EVITAR DUPLICADOS
+            ================================================= */
+
+            if (
+                in_array(
+                    $parqueId,
+                    $idsRegistrados,
+                    true
+                )
+            ) {
+                continue;
+            }
+
+
+            /* =================================================
+               ORIGEN
+            ================================================= */
+
+            $idOrigen =
+                $this->resolverOrigenUnidad(
+                    $unidad['origen']
+                    ?? null
+                );
+
+
+            /* =================================================
+               INSERTAR
+            ================================================= */
+
+            $insertado =
+                $this->db
+                    ->table(
+                        'ai_felicitacion_unidades'
+                    )
+                    ->insert([
+                        'id_felicitacion' =>
+                            $idFelicitacion,
+
+                        'parque_vehicular_id' =>
+                            $parqueId,
+
+                        'no_economico_snapshot' =>
+                            $this->nullable(
+                                $unidad['no_economico']
+                                ?? null
+                            ),
+
+                        'placas_snapshot' =>
+                            $this->nullable(
+                                $unidad['placas']
+                                ?? null
+                            ),
+
+                        'marca_snapshot' =>
+                            $this->nullable(
+                                $unidad['marca']
+                                ?? null
+                            ),
+
+                        'submarca_snapshot' =>
+                            $this->nullable(
+                                $unidad['submarca']
+                                ?? null
+                            ),
+
+                        'color_snapshot' =>
+                            $this->nullable(
+                                $unidad['color']
+                                ?? null
+                            ),
+
+                        'estatus_snapshot' =>
+                            $this->nullable(
+                                $unidad['estatus']
+                                ?? null
+                            ),
+
+                        'servicio_snapshot' =>
+                            $this->nullable(
+                                $unidad['servicio']
+                                ?? null
+                            ),
+
+                        'tipo_snapshot' =>
+                            $this->nullable(
+                                $unidad['tipo']
+                                ?? null
+                            ),
+
+                        'id_origen' =>
+                            $idOrigen,
+
+                        'created_at' =>
+                            date(
+                                'Y-m-d H:i:s'
+                            ),
+                    ]);
+
+
+            if (
+                $insertado === false
+            ) {
+
+                throw new \RuntimeException(
+                    'No fue posible guardar una unidad relacionada con la felicitación.'
+                );
+            }
+
+
+            $idsRegistrados[] =
+                $parqueId;
+        }
+
+
+        /*
+         * Si todas las entradas recibidas fueran inválidas
+         * o no insertables, no permitimos guardar una
+         * felicitación CON_UNIDAD sin una unidad real.
+         */
+
+        if (
+            empty(
+                $idsRegistrados
+            )
+        ) {
+
+            throw new \InvalidArgumentException(
+                'Debes agregar al menos una unidad válida a la felicitación.'
+            );
+        }
+    }
+
+
+    /* =========================================================
+       RESOLVER ORIGEN DE UNIDAD
+    ========================================================= */
+
+    protected function resolverOrigenUnidad(
+        mixed $origen
+    ): ?int {
+
+        $clave =
+            strtoupper(
+                trim(
+                    (string) (
+                        $origen
+                        ?? ''
+                    )
+                )
+            );
+
+
+        if (
+            $clave === ''
+        ) {
+            return null;
+        }
+
+
+        $registro =
+            $this->db
+                ->table(
+                    'ai_cat_origen_unidad'
+                )
+                ->select(
+                    'id_origen'
+                )
+                ->where(
+                    'clave',
+                    $clave
+                )
+                ->get()
+                ->getRowArray();
+
+
+        if (
+            !$registro
+        ) {
+            return null;
+        }
+
+
+        $idOrigen =
+            (int) (
+                $registro['id_origen']
+                ?? 0
+            );
+
+
+        return $idOrigen > 0
+            ? $idOrigen
+            : null;
     }
 
 
@@ -343,13 +724,20 @@ class FelicitacionService
             );
 
 
-        if ($fecha === '') {
+        if (
+            $fecha === ''
+        ) {
 
             throw new \InvalidArgumentException(
                 'La fecha de registro es obligatoria.'
             );
         }
 
+
+        /* =====================================================
+           FORMATO DE PANTALLA
+           dd/mm/YYYY
+        ===================================================== */
 
         $formatoPantalla =
             \DateTime::createFromFormat(
@@ -371,6 +759,11 @@ class FelicitacionService
                 );
         }
 
+
+        /* =====================================================
+           FORMATO DE BD
+           YYYY-mm-dd
+        ===================================================== */
 
         $formatoBd =
             \DateTime::createFromFormat(

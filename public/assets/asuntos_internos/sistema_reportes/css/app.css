@@ -50,10 +50,12 @@
 
 @import url('./reportes/componentes/resultado.css');
 @import url('./reportes/componentes/confirmacion.css');
-/*
-@import url('./components/buttons.css');
-@import url('./components/modals.css');
-@import url('./components/alerts.css');
-@import url('./components/tables.css');
-*/
 
+/* =========================================================
+   FELICITACIONES - LISTADO
+========================================================= */
+
+@import url('./reportes/felicitaciones/listado.css');
+@import url('./reportes/felicitaciones/detalle.css');
+@import url('./reportes/felicitaciones/editar.css');
+@import url('./reportes/felicitaciones/formulario.css');

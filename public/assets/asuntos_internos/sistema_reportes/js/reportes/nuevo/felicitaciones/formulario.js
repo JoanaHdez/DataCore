@@ -94,6 +94,38 @@ function inicializarFormularioFelicitacion() {
                 return;
             }
 
+            /* =====================================================
+            VALIDAR UNIDAD
+            ===================================================== */
+
+            const modalidadConUnidad =
+                formulario.querySelector(
+                    '#felicitacion-modalidad-con-unidad'
+                );
+
+
+            if (
+                modalidadConUnidad?.checked
+            ) {
+
+                const unidades =
+                    formulario.querySelectorAll(
+                        'input[name^="unidades["][name$="[parque_vehicular_id]"]'
+                    );
+
+
+                if (
+                    unidades.length === 0
+                ) {
+
+                    alert(
+                        'Debes agregar al menos una unidad o seleccionar "Sin unidad / Oficina".'
+                    );
+
+                    return;
+                }
+            }
+
 
             guardando =
                 true;
@@ -202,7 +234,7 @@ function inicializarFormularioFelicitacion() {
                         `La felicitación se registró correctamente con el folio ${resultado.folio ?? ''}.`,
 
                     url:
-                        '/DataCore/public/asuntos-internos/reportes/listado',
+                        '/DataCore/public/asuntos-internos/reportes/felicitaciones',
 
                     duracion:
                         2000,

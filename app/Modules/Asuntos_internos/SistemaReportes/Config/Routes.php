@@ -50,6 +50,20 @@ $routes->group(
 
 
                 /* =================================================
+                FELICITACIONES
+                ================================================= */
+
+                $routes->get(
+                    'felicitaciones',
+                    '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Felicitaciones_Controller::index'
+                );
+
+                $routes->get(
+                    'felicitaciones/detalle/(:num)',
+                    '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Felicitaciones_Controller::detalle/$1'
+                );
+
+                /* =================================================
                    DASHBOARD
                 ================================================= */
 

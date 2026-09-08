@@ -1,0 +1,471 @@
+/* =========================================================
+   FELICITACIONES
+   LISTADO
+========================================================= */
+
+.felicitaciones-page {
+    width: 100%;
+}
+
+
+/* =========================================================
+   ENCABEZADO PRINCIPAL
+========================================================= */
+
+.felicitaciones-header {
+    margin-bottom: 18px;
+}
+
+
+.felicitaciones-header__eyebrow {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #0d74b8;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+}
+
+
+.felicitaciones-header__title {
+    margin: 0;
+
+    color: #102f56;
+
+    font-size: 26px;
+    font-weight: 800;
+
+    line-height: 1.15;
+}
+
+
+.felicitaciones-header__description {
+    margin: 6px 0 0;
+
+    color: #6c8093;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   TARJETA TABLA
+========================================================= */
+
+.felicitaciones-tabla {
+    background: #ffffff;
+
+    border: 1px solid #dce6ef;
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 8px 24px rgba(28, 58, 89, 0.06);
+}
+
+
+/* =========================================================
+   ENCABEZADO DE TARJETA
+========================================================= */
+
+.felicitaciones-tabla__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 18px 20px;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #e5edf3;
+}
+
+
+.felicitaciones-tabla__eyebrow {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #1475bd;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+}
+
+
+.felicitaciones-tabla__title {
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 15px;
+    font-weight: 800;
+}
+
+
+.felicitaciones-tabla__description {
+    margin: 4px 0 0;
+
+    color: #8191a0;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   TABLA
+========================================================= */
+
+.felicitaciones-tabla__container {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+.felicitaciones-tabla__table {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+
+.felicitaciones-tabla__table th {
+    padding: 12px 14px;
+
+    color: #ffffff;
+
+    background: #204a7a;
+
+    border-right: 1px solid rgba(255, 255, 255, 0.12);
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 0.4px;
+    text-align: left;
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+
+.felicitaciones-tabla__table th:last-child {
+    border-right: 0;
+}
+
+
+.felicitaciones-tabla__table td {
+    padding: 14px;
+
+    color: #29445c;
+
+    border-bottom: 1px solid #edf2f6;
+
+    font-size: 9px;
+
+    vertical-align: middle;
+}
+
+
+.felicitaciones-tabla__table tr:last-child td {
+    border-bottom: 0;
+}
+
+
+.felicitaciones-tabla__table tbody tr {
+    transition:
+        background 0.18s ease;
+}
+
+
+.felicitaciones-tabla__table tbody tr:hover {
+    background: #f8fbfe;
+}
+
+
+/* =========================================================
+   COLUMNAS
+========================================================= */
+
+.felicitaciones-tabla__numero {
+    width: 70px;
+
+    text-align: center;
+}
+
+
+.felicitaciones-tabla__folio {
+    width: 160px;
+}
+
+
+.felicitaciones-tabla__fecha {
+    width: 160px;
+}
+
+
+.felicitaciones-tabla__acciones-columna {
+    width: 240px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   FOLIO
+========================================================= */
+
+.felicitaciones-tabla__folio strong {
+    color: #0f4f83;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   ACCIONES
+========================================================= */
+
+.felicitaciones-tabla__acciones {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    white-space: nowrap;
+}
+
+
+.felicitaciones-tabla__accion {
+    padding: 7px 11px;
+
+    color: #28577d;
+
+    background: #ffffff;
+
+    border: 1px solid #cadbe8;
+    border-radius: 6px;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.felicitaciones-tabla__accion:hover {
+    color: #0f6298;
+
+    background: #eff8fe;
+
+    border-color: #96c7e6;
+}
+
+
+.felicitaciones-tabla__accion--eliminar {
+    color: #b13e38;
+
+    background: #fff7f6;
+
+    border-color: #ecd2cf;
+}
+
+
+.felicitaciones-tabla__accion--eliminar:hover {
+    color: #9d312c;
+
+    background: #ffefed;
+
+    border-color: #e3b7b2;
+}
+
+
+/* =========================================================
+   VACÍO
+========================================================= */
+
+.felicitaciones-tabla__empty td {
+    padding: 34px 20px;
+}
+
+
+.felicitaciones-tabla__empty-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 5px;
+
+    color: #8293a2;
+
+    text-align: center;
+}
+
+
+.felicitaciones-tabla__empty-content strong {
+    color: #29445c;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   PAGINACIÓN DE FELICITACIONES
+========================================================= */
+
+#felicitaciones-paginacion {
+    margin-top: 18px;
+}
+
+
+#felicitaciones-paginacion
+.reportes-paginacion__info {
+    white-space: nowrap;
+}
+
+
+#felicitaciones-paginacion
+.reportes-paginacion__controls {
+    margin-left: auto;
+}
+
+
+#felicitaciones-paginacion
+.reportes-paginacion__paginas {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+}
+
+
+/* =========================================================
+   BOTONES NUMÉRICOS
+========================================================= */
+
+#felicitaciones-paginacion
+.reportes-paginacion__pagina {
+    min-width: 36px;
+    height: 36px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 10px;
+
+    color: #294a68;
+
+    background: #ffffff;
+
+    border: 1px solid #cfdce7;
+    border-radius: 7px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+
+#felicitaciones-paginacion
+.reportes-paginacion__pagina:hover {
+    color: #164a78;
+
+    background: #f4f8fb;
+
+    border-color: #aec7da;
+}
+
+
+#felicitaciones-paginacion
+.reportes-paginacion__pagina--active {
+    color: #ffffff;
+
+    background: #204a7a;
+
+    border-color: #204a7a;
+}
+
+
+/* =========================================================
+   DESHABILITADO
+========================================================= */
+
+#felicitaciones-paginacion
+.reportes-paginacion__button:disabled {
+    opacity: 0.45;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    #felicitaciones-paginacion {
+        align-items: flex-start;
+
+        gap: 14px;
+    }
+
+
+    #felicitaciones-paginacion
+    .reportes-paginacion__controls {
+        width: 100%;
+        margin-left: 0;
+
+        justify-content: space-between;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 760px) {
+
+    .felicitaciones-header__title {
+        font-size: 22px;
+    }
+
+
+    .felicitaciones-tabla__table {
+        min-width: 760px;
+    }
+
+
+    .felicitaciones-tabla__header {
+        padding: 16px;
+    }
+
+}

@@ -741,7 +741,9 @@ class Reportes_Controller extends BaseController
             );
 
 
-        if ($idUsuario <= 0) {
+        if (
+            $idUsuario <= 0
+        ) {
 
             return $this->response
                 ->setStatusCode(401)
@@ -761,6 +763,10 @@ class Reportes_Controller extends BaseController
                 ->getPost();
 
 
+        /* =========================================================
+        PERSONAL
+        ========================================================= */
+
         $personal =
             $this->request
                 ->getPost(
@@ -768,9 +774,36 @@ class Reportes_Controller extends BaseController
                 );
 
 
-        if (!is_array($personal)) {
+        if (
+            !is_array(
+                $personal
+            )
+        ) {
 
-            $personal = [];
+            $personal =
+                [];
+        }
+
+
+        /* =========================================================
+        UNIDADES
+        ========================================================= */
+
+        $unidades =
+            $this->request
+                ->getPost(
+                    'unidades'
+                );
+
+
+        if (
+            !is_array(
+                $unidades
+            )
+        ) {
+
+            $unidades =
+                [];
         }
 
 
@@ -788,6 +821,7 @@ class Reportes_Controller extends BaseController
                 $servicio->guardar(
                     $datos,
                     $personal,
+                    $unidades,
                     $idUsuario
                 );
 
@@ -818,14 +852,19 @@ class Reportes_Controller extends BaseController
                         ?? null,
                 ]);
 
+
         } catch (\InvalidArgumentException $e) {
 
             return $this->response
                 ->setStatusCode(422)
                 ->setJSON([
-                    'success' => false,
-                    'message' => $e->getMessage(),
+                    'success' =>
+                        false,
+
+                    'message' =>
+                        $e->getMessage(),
                 ]);
+
 
         } catch (\Throwable $e) {
 
@@ -842,8 +881,11 @@ class Reportes_Controller extends BaseController
             return $this->response
                 ->setStatusCode(500)
                 ->setJSON([
-                    'success' => false,
-                    'message' => 'No fue posible guardar la felicitación.',
+                    'success' =>
+                        false,
+
+                    'message' =>
+                        'No fue posible guardar la felicitación.',
                 ]);
         }
     }

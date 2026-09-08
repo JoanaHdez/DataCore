@@ -23,27 +23,28 @@ import './reportes/dashboard/autorizacion.js';
 ========================================================= */
 
 import './reportes/nuevo/tipoRegistro.js';
-
 import './reportes/nuevo/limpiar.js';
-
 import './reportes/nuevo/pasos.js';
-
 import './reportes/nuevo/personal.js';
-
 import './reportes/nuevo/unidades.js';
-
 import './reportes/nuevo/evidencia.js';
-
 import './reportes/nuevo/sanciones.js';
 
-
 /* =========================================================
-   REPORTES - NUEVO - FELICITACIONES
+REPORTES - NUEVO - FELICITACIONES
 ========================================================= */
 
 import './reportes/nuevo/felicitaciones/personal.js';
-
 import './reportes/nuevo/felicitaciones/formulario.js';
+import './reportes/nuevo/felicitaciones/detalle.js';
+import './reportes/nuevo/felicitaciones/paginacion.js';
+import './reportes/nuevo/felicitaciones/periodo.js';
+import './reportes/nuevo/felicitaciones/filtros.js';
+import './reportes/nuevo/felicitaciones/resumen.js';
+import './reportes/nuevo/felicitaciones/editar.js';
+import './reportes/nuevo/felicitaciones/pasos.js';
+import './reportes/nuevo/felicitaciones/unidades.js';
+import './reportes/nuevo/felicitaciones/limpiar.js';
 
 
 /* =========================================================

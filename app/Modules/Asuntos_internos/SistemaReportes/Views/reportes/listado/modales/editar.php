@@ -114,9 +114,9 @@
 
 
                 <!-- =========================================
-     PASO 2
-     DATOS DE LOS HECHOS
-========================================== -->
+                    PASO 2
+                    DATOS DE LOS HECHOS
+                ========================================== -->
                 <section class="detalle-reporte-seccion" data-editar-panel="hechos">
 
                     <?= $this->include(

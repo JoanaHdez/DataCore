@@ -82,14 +82,12 @@ if (!empty($perscodUsuario)) {
 
             <?php if (!empty($fotoUsuario)): ?>
 
-                <img
-                    src="<?= esc($fotoUsuario) ?>"
-                    alt="Foto de <?= esc($nombreUsuario) ?>">
+            <img src="<?= esc($fotoUsuario) ?>" alt="Foto de <?= esc($nombreUsuario) ?>">
 
             <?php else: ?>
 
-                <span>
-                    <?= esc(
+            <span>
+                <?= esc(
                         strtoupper(
                             mb_substr(
                                 $nombreUsuario,
@@ -98,7 +96,7 @@ if (!empty($perscodUsuario)) {
                             )
                         )
                     ) ?>
-                </span>
+            </span>
 
             <?php endif; ?>
 
@@ -112,32 +110,44 @@ if (!empty($perscodUsuario)) {
 <nav class="report-nav">
 
     <a href="<?= base_url(
-                    'asuntos-internos/reportes/nuevo'
-                ) ?>" class="report-nav__link <?= url_is(
-                                                    'asuntos-internos/reportes/nuevo'
-                                                ) ? 'report-nav__link--active' : '' ?>">
+            'asuntos-internos/reportes/nuevo'
+        ) ?>" class="report-nav__link <?= url_is(
+            'asuntos-internos/reportes/nuevo'
+        ) ? 'report-nav__link--active' : '' ?>">
         Nuevo reporte
     </a>
 
+
     <a href="<?= base_url(
-                    'asuntos-internos/reportes/listado'
-                ) ?>" class="report-nav__link <?= url_is(
-                                                    'asuntos-internos/reportes/listado'
-                                                ) ? 'report-nav__link--active' : '' ?>">
+            'asuntos-internos/reportes/listado'
+        ) ?>" class="report-nav__link <?= url_is(
+            'asuntos-internos/reportes/listado'
+        ) ? 'report-nav__link--active' : '' ?>">
         Reportes
     </a>
 
+
     <a href="<?= base_url(
-                    'asuntos-internos/reportes/dashboard'
-                ) ?>" class="report-nav__link <?= url_is(
-                                                    'asuntos-internos/reportes/dashboard'
-                                                ) ? 'report-nav__link--active' : '' ?>">
+            'asuntos-internos/reportes/felicitaciones'
+        ) ?>" class="report-nav__link <?= url_is(
+            'asuntos-internos/reportes/felicitaciones'
+        ) ? 'report-nav__link--active' : '' ?>">
+        Felicitaciones
+    </a>
+
+
+    <a href="<?= base_url(
+            'asuntos-internos/reportes/dashboard'
+        ) ?>" class="report-nav__link <?= url_is(
+            'asuntos-internos/reportes/dashboard'
+        ) ? 'report-nav__link--active' : '' ?>">
         Dashboard
     </a>
 
+
     <a href="<?= base_url(
-                    'asuntos-internos/reportes/logout'
-                ) ?>" class="report-nav__logout">
+            'asuntos-internos/reportes/logout'
+        ) ?>" class="report-nav__logout">
         Cerrar sesión
     </a>
 
