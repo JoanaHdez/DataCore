@@ -1,12 +1,29 @@
 /* =========================================================
    SISTEMA DE REPORTES - ASUNTOS INTERNOS
-   FELICITACIONES - EDITAR
+   FELICITACIONES - MODAL EDITAR
 ========================================================= */
 
 
 /* =========================================================
-   ESTADO OCULTO
+   MODAL
 ========================================================= */
+
+#modal-editar-felicitacion {
+    position: fixed;
+    inset: 0;
+    z-index: 3100;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 18px;
+
+    background: rgba(15, 35, 58, 0.60);
+
+    font-family: inherit;
+}
+
 
 #modal-editar-felicitacion[hidden] {
     display: none !important;
@@ -14,19 +31,42 @@
 
 
 /* =========================================================
-   CONTENIDO GENERAL
+   OVERLAY
 ========================================================= */
 
 #modal-editar-felicitacion
-.modal-felicitacion__contenido {
+.modal-felicitacion__overlay {
+    position: absolute;
+    inset: 0;
 
-    width: min(900px, 100%);
+    background: transparent;
 
-    max-height: 90vh;
+    backdrop-filter: blur(2px);
+}
+
+
+/* =========================================================
+   CONTENIDO PRINCIPAL
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-editar__contenido {
+    position: relative;
+    z-index: 1;
+
+    width: min(900px, calc(100vw - 36px));
+    height: min(840px, 92vh);
+    max-height: 92vh;
+
+    display: flex;
+    flex-direction: column;
 
     background: #ffffff;
 
-    border-radius: 16px;
+    border-radius: 15px;
+
+    box-shadow:
+        0 24px 60px rgba(6, 24, 46, 0.30);
 
     overflow: hidden;
 }
@@ -37,80 +77,212 @@
 ========================================================= */
 
 #modal-editar-felicitacion
-.modal-felicitacion__header {
+.modal-felicitacion-editar__header {
+    flex: 0 0 auto;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
 
     padding: 18px 22px;
 
     background:
         linear-gradient(
-            90deg,
-            #174a7a 0%,
-            #0f669c 100%
+            100deg,
+            #164e86 0%,
+            #12639a 100%
         );
-
-    border-bottom: 0;
 }
 
 
+/* =========================================================
+   HEADER INFO
+========================================================= */
+
 #modal-editar-felicitacion
-.modal-felicitacion__eyebrow {
+.modal-felicitacion-editar__header-info {
+    min-width: 0;
+}
+
+
+/* =========================================================
+   EYEBROW HEADER
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-editar__eyebrow {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #d4ebfa;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+
+    line-height: 1.2;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   TÍTULO HEADER
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-editar__titulo {
+    margin: 0;
 
     color: #ffffff;
 
-    opacity: 0.95;
+    font-size: 21px;
+    font-weight: 800;
+
+    line-height: 1.2;
 }
 
 
+/* =========================================================
+   CERRAR
+========================================================= */
+
 #modal-editar-felicitacion
-.modal-felicitacion__titulo {
+.modal-felicitacion-editar__cerrar {
+    width: 36px;
+    height: 36px;
+
+    flex: 0 0 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
 
     color: #ffffff;
+
+    background: rgba(255, 255, 255, 0.10);
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+
+    font-family: inherit;
+    font-size: 20px;
+    font-weight: 400;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
 }
 
 
 #modal-editar-felicitacion
-.modal-felicitacion__cerrar {
+.modal-felicitacion-editar__cerrar:hover {
+    background: rgba(255, 255, 255, 0.18);
 
+    border-color: rgba(255, 255, 255, 0.42);
+
+    transform: scale(1.04);
+}
+
+
+/* =========================================================
+   FORMULARIO
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-editar__form {
+    min-height: 0;
+
+    flex: 1 1 auto;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* =========================================================
+   NAVEGACIÓN
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-editar__nav {
+    flex: 0 0 auto;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 12px 20px;
+
+    background: #f8fafc;
+
+    border-bottom: 1px solid #dce5ed;
+}
+
+
+/* =========================================================
+   BOTONES NAVEGACIÓN
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-editar__nav-btn {
+    padding: 10px 16px;
+
+    color: #5e7286;
+
+    background: transparent;
+
+    border: 0;
+    border-radius: 7px;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 700;
+
+    line-height: 1.2;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-editar__nav-btn:hover {
+    color: #0d639c;
+
+    background: #eef5fa;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-editar__nav-btn--activo {
     color: #ffffff;
 
     background:
-        rgba(
-            255,
-            255,
-            255,
-            0.08
+        linear-gradient(
+            100deg,
+            #0d72b5,
+            #1189c7
         );
 
-    border-color:
-        rgba(
-            255,
-            255,
-            255,
-            0.25
-        );
-}
-
-
-#modal-editar-felicitacion
-.modal-felicitacion__cerrar:hover {
-
-    color: #ffffff;
-
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            0.16
-        );
-
-    border-color:
-        rgba(
-            255,
-            255,
-            255,
-            0.4
-        );
+    box-shadow:
+        0 4px 10px rgba(18, 116, 184, 0.18);
 }
 
 
@@ -119,13 +291,56 @@
 ========================================================= */
 
 #modal-editar-felicitacion
-.modal-felicitacion__body {
+.modal-felicitacion-editar__body {
+    min-height: 0;
 
-    padding: 18px;
+    flex: 1 1 auto;
 
-    background: #f6f9fc;
+    padding: 24px;
 
     overflow-y: auto;
+
+    background: #f4f7fa;
+}
+
+
+/* =========================================================
+   SCROLL
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-editar__body::-webkit-scrollbar {
+    width: 7px;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-editar__body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-editar__body::-webkit-scrollbar-thumb {
+    background: #c7d4df;
+
+    border-radius: 10px;
+}
+
+
+/* =========================================================
+   PANELES
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-editar__panel {
+    display: block;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-editar__panel[hidden] {
+    display: none !important;
 }
 
 
@@ -135,31 +350,22 @@
 
 #modal-editar-felicitacion
 .modal-felicitacion__seccion {
-
-    margin: 0 0 16px;
-
-    background: #ffffff;
-
-    border: 1px solid #d9e4ed;
-
-    border-radius: 12px;
+    margin: 0 0 24px;
 
     overflow: hidden;
 
+    background: #ffffff;
+
+    border: 1px solid #d8e3ec;
+    border-radius: 12px;
+
     box-shadow:
-        0 3px 10px
-        rgba(
-            20,
-            52,
-            82,
-            0.035
-        );
+        0 4px 12px rgba(24, 56, 88, 0.035);
 }
 
 
 #modal-editar-felicitacion
 .modal-felicitacion__seccion:last-child {
-
     margin-bottom: 0;
 }
 
@@ -170,27 +376,353 @@
 
 #modal-editar-felicitacion
 .modal-felicitacion__seccion-header {
-
-    padding: 15px 18px;
+    padding: 16px 20px;
 
     background: #ffffff;
 
-    border-bottom: 1px solid #dfe8ef;
+    border-bottom: 1px solid #e3eaf1;
 }
 
+
+/* =========================================================
+   EYEBROW DE SECCIÓN
+========================================================= */
 
 #modal-editar-felicitacion
 .modal-felicitacion__seccion-header
 .modal-felicitacion__eyebrow {
+    display: block;
 
     margin-bottom: 5px;
 
-    color: #0d74b8;
+    color: #1279bb;
 
-    opacity: 1;
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+
+    line-height: 1.2;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   TÍTULO DE SECCIÓN
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion__seccion-title {
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 16px;
+    font-weight: 800;
+
+    line-height: 1.25;
+}
+
+
+/* =========================================================
+   GRID GENERAL
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion__grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    column-gap: 16px;
+    row-gap: 20px;
+
+    padding: 22px;
+}
+
+
+/* =========================================================
+   CAMPO GENERAL
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion__campo {
+    min-width: 0;
+
+    padding: 0;
+
+    background: transparent;
+
+    border: 0;
+    border-radius: 0;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion__campo--full {
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   LABELS
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion__campo label,
+#modal-editar-felicitacion
+.report-search label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #173554;
 
     font-size: 9px;
+    font-weight: 700;
 
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+#modal-editar-felicitacion
+.report-input,
+#modal-editar-felicitacion
+.report-select,
+#modal-editar-felicitacion
+.report-textarea {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    color: #304b64;
+
+    background: #ffffff;
+
+    border: 1px solid #c9d8e5;
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 400;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+#modal-editar-felicitacion
+.report-input,
+#modal-editar-felicitacion
+.report-select {
+    min-height: 42px;
+
+    padding: 10px 12px;
+}
+
+
+#modal-editar-felicitacion
+.report-textarea {
+    min-height: 120px;
+
+    padding: 11px 12px;
+
+    line-height: 1.5;
+
+    resize: vertical;
+}
+
+
+/* =========================================================
+   FOCUS
+========================================================= */
+
+#modal-editar-felicitacion
+.report-input:focus,
+#modal-editar-felicitacion
+.report-select:focus,
+#modal-editar-felicitacion
+.report-textarea:focus {
+    border-color: #55aee0;
+
+    box-shadow:
+        0 0 0 3px rgba(43, 150, 213, 0.10);
+}
+
+
+/* =========================================================
+   READONLY
+========================================================= */
+
+#modal-editar-felicitacion
+.report-input[readonly],
+#modal-editar-felicitacion
+.report-input:disabled {
+    color: #5f7588;
+
+    background: #eef3f7;
+
+    border-color: #d3dee7;
+}
+
+
+/* =========================================================
+   RAZÓN
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion__campo--texto {
+    margin: 0;
+
+    padding: 22px;
+
+    background: transparent;
+
+    border: 0;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion__campo--texto
+.report-textarea {
+    min-height: 130px;
+}
+
+
+/* =========================================================
+   PERSONAL FELICITADO
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar {
+    padding: 0;
+}
+
+
+/* =========================================================
+   BUSCADOR PERSONAL
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__busqueda {
+    padding: 22px 20px 38px;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__busqueda label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #173554;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__busqueda
+.report-input {
+    width: 100%;
+
+    min-height: 42px;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__busqueda small {
+    display: block;
+
+    margin-top: 10px;
+
+    color: #71869a;
+
+    font-size: 8px;
+    font-weight: 400;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   RESULTADOS PERSONAL
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__resultados {
+    position: relative;
+
+    width: 100%;
+
+    margin-top: 8px;
+
+    background: #ffffff;
+
+    border: 1px solid #d6e1ea;
+    border-radius: 8px;
+
+    overflow: hidden;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__resultados[hidden] {
+    display: none !important;
+}
+
+
+/* =========================================================
+   PERSONAL AGREGADO
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__agregado {
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border-top: 1px solid #dce5ed;
+}
+
+
+/* =========================================================
+   SUBHEADER PERSONAL AGREGADO
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__subheader {
+    padding: 14px 18px;
+
+    background: #f5f8fa;
+
+    border-bottom: 1px solid #dce5ed;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__subheader
+.modal-felicitacion__eyebrow {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #1279bb;
+
+    font-size: 8px;
     font-weight: 800;
 
     letter-spacing: 1.1px;
@@ -200,148 +732,56 @@
 
 
 #modal-editar-felicitacion
-.modal-felicitacion__seccion-title {
-
-    margin: 0;
+.modal-felicitacion-personal-editar__subheader strong {
+    display: block;
 
     color: #173554;
 
-    font-size: 15px;
-
-    font-weight: 800;
-}
-
-
-/* =========================================================
-   GRID DE DATOS
-========================================================= */
-
-#modal-editar-felicitacion
-.modal-felicitacion__grid {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(
-            2,
-            minmax(
-                0,
-                1fr
-            )
-        );
-
-    gap: 12px;
-
-    padding: 16px 18px;
-}
-
-
-/* =========================================================
-   CAMPOS
-========================================================= */
-
-#modal-editar-felicitacion
-.modal-felicitacion__campo {
-
-    padding: 12px 14px;
-
-    background: #f8fafc;
-
-    border: 1px solid #dce6ee;
-
-    border-radius: 9px;
-}
-
-
-#modal-editar-felicitacion
-.modal-felicitacion__campo label {
-
-    display: block;
-
-    margin-bottom: 7px;
-
-    color: #50677d;
-
     font-size: 10px;
-
     font-weight: 700;
-}
 
-
-#modal-editar-felicitacion
-.modal-felicitacion__campo
-.report-input {
-
-    width: 100%;
-
-    min-height: 38px;
-
-    padding: 9px 11px;
-
-    color: #35516b;
-
-    background: #f2f6f9;
-
-    border: 1px solid #d5e1ea;
-
-    border-radius: 8px;
-
-    font-size: 10px;
-
-    box-sizing: border-box;
+    line-height: 1.3;
 }
 
 
 /* =========================================================
-   TABLA DE PERSONAL
+   TABLAS GENERALES
 ========================================================= */
 
 #modal-editar-felicitacion
 .modal-felicitacion__tabla-wrapper {
-
-    margin: 16px 18px;
+    width: 100%;
 
     overflow-x: auto;
-
-    border: 1px solid #d9e4ed;
-
-    border-radius: 9px;
 }
 
 
 #modal-editar-felicitacion
 .modal-felicitacion__tabla {
-
     width: 100%;
 
     border-collapse: collapse;
+
+    background: #ffffff;
 }
 
 
 /* =========================================================
-   ENCABEZADO AZUL DE TABLA
+   TABLA PERSONAL - HEADER
 ========================================================= */
 
 #modal-editar-felicitacion
+.modal-felicitacion-personal-editar
 .modal-felicitacion__tabla thead th {
+    padding: 10px 14px;
 
-    padding: 11px 12px;
+    color: #5f7387;
 
-    color: #ffffff !important;
+    background: #f5f8fa;
 
-    background: #204a7a !important;
-
-    border-right:
-        1px solid
-        rgba(
-            255,
-            255,
-            255,
-            0.12
-        );
+    border-bottom: 1px solid #dce5ed;
 
     font-size: 8px;
-
     font-weight: 800;
 
     text-align: left;
@@ -352,45 +792,644 @@
 }
 
 
-#modal-editar-felicitacion
-.modal-felicitacion__tabla thead th:last-child {
-
-    border-right: 0;
-}
-
-
 /* =========================================================
-   FILAS DE TABLA
+   TABLA PERSONAL - CELDAS
 ========================================================= */
 
 #modal-editar-felicitacion
+.modal-felicitacion-personal-editar
 .modal-felicitacion__tabla tbody td {
+    padding: 12px 14px;
 
-    padding: 12px;
-
-    color: #30495e;
+    color: #304b64;
 
     background: #ffffff;
 
-    border-bottom: 1px solid #e7edf2;
+    border-bottom: 1px solid #e5ecf2;
 
     font-size: 9px;
+    font-weight: 500;
 
     vertical-align: middle;
 }
 
 
 #modal-editar-felicitacion
+.modal-felicitacion-personal-editar
 .modal-felicitacion__tabla tbody tr:last-child td {
-
     border-bottom: 0;
 }
 
 
-#modal-editar-felicitacion
-.modal-felicitacion__tabla tbody tr:hover td {
+/* =========================================================
+   FOTO PERSONAL
+========================================================= */
 
-    background: #f8fbfe;
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__foto {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background: #eaf4fb;
+
+    border: 1px solid #c8deed;
+    border-radius: 50%;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__foto img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__foto span {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #0e669f;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   NOMBRE PERSONAL
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__nombre {
+    color: #173554;
+
+    font-size: 9px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   INPUT TURNO
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__turno {
+    width: 100%;
+
+    min-width: 150px;
+    min-height: 34px;
+
+    padding: 7px 10px;
+
+    color: #173554;
+
+    background: #ffffff;
+
+    border: 1px solid #cad9e5;
+    border-radius: 7px;
+
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 600;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   BOTÓN QUITAR
+========================================================= */
+
+#modal-editar-felicitacion
+.button--remove {
+    min-width: 50px;
+
+    padding: 7px 10px;
+
+    color: #c43d35;
+
+    background: #fff6f5;
+
+    border: 1px solid #efc8c4;
+    border-radius: 6px;
+
+    font-family: inherit;
+    font-size: 8px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+/* =========================================================
+   CONTENIDO DE UNIDADES
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar {
+    padding: 30px 20px;
+}
+
+
+/* =========================================================
+   GRUPOS
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__grupo {
+    margin: 0;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__grupo
++
+.modal-felicitacion-unidades-editar__grupo {
+    margin-top: 38px;
+}
+
+
+/* =========================================================
+   LABEL
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__label {
+    display: block;
+
+    margin-bottom: 18px;
+
+    color: #173554;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   OPCIONES DE ASIGNACIÓN
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__opciones {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__opcion {
+    min-height: 38px;
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 8px 12px;
+
+    color: #173554;
+
+    background: #ffffff;
+
+    border: 1px solid #cad9e5;
+    border-radius: 7px;
+
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 700;
+
+    line-height: 1.2;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__opcion:hover {
+    border-color: #9fc7df;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__opcion:has(input:checked) {
+    color: #0d639c;
+
+    background: #eef8fe;
+
+    border-color: #4aaee5;
+
+    box-shadow:
+        0 0 0 2px rgba(74, 174, 229, 0.08);
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__opcion input {
+    width: 15px;
+    height: 15px;
+
+    flex: 0 0 15px;
+
+    margin: 0;
+
+    accent-color: #1688c9;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   TEXTO DE AYUDA
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__ayuda {
+    display: block;
+
+    margin-top: 12px;
+    margin-bottom: 30px;
+
+    color: #71869a;
+
+    font-size: 8px;
+    font-weight: 400;
+
+    line-height: 1.4;
+}
+
+/* =========================================================
+   BUSCADOR DE UNIDAD
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__busqueda {
+    margin-top: 60px;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__busqueda label {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: #173554;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    line-height: 1.3;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__busqueda
+.report-input {
+    width: 100%;
+
+    min-height: 42px;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__busqueda small {
+    display: block;
+
+    margin-top: 16px;
+
+    color: #71869a;
+
+    font-size: 8px;
+    font-weight: 400;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   RESULTADOS DE BÚSQUEDA
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__resultados {
+    position: relative;
+
+    width: 100%;
+
+    margin-top: 8px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #d6e1ea;
+    border-radius: 8px;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__resultados[hidden] {
+    display: none !important;
+}
+
+
+/* =========================================================
+   UNIDADES AGREGADAS
+   CUADRO INTERNO COMO QUEJAS
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__agregadas {
+    margin-top: 48px;
+
+    margin-left: -20px;
+    margin-right: -20px;
+    margin-bottom: -30px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border-top: 1px solid #d8e3ec;
+
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+
+    border-radius: 0;
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   SUBHEADER UNIDADES AGREGADAS
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__subheader {
+    padding: 14px 18px;
+
+    background: #f5f8fa;
+
+    border-bottom: 1px solid #dce5ed;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__subheader
+.modal-felicitacion__eyebrow {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #1279bb;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 1.1px;
+
+    line-height: 1.2;
+
+    text-transform: uppercase;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__subheader strong {
+    display: block;
+
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   TABLA DE UNIDADES
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar
+.modal-felicitacion__tabla-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar
+.modal-felicitacion__tabla {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    background: #ffffff;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar
+.modal-felicitacion__tabla thead th {
+    padding: 10px 12px;
+
+    color: #5f7387;
+
+    background: #f5f8fa;
+
+    border-bottom: 1px solid #dce5ed;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    line-height: 1.25;
+
+    text-align: left;
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar
+.modal-felicitacion__tabla tbody td {
+    padding: 12px;
+
+    color: #304b64;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #e5ecf2;
+
+    font-size: 9px;
+    font-weight: 500;
+
+    line-height: 1.35;
+
+    vertical-align: middle;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar
+.modal-felicitacion__tabla tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+
+/* =========================================================
+   NOMBRE / DATOS PRINCIPALES DE UNIDAD
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__unidad-nombre {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #173554;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    line-height: 1.25;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__unidad-detalle {
+    display: block;
+
+    color: #71869a;
+
+    font-size: 8px;
+    font-weight: 400;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   ESTADO SIN UNIDAD / OFICINA
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__sin-unidad {
+    margin-top: 38px;
+
+    padding: 16px 18px;
+
+    background: #f4f9fd;
+
+    border: 1px solid #c9deec;
+    border-radius: 10px;
+
+    box-shadow:
+        0 2px 5px rgba(24, 56, 88, 0.02);
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__sin-unidad strong {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    line-height: 1.3;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__sin-unidad p {
+    margin: 0;
+
+    color: #60788e;
+
+    font-size: 9px;
+    font-weight: 400;
+
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   ELEMENTOS OCULTOS
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar [hidden] {
+    display: none !important;
+}
+
+
+/* =========================================================
+   RESPONSIVE UNIDADES
+========================================================= */
+
+@media (max-width: 700px) {
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-unidades-editar__contenido {
+        padding: 18px;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-unidades-editar__opciones {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-unidades-editar__opcion {
+        width: 100%;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-unidades-editar
+    .modal-felicitacion__tabla {
+        min-width: 720px;
+    }
 }
 
 
@@ -399,21 +1438,38 @@
 ========================================================= */
 
 #modal-editar-felicitacion
-.modal-felicitacion__footer {
+.modal-felicitacion-editar__footer {
+    flex: 0 0 auto;
 
     display: flex;
-
     align-items: center;
-
     justify-content: flex-end;
 
-    gap: 8px;
+    gap: 10px;
 
     padding: 14px 18px;
 
-    background: #ffffff;
+    background: #f8fafc;
 
     border-top: 1px solid #dfe8ef;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-editar__footer
+.button {
+    width: auto;
+
+    min-width: 110px;
+}
+
+
+/* =========================================================
+   BLOQUEAR SCROLL
+========================================================= */
+
+body.modal-abierto {
+    overflow: hidden;
 }
 
 
@@ -421,27 +1477,79 @@
    RESPONSIVE
 ========================================================= */
 
-@media (
-    max-width: 700px
-) {
+@media (max-width: 700px) {
+
+    #modal-editar-felicitacion {
+        padding: 10px;
+    }
+
 
     #modal-editar-felicitacion
-    .modal-felicitacion__contenido {
+    .modal-felicitacion-editar__contenido {
+        width: calc(100vw - 20px);
 
-        max-height: 94vh;
+        height: 96vh;
+        max-height: 96vh;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-editar__header {
+        padding: 18px;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-editar__titulo {
+        font-size: 18px;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-editar__nav {
+        overflow-x: auto;
+
+        padding: 10px 14px;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-editar__nav-btn {
+        flex: 0 0 auto;
+
+        white-space: nowrap;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-editar__body {
+        padding: 14px;
     }
 
 
     #modal-editar-felicitacion
     .modal-felicitacion__grid {
-
         grid-template-columns: 1fr;
+
+        padding: 18px;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion__campo--full {
+        grid-column: auto;
     }
 
 
     #modal-editar-felicitacion
     .modal-felicitacion__tabla {
-
-        min-width: 650px;
+        min-width: 700px;
     }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-editar__footer {
+        padding: 12px 14px;
+    }
+
 }

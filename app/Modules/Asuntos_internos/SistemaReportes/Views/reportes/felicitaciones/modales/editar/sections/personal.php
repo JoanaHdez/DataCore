@@ -1,4 +1,8 @@
-<section class="modal-felicitacion__seccion">
+<section class="modal-felicitacion__seccion modal-felicitacion-personal-editar">
+
+    <!-- =====================================================
+         ENCABEZADO PRINCIPAL
+    ====================================================== -->
 
     <div class="modal-felicitacion__seccion-header">
 
@@ -13,49 +17,96 @@
     </div>
 
 
-    <div class="modal-felicitacion__tabla-wrapper">
+    <!-- =====================================================
+         BUSCADOR
+    ====================================================== -->
 
-        <table class="modal-felicitacion__tabla">
+    <div class="modal-felicitacion-personal-editar__busqueda">
 
-            <thead>
-
-                <tr>
-
-                    <th>
-                        Nombre
-                    </th>
-
-                    <th>
-                        Área
-                    </th>
-
-                    <th>
-                        Turno
-                    </th>
-
-                    <th>
-                        Alias
-                    </th>
-
-                </tr>
-
-            </thead>
+        <label for="editar-felicitacion-buscar-personal">
+            Buscar personal
+        </label>
 
 
-            <tbody id="editar-felicitacion-personal">
+        <input type="text" id="editar-felicitacion-buscar-personal" class="report-input"
+            placeholder="Busca por nombre o nómina" autocomplete="off">
 
-                <tr>
 
-                    <td colspan="4">
-                        Sin personal relacionado
-                    </td>
+        <small>
+            Puedes agregar una o más personas a la felicitación.
+        </small>
 
-                </tr>
 
-            </tbody>
+        <!-- =================================================
+             RESULTADOS DE BÚSQUEDA
+        ================================================== -->
 
-        </table>
+        <div class="modal-felicitacion-personal-editar__resultados" id="editar-felicitacion-personal-resultados" hidden>
+        </div>
 
     </div>
+
+
+    <!-- =====================================================
+         PERSONAL AGREGADO
+    ====================================================== -->
+
+    <div class="modal-felicitacion-personal-editar__agregado">
+
+        <div class="modal-felicitacion-personal-editar__subheader">
+
+            <span class="modal-felicitacion__eyebrow">
+                Personal agregado
+            </span>
+
+            <strong>
+                Elementos relacionados con la felicitación
+            </strong>
+
+        </div>
+
+
+        <div class="modal-felicitacion__tabla-wrapper">
+
+            <table class="modal-felicitacion__tabla">
+
+                <thead>
+
+                    <tr>
+                        <th>Foto</th>
+                        <th>Nombre</th>
+                        <th>Nómina</th>
+                        <th>Área</th>
+                        <th>Turno</th>
+                        <th>Acciones</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="editar-felicitacion-personal">
+
+                    <tr>
+
+                        <td colspan="6">
+                            Sin personal relacionado
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         INPUTS DINÁMICOS
+    ====================================================== -->
+
+    <div id="editar-felicitacion-personal-inputs"></div>
 
 </section>

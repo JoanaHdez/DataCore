@@ -1952,3 +1952,1266 @@ function escaparHtmlDetalle(
         );
 
 }
+
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   Felicitaciones - Detalle
+========================================================= */
+
+document.addEventListener(
+    'DOMContentLoaded',
+    () => {
+        inicializarDetalleFelicitacion();
+    }
+);
+
+
+/* =========================================================
+   INICIALIZAR
+========================================================= */
+
+function inicializarDetalleFelicitacion() {
+
+    const modal =
+        document.querySelector(
+            '#modal-detalle-felicitacion'
+        );
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    /* =====================================================
+       ABRIR
+    ===================================================== */
+
+    document.addEventListener(
+        'click',
+        async (evento) => {
+
+            const boton =
+                evento.target.closest(
+                    '[data-accion-felicitacion="ver"]'
+                );
+
+
+            if (!boton) {
+                return;
+            }
+
+
+            const idFelicitacion =
+                Number(
+                    boton.dataset.idFelicitacion
+                    || 0
+                );
+
+
+            if (
+                !Number.isInteger(
+                    idFelicitacion
+                )
+                || idFelicitacion <= 0
+            ) {
+
+                console.error(
+                    'La felicitación no contiene un id válido.'
+                );
+
+                return;
+            }
+
+
+            await abrirDetalleFelicitacion(
+                modal,
+                idFelicitacion
+            );
+        }
+    );
+
+
+    /* =====================================================
+       NAVEGACIÓN Y CIERRE
+    ===================================================== */
+
+    modal.addEventListener(
+        'click',
+        (evento) => {
+
+            /* =============================================
+               CAMBIAR SECCIÓN
+            ============================================== */
+
+            const botonSeccion =
+                evento.target.closest(
+                    '[data-detalle-felicitacion-seccion]'
+                );
+
+
+            if (botonSeccion) {
+
+                const seccion =
+                    botonSeccion
+                        .dataset
+                        .detalleFelicitacionSeccion;
+
+
+                mostrarSeccionDetalleFelicitacion(
+                    modal,
+                    seccion
+                );
+
+
+                return;
+            }
+
+
+            /* =============================================
+               CERRAR
+            ============================================== */
+
+            const cerrar =
+                evento.target.closest(
+                    '[data-cerrar-detalle-felicitacion]'
+                );
+
+
+            if (!cerrar) {
+                return;
+            }
+
+
+            cerrarDetalleFelicitacion(
+                modal
+            );
+        }
+    );
+
+
+    /* =====================================================
+       ESC
+    ===================================================== */
+
+    document.addEventListener(
+        'keydown',
+        (evento) => {
+
+            if (
+                evento.key === 'Escape'
+                && !modal.hidden
+            ) {
+
+                cerrarDetalleFelicitacion(
+                    modal
+                );
+            }
+        }
+    );
+}
+
+
+/* =========================================================
+   ABRIR DETALLE
+========================================================= */
+
+async function abrirDetalleFelicitacion(
+    modal,
+    idFelicitacion
+) {
+
+    /* =====================================================
+       LIMPIAR DATOS DEL REGISTRO ANTERIOR
+    ===================================================== */
+
+    limpiarDetalleFelicitacion(
+        modal
+    );
+
+
+    /* =====================================================
+       REGRESAR A LA PRIMERA SECCIÓN
+    ===================================================== */
+
+    mostrarSeccionDetalleFelicitacion(
+        modal,
+        'datos'
+    );
+
+
+    /* =====================================================
+       MOSTRAR MODAL INMEDIATAMENTE
+
+       No esperamos al backend para abrirlo.
+    ===================================================== */
+
+    mostrarModalDetalleFelicitacion(
+        modal
+    );
+
+
+    try {
+
+        /* =================================================
+           CONSULTAR BACKEND
+        ================================================= */
+
+        const resultado =
+            await consultarDetalleFelicitacion(
+                idFelicitacion
+            );
+
+
+        /* =================================================
+           VALIDAR RESPUESTA
+        ================================================= */
+
+        if (
+            !resultado
+            || resultado.success !== true
+            || !resultado.felicitacion
+        ) {
+
+            throw new Error(
+                resultado?.message
+                || 'No fue posible consultar la felicitación.'
+            );
+        }
+
+
+        /* =================================================
+           CARGAR INFORMACIÓN
+        ================================================= */
+
+        cargarDetalleFelicitacion(
+            modal,
+            resultado
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            'Error consultando detalle de felicitación:',
+            error
+        );
+
+
+        /* =================================================
+           CERRAR SI HUBO ERROR
+        ================================================= */
+
+        cerrarDetalleFelicitacion(
+            modal
+        );
+
+
+        window.alert(
+            error.message
+            || 'No fue posible consultar el detalle de la felicitación.'
+        );
+    }
+}
+
+
+/* =========================================================
+   CONSULTAR BACKEND
+========================================================= */
+
+async function consultarDetalleFelicitacion(
+    idFelicitacion
+) {
+
+    const url =
+        new URL(
+            `DataCore/public/asuntos-internos/reportes/felicitaciones/detalle/${idFelicitacion}`,
+            `${window.location.origin}/`
+        );
+
+
+    const respuesta =
+        await fetch(
+            url.toString(),
+            {
+                method:
+                    'GET',
+
+                headers: {
+                    Accept:
+                        'application/json',
+                },
+
+                credentials:
+                    'same-origin',
+            }
+        );
+
+
+    let resultado =
+        null;
+
+
+    try {
+
+        resultado =
+            await respuesta.json();
+
+
+    } catch (error) {
+
+        throw new Error(
+            'El servidor devolvió una respuesta no válida.'
+        );
+    }
+
+
+    if (
+        !respuesta.ok
+    ) {
+
+        throw new Error(
+            resultado?.message
+            || 'No fue posible consultar la felicitación.'
+        );
+    }
+
+
+    return resultado;
+}
+
+
+/* =========================================================
+   CARGAR DETALLE COMPLETO
+========================================================= */
+
+function cargarDetalleFelicitacion(
+    modal,
+    resultado
+) {
+
+    const felicitacion =
+        resultado.felicitacion
+        || {};
+
+
+    const personal =
+        Array.isArray(
+            resultado.personal
+        )
+            ? resultado.personal
+            : [];
+
+
+    const unidades =
+        Array.isArray(
+            resultado.unidades
+        )
+            ? resultado.unidades
+            : [];
+
+
+    /* =====================================================
+       TÍTULO
+    ===================================================== */
+
+    const folio =
+        String(
+            felicitacion.folio
+            || ''
+        ).trim();
+
+
+    const tituloFolio =
+        modal.querySelector(
+            '#detalle-felicitacion-titulo-folio'
+        );
+
+
+    if (tituloFolio) {
+
+        tituloFolio.textContent =
+            folio !== ''
+                ? ` ${folio}`
+                : '';
+    }
+
+
+    /* =====================================================
+       DATOS GENERALES
+    ===================================================== */
+
+    asignarTextoDetalleFelicitacion(
+        modal,
+        '#detalle-felicitacion-folio',
+        felicitacion.folio
+    );
+
+
+    asignarTextoDetalleFelicitacion(
+        modal,
+        '#detalle-felicitacion-fecha',
+        formatearFechaFelicitacion(
+            felicitacion.fecha_registro
+        )
+    );
+
+
+    asignarTextoDetalleFelicitacion(
+        modal,
+        '#detalle-felicitacion-felicitante',
+        felicitacion.nombre_felicitante
+    );
+
+
+    /* =====================================================
+       RAZÓN
+    ===================================================== */
+
+    asignarTextoDetalleFelicitacion(
+        modal,
+        '#detalle-felicitacion-razon',
+        felicitacion.razon_felicitacion
+    );
+
+
+    /* =====================================================
+       PERSONAL
+    ===================================================== */
+
+    renderizarPersonalDetalleFelicitacion(
+        modal,
+        personal
+    );
+
+
+    /* =====================================================
+       UNIDADES
+    ===================================================== */
+
+    renderizarUnidadesDetalleFelicitacion(
+        modal,
+        unidades
+    );
+}
+
+
+/* =========================================================
+   PERSONAL
+========================================================= */
+
+function renderizarPersonalDetalleFelicitacion(
+    modal,
+    personal
+) {
+
+    const vacio =
+        modal.querySelector(
+            '#detalle-felicitacion-personal-vacio'
+        );
+
+
+    const wrapper =
+        modal.querySelector(
+            '#detalle-felicitacion-personal-tabla-wrapper'
+        );
+
+
+    const tbody =
+        modal.querySelector(
+            '#detalle-felicitacion-personal'
+        );
+
+
+    if (
+        !vacio
+        || !wrapper
+        || !tbody
+    ) {
+        return;
+    }
+
+
+    tbody.innerHTML =
+        '';
+
+
+    if (
+        !Array.isArray(
+            personal
+        )
+        || personal.length === 0
+    ) {
+
+        vacio.hidden =
+            false;
+
+
+        wrapper.hidden =
+            true;
+
+
+        return;
+    }
+
+
+    personal.forEach(
+        (persona) => {
+
+            const fila =
+                document.createElement(
+                    'tr'
+                );
+
+
+            const nombre =
+                String(
+                    persona.nombre_snapshot
+                    || persona.nombre
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            const nomina =
+                String(
+                    persona.perscod
+                    || persona.nomina
+                    || ''
+                ).trim();
+
+
+            const area =
+                String(
+                    persona.area_snapshot
+                    || persona.area
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            const turno =
+                String(
+                    persona.turno_snapshot
+                    || persona.turno
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            const foto =
+                String(
+                    persona.foto
+                    || ''
+                ).trim();
+
+
+            const inicial =
+                nombre
+                    ? nombre.charAt(0)
+                    : '?';
+
+
+            const fotoHtml =
+                foto
+                    ? `
+                        <div class="detalle-felicitacion-personal__foto">
+
+                            <img
+                                src="${escaparHtmlFelicitacion(foto)}"
+                                alt=""
+                                onerror="
+                                    this.style.display='none';
+                                    this.nextElementSibling.style.display='flex';
+                                "
+                            >
+
+                            <span style="display:none;">
+                                ${escaparHtmlFelicitacion(inicial)}
+                            </span>
+
+                        </div>
+                    `
+                    : `
+                        <div class="detalle-felicitacion-personal__foto">
+
+                            <span>
+                                ${escaparHtmlFelicitacion(inicial)}
+                            </span>
+
+                        </div>
+                    `;
+
+
+            fila.innerHTML = `
+
+                <td>
+                    ${fotoHtml}
+                </td>
+
+                <td>
+                    <strong class="detalle-felicitacion-personal__nombre">
+                        ${escaparHtmlFelicitacion(
+                            nombre
+                            || '—'
+                        )}
+                    </strong>
+                </td>
+
+                <td>
+                    ${escaparHtmlFelicitacion(
+                        nomina
+                        || '—'
+                    )}
+                </td>
+
+                <td>
+                    ${escaparHtmlFelicitacion(
+                        area
+                        || '—'
+                    )}
+                </td>
+
+                <td>
+                    ${escaparHtmlFelicitacion(
+                        turno
+                        || '—'
+                    )}
+                </td>
+
+            `;
+
+
+            tbody.appendChild(
+                fila
+            );
+        }
+    );
+
+
+    vacio.hidden =
+        true;
+
+
+    wrapper.hidden =
+        false;
+}
+
+/* =========================================================
+   UNIDADES
+========================================================= */
+
+function renderizarUnidadesDetalleFelicitacion(
+    modal,
+    unidades
+) {
+
+    const contenedorUnidades =
+        modal.querySelector(
+            '#detalle-felicitacion-unidades-contenedor'
+        );
+
+
+    const contenedorSinUnidad =
+        modal.querySelector(
+            '#detalle-felicitacion-sin-unidad'
+        );
+
+
+    const tbody =
+        modal.querySelector(
+            '#detalle-felicitacion-unidades'
+        );
+
+
+    if (
+        !contenedorUnidades
+        || !contenedorSinUnidad
+        || !tbody
+    ) {
+        return;
+    }
+
+
+    tbody.innerHTML =
+        '';
+
+
+    /* =====================================================
+       SIN UNIDAD / OFICINA
+    ===================================================== */
+
+    if (
+        !Array.isArray(
+            unidades
+        )
+        || unidades.length === 0
+    ) {
+
+        contenedorUnidades.hidden =
+            true;
+
+
+        contenedorSinUnidad.hidden =
+            false;
+
+
+        return;
+    }
+
+
+    /* =====================================================
+       CON UNIDAD
+    ===================================================== */
+
+    contenedorSinUnidad.hidden =
+        true;
+
+
+    contenedorUnidades.hidden =
+        false;
+
+
+    unidades.forEach(
+        (unidad) => {
+
+            const fila =
+                document.createElement(
+                    'tr'
+                );
+
+
+            const noEconomico =
+                normalizarMayusculasFelicitacion(
+                    unidad.no_economico
+                    || unidad.no_economico_snapshot
+                );
+
+
+            const placas =
+                normalizarMayusculasFelicitacion(
+                    unidad.placas
+                    || unidad.placas_snapshot
+                );
+
+
+            const marca =
+                normalizarMayusculasFelicitacion(
+                    unidad.marca
+                    || unidad.marca_snapshot
+                );
+
+
+            const submarca =
+                normalizarMayusculasFelicitacion(
+                    unidad.submarca
+                    || unidad.submarca_snapshot
+                );
+
+
+            const color =
+                normalizarMayusculasFelicitacion(
+                    unidad.color
+                    || unidad.color_snapshot
+                );
+
+
+            const estatus =
+                normalizarMayusculasFelicitacion(
+                    unidad.estatus
+                    || unidad.estatus_snapshot
+                );
+
+
+            const servicio =
+                normalizarMayusculasFelicitacion(
+                    unidad.servicio
+                    || unidad.servicio_snapshot
+                );
+
+
+            const tipo =
+                normalizarMayusculasFelicitacion(
+                    unidad.tipo
+                    || unidad.tipo_snapshot
+                );
+
+
+            const marcaSubmarca =
+                [
+                    marca,
+                    submarca,
+                ]
+                    .filter(
+                        Boolean
+                    )
+                    .join(
+                        ' '
+                    );
+
+
+            fila.innerHTML = `
+
+                <td>
+
+                    <strong>
+                        ${escaparHtmlFelicitacion(
+                            noEconomico
+                            || '—'
+                        )}
+                    </strong>
+
+                    <small
+                        style="
+                            display:block;
+                            margin-top:3px;
+                        "
+                    >
+                        Placas:
+                        ${escaparHtmlFelicitacion(
+                            placas
+                            || '—'
+                        )}
+                    </small>
+
+                </td>
+
+
+                <td>
+                    ${escaparHtmlFelicitacion(
+                        marcaSubmarca
+                        || '—'
+                    )}
+                </td>
+
+
+                <td>
+                    ${escaparHtmlFelicitacion(
+                        color
+                        || '—'
+                    )}
+                </td>
+
+
+                <td>
+                    ${escaparHtmlFelicitacion(
+                        estatus
+                        || '—'
+                    )}
+                </td>
+
+
+                <td>
+                    ${escaparHtmlFelicitacion(
+                        servicio
+                        || '—'
+                    )}
+                </td>
+
+
+                <td>
+                    ${escaparHtmlFelicitacion(
+                        tipo
+                        || '—'
+                    )}
+                </td>
+
+            `;
+
+
+            tbody.appendChild(
+                fila
+            );
+        }
+    );
+}
+
+
+/* =========================================================
+   NAVEGACIÓN
+========================================================= */
+
+function mostrarSeccionDetalleFelicitacion(
+    modal,
+    seccion
+) {
+
+    const botones =
+        modal.querySelectorAll(
+            '[data-detalle-felicitacion-seccion]'
+        );
+
+
+    const paneles =
+        modal.querySelectorAll(
+            '[data-detalle-felicitacion-panel]'
+        );
+
+
+    /* =====================================================
+       BOTONES
+    ===================================================== */
+
+    botones.forEach(
+        (boton) => {
+
+            const activo =
+                boton
+                    .dataset
+                    .detalleFelicitacionSeccion
+                === seccion;
+
+
+            boton.classList.toggle(
+                'detalle-felicitacion-nav__item--active',
+                activo
+            );
+        }
+    );
+
+
+    /* =====================================================
+       PANELES
+    ===================================================== */
+
+    paneles.forEach(
+        (panel) => {
+
+            const activo =
+                panel
+                    .dataset
+                    .detalleFelicitacionPanel
+                === seccion;
+
+
+            panel.hidden =
+                !activo;
+
+
+            panel.classList.toggle(
+                'detalle-felicitacion-panel--active',
+                activo
+            );
+        }
+    );
+
+
+    /* =====================================================
+       SCROLL ARRIBA
+    ===================================================== */
+
+    const body =
+        modal.querySelector(
+            '.modal-felicitacion__body'
+        );
+
+
+    if (body) {
+
+        body.scrollTo({
+            top:
+                0,
+
+            behavior:
+                'smooth',
+        });
+    }
+}
+
+
+/* =========================================================
+   MOSTRAR MODAL
+========================================================= */
+
+function mostrarModalDetalleFelicitacion(
+    modal
+) {
+
+    modal.hidden =
+        false;
+
+
+    modal.setAttribute(
+        'aria-hidden',
+        'false'
+    );
+
+
+    document.body.classList.add(
+        'modal-abierto'
+    );
+}
+
+
+/* =========================================================
+   CERRAR
+========================================================= */
+
+function cerrarDetalleFelicitacion(
+    modal
+) {
+
+    const activo =
+        document.activeElement;
+
+
+    if (
+        activo
+        && modal.contains(
+            activo
+        )
+    ) {
+
+        activo.blur();
+    }
+
+
+    modal.hidden =
+        true;
+
+
+    modal.setAttribute(
+        'aria-hidden',
+        'true'
+    );
+
+
+    document.body.classList.remove(
+        'modal-abierto'
+    );
+
+
+    /* =====================================================
+       REGRESAR A PRIMERA PESTAÑA
+    ===================================================== */
+
+    mostrarSeccionDetalleFelicitacion(
+        modal,
+        'datos'
+    );
+}
+
+
+/* =========================================================
+   LIMPIAR
+========================================================= */
+
+function limpiarDetalleFelicitacion(
+    modal
+) {
+
+    /* =====================================================
+       TÍTULO
+    ===================================================== */
+
+    const tituloFolio =
+        modal.querySelector(
+            '#detalle-felicitacion-titulo-folio'
+        );
+
+
+    if (tituloFolio) {
+
+        tituloFolio.textContent =
+            '';
+    }
+
+
+    /* =====================================================
+       TEXTOS
+    ===================================================== */
+
+    asignarTextoDetalleFelicitacion(
+        modal,
+        '#detalle-felicitacion-folio',
+        ''
+    );
+
+
+    asignarTextoDetalleFelicitacion(
+        modal,
+        '#detalle-felicitacion-fecha',
+        ''
+    );
+
+
+    asignarTextoDetalleFelicitacion(
+        modal,
+        '#detalle-felicitacion-felicitante',
+        ''
+    );
+
+
+    asignarTextoDetalleFelicitacion(
+        modal,
+        '#detalle-felicitacion-razon',
+        ''
+    );
+
+
+    /* =====================================================
+       PERSONAL
+    ===================================================== */
+
+    renderizarPersonalDetalleFelicitacion(
+        modal,
+        []
+    );
+
+
+    /* =====================================================
+       UNIDADES
+    ===================================================== */
+
+    renderizarUnidadesDetalleFelicitacion(
+        modal,
+        []
+    );
+}
+
+
+/* =========================================================
+   FECHA
+========================================================= */
+
+function formatearFechaFelicitacion(
+    valor
+) {
+
+    const fecha =
+        String(
+            valor
+            || ''
+        ).trim();
+
+
+    if (!fecha) {
+        return '';
+    }
+
+
+    /* =====================================================
+       YA VIENE DD/MM/YYYY
+    ===================================================== */
+
+    if (
+        /^\d{2}\/\d{2}\/\d{4}$/.test(
+            fecha
+        )
+    ) {
+
+        return fecha;
+    }
+
+
+    /* =====================================================
+       VIENE YYYY-MM-DD
+    ===================================================== */
+
+    const coincidencia =
+        fecha.match(
+            /^(\d{4})-(\d{2})-(\d{2})$/
+        );
+
+
+    if (!coincidencia) {
+        return fecha;
+    }
+
+
+    return (
+        `${coincidencia[3]}/`
+        + `${coincidencia[2]}/`
+        + `${coincidencia[1]}`
+    );
+}
+
+
+/* =========================================================
+   ASIGNAR TEXTO
+========================================================= */
+
+function asignarTextoDetalleFelicitacion(
+    modal,
+    selector,
+    valor
+) {
+
+    const elemento =
+        modal.querySelector(
+            selector
+        );
+
+
+    if (!elemento) {
+        return;
+    }
+
+
+    const texto =
+        String(
+            valor
+            ?? ''
+        ).trim();
+
+
+    elemento.textContent =
+        texto !== ''
+            ? texto
+            : '—';
+}
+
+
+/* =========================================================
+   MAYÚSCULAS
+========================================================= */
+
+function normalizarMayusculasFelicitacion(
+    valor
+) {
+
+    return String(
+        valor
+        ?? ''
+    )
+        .trim()
+        .toUpperCase();
+}
+
+
+/* =========================================================
+   ESCAPAR HTML
+========================================================= */
+
+function escaparHtmlFelicitacion(
+    valor
+) {
+
+    return String(
+        valor
+        ?? ''
+    )
+        .replaceAll(
+            '&',
+            '&amp;'
+        )
+        .replaceAll(
+            '<',
+            '&lt;'
+        )
+        .replaceAll(
+            '>',
+            '&gt;'
+        )
+        .replaceAll(
+            '"',
+            '&quot;'
+        )
+        .replaceAll(
+            "'",
+            '&#039;'
+        );
+}

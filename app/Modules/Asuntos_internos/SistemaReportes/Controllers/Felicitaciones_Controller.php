@@ -700,9 +700,9 @@ class Felicitaciones_Controller extends BaseController
 
     public function detalle(int $idFelicitacion)
     {
-        /* =====================================================
+        /* =========================================================
         VALIDAR SESIÓN
-        ===================================================== */
+        ========================================================= */
 
         if (
             session()->get('reportes_autenticado') !== true
@@ -712,28 +712,56 @@ class Felicitaciones_Controller extends BaseController
             return $this->response
                 ->setStatusCode(401)
                 ->setJSON([
-                    'success' => false,
-                    'message' => 'La sesión no es válida.',
+                    'success' =>
+                        false,
+
+                    'message' =>
+                        'La sesión no es válida.',
                 ]);
         }
 
 
-        if ($idFelicitacion <= 0) {
+        /* =========================================================
+        VALIDAR ID
+        ========================================================= */
+
+        if (
+            $idFelicitacion <= 0
+        ) {
 
             return $this->response
                 ->setStatusCode(422)
                 ->setJSON([
-                    'success' => false,
-                    'message' => 'La felicitación solicitada no es válida.',
+                    'success' =>
+                        false,
+
+                    'message' =>
+                        'La felicitación solicitada no es válida.',
                 ]);
         }
 
 
         try {
 
-            /* =================================================
+            /* =====================================================
+            CONEXIONES
+            ===================================================== */
+
+            $db =
+                \Config\Database::connect(
+                    'datacore'
+                );
+
+
+            $dbPlantilla =
+                \Config\Database::connect(
+                    'plantilla'
+                );
+
+
+            /* =====================================================
             FELICITACIÓN
-            ================================================= */
+            ===================================================== */
 
             $felicitacionModel =
                 new FelicitacionModel();
@@ -741,31 +769,36 @@ class Felicitaciones_Controller extends BaseController
 
             $felicitacion =
                 $felicitacionModel
-                ->where(
-                    'id_felicitacion',
-                    $idFelicitacion
-                )
-                ->where(
-                    'eliminado',
-                    0
-                )
-                ->first();
+                    ->where(
+                        'id_felicitacion',
+                        $idFelicitacion
+                    )
+                    ->where(
+                        'eliminado',
+                        0
+                    )
+                    ->first();
 
 
-            if (!$felicitacion) {
+            if (
+                !$felicitacion
+            ) {
 
                 return $this->response
                     ->setStatusCode(404)
                     ->setJSON([
-                        'success' => false,
-                        'message' => 'La felicitación no existe.',
+                        'success' =>
+                            false,
+
+                        'message' =>
+                            'La felicitación no existe.',
                     ]);
             }
 
 
-            /* =================================================
+            /* =====================================================
             FECHA
-            ================================================= */
+            ===================================================== */
 
             $fechaRegistro =
                 trim(
@@ -776,7 +809,9 @@ class Felicitaciones_Controller extends BaseController
                 );
 
 
-            if ($fechaRegistro !== '') {
+            if (
+                $fechaRegistro !== ''
+            ) {
 
                 $fecha =
                     \DateTime::createFromFormat(
@@ -785,7 +820,9 @@ class Felicitaciones_Controller extends BaseController
                     );
 
 
-                if ($fecha !== false) {
+                if (
+                    $fecha !== false
+                ) {
 
                     $felicitacion['fecha_registro'] =
                         $fecha->format(
@@ -795,42 +832,406 @@ class Felicitaciones_Controller extends BaseController
             }
 
 
-            /* =================================================
+            /* =====================================================
             PERSONAL RELACIONADO
-            ================================================= */
+            ===================================================== */
 
             $personalModel =
                 new FelicitacionPersonalModel();
 
 
-            $personal =
+            $personalDb =
                 $personalModel
-                ->where(
-                    'id_felicitacion',
-                    $idFelicitacion
-                )
-                ->orderBy(
-                    'id_felicitacion_personal',
-                    'ASC'
-                )
-                ->findAll();
+                    ->where(
+                        'id_felicitacion',
+                        $idFelicitacion
+                    )
+                    ->orderBy(
+                        'id_felicitacion_personal',
+                        'ASC'
+                    )
+                    ->findAll();
 
 
-            /* =================================================
+            /* =====================================================
+            IDS DE PLANTILLA
+            ===================================================== */
+
+            $idsPlantilla =
+                [];
+
+
+            foreach (
+                $personalDb
+                as $persona
+            ) {
+
+                $plantillaId =
+                    (int) (
+                        $persona['plantilla_id']
+                        ?? 0
+                    );
+
+
+                if (
+                    $plantillaId > 0
+                ) {
+
+                    $idsPlantilla[] =
+                        $plantillaId;
+                }
+            }
+
+
+            $idsPlantilla =
+                array_values(
+                    array_unique(
+                        $idsPlantilla
+                    )
+                );
+
+
+            /* =====================================================
+            CONSULTAR DATOS ACTUALES DE PLANTILLA
+
+            Se hace una sola consulta para todo el personal.
+            ===================================================== */
+
+            $personalPlantilla =
+                [];
+
+
+            if (
+                !empty(
+                    $idsPlantilla
+                )
+            ) {
+
+                $registrosPlantilla =
+                    $dbPlantilla
+                        ->table(
+                            'plantilla'
+                        )
+                        ->select([
+                            'ID',
+                            'PERSCOD',
+                            'NO_NOMINA',
+                        ])
+                        ->whereIn(
+                            'ID',
+                            $idsPlantilla
+                        )
+                        ->get()
+                        ->getResultArray();
+
+
+                foreach (
+                    $registrosPlantilla
+                    as $registroPlantilla
+                ) {
+
+                    $id =
+                        (int) (
+                            $registroPlantilla['ID']
+                            ?? 0
+                        );
+
+
+                    if (
+                        $id <= 0
+                    ) {
+                        continue;
+                    }
+
+
+                    $personalPlantilla[$id] =
+                        $registroPlantilla;
+                }
+            }
+
+
+            /* =====================================================
+            PREPARAR PERSONAL
+            ===================================================== */
+
+            $personal =
+                [];
+
+
+            foreach (
+                $personalDb
+                as $persona
+            ) {
+
+                $plantillaId =
+                    (int) (
+                        $persona['plantilla_id']
+                        ?? 0
+                    );
+
+
+                $datosPlantilla =
+                    $personalPlantilla[$plantillaId]
+                    ?? [];
+
+
+                /* =================================================
+                PERSCOD
+                ================================================= */
+
+                $perscod =
+                    trim(
+                        (string) (
+                            $datosPlantilla['PERSCOD']
+                            ?? $persona['perscod']
+                            ?? ''
+                        )
+                    );
+
+
+                /* =================================================
+                NÓMINA
+                ================================================= */
+
+                $nomina =
+                    trim(
+                        (string) (
+                            $datosPlantilla['NO_NOMINA']
+                            ?? ''
+                        )
+                    );
+
+
+                /* =================================================
+                FOTO
+
+                No se convierte a Base64.
+                El navegador la carga después.
+                ================================================= */
+
+                $foto =
+                    null;
+
+
+                if (
+                    $perscod !== ''
+                ) {
+
+                    $foto =
+                        'http://10.8.6.2:8083/dgsc/images/fotos/'
+                        . rawurlencode(
+                            $perscod
+                        )
+                        . '/F.F.R.E.jpg';
+                }
+
+
+                /* =================================================
+                RESULTADO
+                ================================================= */
+
+                $personal[] = [
+
+                    'id_felicitacion_personal' =>
+                        (int) (
+                            $persona['id_felicitacion_personal']
+                            ?? 0
+                        ),
+
+                    'plantilla_id' =>
+                        $plantillaId,
+
+                    'perscod' =>
+                        $perscod,
+
+                    'nomina' =>
+                        $nomina,
+
+                    'nombre_snapshot' =>
+                        $persona['nombre_snapshot']
+                        ?? '',
+
+                    'nombre' =>
+                        $persona['nombre_snapshot']
+                        ?? '',
+
+                    'area_snapshot' =>
+                        $persona['area_snapshot']
+                        ?? '',
+
+                    'area' =>
+                        $persona['area_snapshot']
+                        ?? '',
+
+                    'turno_snapshot' =>
+                        $persona['turno_snapshot']
+                        ?? '',
+
+                    'turno' =>
+                        $persona['turno_snapshot']
+                        ?? '',
+
+                    'alias_snapshot' =>
+                        $persona['alias_snapshot']
+                        ?? '',
+
+                    'alias' =>
+                        $persona['alias_snapshot']
+                        ?? '',
+
+                    'foto' =>
+                        $foto,
+                ];
+            }
+
+
+            /* =====================================================
+            UNIDADES RELACIONADAS
+            ===================================================== */
+
+            $unidadesDb =
+                $db
+                    ->table(
+                        'ai_felicitacion_unidades'
+                    )
+                    ->select([
+                        'id_felicitacion_unidad',
+                        'parque_vehicular_id',
+                        'no_economico_snapshot',
+                        'placas_snapshot',
+                        'marca_snapshot',
+                        'submarca_snapshot',
+                        'color_snapshot',
+                        'estatus_snapshot',
+                        'servicio_snapshot',
+                        'tipo_snapshot',
+                        'id_origen',
+                    ])
+                    ->where(
+                        'id_felicitacion',
+                        $idFelicitacion
+                    )
+                    ->orderBy(
+                        'id_felicitacion_unidad',
+                        'ASC'
+                    )
+                    ->get()
+                    ->getResultArray();
+
+
+            /* =====================================================
+            NORMALIZAR UNIDADES
+            ===================================================== */
+
+            $unidades =
+                [];
+
+
+            foreach (
+                $unidadesDb
+                as $unidad
+            ) {
+
+                $unidades[] = [
+
+                    'id_felicitacion_unidad' =>
+                        (int) (
+                            $unidad['id_felicitacion_unidad']
+                            ?? 0
+                        ),
+
+                    'id' =>
+                        (int) (
+                            $unidad['parque_vehicular_id']
+                            ?? 0
+                        ),
+
+                    'parque_vehicular_id' =>
+                        (int) (
+                            $unidad['parque_vehicular_id']
+                            ?? 0
+                        ),
+
+                    'no_economico' =>
+                        $unidad['no_economico_snapshot']
+                        ?? '',
+
+                    'placas' =>
+                        $unidad['placas_snapshot']
+                        ?? '',
+
+                    'marca' =>
+                        $unidad['marca_snapshot']
+                        ?? '',
+
+                    'submarca' =>
+                        $unidad['submarca_snapshot']
+                        ?? '',
+
+                    'color' =>
+                        $unidad['color_snapshot']
+                        ?? '',
+
+                    'estatus' =>
+                        $unidad['estatus_snapshot']
+                        ?? '',
+
+                    'servicio' =>
+                        $unidad['servicio_snapshot']
+                        ?? '',
+
+                    'tipo' =>
+                        $unidad['tipo_snapshot']
+                        ?? '',
+
+                    'id_origen' =>
+                        isset(
+                            $unidad['id_origen']
+                        )
+                            ? (int) $unidad['id_origen']
+                            : null,
+                ];
+            }
+
+
+            /* =====================================================
+            MODALIDAD
+
+            Si hay unidades:
+                CON_UNIDAD
+
+            Si no hay unidades:
+                SIN_UNIDAD_OFICINA
+            ===================================================== */
+
+            $felicitacion['modalidad_unidad'] =
+                !empty(
+                    $unidades
+                )
+                    ? 'CON_UNIDAD'
+                    : 'SIN_UNIDAD_OFICINA';
+
+
+            /* =====================================================
             RESPUESTA
-            ================================================= */
+            ===================================================== */
 
             return $this->response
                 ->setJSON([
                     'success' =>
-                    true,
+                        true,
 
                     'felicitacion' =>
-                    $felicitacion,
+                        $felicitacion,
 
                     'personal' =>
-                    $personal,
+                        $personal,
+
+                    'unidades' =>
+                        $unidades,
                 ]);
+
+
         } catch (\Throwable $e) {
 
             log_message(
@@ -838,10 +1239,10 @@ class Felicitaciones_Controller extends BaseController
                 'Error consultando detalle de felicitación {id}: {mensaje}',
                 [
                     'id' =>
-                    $idFelicitacion,
+                        $idFelicitacion,
 
                     'mensaje' =>
-                    $e->getMessage(),
+                        $e->getMessage(),
                 ]
             );
 
@@ -849,8 +1250,11 @@ class Felicitaciones_Controller extends BaseController
             return $this->response
                 ->setStatusCode(500)
                 ->setJSON([
-                    'success' => false,
-                    'message' => 'No fue posible consultar el detalle de la felicitación.',
+                    'success' =>
+                        false,
+
+                    'message' =>
+                        'No fue posible consultar el detalle de la felicitación.',
                 ]);
         }
     }

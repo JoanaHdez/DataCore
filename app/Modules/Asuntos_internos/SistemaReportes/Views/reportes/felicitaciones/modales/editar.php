@@ -110,17 +110,22 @@
 
                 <div class="modal-felicitacion-editar__panel" data-panel-editar-felicitacion="personal" hidden>
 
+                    <!-- =========================================
+                        PERSONAL
+                    ========================================== -->
+
                     <?= $this->include(
                         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\felicitaciones\modales\editar\sections\personal'
                     ) ?>
 
 
                     <!-- =========================================
-                         UNIDADES
-
-                         La agregaremos después de actualizar
-                         primero el formulario de Felicitaciones.
+                        UNIDADES
                     ========================================== -->
+
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\felicitaciones\modales\editar\sections\unidades'
+                    ) ?>
 
                 </div>
 
