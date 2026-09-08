@@ -107,6 +107,136 @@
 
             </div>
 
+
+            <!-- =============================================
+     UNIDAD SELECCIONADA
+============================================== -->
+
+            <div class="editar-unidad-seleccionada" id="editar-felicitacion-unidad-seleccionada" hidden>
+
+                <input type="hidden" id="editar-felicitacion-unidad-parque-id">
+
+
+                <div class="editar-reporte-grid">
+
+
+                    <!-- UNIDAD -->
+
+                    <div class="editar-reporte-campo">
+
+                        <label for="editar-felicitacion-unidad-no-economico">
+                            Unidad
+                        </label>
+
+                        <input type="text" id="editar-felicitacion-unidad-no-economico" readonly>
+
+                    </div>
+
+
+                    <!-- PLACAS -->
+
+                    <div class="editar-reporte-campo">
+
+                        <label for="editar-felicitacion-unidad-placas">
+                            Placas
+                        </label>
+
+                        <input type="text" id="editar-felicitacion-unidad-placas" readonly>
+
+                    </div>
+
+
+                    <!-- MARCA -->
+
+                    <div class="editar-reporte-campo">
+
+                        <label for="editar-felicitacion-unidad-marca">
+                            Marca
+                        </label>
+
+                        <input type="text" id="editar-felicitacion-unidad-marca" readonly>
+
+                    </div>
+
+
+                    <!-- SUBMARCA -->
+
+                    <div class="editar-reporte-campo">
+
+                        <label for="editar-felicitacion-unidad-submarca">
+                            Submarca
+                        </label>
+
+                        <input type="text" id="editar-felicitacion-unidad-submarca" readonly>
+
+                    </div>
+
+
+                    <!-- COLOR -->
+
+                    <div class="editar-reporte-campo">
+
+                        <label for="editar-felicitacion-unidad-color">
+                            Color
+                        </label>
+
+                        <input type="text" id="editar-felicitacion-unidad-color" readonly>
+
+                    </div>
+
+
+                    <!-- ESTATUS -->
+
+                    <div class="editar-reporte-campo">
+
+                        <label for="editar-felicitacion-unidad-estatus">
+                            Estatus de la unidad
+                        </label>
+
+                        <input type="text" id="editar-felicitacion-unidad-estatus" readonly>
+
+                    </div>
+
+
+                    <!-- SERVICIO -->
+
+                    <div class="editar-reporte-campo">
+
+                        <label for="editar-felicitacion-unidad-servicio">
+                            Servicio y adscripción
+                        </label>
+
+                        <input type="text" id="editar-felicitacion-unidad-servicio" readonly>
+
+                    </div>
+
+
+                    <!-- TIPO -->
+
+                    <div class="editar-reporte-campo">
+
+                        <label for="editar-felicitacion-unidad-tipo">
+                            Tipo de vehículo
+                        </label>
+
+                        <input type="text" id="editar-felicitacion-unidad-tipo" readonly>
+
+                    </div>
+
+                </div>
+
+
+                <div class="editar-unidad-seleccionada__acciones">
+
+                    <button type="button" class="button button--primary" id="btn-editar-agregar-unidad-felicitacion">
+                        Agregar unidad
+                    </button>
+
+                </div>
+
+            </div>
+
+
             <!-- =============================================
                  UNIDADES AGREGADAS
             ============================================== -->
