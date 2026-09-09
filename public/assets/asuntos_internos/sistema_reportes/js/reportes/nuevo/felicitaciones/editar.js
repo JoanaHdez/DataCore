@@ -1,3 +1,14 @@
+import {
+    escaparHtml,
+    obtenerInicialApellido,
+    obtenerFotoPersonal,
+} from './editar/utilidades.js';
+
+import {
+    abrirModalEditar,
+    cerrarModalEditar,
+} from './editar/modal.js';
+
 /* =========================================================
    SISTEMA DE REPORTES - ASUNTOS INTERNOS
    Felicitaciones - Editar
@@ -46,6 +57,10 @@ function inicializarEditarFelicitacion() {
     );
 
     inicializarBuscadorUnidadesEditar(
+        modal
+    );
+
+    inicializarBuscadorPersonalEditar(
         modal
     );
 
@@ -1445,102 +1460,7 @@ function limpiarModalEditar(
 }
 
 
-/* =========================================================
-   ABRIR
-========================================================= */
 
-function abrirModalEditar(
-    modal
-) {
-
-    modal.hidden =
-        false;
-
-
-    modal.setAttribute(
-        'aria-hidden',
-        'false'
-    );
-
-
-    document.body.classList.add(
-        'modal-abierto'
-    );
-}
-
-
-/* =========================================================
-   CERRAR
-========================================================= */
-
-function cerrarModalEditar(
-    modal
-) {
-
-    const activo =
-        document.activeElement;
-
-
-    if (
-        activo
-        && modal.contains(
-            activo
-        )
-    ) {
-
-        activo.blur();
-    }
-
-
-    modal.hidden =
-        true;
-
-
-    modal.setAttribute(
-        'aria-hidden',
-        'true'
-    );
-
-
-    document.body.classList.remove(
-        'modal-abierto'
-    );
-}
-
-
-/* =========================================================
-   ESCAPAR HTML
-========================================================= */
-
-function escaparHtml(
-    valor
-) {
-
-    return String(
-        valor
-        ?? ''
-    )
-        .replaceAll(
-            '&',
-            '&amp;'
-        )
-        .replaceAll(
-            '<',
-            '&lt;'
-        )
-        .replaceAll(
-            '>',
-            '&gt;'
-        )
-        .replaceAll(
-            '"',
-            '&quot;'
-        )
-        .replaceAll(
-            "'",
-            '&#039;'
-        );
-}
 
 
 
@@ -2070,20 +1990,6 @@ function inicializarBuscadorUnidadesEditar(
         unidades.forEach(
             (unidad) => {
 
-                const boton =
-                    document.createElement(
-                        'button'
-                    );
-
-
-                boton.type =
-                    'button';
-
-
-                boton.className =
-                    'modal-felicitacion-unidades-editar__resultado';
-
-
                 const numeroEconomico =
                     String(
                         unidad.no_economico
@@ -2112,6 +2018,20 @@ function inicializarBuscadorUnidadesEditar(
                     ).trim();
 
 
+                const boton =
+                    document.createElement(
+                        'button'
+                    );
+
+
+                boton.type =
+                    'button';
+
+
+                boton.className =
+                    'modal-felicitacion-unidades-editar__resultado';
+
+
                 boton.innerHTML = `
 
                     <strong>
@@ -2122,6 +2042,7 @@ function inicializarBuscadorUnidadesEditar(
                     </strong>
 
                     <span>
+                        Placas:
                         ${escaparHtml(
                             placas
                             || 'SIN PLACAS'
@@ -2130,10 +2051,13 @@ function inicializarBuscadorUnidadesEditar(
 
                     <small>
                         ${escaparHtml(
-                            [marca, submarca]
+                            [
+                                marca,
+                                submarca
+                            ]
                                 .filter(Boolean)
                                 .join(' ')
-                                || 'Sin información'
+                            || 'Sin información'
                         )}
                     </small>
                 `;
@@ -2186,6 +2110,7 @@ function inicializarBuscadorUnidadesEditar(
 
 
         unidadSeleccionada = {
+
             id:
                 parqueVehicularId,
 
@@ -2239,10 +2164,6 @@ function inicializarBuscadorUnidadesEditar(
         };
 
 
-        /* =================================================
-           CARGAR CAMPOS
-        ================================================= */
-
         inputParqueId.value =
             String(
                 unidadSeleccionada.id
@@ -2281,17 +2202,9 @@ function inicializarBuscadorUnidadesEditar(
             unidadSeleccionada.tipo;
 
 
-        /* =================================================
-           MOSTRAR CONTENEDOR
-        ================================================= */
-
         contenedorSeleccionada.hidden =
             false;
 
-
-        /* =================================================
-           MOSTRAR UNIDAD EN BUSCADOR
-        ================================================= */
 
         inputBusqueda.value =
             unidadSeleccionada.no_economico;
@@ -2320,10 +2233,6 @@ function inicializarBuscadorUnidadesEditar(
             const parqueVehicularId =
                 unidadSeleccionada.id;
 
-
-            /* =================================================
-               EVITAR DUPLICADO
-            ================================================= */
 
             const existente =
                 tbody.querySelector(
@@ -2476,24 +2385,12 @@ function inicializarBuscadorUnidadesEditar(
             );
 
 
-            /* =================================================
-               MOSTRAR TABLA
-            ================================================= */
-
             contenedorAgregadas.hidden =
                 false;
 
 
-            /* =================================================
-               ACTUALIZAR INPUTS
-            ================================================= */
-
             actualizarInputsUnidades();
 
-
-            /* =================================================
-               LIMPIAR SELECTOR
-            ================================================= */
 
             limpiarSelectorCompleto();
         }
@@ -2683,7 +2580,7 @@ function inicializarBuscadorUnidadesEditar(
 
 
     /* =====================================================
-       RESULTADOS
+       MENSAJE DE RESULTADOS
     ===================================================== */
 
     function mostrarMensajeResultados(
@@ -2706,6 +2603,10 @@ function inicializarBuscadorUnidadesEditar(
             false;
     }
 
+
+    /* =====================================================
+       OCULTAR RESULTADOS
+    ===================================================== */
 
     function ocultarResultados() {
 
@@ -2740,3 +2641,1086 @@ function inicializarBuscadorUnidadesEditar(
         }
     );
 }
+
+
+/* =========================================================
+   INICIALIZAR BUSCADOR DE PERSONAL - EDITAR FELICITACIÓN
+========================================================= */
+
+function inicializarBuscadorPersonalEditar(
+    modal
+) {
+
+    const inputBusqueda =
+        modal.querySelector(
+            '#editar-felicitacion-buscar-personal'
+        );
+
+
+    const contenedorResultados =
+        modal.querySelector(
+            '#editar-felicitacion-personal-resultados'
+        );
+
+
+    const contenedorSeleccionado =
+        modal.querySelector(
+            '#editar-felicitacion-personal-seleccionado'
+        );
+
+
+    const inputPlantillaId =
+        modal.querySelector(
+            '#editar-felicitacion-personal-plantilla-id'
+        );
+
+
+    const inputPerscod =
+        modal.querySelector(
+            '#editar-felicitacion-personal-perscod'
+        );
+
+
+    const inputNombre =
+        modal.querySelector(
+            '#editar-felicitacion-personal-nombre'
+        );
+
+
+    const inputNomina =
+        modal.querySelector(
+            '#editar-felicitacion-personal-nomina'
+        );
+
+
+    const inputArea =
+        modal.querySelector(
+            '#editar-felicitacion-personal-area'
+        );
+
+
+    const inputTurno =
+        modal.querySelector(
+            '#editar-felicitacion-personal-turno'
+        );
+
+
+    const inputAlias =
+        modal.querySelector(
+            '#editar-felicitacion-personal-alias'
+        );
+
+
+    const imagenFoto =
+        modal.querySelector(
+            '#editar-felicitacion-personal-foto'
+        );
+
+
+    const fotoFallback =
+        modal.querySelector(
+            '#editar-felicitacion-personal-foto-fallback'
+        );
+
+
+    const btnAgregar =
+        modal.querySelector(
+            '#btn-editar-agregar-personal-felicitacion'
+        );
+
+
+    const tbody =
+        modal.querySelector(
+            '#editar-felicitacion-personal'
+        );
+
+
+    const contenedorInputs =
+        modal.querySelector(
+            '#editar-felicitacion-personal-inputs'
+        );
+
+
+    if (
+        !inputBusqueda
+        || !contenedorResultados
+        || !contenedorSeleccionado
+        || !inputPlantillaId
+        || !inputPerscod
+        || !inputNombre
+        || !inputNomina
+        || !inputArea
+        || !inputTurno
+        || !inputAlias
+        || !imagenFoto
+        || !fotoFallback
+        || !btnAgregar
+        || !tbody
+        || !contenedorInputs
+    ) {
+
+        console.error(
+            'No se encontraron todos los elementos para editar personal.'
+        );
+
+        return;
+    }
+
+
+    let temporizadorBusqueda =
+        null;
+
+
+    let controladorBusqueda =
+        null;
+
+
+    let personaSeleccionada =
+        null;
+
+
+    /* =====================================================
+       BUSCAR
+    ===================================================== */
+
+    inputBusqueda.addEventListener(
+        'input',
+        () => {
+
+            const termino =
+                inputBusqueda.value.trim();
+
+
+            if (temporizadorBusqueda) {
+
+                clearTimeout(
+                    temporizadorBusqueda
+                );
+            }
+
+
+            limpiarPersonaSeleccionada();
+
+
+            if (
+                termino.length < 1
+            ) {
+
+                ocultarResultados();
+
+                return;
+            }
+
+
+            temporizadorBusqueda =
+                window.setTimeout(
+                    () => {
+
+                        buscarPersonal(
+                            termino
+                        );
+
+                    },
+                    300
+                );
+        }
+    );
+
+
+    /* =====================================================
+       CONSULTAR PERSONAL
+    ===================================================== */
+
+    async function buscarPersonal(
+        termino
+    ) {
+
+        if (controladorBusqueda) {
+
+            controladorBusqueda.abort();
+        }
+
+
+        controladorBusqueda =
+            new AbortController();
+
+
+        try {
+
+            const url =
+                new URL(
+                    'DataCore/public/asuntos-internos/reportes/personal/buscar',
+                    `${window.location.origin}/`
+                );
+
+
+            url.searchParams.set(
+                'q',
+                termino
+            );
+
+
+            const respuesta =
+                await fetch(
+                    url.toString(),
+                    {
+                        method:
+                            'GET',
+
+                        headers: {
+                            Accept:
+                                'application/json',
+                        },
+
+                        credentials:
+                            'same-origin',
+
+                        signal:
+                            controladorBusqueda.signal,
+                    }
+                );
+
+
+            const resultado =
+                await respuesta.json();
+
+
+            if (!respuesta.ok) {
+
+                throw new Error(
+                    resultado?.message
+                    || 'No fue posible consultar el personal.'
+                );
+            }
+
+
+            const personal =
+                Array.isArray(
+                    resultado.personal
+                )
+                    ? resultado.personal
+                    : [];
+
+
+            renderizarResultados(
+                personal
+            );
+
+
+        } catch (error) {
+
+            if (
+                error.name === 'AbortError'
+            ) {
+                return;
+            }
+
+
+            console.error(
+                'Error buscando personal:',
+                error
+            );
+
+
+            mostrarMensajeResultados(
+                'No fue posible consultar el personal.'
+            );
+        }
+    }
+
+
+    /* =====================================================
+       RESULTADOS
+    ===================================================== */
+
+    function renderizarResultados(
+        personal
+    ) {
+
+        contenedorResultados.innerHTML =
+            '';
+
+
+        if (
+            personal.length === 0
+        ) {
+
+            mostrarMensajeResultados(
+                'No se encontró personal.'
+            );
+
+            return;
+        }
+
+
+        personal.forEach(
+            (persona) => {
+
+                const nombre =
+                    String(
+                        persona.nombre
+                        || persona.nombre_completo
+                        || ''
+                    ).trim();
+
+
+                const nomina =
+                    String(
+                        persona.nomina
+                        || persona.perscod
+                        || ''
+                    ).trim();
+
+
+                const area =
+                    String(
+                        persona.area
+                        || persona.adscripcion
+                        || ''
+                    ).trim();
+
+
+                const inicial =
+                    nombre !== ''
+                        ? nombre.charAt(0).toUpperCase()
+                        : '?';
+
+
+                const boton =
+                    document.createElement(
+                        'button'
+                    );
+
+
+                boton.type =
+                    'button';
+
+
+                boton.className =
+                    'modal-felicitacion-personal-editar__resultado';
+
+
+                boton.dataset.inicial =
+                    inicial;
+
+
+                boton.innerHTML = `
+
+                    <strong>
+                        ${escaparHtml(
+                            nombre
+                            || 'SIN NOMBRE'
+                        )}
+                    </strong>
+
+                    <span>
+                        Nómina:
+                        ${escaparHtml(
+                            nomina
+                            || '—'
+                        )}
+                    </span>
+
+                    <small>
+                        ${escaparHtml(
+                            area
+                            || 'Sin área'
+                        )}
+                    </small>
+                `;
+
+
+                boton.addEventListener(
+                    'click',
+                    () => {
+
+                        seleccionarPersona(
+                            persona
+                        );
+                    }
+                );
+
+
+                contenedorResultados.appendChild(
+                    boton
+                );
+            }
+        );
+
+
+        contenedorResultados.hidden =
+            false;
+    }
+
+    /* =====================================================
+       SELECCIONAR PERSONA
+    ===================================================== */
+
+    function seleccionarPersona(
+        persona
+    ) {
+
+        const plantillaId =
+            Number(
+                persona.plantilla_id
+                || persona.id
+                || 0
+            );
+
+
+        const perscod =
+            String(
+                persona.perscod
+                || persona.nomina
+                || ''
+            ).trim();
+
+
+        const nombre =
+            String(
+                persona.nombre
+                || persona.nombre_completo
+                || ''
+            ).trim();
+
+
+        const nomina =
+            String(
+                persona.nomina
+                || perscod
+            ).trim();
+
+
+        const area =
+            String(
+                persona.area
+                || persona.adscripcion
+                || ''
+            ).trim();
+
+
+        const turno =
+            String(
+                persona.turno
+                || ''
+            ).trim();
+
+
+        const alias =
+            String(
+                persona.alias
+                || ''
+            ).trim();
+
+
+        const foto =
+            String(
+                persona.foto
+                || persona.foto_url
+                || ''
+            ).trim();
+
+
+        personaSeleccionada = {
+            plantillaId,
+            perscod,
+            nombre,
+            nomina,
+            area,
+            turno,
+            alias,
+            foto,
+        };
+
+
+        inputPlantillaId.value =
+            String(
+                plantillaId
+            );
+
+
+        inputPerscod.value =
+            perscod;
+
+
+        inputNombre.value =
+            nombre;
+
+
+        inputNomina.value =
+            nomina;
+
+
+        inputArea.value =
+            area;
+
+
+        inputTurno.value =
+            turno;
+
+
+        inputAlias.value =
+            alias;
+
+
+        /* =================================================
+           FOTO
+        ================================================= */
+
+        if (foto !== '') {
+
+            imagenFoto.src =
+                foto;
+
+
+            imagenFoto.hidden =
+                false;
+
+
+            fotoFallback.hidden =
+                true;
+
+        } else {
+
+            imagenFoto.src =
+                '';
+
+
+            imagenFoto.hidden =
+                true;
+
+
+            fotoFallback.hidden =
+                false;
+
+
+            fotoFallback.textContent =
+                nombre !== ''
+                    ? nombre.charAt(0).toUpperCase()
+                    : '?';
+        }
+
+
+        contenedorSeleccionado.hidden =
+            false;
+
+
+        inputBusqueda.value =
+            nombre;
+
+
+        ocultarResultados();
+    }
+
+
+    /* =====================================================
+       AGREGAR PERSONAL
+    ===================================================== */
+
+    btnAgregar.addEventListener(
+        'click',
+        () => {
+
+            if (!personaSeleccionada) {
+                return;
+            }
+
+
+            const plantillaId =
+                Number(
+                    personaSeleccionada.plantillaId
+                    || 0
+                );
+
+
+            const perscod =
+                String(
+                    personaSeleccionada.perscod
+                    || ''
+                ).trim();
+
+
+            /* =================================================
+               EVITAR DUPLICADOS
+            ================================================= */
+
+            const existente =
+                Array.from(
+                    tbody.querySelectorAll(
+                        'tr[data-plantilla-id]'
+                    )
+                )
+                    .some(
+                        (fila) => {
+
+                            return (
+                                Number(
+                                    fila.dataset.plantillaId
+                                    || 0
+                                ) === plantillaId
+                                || (
+                                    perscod !== ''
+                                    && String(
+                                        fila.dataset.perscod
+                                        || ''
+                                    ) === perscod
+                                )
+                            );
+                        }
+                    );
+
+
+            if (existente) {
+
+                alert(
+                    'Esta persona ya está relacionada con la felicitación.'
+                );
+
+                return;
+            }
+
+
+            tbody
+                .querySelectorAll(
+                    'tr'
+                )
+                .forEach(
+                    (fila) => {
+
+                        if (
+                            !fila.dataset.plantillaId
+                            && !fila.dataset.perscod
+                        ) {
+                            fila.remove();
+                        }
+                    }
+                );
+
+
+            const nombre =
+                personaSeleccionada.nombre;
+
+
+            const nomina =
+                personaSeleccionada.nomina;
+
+
+            const area =
+                personaSeleccionada.area;
+
+
+            const turno =
+                inputTurno.value.trim();
+
+
+            const alias =
+                inputAlias.value.trim();
+
+
+            const foto =
+                personaSeleccionada.foto;
+
+
+            const inicial =
+                nombre !== ''
+                    ? nombre.charAt(0).toUpperCase()
+                    : '?';
+
+
+            const fila =
+                document.createElement(
+                    'tr'
+                );
+
+
+            fila.dataset.plantillaId =
+                String(
+                    plantillaId
+                );
+
+
+            fila.dataset.perscod =
+                perscod;
+
+
+            fila.dataset.alias =
+                alias;
+
+
+            fila.dataset.personalNuevo =
+                '1';
+
+
+            fila.innerHTML = `
+
+                <td>
+
+                    <div class="modal-felicitacion-personal-editar__foto">
+
+                        ${
+                            foto !== ''
+                                ? `
+                                    <img
+                                        src="${escaparHtml(foto)}"
+                                        alt="${escaparHtml(nombre)}"
+                                    >
+                                `
+                                : `
+                                    <span>
+                                        ${escaparHtml(inicial)}
+                                    </span>
+                                `
+                        }
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <span class="modal-felicitacion-personal-editar__nombre">
+                        ${escaparHtml(
+                            nombre
+                            || '—'
+                        )}
+                    </span>
+
+                </td>
+
+
+                <td>
+                    ${escaparHtml(
+                        nomina
+                        || perscod
+                        || '—'
+                    )}
+                </td>
+
+
+                <td>
+                    ${escaparHtml(
+                        area
+                        || '—'
+                    )}
+                </td>
+
+
+                <td>
+
+                    <input
+                        type="text"
+                        class="modal-felicitacion-personal-editar__turno"
+                        value="${escaparHtml(turno)}"
+                        data-turno-personal-felicitacion
+                        autocomplete="off"
+                    >
+
+                </td>
+
+
+                <td>
+
+                    <button
+                        type="button"
+                        class="button--remove"
+                        data-quitar-personal-felicitacion
+                    >
+                        Quitar
+                    </button>
+
+                </td>
+            `;
+
+
+            tbody.appendChild(
+                fila
+            );
+
+
+            actualizarInputsPersonal();
+
+
+            limpiarSelectorCompleto();
+        }
+    );
+
+
+    /* =====================================================
+       QUITAR PERSONAL
+    ===================================================== */
+
+    tbody.addEventListener(
+        'click',
+        (evento) => {
+
+            const boton =
+                evento.target.closest(
+                    '[data-quitar-personal-felicitacion]'
+                );
+
+
+            if (!boton) {
+                return;
+            }
+
+
+            const fila =
+                boton.closest(
+                    'tr'
+                );
+
+
+            if (!fila) {
+                return;
+            }
+
+
+            fila.remove();
+
+
+            actualizarInputsPersonal();
+
+
+            if (
+                tbody.querySelectorAll(
+                    'tr[data-plantilla-id], tr[data-perscod]'
+                ).length === 0
+            ) {
+
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            Sin personal relacionado
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+    );
+
+
+    /* =====================================================
+       INPUTS PARA BACKEND
+    ===================================================== */
+
+    function actualizarInputsPersonal() {
+
+        contenedorInputs.innerHTML =
+            '';
+
+
+        const filas =
+            tbody.querySelectorAll(
+                'tr[data-plantilla-id], tr[data-perscod]'
+            );
+
+
+        filas.forEach(
+            (fila, indice) => {
+
+                const plantillaId =
+                    String(
+                        fila.dataset.plantillaId
+                        || ''
+                    );
+
+
+                const perscod =
+                    String(
+                        fila.dataset.perscod
+                        || ''
+                    );
+
+
+                const alias =
+                    String(
+                        fila.dataset.alias
+                        || ''
+                    );
+
+
+                const inputTurnoFila =
+                    fila.querySelector(
+                        '[data-turno-personal-felicitacion]'
+                    );
+
+
+                const turno =
+                    inputTurnoFila
+                        ? inputTurnoFila.value.trim()
+                        : '';
+
+
+                contenedorInputs.insertAdjacentHTML(
+                    'beforeend',
+                    `
+                        <input
+                            type="hidden"
+                            name="personal[${indice}][plantilla_id]"
+                            value="${escaparHtml(plantillaId)}"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="personal[${indice}][perscod]"
+                            value="${escaparHtml(perscod)}"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="personal[${indice}][turno]"
+                            value="${escaparHtml(turno)}"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="personal[${indice}][alias]"
+                            value="${escaparHtml(alias)}"
+                        >
+                    `
+                );
+            }
+        );
+    }
+
+
+    tbody.addEventListener(
+        'input',
+        (evento) => {
+
+            if (
+                evento.target.matches(
+                    '[data-turno-personal-felicitacion]'
+                )
+            ) {
+
+                actualizarInputsPersonal();
+            }
+        }
+    );
+
+
+    /* =====================================================
+       LIMPIAR PERSONA
+    ===================================================== */
+
+    function limpiarPersonaSeleccionada() {
+
+        personaSeleccionada =
+            null;
+
+
+        inputPlantillaId.value =
+            '';
+
+
+        inputPerscod.value =
+            '';
+
+
+        inputNombre.value =
+            '';
+
+
+        inputNomina.value =
+            '';
+
+
+        inputArea.value =
+            '';
+
+
+        inputTurno.value =
+            '';
+
+
+        inputAlias.value =
+            '';
+
+
+        imagenFoto.src =
+            '';
+
+
+        imagenFoto.hidden =
+            true;
+
+
+        fotoFallback.textContent =
+            '—';
+
+
+        fotoFallback.hidden =
+            false;
+
+
+        contenedorSeleccionado.hidden =
+            true;
+    }
+
+
+    function limpiarSelectorCompleto() {
+
+        inputBusqueda.value =
+            '';
+
+
+        ocultarResultados();
+
+
+        limpiarPersonaSeleccionada();
+    }
+
+
+    /* =====================================================
+       MENSAJES / RESULTADOS
+    ===================================================== */
+
+    function mostrarMensajeResultados(
+        mensaje
+    ) {
+
+        contenedorResultados.innerHTML = `
+
+            <div class="modal-felicitacion-personal-editar__resultado-vacio">
+                ${escaparHtml(mensaje)}
+            </div>
+        `;
+
+
+        contenedorResultados.hidden =
+            false;
+    }
+
+
+    function ocultarResultados() {
+
+        contenedorResultados.hidden =
+            true;
+
+
+        contenedorResultados.innerHTML =
+            '';
+    }
+
+
+    document.addEventListener(
+        'click',
+        (evento) => {
+
+            if (
+                evento.target === inputBusqueda
+                || contenedorResultados.contains(
+                    evento.target
+                )
+            ) {
+                return;
+            }
+
+
+            ocultarResultados();
+        }
+    );
+}
+

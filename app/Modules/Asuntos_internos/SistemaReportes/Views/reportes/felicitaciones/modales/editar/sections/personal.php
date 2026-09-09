@@ -38,10 +38,107 @@
 
 
         <!-- =================================================
-             RESULTADOS DE BÚSQUEDA
-        ================================================== -->
+     RESULTADOS DE BÚSQUEDA
+================================================== -->
 
         <div class="modal-felicitacion-personal-editar__resultados" id="editar-felicitacion-personal-resultados" hidden>
+        </div>
+
+
+        <!-- =================================================
+     PERSONA SELECCIONADA
+================================================== -->
+
+        <div class="editar-personal-seleccionado" id="editar-felicitacion-personal-seleccionado" hidden>
+
+            <div class="editar-personal-seleccionado__foto">
+
+                <img id="editar-felicitacion-personal-foto" src="" alt="" hidden>
+
+                <span id="editar-felicitacion-personal-foto-fallback">
+                    —
+                </span>
+
+            </div>
+
+
+            <div class="editar-personal-seleccionado__datos">
+
+                <input type="hidden" id="editar-felicitacion-personal-plantilla-id">
+
+                <input type="hidden" id="editar-felicitacion-personal-perscod">
+
+
+                <div class="editar-reporte-grid">
+
+                    <div class="editar-reporte-campo editar-reporte-campo--full">
+
+                        <label>
+                            Nombre
+                        </label>
+
+                        <input type="text" id="editar-felicitacion-personal-nombre" readonly>
+
+                    </div>
+
+
+                    <div class="editar-reporte-campo">
+
+                        <label>
+                            Nómina
+                        </label>
+
+                        <input type="text" id="editar-felicitacion-personal-nomina" readonly>
+
+                    </div>
+
+
+                    <div class="editar-reporte-campo">
+
+                        <label>
+                            Área
+                        </label>
+
+                        <input type="text" id="editar-felicitacion-personal-area" readonly>
+
+                    </div>
+
+
+                    <div class="editar-reporte-campo">
+
+                        <label>
+                            Turno
+                        </label>
+
+                        <input type="text" id="editar-felicitacion-personal-turno" placeholder="Turno">
+
+                    </div>
+
+
+                    <div class="editar-reporte-campo">
+
+                        <label>
+                            Alias
+                        </label>
+
+                        <input type="text" id="editar-felicitacion-personal-alias"
+                            placeholder="Alias del elemento, si aplica" autocomplete="off">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="editar-personal-seleccionado__acciones">
+
+                <button type="button" class="button button--primary" id="btn-editar-agregar-personal-felicitacion">
+                    Agregar personal
+                </button>
+
+            </div>
+
         </div>
 
     </div>

@@ -1576,6 +1576,209 @@
 
 
 /* =========================================================
+   RESULTADOS DEL BUSCADOR DE PERSONAL
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__resultados {
+    width: 100%;
+
+    margin-top: 10px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #d7e2eb;
+    border-radius: 10px;
+
+    box-shadow:
+        0 2px 6px rgba(24, 56, 88, 0.025);
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__resultados[hidden] {
+    display: none !important;
+}
+
+
+/* =========================================================
+   CADA RESULTADO
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__resultado {
+    position: relative;
+
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        38px
+        minmax(0, 1fr);
+
+    grid-template-rows:
+        auto
+        auto
+        auto;
+
+    align-items: center;
+
+    column-gap: 12px;
+
+    padding: 11px 14px;
+
+    color: #173554;
+
+    background: #ffffff;
+
+    border: 0;
+    border-bottom: 1px solid #e4ebf1;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+
+    appearance: none;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__resultado:last-child {
+    border-bottom: 0;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__resultado:hover {
+    background: #f7fafc;
+}
+
+
+/* =========================================================
+   CÍRCULO CON INICIAL
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__resultado::before {
+    content: attr(data-inicial);
+
+    grid-column: 1;
+    grid-row: 1 / 4;
+
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #ffffff;
+
+    background: #0d80c5;
+
+    border-radius: 50%;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   NOMBRE
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__resultado strong {
+    grid-column: 2;
+    grid-row: 1;
+
+    display: block;
+
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    line-height: 1.3;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   NÓMINA
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__resultado span {
+    grid-column: 2;
+    grid-row: 2;
+
+    display: block;
+
+    margin-top: 1px;
+
+    color: #60768a;
+
+    font-size: 8px;
+    font-weight: 400;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   ÁREA
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__resultado small {
+    grid-column: 2;
+    grid-row: 3;
+
+    display: block;
+
+    margin-top: 1px;
+
+    color: #5f7590;
+
+    font-size: 8px;
+    font-weight: 400;
+
+    line-height: 1.3;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   RESULTADO VACÍO
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__resultado-vacio {
+    padding: 14px;
+
+    color: #6f8395;
+
+    background: #ffffff;
+
+    font-size: 9px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
    RESPONSIVE UNIDADES
 ========================================================= */
 
