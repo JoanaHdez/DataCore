@@ -105,7 +105,7 @@ $rolUsuario =
 
 
     <!-- =====================================================
-         MODALES
+        MODALES
     ====================================================== -->
 
     <?= $this->include(
@@ -114,6 +114,14 @@ $rolUsuario =
 
     <?= $this->include(
         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\felicitaciones\modales\editar'
+    ) ?>
+
+    <?= $this->include(
+        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\felicitaciones\modales\eliminar'
+    ) ?>
+
+    <?= $this->include(
+        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\felicitaciones\modales\confirmar_eliminacion'
     ) ?>
 
 </div>

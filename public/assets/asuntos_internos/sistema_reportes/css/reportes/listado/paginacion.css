@@ -228,6 +228,68 @@
     border: 1px solid #c7e7d8;
 }
 
+/* =========================================================
+   BOTONES DEL MODAL
+========================================================= */
+
+.modal-reporte__button {
+    min-width: 120px;
+    height: 38px;
+
+    padding: 0 18px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 800;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.15s ease;
+}
+
+
+.modal-reporte__button:hover {
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   BOTÓN SECUNDARIO
+========================================================= */
+
+.modal-reporte__button--secondary {
+    color: #304d69;
+    background: #ffffff;
+
+    border: 1px solid #d3dee7;
+}
+
+
+.modal-reporte__button--secondary:hover {
+    color: #304d69;
+    background: #f5f8fa;
+
+    border-color: #bccbd7;
+}
+
+
+.modal-reporte__button--secondary:focus {
+    outline: none;
+
+    box-shadow:
+        0 0 0 3px rgba(48, 77, 105, 0.12);
+}
 
 /* =========================================================
    BOTÓN DE ELIMINAR

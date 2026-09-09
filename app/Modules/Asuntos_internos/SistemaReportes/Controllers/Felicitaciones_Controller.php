@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Modules\Asuntos_internos\SistemaReportes\Models\FelicitacionModel;
 use App\Modules\Asuntos_internos\SistemaReportes\Models\FelicitacionPersonalModel;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\FelicitacionService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\AuthService;
 
 class Felicitaciones_Controller extends BaseController
 {
@@ -1471,5 +1472,397 @@ class Felicitaciones_Controller extends BaseController
                         'No fue posible actualizar la felicitación.',
                 ]);
         }
+    }
+
+    public function eliminar(int $idFelicitacion)
+    {
+        /* =========================================================
+        VALIDAR SESIÓN
+        ========================================================= */
+
+        if (
+            session()->get('reportes_autenticado') !== true
+            || !session()->has('usuario_reportes')
+        ) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La sesión no es válida.',
+                ]);
+        }
+
+
+        $usuario =
+            session()->get(
+                'usuario_reportes'
+            );
+
+
+        $idUsuario =
+            (int) (
+                $usuario['id_usuario']
+                ?? 0
+            );
+
+
+        $rol =
+            trim(
+                (string) (
+                    $usuario['rol']
+                    ?? 'usuario'
+                )
+            );
+
+
+        if (
+            $idUsuario <= 0
+        ) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'No fue posible identificar al usuario.',
+                ]);
+        }
+
+
+        if (
+            $idFelicitacion <= 0
+        ) {
+
+            return $this->response
+                ->setStatusCode(400)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La felicitación no es válida.',
+                ]);
+        }
+
+
+        /* =========================================================
+        CONEXIÓN DATACORE
+        ========================================================= */
+
+        $db =
+            \Config\Database::connect(
+                'datacore'
+            );
+
+
+        /* =========================================================
+        BUSCAR FELICITACIÓN
+        ========================================================= */
+
+        $felicitacion =
+            $db
+                ->table(
+                    'ai_felicitaciones'
+                )
+                ->where(
+                    'id_felicitacion',
+                    $idFelicitacion
+                )
+                ->get()
+                ->getRowArray();
+
+
+        if (
+            !$felicitacion
+        ) {
+
+            return $this->response
+                ->setStatusCode(404)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La felicitación no existe.',
+                ]);
+        }
+
+
+        /* =========================================================
+        VALIDAR SI YA FUE ELIMINADA
+        ========================================================= */
+
+        if (
+            (int) (
+                $felicitacion['eliminado']
+                ?? 0
+            ) === 1
+        ) {
+
+            return $this->response
+                ->setStatusCode(409)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La felicitación ya fue eliminada.',
+                ]);
+        }
+
+
+        /* =========================================================
+        AUTORIZACIÓN
+        ========================================================= */
+
+        $idAdministradorAutorizador =
+            null;
+
+
+        /*
+        * =====================================================
+        * ADMINISTRADOR
+        *
+        * Si la sesión ya pertenece a un administrador,
+        * no solicitamos contraseña adicional.
+        * =====================================================
+        */
+
+        if (
+            $rol === 'admin'
+        ) {
+
+            $idAdministradorAutorizador =
+                $idUsuario;
+
+        } else {
+
+            /*
+            * =================================================
+            * USUARIO NORMAL
+            *
+            * El backend vuelve a validar la contraseña.
+            * No confiamos únicamente en JavaScript.
+            * =================================================
+            */
+
+            $passwordAdmin =
+                strtoupper(
+                    trim(
+                        (string) $this->request
+                            ->getPost(
+                                'password_admin'
+                            )
+                    )
+                );
+
+
+            if (
+                $passwordAdmin === ''
+            ) {
+
+                return $this->response
+                    ->setStatusCode(403)
+                    ->setJSON([
+                        'success' => false,
+                        'message' => 'Se requiere autorización administrativa.',
+                    ]);
+            }
+
+
+            try {
+
+                $authService =
+                    new AuthService();
+
+
+                $administrador =
+                    $authService
+                        ->validarAutorizacionAdministradores(
+                            $passwordAdmin
+                        );
+
+            } catch (\Throwable $e) {
+
+                log_message(
+                    'error',
+                    'Error validando autorización administrativa para eliminar felicitación: {mensaje}',
+                    [
+                        'mensaje' =>
+                            $e->getMessage(),
+                    ]
+                );
+
+
+                return $this->response
+                    ->setStatusCode(500)
+                    ->setJSON([
+                        'success' => false,
+                        'message' => 'No fue posible validar la autorización.',
+                    ]);
+            }
+
+
+            if (
+                !$administrador
+            ) {
+
+                return $this->response
+                    ->setStatusCode(403)
+                    ->setJSON([
+                        'success' => false,
+                        'message' => 'Contraseña de administrador incorrecta.',
+                    ]);
+            }
+
+
+            $idAdministradorAutorizador =
+                (int) (
+                    $administrador['id_usuario']
+                    ?? 0
+                );
+
+
+            if (
+                $idAdministradorAutorizador <= 0
+            ) {
+
+                return $this->response
+                    ->setStatusCode(500)
+                    ->setJSON([
+                        'success' => false,
+                        'message' => 'No fue posible identificar al administrador autorizador.',
+                    ]);
+            }
+        }
+
+
+        /* =========================================================
+        TRANSACCIÓN
+        ========================================================= */
+
+        $db->transBegin();
+
+
+        try {
+
+            $ahora =
+                date(
+                    'Y-m-d H:i:s'
+                );
+
+
+            /* =====================================================
+            BORRADO LÓGICO
+            ===================================================== */
+
+            $db
+                ->table(
+                    'ai_felicitaciones'
+                )
+                ->where(
+                    'id_felicitacion',
+                    $idFelicitacion
+                )
+                ->update([
+                    'eliminado' =>
+                        1,
+
+                    'eliminado_at' =>
+                        $ahora,
+
+                    'eliminado_por' =>
+                        $idUsuario,
+
+                    'updated_at' =>
+                        $ahora,
+                ]);
+
+
+            /* =====================================================
+            REGISTRO DE ELIMINACIÓN
+            ===================================================== */
+
+            $db
+                ->table(
+                    'ai_felicitacion_eliminaciones'
+                )
+                ->insert([
+
+                    'id_felicitacion' =>
+                        $idFelicitacion,
+
+                    'solicitado_por' =>
+                        $idUsuario,
+
+                    'autorizado_por' =>
+                        $idAdministradorAutorizador,
+
+                    'requirio_autorizacion' =>
+                        $rol === 'admin'
+                            ? 0
+                            : 1,
+
+                    'motivo' =>
+                        'Eliminación solicitada desde el listado de felicitaciones.',
+
+                    'ip' =>
+                        $this->request
+                            ->getIPAddress(),
+
+                    'created_at' =>
+                        $ahora,
+                ]);
+
+
+            /* =====================================================
+            VALIDAR TRANSACCIÓN
+            ===================================================== */
+
+            if (
+                $db->transStatus() === false
+            ) {
+
+                throw new \RuntimeException(
+                    'La transacción de eliminación no pudo completarse.'
+                );
+            }
+
+
+            $db->transCommit();
+
+        } catch (\Throwable $e) {
+
+            $db->transRollback();
+
+
+            log_message(
+                'error',
+                'Error eliminando lógicamente felicitación {id}: {mensaje}',
+                [
+                    'id' =>
+                        $idFelicitacion,
+
+                    'mensaje' =>
+                        $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'No fue posible eliminar la felicitación.',
+                ]);
+        }
+
+
+        /* =========================================================
+        RESPUESTA
+        ========================================================= */
+
+        return $this->response
+            ->setJSON([
+                'success' => true,
+
+                'message' =>
+                    'La felicitación fue eliminada correctamente.',
+
+                'folio' =>
+                    $felicitacion['folio']
+                    ?? '',
+            ]);
     }
 }

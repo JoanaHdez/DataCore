@@ -68,6 +68,11 @@ $routes->group(
                     '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Felicitaciones_Controller::actualizar/$1'
                 );
 
+                $routes->post(
+                    'felicitaciones/eliminar/(:num)',
+                    '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Felicitaciones_Controller::eliminar/$1'
+                );
+
                 /* =================================================
                    DASHBOARD
                 ================================================= */

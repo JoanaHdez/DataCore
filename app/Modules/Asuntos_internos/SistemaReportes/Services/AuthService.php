@@ -407,4 +407,154 @@ class AuthService
 
         return !empty($administrador);
     }
+    /**
+     * =========================================================
+     * VALIDAR AUTORIZACIÓN DE ADMINISTRADORES
+     * =========================================================
+     *
+     * Valida la contraseña contra cualquiera de los usuarios
+     * locales que actualmente tenga el rol "admin".
+     *
+     * Devuelve información del administrador que autorizó
+     * para poder registrar correctamente autorizado_por.
+     *
+     * La CURP:
+     * - no se guarda en DataCore
+     * - no se guarda en sesión
+     * - no se registra en logs
+     */
+    public function validarAutorizacionAdministradores(
+        string $curp
+    ): ?array {
+
+        $curp =
+            strtoupper(
+                trim(
+                    $curp
+                )
+            );
+
+
+        if (
+            $curp === ''
+        ) {
+            return null;
+        }
+
+
+        /* =====================================================
+        OBTENER ADMINISTRADORES LOCALES
+        ===================================================== */
+
+        $administradores =
+            $this->dbDataCore
+                ->table('dc_usuarios u')
+                ->select([
+                    'u.id_usuario',
+                    'u.plantilla_id',
+                ])
+                ->join(
+                    'dc_roles r',
+                    'r.id_rol = u.id_rol',
+                    'inner'
+                )
+                ->where(
+                    'r.clave',
+                    self::ROL_ADMIN
+                )
+                ->where(
+                    'r.activo',
+                    1
+                )
+                ->where(
+                    'u.activo',
+                    1
+                )
+                ->get()
+                ->getResultArray();
+
+
+        if (
+            empty($administradores)
+        ) {
+            return null;
+        }
+
+
+        /* =====================================================
+        VALIDAR CONTRASEÑA CONTRA CADA ADMINISTRADOR
+        ===================================================== */
+
+        foreach (
+            $administradores
+            as $administrador
+        ) {
+
+            $idUsuario =
+                (int) (
+                    $administrador['id_usuario']
+                    ?? 0
+                );
+
+
+            $plantillaId =
+                (int) (
+                    $administrador['plantilla_id']
+                    ?? 0
+                );
+
+
+            if (
+                $idUsuario <= 0
+                || $plantillaId <= 0
+            ) {
+                continue;
+            }
+
+
+            $persona =
+                $this->dbPlantilla
+                    ->table('plantilla')
+                    ->select([
+                        'ID',
+                    ])
+                    ->where(
+                        'ID',
+                        $plantillaId
+                    )
+                    ->where(
+                        'CURP',
+                        $curp
+                    )
+                    ->where(
+                        'ESTADO',
+                        'ACTIVO'
+                    )
+                    ->get()
+                    ->getRowArray();
+
+
+            if (
+                !$persona
+            ) {
+                continue;
+            }
+
+
+            /* =================================================
+            ADMINISTRADOR IDENTIFICADO
+            ================================================= */
+
+            return [
+                'id_usuario' =>
+                    $idUsuario,
+
+                'plantilla_id' =>
+                    $plantillaId,
+            ];
+        }
+
+
+        return null;
+    }
 }

@@ -45,6 +45,7 @@ import './reportes/nuevo/felicitaciones/editar.js';
 import './reportes/nuevo/felicitaciones/pasos.js';
 import './reportes/nuevo/felicitaciones/unidades.js';
 import './reportes/nuevo/felicitaciones/limpiar.js';
+import './reportes/nuevo/felicitaciones/eliminar.js';
 
 
 /* =========================================================

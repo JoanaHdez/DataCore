@@ -25,3 +25,11 @@
 <?= $this->include(
     'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\exportar'
 ) ?>
+
+<?= $this->include(
+    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\felicitaciones\modales\eliminar'
+) ?>
+
+<?= $this->include(
+    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\felicitaciones\modales\confirmar_eliminacion'
+) ?>

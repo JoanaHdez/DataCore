@@ -66,9 +66,9 @@
 
                 <?php if (!empty($felicitaciones)): ?>
 
-                    <?php foreach ($felicitaciones as $indice => $felicitacion): ?>
+                <?php foreach ($felicitaciones as $indice => $felicitacion): ?>
 
-                        <?php
+                <?php
 
                         /* =============================================
                            DATOS DEL REGISTRO
@@ -239,142 +239,133 @@
                         ?>
 
 
-                        <tr 
-                            data-id-felicitacion="<?= $idFelicitacion ?>" 
-                            data-folio="<?= esc($folio) ?>"
-                            data-fecha="<?= esc($fechaFiltro) ?>" 
-                            data-felicitante="<?= esc($felicitante) ?>"
-                            data-personal="<?= esc($personalFiltro) ?>" 
-                            data-personal-ids="<?= esc($personalIdsFiltro) ?>"
-                            data-perscods="<?= esc($perscodsFiltro) ?>"
-                            data-aliases="<?= esc($aliasesFiltro) ?>"
-                            data-areas="<?= esc($areasFiltro) ?>" 
-                            data-turnos="<?= esc($turnosFiltro) ?>"
-                            data-sectores="<?= esc($sectoresFiltro) ?>">
+                <tr data-id-felicitacion="<?= $idFelicitacion ?>" data-folio="<?= esc($folio) ?>"
+                    data-fecha="<?= esc($fechaFiltro) ?>" data-felicitante="<?= esc($felicitante) ?>"
+                    data-personal="<?= esc($personalFiltro) ?>" data-personal-ids="<?= esc($personalIdsFiltro) ?>"
+                    data-perscods="<?= esc($perscodsFiltro) ?>" data-aliases="<?= esc($aliasesFiltro) ?>"
+                    data-areas="<?= esc($areasFiltro) ?>" data-turnos="<?= esc($turnosFiltro) ?>"
+                    data-sectores="<?= esc($sectoresFiltro) ?>">
 
-                            <!-- =====================================
+                    <!-- =====================================
                                  NO.
                             ====================================== -->
 
-                            <td class="felicitaciones-tabla__numero">
+                    <td class="felicitaciones-tabla__numero">
 
-                                <?= $indice + 1 ?>
+                        <?= $indice + 1 ?>
 
-                            </td>
+                    </td>
 
 
-                            <!-- =====================================
+                    <!-- =====================================
                                  FOLIO
                             ====================================== -->
 
-                            <td class="felicitaciones-tabla__folio">
+                    <td class="felicitaciones-tabla__folio">
 
-                                <strong>
-                                    <?= esc(
+                        <strong>
+                            <?= esc(
                                         $folio
                                             ?: '—'
                                     ) ?>
-                                </strong>
+                        </strong>
 
-                            </td>
+                    </td>
 
 
-                            <!-- =====================================
+                    <!-- =====================================
                                  FECHA
                             ====================================== -->
 
-                            <td class="felicitaciones-tabla__fecha">
+                    <td class="felicitaciones-tabla__fecha">
 
-                                <?= esc(
+                        <?= esc(
                                     $fecha
                                         ?: '—'
                                 ) ?>
 
-                            </td>
+                    </td>
 
 
-                            <!-- =====================================
+                    <!-- =====================================
                                  FELICITANTE
                             ====================================== -->
 
-                            <td class="felicitaciones-tabla__felicitante">
+                    <td class="felicitaciones-tabla__felicitante">
 
-                                <?= esc(
+                        <?= esc(
                                     $felicitante
                                         ?: '—'
                                 ) ?>
 
-                            </td>
+                    </td>
 
 
-                            <!-- =====================================
+                    <!-- =====================================
                                  ACCIONES
                             ====================================== -->
 
-                            <td>
+                    <td>
 
-                                <div class="felicitaciones-tabla__acciones">
+                        <div class="felicitaciones-tabla__acciones">
 
-                                    <!-- VER -->
+                            <!-- VER -->
 
-                                    <button type="button" class="felicitaciones-tabla__accion" data-accion-felicitacion="ver"
-                                        data-id-felicitacion="<?= $idFelicitacion ?>" data-folio="<?= esc($folio) ?>">
-                                        Ver
-                                    </button>
-
-
-                                    <!-- EDITAR -->
-
-                                    <button type="button" class="felicitaciones-tabla__accion" data-accion-felicitacion="editar"
-                                        data-id-felicitacion="<?= $idFelicitacion ?>" data-folio="<?= esc($folio) ?>">
-                                        Editar
-                                    </button>
+                            <button type="button" class="felicitaciones-tabla__accion" data-accion-felicitacion="ver"
+                                data-id-felicitacion="<?= $idFelicitacion ?>" data-folio="<?= esc($folio) ?>">
+                                Ver
+                            </button>
 
 
-                                    <!-- ELIMINAR -->
+                            <!-- EDITAR -->
 
-                                    <button type="button" class="
-                                            felicitaciones-tabla__accion
-                                            felicitaciones-tabla__accion--eliminar
-                                        " data-accion-felicitacion="eliminar"
-                                        data-id-felicitacion="<?= $idFelicitacion ?>" data-folio="<?= esc($folio) ?>">
-                                        Eliminar
-                                    </button>
+                            <button type="button" class="felicitaciones-tabla__accion" data-accion-felicitacion="editar"
+                                data-id-felicitacion="<?= $idFelicitacion ?>" data-folio="<?= esc($folio) ?>">
+                                Editar
+                            </button>
 
-                                </div>
 
-                            </td>
+                            <!-- ELIMINAR -->
 
-                        </tr>
+                            <button type="button" class="felicitaciones-tabla__accion" data-accion-felicitacion="eliminar" 
+                                data-id-felicitacion="<?= $idFelicitacion ?>"data-folio="<?= esc($folio) ?>">
+                                Eliminar
+                            </button>
 
-                    <?php endforeach; ?>
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                <?php endforeach; ?>
 
 
                 <?php else: ?>
 
-                    <!-- =============================================
+                <!-- =============================================
                          SIN REGISTROS
                     ============================================== -->
 
-                    <tr class="felicitaciones-tabla__empty">
+                <tr class="felicitaciones-tabla__empty">
 
-                        <td colspan="5">
+                    <td colspan="5">
 
-                            <div class="felicitaciones-tabla__empty-content">
+                        <div class="felicitaciones-tabla__empty-content">
 
-                                <strong>
-                                    No hay felicitaciones para mostrar
-                                </strong>
+                            <strong>
+                                No hay felicitaciones para mostrar
+                            </strong>
 
-                                <span>
-                                    Las felicitaciones aparecerán aquí cuando existan registros disponibles.
-                                </span>
+                            <span>
+                                Las felicitaciones aparecerán aquí cuando existan registros disponibles.
+                            </span>
 
-                            </div>
+                        </div>
 
-                        </td>
+                    </td>
 
-                    </tr>
+                </tr>
 
                 <?php endif; ?>
 

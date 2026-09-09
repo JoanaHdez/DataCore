@@ -423,6 +423,88 @@
     cursor: not-allowed;
 }
 
+/* =========================================================
+   FELICITACIONES
+   CONFIRMACIÓN DE ELIMINACIÓN - BOTONES
+========================================================= */
+
+#modal-confirmar-eliminacion-felicitacion
+.modal-reporte__button {
+    min-width: 120px;
+    height: 38px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 16px;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+    box-sizing: border-box;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/* =========================================================
+   CANCELAR
+========================================================= */
+
+#modal-confirmar-eliminacion-felicitacion
+.modal-reporte__button--secondary {
+    color: #405d78;
+    background: #ffffff;
+
+    border: 1px solid #d8e1e9;
+}
+
+
+#modal-confirmar-eliminacion-felicitacion
+.modal-reporte__button--secondary:hover {
+    background: #f5f8fa;
+    border-color: #bccbd7;
+}
+
+
+/* =========================================================
+   ELIMINAR
+========================================================= */
+
+#modal-confirmar-eliminacion-felicitacion
+.modal-reporte__button--danger {
+    color: #ffffff;
+    background: #bd3b32;
+
+    border: 1px solid #bd3b32;
+}
+
+
+#modal-confirmar-eliminacion-felicitacion
+.modal-reporte__button--danger:hover {
+    background: #a8322b;
+    border-color: #a8322b;
+}
+
+
+#modal-confirmar-eliminacion-felicitacion
+.modal-reporte__button--danger:focus {
+    outline: none;
+
+    box-shadow:
+        0 0 0 3px rgba(189, 59, 50, 0.18);
+}
+
 
 /* =========================================================
    RESPONSIVE
