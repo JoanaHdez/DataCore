@@ -207,27 +207,11 @@
                             <thead>
 
                                 <tr>
-
-                                    <th>
-                                        Foto
-                                    </th>
-
-                                    <th>
-                                        Nombre
-                                    </th>
-
-                                    <th>
-                                        Nómina
-                                    </th>
-
-                                    <th>
-                                        Área
-                                    </th>
-
-                                    <th>
-                                        Turno
-                                    </th>
-
+                                    <th>Foto</th>
+                                    <th>Nombre</th>
+                                    <th>Área</th>
+                                    <th>Turno</th>
+                                    <th>Alias</th>
                                 </tr>
 
                             </thead>
@@ -289,7 +273,7 @@
 
                                     <tr>
 
-                                        <td colspan="6">
+                                        <td colspan="7">
                                             —
                                         </td>
 

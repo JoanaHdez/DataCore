@@ -6,6 +6,7 @@
 document.addEventListener(
     'DOMContentLoaded',
     () => {
+
         inicializarDetalleFelicitacion();
     }
 );
@@ -36,6 +37,10 @@ function inicializarDetalleFelicitacion() {
         return;
     }
 
+
+    /* =====================================================
+       ABRIR DETALLE
+    ===================================================== */
 
     botonesVer.forEach(
         (boton) => {
@@ -82,6 +87,7 @@ function inicializarDetalleFelicitacion() {
                 elemento.addEventListener(
                     'click',
                     () => {
+
                         cerrarModal(
                             modal
                         );
@@ -165,14 +171,30 @@ async function cargarDetalleFelicitacion(
         }
 
 
-        renderizarDetalle(
+        /* =================================================
+           DATOS
+        ================================================= */
+
+        const felicitacion =
             resultado.felicitacion
-            || {},
+            || {};
+
+
+        const personal =
             Array.isArray(
                 resultado.personal
             )
                 ? resultado.personal
-                : []
+                : [];
+
+
+        /* =================================================
+           RENDER
+        ================================================= */
+
+        renderizarDetalle(
+            felicitacion,
+            personal
         );
 
 
@@ -198,7 +220,7 @@ async function cargarDetalleFelicitacion(
 
 
 /* =========================================================
-   RENDERIZAR
+   RENDERIZAR DETALLE
 ========================================================= */
 
 function renderizarDetalle(
@@ -286,24 +308,92 @@ function renderizarPersonal(
         '';
 
 
+    /* =====================================================
+       SIN PERSONAL
+    ===================================================== */
+
     if (
-        personal.length === 0
+        !Array.isArray(personal)
+        || personal.length === 0
     ) {
 
         tbody.innerHTML = `
             <tr>
-                <td colspan="4">
+                <td colspan="5">
                     Sin personal relacionado
                 </td>
             </tr>
         `;
 
+
         return;
     }
 
 
+    /* =====================================================
+       PERSONAL REGISTRADO
+    ===================================================== */
+
     personal.forEach(
         (persona) => {
+
+            /* =================================================
+               DATOS
+            ================================================= */
+
+            const nombre =
+                String(
+                    persona.nombre_snapshot
+                    || persona.nombre
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            const area =
+                String(
+                    persona.area_snapshot
+                    || persona.area
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            const turno =
+                String(
+                    persona.turno_snapshot
+                    || persona.turno
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            const alias =
+                String(
+                    persona.alias_snapshot
+                    || persona.alias
+                    || ''
+                ).trim();
+
+
+            const foto =
+                obtenerFotoPersonal(
+                    persona
+                );
+
+
+            const inicial =
+                obtenerInicialApellido(
+                    nombre
+                );
+
+
+            /* =================================================
+               FILA
+            ================================================= */
 
             const fila =
                 document.createElement(
@@ -312,35 +402,203 @@ function renderizarPersonal(
 
 
             fila.innerHTML = `
-                <td>
-                    ${escaparHtml(
-                        persona.nombre_snapshot
-                        || '—'
-                    )}
-                </td>
+
+                <!-- FOTO -->
 
                 <td>
-                    ${escaparHtml(
-                        persona.area_snapshot
-                        || '—'
-                    )}
+
+                    <div class="modal-felicitacion-detalle__foto">
+
+                        <img
+                            alt=""
+                            data-foto-detalle-felicitacion
+                            hidden
+                        >
+
+                        <span
+                            data-fallback-detalle-felicitacion
+                        >
+                            ${escaparHtml(
+                                inicial
+                            )}
+                        </span>
+
+                    </div>
+
                 </td>
 
-                <td>
-                    ${escaparHtml(
-                        persona.turno_snapshot
-                        || '—'
-                    )}
-                </td>
+
+                <!-- NOMBRE -->
 
                 <td>
+
                     ${escaparHtml(
-                        persona.alias_snapshot
+                        nombre
                         || '—'
                     )}
+
+                </td>
+
+
+                <!-- ÁREA -->
+
+                <td>
+
+                    ${escaparHtml(
+                        area
+                        || '—'
+                    )}
+
+                </td>
+
+
+                <!-- TURNO -->
+
+                <td>
+
+                    ${escaparHtml(
+                        turno
+                        || '—'
+                    )}
+
+                </td>
+
+
+                <!-- ALIAS -->
+
+                <td>
+
+                    ${escaparHtml(
+                        alias
+                        || '—'
+                    )}
+
                 </td>
             `;
 
+
+            /* =================================================
+               FOTO / FALLBACK
+            ================================================= */
+
+            const imagen =
+                fila.querySelector(
+                    '[data-foto-detalle-felicitacion]'
+                );
+
+
+            const fallback =
+                fila.querySelector(
+                    '[data-fallback-detalle-felicitacion]'
+                );
+
+
+            if (
+                imagen
+                && fallback
+            ) {
+
+                /* =============================================
+                   ESTADO INICIAL
+
+                   La inicial siempre se muestra primero.
+                ============================================== */
+
+                imagen.hidden =
+                    true;
+
+
+                imagen.removeAttribute(
+                    'src'
+                );
+
+
+                imagen.style.display =
+                    'none';
+
+
+                fallback.hidden =
+                    false;
+
+
+                fallback.style.display =
+                    'flex';
+
+
+                /* =============================================
+                   SI HAY FOTO
+                ============================================== */
+
+                if (
+                    foto !== ''
+                ) {
+
+                    /* =========================================
+                       FOTO CARGADA
+                    ========================================== */
+
+                    imagen.onload =
+                        () => {
+
+                            imagen.hidden =
+                                false;
+
+
+                            imagen.style.display =
+                                'block';
+
+
+                            fallback.hidden =
+                                true;
+
+
+                            fallback.style.display =
+                                'none';
+                        };
+
+
+                    /* =========================================
+                       FOTO CON ERROR
+                    ========================================== */
+
+                    imagen.onerror =
+                        () => {
+
+                            imagen.hidden =
+                                true;
+
+
+                            imagen.style.display =
+                                'none';
+
+
+                            imagen.removeAttribute(
+                                'src'
+                            );
+
+
+                            fallback.hidden =
+                                false;
+
+
+                            fallback.style.display =
+                                'flex';
+                        };
+
+
+                    /* =========================================
+                       INICIAR CARGA
+                    ========================================== */
+
+                    imagen.src =
+                        foto;
+                }
+            }
+
+
+            /* =================================================
+               AGREGAR FILA
+            ================================================= */
 
             tbody.appendChild(
                 fila
@@ -362,6 +620,12 @@ function abrirModal(
         false;
 
 
+    modal.setAttribute(
+        'aria-hidden',
+        'false'
+    );
+
+
     document.body.classList.add(
         'modal-abierto'
     );
@@ -372,8 +636,29 @@ function cerrarModal(
     modal
 ) {
 
+    const activo =
+        document.activeElement;
+
+
+    if (
+        activo
+        && modal.contains(
+            activo
+        )
+    ) {
+
+        activo.blur();
+    }
+
+
     modal.hidden =
         true;
+
+
+    modal.setAttribute(
+        'aria-hidden',
+        'true'
+    );
 
 
     document.body.classList.remove(
@@ -416,6 +701,10 @@ function asignarTexto(
 }
 
 
+/* =========================================================
+   ESCAPAR HTML
+========================================================= */
+
 function escaparHtml(
     valor
 ) {
@@ -424,9 +713,82 @@ function escaparHtml(
         valor
         ?? ''
     )
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
+        .replaceAll(
+            '&',
+            '&amp;'
+        )
+        .replaceAll(
+            '<',
+            '&lt;'
+        )
+        .replaceAll(
+            '>',
+            '&gt;'
+        )
+        .replaceAll(
+            '"',
+            '&quot;'
+        )
+        .replaceAll(
+            "'",
+            '&#039;'
+        );
+}
+
+
+/* =========================================================
+   OBTENER INICIAL DEL PRIMER APELLIDO
+========================================================= */
+
+function obtenerInicialApellido(
+    nombreCompleto
+) {
+
+    const nombre =
+        String(
+            nombreCompleto
+            || ''
+        ).trim();
+
+
+    if (
+        nombre === ''
+    ) {
+
+        return '?';
+    }
+
+
+    const partes =
+        nombre
+            .split(/\s+/)
+            .filter(Boolean);
+
+
+    if (
+        partes.length === 0
+    ) {
+
+        return '?';
+    }
+
+
+    return partes[0]
+        .charAt(0)
+        .toUpperCase();
+}
+
+
+/* =========================================================
+   OBTENER FOTO DEL PERSONAL
+========================================================= */
+
+function obtenerFotoPersonal(
+    persona
+) {
+
+    return String(
+        persona?.foto
+        || ''
+    ).trim();
 }
