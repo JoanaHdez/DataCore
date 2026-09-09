@@ -25,6 +25,12 @@ export function cargarPersonalEditar(
         );
 
 
+    const contenedorInputs =
+        modal.querySelector(
+            '#editar-felicitacion-personal-inputs'
+        );
+
+
     if (!tbody) {
         return;
     }
@@ -32,6 +38,13 @@ export function cargarPersonalEditar(
 
     tbody.innerHTML =
         '';
+
+
+    if (contenedorInputs) {
+
+        contenedorInputs.innerHTML =
+            '';
+    }
 
 
     /* =====================================================
@@ -61,7 +74,7 @@ export function cargarPersonalEditar(
     ===================================================== */
 
     personal.forEach(
-        (persona) => {
+        (persona, indice) => {
 
             /* =================================================
                IDENTIFICADORES
@@ -176,10 +189,6 @@ export function cargarPersonalEditar(
 
             /* =================================================
                FOTO
-
-               La inicial queda visible inicialmente.
-               Si la fotografía carga correctamente,
-               se muestra la imagen y se oculta la inicial.
             ================================================= */
 
             const fotoHtml = `
@@ -309,21 +318,12 @@ export function cargarPersonalEditar(
 
             /* =================================================
                CARGAR FOTO
-
-               Mismo comportamiento que Quejas:
-               - Inicial visible por defecto.
-               - Si carga foto -> mostrar foto.
-               - Si falla -> mantener inicial.
             ================================================= */
 
             if (
                 imagen
                 && fallback
             ) {
-
-                /* =============================================
-                   ESTADO INICIAL
-                ============================================== */
 
                 imagen.hidden =
                     true;
@@ -338,17 +338,9 @@ export function cargarPersonalEditar(
                     false;
 
 
-                /* =============================================
-                   SI NO EXISTE FOTO
-                ============================================== */
-
                 if (
                     foto !== ''
                 ) {
-
-                    /* =========================================
-                       FOTO CARGADA
-                    ========================================== */
 
                     imagen.onload =
                         () => {
@@ -361,10 +353,6 @@ export function cargarPersonalEditar(
                                 true;
                         };
 
-
-                    /* =========================================
-                       FOTO CON ERROR
-                    ========================================== */
 
                     imagen.onerror =
                         () => {
@@ -383,10 +371,6 @@ export function cargarPersonalEditar(
                         };
 
 
-                    /* =========================================
-                       INICIAR CARGA
-                    ========================================== */
-
                     imagen.src =
                         foto;
                 }
@@ -400,6 +384,46 @@ export function cargarPersonalEditar(
             tbody.appendChild(
                 fila
             );
+
+
+            /* =================================================
+               RECONSTRUIR INPUTS DINÁMICOS
+
+               Esto permite que el personal que ya estaba
+               registrado también forme parte del submit.
+            ================================================= */
+
+            if (contenedorInputs) {
+
+                contenedorInputs.insertAdjacentHTML(
+                    'beforeend',
+                    `
+                        <input
+                            type="hidden"
+                            name="personal[${indice}][plantilla_id]"
+                            value="${escaparHtml(plantillaId)}"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="personal[${indice}][perscod]"
+                            value="${escaparHtml(perscod)}"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="personal[${indice}][turno]"
+                            value="${escaparHtml(turno)}"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="personal[${indice}][alias]"
+                            value="${escaparHtml(alias)}"
+                        >
+                    `
+                );
+            }
         }
     );
 }

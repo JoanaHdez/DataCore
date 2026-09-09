@@ -53,6 +53,12 @@ export function cargarUnidadesEditar(
         );
 
 
+    const contenedorInputs =
+        modal.querySelector(
+            '#editar-felicitacion-unidades-inputs'
+        );
+
+
     if (
         !radioConUnidad
         || !radioSinUnidad
@@ -66,11 +72,18 @@ export function cargarUnidadesEditar(
 
 
     /* =====================================================
-       LIMPIAR TABLA
+       LIMPIAR
     ===================================================== */
 
     tbody.innerHTML =
         '';
+
+
+    if (contenedorInputs) {
+
+        contenedorInputs.innerHTML =
+            '';
+    }
 
 
     /* =====================================================
@@ -107,11 +120,7 @@ export function cargarUnidadesEditar(
 
 
         /* =================================================
-           OCULTAR TABLA DE UNIDADES
-
-           Si después cambia manualmente a "Con unidad",
-           se mostrará el buscador, pero esta tabla seguirá
-           oculta hasta que realmente agregue una unidad.
+           OCULTAR TABLA
         ================================================= */
 
         contenedorUnidadesAgregadas.hidden =
@@ -134,25 +143,13 @@ export function cargarUnidadesEditar(
         false;
 
 
-    /* =====================================================
-       MOSTRAR CONTENIDO CON UNIDAD
-    ===================================================== */
-
     contenidoConUnidad.hidden =
         false;
 
 
-    /* =====================================================
-       OCULTAR ESTADO SIN UNIDAD
-    ===================================================== */
-
     contenidoSinUnidad.hidden =
         true;
 
-
-    /* =====================================================
-       MOSTRAR TABLA PORQUE SÍ EXISTEN UNIDADES
-    ===================================================== */
 
     contenedorUnidadesAgregadas.hidden =
         false;
@@ -163,7 +160,7 @@ export function cargarUnidadesEditar(
     ===================================================== */
 
     unidades.forEach(
-        (unidad) => {
+        (unidad, indice) => {
 
             const idFelicitacionUnidad =
                 Number(
@@ -381,6 +378,31 @@ export function cargarUnidadesEditar(
             tbody.appendChild(
                 fila
             );
+
+
+            /* =================================================
+               RECONSTRUIR INPUT DINÁMICO
+
+               Esto permite que las unidades ya registradas
+               también formen parte del submit.
+            ================================================= */
+
+            if (
+                contenedorInputs
+                && parqueVehicularId > 0
+            ) {
+
+                contenedorInputs.insertAdjacentHTML(
+                    'beforeend',
+                    `
+                        <input
+                            type="hidden"
+                            name="unidades[${indice}][parque_vehicular_id]"
+                            value="${escaparHtml(parqueVehicularId)}"
+                        >
+                    `
+                );
+            }
         }
     );
 }

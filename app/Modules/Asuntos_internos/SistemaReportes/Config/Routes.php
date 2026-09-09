@@ -63,6 +63,11 @@ $routes->group(
                     '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Felicitaciones_Controller::detalle/$1'
                 );
 
+                $routes->post(
+                    'felicitaciones/actualizar/(:num)',
+                    '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Felicitaciones_Controller::actualizar/$1'
+                );
+
                 /* =================================================
                    DASHBOARD
                 ================================================= */

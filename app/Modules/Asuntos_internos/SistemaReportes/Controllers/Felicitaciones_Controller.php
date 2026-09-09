@@ -5,6 +5,7 @@ namespace App\Modules\Asuntos_internos\SistemaReportes\Controllers;
 use App\Controllers\BaseController;
 use App\Modules\Asuntos_internos\SistemaReportes\Models\FelicitacionModel;
 use App\Modules\Asuntos_internos\SistemaReportes\Models\FelicitacionPersonalModel;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\FelicitacionService;
 
 class Felicitaciones_Controller extends BaseController
 {
@@ -1255,6 +1256,219 @@ class Felicitaciones_Controller extends BaseController
 
                     'message' =>
                         'No fue posible consultar el detalle de la felicitación.',
+                ]);
+        }
+    }
+
+    /* =========================================================
+    ACTUALIZAR FELICITACIÓN
+    ========================================================= */
+
+    public function actualizar(
+        int $idFelicitacion
+    ) {
+
+        /* =====================================================
+        VALIDAR SESIÓN
+        ===================================================== */
+
+        if (
+            session()->get('reportes_autenticado') !== true
+            || !session()->has('usuario_reportes')
+        ) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' =>
+                        false,
+
+                    'message' =>
+                        'La sesión no es válida.',
+                ]);
+        }
+
+
+        /* =====================================================
+        VALIDAR ID
+        ===================================================== */
+
+        if (
+            $idFelicitacion <= 0
+        ) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' =>
+                        false,
+
+                    'message' =>
+                        'La felicitación que deseas actualizar no es válida.',
+                ]);
+        }
+
+
+        /* =====================================================
+        USUARIO
+        ===================================================== */
+
+        $usuario =
+            session()->get(
+                'usuario_reportes'
+            );
+
+
+        $idUsuario =
+            (int) (
+                $usuario['id_usuario']
+                ?? 0
+            );
+
+
+        if (
+            $idUsuario <= 0
+        ) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' =>
+                        false,
+
+                    'message' =>
+                        'No fue posible identificar al usuario.',
+                ]);
+        }
+
+
+        /* =====================================================
+        DATOS
+        ===================================================== */
+
+        $datos =
+            $this->request
+                ->getPost();
+
+
+        /* =====================================================
+        PERSONAL
+        ===================================================== */
+
+        $personal =
+            $this->request
+                ->getPost(
+                    'personal'
+                );
+
+
+        if (
+            !is_array(
+                $personal
+            )
+        ) {
+
+            $personal =
+                [];
+        }
+
+
+        /* =====================================================
+        UNIDADES
+        ===================================================== */
+
+        $unidades =
+            $this->request
+                ->getPost(
+                    'unidades'
+                );
+
+
+        if (
+            !is_array(
+                $unidades
+            )
+        ) {
+
+            $unidades =
+                [];
+        }
+
+
+        /* =====================================================
+        ACTUALIZAR
+        ===================================================== */
+
+        try {
+
+            $servicio =
+                new FelicitacionService();
+
+
+            $resultado =
+                $servicio->actualizar(
+                    $idFelicitacion,
+                    $datos,
+                    $personal,
+                    $unidades,
+                    $idUsuario
+                );
+
+
+            return $this->response
+                ->setJSON([
+                    'success' =>
+                        true,
+
+                    'message' =>
+                        'La felicitación fue actualizada correctamente.',
+
+                    'id_felicitacion' =>
+                        $resultado['id_felicitacion']
+                        ?? $idFelicitacion,
+
+                    'folio' =>
+                        $resultado['folio']
+                        ?? null,
+                ]);
+
+
+        } catch (\InvalidArgumentException $e) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' =>
+                        false,
+
+                    'message' =>
+                        $e->getMessage(),
+                ]);
+
+
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error actualizando felicitación {id}: {mensaje}',
+                [
+                    'id' =>
+                        $idFelicitacion,
+
+                    'mensaje' =>
+                        $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' =>
+                        false,
+
+                    'message' =>
+                        'No fue posible actualizar la felicitación.',
                 ]);
         }
     }

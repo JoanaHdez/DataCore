@@ -209,6 +209,7 @@
                                 <tr>
                                     <th>Foto</th>
                                     <th>Nombre</th>
+                                    <th>Nómina</th>
                                     <th>Área</th>
                                     <th>Turno</th>
                                     <th>Alias</th>
@@ -217,7 +218,17 @@
                             </thead>
 
 
-                            <tbody id="detalle-felicitacion-personal"></tbody>
+                            <tbody id="detalle-felicitacion-personal">
+
+                                    <tr>
+
+                                        <td colspan="6">
+                                            —
+                                        </td>
+
+                                    </tr>
+
+                            </tbody>
 
                         </table>
 

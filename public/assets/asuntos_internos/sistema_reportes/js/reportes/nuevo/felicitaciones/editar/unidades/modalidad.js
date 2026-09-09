@@ -132,7 +132,7 @@ export function inicializarModalidadUnidadEditar(
             if (
                 tbodyUnidades
                 && tbodyUnidades.querySelectorAll(
-                    'tr[data-unidad-id]'
+                    'tr[data-parque-vehicular-id]'
                 ).length === 0
             ) {
 
