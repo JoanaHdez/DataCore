@@ -3,6 +3,10 @@
    FELICITACIONES - EDITAR
    GUARDAR CAMBIOS
 ========================================================= */
+import {
+    mostrarResultado,
+    mostrarResultadoYRedirigir,
+} from '../../../notificaciones/resultado.js';
 
 
 /* =========================================================
@@ -70,9 +74,16 @@ export function inicializarGuardadoEditar(
                 idFelicitacion <= 0
             ) {
 
-                alert(
-                    'No fue posible identificar la felicitación que deseas actualizar.'
-                );
+                mostrarResultado({
+                    tipo:
+                        'error',
+
+                    titulo:
+                        'No fue posible continuar',
+
+                    mensaje:
+                        'No fue posible identificar la felicitación que deseas actualizar.',
+                });
 
                 return;
             }
@@ -112,9 +123,16 @@ export function inicializarGuardadoEditar(
                 nombreFelicitante === ''
             ) {
 
-                alert(
-                    'El nombre de la persona que da la felicitación es obligatorio.'
-                );
+                mostrarResultado({
+                    tipo:
+                        'warning',
+
+                    titulo:
+                        'Campo obligatorio',
+
+                    mensaje:
+                        'El nombre de la persona que da la felicitación es obligatorio.',
+                });
 
 
                 inputFelicitante?.focus();
@@ -127,9 +145,16 @@ export function inicializarGuardadoEditar(
                 razonFelicitacion === ''
             ) {
 
-                alert(
-                    'La razón de la felicitación es obligatoria.'
-                );
+                mostrarResultado({
+                    tipo:
+                        'warning',
+
+                    titulo:
+                        'Campo obligatorio',
+
+                    mensaje:
+                        'La razón de la felicitación es obligatoria.',
+                });
 
 
                 inputRazon?.focus();
@@ -160,9 +185,16 @@ export function inicializarGuardadoEditar(
                 && modalidad !== 'SIN_UNIDAD_OFICINA'
             ) {
 
-                alert(
-                    'Selecciona el tipo de asignación de unidad.'
-                );
+                mostrarResultado({
+                    tipo:
+                        'warning',
+
+                    titulo:
+                        'Selecciona una opción',
+
+                    mensaje:
+                        'Selecciona el tipo de asignación de unidad.',
+                });
 
                 return;
             }
@@ -170,9 +202,6 @@ export function inicializarGuardadoEditar(
 
             /* =================================================
                PERSONAL ACTUAL
-
-               Se toma directamente de las filas para enviar
-               exactamente el estado actual del modal.
             ================================================= */
 
             const filasPersonal =
@@ -185,9 +214,16 @@ export function inicializarGuardadoEditar(
                 filasPersonal.length === 0
             ) {
 
-                alert(
-                    'Debes agregar al menos una persona a la felicitación.'
-                );
+                mostrarResultado({
+                    tipo:
+                        'warning',
+
+                    titulo:
+                        'Personal requerido',
+
+                    mensaje:
+                        'Debes agregar al menos una persona a la felicitación.',
+                });
 
                 return;
             }
@@ -208,9 +244,16 @@ export function inicializarGuardadoEditar(
                 && filasUnidades.length === 0
             ) {
 
-                alert(
-                    'Debes agregar al menos una unidad o seleccionar "Sin unidad / Oficina".'
-                );
+                mostrarResultado({
+                    tipo:
+                        'warning',
+
+                    titulo:
+                        'Unidad requerida',
+
+                    mensaje:
+                        'Debes agregar al menos una unidad o seleccionar "Sin unidad / Oficina".',
+                });
 
                 return;
             }
@@ -218,14 +261,6 @@ export function inicializarGuardadoEditar(
 
             /* =================================================
                FORMDATA
-
-               Incluye automáticamente:
-               - CSRF
-               - id_felicitacion
-               - fecha_registro
-               - nombre_felicitante
-               - razon_felicitacion
-               - modalidad_unidad_editar
             ================================================= */
 
             const datos =
@@ -236,8 +271,6 @@ export function inicializarGuardadoEditar(
 
             /* =================================================
                ELIMINAR PERSONAL DINÁMICO ANTERIOR
-
-               Lo reconstruiremos directamente desde la tabla.
             ================================================= */
 
             Array.from(
@@ -351,10 +384,6 @@ export function inicializarGuardadoEditar(
 
             /* =================================================
                RECONSTRUIR UNIDADES
-
-               Si seleccionó SIN_UNIDAD_OFICINA no enviamos
-               ninguna unidad. El Service eliminará las
-               relaciones anteriores.
             ================================================= */
 
             if (
@@ -454,24 +483,23 @@ export function inicializarGuardadoEditar(
                    ÉXITO
                 ============================================== */
 
-                alert(
-                    resultado.message
-                    || 'La felicitación fue actualizada correctamente.'
-                );
+                mostrarResultadoYRedirigir({
+                    tipo:
+                        'success',
 
+                    titulo:
+                        'Felicitación actualizada',
 
-                /*
-                 * Recargamos para que:
-                 * - listado
-                 * - filtros
-                 * - detalles
-                 * - siguiente edición
-                 *
-                 * utilicen inmediatamente la información
-                 * actualizada de la base de datos.
-                 */
+                    mensaje:
+                        resultado.message
+                        || 'La felicitación fue actualizada correctamente.',
 
-                window.location.reload();
+                    url:
+                        window.location.href,
+
+                    duracion:
+                        1500,
+                });
 
 
             } catch (error) {
@@ -482,10 +510,17 @@ export function inicializarGuardadoEditar(
                 );
 
 
-                alert(
-                    error.message
-                    || 'No fue posible actualizar la felicitación.'
-                );
+                mostrarResultado({
+                    tipo:
+                        'error',
+
+                    titulo:
+                        'No fue posible actualizar',
+
+                    mensaje:
+                        error.message
+                        || 'No fue posible actualizar la felicitación.',
+                });
 
 
                 /* =============================================
