@@ -25,6 +25,7 @@ class ReportePersonalModel extends Model
         'nombre_snapshot',
         'area_snapshot',
         'turno_snapshot',
+        'alias_snapshot',
     ];
 
     protected $useTimestamps = false;

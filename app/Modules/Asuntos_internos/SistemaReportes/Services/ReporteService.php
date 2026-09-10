@@ -1093,10 +1093,8 @@ class ReporteService
                     'id_reporte' =>
                     $idReporte,
 
-
                     'plantilla_id' =>
                     $plantillaId,
-
 
                     'perscod' =>
                     $this->valorNullable(
@@ -1104,10 +1102,8 @@ class ReporteService
                             ?? null
                     ),
 
-
                     'nombre_snapshot' =>
                     $nombre,
-
 
                     'area_snapshot' =>
                     $this->valorNullable(
@@ -1115,9 +1111,14 @@ class ReporteService
                             ?? null
                     ),
 
-
                     'turno_snapshot' =>
                     $turno,
+
+                    'alias_snapshot' =>
+                    $this->valorNullable(
+                        $persona['alias']
+                            ?? null
+                    ),
 
                 ]);
 

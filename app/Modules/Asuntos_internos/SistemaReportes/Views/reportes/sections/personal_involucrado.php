@@ -26,6 +26,7 @@
         <!-- =====================================================
              BÚSQUEDA
         ====================================================== -->
+
         <div class="report-form-grid">
 
             <div class="report-field report-field--full">
@@ -35,11 +36,7 @@
                     <span class="required">*</span>
                 </label>
 
-                <input
-                    type="text"
-                    id="oficial"
-                    class="report-input"
-                    placeholder="Busca por nombre o nómina"
+                <input type="text" id="oficial" class="report-input" placeholder="Busca por nombre o nómina"
                     autocomplete="off">
 
                 <small class="report-field__help">
@@ -47,10 +44,7 @@
                 </small>
 
                 <!-- Resultados de búsqueda -->
-                <div
-                    class="personal-resultados"
-                    id="personal-resultados"
-                    hidden></div>
+                <div class="personal-resultados" id="personal-resultados" hidden></div>
 
             </div>
 
@@ -60,18 +54,12 @@
         <!-- =====================================================
              PERSONA SELECCIONADA
         ====================================================== -->
-        <div
-            class="personal-seleccionado"
-            id="personal-seleccionado"
-            hidden>
+
+        <div class="personal-seleccionado" id="personal-seleccionado" hidden>
 
             <div class="personal-seleccionado__foto">
 
-                <img
-                    id="personal-foto"
-                    src=""
-                    alt=""
-                    hidden>
+                <img id="personal-foto" src="" alt="" hidden>
 
                 <span id="personal-foto-fallback">
                     —
@@ -82,46 +70,46 @@
 
             <div class="personal-seleccionado__datos">
 
-                <input
-                    type="hidden"
-                    id="personal-plantilla-id">
+                <input type="hidden" id="personal-plantilla-id">
 
-                <input
-                    type="hidden"
-                    id="personal-perscod">
+                <input type="hidden" id="personal-perscod">
 
 
                 <div class="report-form-grid">
 
+                    <!-- =================================================
+                         NOMBRE
+                    ================================================== -->
+
                     <div class="report-field report-field--full">
 
-                        <label>
+                        <label for="personal-nombre">
                             Nombre
                         </label>
 
-                        <input
-                            type="text"
-                            id="personal-nombre"
-                            class="report-input report-input--readonly"
-                            readonly>
+                        <input type="text" id="personal-nombre" class="report-input report-input--readonly" readonly>
 
                     </div>
 
+
+                    <!-- =================================================
+                         ÁREA
+                    ================================================== -->
 
                     <div class="report-field">
 
-                        <label>
+                        <label for="personal-area">
                             Área
                         </label>
 
-                        <input
-                            type="text"
-                            id="personal-area"
-                            class="report-input report-input--readonly"
-                            readonly>
+                        <input type="text" id="personal-area" class="report-input report-input--readonly" readonly>
 
                     </div>
 
+
+                    <!-- =================================================
+                         TURNO
+                    ================================================== -->
 
                     <div class="report-field">
 
@@ -130,11 +118,28 @@
                             <span class="required">*</span>
                         </label>
 
-                        <input
-                            type="text"
-                            id="personal-turno"
-                            class="report-input"
-                            placeholder="Turno">
+                        <input type="text" id="personal-turno" class="report-input" placeholder="Turno"
+                            autocomplete="off">
+
+                    </div>
+
+
+                    <!-- =================================================
+                         ALIAS
+                    ================================================== -->
+
+                    <div class="report-field">
+
+                        <label for="personal-alias">
+                            Alias
+                        </label>
+
+                        <input type="text" id="personal-alias" class="report-input" placeholder="Ingresa el alias"
+                            autocomplete="off">
+
+                        <small class="report-field__help">
+                            Campo opcional.
+                        </small>
 
                     </div>
 
@@ -143,12 +148,13 @@
             </div>
 
 
+            <!-- =====================================================
+                 ACCIONES
+            ====================================================== -->
+
             <div class="personal-seleccionado__acciones">
 
-                <button
-                    type="button"
-                    class="button button--primary"
-                    id="btn-agregar-personal">
+                <button type="button" class="button button--primary" id="btn-agregar-personal">
                     Agregar personal
                 </button>
 
@@ -160,10 +166,8 @@
         <!-- =====================================================
              PERSONAL AGREGADO
         ====================================================== -->
-        <div
-            class="personal-agregado"
-            id="personal-agregado"
-            hidden>
+
+        <div class="personal-agregado" id="personal-agregado" hidden>
 
             <div class="personal-agregado__header">
 
@@ -193,6 +197,7 @@
                             <th>Nombre</th>
                             <th>Área</th>
                             <th>Turno</th>
+                            <th>Alias</th>
                             <th>Acciones</th>
                         </tr>
 
@@ -210,6 +215,7 @@
         <!-- =====================================================
              DATOS PARA ENVIAR AL BACKEND
         ====================================================== -->
+
         <div id="personal-hidden-inputs"></div>
 
     </div>

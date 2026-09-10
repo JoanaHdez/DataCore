@@ -4253,8 +4253,14 @@ class Reportes_Controller extends BaseController
             );
 
 
+        /*
+        |--------------------------------------------------------------------------
+        | NO BUSCAR SI EL CAMPO ESTÁ VACÍO
+        |--------------------------------------------------------------------------
+        */
+
         if (
-            mb_strlen($termino) < 2
+            mb_strlen($termino) === 0
         ) {
 
             return $this->response
@@ -4267,27 +4273,54 @@ class Reportes_Controller extends BaseController
 
         try {
 
+            /*
+            |--------------------------------------------------------------------------
+            | CONEXIÓN A PLANTILLA
+            |--------------------------------------------------------------------------
+            */
+
             $db =
                 \Config\Database::connect(
                     'plantilla'
                 );
 
 
+            /*
+            |--------------------------------------------------------------------------
+            | CONSULTA DE PERSONAL
+            |--------------------------------------------------------------------------
+            */
+
             $builder =
                 $db
-                ->table('plantilla')
-                ->select([
-                    'ID',
-                    'PERSCOD',
-                    'NOMBRE_COMPLETO',
-                    'NO_NOMINA',
-                    'AREA',
-                    'TURNO',
-                ])
-                ->where(
-                    'ESTADO',
-                    'ACTIVO'
-                );
+                    ->table('plantilla')
+                    ->select([
+                        'ID',
+                        'PERSCOD',
+                        'NOMBRE_COMPLETO',
+                        'NO_NOMINA',
+                        'AREA',
+                        'TURNO',
+                    ])
+                    ->where(
+                        'ESTADO',
+                        'ACTIVO'
+                    );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | BÚSQUEDA PARCIAL
+            |--------------------------------------------------------------------------
+            |
+            | Permite buscar por:
+            |
+            | - Nombre
+            | - Apellido
+            | - Nombre completo
+            | - Número de nómina
+            |
+            */
 
             $builder
                 ->groupStart()
@@ -4302,34 +4335,135 @@ class Reportes_Controller extends BaseController
                 ->groupEnd();
 
 
+            /*
+            |--------------------------------------------------------------------------
+            | OBTENER RESULTADOS
+            |--------------------------------------------------------------------------
+            */
+
             $personal =
                 $builder
-                ->orderBy(
-                    'NOMBRE_COMPLETO',
-                    'ASC'
-                )
-                ->limit(10)
-                ->get()
-                ->getResultArray();
+                    ->orderBy(
+                        'NOMBRE_COMPLETO',
+                        'ASC'
+                    )
+                    ->limit(10)
+                    ->get()
+                    ->getResultArray();
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | LIMPIAR TEXTO PARA JSON
+            |--------------------------------------------------------------------------
+            |
+            | Algunos registros de la BD pueden contener caracteres que no están
+            | codificados correctamente como UTF-8.
+            |
+            | Esto evita:
+            |
+            | Malformed UTF-8 characters, possibly incorrectly encoded
+            |
+            */
+
+            $limpiarTexto =
+                static function ($valor): string {
+
+                    $texto =
+                        trim(
+                            (string)
+                            ($valor ?? '')
+                        );
+
+
+                    if ($texto === '') {
+
+                        return '';
+                    }
+
+
+                    /*
+                    * Si ya es UTF-8 válido,
+                    * no modificamos nada.
+                    */
+
+                    if (
+                        mb_check_encoding(
+                            $texto,
+                            'UTF-8'
+                        )
+                    ) {
+
+                        return $texto;
+                    }
+
+
+                    /*
+                    * Intentamos convertir los registros antiguos.
+                    */
+
+                    $textoConvertido =
+                        mb_convert_encoding(
+                            $texto,
+                            'UTF-8',
+                            'ISO-8859-1'
+                        );
+
+
+                    /*
+                    * Última protección.
+                    */
+
+                    if (
+                        ! mb_check_encoding(
+                            $textoConvertido,
+                            'UTF-8'
+                        )
+                    ) {
+
+                        return '';
+                    }
+
+
+                    return $textoConvertido;
+                };
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | PREPARAR RESPUESTA
+            |--------------------------------------------------------------------------
+            */
 
             $resultado = [];
 
 
-            foreach ($personal as $persona) {
+            foreach (
+                $personal as $persona
+            ) {
+
+                /*
+                * PERSCOD
+                */
 
                 $perscod =
-                    trim(
-                        (string)
-                        ($persona['PERSCOD'] ?? '')
+                    $limpiarTexto(
+                        $persona['PERSCOD']
+                        ?? ''
                     );
 
+
+                /*
+                * FOTO
+                */
 
                 $foto =
                     null;
 
 
-                if ($perscod !== '') {
+                if (
+                    $perscod !== ''
+                ) {
 
                     $foto =
                         'http://10.8.6.2:8083/dgsc/images/fotos/'
@@ -4338,57 +4472,75 @@ class Reportes_Controller extends BaseController
                 }
 
 
+                /*
+                * RESULTADO
+                */
+
                 $resultado[] = [
 
                     'id' =>
-                    (int) $persona['ID'],
+                        (int)
+                        ($persona['ID'] ?? 0),
 
                     'perscod' =>
-                    $perscod,
+                        $perscod,
 
                     'nombre' =>
-                    trim(
-                        (string)
-                        ($persona['NOMBRE_COMPLETO'] ?? '')
-                    ),
+                        $limpiarTexto(
+                            $persona['NOMBRE_COMPLETO']
+                            ?? ''
+                        ),
 
                     'nomina' =>
-                    trim(
-                        (string)
-                        ($persona['NO_NOMINA'] ?? '')
-                    ),
+                        $limpiarTexto(
+                            $persona['NO_NOMINA']
+                            ?? ''
+                        ),
 
                     'area' =>
-                    trim(
-                        (string)
-                        ($persona['AREA'] ?? '')
-                    ),
+                        $limpiarTexto(
+                            $persona['AREA']
+                            ?? ''
+                        ),
 
                     'turno' =>
-                    trim(
-                        (string)
-                        ($persona['TURNO'] ?? '')
-                    ),
+                        $limpiarTexto(
+                            $persona['TURNO']
+                            ?? ''
+                        ),
 
                     'foto' =>
-                    $foto,
+                        $foto,
                 ];
             }
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | RESPUESTA
+            |--------------------------------------------------------------------------
+            */
 
             return $this->response
                 ->setJSON([
                     'success' => true,
                     'personal' => $resultado,
                 ]);
+
         } catch (\Throwable $e) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | ERROR
+            |--------------------------------------------------------------------------
+            */
 
             log_message(
                 'error',
                 'Error buscando personal para SistemaReportes: {mensaje}',
                 [
                     'mensaje' =>
-                    $e->getMessage(),
+                        $e->getMessage(),
                 ]
             );
 
@@ -4398,7 +4550,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                    'No fue posible consultar el personal.',
+                        'No fue posible consultar el personal.',
                 ]);
         }
     }
