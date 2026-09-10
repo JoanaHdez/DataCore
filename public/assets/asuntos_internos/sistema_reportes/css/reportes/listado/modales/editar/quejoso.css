@@ -1,0 +1,198 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   NUEVO REPORTE
+   DATOS DEL QUEJOSO
+========================================================= */
+
+
+/* =========================================================
+   OPCIONES DE QUEJA ANÓNIMA
+========================================================= */
+
+.report-options {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+
+    margin-top: 4px;
+}
+
+
+.report-option {
+    min-width: 90px;
+    min-height: 38px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 8px 14px;
+
+    color: #405d78;
+
+    background: #ffffff;
+
+    border: 1px solid #d3dee7;
+    border-radius: 7px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.report-option:hover {
+    border-color: #9fc7df;
+
+    background: #f8fbfd;
+}
+
+
+.report-option input {
+    width: 15px;
+    height: 15px;
+
+    margin: 0;
+
+    accent-color: #1681c4;
+
+    cursor: pointer;
+}
+
+
+.report-option:has(input:checked) {
+    color: #0d639c;
+
+    background: #eef8fe;
+
+    border-color: #4aaee5;
+
+    box-shadow:
+        0 0 0 2px rgba(74, 174, 229, 0.08);
+}
+
+
+/* =========================================================
+   NÚMERO ANÓNIMO
+========================================================= */
+
+#numero-anonimo-contenedor {
+    position: relative;
+
+    margin-top: 4px;
+
+    padding: 18px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f7fbfe 0%,
+            #f2f8fc 100%
+        );
+
+    border: 1px solid #b9d8ea;
+    border-left: 4px solid #1681c4;
+    border-radius: 10px;
+
+    box-sizing: border-box;
+
+    box-shadow:
+        0 3px 10px rgba(24, 56, 88, 0.04);
+}
+
+
+#numero-anonimo-contenedor[hidden] {
+    display: none !important;
+}
+
+
+#numero-anonimo-contenedor label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+#numero-anonimo-contenedor .required {
+    color: #c43d35;
+}
+
+
+#numero-anonimo-contenedor .report-input {
+    background: #ffffff;
+
+    border-color: #9fc9df;
+}
+
+
+#numero-anonimo-contenedor .report-input:focus {
+    border-color: #1681c4;
+
+    box-shadow:
+        0 0 0 3px rgba(22, 129, 196, 0.10);
+}
+
+
+/* =========================================================
+   CAMPOS DESHABILITADOS POR ANÓNIMO
+========================================================= */
+
+.report-field
+.report-input:disabled,
+.report-field
+.report-select:disabled {
+    color: #8999a8;
+
+    background: #eef2f5;
+
+    border-color: #dde5eb;
+
+    cursor: not-allowed;
+
+    opacity: 0.75;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .report-options {
+        align-items: stretch;
+
+        flex-direction: column;
+    }
+
+
+    .report-option {
+        width: 100%;
+
+        justify-content: flex-start;
+    }
+
+
+    #numero-anonimo-contenedor {
+        padding: 16px;
+    }
+}

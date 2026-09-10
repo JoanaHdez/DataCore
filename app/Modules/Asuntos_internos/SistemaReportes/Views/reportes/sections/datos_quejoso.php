@@ -3,6 +3,7 @@
     <div class="report-section__header">
 
         <div>
+
             <span class="report-section__eyebrow">
                 Persona que presenta la queja
             </span>
@@ -14,6 +15,7 @@
             <p class="report-section__description">
                 Información de la persona relacionada con la presentación de la queja.
             </p>
+
         </div>
 
     </div>
@@ -23,91 +25,90 @@
 
         <div class="report-form-grid">
 
-        <!-- =====================================================
-     QUEJA ANÓNIMA
-====================================================== -->
 
-<div class="report-field report-field--full">
+            <!-- =====================================================
+                 QUEJA ANÓNIMA
+            ====================================================== -->
 
-    <label>
-        ¿Queja anónima?
-    </label>
+            <div class="report-field report-field--full">
 
-
-    <div class="report-options">
-
-        <label class="report-option">
-
-            <input
-                type="radio"
-                name="es_anonimo"
-                value="0"
-                id="quejoso-no-anonimo"
-                checked
-            >
-
-            <span>
-                No
-            </span>
-
-        </label>
+                <label>
+                    ¿Queja anónima?
+                </label>
 
 
-        <label class="report-option">
+                <div class="report-options">
 
-            <input
-                type="radio"
-                name="es_anonimo"
-                value="1"
-                id="quejoso-anonimo"
-            >
+                    <label class="report-option">
 
-            <span>
-                Sí
-            </span>
+                        <input type="radio" name="es_anonimo" value="0" id="quejoso-no-anonimo" checked>
 
-        </label>
+                        <span>
+                            No
+                        </span>
 
-    </div>
-
-</div>
+                    </label>
 
 
-<!-- =====================================================
-     NÚMERO ANÓNIMO
-====================================================== -->
+                    <label class="report-option">
 
-<div
-    class="report-field report-field--full"
-    id="numero-anonimo-contenedor"
-    hidden
->
+                        <input type="radio" name="es_anonimo" value="1" id="quejoso-anonimo">
 
-    <label for="numero_anonimo">
-        No. Numérico
-        <span class="required">*</span>
-    </label>
+                        <span>
+                            Sí
+                        </span>
+
+                    </label>
+
+                </div>
 
 
-    <input
-        type="text"
-        id="numero_anonimo"
-        name="numero_anonimo"
-        class="report-input"
-        placeholder="Ingresa el número asignado"
-        autocomplete="off"
-        disabled
-    >
+                <small class="report-field__help">
+                    Selecciona “Sí” cuando la identidad del quejoso no deba registrarse.
+                </small>
 
-</div>
+            </div>
 
-            <!-- QUEJOSO -->
+
+            <!-- =====================================================
+                 NÚMERO ANÓNIMO
+            ====================================================== -->
+
+            <div class="report-field report-field--full" id="numero-anonimo-contenedor" hidden>
+
+                <label for="numero_anonimo">
+                    No. Numérico
+                    <span class="required">*</span>
+                </label>
+
+
+                <input type="text" id="numero_anonimo" name="numero_anonimo" class="report-input"
+                    placeholder="Ingresa el número asignado" autocomplete="off" disabled>
+
+
+                <small class="report-field__help">
+                    Este número será el identificador del quejoso anónimo.
+                </small>
+
+            </div>
+
+
+            <!-- =====================================================
+                 QUEJOSO
+            ====================================================== -->
+
             <div class="report-field report-field--full">
 
                 <label for="quejoso">
+
                     Quejoso
-                    <span class="required">*</span>
+
+                    <span class="required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <input type="text" id="quejoso" name="quejoso" class="report-input"
                     placeholder="Ingresa el nombre del quejoso" autocomplete="off" required>
@@ -115,13 +116,22 @@
             </div>
 
 
-            <!-- EDAD -->
+            <!-- =====================================================
+                 EDAD
+            ====================================================== -->
+
             <div class="report-field">
 
                 <label for="edad">
+
                     Edad
-                    <span class="required">*</span>
+
+                    <span class="required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <input type="number" id="edad" name="edad" class="report-input" placeholder="Ingresa la edad" min="0"
                     max="120" required>
@@ -129,13 +139,22 @@
             </div>
 
 
-            <!-- GÉNERO -->
+            <!-- =====================================================
+                 GÉNERO
+            ====================================================== -->
+
             <div class="report-field">
 
                 <label for="genero">
+
                     Género
-                    <span class="required">*</span>
+
+                    <span class="required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <select id="genero" name="genero" class="report-select" required>
 
@@ -164,13 +183,16 @@
             </div>
 
 
-            <!-- MEDIO DE CONTACTO -->
-            <!-- TELÉFONO -->
+            <!-- =====================================================
+                 TELÉFONO
+            ====================================================== -->
+
             <div class="report-field">
 
                 <label for="telefono">
                     Número de teléfono
                 </label>
+
 
                 <input type="tel" id="telefono" name="telefono" class="report-input"
                     placeholder="Ingresa el número de teléfono" autocomplete="tel">
@@ -178,21 +200,26 @@
             </div>
 
 
-            <!-- CORREO ELECTRÓNICO -->
+            <!-- =====================================================
+                 CORREO ELECTRÓNICO
+            ====================================================== -->
+
             <div class="report-field">
 
                 <label for="correo">
                     Correo electrónico
                 </label>
 
+
                 <input type="email" id="correo" name="correo" class="report-input"
                     placeholder="Ingresa el correo electrónico" autocomplete="email">
 
             </div>
 
+
             <!-- =====================================================
-     CANALIZACIÓN
-====================================================== -->
+                 CANALIZACIÓN
+            ====================================================== -->
 
             <div class="report-field report-field--full">
 
@@ -200,11 +227,19 @@
                     Canalización al área correspondiente
                 </label>
 
+
                 <select id="canalizacion" name="canalizacion" class="report-select">
 
                     <option value="" selected>
                         Sin canalización
                     </option>
+
+                    <!--
+                        OPCIONES TEMPORALES DE PRUEBA.
+
+                        Después se sustituirán por el catálogo:
+                        ai_cat_canalizacion_areas
+                    -->
 
                     <option value="BUSQUEDA">
                         Búsqueda
@@ -224,29 +259,43 @@
 
                 </select>
 
+
+                <small class="report-field__help">
+                    Selecciona el área a la que será canalizada la atención, si aplica.
+                </small>
+
             </div>
 
 
             <!-- =====================================================
-                OTRA ÁREA
-                SOLO CUANDO CANALIZACIÓN = OTRO
+                 OTRA ÁREA
+                 SOLO CUANDO CANALIZACIÓN = OTRO
             ====================================================== -->
 
             <div class="report-field report-field--full" id="canalizacion-otro-contenedor" hidden>
 
                 <label for="canalizacion_otro">
+
                     Especifica el área
-                    <span class="required">*</span>
+
+                    <span class="required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <input type="text" id="canalizacion_otro" name="canalizacion_otro" class="report-input"
                     placeholder="Ingresa el área correspondiente" autocomplete="off" disabled>
+
 
                 <small class="report-field__help">
                     Este campo es obligatorio cuando seleccionas “Otro”.
                 </small>
 
             </div>
+
+
         </div>
 
     </div>

@@ -540,6 +540,41 @@ class ReporteService
     int $idUsuario
     ): array {
 
+    /* =========================================================
+    QUEJOSO ANÓNIMO
+    ========================================================= */
+
+    $esAnonimo =
+        (int) (
+            $datos['es_anonimo']
+            ?? 0
+        ) === 1;
+
+
+    $numeroAnonimo =
+        null;
+
+
+    if ($esAnonimo) {
+
+        $numeroAnonimo =
+            trim(
+                (string) (
+                    $datos['numero_anonimo']
+                    ?? ''
+                )
+            );
+
+
+        if (
+            $numeroAnonimo === ''
+        ) {
+
+            throw new \InvalidArgumentException(
+                'El No. Numérico es obligatorio para una queja anónima.'
+            );
+        }
+    }
         return [
 
             /* =================================================
@@ -738,51 +773,91 @@ class ReporteService
             QUEJOSO
             ================================================= */
 
+            'es_anonimo' =>
+                $esAnonimo
+                    ? 1
+                    : 0,
+
+
+            'numero_anonimo' =>
+                $esAnonimo
+                    ? $numeroAnonimo
+                    : null,
+
+
             'nombre_quejoso' =>
-                $this->valorRequeridoAlternativo(
-                    $datos,
-                    [
-                        'nombre_quejoso',
-                        'quejoso',
-                    ],
-                    'El nombre del quejoso es obligatorio.'
-                ),
+                $esAnonimo
+                    ? null
+                    : $this->valorRequeridoAlternativo(
+                        $datos,
+                        [
+                            'nombre_quejoso',
+                            'quejoso',
+                        ],
+                        'El nombre del quejoso es obligatorio.'
+                    ),
 
 
             'edad_quejoso' =>
-                $this->edadValida(
-                    $datos['edad_quejoso']
-                        ?? $datos['edad']
-                        ?? null
-                ),
+                $esAnonimo
+                    ? null
+                    : $this->edadValida(
+                        $datos['edad_quejoso']
+                            ?? $datos['edad']
+                            ?? null
+                    ),
 
 
             'genero_quejoso' =>
-                $this->valorRequeridoAlternativo(
-                    $datos,
-                    [
-                        'genero_quejoso',
-                        'genero',
-                    ],
-                    'El género del quejoso es obligatorio.'
-                ),
+                $esAnonimo
+                    ? null
+                    : $this->valorRequeridoAlternativo(
+                        $datos,
+                        [
+                            'genero_quejoso',
+                            'genero',
+                        ],
+                        'El género del quejoso es obligatorio.'
+                    ),
 
 
             'telefono_quejoso' =>
-                $this->valorNullable(
-                    $datos['telefono_quejoso']
-                        ?? $datos['telefono']
-                        ?? null
-                ),
+                $esAnonimo
+                    ? null
+                    : $this->valorNullable(
+                        $datos['telefono_quejoso']
+                            ?? $datos['telefono']
+                            ?? null
+                    ),
 
 
             'correo_quejoso' =>
-                $this->valorNullable(
-                    $datos['correo_quejoso']
-                        ?? $datos['correo']
-                        ?? null
-                ),
+                $esAnonimo
+                    ? null
+                    : $this->valorNullable(
+                        $datos['correo_quejoso']
+                            ?? $datos['correo']
+                            ?? null
+                    ),
 
+
+            'canalizacion_area' =>
+                $esAnonimo
+                    ? null
+                    : $this->valorNullable(
+                        $datos['canalizacion_area']
+                            ?? $datos['canalizacion']
+                            ?? null
+                    ),
+
+
+            'canalizacion_otro' =>
+                $esAnonimo
+                    ? null
+                    : $this->valorNullable(
+                        $datos['canalizacion_otro']
+                            ?? null
+                    ),
 
             /* =================================================
             CLASIFICACIÓN
