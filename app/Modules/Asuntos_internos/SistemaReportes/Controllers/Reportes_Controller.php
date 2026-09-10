@@ -403,7 +403,7 @@ class Reportes_Controller extends BaseController
     public function nuevo()
     {
         /* =========================================================
-        PREVISUALIZAR FOLIO DE QUEJA
+        VALORES POR DEFECTO
         ========================================================= */
 
         $folioVisual =
@@ -414,13 +414,25 @@ class Reportes_Controller extends BaseController
             'CGSC/CAI/QJ/—';
 
 
+        $canalizaciones =
+            [];
+
+
         try {
+
+            /* =====================================================
+            CONEXIÓN DATACORE
+            ===================================================== */
 
             $db =
                 \Config\Database::connect(
                     'datacore'
                 );
 
+
+            /* =====================================================
+            FOLIO
+            ===================================================== */
 
             $folioService =
                 new FolioService(
@@ -485,11 +497,40 @@ class Reportes_Controller extends BaseController
             }
 
 
+            /* =====================================================
+            CATÁLOGO DE CANALIZACIÓN
+            ===================================================== */
+
+            $canalizaciones =
+                $db
+                    ->table(
+                        'ai_cat_canalizacion_areas'
+                    )
+                    ->select([
+                        'id_area',
+                        'nombre',
+                    ])
+                    ->where(
+                        'activo',
+                        1
+                    )
+                    ->orderBy(
+                        'orden',
+                        'ASC'
+                    )
+                    ->orderBy(
+                        'nombre',
+                        'ASC'
+                    )
+                    ->get()
+                    ->getResultArray();
+
+
         } catch (\Throwable $e) {
 
             log_message(
                 'error',
-                'Error previsualizando folio de queja: {mensaje}',
+                'Error preparando nuevo reporte: {mensaje}',
                 [
                     'mensaje' =>
                         $e->getMessage(),
@@ -506,6 +547,9 @@ class Reportes_Controller extends BaseController
 
                 'nomenclaturaVisual' =>
                     $nomenclaturaVisual,
+
+                'canalizaciones' =>
+                    $canalizaciones,
             ]
         );
     }

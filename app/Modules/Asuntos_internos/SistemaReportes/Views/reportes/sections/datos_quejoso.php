@@ -1,5 +1,9 @@
 <section class="report-section">
 
+    <!-- =========================================================
+         HEADER
+    ========================================================== -->
+
     <div class="report-section__header">
 
         <div>
@@ -20,6 +24,10 @@
 
     </div>
 
+
+    <!-- =========================================================
+         BODY
+    ========================================================== -->
 
     <div class="report-section__body">
 
@@ -77,8 +85,13 @@
             <div class="report-field report-field--full" id="numero-anonimo-contenedor" hidden>
 
                 <label for="numero_anonimo">
+
                     No. Numérico
-                    <span class="required">*</span>
+
+                    <span class="required">
+                        *
+                    </span>
+
                 </label>
 
 
@@ -223,53 +236,205 @@
 
             <div class="report-field report-field--full">
 
-                <label for="canalizacion">
+                <label>
                     Canalización al área correspondiente
                 </label>
 
 
-                <select id="canalizacion" name="canalizacion" class="report-select">
+                <!-- =================================================
+                     VALOR REAL QUE SE ENVÍA AL BACKEND
+                ================================================== -->
 
-                    <option value="" selected>
+                <input type="hidden" id="canalizacion" name="canalizacion" value="">
+
+
+                <!-- =================================================
+                     SELECTOR VISUAL
+                ================================================== -->
+
+                <button type="button" class="canalizacion-select" id="canalizacion-select" aria-expanded="false">
+
+                    <span class="canalizacion-select__texto" id="canalizacion-select-texto">
                         Sin canalización
-                    </option>
+                    </span>
 
-                    <!--
-                        OPCIONES TEMPORALES DE PRUEBA.
 
-                        Después se sustituirán por el catálogo:
-                        ai_cat_canalizacion_areas
-                    -->
+                    <span class="canalizacion-select__flecha" aria-hidden="true">
+                        ▾
+                    </span>
 
-                    <option value="BUSQUEDA">
-                        Búsqueda
-                    </option>
-
-                    <option value="VICTIMAS">
-                        Víctimas
-                    </option>
-
-                    <option value="GENERO">
-                        Género
-                    </option>
-
-                    <option value="OTRO">
-                        Otro
-                    </option>
-
-                </select>
+                </button>
 
 
                 <small class="report-field__help">
                     Selecciona el área a la que será canalizada la atención, si aplica.
                 </small>
 
+
+                <!-- =================================================
+                     CATÁLOGO
+                ================================================== -->
+
+                <div class="canalizacion-resultados" id="canalizacion-resultados" hidden>
+
+
+                    <!-- =============================================
+                         SIN CANALIZACIÓN
+                    ============================================== -->
+
+                    <button type="button" class="canalizacion-resultados__item" data-canalizacion-opcion
+                        data-canalizacion-nombre="">
+
+                        <span class="canalizacion-resultados__avatar">
+                            —
+                        </span>
+
+
+                        <span class="canalizacion-resultados__datos">
+
+                            <strong>
+                                Sin canalización
+                            </strong>
+
+                            <small>
+                                No canalizar a otra área
+                            </small>
+
+                        </span>
+
+                    </button>
+
+
+                    <!-- =============================================
+                         ÁREAS DESDE CATÁLOGO BD
+                    ============================================== -->
+
+                    <?php if (!empty($canalizaciones)): ?>
+
+                    <?php foreach ($canalizaciones as $canalizacion): ?>
+
+                    <?php
+
+                            $nombreCanalizacion =
+                                trim(
+                                    (string) (
+                                        $canalizacion['nombre']
+                                        ?? ''
+                                    )
+                                );
+
+                                $letraCanalizacion =
+                                    'A';
+
+
+                                $nombreMayusculas =
+                                    mb_strtoupper(
+                                        $nombreCanalizacion,
+                                        'UTF-8'
+                                    );
+
+
+                                if (
+                                    str_contains(
+                                        $nombreMayusculas,
+                                        'BUSQUEDA'
+                                    )
+                                ) {
+
+                                    $letraCanalizacion =
+                                        'B';
+
+                                } elseif (
+                                    str_contains(
+                                        $nombreMayusculas,
+                                        'VICTIMAS'
+                                    )
+                                ) {
+
+                                    $letraCanalizacion =
+                                        'V';
+
+                                } elseif (
+                                    str_contains(
+                                        $nombreMayusculas,
+                                        'VIOLENCIA FAMILIAR'
+                                    )
+                                    || str_contains(
+                                        $nombreMayusculas,
+                                        'GENERO'
+                                    )
+                                ) {
+
+                                    $letraCanalizacion =
+                                        'G';
+                                }
+
+                            ?>
+
+                    <?php if ($nombreCanalizacion !== ''): ?>
+
+                    <button type="button" class="canalizacion-resultados__item" data-canalizacion-opcion
+                        data-canalizacion-nombre="<?= esc($nombreCanalizacion) ?>">
+
+                        <span class="canalizacion-resultados__avatar">
+                            <?= esc($letraCanalizacion) ?>
+                        </span>
+
+
+                        <span class="canalizacion-resultados__datos">
+
+                            <strong>
+                                <?= esc($nombreCanalizacion) ?>
+                            </strong>
+
+                            <small>
+                                Área de canalización
+                            </small>
+
+                        </span>
+
+                    </button>
+
+                    <?php endif; ?>
+
+                    <?php endforeach; ?>
+
+                    <?php endif; ?>
+
+
+                    <!-- =============================================
+                         OTRO
+                    ============================================== -->
+
+                    <button type="button" class="canalizacion-resultados__item" data-canalizacion-opcion
+                        data-canalizacion-nombre="Otro">
+
+                        <span class="canalizacion-resultados__avatar">
+                            +
+                        </span>
+
+
+                        <span class="canalizacion-resultados__datos">
+
+                            <strong>
+                                Otro
+                            </strong>
+
+                            <small>
+                                Especificar otra área
+                            </small>
+
+                        </span>
+
+                    </button>
+
+                </div>
+
             </div>
 
 
             <!-- =====================================================
                  OTRA ÁREA
-                 SOLO CUANDO CANALIZACIÓN = OTRO
             ====================================================== -->
 
             <div class="report-field report-field--full" id="canalizacion-otro-contenedor" hidden>

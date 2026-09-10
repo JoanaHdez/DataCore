@@ -1,3 +1,9 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   NUEVO REPORTE
+   DATOS DEL QUEJOSO
+========================================================= */
+
 document.addEventListener(
     'DOMContentLoaded',
     () => {
@@ -8,19 +14,6 @@ document.addEventListener(
     }
 );
 
-/* =========================================================
-   SISTEMA DE REPORTES - ASUNTOS INTERNOS
-   NUEVO REPORTE
-   DATOS DEL QUEJOSO
-========================================================= */
-
-document.addEventListener(
-    'DOMContentLoaded',
-    () => {
-        inicializarCanalizacionQuejoso();
-    }
-);
-
 
 /* =========================================================
    CANALIZACIÓN
@@ -28,9 +21,33 @@ document.addEventListener(
 
 function inicializarCanalizacionQuejoso() {
 
-    const select =
+    const selector =
+        document.querySelector(
+            '#canalizacion-select'
+        );
+
+
+    const textoSelector =
+        document.querySelector(
+            '#canalizacion-select-texto'
+        );
+
+
+    const inputCanalizacion =
         document.querySelector(
             '#canalizacion'
+        );
+
+
+    const resultados =
+        document.querySelector(
+            '#canalizacion-resultados'
+        );
+
+
+    const opciones =
+        document.querySelectorAll(
+            '[data-canalizacion-opcion]'
         );
 
 
@@ -47,7 +64,10 @@ function inicializarCanalizacionQuejoso() {
 
 
     if (
-        !select
+        !selector
+        || !textoSelector
+        || !inputCanalizacion
+        || !resultados
         || !contenedorOtro
         || !inputOtro
     ) {
@@ -56,13 +76,72 @@ function inicializarCanalizacionQuejoso() {
 
 
     /* =====================================================
-       ACTUALIZAR ESTADO
+       ABRIR / CERRAR
     ===================================================== */
 
-    function actualizarCanalizacion() {
+    function abrirCatalogo() {
+
+        resultados.hidden =
+            false;
+
+
+        selector.setAttribute(
+            'aria-expanded',
+            'true'
+        );
+
+
+        selector.classList.add(
+            'canalizacion-select--activo'
+        );
+    }
+
+
+    function cerrarCatalogo() {
+
+        resultados.hidden =
+            true;
+
+
+        selector.setAttribute(
+            'aria-expanded',
+            'false'
+        );
+
+
+        selector.classList.remove(
+            'canalizacion-select--activo'
+        );
+    }
+
+
+    /* =====================================================
+       SELECCIONAR
+    ===================================================== */
+
+    function seleccionarCanalizacion(
+        valor
+    ) {
+
+        const nombre =
+            String(
+                valor
+                || ''
+            ).trim();
+
+
+        inputCanalizacion.value =
+            nombre;
+
+
+        textoSelector.textContent =
+            nombre !== ''
+                ? nombre
+                : 'Sin canalización';
+
 
         const esOtro =
-            select.value === 'OTRO';
+            nombre === 'Otro';
 
 
         contenedorOtro.hidden =
@@ -77,11 +156,6 @@ function inicializarCanalizacionQuejoso() {
             esOtro;
 
 
-        /* =================================================
-           SI DEJA DE SER "OTRO"
-           LIMPIAR VALOR
-        ================================================= */
-
         if (
             !esOtro
         ) {
@@ -89,16 +163,94 @@ function inicializarCanalizacionQuejoso() {
             inputOtro.value =
                 '';
         }
+
+
+        cerrarCatalogo();
     }
 
 
     /* =====================================================
-       CAMBIO
+       CLICK SELECTOR
     ===================================================== */
 
-    select.addEventListener(
-        'change',
-        actualizarCanalizacion
+    selector.addEventListener(
+        'click',
+        () => {
+
+            if (
+                resultados.hidden
+            ) {
+
+                abrirCatalogo();
+
+            } else {
+
+                cerrarCatalogo();
+            }
+        }
+    );
+
+
+    /* =====================================================
+       OPCIONES
+    ===================================================== */
+
+    opciones.forEach(
+        (opcion) => {
+
+            opcion.addEventListener(
+                'click',
+                () => {
+
+                    seleccionarCanalizacion(
+                        opcion.dataset.canalizacionNombre
+                    );
+                }
+            );
+        }
+    );
+
+
+    /* =====================================================
+       CLICK FUERA
+    ===================================================== */
+
+    document.addEventListener(
+        'click',
+        (evento) => {
+
+            if (
+                selector.contains(
+                    evento.target
+                )
+                || resultados.contains(
+                    evento.target
+                )
+            ) {
+                return;
+            }
+
+
+            cerrarCatalogo();
+        }
+    );
+
+
+    /* =====================================================
+       ESC
+    ===================================================== */
+
+    document.addEventListener(
+        'keydown',
+        (evento) => {
+
+            if (
+                evento.key === 'Escape'
+            ) {
+
+                cerrarCatalogo();
+            }
+        }
     );
 
 
@@ -106,8 +258,11 @@ function inicializarCanalizacionQuejoso() {
        ESTADO INICIAL
     ===================================================== */
 
-    actualizarCanalizacion();
+    seleccionarCanalizacion(
+        ''
+    );
 }
+
 
 /* =========================================================
    QUEJOSO ANÓNIMO
@@ -141,19 +296,37 @@ function inicializarQuejosoAnonimo() {
 
     const camposQuejoso = [
 
-        document.querySelector('#quejoso'),
+        document.querySelector(
+            '#quejoso'
+        ),
 
-        document.querySelector('#edad'),
+        document.querySelector(
+            '#edad'
+        ),
 
-        document.querySelector('#genero'),
+        document.querySelector(
+            '#genero'
+        ),
 
-        document.querySelector('#telefono'),
+        document.querySelector(
+            '#telefono'
+        ),
 
-        document.querySelector('#correo'),
+        document.querySelector(
+            '#correo'
+        ),
 
-        document.querySelector('#canalizacion'),
+        document.querySelector(
+            '#buscar-canalizacion'
+        ),
 
-        document.querySelector('#canalizacion_otro'),
+        document.querySelector(
+            '#canalizacion'
+        ),
+
+        document.querySelector(
+            '#canalizacion_otro'
+        ),
     ];
 
 
@@ -200,7 +373,9 @@ function inicializarQuejosoAnonimo() {
         camposQuejoso.forEach(
             (campo) => {
 
-                if (!campo) {
+                if (
+                    !campo
+                ) {
                     return;
                 }
 
@@ -208,11 +383,6 @@ function inicializarQuejosoAnonimo() {
                 campo.disabled =
                     esAnonimo;
 
-
-                /*
-                 * Los campos obligatorios dejan de serlo
-                 * mientras la queja sea anónima.
-                 */
 
                 if (
                     esAnonimo
@@ -230,7 +400,8 @@ function inicializarQuejosoAnonimo() {
                 } else {
 
                     if (
-                        campo.dataset.requiredOriginal === '1'
+                        campo.dataset.requiredOriginal
+                        === '1'
                     ) {
 
                         campo.required =
@@ -242,6 +413,45 @@ function inicializarQuejosoAnonimo() {
                 }
             }
         );
+
+
+        /* =================================================
+           BOTÓN QUITAR CANALIZACIÓN
+        ================================================= */
+
+        const botonQuitar =
+            document.querySelector(
+                '#btn-quitar-canalizacion'
+            );
+
+
+        if (
+            botonQuitar
+        ) {
+
+            botonQuitar.disabled =
+                esAnonimo;
+        }
+
+
+        /* =================================================
+           RESULTADOS
+        ================================================= */
+
+        const resultados =
+            document.querySelector(
+                '#canalizacion-resultados'
+            );
+
+
+        if (
+            esAnonimo
+            && resultados
+        ) {
+
+            resultados.hidden =
+                true;
+        }
 
 
         /* =================================================
