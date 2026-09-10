@@ -66,7 +66,7 @@
 
                 <?php if (!empty($felicitaciones)): ?>
 
-                <?php foreach ($felicitaciones as $indice => $felicitacion): ?>
+                <?php foreach ($felicitaciones as $felicitacion): ?>
 
                 <?php
 
@@ -252,7 +252,7 @@
 
                     <td class="felicitaciones-tabla__numero">
 
-                        <?= $indice + 1 ?>
+                        <?= $idFelicitacion ?>
 
                     </td>
 

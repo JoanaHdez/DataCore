@@ -21,10 +21,7 @@
 
         <div class="reportes-tabla__actions">
 
-            <button
-                type="button"
-                class="reportes-tabla__export"
-                id="btn-exportar-reportes">
+            <button type="button" class="reportes-tabla__export" id="btn-exportar-reportes">
                 Exportar Excel
             </button>
 
@@ -40,6 +37,10 @@
             <thead>
 
                 <tr>
+
+                    <th>
+                        No.
+                    </th>
 
                     <th>
                         Folio
@@ -87,10 +88,10 @@
                 <?php if (!empty($reportes)): ?>
 
 
-                    <?php foreach ($reportes as $reporte): ?>
+                <?php foreach ($reportes as $reporte): ?>
 
 
-                        <?php
+                <?php
 
                         $idReporte =
                             (int) (
@@ -192,226 +193,217 @@
                         ?>
 
 
-                        <tr
-                            data-id-reporte="<?= $idReporte ?>"
-                            data-folio="<?= esc($folio) ?>">
+                <tr data-id-reporte="<?= $idReporte ?>" data-folio="<?= esc($folio) ?>">
 
 
-                            <!-- =================================================
+                    <!-- =================================================
+                                 NÚMERO CONSECUTIVO
+                            ================================================== -->
+
+                    <td>
+
+                        <?= $idReporte ?>
+
+                    </td>
+
+
+                    <!-- =================================================
                                  FOLIO
                             ================================================== -->
 
-                            <td>
+                    <td>
 
-                                <strong>
-                                    <?= esc($folio ?: '—') ?>
-                                </strong>
+                        <strong>
+                            <?= esc(
+                                        $folio
+                                        ?: '—'
+                                    ) ?>
+                        </strong>
 
-                            </td>
+                    </td>
 
 
-                            <!-- =================================================
+                    <!-- =================================================
                                  FECHA QUEJA
                             ================================================== -->
 
-                            <td>
+                    <td>
 
-                                <?= esc(
+                        <?= esc(
                                     $fechaQueja
                                     ?: '—'
                                 ) ?>
 
-                            </td>
+                    </td>
 
 
-                            <!-- =================================================
+                    <!-- =================================================
                                  EXPEDIENTE
                             ================================================== -->
 
-                            <td>
+                    <td>
 
-                                <?= esc(
+                        <?= esc(
                                     $expediente
                                     ?: '—'
                                 ) ?>
 
-                            </td>
+                    </td>
 
 
-                            <!-- =================================================
+                    <!-- =================================================
                                  CLASIFICACIÓN
                             ================================================== -->
 
-                            <td>
+                    <td>
 
-                                <?= esc(
+                        <?= esc(
                                     $clasificacion
                                     ?: '—'
                                 ) ?>
 
-                            </td>
+                    </td>
 
 
-                            <!-- =================================================
+                    <!-- =================================================
                                  QUEJOSO
                             ================================================== -->
 
-                            <td>
+                    <td>
 
-                                <?= esc(
+                        <?= esc(
                                     $quejoso
                                     ?: '—'
                                 ) ?>
 
-                            </td>
+                    </td>
 
 
-                            <!-- =================================================
+                    <!-- =================================================
                                  ÁREA
                             ================================================== -->
 
-                            <td>
+                    <td>
 
-                                <?= esc(
+                        <?= esc(
                                     $area
                                     ?: '—'
                                 ) ?>
 
-                            </td>
+                    </td>
 
 
-                            <!-- =================================================
+                    <!-- =================================================
                                  TURNO
                             ================================================== -->
 
-                            <td>
+                    <td>
 
-                                <?= esc(
+                        <?= esc(
                                     $turno
                                     ?: '—'
                                 ) ?>
 
-                            </td>
+                    </td>
 
 
-                            <!-- =================================================
+                    <!-- =================================================
                                  RESOLUCIÓN
                             ================================================== -->
 
-                            <td>
+                    <td>
 
-                                <span
-                                    class="reportes-tabla__estado <?= esc($claseResolucion) ?>">
+                        <span class="reportes-tabla__estado <?= esc($claseResolucion) ?>">
 
-                                    <?= esc(
+                            <?= esc(
                                         $resolucion
                                         ?: 'Pendiente'
                                     ) ?>
 
-                                </span>
+                        </span>
 
-                            </td>
+                    </td>
 
 
-                            <!-- =================================================
+                    <!-- =================================================
                                  ACCIONES
                             ================================================== -->
 
-                            <td class="reportes-tabla__acciones">
+                    <td class="reportes-tabla__acciones">
 
 
-                                <!-- VER -->
+                        <!-- VER -->
 
-                                <button
-                                    type="button"
-                                    class="reportes-tabla__accion"
-                                    data-accion="ver"
-                                    data-id-reporte="<?= $idReporte ?>"
-                                    data-folio="<?= esc($folio) ?>">
-                                    Ver
-                                </button>
+                        <button type="button" class="reportes-tabla__accion" data-accion="ver"
+                            data-id-reporte="<?= $idReporte ?>" data-folio="<?= esc($folio) ?>">
+                            Ver
+                        </button>
 
 
-                                <!-- EDITAR -->
+                        <!-- EDITAR -->
 
-                                <button
-                                    type="button"
-                                    class="reportes-tabla__accion"
-                                    data-accion="editar"
-                                    data-id-reporte="<?= $idReporte ?>"
-                                    data-folio="<?= esc($folio) ?>">
-                                    Editar
-                                </button>
+                        <button type="button" class="reportes-tabla__accion" data-accion="editar"
+                            data-id-reporte="<?= $idReporte ?>" data-folio="<?= esc($folio) ?>">
+                            Editar
+                        </button>
 
 
-                                <!-- SEGUIMIENTO -->
+                        <!-- SEGUIMIENTO -->
 
-                                <button
-                                    type="button"
-                                    class="reportes-tabla__accion"
-                                    data-accion="seguimiento"
-                                    data-id-reporte="<?= $idReporte ?>"
-                                    data-folio="<?= esc($folio) ?>">
-                                    Seguimiento
-                                </button>
+                        <button type="button" class="reportes-tabla__accion" data-accion="seguimiento"
+                            data-id-reporte="<?= $idReporte ?>" data-folio="<?= esc($folio) ?>">
+                            Seguimiento
+                        </button>
 
 
-                                <!-- TARJETA -->
+                        <!-- TARJETA -->
 
-                                <button
-                                    type="button"
-                                    class="reportes-tabla__accion"
-                                    data-accion="tarjeta"
-                                    data-id-reporte="<?= $idReporte ?>"
-                                    data-folio="<?= esc($folio) ?>">
-                                    Tarjeta
-                                </button>
+                        <button type="button" class="reportes-tabla__accion" data-accion="tarjeta"
+                            data-id-reporte="<?= $idReporte ?>" data-folio="<?= esc($folio) ?>">
+                            Tarjeta
+                        </button>
 
 
-                                <!-- ELIMINAR -->
+                        <!-- ELIMINAR -->
 
-                                <button
-                                    type="button"
-                                    class="
+                        <button type="button" class="
                                         reportes-tabla__accion
                                         reportes-tabla__accion--eliminar
-                                    "
-                                    data-accion="eliminar"
-                                    data-id-reporte="<?= $idReporte ?>"
-                                    data-folio="<?= esc($folio) ?>">
-                                    Eliminar
-                                </button>
+                                    " data-accion="eliminar" data-id-reporte="<?= $idReporte ?>"
+                            data-folio="<?= esc($folio) ?>">
+                            Eliminar
+                        </button>
 
-                            </td>
+                    </td>
 
-                        </tr>
+                </tr>
 
 
-                    <?php endforeach; ?>
+                <?php endforeach; ?>
 
 
                 <?php else: ?>
 
 
-                    <tr class="reportes-tabla__empty">
+                <tr class="reportes-tabla__empty">
 
-                        <td colspan="9">
+                    <td colspan="10">
 
-                            <div class="reportes-tabla__empty-content">
+                        <div class="reportes-tabla__empty-content">
 
-                                <strong>
-                                    No hay reportes para mostrar
-                                </strong>
+                            <strong>
+                                No hay reportes para mostrar
+                            </strong>
 
-                                <span>
-                                    Los registros aparecerán aquí cuando existan reportes disponibles.
-                                </span>
+                            <span>
+                                Los registros aparecerán aquí cuando existan reportes disponibles.
+                            </span>
 
-                            </div>
+                        </div>
 
-                        </td>
+                    </td>
 
-                    </tr>
+                </tr>
 
 
                 <?php endif; ?>

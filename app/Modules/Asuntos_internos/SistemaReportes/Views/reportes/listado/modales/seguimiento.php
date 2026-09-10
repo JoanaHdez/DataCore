@@ -35,7 +35,7 @@
         <form class="modal-reporte__form modal-reporte__form--seguimiento" id="form-seguimiento-reporte">
 
             <?= csrf_field() ?>
-            
+
             <div class="modal-reporte__body modal-reporte__body--seguimiento">
 
                 <!-- =================================================
@@ -178,8 +178,25 @@
                         </div>
 
 
+                        <!-- FOLIO IP -->
+                        <div class="editar-reporte-campo">
+
+                            <label for="seguimiento-folio-ip">
+                                Folio IP
+                            </label>
+
+                            <input type="text" id="seguimiento-folio-ip" name="folio_ip"
+                                placeholder="Ingresa el folio IP" autocomplete="off" maxlength="100">
+
+                            <small>
+                                Campo opcional.
+                            </small>
+
+                        </div>
+
+
                         <!-- ESTADO RESULTANTE -->
-                        <div class="editar-reporte-campo editar-reporte-campo--full">
+                        <div class="editar-reporte-campo">
 
                             <label for="seguimiento-estado">
                                 Estado resultante
