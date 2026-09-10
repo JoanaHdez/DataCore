@@ -418,6 +418,10 @@ class Reportes_Controller extends BaseController
             [];
 
 
+        $clasificaciones =
+            [];
+
+
         try {
 
             /* =====================================================
@@ -526,6 +530,35 @@ class Reportes_Controller extends BaseController
                     ->getResultArray();
 
 
+            /* =====================================================
+            CATÁLOGO DE CLASIFICACIONES
+            ===================================================== */
+
+            $clasificaciones =
+                $db
+                    ->table(
+                        'ai_cat_clasificaciones'
+                    )
+                    ->select([
+                        'id_clasificacion',
+                        'nombre',
+                    ])
+                    ->where(
+                        'activo',
+                        1
+                    )
+                    ->orderBy(
+                        'orden',
+                        'ASC'
+                    )
+                    ->orderBy(
+                        'nombre',
+                        'ASC'
+                    )
+                    ->get()
+                    ->getResultArray();
+
+
         } catch (\Throwable $e) {
 
             log_message(
@@ -550,6 +583,9 @@ class Reportes_Controller extends BaseController
 
                 'canalizaciones' =>
                     $canalizaciones,
+
+                'clasificaciones' =>
+                    $clasificaciones,
             ]
         );
     }

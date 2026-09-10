@@ -30,7 +30,7 @@ import './reportes/nuevo/unidades.js';
 import './reportes/nuevo/evidencia.js';
 import './reportes/nuevo/sanciones.js';
 import './reportes/nuevo/quejoso.js';
-
+import './reportes/nuevo/clasificacion.js';
 
 /* =========================================================
 REPORTES - NUEVO - FELICITACIONES
