@@ -31,6 +31,8 @@ import './reportes/nuevo/evidencia.js';
 import './reportes/nuevo/sanciones.js';
 import './reportes/nuevo/quejoso.js';
 import './reportes/nuevo/clasificacion.js';
+import './reportes/nuevo/motivos.js';
+
 
 /* =========================================================
 REPORTES - NUEVO - FELICITACIONES

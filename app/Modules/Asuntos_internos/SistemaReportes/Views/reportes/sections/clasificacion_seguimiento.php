@@ -27,8 +27,8 @@
 
 
             <!-- =====================================================
-     CLASIFICACIÓN
-====================================================== -->
+                 CLASIFICACIÓN
+            ====================================================== -->
 
             <div class="report-field">
 
@@ -65,7 +65,7 @@
 
 
                 <!-- =================================================
-                    OPCIONES
+                     OPCIONES
                 ================================================== -->
 
                 <div class="clasificacion-resultados" id="clasificacion-resultados" hidden>
@@ -76,27 +76,27 @@
 
                     <?php
 
-                    $nombreClasificacion =
-                        trim(
-                            (string) (
-                                $clasificacion['nombre']
-                                ?? ''
-                            )
-                        );
+                            $nombreClasificacion =
+                                trim(
+                                    (string) (
+                                        $clasificacion['nombre']
+                                        ?? ''
+                                    )
+                                );
 
 
-                    $letraClasificacion =
-                        mb_strtoupper(
-                            mb_substr(
-                                $nombreClasificacion,
-                                0,
-                                1,
-                                'UTF-8'
-                            ),
-                            'UTF-8'
-                        );
+                            $letraClasificacion =
+                                mb_strtoupper(
+                                    mb_substr(
+                                        $nombreClasificacion,
+                                        0,
+                                        1,
+                                        'UTF-8'
+                                    ),
+                                    'UTF-8'
+                                );
 
-                    ?>
+                            ?>
 
                     <?php if ($nombreClasificacion !== ''): ?>
 
@@ -174,60 +174,277 @@
 
 
             <!-- =====================================================
-                 SANCIÓN DISCIPLINARIA
+                 ESTADO ACTUAL
             ====================================================== -->
 
             <div class="report-field">
 
-                <label for="sancion_disciplinaria">
-                    Sanción disciplinaria
+                <label for="estado_actual">
+                    Estado
                 </label>
 
 
-                <select id="sancion_disciplinaria" name="sancion_disciplinaria" class="report-select">
+                <select id="estado_actual" name="estado_actual" class="report-select">
 
-                    <option value="">
-                        Sin sanción
+                    <option value="Pendiente" selected>
+                        Pendiente
                     </option>
 
-                    <option value="Arresto">
-                        Arresto
+
+                    <option value="En proceso">
+                        En proceso
                     </option>
 
-                    <option value="Amonestación">
-                        Amonestación
-                    </option>
 
-                    <option value="Otro">
-                        Otro
+                    <option value="Finalizado">
+                        Finalizado
                     </option>
 
                 </select>
+
+
+                <small class="report-field__help">
+                    Indica el estado actual de atención de la queja.
+                </small>
 
             </div>
 
 
             <!-- =====================================================
-                 OTRA SANCIÓN
+                 SITUACIÓN DE LA SANCIÓN
             ====================================================== -->
 
-            <div class="report-field" id="campo-sancion-otro" hidden>
+            <div class="report-field report-field--full">
 
-                <label for="sancion_otro">
-
-                    Especifique la sanción
-
-                    <span class="required">
-                        *
-                    </span>
-
+                <label>
+                    Situación de la sanción
                 </label>
 
 
-                <input type="text" id="sancion_otro" name="sancion_otro" class="report-input"
-                    placeholder="Ingresa la sanción correspondiente" autocomplete="off" maxlength="255" disabled>
+                <div class="report-options">
+
+                    <!-- =============================================
+                         SIN SANCIONES
+                    ============================================== -->
+
+                    <label class="report-option">
+
+                        <input type="checkbox" id="sin-sanciones" name="sin_sanciones" value="1">
+
+                        <span>
+                            Sin sanciones
+                        </span>
+
+                    </label>
+
+
+                    <!-- =============================================
+                         BAJA VOLUNTARIA
+                    ============================================== -->
+
+                    <label class="report-option">
+
+                        <input type="checkbox" id="baja-voluntaria" name="baja_voluntaria" value="1">
+
+                        <span>
+                            Baja voluntaria
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+                <small class="report-field__help">
+                    “Sin sanciones” indica que todavía no se ha determinado una sanción.
+                    “Baja voluntaria” corresponde a una baja definitiva.
+                </small>
 
             </div>
+
+
+            <!-- =====================================================
+                 MOTIVOS
+            ====================================================== -->
+
+            <div class="report-field report-field--full">
+
+                <label for="buscar-motivo">
+                    Motivos
+                </label>
+
+
+                <input type="text" id="buscar-motivo" class="report-input" placeholder="Escribe para buscar un motivo"
+                    autocomplete="off">
+
+
+                <small class="report-field__help">
+                    Puedes agregar uno o más motivos. El motivo es opcional.
+                </small>
+
+
+                <!-- =================================================
+                     RESULTADOS DEL CATÁLOGO
+                ================================================== -->
+
+                <div class="motivos-resultados" id="motivos-resultados" hidden>
+
+                    <?php if (!empty($motivos)): ?>
+
+                    <?php foreach ($motivos as $motivo): ?>
+
+                    <?php
+
+                            $idMotivo =
+                                (int) (
+                                    $motivo['id_motivo']
+                                    ?? 0
+                                );
+
+
+                            $textoMotivo =
+                                trim(
+                                    (string) (
+                                        $motivo['motivo']
+                                        ?? ''
+                                    )
+                                );
+
+
+                            $sancionMotivo =
+                                trim(
+                                    (string) (
+                                        $motivo['sancion']
+                                        ?? ''
+                                    )
+                                );
+
+                            ?>
+
+                    <?php if (
+                                $idMotivo > 0
+                                && $textoMotivo !== ''
+                            ): ?>
+
+                    <button type="button" class="motivos-resultados__item" data-motivo-opcion
+                        data-motivo-id="<?= $idMotivo ?>" data-motivo-texto="<?= esc($textoMotivo) ?>"
+                        data-motivo-sancion="<?= esc($sancionMotivo) ?>">
+
+                        <span class="motivos-resultados__numero">
+                            <?= $idMotivo ?>
+                        </span>
+
+
+                        <span class="motivos-resultados__datos">
+
+                            <strong>
+                                <?= esc($textoMotivo) ?>
+                            </strong>
+
+
+                            <small>
+                                Sanción sugerida:
+                                <?= esc(
+                                                $sancionMotivo
+                                                    ?: 'Sin sanción definida'
+                                            ) ?>
+                            </small>
+
+                        </span>
+
+                    </button>
+
+                    <?php endif; ?>
+
+                    <?php endforeach; ?>
+
+                    <?php endif; ?>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 MOTIVOS AGREGADOS
+            ====================================================== -->
+
+            <div class="report-field report-field--full">
+
+                <div class="motivos-agregados" id="motivos-agregados" hidden>
+
+                    <div class="motivos-agregados__header">
+
+                        <span>
+                            Motivos agregados
+                        </span>
+
+                        <strong>
+                            Motivos relacionados con la queja
+                        </strong>
+
+                    </div>
+
+
+                    <div class="motivos-agregados__tabla-wrapper">
+
+                        <table class="motivos-agregados__tabla">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Num
+                                    </th>
+
+                                    <th>
+                                        Motivo
+                                    </th>
+
+                                    <th>
+                                        Sanción
+                                    </th>
+
+                                    <th>
+                                        Folio sanción
+                                    </th>
+
+                                    <th>
+                                        Acciones
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="motivos-agregados-body">
+
+                                <tr>
+
+                                    <td colspan="5">
+                                        Sin motivos agregados
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 INPUTS DINÁMICOS DE MOTIVOS
+            ====================================================== -->
+
+            <div id="motivos-inputs" hidden></div>
 
 
             <!-- =====================================================
@@ -260,23 +477,6 @@
 
                 <textarea id="resolucion" name="resolucion" class="report-textarea"
                     placeholder="Ingresa la resolución"></textarea>
-
-            </div>
-
-
-            <!-- =====================================================
-                 MOTIVOS
-            ====================================================== -->
-
-            <div class="report-field report-field--full">
-
-                <label for="motivos">
-                    Motivos
-                </label>
-
-
-                <textarea id="motivos" name="motivos" class="report-textarea"
-                    placeholder="Ingresa los motivos"></textarea>
 
             </div>
 

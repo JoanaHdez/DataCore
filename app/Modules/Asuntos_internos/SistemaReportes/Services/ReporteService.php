@@ -165,10 +165,10 @@ class ReporteService
 
 
             /* =================================================
-            SANCIÓN DISCIPLINARIA
+            MOTIVOS Y SANCIONES
             ================================================= */
 
-            $this->guardarSancionInicial(
+            $this->guardarMotivosYSanciones(
                 $idReporte,
                 $datos,
                 $idUsuario
@@ -540,412 +540,420 @@ class ReporteService
     int $idUsuario
     ): array {
 
-    /* =========================================================
-    QUEJOSO ANÓNIMO
-    ========================================================= */
+        /* =========================================================
+        QUEJOSO ANÓNIMO
+        ========================================================= */
 
-    $esAnonimo =
-        (int) (
-            $datos['es_anonimo']
-            ?? 0
-        ) === 1;
+        $esAnonimo =
+            (int) (
+                $datos['es_anonimo']
+                ?? 0
+            ) === 1;
 
-
-    $numeroAnonimo =
-        null;
-
-
-    if ($esAnonimo) {
 
         $numeroAnonimo =
-            trim(
-                (string) (
-                    $datos['numero_anonimo']
-                    ?? ''
-                )
-            );
+            null;
 
 
-        if (
-            $numeroAnonimo === ''
-        ) {
+        if ($esAnonimo) {
 
-            throw new \InvalidArgumentException(
-                'El No. Numérico es obligatorio para una queja anónima.'
-            );
+            $numeroAnonimo =
+                trim(
+                    (string) (
+                        $datos['numero_anonimo']
+                        ?? ''
+                    )
+                );
+
+
+            if (
+                $numeroAnonimo === ''
+            ) {
+
+                throw new \InvalidArgumentException(
+                    'El No. Numérico es obligatorio para una queja anónima.'
+                );
+            }
         }
-    }
-        return [
+            return [
 
-            /* =================================================
-            DATOS DEL REPORTE
-            ================================================= */
+                /* =================================================
+                DATOS DEL REPORTE
+                ================================================= */
 
-            'fecha_registro' =>
-                $this->normalizarFecha(
+                'fecha_registro' =>
+                    $this->normalizarFecha(
+                        $this->valorRequerido(
+                            $datos,
+                            'fecha_registro',
+                            'La fecha de registro es obligatoria.'
+                        )
+                    ),
+
+
+                'folio_ip' =>
+                    $this->valorNullable(
+                        $datos['folio_ip']
+                            ?? null
+                    ),
+
+
+                'fecha_queja' =>
+                    $this->normalizarFecha(
+                        $this->valorRequerido(
+                            $datos,
+                            'fecha_queja',
+                            'La fecha de la queja es obligatoria.'
+                        )
+                    ),
+
+
+                'fecha_acuerdo' =>
+                    $this->normalizarFechaNullable(
+                        $datos['fecha_acuerdo']
+                            ?? null
+                    ),
+
+
+                'expediente' =>
                     $this->valorRequerido(
                         $datos,
-                        'fecha_registro',
-                        'La fecha de registro es obligatoria.'
-                    )
-                ),
+                        'expediente',
+                        'El expediente es obligatorio.'
+                    ),
 
 
-            'folio_ip' =>
-                $this->valorNullable(
-                    $datos['folio_ip']
-                        ?? null
-                ),
+                'numero_oficio' =>
+                    $this->valorNullable(
+                        $datos['no_oficio']
+                            ?? $datos['numero_oficio']
+                            ?? null
+                    ),
 
 
-            'fecha_queja' =>
-                $this->normalizarFecha(
+                /* =================================================
+                DATOS DE LOS HECHOS
+                ================================================= */
+
+                'fecha_hechos' =>
+                    $this->normalizarFecha(
+                        $this->valorRequerido(
+                            $datos,
+                            'fecha_hechos',
+                            'La fecha de los hechos es obligatoria.'
+                        )
+                    ),
+
+
+                'hora_hechos' =>
                     $this->valorRequerido(
                         $datos,
-                        'fecha_queja',
-                        'La fecha de la queja es obligatoria.'
-                    )
-                ),
+                        'hora_hechos',
+                        'La hora de los hechos es obligatoria.'
+                    ),
 
 
-            'fecha_acuerdo' =>
-                $this->normalizarFechaNullable(
-                    $datos['fecha_acuerdo']
-                        ?? null
-                ),
-
-
-            'expediente' =>
-                $this->valorRequerido(
-                    $datos,
-                    'expediente',
-                    'El expediente es obligatorio.'
-                ),
-
-
-            'numero_oficio' =>
-                $this->valorNullable(
-                    $datos['no_oficio']
-                        ?? $datos['numero_oficio']
-                        ?? null
-                ),
-
-
-            /* =================================================
-            DATOS DE LOS HECHOS
-            ================================================= */
-
-            'fecha_hechos' =>
-                $this->normalizarFecha(
-                    $this->valorRequerido(
-                        $datos,
-                        'fecha_hechos',
-                        'La fecha de los hechos es obligatoria.'
-                    )
-                ),
-
-
-            'hora_hechos' =>
-                $this->valorRequerido(
-                    $datos,
-                    'hora_hechos',
-                    'La hora de los hechos es obligatoria.'
-                ),
-
-
-            'descripcion_hechos' =>
-                $this->valorRequeridoAlternativo(
-                    $datos,
-                    [
-                        'descripcion_hechos',
-                        'descripcion',
-                    ],
-                    'La descripción de los hechos es obligatoria.'
-                ),
-
-
-            /* =================================================
-            UBICACIÓN
-            ================================================= */
-
-            'calle' =>
-                $this->valorRequerido(
-                    $datos,
-                    'calle',
-                    'La calle es obligatoria.'
-                ),
-
-
-            'numero_exterior' =>
-                $this->valorRequeridoAlternativo(
-                    $datos,
-                    [
-                        'numero_exterior',
-                        'numero',
-                    ],
-                    'El número exterior es obligatorio.'
-                ),
-
-
-            'colonia' =>
-                $this->valorRequerido(
-                    $datos,
-                    'colonia',
-                    'La colonia es obligatoria.'
-                ),
-
-
-            'entre_calle' =>
-                $this->valorNullable(
-                    $datos['entre_calle']
-                        ?? null
-                ),
-
-
-            'y_calle' =>
-                $this->valorNullable(
-                    $datos['y_calle']
-                        ?? null
-                ),
-
-
-            'municipio' =>
-                $this->valorRequerido(
-                    $datos,
-                    'municipio',
-                    'El municipio es obligatorio.'
-                ),
-
-
-            'estado' =>
-                $this->valorRequerido(
-                    $datos,
-                    'estado',
-                    'El estado es obligatorio.'
-                ),
-
-
-            'sector' =>
-                $this->valorRequerido(
-                    $datos,
-                    'sector',
-                    'El sector es obligatorio.'
-                ),
-
-
-            'cuadrante' =>
-                $this->valorRequerido(
-                    $datos,
-                    'cuadrante',
-                    'El cuadrante es obligatorio.'
-                ),
-
-
-            'id_cuadra' =>
-                $this->valorNullable(
-                    $datos['id_cuadra']
-                        ?? null
-                ),
-
-
-            'latitud' =>
-                $this->decimalNullable(
-                    $datos['latitud']
-                        ?? null
-                ),
-
-
-            'longitud' =>
-                $this->decimalNullable(
-                    $datos['longitud']
-                        ?? null
-                ),
-
-
-            'origen_ubicacion' =>
-                $this->normalizarOrigenUbicacion(
-                    $datos['origen_ubicacion']
-                        ?? null
-                ),
-
-
-            /* =================================================
-            QUEJOSO
-            ================================================= */
-
-            'es_anonimo' =>
-                $esAnonimo
-                    ? 1
-                    : 0,
-
-
-            'numero_anonimo' =>
-                $esAnonimo
-                    ? $numeroAnonimo
-                    : null,
-
-
-            'nombre_quejoso' =>
-                $esAnonimo
-                    ? null
-                    : $this->valorRequeridoAlternativo(
+                'descripcion_hechos' =>
+                    $this->valorRequeridoAlternativo(
                         $datos,
                         [
-                            'nombre_quejoso',
-                            'quejoso',
+                            'descripcion_hechos',
+                            'descripcion',
                         ],
-                        'El nombre del quejoso es obligatorio.'
+                        'La descripción de los hechos es obligatoria.'
                     ),
 
 
-            'edad_quejoso' =>
-                $esAnonimo
-                    ? null
-                    : $this->edadValida(
-                        $datos['edad_quejoso']
-                            ?? $datos['edad']
-                            ?? null
+                /* =================================================
+                UBICACIÓN
+                ================================================= */
+
+                'calle' =>
+                    $this->valorRequerido(
+                        $datos,
+                        'calle',
+                        'La calle es obligatoria.'
                     ),
 
 
-            'genero_quejoso' =>
-                $esAnonimo
-                    ? null
-                    : $this->valorRequeridoAlternativo(
+                'numero_exterior' =>
+                    $this->valorRequeridoAlternativo(
                         $datos,
                         [
-                            'genero_quejoso',
-                            'genero',
+                            'numero_exterior',
+                            'numero',
                         ],
-                        'El género del quejoso es obligatorio.'
+                        'El número exterior es obligatorio.'
                     ),
 
 
-            'telefono_quejoso' =>
-                $esAnonimo
-                    ? null
-                    : $this->valorNullable(
-                        $datos['telefono_quejoso']
-                            ?? $datos['telefono']
+                'colonia' =>
+                    $this->valorRequerido(
+                        $datos,
+                        'colonia',
+                        'La colonia es obligatoria.'
+                    ),
+
+
+                'entre_calle' =>
+                    $this->valorNullable(
+                        $datos['entre_calle']
                             ?? null
                     ),
 
 
-            'correo_quejoso' =>
-                $esAnonimo
-                    ? null
-                    : $this->valorNullable(
-                        $datos['correo_quejoso']
-                            ?? $datos['correo']
+                'y_calle' =>
+                    $this->valorNullable(
+                        $datos['y_calle']
                             ?? null
                     ),
 
 
-            'canalizacion_area' =>
-                $esAnonimo
-                    ? null
-                    : $this->valorNullable(
-                        $datos['canalizacion_area']
-                            ?? $datos['canalizacion']
+                'municipio' =>
+                    $this->valorRequerido(
+                        $datos,
+                        'municipio',
+                        'El municipio es obligatorio.'
+                    ),
+
+
+                'estado' =>
+                    $this->valorRequerido(
+                        $datos,
+                        'estado',
+                        'El estado es obligatorio.'
+                    ),
+
+
+                'sector' =>
+                    $this->valorRequerido(
+                        $datos,
+                        'sector',
+                        'El sector es obligatorio.'
+                    ),
+
+
+                'cuadrante' =>
+                    $this->valorRequerido(
+                        $datos,
+                        'cuadrante',
+                        'El cuadrante es obligatorio.'
+                    ),
+
+
+                'id_cuadra' =>
+                    $this->valorNullable(
+                        $datos['id_cuadra']
                             ?? null
                     ),
 
 
-            'canalizacion_otro' =>
-                $esAnonimo
-                    ? null
-                    : $this->valorNullable(
-                        $datos['canalizacion_otro']
+                'latitud' =>
+                    $this->decimalNullable(
+                        $datos['latitud']
                             ?? null
                     ),
 
-            /* =================================================
-            CLASIFICACIÓN
-            ================================================= */
 
-            'clasificacion' =>
-                $this->valorRequerido(
-                    $datos,
-                    'clasificacion',
-                    'La clasificación es obligatoria.'
-                ),
+                'longitud' =>
+                    $this->decimalNullable(
+                        $datos['longitud']
+                            ?? null
+                    ),
 
 
-            'inspector' =>
-                $this->valorRequerido(
-                    $datos,
-                    'inspector',
-                    'El inspector es obligatorio.'
-                ),
+                'origen_ubicacion' =>
+                    $this->normalizarOrigenUbicacion(
+                        $datos['origen_ubicacion']
+                            ?? null
+                    ),
 
 
-            'investigador' =>
-                $this->valorNullable(
-                    $datos['investigador']
-                        ?? null
-                ),
+                /* =================================================
+                QUEJOSO
+                ================================================= */
+
+                'es_anonimo' =>
+                    $esAnonimo
+                        ? 1
+                        : 0,
 
 
-            'quien_emite_resolucion' =>
-                $this->valorNullable(
-                    $datos['quien_emite_resolucion']
-                        ?? null
-                ),
+                'numero_anonimo' =>
+                    $esAnonimo
+                        ? $numeroAnonimo
+                        : null,
 
 
-            'resolucion' =>
-                $this->valorNullable(
-                    $datos['resolucion']
-                        ?? null
-                ),
+                'nombre_quejoso' =>
+                    $esAnonimo
+                        ? null
+                        : $this->valorRequeridoAlternativo(
+                            $datos,
+                            [
+                                'nombre_quejoso',
+                                'quejoso',
+                            ],
+                            'El nombre del quejoso es obligatorio.'
+                        ),
 
 
-            'motivos' =>
-                $this->valorNullable(
-                    $datos['motivos']
-                        ?? null
-                ),
+                'edad_quejoso' =>
+                    $esAnonimo
+                        ? null
+                        : $this->edadValida(
+                            $datos['edad_quejoso']
+                                ?? $datos['edad']
+                                ?? null
+                        ),
 
 
-            'estado_actual' =>
-                $this->normalizarEstadoActual(
-                    $datos['estado_actual']
-                        ?? 'Pendiente'
-                ),
+                'genero_quejoso' =>
+                    $esAnonimo
+                        ? null
+                        : $this->valorRequeridoAlternativo(
+                            $datos,
+                            [
+                                'genero_quejoso',
+                                'genero',
+                            ],
+                            'El género del quejoso es obligatorio.'
+                        ),
 
 
-            'observaciones' =>
-                $this->valorNullable(
-                    $datos['observaciones']
-                        ?? null
-                ),
+                'telefono_quejoso' =>
+                    $esAnonimo
+                        ? null
+                        : $this->valorNullable(
+                            $datos['telefono_quejoso']
+                                ?? $datos['telefono']
+                                ?? null
+                        ),
 
 
-            /* =================================================
-            MODALIDAD DE UNIDAD
-            ================================================= */
-
-            'modalidad_unidad' =>
-                $this->normalizarModalidadUnidad(
-                    $datos['modalidad_unidad']
-                        ?? 'CON_UNIDAD'
-                ),
-
-
-            /* =================================================
-            AUDITORÍA
-            ================================================= */
-
-            'created_by' =>
-                $idUsuario,
+                'correo_quejoso' =>
+                    $esAnonimo
+                        ? null
+                        : $this->valorNullable(
+                            $datos['correo_quejoso']
+                                ?? $datos['correo']
+                                ?? null
+                        ),
 
 
-            'eliminado' =>
-                0,
+                'canalizacion_area' =>
+                    $esAnonimo
+                        ? null
+                        : $this->valorNullable(
+                            $datos['canalizacion_area']
+                                ?? $datos['canalizacion']
+                                ?? null
+                        ),
 
-        ];
+
+                'canalizacion_otro' =>
+                    $esAnonimo
+                        ? null
+                        : $this->valorNullable(
+                            $datos['canalizacion_otro']
+                                ?? null
+                        ),
+
+                /* =================================================
+                CLASIFICACIÓN
+                ================================================= */
+
+                'clasificacion' =>
+                    $this->valorRequerido(
+                        $datos,
+                        'clasificacion',
+                        'La clasificación es obligatoria.'
+                    ),
+
+
+                'inspector' =>
+                    $this->valorRequerido(
+                        $datos,
+                        'inspector',
+                        'El inspector es obligatorio.'
+                    ),
+
+
+                'investigador' =>
+                    $this->valorNullable(
+                        $datos['investigador']
+                            ?? null
+                    ),
+
+
+                'quien_emite_resolucion' =>
+                    $this->valorNullable(
+                        $datos['quien_emite_resolucion']
+                            ?? null
+                    ),
+
+
+                'resolucion' =>
+                    $this->valorNullable(
+                        $datos['resolucion']
+                            ?? null
+                    ),
+
+
+                'motivos' =>
+                    $this->valorNullable(
+                        $datos['motivos']
+                            ?? null
+                    ),
+
+
+                'estado_actual' =>
+                    $this->normalizarEstadoActual(
+                        $datos['estado_actual']
+                            ?? 'Pendiente'
+                    ),
+
+                'baja_voluntaria' =>
+                    (int) (
+                        $datos['baja_voluntaria']
+                        ?? 0
+                    ) === 1
+                        ? 1
+                        : 0,
+
+                'observaciones' =>
+                    $this->valorNullable(
+                        $datos['observaciones']
+                            ?? null
+                    ),
+
+
+                /* =================================================
+                MODALIDAD DE UNIDAD
+                ================================================= */
+
+                'modalidad_unidad' =>
+                    $this->normalizarModalidadUnidad(
+                        $datos['modalidad_unidad']
+                            ?? 'CON_UNIDAD'
+                    ),
+
+
+                /* =================================================
+                AUDITORÍA
+                ================================================= */
+
+                'created_by' =>
+                    $idUsuario,
+
+
+                'eliminado' =>
+                    0,
+
+            ];
     }
 
+    
     /* =========================================================
        PERSONAL
     ========================================================= */
@@ -1266,6 +1274,342 @@ class ReporteService
             throw new \RuntimeException(
                 'No fue posible guardar la sanción disciplinaria.'
             );
+        }
+    }
+
+    /* =========================================================
+    GUARDAR MOTIVOS Y SANCIONES
+    ========================================================= */
+
+    protected function guardarMotivosYSanciones(
+        int $idReporte,
+        array $datos,
+        int $idUsuario
+    ): void {
+
+        if (
+            $idReporte <= 0
+            || $idUsuario <= 0
+        ) {
+            throw new \RuntimeException(
+                'No fue posible identificar el reporte o usuario.'
+            );
+        }
+
+
+        /* =====================================================
+        SIN SANCIONES
+        ===================================================== */
+
+        $sinSanciones =
+            (int) (
+                $datos['sin_sanciones']
+                ?? 0
+            ) === 1;
+
+
+        /* =====================================================
+        BAJA VOLUNTARIA
+        ===================================================== */
+
+        $bajaVoluntaria =
+            (int) (
+                $datos['baja_voluntaria']
+                ?? 0
+            ) === 1;
+
+
+        /* =====================================================
+        MOTIVOS SELECCIONADOS
+        ===================================================== */
+
+        $motivos =
+            $datos['motivos_seleccionados']
+            ?? [];
+
+
+        if (
+            !is_array(
+                $motivos
+            )
+        ) {
+            $motivos =
+                [];
+        }
+
+
+        /*
+        * El motivo es opcional.
+        */
+        if (
+            empty(
+                $motivos
+            )
+        ) {
+            return;
+        }
+
+
+        /* =====================================================
+        EVITAR DUPLICADOS
+        ===================================================== */
+
+        $motivosRegistrados =
+            [];
+
+
+        foreach (
+            $motivos
+            as $motivoFormulario
+        ) {
+
+            if (
+                !is_array(
+                    $motivoFormulario
+                )
+            ) {
+                continue;
+            }
+
+
+            /* =================================================
+            ID MOTIVO
+            ================================================= */
+
+            $idMotivo =
+                (int) (
+                    $motivoFormulario['id_motivo']
+                    ?? 0
+                );
+
+
+            if (
+                $idMotivo <= 0
+            ) {
+                throw new \InvalidArgumentException(
+                    'Existe un motivo seleccionado sin identificador válido.'
+                );
+            }
+
+
+            /* =================================================
+            EVITAR DUPLICADO
+            ================================================= */
+
+            if (
+                in_array(
+                    $idMotivo,
+                    $motivosRegistrados,
+                    true
+                )
+            ) {
+                continue;
+            }
+
+
+            /* =================================================
+            CONSULTAR CATÁLOGO
+            ================================================= */
+
+            $motivoCatalogo =
+                $this->db
+                    ->table(
+                        'ai_cat_motivos'
+                    )
+                    ->select([
+                        'id_motivo',
+                        'motivo',
+                        'sancion',
+                        'activo',
+                    ])
+                    ->where(
+                        'id_motivo',
+                        $idMotivo
+                    )
+                    ->where(
+                        'activo',
+                        1
+                    )
+                    ->get()
+                    ->getRowArray();
+
+
+            if (
+                !$motivoCatalogo
+            ) {
+                throw new \InvalidArgumentException(
+                    'Uno de los motivos seleccionados ya no está disponible.'
+                );
+            }
+
+
+            /* =================================================
+            GUARDAR RELACIÓN REPORTE - MOTIVO
+            ================================================= */
+
+            $insertadoMotivo =
+                $this->db
+                    ->table(
+                        'ai_reporte_motivos'
+                    )
+                    ->insert([
+
+                        'id_reporte' =>
+                            $idReporte,
+
+                        'id_motivo' =>
+                            $idMotivo,
+
+                        'created_by' =>
+                            $idUsuario,
+
+                        'eliminado' =>
+                            0,
+                    ]);
+
+
+            if (
+                $insertadoMotivo === false
+            ) {
+                throw new \RuntimeException(
+                    'No fue posible guardar uno de los motivos del reporte.'
+                );
+            }
+
+
+            $idReporteMotivo =
+                (int) $this->db
+                    ->insertID();
+
+
+            if (
+                $idReporteMotivo <= 0
+            ) {
+                throw new \RuntimeException(
+                    'No fue posible identificar el motivo registrado.'
+                );
+            }
+
+
+            $motivosRegistrados[] =
+                $idMotivo;
+
+
+            /* =================================================
+            SIN SANCIÓN / BAJA VOLUNTARIA
+            ================================================= */
+
+            if (
+                $sinSanciones
+                || $bajaVoluntaria
+            ) {
+                continue;
+            }
+
+
+            /* =================================================
+            SANCIÓN DESDE CATÁLOGO
+            ================================================= */
+
+            $tipoSancion =
+                trim(
+                    (string) (
+                        $motivoCatalogo['sancion']
+                        ?? ''
+                    )
+                );
+
+
+            if (
+                $tipoSancion === ''
+            ) {
+                continue;
+            }
+
+
+            /* =================================================
+            FOLIO DE SANCIÓN
+            ================================================= */
+
+            $folioSancion =
+                trim(
+                    (string) (
+                        $motivoFormulario['folio_sancion']
+                        ?? ''
+                    )
+                );
+
+
+            if (
+                $folioSancion === ''
+            ) {
+                $folioSancion =
+                    null;
+            }
+
+
+            if (
+                $folioSancion !== null
+                && mb_strlen(
+                    $folioSancion
+                ) > 150
+            ) {
+                throw new \InvalidArgumentException(
+                    'El folio de la sanción no puede exceder 150 caracteres.'
+                );
+            }
+
+
+            /* =================================================
+            GUARDAR SANCIÓN
+            ================================================= */
+
+            $insertadoSancion =
+                $this->db
+                    ->table(
+                        'ai_reporte_sanciones'
+                    )
+                    ->insert([
+
+                        'id_reporte' =>
+                            $idReporte,
+
+                        'id_reporte_motivo' =>
+                            $idReporteMotivo,
+
+                        'tipo' =>
+                            $tipoSancion,
+
+                        'descripcion_otro' =>
+                            null,
+
+                        'folio_sancion' =>
+                            $folioSancion,
+
+                        'origen' =>
+                            'registro',
+
+                        'id_seguimiento' =>
+                            null,
+
+                        'es_actual' =>
+                            1,
+
+                        'created_by' =>
+                            $idUsuario,
+
+                        'eliminado' =>
+                            0,
+                    ]);
+
+
+            if (
+                $insertadoSancion === false
+            ) {
+                throw new \RuntimeException(
+                    'No fue posible guardar la sanción relacionada con el motivo.'
+                );
+            }
         }
     }
 

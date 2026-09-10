@@ -422,6 +422,10 @@ class Reportes_Controller extends BaseController
             [];
 
 
+        $motivos =
+            [];
+
+
         try {
 
             /* =====================================================
@@ -559,6 +563,32 @@ class Reportes_Controller extends BaseController
                     ->getResultArray();
 
 
+            /* =====================================================
+            CATÁLOGO DE MOTIVOS
+            ===================================================== */
+
+            $motivos =
+                $db
+                    ->table(
+                        'ai_cat_motivos'
+                    )
+                    ->select([
+                        'id_motivo',
+                        'motivo',
+                        'sancion',
+                    ])
+                    ->where(
+                        'activo',
+                        1
+                    )
+                    ->orderBy(
+                        'id_motivo',
+                        'ASC'
+                    )
+                    ->get()
+                    ->getResultArray();
+
+
         } catch (\Throwable $e) {
 
             log_message(
@@ -586,6 +616,9 @@ class Reportes_Controller extends BaseController
 
                 'clasificaciones' =>
                     $clasificaciones,
+
+                'motivos' =>
+                    $motivos,
             ]
         );
     }
