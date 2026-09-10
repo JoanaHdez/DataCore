@@ -33,7 +33,7 @@
                 </label>
 
                 <input type="text" id="folio_visual" class="report-input report-input--readonly"
-                    value="QJ- — Automático" readonly>
+                    value="<?= esc($folioVisual ?? 'QJ- — Automático') ?>" readonly>
 
                 <small class="report-field__help">
                     El consecutivo se asignará automáticamente al guardar.

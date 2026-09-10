@@ -402,8 +402,111 @@ class Reportes_Controller extends BaseController
 
     public function nuevo()
     {
+        /* =========================================================
+        PREVISUALIZAR FOLIO DE QUEJA
+        ========================================================= */
+
+        $folioVisual =
+            'QJ- — Automático';
+
+
+        $nomenclaturaVisual =
+            'CGSC/CAI/QJ/—';
+
+
+        try {
+
+            $db =
+                \Config\Database::connect(
+                    'datacore'
+                );
+
+
+            $folioService =
+                new FolioService(
+                    $db
+                );
+
+
+            $previsualizacion =
+                $folioService->previsualizar(
+                    'QUEJA'
+                );
+
+
+            $numeroFolio =
+                (int) (
+                    $previsualizacion['numero_folio']
+                    ?? 0
+                );
+
+
+            $folio =
+                trim(
+                    (string) (
+                        $previsualizacion['folio']
+                        ?? ''
+                    )
+                );
+
+
+            $nomenclatura =
+                trim(
+                    (string) (
+                        $previsualizacion['nomenclatura']
+                        ?? ''
+                    )
+                );
+
+
+            if (
+                $folio !== ''
+            ) {
+
+                $folioVisual =
+                    $folio;
+            }
+
+
+            if (
+                $nomenclatura !== ''
+            ) {
+
+                $nomenclaturaVisual =
+                    $nomenclatura;
+
+            } elseif (
+                $numeroFolio > 0
+            ) {
+
+                $nomenclaturaVisual =
+                    'CGSC/CAI/QJ/'
+                    . $numeroFolio;
+            }
+
+
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error previsualizando folio de queja: {mensaje}',
+                [
+                    'mensaje' =>
+                        $e->getMessage(),
+                ]
+            );
+        }
+
+
         return view(
-            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\nuevo'
+            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\nuevo',
+            [
+                'folioVisual' =>
+                    $folioVisual,
+
+                'nomenclaturaVisual' =>
+                    $nomenclaturaVisual,
+            ]
         );
     }
 

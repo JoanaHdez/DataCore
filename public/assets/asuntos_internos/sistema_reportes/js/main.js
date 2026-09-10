@@ -29,6 +29,8 @@ import './reportes/nuevo/personal.js';
 import './reportes/nuevo/unidades.js';
 import './reportes/nuevo/evidencia.js';
 import './reportes/nuevo/sanciones.js';
+import './reportes/nuevo/quejoso.js';
+
 
 /* =========================================================
 REPORTES - NUEVO - FELICITACIONES

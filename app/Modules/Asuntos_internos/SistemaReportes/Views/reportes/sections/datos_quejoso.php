@@ -23,6 +23,84 @@
 
         <div class="report-form-grid">
 
+        <!-- =====================================================
+     QUEJA ANÓNIMA
+====================================================== -->
+
+<div class="report-field report-field--full">
+
+    <label>
+        ¿Queja anónima?
+    </label>
+
+
+    <div class="report-options">
+
+        <label class="report-option">
+
+            <input
+                type="radio"
+                name="es_anonimo"
+                value="0"
+                id="quejoso-no-anonimo"
+                checked
+            >
+
+            <span>
+                No
+            </span>
+
+        </label>
+
+
+        <label class="report-option">
+
+            <input
+                type="radio"
+                name="es_anonimo"
+                value="1"
+                id="quejoso-anonimo"
+            >
+
+            <span>
+                Sí
+            </span>
+
+        </label>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     NÚMERO ANÓNIMO
+====================================================== -->
+
+<div
+    class="report-field report-field--full"
+    id="numero-anonimo-contenedor"
+    hidden
+>
+
+    <label for="numero_anonimo">
+        No. Numérico
+        <span class="required">*</span>
+    </label>
+
+
+    <input
+        type="text"
+        id="numero_anonimo"
+        name="numero_anonimo"
+        class="report-input"
+        placeholder="Ingresa el número asignado"
+        autocomplete="off"
+        disabled
+    >
+
+</div>
+
             <!-- QUEJOSO -->
             <div class="report-field report-field--full">
 
@@ -109,6 +187,64 @@
 
                 <input type="email" id="correo" name="correo" class="report-input"
                     placeholder="Ingresa el correo electrónico" autocomplete="email">
+
+            </div>
+
+            <!-- =====================================================
+     CANALIZACIÓN
+====================================================== -->
+
+            <div class="report-field report-field--full">
+
+                <label for="canalizacion">
+                    Canalización al área correspondiente
+                </label>
+
+                <select id="canalizacion" name="canalizacion" class="report-select">
+
+                    <option value="" selected>
+                        Sin canalización
+                    </option>
+
+                    <option value="BUSQUEDA">
+                        Búsqueda
+                    </option>
+
+                    <option value="VICTIMAS">
+                        Víctimas
+                    </option>
+
+                    <option value="GENERO">
+                        Género
+                    </option>
+
+                    <option value="OTRO">
+                        Otro
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- =====================================================
+                OTRA ÁREA
+                SOLO CUANDO CANALIZACIÓN = OTRO
+            ====================================================== -->
+
+            <div class="report-field report-field--full" id="canalizacion-otro-contenedor" hidden>
+
+                <label for="canalizacion_otro">
+                    Especifica el área
+                    <span class="required">*</span>
+                </label>
+
+                <input type="text" id="canalizacion_otro" name="canalizacion_otro" class="report-input"
+                    placeholder="Ingresa el área correspondiente" autocomplete="off" disabled>
+
+                <small class="report-field__help">
+                    Este campo es obligatorio cuando seleccionas “Otro”.
+                </small>
 
             </div>
         </div>
