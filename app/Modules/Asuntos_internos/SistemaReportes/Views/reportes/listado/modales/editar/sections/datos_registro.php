@@ -15,37 +15,18 @@
 
     <div class="editar-reporte-grid">
 
-        <!-- PREFIJO -->
-        <div class="editar-reporte-campo">
-
-            <label for="editar-prefijo">
-                Prefijo
-            </label>
-
-            <input
-                type="text"
-                id="editar-prefijo"
-                name="prefijo"
-                value="QJ"
-                readonly
-            >
-
-        </div>
-
-
         <!-- NÚMERO DE FOLIO -->
         <div class="editar-reporte-campo">
 
-            <label for="editar-numero-folio">
+            <label for="editar-folio">
                 Número de folio
             </label>
 
-            <input
-                type="text"
-                id="editar-numero-folio"
-                name="numero_folio"
-                required
-            >
+            <input type="text" id="editar-folio" name="folio" readonly>
+
+            <small>
+                El número de folio se asigna automáticamente.
+            </small>
 
         </div>
 
@@ -57,12 +38,11 @@
                 Fecha de registro
             </label>
 
-            <input
-                type="date"
-                id="editar-fecha-registro"
-                name="fecha_registro"
-                readonly
-            >
+            <input type="date" id="editar-fecha-registro" name="fecha_registro" readonly>
+
+            <small>
+                La fecha de registro se asigna automáticamente.
+            </small>
 
         </div>
 

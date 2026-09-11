@@ -255,19 +255,13 @@ export function cargarReporteEnFormulario(
 
 
     /* =====================================================
-       DATOS DEL REPORTE
+    DATOS DEL REPORTE
     ===================================================== */
 
     asignarValorEditar(
         modal,
-        '#editar-prefijo',
-        reporte.prefijo
-    );
-
-    asignarValorEditar(
-        modal,
-        '#editar-numero-folio',
-        reporte.numero_folio
+        '#editar-folio',
+        reporte.folio
     );
 
     asignarValorEditar(
@@ -649,8 +643,7 @@ export function obtenerReporteDesdeFormulario(
 
     const campos = [
 
-        'prefijo',
-        'numero_folio',
+        'folio',
         'fecha_registro',
 
         'folio_ip',
@@ -771,14 +764,6 @@ export function obtenerReporteDesdeFormulario(
         ];
 
     }
-
-
-    reporte.folio =
-        construirFolio(
-            reporte.prefijo,
-            reporte.numero_folio
-        );
-
 
     return reporte;
 
@@ -1020,24 +1005,6 @@ export function limpiarFormularioEditar(
     limpiarSelectorUnidad(
         modal
     );
-
-
-    const prefijo =
-        modal.querySelector(
-            '#editar-prefijo'
-        );
-
-
-    if (
-        prefijo
-        && !prefijo.value
-    ) {
-
-        prefijo.value =
-            'QJ';
-
-    }
-
 
     const inputEvidencia =
         formulario

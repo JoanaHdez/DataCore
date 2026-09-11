@@ -508,10 +508,11 @@ export function inicializarEditarReporte() {
 
 
             const nuevoFolio =
-                construirFolio(
-                    reporteEditado.prefijo,
-                    reporteEditado.numero_folio
-                );
+                String(
+                    reporteEditado.folio
+                    || reporteAnterior.folio
+                    || ''
+                ).trim();
 
 
             reporteEditado.folio =
