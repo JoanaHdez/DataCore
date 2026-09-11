@@ -255,7 +255,7 @@ export function cargarReporteEnFormulario(
 
 
     /* =====================================================
-    DATOS DEL REPORTE
+       DATOS DEL REPORTE
     ===================================================== */
 
     asignarValorEditar(
@@ -263,6 +263,7 @@ export function cargarReporteEnFormulario(
         '#editar-folio',
         reporte.folio
     );
+
 
     asignarValorEditar(
         modal,
@@ -281,11 +282,13 @@ export function cargarReporteEnFormulario(
         reporte.folio_ip
     );
 
+
     asignarValorEditar(
         modal,
         '#editar-fecha-queja',
         reporte.fecha_queja
     );
+
 
     asignarValorEditar(
         modal,
@@ -293,17 +296,20 @@ export function cargarReporteEnFormulario(
         reporte.fecha_acuerdo
     );
 
+
     asignarValorEditar(
         modal,
         '#editar-expediente',
         reporte.expediente
     );
 
+
     asignarValorEditar(
         modal,
         '#editar-nomenclatura',
         reporte.nomenclatura
     );
+
 
     asignarValorEditar(
         modal,
@@ -322,11 +328,13 @@ export function cargarReporteEnFormulario(
         reporte.fecha_hechos
     );
 
+
     asignarValorEditar(
         modal,
         '#editar-hora-hechos',
         reporte.hora_hechos
     );
+
 
     asignarValorEditar(
         modal,
@@ -336,7 +344,7 @@ export function cargarReporteEnFormulario(
 
 
     /* =====================================================
-    UBICACIÓN
+       UBICACIÓN
     ===================================================== */
 
     asignarValorEditar(
@@ -345,11 +353,13 @@ export function cargarReporteEnFormulario(
         reporte.calle
     );
 
+
     asignarValorEditar(
         modal,
         '#editar-numero',
         reporte.numero
     );
+
 
     asignarValorEditar(
         modal,
@@ -357,11 +367,13 @@ export function cargarReporteEnFormulario(
         reporte.colonia
     );
 
+
     asignarValorEditar(
         modal,
         '#editar-entre-calle',
         reporte.entre_calle
     );
+
 
     asignarValorEditar(
         modal,
@@ -369,11 +381,13 @@ export function cargarReporteEnFormulario(
         reporte.y_calle
     );
 
+
     asignarValorEditar(
         modal,
         '#editar-municipio',
         reporte.municipio
     );
+
 
     asignarValorEditar(
         modal,
@@ -381,11 +395,13 @@ export function cargarReporteEnFormulario(
         reporte.estado
     );
 
+
     asignarValorEditar(
         modal,
         '#editar-sector',
         reporte.sector
     );
+
 
     asignarValorEditar(
         modal,
@@ -393,11 +409,13 @@ export function cargarReporteEnFormulario(
         reporte.cuadrante
     );
 
+
     asignarValorEditar(
         modal,
         '#editar-id-cuadra',
         reporte.id_cuadra
     );
+
 
     asignarValorEditar(
         modal,
@@ -405,11 +423,13 @@ export function cargarReporteEnFormulario(
         reporte.latitud
     );
 
+
     asignarValorEditar(
         modal,
         '#editar-longitud',
         reporte.longitud
     );
+
 
     asignarValorEditar(
         modal,
@@ -419,17 +439,18 @@ export function cargarReporteEnFormulario(
 
 
     /*
-    * Coordenadas visibles.
-    *
-    * X = Longitud
-    * Y = Latitud
-    */
+     * Coordenadas visibles.
+     *
+     * X = Longitud
+     * Y = Latitud
+     */
 
     asignarValorEditar(
         modal,
         '#editar-longitud-visible',
         reporte.longitud
     );
+
 
     asignarValorEditar(
         modal,
@@ -453,7 +474,8 @@ export function cargarReporteEnFormulario(
 
 
     const coordenadasEditar =
-        latitudEditar && longitudEditar
+        latitudEditar
+        && longitudEditar
             ? `${latitudEditar}, ${longitudEditar}`
             : '';
 
@@ -464,16 +486,95 @@ export function cargarReporteEnFormulario(
         coordenadasEditar
     );
 
+
     /* =====================================================
        PERSONAL
     ===================================================== */
 
-    establecerPersonal(
+    const personalEditar =
         Array.isArray(
             reporte.personal
         )
-            ? reporte.personal
-            : []
+            ? reporte.personal.map(
+                (persona) => ({
+
+                    ...persona,
+
+                    id:
+                        Number(
+                            persona.id
+                            ?? persona.plantilla_id
+                            ?? 0
+                        ),
+
+                    plantilla_id:
+                        Number(
+                            persona.plantilla_id
+                            ?? persona.id
+                            ?? 0
+                        ),
+
+                    perscod:
+                        String(
+                            persona.perscod
+                            ?? ''
+                        ).trim(),
+
+                    nombre:
+                        String(
+                            persona.nombre
+                            ?? persona.nombre_snapshot
+                            ?? ''
+                        )
+                            .trim()
+                            .toUpperCase(),
+
+                    nomina:
+                        String(
+                            persona.nomina
+                            ?? ''
+                        ).trim(),
+
+                    area:
+                        String(
+                            persona.area
+                            ?? persona.area_snapshot
+                            ?? ''
+                        )
+                            .trim()
+                            .toUpperCase(),
+
+                    turno:
+                        String(
+                            persona.turno
+                            ?? persona.turno_snapshot
+                            ?? ''
+                        )
+                            .trim()
+                            .toUpperCase(),
+
+                    alias:
+                        String(
+                            persona.alias
+                            ?? persona.alias_snapshot
+                            ?? ''
+                        )
+                            .trim()
+                            .toUpperCase(),
+
+                    foto:
+                        String(
+                            persona.foto
+                            ?? ''
+                        ).trim(),
+
+                })
+            )
+            : [];
+
+
+    establecerPersonal(
+        personalEditar
     );
 
 
@@ -488,7 +589,7 @@ export function cargarReporteEnFormulario(
 
 
     /* =====================================================
-    UNIDADES
+       UNIDADES
     ===================================================== */
 
     establecerUnidades(
@@ -526,11 +627,13 @@ export function cargarReporteEnFormulario(
         reporte.quejoso
     );
 
+
     asignarValorEditar(
         modal,
         '#editar-edad',
         reporte.edad
     );
+
 
     asignarSelectSeguro(
         modal,
@@ -538,11 +641,13 @@ export function cargarReporteEnFormulario(
         reporte.genero
     );
 
+
     asignarValorEditar(
         modal,
         '#editar-telefono',
         reporte.telefono
     );
+
 
     asignarValorEditar(
         modal,
@@ -561,11 +666,13 @@ export function cargarReporteEnFormulario(
         reporte.clasificacion
     );
 
+
     asignarValorEditar(
         modal,
         '#editar-inspector',
         reporte.inspector
     );
+
 
     asignarValorEditar(
         modal,
@@ -573,17 +680,20 @@ export function cargarReporteEnFormulario(
         reporte.investigador
     );
 
+
     asignarValorEditar(
         modal,
         '#editar-quien-emite-resolucion',
         reporte.quien_emite_resolucion
     );
 
+
     asignarValorEditar(
         modal,
         '#editar-resolucion',
         reporte.resolucion
     );
+
 
     asignarValorEditar(
         modal,
@@ -617,9 +727,7 @@ export function cargarReporteEnFormulario(
         modal,
         []
     );
-
 }
-
 
 /* =========================================================
    OBTENER REPORTE DESDE FORMULARIO

@@ -30,25 +30,30 @@ export function inicializarEditarUnidades(
             '#editar-unidad-busqueda'
         );
 
+
     const resultados =
         modal.querySelector(
             '#editar-unidad-resultados'
         );
+
 
     const btnAgregar =
         modal.querySelector(
             '#btn-editar-agregar-unidad'
         );
 
+
     const tablaBody =
         modal.querySelector(
             '#editar-unidades-agregadas-body'
         );
 
+
     const modalidadConUnidad =
         modal.querySelector(
             '#editar-modalidad-con-unidad'
         );
+
 
     const modalidadSinUnidad =
         modal.querySelector(
@@ -69,45 +74,69 @@ export function inicializarEditarUnidades(
 
 
     /* =====================================================
-       MODALIDAD
+       MODALIDAD - CON UNIDAD
     ===================================================== */
 
     modalidadConUnidad.addEventListener(
         'change',
         () => {
 
-            if (!modalidadConUnidad.checked) {
+            if (
+                !modalidadConUnidad.checked
+            ) {
                 return;
             }
+
+
+            /*
+             * Únicamente mostramos nuevamente
+             * el contenido de unidades.
+             *
+             * NO eliminamos las unidades existentes.
+             */
 
             mostrarModalidadUnidadEditar(
                 modal,
                 'CON_UNIDAD'
             );
 
+
+            /*
+             * Volvemos a renderizar por seguridad
+             * las unidades que continúan en memoria.
+             */
+
+            renderizarUnidadesEditar(
+                modal
+            );
         }
     );
 
+
+    /* =====================================================
+       MODALIDAD - SIN UNIDAD / OFICINA
+    ===================================================== */
 
     modalidadSinUnidad.addEventListener(
         'change',
         () => {
 
-            if (!modalidadSinUnidad.checked) {
+            if (
+                !modalidadSinUnidad.checked
+            ) {
                 return;
             }
 
 
             /*
-             * Si cambia a Sin unidad / Oficina,
-             * eliminamos las unidades que estuvieran
-             * relacionadas en el formulario.
+             * IMPORTANTE:
+             *
+             * No eliminamos estadoUnidades.elementos.
+             *
+             * Las unidades quedan temporalmente conservadas
+             * por si el usuario cambia nuevamente a
+             * "Con unidad" antes de guardar.
              */
-
-            estadoUnidades.elementos.splice(
-                0,
-                estadoUnidades.elementos.length
-            );
 
 
             establecerUnidadSeleccionada(
@@ -120,16 +149,10 @@ export function inicializarEditarUnidades(
             );
 
 
-            renderizarUnidadesEditar(
-                modal
-            );
-
-
             mostrarModalidadUnidadEditar(
                 modal,
                 'SIN_UNIDAD_OFICINA'
             );
-
         }
     );
 
@@ -172,12 +195,15 @@ export function inicializarEditarUnidades(
                     estadoUnidades
                         .temporizadorBusqueda
                 );
-
             }
 
 
+            /*
+             * Buscar desde la primera letra/número.
+             */
+
             if (
-                termino.length < 1
+                termino.length === 0
             ) {
 
                 ocultarResultadosUnidad(
@@ -197,11 +223,9 @@ export function inicializarEditarUnidades(
                             modal,
                             termino
                         );
-
                     },
                     300
                 );
-
         }
     );
 
@@ -237,8 +261,11 @@ export function inicializarEditarUnidades(
                 estadoUnidades.elementos
                     .some(
                         (item) =>
-                            Number(item.id)
-                            === Number(
+                            Number(
+                                item.id
+                            )
+                            ===
+                            Number(
                                 unidad.id
                             )
                     );
@@ -268,7 +295,6 @@ export function inicializarEditarUnidades(
             limpiarSelectorUnidad(
                 modal
             );
-
         }
     );
 
@@ -294,8 +320,7 @@ export function inicializarEditarUnidades(
 
             const indice =
                 Number(
-                    boton
-                        .dataset
+                    boton.dataset
                         .editarEliminarUnidad
                 );
 
@@ -312,7 +337,6 @@ export function inicializarEditarUnidades(
             renderizarUnidadesEditar(
                 modal
             );
-
         }
     );
 
@@ -339,10 +363,8 @@ export function inicializarEditarUnidades(
             ocultarResultadosUnidad(
                 modal
             );
-
         }
     );
-
 }
 
 /* =========================================================

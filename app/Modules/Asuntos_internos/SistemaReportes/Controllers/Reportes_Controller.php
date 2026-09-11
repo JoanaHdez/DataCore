@@ -1454,15 +1454,16 @@ class Reportes_Controller extends BaseController
 
             $personalBD =
                 $db
-                ->table('ai_reporte_personal')
-                ->select([
-                    'id_reporte_personal',
-                    'plantilla_id',
-                    'perscod',
-                    'nombre_snapshot',
-                    'area_snapshot',
-                    'turno_snapshot',
-                ])
+                    ->table('ai_reporte_personal')
+                    ->select([
+                        'id_reporte_personal',
+                        'plantilla_id',
+                        'perscod',
+                        'nombre_snapshot',
+                        'area_snapshot',
+                        'turno_snapshot',
+                        'alias_snapshot',
+                    ])
                 ->where(
                     'id_reporte',
                     $idReporte
@@ -1572,6 +1573,14 @@ class Reportes_Controller extends BaseController
                     $persona['turno_snapshot']
                         ?? '',
 
+                    'alias' =>
+                        trim(
+                            (string) (
+                                $persona['alias_snapshot']
+                                ?? ''
+                            )
+                        ),
+                        
                     'foto' =>
                     $foto,
 

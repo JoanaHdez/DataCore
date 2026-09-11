@@ -23,25 +23,18 @@
 
             <label for="editar-personal-busqueda">
                 Buscar personal
+                <span class="required">*</span>
             </label>
 
-            <input
-                type="text"
-                id="editar-personal-busqueda"
-                autocomplete="off"
-                placeholder="Busca por nombre o nómina"
-            >
+            <input type="text" id="editar-personal-busqueda" class="report-input" autocomplete="off"
+                placeholder="Busca por nombre o nómina">
 
             <small class="editar-reporte-campo__help">
-                Puedes agregar una o más personas al reporte.
+                Selecciona una persona para cargar automáticamente sus datos.
             </small>
 
 
-            <div
-                class="editar-personal-resultados"
-                id="editar-personal-resultados"
-                hidden
-            ></div>
+            <div class="editar-personal-resultados personal-resultados" id="editar-personal-resultados" hidden></div>
 
         </div>
 
@@ -52,20 +45,11 @@
          PERSONA SELECCIONADA
     ====================================================== -->
 
-    <div
-        class="editar-personal-seleccionado"
-        id="editar-personal-seleccionado"
-        hidden
-    >
+    <div class="editar-personal-seleccionado personal-seleccionado" id="editar-personal-seleccionado" hidden>
 
-        <div class="editar-personal-seleccionado__foto">
+        <div class="editar-personal-seleccionado__foto personal-seleccionado__foto">
 
-            <img
-                id="editar-personal-foto"
-                src=""
-                alt=""
-                hidden
-            >
+            <img id="editar-personal-foto" src="" alt="" hidden>
 
             <span id="editar-personal-foto-fallback">
                 —
@@ -74,62 +58,66 @@
         </div>
 
 
-        <div class="editar-personal-seleccionado__datos">
+        <div class="editar-personal-seleccionado__datos personal-seleccionado__datos">
 
-            <input
-                type="hidden"
-                id="editar-personal-plantilla-id"
-            >
+            <input type="hidden" id="editar-personal-plantilla-id">
 
-            <input
-                type="hidden"
-                id="editar-personal-perscod"
-            >
+            <input type="hidden" id="editar-personal-perscod">
 
 
             <div class="editar-reporte-grid">
 
+                <!-- NOMBRE -->
                 <div class="editar-reporte-campo editar-reporte-campo--full">
 
                     <label for="editar-personal-nombre">
                         Nombre
                     </label>
 
-                    <input
-                        type="text"
-                        id="editar-personal-nombre"
-                        readonly
-                    >
+                    <input type="text" id="editar-personal-nombre" class="report-input report-input--readonly" readonly>
 
                 </div>
 
 
+                <!-- ÁREA -->
                 <div class="editar-reporte-campo">
 
                     <label for="editar-personal-area">
                         Área
                     </label>
 
-                    <input
-                        type="text"
-                        id="editar-personal-area"
-                        readonly
-                    >
+                    <input type="text" id="editar-personal-area" class="report-input report-input--readonly" readonly>
 
                 </div>
 
 
+                <!-- TURNO -->
                 <div class="editar-reporte-campo">
 
                     <label for="editar-personal-turno">
                         Turno
+                        <span class="required">*</span>
                     </label>
 
-                    <input
-                        type="text"
-                        id="editar-personal-turno"
-                        placeholder="Turno"
-                    >
+                    <input type="text" id="editar-personal-turno" class="report-input" placeholder="Turno"
+                        autocomplete="off">
+
+                </div>
+
+
+                <!-- ALIAS -->
+                <div class="editar-reporte-campo">
+
+                    <label for="editar-personal-alias">
+                        Alias
+                    </label>
+
+                    <input type="text" id="editar-personal-alias" class="report-input" placeholder="Ingresa el alias"
+                        autocomplete="off">
+
+                    <small class="editar-reporte-campo__help">
+                        Campo opcional.
+                    </small>
 
                 </div>
 
@@ -138,13 +126,9 @@
         </div>
 
 
-        <div class="editar-personal-seleccionado__acciones">
+        <div class="editar-personal-seleccionado__acciones personal-seleccionado__acciones">
 
-            <button
-                type="button"
-                class="modal-reporte__button modal-reporte__button--primary"
-                id="btn-editar-agregar-personal"
-            >
+            <button type="button" class="button button--primary" id="btn-editar-agregar-personal">
                 Agregar personal
             </button>
 
@@ -157,13 +141,9 @@
          PERSONAL ACTUAL DEL REPORTE
     ====================================================== -->
 
-    <div
-        class="editar-personal-agregado"
-        id="editar-personal-agregado"
-        hidden
-    >
+    <div class="editar-personal-agregado personal-agregado" id="editar-personal-agregado" hidden>
 
-        <div class="editar-personal-agregado__header">
+        <div class="editar-personal-agregado__header personal-agregado__header">
 
             <div>
 
@@ -180,9 +160,9 @@
         </div>
 
 
-        <div class="editar-personal-agregado__tabla-wrapper">
+        <div class="editar-personal-agregado__tabla-wrapper personal-agregado__tabla-wrapper">
 
-            <table class="editar-personal-agregado__tabla">
+            <table class="editar-personal-agregado__tabla personal-agregado__tabla">
 
                 <thead>
 
@@ -192,6 +172,7 @@
                         <th>Nómina</th>
                         <th>Área</th>
                         <th>Turno</th>
+                        <th>Alias</th>
                         <th>Acciones</th>
                     </tr>
 

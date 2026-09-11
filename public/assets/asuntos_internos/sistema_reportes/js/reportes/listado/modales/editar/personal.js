@@ -30,20 +30,30 @@ export function inicializarEditarPersonal(
             '#editar-personal-busqueda'
         );
 
+
     const resultados =
         modal.querySelector(
             '#editar-personal-resultados'
         );
+
 
     const inputTurno =
         modal.querySelector(
             '#editar-personal-turno'
         );
 
+
+    const inputAlias =
+        modal.querySelector(
+            '#editar-personal-alias'
+        );
+
+
     const btnAgregar =
         modal.querySelector(
             '#btn-editar-agregar-personal'
         );
+
 
     const tablaBody =
         modal.querySelector(
@@ -55,6 +65,7 @@ export function inicializarEditarPersonal(
         !inputBusqueda
         || !resultados
         || !inputTurno
+        || !inputAlias
         || !btnAgregar
         || !tablaBody
     ) {
@@ -72,6 +83,7 @@ export function inicializarEditarPersonal(
 
             const inicio =
                 inputTurno.selectionStart;
+
 
             const fin =
                 inputTurno.selectionEnd;
@@ -91,9 +103,42 @@ export function inicializarEditarPersonal(
                     inicio,
                     fin
                 );
-
             }
+        }
+    );
 
+
+    /* =====================================================
+       ALIAS EN MAYÚSCULAS
+    ===================================================== */
+
+    inputAlias.addEventListener(
+        'input',
+        () => {
+
+            const inicio =
+                inputAlias.selectionStart;
+
+
+            const fin =
+                inputAlias.selectionEnd;
+
+
+            inputAlias.value =
+                inputAlias.value
+                    .toUpperCase();
+
+
+            if (
+                inicio !== null
+                && fin !== null
+            ) {
+
+                inputAlias.setSelectionRange(
+                    inicio,
+                    fin
+                );
+            }
         }
     );
 
@@ -129,12 +174,15 @@ export function inicializarEditarPersonal(
                     estadoPersonal
                         .temporizadorBusqueda
                 );
-
             }
 
 
+            /*
+             * Buscar desde la primera letra.
+             */
+
             if (
-                termino.length < 2
+                termino.length === 0
             ) {
 
                 ocultarResultadosPersonal(
@@ -154,11 +202,9 @@ export function inicializarEditarPersonal(
                             modal,
                             termino
                         );
-
                     },
                     300
                 );
-
         }
     );
 
@@ -192,8 +238,21 @@ export function inicializarEditarPersonal(
                     .toUpperCase();
 
 
+            const alias =
+                String(
+                    inputAlias.value
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase();
+
+
             inputTurno.value =
                 turno;
+
+
+            inputAlias.value =
+                alias;
 
 
             const yaExiste =
@@ -221,6 +280,7 @@ export function inicializarEditarPersonal(
             agregarPersonal({
                 ...persona,
                 turno,
+                alias,
             });
 
 
@@ -232,7 +292,6 @@ export function inicializarEditarPersonal(
             limpiarSelectorPersonal(
                 modal
             );
-
         }
     );
 
@@ -258,8 +317,7 @@ export function inicializarEditarPersonal(
 
             const indice =
                 Number(
-                    boton
-                        .dataset
+                    boton.dataset
                         .editarEliminarPersonal
                 );
 
@@ -276,34 +334,107 @@ export function inicializarEditarPersonal(
             renderizarPersonalEditar(
                 modal
             );
-
         }
     );
 
 
     /* =====================================================
-   EDITAR TURNO DE PERSONAL AGREGADO
-===================================================== */
+       EDITAR TURNO / ALIAS
+    ===================================================== */
 
     tablaBody.addEventListener(
         'input',
         (evento) => {
 
-            const input =
+            /*
+             * TURNO
+             */
+
+            const inputTurnoTabla =
                 evento.target.closest(
                     '[data-editar-turno-personal]'
                 );
 
 
-            if (!input) {
+            if (inputTurnoTabla) {
+
+                const indice =
+                    Number(
+                        inputTurnoTabla
+                            .dataset
+                            .editarTurnoPersonal
+                    );
+
+
+                if (
+                    Number.isInteger(indice)
+                    && indice >= 0
+                    && estadoPersonal.elementos[indice]
+                ) {
+
+                    const inicio =
+                        inputTurnoTabla.selectionStart;
+
+
+                    const fin =
+                        inputTurnoTabla.selectionEnd;
+
+
+                    const turno =
+                        String(
+                            inputTurnoTabla.value
+                            || ''
+                        )
+                            .toUpperCase();
+
+
+                    inputTurnoTabla.value =
+                        turno;
+
+
+                    estadoPersonal
+                        .elementos[indice]
+                        .turno =
+                        turno;
+
+
+                    if (
+                        inicio !== null
+                        && fin !== null
+                    ) {
+
+                        inputTurnoTabla.setSelectionRange(
+                            inicio,
+                            fin
+                        );
+                    }
+                }
+
+
+                return;
+            }
+
+
+            /*
+             * ALIAS
+             */
+
+            const inputAliasTabla =
+                evento.target.closest(
+                    '[data-editar-alias-personal]'
+                );
+
+
+            if (!inputAliasTabla) {
                 return;
             }
 
 
             const indice =
                 Number(
-                    input.dataset
-                        .editarTurnoPersonal
+                    inputAliasTabla
+                        .dataset
+                        .editarAliasPersonal
                 );
 
 
@@ -317,28 +448,29 @@ export function inicializarEditarPersonal(
 
 
             const inicio =
-                input.selectionStart;
+                inputAliasTabla.selectionStart;
 
 
             const fin =
-                input.selectionEnd;
+                inputAliasTabla.selectionEnd;
 
 
-            const turno =
+            const alias =
                 String(
-                    input.value
+                    inputAliasTabla.value
                     || ''
-                ).toUpperCase();
+                )
+                    .toUpperCase();
 
 
-            input.value =
-                turno;
+            inputAliasTabla.value =
+                alias;
 
 
             estadoPersonal
                 .elementos[indice]
-                .turno =
-                turno;
+                .alias =
+                alias;
 
 
             if (
@@ -346,40 +478,93 @@ export function inicializarEditarPersonal(
                 && fin !== null
             ) {
 
-                input.setSelectionRange(
+                inputAliasTabla.setSelectionRange(
                     inicio,
                     fin
                 );
-
             }
-
         }
     );
 
 
     /* =====================================================
-       VALIDAR TURNO AL SALIR DEL CAMPO
+       VALIDAR TURNO / ALIAS AL SALIR
     ===================================================== */
 
     tablaBody.addEventListener(
         'blur',
         (evento) => {
 
-            const input =
+            /*
+             * TURNO
+             */
+
+            const inputTurnoTabla =
                 evento.target.closest(
                     '[data-editar-turno-personal]'
                 );
 
 
-            if (!input) {
+            if (inputTurnoTabla) {
+
+                const indice =
+                    Number(
+                        inputTurnoTabla
+                            .dataset
+                            .editarTurnoPersonal
+                    );
+
+
+                if (
+                    Number.isInteger(indice)
+                    && indice >= 0
+                    && estadoPersonal.elementos[indice]
+                ) {
+
+                    const turno =
+                        String(
+                            inputTurnoTabla.value
+                            || ''
+                        )
+                            .trim()
+                            .toUpperCase();
+
+
+                    inputTurnoTabla.value =
+                        turno;
+
+
+                    estadoPersonal
+                        .elementos[indice]
+                        .turno =
+                        turno;
+                }
+
+
+                return;
+            }
+
+
+            /*
+             * ALIAS
+             */
+
+            const inputAliasTabla =
+                evento.target.closest(
+                    '[data-editar-alias-personal]'
+                );
+
+
+            if (!inputAliasTabla) {
                 return;
             }
 
 
             const indice =
                 Number(
-                    input.dataset
-                        .editarTurnoPersonal
+                    inputAliasTabla
+                        .dataset
+                        .editarAliasPersonal
                 );
 
 
@@ -392,23 +577,23 @@ export function inicializarEditarPersonal(
             }
 
 
-            const turno =
+            const alias =
                 String(
-                    input.value
+                    inputAliasTabla.value
                     || ''
                 )
                     .trim()
                     .toUpperCase();
 
 
-            input.value =
-                turno;
+            inputAliasTabla.value =
+                alias;
 
 
             estadoPersonal
                 .elementos[indice]
-                .turno =
-                turno;
+                .alias =
+                alias;
 
         },
         true
@@ -437,12 +622,9 @@ export function inicializarEditarPersonal(
             ocultarResultadosPersonal(
                 modal
             );
-
         }
     );
-
 }
-
 
 /* =========================================================
    BUSCAR PERSONAL
@@ -485,11 +667,11 @@ async function buscarPersonal(
                 baseUrl
             ); */
 
-            const url =
-    new URL(
-        'DataCore/public/asuntos-internos/reportes/personal/buscar',
-        `${window.location.origin}/`
-    );
+        const url =
+            new URL(
+                'DataCore/public/asuntos-internos/reportes/personal/buscar',
+                `${window.location.origin}/`
+            );
 
 
         url.searchParams.set(
@@ -735,6 +917,15 @@ function seleccionarPersona(
                 .trim()
                 .toUpperCase(),
 
+        alias:
+            String(
+                persona.alias
+                ?? persona.alias_snapshot
+                ?? ''
+            )
+                .trim()
+                .toUpperCase(),
+
         foto:
             String(
                 persona.foto
@@ -755,11 +946,13 @@ function seleccionarPersona(
         personaNormalizada.id
     );
 
+
     asignarValorEditar(
         modal,
         '#editar-personal-perscod',
         personaNormalizada.perscod
     );
+
 
     asignarValorEditar(
         modal,
@@ -767,17 +960,27 @@ function seleccionarPersona(
         personaNormalizada.nombre
     );
 
+
     asignarValorEditar(
         modal,
         '#editar-personal-area',
         personaNormalizada.area
     );
 
+
     asignarValorEditar(
         modal,
         '#editar-personal-turno',
         personaNormalizada.turno
     );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-personal-alias',
+        personaNormalizada.alias
+    );
+
 
     asignarValorEditar(
         modal,
@@ -802,14 +1005,12 @@ function seleccionarPersona(
 
         seleccionado.hidden =
             false;
-
     }
 
 
     ocultarResultadosPersonal(
         modal
     );
-
 }
 
 
@@ -923,10 +1124,12 @@ export function renderizarPersonalEditar(
             '#editar-personal-agregado'
         );
 
+
     const body =
         modal.querySelector(
             '#editar-personal-agregado-body'
         );
+
 
     const hidden =
         modal.querySelector(
@@ -945,6 +1148,7 @@ export function renderizarPersonalEditar(
 
     body.innerHTML =
         '';
+
 
     hidden.innerHTML =
         '';
@@ -973,8 +1177,8 @@ export function renderizarPersonalEditar(
 
                                 <img
                                     src="${escaparHTML(
-                            persona.foto
-                        )}"
+                                        persona.foto
+                                    )}"
                                     alt=""
                                     onerror="
                                         this.style.display='none';
@@ -1001,50 +1205,86 @@ export function renderizarPersonalEditar(
 
                 fila.innerHTML = `
 
+                    <!-- FOTO -->
                     <td>
                         ${fotoHtml}
                     </td>
 
+
+                    <!-- NOMBRE -->
                     <td>
+
                         <strong>
                             ${escaparHTML(
-                    persona.nombre
-                    || '—'
-                )}
+                                persona.nombre
+                                || '—'
+                            )}
                         </strong>
+
                     </td>
 
+
+                    <!-- NÓMINA -->
                     <td>
+
                         ${escaparHTML(
-                    persona.nomina
-                    || '—'
-                )}
+                            persona.nomina
+                            || '—'
+                        )}
+
                     </td>
 
+
+                    <!-- ÁREA -->
                     <td>
+
                         ${escaparHTML(
-                    persona.area
-                    || '—'
-                )}
+                            persona.area
+                            || '—'
+                        )}
+
                     </td>
 
+
+                    <!-- TURNO -->
                     <td>
 
-    <input
-        type="text"
-        class="editar-personal-tabla__turno"
-        data-editar-turno-personal="${indice}"
-        value="${escaparHTML(
-                    persona.turno
-                    || ''
-                )}"
-        placeholder="TURNO"
-        autocomplete="off"
-        required
-    >
+                        <input
+                            type="text"
+                            class="editar-personal-tabla__turno"
+                            data-editar-turno-personal="${indice}"
+                            value="${escaparHTML(
+                                persona.turno
+                                || ''
+                            )}"
+                            placeholder="TURNO"
+                            autocomplete="off"
+                            required
+                        >
 
-</td>
+                    </td>
 
+
+                    <!-- ALIAS -->
+                    <td>
+
+                        <input
+                            type="text"
+                            class="editar-personal-tabla__turno"
+                            data-editar-alias-personal="${indice}"
+                            value="${escaparHTML(
+                                persona.alias
+                                ?? persona.alias_snapshot
+                                ?? ''
+                            )}"
+                            placeholder="ALIAS"
+                            autocomplete="off"
+                        >
+
+                    </td>
+
+
+                    <!-- ACCIONES -->
                     <td>
 
                         <button
@@ -1069,7 +1309,6 @@ export function renderizarPersonalEditar(
                     persona,
                     indice
                 );
-
             }
         );
 
@@ -1084,9 +1323,7 @@ export function renderizarPersonalEditar(
             estadoPersonal.elementos
                 .length
         );
-
 }
-
 
 /* =========================================================
    INPUTS OCULTOS
@@ -1101,25 +1338,42 @@ function crearInputsOcultosPersonal(
     const campos = {
 
         plantilla_id:
-            persona.id,
+            persona.id
+            ?? persona.plantilla_id
+            ?? '',
 
         perscod:
-            persona.perscod,
+            persona.perscod
+            ?? '',
 
         nombre:
-            persona.nombre,
+            persona.nombre
+            ?? '',
 
         nomina:
-            persona.nomina,
+            persona.nomina
+            ?? '',
 
         area:
-            persona.area,
+            persona.area
+            ?? '',
 
         turno:
             String(
                 persona.turno
                 || ''
-            ).toUpperCase(),
+            )
+                .trim()
+                .toUpperCase(),
+
+        alias:
+            String(
+                persona.alias
+                ?? persona.alias_snapshot
+                ?? ''
+            )
+                .trim()
+                .toUpperCase(),
 
     };
 
@@ -1138,8 +1392,10 @@ function crearInputsOcultosPersonal(
             input.type =
                 'hidden';
 
+
             input.name =
                 `personal[${indice}][${campo}]`;
+
 
             input.value =
                 valor ?? '';
@@ -1148,12 +1404,9 @@ function crearInputsOcultosPersonal(
             contenedor.appendChild(
                 input
             );
-
         }
     );
-
 }
-
 
 /* =========================================================
    LIMPIAR SELECTOR
@@ -1201,6 +1454,7 @@ function limpiarPersonaSeleccionada(
         '#editar-personal-nombre',
         '#editar-personal-area',
         '#editar-personal-turno',
+        '#editar-personal-alias',
     ].forEach(
         (selector) => {
 
@@ -1209,7 +1463,6 @@ function limpiarPersonaSeleccionada(
                 selector,
                 ''
             );
-
         }
     );
 
@@ -1225,10 +1478,10 @@ function limpiarPersonaSeleccionada(
         foto.hidden =
             true;
 
+
         foto.removeAttribute(
             'src'
         );
-
     }
 
 
@@ -1243,9 +1496,9 @@ function limpiarPersonaSeleccionada(
         fallback.textContent =
             '—';
 
+
         fallback.hidden =
             false;
-
     }
 
 
@@ -1259,11 +1512,8 @@ function limpiarPersonaSeleccionada(
 
         seleccionado.hidden =
             true;
-
     }
-
 }
-
 
 /* =========================================================
    RESULTADOS
