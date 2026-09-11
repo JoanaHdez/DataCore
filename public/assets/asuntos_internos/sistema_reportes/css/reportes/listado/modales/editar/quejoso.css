@@ -1,0 +1,244 @@
+/* =========================================================
+   OPCIONES DE QUEJA ANÓNIMA
+========================================================= */
+
+.editar-report-options {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+
+    margin-top: 4px;
+}
+
+
+.editar-report-option {
+    width: 90px;
+    min-width: 90px;
+    min-height: 38px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 8px 14px;
+
+    color: #405d78;
+
+    background: #ffffff;
+
+    border: 1px solid #d3dee7;
+    border-radius: 7px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.editar-report-option:hover {
+    border-color: #9fc7df;
+
+    background: #f8fbfd;
+}
+
+
+.editar-report-option input[type="radio"] {
+    width: 15px !important;
+    height: 15px !important;
+
+    min-width: 15px !important;
+    min-height: 15px !important;
+
+    max-width: 15px !important;
+    max-height: 15px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    flex: 0 0 15px !important;
+
+    appearance: auto !important;
+    -webkit-appearance: radio !important;
+
+    accent-color: #1681c4;
+
+    cursor: pointer;
+}
+
+
+.editar-report-option span {
+    display: inline-block;
+
+    line-height: 1;
+}
+
+
+.editar-report-option:has(
+    input[type="radio"]:checked
+) {
+    color: #0d639c;
+
+    background: #eef8fe;
+
+    border-color: #4aaee5;
+
+    box-shadow:
+        0 0 0 2px rgba(74, 174, 229, 0.08);
+}
+
+/* =========================================================
+   NÚMERO ANÓNIMO
+   MISMO DISEÑO QUE NUEVO REPORTE
+========================================================= */
+
+#editar-numero-anonimo-contenedor {
+    position: relative;
+
+    width: 100%;
+
+    margin-top: 4px;
+    padding: 18px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f7fbfe 0%,
+            #f2f8fc 100%
+        );
+
+    border: 1px solid #b9d8ea;
+    border-left: 4px solid #1681c4;
+    border-radius: 10px;
+
+    box-sizing: border-box;
+
+    box-shadow:
+        0 3px 10px rgba(24, 56, 88, 0.04);
+}
+
+
+/* =========================================================
+   OCULTO
+========================================================= */
+
+#editar-numero-anonimo-contenedor[hidden] {
+    display: none !important;
+}
+
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+#editar-numero-anonimo-contenedor
+.quejoso-anonimo__numero {
+    width: 100%;
+}
+
+
+/* =========================================================
+   LABEL
+========================================================= */
+
+#editar-numero-anonimo-contenedor label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+#editar-numero-anonimo-contenedor .required {
+    color: #c43d35;
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+#editar-numero-anonimo {
+    width: 100%;
+    min-height: 42px;
+
+    padding: 0 14px;
+
+    color: #173554;
+
+    background: #ffffff;
+
+    border: 1px solid #9fc9df;
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 11px;
+
+    box-sizing: border-box;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+#editar-numero-anonimo::placeholder {
+    color: #93a5b5;
+}
+
+
+#editar-numero-anonimo:focus {
+    border-color: #1681c4;
+
+    box-shadow:
+        0 0 0 3px rgba(22, 129, 196, 0.10);
+}
+
+
+/* =========================================================
+   TEXTO DE AYUDA
+========================================================= */
+
+#editar-numero-anonimo-contenedor
+.editar-reporte-campo__help {
+    display: block;
+
+    margin-top: 8px;
+
+    color: #728596;
+
+    font-size: 9px;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    #editar-numero-anonimo-contenedor {
+        padding: 16px;
+    }
+}

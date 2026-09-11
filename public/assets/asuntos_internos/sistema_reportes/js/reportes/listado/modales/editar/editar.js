@@ -62,6 +62,10 @@ import {
     confirmarAccion,
 } from '../../../notificaciones/confirmacion.js';
 
+import {
+    inicializarEditarQuejoso,
+} from './quejoso.js';
+
 
 /* =========================================================
    INICIALIZAR
@@ -123,6 +127,9 @@ export function inicializarEditarReporte() {
         modal
     );
 
+    inicializarEditarQuejoso(
+        modal
+    );
 
     /* =====================================================
        ABRIR EDITAR

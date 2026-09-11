@@ -93,6 +93,11 @@
 
             <?= csrf_field() ?>
 
+
+            <!-- =================================================
+                 DATO ANÓNIMO
+            ================================================== -->
+
             <div class="modal-reporte__body modal-reporte__body--editar">
 
 
@@ -114,8 +119,8 @@
 
 
                 <!-- =========================================
-                    PASO 2
-                    DATOS DE LOS HECHOS
+                     PASO 2
+                     DATOS DE LOS HECHOS
                 ========================================== -->
                 <section class="detalle-reporte-seccion" data-editar-panel="hechos">
 
@@ -151,7 +156,6 @@
                      PASO 4
                      DATOS DEL QUEJOSO
                 ========================================== -->
-
                 <section class="detalle-reporte-seccion" data-editar-panel="quejoso">
 
                     <?= $this->include(
@@ -180,6 +184,7 @@
                     ) ?>
 
                 </section>
+
             </div>
 
 

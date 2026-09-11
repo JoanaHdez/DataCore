@@ -384,6 +384,39 @@ class Reportes_Controller extends BaseController
                 $sectoresEncontrados
             );
 
+
+        /* =========================================================
+            CATÁLOGO DE CANALIZACIÓN
+
+            Se utiliza también en el modal Editar para mantener
+            las mismas opciones que el formulario Nuevo.
+            ========================================================= */
+
+        $canalizaciones =
+            $db
+            ->table(
+                'ai_cat_canalizacion_areas'
+            )
+            ->select([
+                'id_area',
+                'nombre',
+            ])
+            ->where(
+                'activo',
+                1
+            )
+            ->orderBy(
+                'orden',
+                'ASC'
+            )
+            ->orderBy(
+                'nombre',
+                'ASC'
+            )
+            ->get()
+            ->getResultArray();
+
+
         /* =========================================================
         VISTA
         ========================================================= */
@@ -396,6 +429,9 @@ class Reportes_Controller extends BaseController
 
                 'sectores' =>
                 $sectores,
+
+                'canalizaciones' =>
+                $canalizaciones,
             ]
         );
     }
@@ -494,7 +530,6 @@ class Reportes_Controller extends BaseController
 
                 $nomenclaturaVisual =
                     $nomenclatura;
-
             } elseif (
                 $numeroFolio > 0
             ) {
@@ -511,27 +546,27 @@ class Reportes_Controller extends BaseController
 
             $canalizaciones =
                 $db
-                    ->table(
-                        'ai_cat_canalizacion_areas'
-                    )
-                    ->select([
-                        'id_area',
-                        'nombre',
-                    ])
-                    ->where(
-                        'activo',
-                        1
-                    )
-                    ->orderBy(
-                        'orden',
-                        'ASC'
-                    )
-                    ->orderBy(
-                        'nombre',
-                        'ASC'
-                    )
-                    ->get()
-                    ->getResultArray();
+                ->table(
+                    'ai_cat_canalizacion_areas'
+                )
+                ->select([
+                    'id_area',
+                    'nombre',
+                ])
+                ->where(
+                    'activo',
+                    1
+                )
+                ->orderBy(
+                    'orden',
+                    'ASC'
+                )
+                ->orderBy(
+                    'nombre',
+                    'ASC'
+                )
+                ->get()
+                ->getResultArray();
 
 
             /* =====================================================
@@ -540,27 +575,27 @@ class Reportes_Controller extends BaseController
 
             $clasificaciones =
                 $db
-                    ->table(
-                        'ai_cat_clasificaciones'
-                    )
-                    ->select([
-                        'id_clasificacion',
-                        'nombre',
-                    ])
-                    ->where(
-                        'activo',
-                        1
-                    )
-                    ->orderBy(
-                        'orden',
-                        'ASC'
-                    )
-                    ->orderBy(
-                        'nombre',
-                        'ASC'
-                    )
-                    ->get()
-                    ->getResultArray();
+                ->table(
+                    'ai_cat_clasificaciones'
+                )
+                ->select([
+                    'id_clasificacion',
+                    'nombre',
+                ])
+                ->where(
+                    'activo',
+                    1
+                )
+                ->orderBy(
+                    'orden',
+                    'ASC'
+                )
+                ->orderBy(
+                    'nombre',
+                    'ASC'
+                )
+                ->get()
+                ->getResultArray();
 
 
             /* =====================================================
@@ -569,26 +604,24 @@ class Reportes_Controller extends BaseController
 
             $motivos =
                 $db
-                    ->table(
-                        'ai_cat_motivos'
-                    )
-                    ->select([
-                        'id_motivo',
-                        'motivo',
-                        'sancion',
-                    ])
-                    ->where(
-                        'activo',
-                        1
-                    )
-                    ->orderBy(
-                        'id_motivo',
-                        'ASC'
-                    )
-                    ->get()
-                    ->getResultArray();
-
-
+                ->table(
+                    'ai_cat_motivos'
+                )
+                ->select([
+                    'id_motivo',
+                    'motivo',
+                    'sancion',
+                ])
+                ->where(
+                    'activo',
+                    1
+                )
+                ->orderBy(
+                    'id_motivo',
+                    'ASC'
+                )
+                ->get()
+                ->getResultArray();
         } catch (\Throwable $e) {
 
             log_message(
@@ -596,7 +629,7 @@ class Reportes_Controller extends BaseController
                 'Error preparando nuevo reporte: {mensaje}',
                 [
                     'mensaje' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
                 ]
             );
         }
@@ -606,19 +639,19 @@ class Reportes_Controller extends BaseController
             'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\nuevo',
             [
                 'folioVisual' =>
-                    $folioVisual,
+                $folioVisual,
 
                 'nomenclaturaVisual' =>
-                    $nomenclaturaVisual,
+                $nomenclaturaVisual,
 
                 'canalizaciones' =>
-                    $canalizaciones,
+                $canalizaciones,
 
                 'clasificaciones' =>
-                    $clasificaciones,
+                $clasificaciones,
 
                 'motivos' =>
-                    $motivos,
+                $motivos,
             ]
         );
     }
@@ -652,9 +685,9 @@ class Reportes_Controller extends BaseController
                 trim(
                     (string) (
                         $this->request
-                            ->getGet(
-                                'tipo_registro'
-                            )
+                        ->getGet(
+                            'tipo_registro'
+                        )
                         ?? 'QUEJA'
                     )
                 )
@@ -680,25 +713,24 @@ class Reportes_Controller extends BaseController
             return $this->response
                 ->setJSON([
                     'success' =>
-                        true,
+                    true,
 
                     'tipo_registro' =>
-                        $resultado['tipo_registro']
+                    $resultado['tipo_registro']
                         ?? $tipoRegistro,
 
                     'numero_folio' =>
-                        $resultado['numero_folio']
+                    $resultado['numero_folio']
                         ?? null,
 
                     'folio' =>
-                        $resultado['folio']
+                    $resultado['folio']
                         ?? null,
 
                     'nomenclatura' =>
-                        $resultado['nomenclatura']
+                    $resultado['nomenclatura']
                         ?? null,
                 ]);
-
         } catch (\InvalidArgumentException $e) {
 
             return $this->response
@@ -707,7 +739,6 @@ class Reportes_Controller extends BaseController
                     'success' => false,
                     'message' => $e->getMessage(),
                 ]);
-
         } catch (\Throwable $e) {
 
             log_message(
@@ -715,7 +746,7 @@ class Reportes_Controller extends BaseController
                 'Error previsualizando folio de Asuntos Internos: {mensaje}',
                 [
                     'mensaje' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
                 ]
             );
 
@@ -976,7 +1007,7 @@ class Reportes_Controller extends BaseController
 
         $datos =
             $this->request
-                ->getPost();
+            ->getPost();
 
 
         /* =========================================================
@@ -985,9 +1016,9 @@ class Reportes_Controller extends BaseController
 
         $personal =
             $this->request
-                ->getPost(
-                    'personal'
-                );
+            ->getPost(
+                'personal'
+            );
 
 
         if (
@@ -1007,9 +1038,9 @@ class Reportes_Controller extends BaseController
 
         $unidades =
             $this->request
-                ->getPost(
-                    'unidades'
-                );
+            ->getPost(
+                'unidades'
+            );
 
 
         if (
@@ -1046,42 +1077,38 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(201)
                 ->setJSON([
                     'success' =>
-                        true,
+                    true,
 
                     'message' =>
-                        'La felicitación fue guardada correctamente.',
+                    'La felicitación fue guardada correctamente.',
 
                     'id_felicitacion' =>
-                        $resultado['id_felicitacion']
+                    $resultado['id_felicitacion']
                         ?? null,
 
                     'numero_folio' =>
-                        $resultado['numero_folio']
+                    $resultado['numero_folio']
                         ?? null,
 
                     'folio' =>
-                        $resultado['folio']
+                    $resultado['folio']
                         ?? null,
 
                     'nomenclatura' =>
-                        $resultado['nomenclatura']
+                    $resultado['nomenclatura']
                         ?? null,
                 ]);
-
-
         } catch (\InvalidArgumentException $e) {
 
             return $this->response
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' =>
-                        false,
+                    false,
 
                     'message' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
                 ]);
-
-
         } catch (\Throwable $e) {
 
             log_message(
@@ -1089,7 +1116,7 @@ class Reportes_Controller extends BaseController
                 'Error guardando felicitación de Asuntos Internos: {mensaje}',
                 [
                     'mensaje' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
                 ]
             );
 
@@ -1098,14 +1125,14 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(500)
                 ->setJSON([
                     'success' =>
-                        false,
+                    false,
 
                     'message' =>
-                        'No fue posible guardar la felicitación.',
+                    'No fue posible guardar la felicitación.',
                 ]);
         }
     }
-    
+
     public function actualizarReporte(int $idReporte)
     {
         /* =========================================================
@@ -1454,16 +1481,16 @@ class Reportes_Controller extends BaseController
 
             $personalBD =
                 $db
-                    ->table('ai_reporte_personal')
-                    ->select([
-                        'id_reporte_personal',
-                        'plantilla_id',
-                        'perscod',
-                        'nombre_snapshot',
-                        'area_snapshot',
-                        'turno_snapshot',
-                        'alias_snapshot',
-                    ])
+                ->table('ai_reporte_personal')
+                ->select([
+                    'id_reporte_personal',
+                    'plantilla_id',
+                    'perscod',
+                    'nombre_snapshot',
+                    'area_snapshot',
+                    'turno_snapshot',
+                    'alias_snapshot',
+                ])
                 ->where(
                     'id_reporte',
                     $idReporte
@@ -1574,13 +1601,13 @@ class Reportes_Controller extends BaseController
                         ?? '',
 
                     'alias' =>
-                        trim(
-                            (string) (
-                                $persona['alias_snapshot']
-                                ?? ''
-                            )
-                        ),
-                        
+                    trim(
+                        (string) (
+                            $persona['alias_snapshot']
+                            ?? ''
+                        )
+                    ),
+
                     'foto' =>
                     $foto,
 
@@ -4302,19 +4329,19 @@ class Reportes_Controller extends BaseController
 
             $builder =
                 $db
-                    ->table('plantilla')
-                    ->select([
-                        'ID',
-                        'PERSCOD',
-                        'NOMBRE_COMPLETO',
-                        'NO_NOMINA',
-                        'AREA',
-                        'TURNO',
-                    ])
-                    ->where(
-                        'ESTADO',
-                        'ACTIVO'
-                    );
+                ->table('plantilla')
+                ->select([
+                    'ID',
+                    'PERSCOD',
+                    'NOMBRE_COMPLETO',
+                    'NO_NOMINA',
+                    'AREA',
+                    'TURNO',
+                ])
+                ->where(
+                    'ESTADO',
+                    'ACTIVO'
+                );
 
 
             /*
@@ -4352,13 +4379,13 @@ class Reportes_Controller extends BaseController
 
             $personal =
                 $builder
-                    ->orderBy(
-                        'NOMBRE_COMPLETO',
-                        'ASC'
-                    )
-                    ->limit(10)
-                    ->get()
-                    ->getResultArray();
+                ->orderBy(
+                    'NOMBRE_COMPLETO',
+                    'ASC'
+                )
+                ->limit(10)
+                ->get()
+                ->getResultArray();
 
 
             /*
@@ -4458,7 +4485,7 @@ class Reportes_Controller extends BaseController
                 $perscod =
                     $limpiarTexto(
                         $persona['PERSCOD']
-                        ?? ''
+                            ?? ''
                     );
 
 
@@ -4488,38 +4515,38 @@ class Reportes_Controller extends BaseController
                 $resultado[] = [
 
                     'id' =>
-                        (int)
-                        ($persona['ID'] ?? 0),
+                    (int)
+                    ($persona['ID'] ?? 0),
 
                     'perscod' =>
-                        $perscod,
+                    $perscod,
 
                     'nombre' =>
-                        $limpiarTexto(
-                            $persona['NOMBRE_COMPLETO']
+                    $limpiarTexto(
+                        $persona['NOMBRE_COMPLETO']
                             ?? ''
-                        ),
+                    ),
 
                     'nomina' =>
-                        $limpiarTexto(
-                            $persona['NO_NOMINA']
+                    $limpiarTexto(
+                        $persona['NO_NOMINA']
                             ?? ''
-                        ),
+                    ),
 
                     'area' =>
-                        $limpiarTexto(
-                            $persona['AREA']
+                    $limpiarTexto(
+                        $persona['AREA']
                             ?? ''
-                        ),
+                    ),
 
                     'turno' =>
-                        $limpiarTexto(
-                            $persona['TURNO']
+                    $limpiarTexto(
+                        $persona['TURNO']
                             ?? ''
-                        ),
+                    ),
 
                     'foto' =>
-                        $foto,
+                    $foto,
                 ];
             }
 
@@ -4535,7 +4562,6 @@ class Reportes_Controller extends BaseController
                     'success' => true,
                     'personal' => $resultado,
                 ]);
-
         } catch (\Throwable $e) {
 
             /*
@@ -4549,7 +4575,7 @@ class Reportes_Controller extends BaseController
                 'Error buscando personal para SistemaReportes: {mensaje}',
                 [
                     'mensaje' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
                 ]
             );
 
@@ -4559,7 +4585,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'No fue posible consultar el personal.',
+                    'No fue posible consultar el personal.',
                 ]);
         }
     }
