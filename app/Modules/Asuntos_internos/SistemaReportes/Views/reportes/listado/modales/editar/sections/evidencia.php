@@ -15,94 +15,87 @@
 
     <div class="editar-reporte-grid">
 
+
+        <!-- =====================================================
+             AGREGAR EVIDENCIA
+        ====================================================== -->
+
         <div class="editar-reporte-campo editar-reporte-campo--full">
 
-    <label for="editar-evidencia-fotografica">
-        Agregar evidencia
-    </label>
+            <label for="editar-evidencia-fotografica">
+                Agregar evidencia
+            </label>
 
-    <div class="editar-evidencia-carga">
 
-        <input
-            type="file"
-            id="editar-evidencia-fotografica"
-            name="evidencia_fotografica[]"
-            class="editar-evidencia-carga__input"
-            accept="image/jpeg,image/png,image/webp"
-            multiple
-        >
+            <div class="editar-evidencia-carga">
 
-        <label
-            for="editar-evidencia-fotografica"
-            class="editar-evidencia-carga__zona"
-        >
+                <input type="file" id="editar-evidencia-fotografica" name="evidencia_fotografica[]"
+                    class="editar-evidencia-carga__input" accept="image/jpeg,image/png,image/webp" multiple>
 
-            <div class="editar-evidencia-carga__icono">
-                ↑
-            </div>
 
-            <div class="editar-evidencia-carga__texto">
+                <label for="editar-evidencia-fotografica" class="editar-evidencia-carga__zona">
 
-                <strong>
-                    Seleccionar fotografías
-                </strong>
+                    <div class="editar-evidencia-carga__icono">
+                        ↑
+                    </div>
 
-                <span>
-                    Haz clic para agregar una o varias imágenes
-                </span>
 
-                <small>
-                    JPG, PNG o WEBP
-                </small>
+                    <div class="editar-evidencia-carga__texto">
+
+                        <strong>
+                            Seleccionar fotografías
+                        </strong>
+
+                        <span>
+                            Haz clic para agregar una o varias imágenes
+                        </span>
+
+                        <small>
+                            JPG, PNG o WEBP
+                        </small>
+
+                    </div>
+
+                </label>
 
             </div>
 
-        </label>
-
-    </div>
-
-</div>
+        </div>
 
 
-        <!-- Evidencia que ya pertenece al reporte -->
-        <div class="editar-reporte-campo editar-reporte-campo--full">
+        <!-- =====================================================
+             EVIDENCIA REGISTRADA
+             Solo se muestra cuando existan archivos
+        ====================================================== -->
+
+        <div class="editar-reporte-campo editar-reporte-campo--full" id="editar-evidencia-existente-contenedor" hidden>
 
             <label>
                 Evidencia registrada
             </label>
 
-            <div
-                id="editar-evidencia-existente"
-                class="editar-evidencia__lista"
-            >
-                <span class="editar-evidencia__vacio">
-                    Sin evidencia registrada
-                </span>
-            </div>
+
+            <div id="editar-evidencia-existente" class="editar-evidencia__lista"></div>
 
         </div>
 
 
-        <!-- Archivos nuevos seleccionados -->
-        <div
-            class="editar-reporte-campo editar-reporte-campo--full"
-            id="editar-evidencia-nueva-contenedor"
-        >
+        <!-- =====================================================
+             NUEVA EVIDENCIA SELECCIONADA
+             Solo se muestra cuando el usuario seleccione archivos
+        ====================================================== -->
+
+        <div class="editar-reporte-campo editar-reporte-campo--full" id="editar-evidencia-nueva-contenedor" hidden>
 
             <label>
                 Nueva evidencia seleccionada
             </label>
 
-            <div
-                id="editar-evidencia-nueva"
-                class="editar-evidencia__lista"
-            >
-                <span class="editar-evidencia__vacio">
-                    No se han seleccionado archivos nuevos
-                </span>
-            </div>
+
+            <div id="editar-evidencia-nueva" class="editar-evidencia__lista"></div>
 
         </div>
+
 
     </div>
 

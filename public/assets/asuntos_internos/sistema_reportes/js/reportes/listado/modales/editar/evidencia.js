@@ -112,13 +112,27 @@ function renderizarEvidenciasExistentes(
     modal
 ) {
 
+    if (!modal) {
+        return;
+    }
+
+
     const contenedor =
         modal.querySelector(
             '#editar-evidencia-existente'
         );
 
 
-    if (!contenedor) {
+    const bloque =
+        modal.querySelector(
+            '#editar-evidencia-existente-contenedor'
+        );
+
+
+    if (
+        !contenedor
+        || !bloque
+    ) {
         return;
     }
 
@@ -141,32 +155,49 @@ function renderizarEvidenciasExistentes(
                 return !evidenciasEliminadas.has(
                     id
                 );
-
             }
         );
 
+
+    /* =====================================================
+       SIN EVIDENCIAS
+    ===================================================== */
 
     if (
         visibles.length === 0
     ) {
 
-        contenedor.innerHTML = `
-            <div class="editar-evidencia__vacio">
-                Sin evidencia registrada
-            </div>
-        `;
+        bloque.hidden =
+            true;
+
+
+        bloque.style.setProperty(
+            'display',
+            'none',
+            'important'
+        );
 
 
         return;
     }
 
 
-    /* const baseUrl =
-        document
-            .querySelector('base')
-            ?.href
-        || `${window.location.origin}/`; */
+    /* =====================================================
+       MOSTRAR BLOQUE
+    ===================================================== */
 
+    bloque.hidden =
+        false;
+
+
+    bloque.style.removeProperty(
+        'display'
+    );
+
+
+    /* =====================================================
+       EVIDENCIAS
+    ===================================================== */
 
     visibles.forEach(
         (evidencia, indice) => {
@@ -179,7 +210,9 @@ function renderizarEvidenciasExistentes(
 
 
             if (
-                !Number.isInteger(idEvidencia)
+                !Number.isInteger(
+                    idEvidencia
+                )
                 || idEvidencia <= 0
             ) {
                 return;
@@ -202,19 +235,13 @@ function renderizarEvidenciasExistentes(
                 ).trim();
 
 
-            /* const urlImagen =
+            const urlImagen =
                 new URL(
-                    `asuntos-internos/reportes/evidencia/${idEvidencia}`,
-                    baseUrl
-                ).toString(); */
+                    `DataCore/public/asuntos-internos/reportes/evidencia/${idEvidencia}`,
+                    `${window.location.origin}/`
+                ).toString();
 
-const urlImagen =
-    new URL(
-        `DataCore/public/asuntos-internos/reportes/evidencia/${idEvidencia}`,
-        `${window.location.origin}/`
-    ).toString();
 
-    
             const item =
                 document.createElement(
                     'div'
@@ -300,15 +327,15 @@ const urlImagen =
                 );
 
 
-            const abrirImagen = () => {
+            const abrirImagen =
+                () => {
 
-                window.open(
-                    urlImagen,
-                    '_blank',
-                    'noopener,noreferrer'
-                );
-
-            };
+                    window.open(
+                        urlImagen,
+                        '_blank',
+                        'noopener,noreferrer'
+                    );
+                };
 
 
             if (botonPreview) {
@@ -339,20 +366,16 @@ const urlImagen =
                             modal,
                             idEvidencia
                         );
-
                     }
                 );
-
             }
 
 
             contenedor.appendChild(
                 item
             );
-
         }
     );
-
 }
 
 
@@ -428,10 +451,19 @@ export function obtenerEvidenciasConservadas() {
    EVIDENCIA NUEVA
 ========================================================= */
 
+/* =========================================================
+   EVIDENCIA NUEVA
+========================================================= */
+
 export function mostrarEvidenciaNueva(
     modal,
     archivos
 ) {
+
+    if (!modal) {
+        return;
+    }
+
 
     const contenedor =
         modal.querySelector(
@@ -439,7 +471,22 @@ export function mostrarEvidenciaNueva(
         );
 
 
-    if (!contenedor) {
+    const bloque =
+        modal.querySelector(
+            '#editar-evidencia-nueva-contenedor'
+        );
+
+
+    const input =
+        modal.querySelector(
+            '#editar-evidencia-fotografica'
+        );
+
+
+    if (
+        !contenedor
+        || !bloque
+    ) {
         return;
     }
 
@@ -454,20 +501,45 @@ export function mostrarEvidenciaNueva(
         );
 
 
+    /* =====================================================
+       SIN ARCHIVOS NUEVOS
+    ===================================================== */
+
     if (
         lista.length === 0
     ) {
 
-        contenedor.innerHTML = `
-            <div class="editar-evidencia__vacio">
-                No se han seleccionado archivos nuevos
-            </div>
-        `;
+        bloque.hidden =
+            true;
+
+
+        bloque.style.setProperty(
+            'display',
+            'none',
+            'important'
+        );
 
 
         return;
     }
 
+
+    /* =====================================================
+       MOSTRAR BLOQUE
+    ===================================================== */
+
+    bloque.hidden =
+        false;
+
+
+    bloque.style.removeProperty(
+        'display'
+    );
+
+
+    /* =====================================================
+       ARCHIVOS NUEVOS
+    ===================================================== */
 
     lista.forEach(
         (archivo, indice) => {
@@ -478,8 +550,13 @@ export function mostrarEvidenciaNueva(
                 );
 
 
+            /*
+             * Usamos el mismo diseño visual
+             * de la evidencia registrada.
+             */
+
             item.className =
-                'editar-evidencia__item editar-evidencia__item--nueva';
+                'editar-evidencia__item editar-evidencia__item--existente';
 
 
             const urlTemporal =
@@ -529,14 +606,34 @@ export function mostrarEvidenciaNueva(
                     </span>
 
 
-                    <span class="editar-evidencia__nueva-etiqueta">
-                        Nueva
-                    </span>
+                    <div class="editar-evidencia__acciones">
+
+                        <button
+                            type="button"
+                            class="editar-evidencia__accion editar-evidencia__accion--ver"
+                        >
+                            Ver imagen
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="editar-evidencia__accion editar-evidencia__accion--quitar"
+                            data-indice-evidencia-nueva="${indice}"
+                        >
+                            Quitar
+                        </button>
+
+                    </div>
 
                 </div>
 
             `;
 
+
+            /* =================================================
+               VER IMAGEN
+            ================================================= */
 
             const botonPreview =
                 item.querySelector(
@@ -544,33 +641,127 @@ export function mostrarEvidenciaNueva(
                 );
 
 
+            const botonVer =
+                item.querySelector(
+                    '.editar-evidencia__accion--ver'
+                );
+
+
+            const abrirImagen =
+                () => {
+
+                    window.open(
+                        urlTemporal,
+                        '_blank',
+                        'noopener,noreferrer'
+                    );
+                };
+
+
             if (botonPreview) {
 
                 botonPreview.addEventListener(
                     'click',
-                    () => {
+                    abrirImagen
+                );
+            }
 
-                        window.open(
-                            urlTemporal,
-                            '_blank',
-                            'noopener,noreferrer'
-                        );
 
-                    }
+            if (botonVer) {
+
+                botonVer.addEventListener(
+                    'click',
+                    abrirImagen
+                );
+            }
+
+
+            /* =================================================
+               QUITAR ARCHIVO NUEVO
+            ================================================= */
+
+            const botonQuitar =
+                item.querySelector(
+                    '.editar-evidencia__accion--quitar'
                 );
 
+
+            if (
+                botonQuitar
+                && input
+            ) {
+
+                botonQuitar.addEventListener(
+                    'click',
+                    () => {
+
+                        const indiceEliminar =
+                            Number(
+                                botonQuitar.dataset.indiceEvidenciaNueva
+                            );
+
+
+                        if (
+                            !Number.isInteger(
+                                indiceEliminar
+                            )
+                        ) {
+                            return;
+                        }
+
+
+                        const archivosActuales =
+                            Array.from(
+                                input.files || []
+                            );
+
+
+                        const transferencia =
+                            new DataTransfer();
+
+
+                        archivosActuales.forEach(
+                            (archivoActual, indiceActual) => {
+
+                                if (
+                                    indiceActual
+                                    === indiceEliminar
+                                ) {
+                                    return;
+                                }
+
+
+                                transferencia.items.add(
+                                    archivoActual
+                                );
+                            }
+                        );
+
+
+                        input.files =
+                            transferencia.files;
+
+
+                        /*
+                         * Volvemos a dibujar las evidencias
+                         * que permanecen seleccionadas.
+                         */
+
+                        mostrarEvidenciaNueva(
+                            modal,
+                            input.files
+                        );
+                    }
+                );
             }
 
 
             contenedor.appendChild(
                 item
             );
-
         }
     );
-
 }
-
 
 /* =========================================================
    OBTENER NUEVAS EVIDENCIAS
