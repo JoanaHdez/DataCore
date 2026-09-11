@@ -417,6 +417,61 @@ class Reportes_Controller extends BaseController
             ->getResultArray();
 
 
+            /* =========================================================
+            CATÁLOGO DE CLASIFICACIONES
+            ========================================================= */
+
+            $clasificaciones =
+                $db
+                    ->table(
+                        'ai_cat_clasificaciones'
+                    )
+                    ->select([
+                        'id_clasificacion',
+                        'nombre',
+                    ])
+                    ->where(
+                        'activo',
+                        1
+                    )
+                    ->orderBy(
+                        'orden',
+                        'ASC'
+                    )
+                    ->orderBy(
+                        'nombre',
+                        'ASC'
+                    )
+                    ->get()
+                    ->getResultArray();
+
+
+        /* =========================================================
+        CATÁLOGO DE MOTIVOS
+        ========================================================= */
+
+        $motivos =
+            $db
+                ->table(
+                    'ai_cat_motivos'
+                )
+                ->select([
+                    'id_motivo',
+                    'motivo',
+                    'sancion',
+                ])
+                ->where(
+                    'activo',
+                    1
+                )
+                ->orderBy(
+                    'id_motivo',
+                    'ASC'
+                )
+                ->get()
+                ->getResultArray();
+
+        
         /* =========================================================
         VISTA
         ========================================================= */
@@ -425,13 +480,19 @@ class Reportes_Controller extends BaseController
             'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\index',
             [
                 'reportes' =>
-                $reportes,
+                    $reportes,
 
                 'sectores' =>
-                $sectores,
+                    $sectores,
 
                 'canalizaciones' =>
-                $canalizaciones,
+                    $canalizaciones,
+
+                'clasificaciones' =>
+                    $clasificaciones,
+
+                'motivos' =>
+                    $motivos,
             ]
         );
     }

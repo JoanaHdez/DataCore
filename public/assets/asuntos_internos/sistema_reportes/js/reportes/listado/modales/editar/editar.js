@@ -46,15 +46,6 @@ import {
 } from './ubicacion.js';
 
 import {
-    inicializarEditarSancion,
-    cargarSancionEditar,
-    validarSancionEditar,
-    sancionFueModificada,
-    obtenerSancionEditar,
-    obtenerTextoSancionEditar,
-} from './sanciones.js';
-
-import {
     mostrarResultado,
 } from '../../../notificaciones/resultado.js';
 
@@ -66,6 +57,17 @@ import {
     inicializarEditarQuejoso,
 } from './quejoso.js';
 
+import {
+    inicializarEditarClasificacion
+} from './clasificacion.js';
+
+import {
+    inicializarSancionesEditar
+} from './sanciones.js';
+
+import {
+    inicializarMotivosEditar
+} from './motivos.js';
 
 /* =========================================================
    INICIALIZAR
@@ -118,18 +120,30 @@ export function inicializarEditarReporte() {
     );
 
 
-    inicializarEditarSancion(
-        modal
-    );
-
-
     inicializarUbicacionEditar(
         modal
     );
 
+
     inicializarEditarQuejoso(
         modal
     );
+
+
+    inicializarEditarClasificacion(
+        modal
+    );
+
+
+    inicializarSancionesEditar(
+        modal
+    );
+
+
+    inicializarMotivosEditar(
+        modal
+    );
+
 
     /* =====================================================
        ABRIR EDITAR
@@ -170,13 +184,16 @@ export function inicializarEditarReporte() {
 
 
             if (
-                !Number.isInteger(idReporte)
+                !Number.isInteger(
+                    idReporte
+                )
                 || idReporte <= 0
             ) {
 
                 console.error(
                     'El reporte no contiene un id_reporte válido.'
                 );
+
 
                 return;
             }
@@ -253,26 +270,13 @@ export function inicializarEditarReporte() {
                     reporte.modalidad_unidad
                 );
 
+
                 /* =================================================
-                UBICACIÓN / GOOGLE MAPS
+                   UBICACIÓN / GOOGLE MAPS
                 ================================================= */
 
                 inicializarUbicacionEditar(
                     modal
-                );
-
-
-                /*
-                 * La sanción se carga directamente desde
-                 * la respuesta real del backend.
-                 *
-                 * Así evitamos que pueda perderse durante
-                 * la adaptación del objeto del reporte.
-                 */
-
-                cargarSancionEditar(
-                    modal,
-                    datos.sancion
                 );
 
 
@@ -376,13 +380,16 @@ export function inicializarEditarReporte() {
 
 
             if (
-                !Number.isInteger(idReporte)
+                !Number.isInteger(
+                    idReporte
+                )
                 || idReporte <= 0
             ) {
 
                 window.alert(
                     'No fue posible identificar el reporte que deseas actualizar.'
                 );
+
 
                 return;
             }
@@ -402,97 +409,6 @@ export function inicializarEditarReporte() {
 
 
             /* =================================================
-               VALIDAR SANCIÓN
-            ================================================= */
-
-            if (
-                !validarSancionEditar(
-                    modal
-                )
-            ) {
-                return;
-            }
-
-
-            /* =================================================
-               DETECTAR CAMBIO DE SANCIÓN
-            ================================================= */
-
-            const cambioSancion =
-                sancionFueModificada(
-                    modal
-                );
-
-
-            if (cambioSancion) {
-
-                const sancionNueva =
-                    obtenerSancionEditar(
-                        modal
-                    );
-
-
-                const sancionAnterior =
-                    reporteAnterior.sancion
-                    || null;
-
-
-                const textoAnterior =
-                    obtenerTextoSancionEditar(
-                        sancionAnterior
-                    );
-
-
-                const textoNuevo =
-                    obtenerTextoSancionEditar(
-                        sancionNueva
-                    );
-
-
-                /*
-                 * TEMPORAL:
-                 *
-                 * Esto nos permite probar primero el flujo.
-                 *
-                 * Posteriormente lo sustituiremos por el modal
-                 * institucional con:
-                 *
-                 * - Cancelar
-                 * - Corregir sanción
-                 * - Ir a seguimiento
-                 */
-
-                const continuar =
-                    await confirmarAccion({
-                        titulo:
-                            'Confirmar cambio de sanción',
-
-                        mensaje:
-                            'Estás modificando la sanción disciplinaria registrada actualmente.'
-                            + '\n\n'
-                            + `Sanción actual: ${textoAnterior}`
-                            + '\n'
-                            + `Nueva sanción: ${textoNuevo}`
-                            + '\n\n'
-                            + 'Si se trata de una corrección de captura, puedes continuar desde Editar.'
-                            + '\n\n'
-                            + 'Si corresponde a una nueva sanción derivada del seguimiento del caso, debe registrarse desde Seguimiento.',
-
-                        textoConfirmar:
-                            'Continuar',
-
-                        textoCancelar:
-                            'Cancelar',
-                    });
-
-
-                if (!continuar) {
-                    return;
-                }
-            }
-
-
-            /* =================================================
                OBTENER ESTADO FINAL DEL FORMULARIO
             ================================================= */
 
@@ -500,17 +416,6 @@ export function inicializarEditarReporte() {
                 obtenerReporteDesdeFormulario(
                     formulario,
                     reporteAnterior
-                );
-
-
-            /*
-             * Conservamos también en el objeto local
-             * la sanción seleccionada.
-             */
-
-            reporteEditado.sancion =
-                obtenerSancionEditar(
-                    modal
                 );
 
 
@@ -548,50 +453,6 @@ export function inicializarEditarReporte() {
             datos.set(
                 'folio',
                 nuevoFolio
-            );
-
-
-            /* =================================================
-               SANCIÓN DISCIPLINARIA
-            ================================================= */
-
-            datos.set(
-                'sancion_modificada',
-                cambioSancion
-                    ? '1'
-                    : '0'
-            );
-
-
-            datos.set(
-                'sancion_origen_cambio',
-                cambioSancion
-                    ? 'edicion'
-                    : ''
-            );
-
-
-            /*
-             * Forzamos los valores finales por seguridad.
-             */
-
-            const sancionFinal =
-                obtenerSancionEditar(
-                    modal
-                );
-
-
-            datos.set(
-                'sancion_disciplinaria',
-                sancionFinal.tipo
-                || ''
-            );
-
-
-            datos.set(
-                'sancion_otro',
-                sancionFinal.descripcion_otro
-                || ''
             );
 
 
@@ -738,6 +599,7 @@ export function inicializarEditarReporte() {
                         `unidades[${indice}][tipo]`,
                         unidad.tipo
                     );
+
                 }
             );
 
@@ -864,18 +726,23 @@ export function inicializarEditarReporte() {
 
 
                 /* =================================================
-                RESULTADO
+                   RESULTADO
                 ================================================= */
 
                 mostrarResultado({
-                    tipo: 'success',
-                    titulo: 'Reporte actualizado',
-                    mensaje: 'Los cambios del reporte se guardaron correctamente.',
+                    tipo:
+                        'success',
+
+                    titulo:
+                        'Reporte actualizado',
+
+                    mensaje:
+                        'Los cambios del reporte se guardaron correctamente.',
                 });
 
 
                 /* =================================================
-                RECARGAR
+                   RECARGAR
                 ================================================= */
 
                 window.setTimeout(

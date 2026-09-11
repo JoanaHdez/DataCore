@@ -1,0 +1,214 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   EDITAR REPORTE
+   SITUACIÓN DE LA SANCIÓN
+========================================================= */
+
+
+/* =========================================================
+   CONTENEDOR
+========================================================= */
+
+#modal-editar-reporte .editar-report-options {
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+
+    margin-top: 4px;
+}
+
+
+/* =========================================================
+   OPCIONES
+========================================================= */
+
+#modal-editar-reporte .editar-report-option {
+
+    width: auto !important;
+
+    min-width: 124px !important;
+    max-width: none !important;
+
+    min-height: 2px;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    flex-direction: row !important;
+    flex: 0 0 auto !important;
+
+    gap: 8px;
+
+    padding: 2px 2px;
+
+    color: #405d78;
+
+    background: #ffffff;
+
+    border: 1px solid #d3dee7;
+    border-radius: 7px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+
+    white-space: nowrap !important;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/* =========================================================
+   HOVER
+========================================================= */
+
+#modal-editar-reporte .editar-report-option:hover {
+
+    border-color: #9fc7df;
+
+    background: #f8fbfd;
+}
+
+
+/* =========================================================
+   CHECKBOX
+========================================================= */
+
+#modal-editar-reporte
+.editar-report-option
+input[type="checkbox"] {
+
+    width: 15px !important;
+    height: 15px !important;
+
+    min-width: 15px !important;
+    max-width: 15px !important;
+
+    flex: 0 0 15px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    accent-color: #1681c4;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   TEXTO
+========================================================= */
+
+#modal-editar-reporte
+.editar-report-option
+span {
+
+    display: inline-block !important;
+
+    width: auto !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    line-height: 1.2;
+
+    white-space: nowrap !important;
+}
+
+
+/* =========================================================
+   OPCIÓN SELECCIONADA
+========================================================= */
+
+#modal-editar-reporte
+.editar-report-option:has(
+    input[type="checkbox"]:checked
+) {
+
+    color: #0d639c;
+
+    background: #eef8fe;
+
+    border-color: #4aaee5;
+
+    box-shadow:
+        0 0 0 2px rgba(74, 174, 229, 0.08);
+}
+
+/* =========================================================
+   MOTIVOS DESHABILITADOS
+========================================================= */
+
+#modal-editar-reporte
+#editar-buscar-motivo:disabled {
+
+    color: #8999a8;
+
+    background: #eef2f5;
+
+    border-color: #dde5eb;
+
+    cursor: not-allowed;
+
+    opacity: 0.75;
+}
+
+
+/* PLACEHOLDER */
+
+#modal-editar-reporte
+#editar-buscar-motivo:disabled::placeholder {
+
+    color: #9aa9b6;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    #modal-editar-reporte .editar-report-options {
+
+        display: flex !important;
+
+        flex-direction: row !important;
+
+        align-items: center !important;
+
+        justify-content: flex-start !important;
+
+        gap: 10px !important;
+
+        flex-wrap: wrap !important;
+    }
+
+
+    #modal-editar-reporte .editar-report-option {
+
+        width: auto !important;
+
+        min-width: 124px !important;
+        max-width: none !important;
+
+        min-height: 38px;
+
+        flex: 0 0 auto !important;
+
+        padding: 8px 14px;
+    }
+}

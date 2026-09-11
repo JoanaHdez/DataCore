@@ -1,6 +1,11 @@
+import {
+    establecerMotivosHabilitadosEditar
+} from './motivos.js';
+
 /* =========================================================
    SISTEMA DE REPORTES - ASUNTOS INTERNOS
-   Editar reporte - Sanción disciplinaria
+   EDITAR REPORTE
+   SITUACIÓN DE LA SANCIÓN
 ========================================================= */
 
 
@@ -8,619 +13,441 @@
    INICIALIZAR
 ========================================================= */
 
-export function inicializarEditarSancion(
+export function inicializarSancionesEditar(
     modal
 ) {
 
-    const select =
-        modal.querySelector(
-            '#editar-sancion-disciplinaria'
-        );
-
-
-    const inputOtro =
-        modal.querySelector(
-            '#editar-sancion-otro'
-        );
+    if (!modal) {
+        return;
+    }
 
 
     if (
-        !select
-        || !inputOtro
+        modal.dataset.editarSancionesInicializadas
+        === '1'
     ) {
         return;
     }
 
 
-    select.addEventListener(
+    const sinSanciones =
+        modal.querySelector(
+            '#editar-sin-sanciones'
+        );
+
+
+    const bajaVoluntaria =
+        modal.querySelector(
+            '#editar-baja-voluntaria'
+        );
+
+
+    const estado =
+        modal.querySelector(
+            '#editar-estado-actual'
+        );
+
+
+    if (
+        !sinSanciones
+        || !bajaVoluntaria
+        || !estado
+    ) {
+        return;
+    }
+
+
+    modal.dataset.editarSancionesInicializadas =
+        '1';
+
+
+    /* =====================================================
+       SIN SANCIONES
+    ===================================================== */
+
+    sinSanciones.addEventListener(
         'change',
         () => {
 
-            actualizarCampoOtroSancion(
+            if (
+                sinSanciones.checked
+            ) {
+
+                bajaVoluntaria.checked =
+                    false;
+
+
+                establecerMotivosHabilitadosEditar(
+                    modal,
+                    false
+                );
+
+            } else {
+
+                establecerMotivosHabilitadosEditar(
+                    modal,
+                    true
+                );
+            }
+
+
+            actualizarBajaVoluntariaEditar(
                 modal
             );
-
         }
     );
 
 
-    actualizarCampoOtroSancion(
+    /* =====================================================
+       BAJA VOLUNTARIA
+    ===================================================== */
+
+    bajaVoluntaria.addEventListener(
+        'change',
+        () => {
+
+            if (
+                bajaVoluntaria.checked
+            ) {
+
+                sinSanciones.checked =
+                    false;
+
+
+                establecerMotivosHabilitadosEditar(
+                    modal,
+                    true
+                );
+            }
+
+
+            actualizarBajaVoluntariaEditar(
+                modal
+            );
+        }
+    );
+
+
+    /* =====================================================
+       ESTADO INICIAL
+    ===================================================== */
+
+    actualizarBajaVoluntariaEditar(
         modal
     );
 }
 
 
 /* =========================================================
-   CARGAR SANCIÓN VIGENTE
+   ACTUALIZAR BAJA VOLUNTARIA
 ========================================================= */
 
-export function cargarSancionEditar(
-    modal,
-    sancion
+export function actualizarBajaVoluntariaEditar(
+    modal
 ) {
 
-    const select =
-        modal.querySelector(
-            '#editar-sancion-disciplinaria'
-        );
+    if (!modal) {
+        return;
+    }
 
-    const inputOtro =
-        modal.querySelector(
-            '#editar-sancion-otro'
-        );
 
-    const original =
+    const bajaVoluntaria =
         modal.querySelector(
-            '#editar-sancion-original'
-        );
-
-    const otroOriginal =
-        modal.querySelector(
-            '#editar-sancion-otro-original'
-        );
-
-    const avisoOrigen =
-        modal.querySelector(
-            '#editar-sancion-origen'
+            '#editar-baja-voluntaria'
         );
 
 
-    const tipo =
-        String(
-            sancion?.tipo
-            || ''
-        ).trim();
+    const estado =
+        modal.querySelector(
+            '#editar-estado-actual'
+        );
 
 
-    const descripcionOtro =
-        String(
-            sancion?.descripcion_otro
-            || ''
-        ).trim();
-
-
-    /* =====================================================
-       SELECT
-    ===================================================== */
-
-    if (select) {
-
-        const valoresPermitidos = [
-            '',
-            'Arresto',
-            'Amonestación',
-            'Otro',
-        ];
-
-
-        select.value =
-            valoresPermitidos.includes(
-                tipo
-            )
-                ? tipo
-                : '';
+    if (
+        !bajaVoluntaria
+        || !estado
+    ) {
+        return;
     }
 
 
     /* =====================================================
-       OTRO
+       BAJA VOLUNTARIA ACTIVADA
     ===================================================== */
 
-    if (inputOtro) {
+    if (
+        bajaVoluntaria.checked
+    ) {
 
-        inputOtro.value =
-            tipo === 'Otro'
-                ? descripcionOtro
-                : '';
+        /*
+         * Guardamos el estado que tenía antes de seleccionar
+         * Baja voluntaria.
+         */
+
+        if (
+            !estado.dataset.estadoAnterior
+        ) {
+
+            estado.dataset.estadoAnterior =
+                estado.value
+                || 'Pendiente';
+        }
+
+
+        /*
+         * Baja voluntaria finaliza automáticamente
+         * el reporte.
+         */
+
+        estado.value =
+            'Finalizado';
+
+
+        /*
+         * No usamos disabled porque necesitamos que
+         * estado_actual siga enviándose en FormData.
+         */
+
+        estado.classList.add(
+            'report-select--readonly'
+        );
+
+
+        return;
     }
 
 
     /* =====================================================
-       VALORES ORIGINALES
+       BAJA VOLUNTARIA DESACTIVADA
     ===================================================== */
 
-    if (original) {
-
-        original.value =
-            tipo;
-    }
-
-
-    if (otroOriginal) {
-
-        otroOriginal.value =
-            tipo === 'Otro'
-                ? descripcionOtro
-                : '';
-    }
+    estado.classList.remove(
+        'report-select--readonly'
+    );
 
 
     /*
-     * MUY IMPORTANTE:
-     * primero cargamos el valor y DESPUÉS
-     * actualizamos la interfaz.
+     * Si existía un estado anterior, lo restauramos.
      */
 
-    actualizarCampoOtroSancion(
-        modal
+    if (
+        estado.dataset.estadoAnterior
+    ) {
+
+        estado.value =
+            estado.dataset.estadoAnterior;
+
+
+        delete estado.dataset.estadoAnterior;
+    }
+}
+
+
+/* =========================================================
+   CARGAR DATOS EXISTENTES
+========================================================= */
+
+export function cargarSancionesEditar(
+    modal,
+    reporte
+) {
+
+    if (
+        !modal
+        || !reporte
+    ) {
+        return;
+    }
+
+
+    const sinSanciones =
+        modal.querySelector(
+            '#editar-sin-sanciones'
+        );
+
+
+    const bajaVoluntaria =
+        modal.querySelector(
+            '#editar-baja-voluntaria'
+        );
+
+
+    const estado =
+        modal.querySelector(
+            '#editar-estado-actual'
+        );
+
+
+    if (
+        !sinSanciones
+        || !bajaVoluntaria
+        || !estado
+    ) {
+        return;
+    }
+
+
+    /* =====================================================
+       LIMPIAR ESTADO TEMPORAL
+    ===================================================== */
+
+    delete estado.dataset.estadoAnterior;
+
+
+    /* =====================================================
+       CARGAR VALORES EXISTENTES
+    ===================================================== */
+
+    sinSanciones.checked =
+        convertirBooleano(
+            reporte.sin_sanciones
+        );
+
+
+    bajaVoluntaria.checked =
+        convertirBooleano(
+            reporte.baja_voluntaria
+        );
+
+
+    /* =====================================================
+       EVITAR AMBAS OPCIONES ACTIVAS
+    ===================================================== */
+
+    if (
+        sinSanciones.checked
+        && bajaVoluntaria.checked
+    ) {
+
+        sinSanciones.checked =
+            false;
+    }
+
+
+    /* =====================================================
+       MOTIVOS
+
+       Si está marcado "Sin sanciones",
+       el buscador debe quedar deshabilitado.
+
+       En cualquier otro caso debe quedar habilitado.
+    ===================================================== */
+
+    establecerMotivosHabilitadosEditar(
+        modal,
+        !sinSanciones.checked
     );
 
 
     /* =====================================================
-       ORIGEN
+       BAJA VOLUNTARIA
     ===================================================== */
 
-    if (avisoOrigen) {
-
-        const desdeSeguimiento =
-            sancion?.actualizada_desde_seguimiento
-            === true;
-
-
-        if (!desdeSeguimiento) {
-
-            avisoOrigen.hidden =
-                true;
-
-            avisoOrigen.style.display =
-                'none';
-
-            avisoOrigen.textContent =
-                '';
-
-            return;
-        }
-
-
-        const fecha =
-            String(
-                sancion?.fecha_actualizacion
-                || ''
-            ).trim();
-
-
-        avisoOrigen.textContent =
-            fecha
-                ? `Actualizada desde seguimiento el ${fecha}`
-                : 'Actualizada desde seguimiento';
-
-
-        avisoOrigen.hidden =
-            false;
-
-        avisoOrigen.style.display =
-            '';
-    }
+    actualizarBajaVoluntariaEditar(
+        modal
+    );
 }
-
 
 /* =========================================================
    LIMPIAR
 ========================================================= */
 
-export function limpiarSancionEditar(
+export function limpiarSancionesEditar(
     modal
 ) {
 
-    const select =
-        modal.querySelector(
-            '#editar-sancion-disciplinaria'
-        );
-
-
-    const inputOtro =
-        modal.querySelector(
-            '#editar-sancion-otro'
-        );
-
-
-    const original =
-        modal.querySelector(
-            '#editar-sancion-original'
-        );
-
-
-    const otroOriginal =
-        modal.querySelector(
-            '#editar-sancion-otro-original'
-        );
-
-
-    const avisoOrigen =
-        modal.querySelector(
-            '#editar-sancion-origen'
-        );
-
-
-    if (select) {
-        select.value = '';
+    if (!modal) {
+        return;
     }
 
 
-    if (inputOtro) {
-        inputOtro.value = '';
+    const sinSanciones =
+        modal.querySelector(
+            '#editar-sin-sanciones'
+        );
+
+
+    const bajaVoluntaria =
+        modal.querySelector(
+            '#editar-baja-voluntaria'
+        );
+
+
+    const estado =
+        modal.querySelector(
+            '#editar-estado-actual'
+        );
+
+
+    /* =====================================================
+       SIN SANCIONES
+    ===================================================== */
+
+    if (sinSanciones) {
+
+        sinSanciones.checked =
+            false;
     }
 
 
-    if (original) {
-        original.value = '';
+    /* =====================================================
+       BAJA VOLUNTARIA
+    ===================================================== */
+
+    if (bajaVoluntaria) {
+
+        bajaVoluntaria.checked =
+            false;
     }
 
 
-    if (otroOriginal) {
-        otroOriginal.value = '';
+    /* =====================================================
+       ESTADO
+    ===================================================== */
+
+    if (estado) {
+
+        delete estado.dataset.estadoAnterior;
+
+
+        estado.classList.remove(
+            'report-select--readonly'
+        );
     }
 
 
-    if (avisoOrigen) {
+    /* =====================================================
+       MOTIVOS
 
-        avisoOrigen.hidden =
-            true;
+       Al limpiar Editar, el buscador debe volver
+       a quedar disponible.
+    ===================================================== */
 
-        avisoOrigen.textContent =
-            '';
-    }
-
-
-    actualizarCampoOtroSancion(
-        modal
+    establecerMotivosHabilitadosEditar(
+        modal,
+        true
     );
 }
 
 
 /* =========================================================
-   CAMPO "OTRO"
+   CONVERTIR VALOR A BOOLEANO
 ========================================================= */
 
-export function actualizarCampoOtroSancion(
-    modal
-) {
-
-    const select =
-        modal.querySelector(
-            '#editar-sancion-disciplinaria'
-        );
-
-
-    const contenedor =
-        modal.querySelector(
-            '#editar-campo-sancion-otro'
-        );
-
-
-    const input =
-        modal.querySelector(
-            '#editar-sancion-otro'
-        );
-
-
-    if (
-        !select
-        || !contenedor
-        || !input
-    ) {
-        return;
-    }
-
-
-    const esOtro =
-        select.value === 'Otro';
-
-
-    /* =====================================================
-       SI ES "OTRO"
-    ===================================================== */
-
-    if (esOtro) {
-
-        contenedor.hidden =
-            false;
-
-
-        /*
-         * Quitamos cualquier display:none que haya quedado
-         * aplicado anteriormente.
-         */
-
-        contenedor.style.removeProperty(
-            'display'
-        );
-
-
-        input.disabled =
-            false;
-
-
-        input.required =
-            true;
-
-
-        return;
-    }
-
-
-    /* =====================================================
-       CUALQUIER OTRA OPCIÓN
-    ===================================================== */
-
-    contenedor.hidden =
-        true;
-
-
-    /*
-     * Forzamos display:none porque algunas reglas CSS
-     * del formulario pueden sobrescribir [hidden].
-     */
-
-    contenedor.style.setProperty(
-        'display',
-        'none',
-        'important'
-    );
-
-
-    input.disabled =
-        true;
-
-
-    input.required =
-        false;
-
-
-    input.value =
-        '';
-}
-
-
-/* =========================================================
-   VALIDAR OTRO
-========================================================= */
-
-export function validarSancionEditar(
-    modal
-) {
-
-    const select =
-        modal.querySelector(
-            '#editar-sancion-disciplinaria'
-        );
-
-
-    const inputOtro =
-        modal.querySelector(
-            '#editar-sancion-otro'
-        );
-
-
-    if (!select) {
-        return true;
-    }
-
-
-    if (
-        select.value !== 'Otro'
-    ) {
-        return true;
-    }
-
-
-    const descripcion =
-        String(
-            inputOtro?.value
-            || ''
-        ).trim();
-
-
-    if (descripcion) {
-        return true;
-    }
-
-
-    if (inputOtro) {
-
-        inputOtro.focus();
-
-        inputOtro.reportValidity();
-    }
-
-
-    return false;
-}
-
-
-/* =========================================================
-   ¿CAMBIÓ LA SANCIÓN?
-========================================================= */
-
-export function sancionFueModificada(
-    modal
-) {
-
-    const select =
-        modal.querySelector(
-            '#editar-sancion-disciplinaria'
-        );
-
-
-    const inputOtro =
-        modal.querySelector(
-            '#editar-sancion-otro'
-        );
-
-
-    const original =
-        modal.querySelector(
-            '#editar-sancion-original'
-        );
-
-
-    const otroOriginal =
-        modal.querySelector(
-            '#editar-sancion-otro-original'
-        );
-
-
-    const tipoActual =
-        String(
-            select?.value
-            || ''
-        ).trim();
-
-
-    const tipoOriginal =
-        String(
-            original?.value
-            || ''
-        ).trim();
-
-
-    if (
-        tipoActual
-        !== tipoOriginal
-    ) {
-        return true;
-    }
-
-
-    if (
-        tipoActual !== 'Otro'
-    ) {
-        return false;
-    }
-
-
-    const descripcionActual =
-        normalizarTextoSancion(
-            inputOtro?.value
-        );
-
-
-    const descripcionOriginal =
-        normalizarTextoSancion(
-            otroOriginal?.value
-        );
-
-
-    return descripcionActual
-        !== descripcionOriginal;
-}
-
-
-/* =========================================================
-   OBTENER VALORES
-========================================================= */
-
-export function obtenerSancionEditar(
-    modal
-) {
-
-    const select =
-        modal.querySelector(
-            '#editar-sancion-disciplinaria'
-        );
-
-
-    const inputOtro =
-        modal.querySelector(
-            '#editar-sancion-otro'
-        );
-
-
-    return {
-
-        tipo:
-            String(
-                select?.value
-                || ''
-            ).trim(),
-
-        descripcion_otro:
-            select?.value === 'Otro'
-                ? String(
-                    inputOtro?.value
-                    || ''
-                ).trim()
-                : '',
-    };
-}
-
-
-/* =========================================================
-   TEXTO VISIBLE
-========================================================= */
-
-export function obtenerTextoSancionEditar(
-    sancion
-) {
-
-    const tipo =
-        String(
-            sancion?.tipo
-            || ''
-        ).trim();
-
-
-    if (!tipo) {
-        return 'Sin sanción';
-    }
-
-
-    if (tipo === 'Otro') {
-
-        const descripcion =
-            String(
-                sancion?.descripcion_otro
-                || ''
-            ).trim();
-
-
-        return descripcion
-            || 'Otro';
-    }
-
-
-    return tipo;
-}
-
-
-/* =========================================================
-   NORMALIZAR
-========================================================= */
-
-function normalizarTextoSancion(
+function convertirBooleano(
     valor
 ) {
 
-    return String(
-        valor
-        || ''
-    )
-        .trim()
-        .replace(
-            /\s+/g,
-            ' '
+    return (
+        valor === true
+        || valor === 1
+        || valor === '1'
+        || String(
+            valor
+            || ''
         )
-        .toLocaleLowerCase(
-            'es-MX'
-        );
+            .trim()
+            .toLowerCase()
+            === 'true'
+    );
 }

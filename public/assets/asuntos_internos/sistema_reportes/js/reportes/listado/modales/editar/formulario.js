@@ -657,7 +657,7 @@ export function cargarReporteEnFormulario(
 
 
     /* =====================================================
-       CLASIFICACIÓN
+       CLASIFICACIÓN Y SEGUIMIENTO
     ===================================================== */
 
     asignarValorEditar(
@@ -681,6 +681,20 @@ export function cargarReporteEnFormulario(
     );
 
 
+    /* =====================================================
+       ESTADO ACTUAL
+
+       Si el reporte todavía no tiene un estado registrado,
+       Editar debe iniciar en "Pendiente", igual que Nuevo.
+    ===================================================== */
+
+    asignarSelectSeguro(
+        modal,
+        '#editar-estado-actual',
+        reporte.estado_actual || 'Pendiente'
+    );
+
+
     asignarValorEditar(
         modal,
         '#editar-quien-emite-resolucion',
@@ -694,6 +708,13 @@ export function cargarReporteEnFormulario(
         reporte.resolucion
     );
 
+
+    /*
+     * Este campo pertenece a la estructura anterior de motivos.
+     * Por ahora lo conservamos sin modificar su lógica.
+     * Lo reemplazaremos cuando conectemos el nuevo módulo
+     * de Motivos y Sanciones.
+     */
 
     asignarValorEditar(
         modal,
@@ -728,7 +749,6 @@ export function cargarReporteEnFormulario(
         []
     );
 }
-
 /* =========================================================
    OBTENER REPORTE DESDE FORMULARIO
 ========================================================= */
