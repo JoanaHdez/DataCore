@@ -30,6 +30,18 @@
 @import url('./reportes/listado/tabla.css');
 @import url('./reportes/listado/paginacion.css');
 
+
+/* =========================================================
+   REPORTES - MODAL DETALLES
+========================================================= */
+
+@import url("./reportes/listado/modales/detalles/datos-reporte.css");
+
+
+/* =========================================================
+   REPORTES - MODAL EDITAR
+========================================================= */
+
 @import url("./reportes/listado/modales/editar/personal-unidades.css");
 @import url("./reportes/listado/modales/editar/ubicacion.css");
 @import url("./reportes/listado/modales/editar/quejoso.css");
@@ -70,3 +82,4 @@
 @import url('./reportes/felicitaciones/detalle.css');
 @import url('./reportes/felicitaciones/editar.css');
 @import url('./reportes/felicitaciones/formulario.css');
+

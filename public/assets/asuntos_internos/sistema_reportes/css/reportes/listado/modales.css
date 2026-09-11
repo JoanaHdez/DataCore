@@ -1016,8 +1016,8 @@ body.modal-abierto {
 
 .modal-reporte__dialog--editar {
     width: min(1180px, 100%);
-    height: 90vh;
-    max-height: 90vh;
+    height: auto;
+    max-height: calc(100vh - 48px);
 
     display: flex;
     flex-direction: column;
@@ -1040,7 +1040,7 @@ body.modal-abierto {
 
 /* Formulario ocupa el espacio restante */
 .modal-reporte__form--editar {
-    flex: 1;
+    flex: 0 1 auto;
     min-height: 0;
 
     display: flex;
@@ -1052,10 +1052,10 @@ body.modal-abierto {
 
 /* Solo esta zona hace scroll */
 .modal-reporte__body--editar {
-    flex: 1;
+    flex: 0 1 auto;
     min-height: 0;
 
-    max-height: none;
+    max-height: calc(100vh - 230px);
 
     overflow-y: auto;
     overflow-x: hidden;

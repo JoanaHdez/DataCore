@@ -15,41 +15,52 @@
 
     <div class="detalle-reporte-grid">
 
-        <div class="detalle-reporte-campo">
+        <!-- =====================================================
+             NÚMERO DE FOLIO
+        ====================================================== -->
 
-            <span>
-                Prefijo
-            </span>
+        <div class="detalle-reporte-campo-grupo">
 
-            <strong id="detalle-prefijo">
-                QJ
-            </strong>
+            <div class="detalle-reporte-campo">
+
+                <span>
+                    Número de folio
+                </span>
+
+                <strong id="detalle-folio">
+                    —
+                </strong>
+
+            </div>
+
+            <small class="detalle-reporte-campo-ayuda">
+                El número de folio se asigna automáticamente.
+            </small>
 
         </div>
 
 
-        <div class="detalle-reporte-campo">
+        <!-- =====================================================
+             FECHA DE REGISTRO
+        ====================================================== -->
 
-            <span>
-                Número de folio
-            </span>
+        <div class="detalle-reporte-campo-grupo">
 
-            <strong id="detalle-numero-folio">
-                —
-            </strong>
+            <div class="detalle-reporte-campo">
 
-        </div>
+                <span>
+                    Fecha de registro
+                </span>
 
+                <strong id="detalle-fecha-registro">
+                    —
+                </strong>
 
-        <div class="detalle-reporte-campo">
+            </div>
 
-            <span>
-                Fecha de registro
-            </span>
-
-            <strong id="detalle-fecha-registro">
-                —
-            </strong>
+            <small class="detalle-reporte-campo-ayuda">
+                La fecha de registro se asigna automáticamente.
+            </small>
 
         </div>
 

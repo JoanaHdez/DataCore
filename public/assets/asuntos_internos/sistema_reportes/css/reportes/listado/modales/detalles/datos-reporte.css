@@ -1,0 +1,65 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   DETALLE DE QUEJAS
+   DATOS DEL REPORTE
+========================================================= */
+
+
+/* =========================================================
+   GRUPO DE CAMPO
+========================================================= */
+
+.detalle-reporte-campo-grupo {
+
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 0;
+}
+
+
+/* =========================================================
+   TARJETA
+========================================================= */
+
+.detalle-reporte-campo-grupo
+.detalle-reporte-campo {
+
+    width: 100%;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   TEXTO DE AYUDA
+========================================================= */
+
+.detalle-reporte-campo-ayuda {
+
+    display: block;
+
+    margin-top: 8px;
+    margin-bottom: 0;
+
+    color: #708295;
+
+    font-size: 10px;
+    font-weight: 500;
+
+    line-height: 1.45;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .detalle-reporte-campo-ayuda {
+
+        margin-top: 8px;
+    }
+}

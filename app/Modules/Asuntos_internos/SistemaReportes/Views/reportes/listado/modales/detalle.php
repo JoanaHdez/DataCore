@@ -31,8 +31,8 @@
                 <div class="detalle-reporte__meta">
 
                     <span>
-                        Expediente:
-                        <strong id="detalle-meta-expediente">
+                        Nomenclatura:
+                        <strong id="detalle-meta-nomenclatura">
                             —
                         </strong>
                     </span>

@@ -67,11 +67,10 @@
 
                 <label for="expediente">
                     Expediente
-                    <span class="required">*</span>
                 </label>
 
                 <input type="text" id="expediente" name="expediente" class="report-input"
-                    placeholder="Ingresa el número de expediente" required>
+                    placeholder="Ingresa el número de expediente">
 
             </div>
 

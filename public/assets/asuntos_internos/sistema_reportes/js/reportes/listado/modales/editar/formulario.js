@@ -39,6 +39,10 @@ import {
     obtenerNuevasEvidencias,
 } from './evidencia.js';
 
+import {
+    cargarQuejosoEditar
+} from './quejoso.js';
+
 
 /* =========================================================
    CREAR REPORTE TEMPORAL DESDE FILA
@@ -655,6 +659,15 @@ export function cargarReporteEnFormulario(
         reporte.correo
     );
 
+    /* =====================================================
+    ESTADO DEL QUEJOSO
+    ANÓNIMO / NO ANÓNIMO
+    ===================================================== */
+
+    cargarQuejosoEditar(
+        modal,
+        reporte
+    );
 
     /* =====================================================
        CLASIFICACIÓN Y SEGUIMIENTO
@@ -749,6 +762,8 @@ export function cargarReporteEnFormulario(
         []
     );
 }
+
+
 /* =========================================================
    OBTENER REPORTE DESDE FORMULARIO
 ========================================================= */

@@ -28,21 +28,14 @@
                 </h2>
 
 
-                <div class="detalle-reporte__meta">
+                <div class="editar-reporte-campo">
 
-                    <span>
-                        Expediente:
-                        <strong id="editar-meta-expediente">
-                            —
-                        </strong>
-                    </span>
+                    <label for="editar-expediente">
+                        Expediente
+                    </label>
 
-                    <span>
-                        Estado:
-                        <strong id="editar-meta-estado">
-                            —
-                        </strong>
-                    </span>
+                    <input type="text" id="editar-expediente" name="expediente"
+                        placeholder="Ingresa el número de expediente" autocomplete="off">
 
                 </div>
 

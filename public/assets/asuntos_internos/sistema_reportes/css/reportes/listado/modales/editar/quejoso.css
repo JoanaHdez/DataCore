@@ -1,8 +1,16 @@
 /* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   EDITAR REPORTE
+   DATOS DEL QUEJOSO
+========================================================= */
+
+
+/* =========================================================
    OPCIONES DE QUEJA ANÓNIMA
 ========================================================= */
 
 .editar-report-options {
+
     display: flex;
     align-items: center;
 
@@ -14,7 +22,12 @@
 }
 
 
+/* =========================================================
+   OPCIÓN
+========================================================= */
+
 .editar-report-option {
+
     width: 90px;
     min-width: 90px;
     min-height: 38px;
@@ -49,14 +62,24 @@
 }
 
 
+/* =========================================================
+   HOVER
+========================================================= */
+
 .editar-report-option:hover {
+
     border-color: #9fc7df;
 
     background: #f8fbfd;
 }
 
 
+/* =========================================================
+   RADIO
+========================================================= */
+
 .editar-report-option input[type="radio"] {
+
     width: 15px !important;
     height: 15px !important;
 
@@ -80,16 +103,30 @@
 }
 
 
+/* =========================================================
+   TEXTO
+========================================================= */
+
 .editar-report-option span {
+
     display: inline-block;
 
+    color: inherit;
+
     line-height: 1;
+
+    white-space: nowrap;
 }
 
+
+/* =========================================================
+   OPCIÓN SELECCIONADA
+========================================================= */
 
 .editar-report-option:has(
     input[type="radio"]:checked
 ) {
+
     color: #0d639c;
 
     background: #eef8fe;
@@ -100,17 +137,99 @@
         0 0 0 2px rgba(74, 174, 229, 0.08);
 }
 
+
+.editar-report-option:has(
+    input[type="radio"]:checked
+) span {
+
+    color: #0d639c;
+}
+
+
+/* =========================================================
+   QUEJA ANÓNIMA
+   TAMAÑO ESPECÍFICO DE NO / SÍ
+========================================================= */
+
+#modal-editar-reporte
+.editar-report-option:has(
+    #editar-anonimo-no
+),
+
+#modal-editar-reporte
+.editar-report-option:has(
+    #editar-anonimo-si
+) {
+
+    width: 90px !important;
+    min-width: 90px !important;
+    max-width: 90px !important;
+
+    min-height: 38px !important;
+
+    flex: 0 0 90px !important;
+
+    padding: 8px 12px !important;
+
+    gap: 8px !important;
+
+    justify-content: center !important;
+}
+
+
+/* =========================================================
+   QUEJA ANÓNIMA
+   ESTADO SELECCIONADO ESPECÍFICO
+========================================================= */
+
+#modal-editar-reporte
+.editar-report-option:has(
+    #editar-anonimo-no:checked
+),
+
+#modal-editar-reporte
+.editar-report-option:has(
+    #editar-anonimo-si:checked
+) {
+
+    color: #0d639c !important;
+
+    background: #eef8fe !important;
+
+    border-color: #4aaee5 !important;
+
+    box-shadow:
+        0 0 0 2px rgba(74, 174, 229, 0.08) !important;
+}
+
+
+#modal-editar-reporte
+.editar-report-option:has(
+    #editar-anonimo-no:checked
+) span,
+
+#modal-editar-reporte
+.editar-report-option:has(
+    #editar-anonimo-si:checked
+) span {
+
+    color: #0d639c !important;
+}
+
+
 /* =========================================================
    NÚMERO ANÓNIMO
    MISMO DISEÑO QUE NUEVO REPORTE
 ========================================================= */
 
 #editar-numero-anonimo-contenedor {
+
     position: relative;
 
     width: 100%;
 
     margin-top: 4px;
+
     padding: 18px;
 
     background:
@@ -136,6 +255,7 @@
 ========================================================= */
 
 #editar-numero-anonimo-contenedor[hidden] {
+
     display: none !important;
 }
 
@@ -146,6 +266,7 @@
 
 #editar-numero-anonimo-contenedor
 .quejoso-anonimo__numero {
+
     width: 100%;
 }
 
@@ -155,6 +276,7 @@
 ========================================================= */
 
 #editar-numero-anonimo-contenedor label {
+
     display: block;
 
     margin-bottom: 8px;
@@ -167,6 +289,7 @@
 
 
 #editar-numero-anonimo-contenedor .required {
+
     color: #c43d35;
 }
 
@@ -176,6 +299,7 @@
 ========================================================= */
 
 #editar-numero-anonimo {
+
     width: 100%;
     min-height: 42px;
 
@@ -202,11 +326,13 @@
 
 
 #editar-numero-anonimo::placeholder {
+
     color: #93a5b5;
 }
 
 
 #editar-numero-anonimo:focus {
+
     border-color: #1681c4;
 
     box-shadow:
@@ -220,6 +346,7 @@
 
 #editar-numero-anonimo-contenedor
 .editar-reporte-campo__help {
+
     display: block;
 
     margin-top: 8px;
@@ -238,7 +365,37 @@
 
 @media (max-width: 600px) {
 
+    .editar-report-options {
+
+        flex-direction: row;
+        align-items: center;
+
+        gap: 10px;
+
+        flex-wrap: wrap;
+    }
+
+
+    #modal-editar-reporte
+    .editar-report-option:has(
+        #editar-anonimo-no
+    ),
+
+    #modal-editar-reporte
+    .editar-report-option:has(
+        #editar-anonimo-si
+    ) {
+
+        width: 90px !important;
+        min-width: 90px !important;
+        max-width: 90px !important;
+
+        flex: 0 0 90px !important;
+    }
+
+
     #editar-numero-anonimo-contenedor {
+
         padding: 16px;
     }
 }

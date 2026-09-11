@@ -1,4 +1,26 @@
 /* =========================================================
+   UTILIDADES
+========================================================= */
+
+import {
+    formatearFechaDetalle,
+    formatearHoraDetalle,
+} from './detalle/utils/fechas.js';
+
+
+import {
+    mayusculas,
+    asignarTextoDetalle,
+    escaparHtmlDetalle,
+} from './detalle/utils/texto.js';
+
+
+import {
+    cargarDatosReporteDetalle,
+} from './detalle/secciones/datosReporte.js';
+
+
+/* =========================================================
    SISTEMA DE REPORTES - ASUNTOS INTERNOS
    Listado - Detalle real del reporte
 ========================================================= */
@@ -393,33 +415,12 @@ function cargarDetalleReporte(
 
 
     /* =====================================================
-       DATOS DEL REPORTE
+    DATOS DEL REPORTE
     ===================================================== */
 
-    asignarTextoDetalle(
+    cargarDatosReporteDetalle(
         modal,
-        '#detalle-prefijo',
-        obtenerPrefijoFolio(
-            folio
-        )
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-numero-folio',
-        obtenerNumeroFolio(
-            folio
-        )
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-fecha-registro',
-        formatearFechaDetalle(
-            reporte.fecha_registro
-        )
+        reporte
     );
 
 
@@ -1215,47 +1216,47 @@ function renderizarUnidadesDetalle(
 
                     <strong>
                         ${escaparHtmlDetalle(
-                            noEconomico || '—'
-                        )}
+                noEconomico || '—'
+            )}
                     </strong>
 
                     <small class="detalle-unidades__placas">
                         Placas:
                         ${escaparHtmlDetalle(
-                            placas || '—'
-                        )}
+                placas || '—'
+            )}
                     </small>
 
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                        marcaSubmarca || '—'
-                    )}
+                marcaSubmarca || '—'
+            )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                        color || '—'
-                    )}
+                color || '—'
+            )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                        estatus || '—'
-                    )}
+                estatus || '—'
+            )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                        servicio || '—'
-                    )}
+                servicio || '—'
+            )}
                 </td>
 
                 <td>
                     ${escaparHtmlDetalle(
-                        tipo || '—'
-                    )}
+                tipo || '—'
+            )}
                 </td>
             `;
 
@@ -1751,207 +1752,6 @@ function limpiarDetalleReporte(
 
 }
 
-
-/* =========================================================
-   FECHA
-========================================================= */
-
-function formatearFechaDetalle(
-    valor
-) {
-
-    const fecha =
-        String(
-            valor || ''
-        ).trim();
-
-
-    if (!fecha) {
-        return '';
-    }
-
-
-    const coincidencia =
-        fecha.match(
-            /^(\d{4})-(\d{2})-(\d{2})$/
-        );
-
-
-    if (!coincidencia) {
-        return fecha;
-    }
-
-
-    return `${coincidencia[3]}/${coincidencia[2]}/${coincidencia[1]}`;
-
-}
-
-
-/* =========================================================
-   HORA
-========================================================= */
-
-function formatearHoraDetalle(
-    valor
-) {
-
-    const hora =
-        String(
-            valor || ''
-        ).trim();
-
-
-    if (!hora) {
-        return '';
-    }
-
-
-    return hora.length >= 5
-        ? hora.substring(0, 5)
-        : hora;
-
-}
-
-
-/* =========================================================
-   FOLIO
-========================================================= */
-
-function obtenerPrefijoFolio(
-    folio
-) {
-
-    const texto =
-        String(
-            folio || ''
-        ).trim();
-
-
-    if (!texto) {
-        return 'QJ';
-    }
-
-
-    const partes =
-        texto.split('-');
-
-
-    return partes.length > 1
-        ? partes[0]
-        : 'QJ';
-
-}
-
-
-function obtenerNumeroFolio(
-    folio
-) {
-
-    const texto =
-        String(
-            folio || ''
-        ).trim();
-
-
-    if (!texto) {
-        return '';
-    }
-
-
-    const partes =
-        texto.split('-');
-
-
-    return partes.length > 1
-        ? partes.slice(1).join('-')
-        : texto;
-
-}
-
-
-/* =========================================================
-   MAYÚSCULAS
-========================================================= */
-
-function mayusculas(
-    valor
-) {
-
-    return String(
-        valor ?? ''
-    )
-        .trim()
-        .toUpperCase();
-
-}
-
-
-/* =========================================================
-   ASIGNAR TEXTO
-========================================================= */
-
-function asignarTextoDetalle(
-    modal,
-    selector,
-    valor
-) {
-
-    const elemento =
-        modal.querySelector(
-            selector
-        );
-
-
-    if (!elemento) {
-        return;
-    }
-
-
-    const texto =
-        String(
-            valor ?? ''
-        ).trim();
-
-
-    elemento.textContent =
-        texto || '—';
-
-}
-
-
-/* =========================================================
-   ESCAPAR HTML
-========================================================= */
-
-function escaparHtmlDetalle(
-    valor
-) {
-
-    return String(
-        valor ?? ''
-    )
-        .replaceAll(
-            '&',
-            '&amp;'
-        )
-        .replaceAll(
-            '<',
-            '&lt;'
-        )
-        .replaceAll(
-            '>',
-            '&gt;'
-        )
-        .replaceAll(
-            '"',
-            '&quot;'
-        )
-        .replaceAll(
-            "'",
-            '&#039;'
-        );
-
-}
 
 /* =========================================================
    SISTEMA DE REPORTES - ASUNTOS INTERNOS
@@ -2555,31 +2355,31 @@ function renderizarPersonalDetalleFelicitacion(
                 <td>
                     <strong class="detalle-felicitacion-personal__nombre">
                         ${escaparHtmlFelicitacion(
-                            nombre
-                            || '—'
-                        )}
+                nombre
+                || '—'
+            )}
                     </strong>
                 </td>
 
                 <td>
                     ${escaparHtmlFelicitacion(
-                        nomina
-                        || '—'
-                    )}
+                nomina
+                || '—'
+            )}
                 </td>
 
                 <td>
                     ${escaparHtmlFelicitacion(
-                        area
-                        || '—'
-                    )}
+                area
+                || '—'
+            )}
                 </td>
 
                 <td>
                     ${escaparHtmlFelicitacion(
-                        turno
-                        || '—'
-                    )}
+                turno
+                || '—'
+            )}
                 </td>
 
             `;
@@ -2759,9 +2559,9 @@ function renderizarUnidadesDetalleFelicitacion(
 
                     <strong>
                         ${escaparHtmlFelicitacion(
-                            noEconomico
-                            || '—'
-                        )}
+                noEconomico
+                || '—'
+            )}
                     </strong>
 
                     <small
@@ -2772,9 +2572,9 @@ function renderizarUnidadesDetalleFelicitacion(
                     >
                         Placas:
                         ${escaparHtmlFelicitacion(
-                            placas
-                            || '—'
-                        )}
+                placas
+                || '—'
+            )}
                     </small>
 
                 </td>
@@ -2782,41 +2582,41 @@ function renderizarUnidadesDetalleFelicitacion(
 
                 <td>
                     ${escaparHtmlFelicitacion(
-                        marcaSubmarca
-                        || '—'
-                    )}
+                marcaSubmarca
+                || '—'
+            )}
                 </td>
 
 
                 <td>
                     ${escaparHtmlFelicitacion(
-                        color
-                        || '—'
-                    )}
+                color
+                || '—'
+            )}
                 </td>
 
 
                 <td>
                     ${escaparHtmlFelicitacion(
-                        estatus
-                        || '—'
-                    )}
+                estatus
+                || '—'
+            )}
                 </td>
 
 
                 <td>
                     ${escaparHtmlFelicitacion(
-                        servicio
-                        || '—'
-                    )}
+                servicio
+                || '—'
+            )}
                 </td>
 
 
                 <td>
                     ${escaparHtmlFelicitacion(
-                        tipo
-                        || '—'
-                    )}
+                tipo
+                || '—'
+            )}
                 </td>
 
             `;

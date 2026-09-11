@@ -54,15 +54,14 @@
 
 
         <!-- EXPEDIENTE -->
-        <div class="editar-reporte-campo">
+        <div class="report-field">
 
-            <label for="editar-expediente">
+            <label for="expediente">
                 Expediente
-                <span class="required">*</span>
             </label>
 
-            <input type="text" id="editar-expediente" name="expediente" placeholder="Ingresa el número de expediente"
-                autocomplete="off" required>
+            <input type="text" id="expediente" name="expediente" class="report-input"
+                placeholder="Ingresa el número de expediente">
 
         </div>
 
