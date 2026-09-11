@@ -3,7 +3,7 @@
     <div class="detalle-reporte-seccion__header">
 
         <span>
-            Identificación
+            Datos generales
         </span>
 
         <h3>
@@ -22,12 +22,8 @@
                 Folio IP
             </label>
 
-            <input
-                type="text"
-                id="editar-folio-ip"
-                name="folio_ip"
-                autocomplete="off"
-            >
+            <input type="text" id="editar-folio-ip" name="folio_ip" placeholder="Ingresa el folio IP"
+                autocomplete="off">
 
         </div>
 
@@ -40,12 +36,7 @@
                 <span class="required">*</span>
             </label>
 
-            <input
-                type="date"
-                id="editar-fecha-queja"
-                name="fecha_queja"
-                required
-            >
+            <input type="date" id="editar-fecha-queja" name="fecha_queja" required>
 
         </div>
 
@@ -57,11 +48,7 @@
                 Fecha de acuerdo
             </label>
 
-            <input
-                type="date"
-                id="editar-fecha-acuerdo"
-                name="fecha_acuerdo"
-            >
+            <input type="date" id="editar-fecha-acuerdo" name="fecha_acuerdo">
 
         </div>
 
@@ -74,13 +61,8 @@
                 <span class="required">*</span>
             </label>
 
-            <input
-                type="text"
-                id="editar-expediente"
-                name="expediente"
-                autocomplete="off"
-                required
-            >
+            <input type="text" id="editar-expediente" name="expediente" placeholder="Ingresa el número de expediente"
+                autocomplete="off" required>
 
         </div>
 
@@ -92,12 +74,11 @@
                 Nomenclatura
             </label>
 
-            <input
-                type="text"
-                id="editar-nomenclatura"
-                name="nomenclatura"
-                autocomplete="off"
-            >
+            <input type="text" id="editar-nomenclatura" name="nomenclatura" readonly>
+
+            <small>
+                Se genera automáticamente con el número de folio asignado.
+            </small>
 
         </div>
 
@@ -109,12 +90,8 @@
                 No. de oficio
             </label>
 
-            <input
-                type="text"
-                id="editar-no-oficio"
-                name="no_oficio"
-                autocomplete="off"
-            >
+            <input type="text" id="editar-no-oficio" name="no_oficio" placeholder="Ingresa el número de oficio"
+                autocomplete="off">
 
         </div>
 
