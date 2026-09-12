@@ -3,12 +3,6 @@
 ========================================================= */
 
 import {
-    formatearFechaDetalle,
-    formatearHoraDetalle,
-} from './detalle/utils/fechas.js';
-
-
-import {
     mayusculas,
     asignarTextoDetalle,
     escaparHtmlDetalle,
@@ -18,6 +12,14 @@ import {
 import {
     cargarDatosReporteDetalle,
 } from './detalle/secciones/datosReporte.js';
+
+import {
+    cargarIdentificacionDetalle,
+} from './detalle/secciones/identificacion.js';
+
+import {
+    cargarDatosHechosDetalle,
+} from './detalle/secciones/datosHechos.js';
 
 
 /* =========================================================
@@ -425,81 +427,22 @@ function cargarDetalleReporte(
 
 
     /* =====================================================
-       IDENTIFICACIÓN
+    IDENTIFICACIÓN
     ===================================================== */
 
-    asignarTextoDetalle(
+    cargarIdentificacionDetalle(
         modal,
-        '#detalle-folio-ip',
-        reporte.folio_ip
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-fecha-queja',
-        formatearFechaDetalle(
-            reporte.fecha_queja
-        )
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-fecha-acuerdo',
-        formatearFechaDetalle(
-            reporte.fecha_acuerdo
-        )
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-expediente',
-        reporte.expediente
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-nomenclatura',
-        reporte.nomenclatura
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-no-oficio',
-        reporte.numero_oficio
+        reporte
     );
 
 
     /* =====================================================
-       DATOS DE LOS HECHOS
+    DATOS DE LOS HECHOS
     ===================================================== */
 
-    asignarTextoDetalle(
+    cargarDatosHechosDetalle(
         modal,
-        '#detalle-fecha-hechos',
-        formatearFechaDetalle(
-            reporte.fecha_hechos
-        )
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-hora-hechos',
-        formatearHoraDetalle(
-            reporte.hora_hechos
-        )
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-descripcion',
-        reporte.descripcion_hechos
+        reporte
     );
 
 

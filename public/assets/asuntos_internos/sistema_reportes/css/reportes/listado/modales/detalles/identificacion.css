@@ -1,0 +1,163 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   DETALLE DE QUEJAS
+   IDENTIFICACIÓN DEL REGISTRO
+========================================================= */
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.detalle-identificacion-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
+
+    padding: 22px;
+}
+
+
+/* =========================================================
+   CAMPO
+========================================================= */
+
+.detalle-identificacion-campo {
+
+    min-width: 0;
+}
+
+
+/* =========================================================
+   LABEL
+========================================================= */
+
+.detalle-identificacion-campo__label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   OBLIGATORIO
+========================================================= */
+
+.detalle-identificacion-campo__label
+.required {
+
+    display: inline;
+
+    margin: 0;
+
+    color: #c43d35;
+
+    font-size: inherit;
+    font-weight: inherit;
+
+    letter-spacing: normal;
+
+    text-transform: none;
+}
+
+
+/* =========================================================
+   VALOR
+========================================================= */
+
+.detalle-identificacion-campo__valor {
+
+    width: 100%;
+    min-height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 0 14px;
+
+    background: #ffffff;
+
+    border: 1px solid #cfdce7;
+    border-radius: 8px;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   VALOR AUTOMÁTICO / READONLY
+========================================================= */
+
+.detalle-identificacion-campo__valor--readonly {
+
+    background: #eef3f7;
+}
+
+
+/* =========================================================
+   TEXTO DEL VALOR
+========================================================= */
+
+.detalle-identificacion-campo__valor strong {
+
+    display: block;
+
+    min-width: 0;
+
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 11px;
+    font-weight: 500;
+
+    line-height: 1.4;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   TEXTO AUXILIAR
+========================================================= */
+
+.detalle-identificacion-campo__ayuda {
+
+    display: block;
+
+    margin-top: 8px;
+    margin-bottom: 0;
+
+    color: #708295;
+
+    font-size: 10px;
+    font-weight: 500;
+
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .detalle-identificacion-grid {
+
+        grid-template-columns: 1fr;
+    }
+}

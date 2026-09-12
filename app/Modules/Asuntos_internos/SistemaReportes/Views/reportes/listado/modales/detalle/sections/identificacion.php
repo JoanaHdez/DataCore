@@ -3,7 +3,7 @@
     <div class="detalle-reporte-seccion__header">
 
         <span>
-            Identificación
+            Datos generales
         </span>
 
         <h3>
@@ -15,80 +15,114 @@
 
     <div class="detalle-reporte-grid">
 
-        <div class="detalle-reporte-campo">
+        <!-- FOLIO IP -->
+        <div class="detalle-reporte-campo-grupo">
 
-            <span>
-                Folio IP
-            </span>
+            <div class="detalle-reporte-campo">
 
-            <strong id="detalle-folio-ip">
-                —
-            </strong>
+                <span>
+                    Folio IP
+                </span>
 
-        </div>
+                <strong id="detalle-folio-ip">
+                    —
+                </strong>
 
-
-        <div class="detalle-reporte-campo">
-
-            <span>
-                Fecha de queja
-            </span>
-
-            <strong id="detalle-fecha-queja">
-                —
-            </strong>
+            </div>
 
         </div>
 
 
-        <div class="detalle-reporte-campo">
+        <!-- FECHA DE QUEJA -->
+        <div class="detalle-reporte-campo-grupo">
 
-            <span>
-                Fecha de acuerdo
-            </span>
+            <div class="detalle-reporte-campo">
 
-            <strong id="detalle-fecha-acuerdo">
-                —
-            </strong>
+                <span>
+                    Fecha de queja
+                </span>
 
-        </div>
+                <strong id="detalle-fecha-queja">
+                    —
+                </strong>
 
-
-        <div class="detalle-reporte-campo">
-
-            <span>
-                Expediente
-            </span>
-
-            <strong id="detalle-expediente">
-                —
-            </strong>
+            </div>
 
         </div>
 
 
-        <div class="detalle-reporte-campo">
+        <!-- FECHA DE ACUERDO -->
+        <div class="detalle-reporte-campo-grupo">
 
-            <span>
-                Nomenclatura
-            </span>
+            <div class="detalle-reporte-campo">
 
-            <strong id="detalle-nomenclatura">
-                —
-            </strong>
+                <span>
+                    Fecha de acuerdo
+                </span>
+
+                <strong id="detalle-fecha-acuerdo">
+                    —
+                </strong>
+
+            </div>
 
         </div>
 
 
-        <div class="detalle-reporte-campo">
+        <!-- EXPEDIENTE -->
+        <div class="detalle-reporte-campo-grupo">
 
-            <span>
-                No. de oficio
-            </span>
+            <div class="detalle-reporte-campo">
 
-            <strong id="detalle-no-oficio">
-                —
-            </strong>
+                <span>
+                    Expediente
+                </span>
+
+                <strong id="detalle-expediente">
+                    —
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- NOMENCLATURA -->
+        <div class="detalle-reporte-campo-grupo">
+
+            <div class="detalle-reporte-campo">
+
+                <span>
+                    Nomenclatura
+                </span>
+
+                <strong id="detalle-nomenclatura">
+                    —
+                </strong>
+
+            </div>
+
+            <small class="detalle-reporte-campo-ayuda">
+                Se genera automáticamente con el número de folio asignado.
+            </small>
+
+        </div>
+
+
+        <!-- NÚMERO DE OFICIO -->
+        <div class="detalle-reporte-campo-grupo">
+
+            <div class="detalle-reporte-campo">
+
+                <span>
+                    No. de oficio
+                </span>
+
+                <strong id="detalle-no-oficio">
+                    —
+                </strong>
+
+            </div>
 
         </div>
 
