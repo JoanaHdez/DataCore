@@ -1,0 +1,16 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   DETALLE DE QUEJAS
+   DATOS DEL QUEJOSO
+========================================================= */
+
+
+/* =========================================================
+   ELEMENTOS CONDICIONALES
+========================================================= */
+
+#detalle-numero-anonimo-contenedor[hidden],
+#detalle-canalizacion-otro-contenedor[hidden] {
+
+    display: none !important;
+}
