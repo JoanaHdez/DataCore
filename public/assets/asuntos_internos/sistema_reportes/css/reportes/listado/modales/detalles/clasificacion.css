@@ -1,0 +1,316 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   DETALLE DE QUEJAS
+   CLASIFICACIÓN Y SEGUIMIENTO
+========================================================= */
+
+
+/* =========================================================
+   ESPACIO VACÍO JUNTO A SITUACIÓN DE LA SANCIÓN
+========================================================= */
+
+.detalle-clasificacion__espacio {
+    min-width: 0;
+}
+
+
+/* =========================================================
+   BLOQUE DE MOTIVOS
+========================================================= */
+
+.detalle-clasificacion__motivos {
+    min-width: 0;
+
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   ELEMENTOS OCULTOS
+========================================================= */
+
+.detalle-clasificacion__motivos-vacio[hidden],
+.detalle-clasificacion__motivos-wrapper[hidden] {
+    display: none !important;
+}
+
+
+/* =========================================================
+   SIN MOTIVOS
+========================================================= */
+
+.detalle-clasificacion__motivos-vacio {
+    width: 100%;
+
+    padding: 18px 20px;
+
+    color: #718498;
+    background: #f8fbfd;
+
+    border-top: 1px solid #e5edf3;
+
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.5;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   CONTENEDOR DE TABLA
+========================================================= */
+
+.detalle-clasificacion__motivos-wrapper {
+    width: calc(100% + 32px);
+
+    margin:
+        8px
+        -16px
+        -15px;
+
+    overflow-x: auto;
+
+    background: #ffffff;
+
+    border-top: 1px solid #e6edf3;
+    border-bottom: 1px solid #e6edf3;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   TABLA
+========================================================= */
+
+.detalle-clasificacion__motivos-tabla {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    background: #ffffff;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.detalle-clasificacion__motivos-tabla thead {
+    background: #f7fafc;
+}
+
+
+.detalle-clasificacion__motivos-tabla th {
+    padding: 11px 14px;
+
+    color: #5f7387;
+    background: #f7fafc;
+
+    border-bottom: 1px solid #e4ecf2;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    line-height: 1.35;
+
+    text-align: left;
+    vertical-align: middle;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   CELDAS
+========================================================= */
+
+.detalle-clasificacion__motivos-tabla td {
+    padding: 13px 14px;
+
+    color: #29445c;
+    background: #ffffff;
+
+    border-bottom: 1px solid #edf2f6;
+
+    font-size: 9px;
+    font-weight: 500;
+
+    line-height: 1.45;
+
+    text-align: left;
+    vertical-align: middle;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   FILAS
+========================================================= */
+
+.detalle-clasificacion__motivos-tabla
+tbody
+tr:last-child
+td {
+    border-bottom: 0;
+}
+
+
+.detalle-clasificacion__motivos-tabla
+tbody
+tr:hover
+td {
+    background: #fbfdff;
+}
+
+
+/* =========================================================
+   ANCHOS DE COLUMNAS
+========================================================= */
+
+.detalle-clasificacion__motivos-tabla
+th:nth-child(1),
+.detalle-clasificacion__motivos-tabla
+td:nth-child(1) {
+    width: 70px;
+}
+
+
+.detalle-clasificacion__motivos-tabla
+th:nth-child(2),
+.detalle-clasificacion__motivos-tabla
+td:nth-child(2) {
+    width: auto;
+}
+
+
+.detalle-clasificacion__motivos-tabla
+th:nth-child(3),
+.detalle-clasificacion__motivos-tabla
+td:nth-child(3) {
+    width: 220px;
+}
+
+
+.detalle-clasificacion__motivos-tabla
+th:nth-child(4),
+.detalle-clasificacion__motivos-tabla
+td:nth-child(4) {
+    width: 170px;
+}
+
+
+/* =========================================================
+   NÚMERO
+========================================================= */
+
+.detalle-clasificacion__motivos-tabla
+td:nth-child(1) {
+    color: #1475bd;
+
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   MOTIVO
+========================================================= */
+
+.detalle-clasificacion__motivos-tabla
+td:nth-child(2) {
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   SANCIÓN
+========================================================= */
+
+.detalle-clasificacion__motivos-tabla
+td:nth-child(3) {
+    color: #173554;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   FOLIO DE SANCIÓN
+========================================================= */
+
+.detalle-clasificacion__motivos-tabla
+td:nth-child(4) {
+    color: #29445c;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   QUIÉN EMITE LA RESOLUCIÓN
+========================================================= */
+
+.detalle-clasificacion__resolucion-emisor {
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   RESOLUCIÓN
+========================================================= */
+
+.detalle-clasificacion__resolucion {
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .detalle-clasificacion__espacio {
+        display: none;
+    }
+
+
+    .detalle-clasificacion__motivos-tabla {
+        min-width: 760px;
+    }
+
+}
+
+
+@media (max-width: 560px) {
+
+    .detalle-clasificacion__motivos-vacio {
+        padding: 16px;
+    }
+
+
+    .detalle-clasificacion__motivos-wrapper {
+        width: calc(100% + 32px);
+    }
+
+
+    .detalle-clasificacion__motivos-tabla {
+        min-width: 720px;
+    }
+
+}

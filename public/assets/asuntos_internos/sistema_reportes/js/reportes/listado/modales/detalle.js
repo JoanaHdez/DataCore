@@ -44,6 +44,11 @@ import {
 } from './detalle/secciones/quejoso.js';
 
 
+import {
+    cargarClasificacionDetalle,
+} from './detalle/secciones/clasificacion.js';
+
+
 /* =========================================================
    SISTEMA DE REPORTES - ASUNTOS INTERNOS
    Listado - Detalle real del reporte
@@ -397,6 +402,14 @@ function cargarDetalleReporte(
             : null;
 
 
+    const motivos =
+        Array.isArray(
+            datos.motivos
+        )
+            ? datos.motivos
+            : [];
+
+
     const folio =
         String(
             reporte.folio
@@ -505,55 +518,14 @@ function cargarDetalleReporte(
 
 
     /* =====================================================
-       CLASIFICACIÓN
-    ===================================================== */
+   CLASIFICACIÓN Y SEGUIMIENTO
+===================================================== */
 
-    asignarTextoDetalle(
+    cargarClasificacionDetalle(
         modal,
-        '#detalle-clasificacion',
-        reporte.clasificacion
+        reporte,
+        motivos
     );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-inspector',
-        reporte.inspector
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-investigador',
-        reporte.investigador
-    );
-
-
-    renderizarSancionDetalle(
-        modal,
-        sancion
-    );
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-quien-emite-resolucion',
-        reporte.quien_emite_resolucion
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-resolucion',
-        reporte.resolucion
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-motivos',
-        reporte.motivos
-    );
-
 
     /* =====================================================
        OBSERVACIONES

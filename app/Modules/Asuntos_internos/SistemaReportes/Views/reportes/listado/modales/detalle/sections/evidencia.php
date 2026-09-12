@@ -13,13 +13,26 @@
     </div>
 
 
-    <div
-        class="detalle-reporte-evidencia"
-        id="detalle-evidencia-lista"
-    >
+    <div class="detalle-reporte-evidencia" id="detalle-evidencia-lista">
 
-        <div class="detalle-reporte-evidencia__vacio">
-            No hay evidencia fotográfica registrada.
+        <div class="detalle-evidencia__vacio">
+
+            <div class="detalle-evidencia__vacio-icono">
+                +
+            </div>
+
+            <div>
+
+                <strong>
+                    Sin evidencia
+                </strong>
+
+                <span>
+                    No hay evidencia fotográfica registrada.
+                </span>
+
+            </div>
+
         </div>
 
     </div>

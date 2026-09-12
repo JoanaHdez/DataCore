@@ -417,33 +417,33 @@ class Reportes_Controller extends BaseController
             ->getResultArray();
 
 
-            /* =========================================================
+        /* =========================================================
             CATÁLOGO DE CLASIFICACIONES
             ========================================================= */
 
-            $clasificaciones =
-                $db
-                    ->table(
-                        'ai_cat_clasificaciones'
-                    )
-                    ->select([
-                        'id_clasificacion',
-                        'nombre',
-                    ])
-                    ->where(
-                        'activo',
-                        1
-                    )
-                    ->orderBy(
-                        'orden',
-                        'ASC'
-                    )
-                    ->orderBy(
-                        'nombre',
-                        'ASC'
-                    )
-                    ->get()
-                    ->getResultArray();
+        $clasificaciones =
+            $db
+            ->table(
+                'ai_cat_clasificaciones'
+            )
+            ->select([
+                'id_clasificacion',
+                'nombre',
+            ])
+            ->where(
+                'activo',
+                1
+            )
+            ->orderBy(
+                'orden',
+                'ASC'
+            )
+            ->orderBy(
+                'nombre',
+                'ASC'
+            )
+            ->get()
+            ->getResultArray();
 
 
         /* =========================================================
@@ -452,26 +452,26 @@ class Reportes_Controller extends BaseController
 
         $motivos =
             $db
-                ->table(
-                    'ai_cat_motivos'
-                )
-                ->select([
-                    'id_motivo',
-                    'motivo',
-                    'sancion',
-                ])
-                ->where(
-                    'activo',
-                    1
-                )
-                ->orderBy(
-                    'id_motivo',
-                    'ASC'
-                )
-                ->get()
-                ->getResultArray();
+            ->table(
+                'ai_cat_motivos'
+            )
+            ->select([
+                'id_motivo',
+                'motivo',
+                'sancion',
+            ])
+            ->where(
+                'activo',
+                1
+            )
+            ->orderBy(
+                'id_motivo',
+                'ASC'
+            )
+            ->get()
+            ->getResultArray();
 
-        
+
         /* =========================================================
         VISTA
         ========================================================= */
@@ -480,19 +480,19 @@ class Reportes_Controller extends BaseController
             'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\index',
             [
                 'reportes' =>
-                    $reportes,
+                $reportes,
 
                 'sectores' =>
-                    $sectores,
+                $sectores,
 
                 'canalizaciones' =>
-                    $canalizaciones,
+                $canalizaciones,
 
                 'clasificaciones' =>
-                    $clasificaciones,
+                $clasificaciones,
 
                 'motivos' =>
-                    $motivos,
+                $motivos,
             ]
         );
     }
@@ -1799,6 +1799,49 @@ class Reportes_Controller extends BaseController
                 ->get()
                 ->getResultArray();
 
+            /* =====================================================
+            MOTIVOS RELACIONADOS
+            ===================================================== */
+
+            $motivos =
+                $db
+                ->table('ai_reporte_motivos rm')
+                ->select([
+                    'rm.id_reporte_motivo',
+                    'rm.id_motivo',
+
+                    'm.motivo',
+
+                    's.id_sancion',
+                    's.tipo AS sancion',
+                    's.descripcion_otro AS sancion_otro',
+                    's.folio_sancion',
+                ])
+                ->join(
+                    'ai_cat_motivos m',
+                    'm.id_motivo = rm.id_motivo',
+                    'left'
+                )
+                ->join(
+                    'ai_reporte_sanciones s',
+                    's.id_reporte_motivo = rm.id_reporte_motivo'
+                        . ' AND s.eliminado = 0',
+                    'left'
+                )
+                ->where(
+                    'rm.id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'rm.eliminado',
+                    0
+                )
+                ->orderBy(
+                    'rm.id_reporte_motivo',
+                    'ASC'
+                )
+                ->get()
+                ->getResultArray();
 
             /* =====================================================
             SANCIÓN DISCIPLINARIA VIGENTE
@@ -1975,6 +2018,9 @@ class Reportes_Controller extends BaseController
 
                     'evidencias' =>
                     $evidencias,
+
+                    'motivos' =>
+                    $motivos,
 
                     'sancion' =>
                     $sancionDetalle,

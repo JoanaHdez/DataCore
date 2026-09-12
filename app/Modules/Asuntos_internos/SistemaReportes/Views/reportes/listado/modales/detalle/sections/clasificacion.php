@@ -15,7 +15,10 @@
 
     <div class="detalle-reporte-grid">
 
-        <!-- CLASIFICACIÓN -->
+        <!-- =====================================================
+             CLASIFICACIÓN
+        ====================================================== -->
+
         <div class="detalle-reporte-campo">
 
             <span>
@@ -29,7 +32,10 @@
         </div>
 
 
-        <!-- INSPECTOR -->
+        <!-- =====================================================
+             INSPECTOR
+        ====================================================== -->
+
         <div class="detalle-reporte-campo">
 
             <span>
@@ -43,7 +49,10 @@
         </div>
 
 
-        <!-- INVESTIGADOR -->
+        <!-- =====================================================
+             INVESTIGADOR
+        ====================================================== -->
+
         <div class="detalle-reporte-campo">
 
             <span>
@@ -57,26 +66,114 @@
         </div>
 
 
-        <!-- SANCIÓN DISCIPLINARIA -->
+        <!-- =====================================================
+             ESTADO
+        ====================================================== -->
+
         <div class="detalle-reporte-campo">
 
             <span>
-                Sanción disciplinaria
+                Estado
             </span>
 
-            <strong id="detalle-sancion-disciplinaria">
-                Sin sanción registrada
+            <strong id="detalle-estado-actual">
+                —
             </strong>
-
-            <small id="detalle-sancion-origen" class="detalle-reporte-campo__aviso" hidden>
-                Actualizada desde seguimiento
-            </small>
 
         </div>
 
 
-        <!-- QUIÉN EMITE LA RESOLUCIÓN -->
+        <!-- =====================================================
+             SITUACIÓN DE LA SANCIÓN
+        ====================================================== -->
+
         <div class="detalle-reporte-campo">
+
+            <span>
+                Situación de la sanción
+            </span>
+
+            <strong id="detalle-situacion-sancion">
+                —
+            </strong>
+
+        </div>
+
+
+        <!-- =====================================================
+             ESPACIO VACÍO
+        ====================================================== -->
+
+        <div class="detalle-clasificacion__espacio"></div>
+
+
+        <!-- =====================================================
+             MOTIVOS
+        ====================================================== -->
+
+        <div class="detalle-reporte-campo detalle-reporte-campo--full detalle-clasificacion__motivos">
+
+            <span>
+                Motivos
+            </span>
+
+
+            <!-- =================================================
+                 SIN MOTIVOS
+            ================================================== -->
+
+            <div class="detalle-clasificacion__motivos-vacio" id="detalle-motivos-vacio">
+                Sin motivos relacionados
+            </div>
+
+
+            <!-- =================================================
+                 TABLA DE MOTIVOS
+            ================================================== -->
+
+            <div class="detalle-clasificacion__motivos-wrapper" id="detalle-motivos-wrapper" hidden>
+
+                <table class="detalle-clasificacion__motivos-tabla">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Num
+                            </th>
+
+                            <th>
+                                Motivo
+                            </th>
+
+                            <th>
+                                Sanción
+                            </th>
+
+                            <th>
+                                Folio sanción
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="detalle-motivos-body"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             QUIÉN EMITE LA RESOLUCIÓN
+        ====================================================== -->
+
+        <div class="detalle-reporte-campo detalle-reporte-campo--full detalle-clasificacion__resolucion-emisor">
 
             <span>
                 Quién emite la resolución
@@ -89,28 +186,17 @@
         </div>
 
 
-        <!-- RESOLUCIÓN -->
-        <div class="detalle-reporte-campo detalle-reporte-campo--full">
+        <!-- =====================================================
+             RESOLUCIÓN
+        ====================================================== -->
+
+        <div class="detalle-reporte-campo detalle-reporte-campo--full detalle-clasificacion__resolucion">
 
             <span>
                 Resolución
             </span>
 
             <strong id="detalle-resolucion">
-                —
-            </strong>
-
-        </div>
-
-
-        <!-- MOTIVOS -->
-        <div class="detalle-reporte-campo detalle-reporte-campo--full">
-
-            <span>
-                Motivos
-            </span>
-
-            <strong id="detalle-motivos">
                 —
             </strong>
 
