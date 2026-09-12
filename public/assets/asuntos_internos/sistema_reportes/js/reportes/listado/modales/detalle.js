@@ -54,6 +54,10 @@ import {
     limpiarEvidenciaDetalle,
 } from './detalle/secciones/evidencias.js';
 
+import {
+    cargarObservacionesDetalle,
+} from './detalle/secciones/observaciones.js';
+
 
 /* =========================================================
    SISTEMA DE REPORTES - ASUNTOS INTERNOS
@@ -524,8 +528,8 @@ function cargarDetalleReporte(
 
 
     /* =====================================================
-   CLASIFICACIÓN Y SEGUIMIENTO
-===================================================== */
+    CLASIFICACIÓN Y SEGUIMIENTO
+    ===================================================== */
 
     cargarClasificacionDetalle(
         modal,
@@ -534,13 +538,12 @@ function cargarDetalleReporte(
     );
 
     /* =====================================================
-       OBSERVACIONES
+    OBSERVACIONES
     ===================================================== */
 
-    asignarTextoDetalle(
+    cargarObservacionesDetalle(
         modal,
-        '#detalle-observaciones',
-        reporte.observaciones
+        reporte
     );
 
 
