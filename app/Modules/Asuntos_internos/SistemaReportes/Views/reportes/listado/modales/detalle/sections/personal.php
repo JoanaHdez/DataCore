@@ -16,18 +16,12 @@
     <!-- =====================================================
          CONTENEDOR DE PERSONAL
     ====================================================== -->
-    <div
-        class="detalle-personal"
-        id="detalle-personal"
-    >
+    <div class="detalle-personal" id="detalle-personal">
 
         <!-- =================================================
              ESTADO VACÍO
         ================================================== -->
-        <div
-            class="detalle-personal__vacio"
-            id="detalle-personal-vacio"
-        >
+        <div class="detalle-personal__vacio" id="detalle-personal-vacio">
             No hay personal relacionado con este reporte.
         </div>
 
@@ -35,11 +29,7 @@
         <!-- =================================================
              TABLA
         ================================================== -->
-        <div
-            class="detalle-personal__tabla-wrapper"
-            id="detalle-personal-tabla-wrapper"
-            hidden
-        >
+        <div class="detalle-personal__tabla-wrapper" id="detalle-personal-tabla-wrapper" hidden>
 
             <table class="detalle-personal__tabla">
 

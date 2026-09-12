@@ -1,0 +1,195 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   DETALLE DE QUEJAS
+   PERSONAL INVOLUCRADO
+========================================================= */
+
+
+/* =========================================================
+   CONTENEDOR
+========================================================= */
+
+.detalle-personal {
+
+    overflow: hidden;
+
+    border-top: 1px solid #e6edf3;
+}
+
+
+/* =========================================================
+   ESTADO VACÍO
+========================================================= */
+
+.detalle-personal__vacio {
+
+    padding: 18px 20px;
+
+    color: #718498;
+
+    background: #f8fbfd;
+
+    border-top: 1px solid #e5edf3;
+
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+
+.detalle-personal__vacio[hidden],
+.detalle-personal__tabla-wrapper[hidden] {
+
+    display: none !important;
+}
+
+
+/* =========================================================
+   WRAPPER TABLA
+========================================================= */
+
+.detalle-personal__tabla-wrapper {
+
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+/* =========================================================
+   TABLA
+========================================================= */
+
+.detalle-personal__tabla {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    background: #ffffff;
+}
+
+
+.detalle-personal__tabla th {
+
+    padding: 11px 14px;
+
+    color: #5f7387;
+
+    background: #f7fafc;
+
+    border-bottom: 1px solid #e4ecf2;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    text-align: left;
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+
+.detalle-personal__tabla td {
+
+    padding: 13px 14px;
+
+    color: #29445c;
+
+    border-bottom: 1px solid #edf2f6;
+
+    font-size: 9px;
+    line-height: 1.45;
+
+    vertical-align: middle;
+}
+
+
+.detalle-personal__tabla tbody tr:last-child td {
+
+    border-bottom: 0;
+}
+
+
+.detalle-personal__tabla tbody tr:hover {
+
+    background: #fbfdff;
+}
+
+
+/* =========================================================
+   NOMBRE
+========================================================= */
+
+.detalle-personal__tabla td strong {
+
+    display: block;
+
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   FOTO
+========================================================= */
+
+.detalle-personal__foto {
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background: #e8f3fb;
+
+    border: 1px solid #cfe1ed;
+    border-radius: 50%;
+}
+
+
+.detalle-personal__foto img {
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+
+.detalle-personal__foto span {
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #1681c4;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 800px) {
+
+    .detalle-personal__tabla {
+
+        min-width: 650px;
+    }
+}
