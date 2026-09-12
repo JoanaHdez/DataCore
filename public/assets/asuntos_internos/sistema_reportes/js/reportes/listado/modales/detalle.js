@@ -13,13 +13,20 @@ import {
     cargarDatosReporteDetalle,
 } from './detalle/secciones/datosReporte.js';
 
+
 import {
     cargarIdentificacionDetalle,
 } from './detalle/secciones/identificacion.js';
 
+
 import {
     cargarDatosHechosDetalle,
 } from './detalle/secciones/datosHechos.js';
+
+
+import {
+    cargarUbicacionDetalle,
+} from './detalle/secciones/ubicacion.js';
 
 
 /* =========================================================
@@ -447,90 +454,12 @@ function cargarDetalleReporte(
 
 
     /* =====================================================
-       UBICACIÓN
+    UBICACIÓN
     ===================================================== */
 
-    asignarTextoDetalle(
+    cargarUbicacionDetalle(
         modal,
-        '#detalle-calle',
-        reporte.calle
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-numero',
-        reporte.numero_exterior
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-colonia',
-        reporte.colonia
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-entre-calle',
-        reporte.entre_calle
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-y-calle',
-        reporte.y_calle
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-municipio',
-        reporte.municipio
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-estado',
-        reporte.estado
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-sector',
-        reporte.sector
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-cuadrante',
-        reporte.cuadrante
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-id-cuadra',
-        reporte.id_cuadra
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-latitud',
-        reporte.latitud
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-longitud',
-        reporte.longitud
+        reporte
     );
 
 
