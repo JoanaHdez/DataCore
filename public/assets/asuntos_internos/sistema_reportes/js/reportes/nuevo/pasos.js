@@ -348,7 +348,30 @@ function inicializarFormularioPorPasos() {
                         formulario
                     );
 
+                console.log(
+    'PRUEBA QUEJOSO:',
+    {
+        es_anonimo:
+            datos.get(
+                'es_anonimo'
+            ),
 
+        numero_anonimo:
+            datos.get(
+                'numero_anonimo'
+            ),
+
+        canalizacion:
+            datos.get(
+                'canalizacion'
+            ),
+
+        canalizacion_otro:
+            datos.get(
+                'canalizacion_otro'
+            ),
+    }
+);
                 /* =============================================
                    ENDPOINT
                 ============================================= */
@@ -454,7 +477,7 @@ function inicializarFormularioPorPasos() {
                         resultado.message
                         || 'El reporte se registró correctamente.',
 
-                        url:
+                    url:
                         '/DataCore/public/asuntos-internos/reportes/listado',
 
                     duracion:

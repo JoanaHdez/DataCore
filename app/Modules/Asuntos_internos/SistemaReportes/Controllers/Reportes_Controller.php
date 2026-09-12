@@ -1499,6 +1499,12 @@ class Reportes_Controller extends BaseController
                     'telefono_quejoso',
                     'correo_quejoso',
 
+                    'es_anonimo',
+                    'numero_anonimo',
+
+                    'canalizacion_area',
+                    'canalizacion_otro',
+
                     'clasificacion',
                     'inspector',
                     'investigador',

@@ -294,6 +294,12 @@ function inicializarQuejosoAnonimo() {
         );
 
 
+    /*
+     * Solo se deshabilitan los datos personales.
+     *
+     * La canalización debe permanecer disponible
+     * aunque la queja sea anónima.
+     */
     const camposQuejoso = [
 
         document.querySelector(
@@ -314,18 +320,6 @@ function inicializarQuejosoAnonimo() {
 
         document.querySelector(
             '#correo'
-        ),
-
-        document.querySelector(
-            '#buscar-canalizacion'
-        ),
-
-        document.querySelector(
-            '#canalizacion'
-        ),
-
-        document.querySelector(
-            '#canalizacion_otro'
         ),
     ];
 
@@ -367,7 +361,7 @@ function inicializarQuejosoAnonimo() {
 
 
         /* =================================================
-           CAMPOS DEL QUEJOSO
+           DATOS PERSONALES DEL QUEJOSO
         ================================================= */
 
         camposQuejoso.forEach(
@@ -388,10 +382,20 @@ function inicializarQuejosoAnonimo() {
                     esAnonimo
                 ) {
 
-                    campo.dataset.requiredOriginal =
-                        campo.required
-                            ? '1'
-                            : '0';
+                    /*
+                     * Guardamos si originalmente era
+                     * obligatorio antes de deshabilitarlo.
+                     */
+                    if (
+                        campo.dataset.requiredOriginal
+                        === undefined
+                    ) {
+
+                        campo.dataset.requiredOriginal =
+                            campo.required
+                                ? '1'
+                                : '0';
+                    }
 
 
                     campo.required =
@@ -399,59 +403,18 @@ function inicializarQuejosoAnonimo() {
 
                 } else {
 
-                    if (
+                    /*
+                     * Restauramos el required original.
+                     */
+                    campo.required =
                         campo.dataset.requiredOriginal
-                        === '1'
-                    ) {
-
-                        campo.required =
-                            true;
-                    }
+                        === '1';
 
 
                     delete campo.dataset.requiredOriginal;
                 }
             }
         );
-
-
-        /* =================================================
-           BOTÓN QUITAR CANALIZACIÓN
-        ================================================= */
-
-        const botonQuitar =
-            document.querySelector(
-                '#btn-quitar-canalizacion'
-            );
-
-
-        if (
-            botonQuitar
-        ) {
-
-            botonQuitar.disabled =
-                esAnonimo;
-        }
-
-
-        /* =================================================
-           RESULTADOS
-        ================================================= */
-
-        const resultados =
-            document.querySelector(
-                '#canalizacion-resultados'
-            );
-
-
-        if (
-            esAnonimo
-            && resultados
-        ) {
-
-            resultados.hidden =
-                true;
-        }
 
 
         /* =================================================

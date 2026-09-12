@@ -39,6 +39,11 @@ import {
 } from './detalle/secciones/unidades.js';
 
 
+import {
+    cargarQuejosoDetalle,
+} from './detalle/secciones/quejoso.js';
+
+
 /* =========================================================
    SISTEMA DE REPORTES - ASUNTOS INTERNOS
    Listado - Detalle real del reporte
@@ -490,41 +495,12 @@ function cargarDetalleReporte(
     );
 
     /* =====================================================
-       QUEJOSO
+    QUEJOSO
     ===================================================== */
 
-    asignarTextoDetalle(
+    cargarQuejosoDetalle(
         modal,
-        '#detalle-quejoso',
-        reporte.nombre_quejoso
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-edad',
-        reporte.edad_quejoso
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-genero',
-        reporte.genero_quejoso
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-telefono',
-        reporte.telefono_quejoso
-    );
-
-
-    asignarTextoDetalle(
-        modal,
-        '#detalle-correo',
-        reporte.correo_quejoso
+        reporte
     );
 
 
