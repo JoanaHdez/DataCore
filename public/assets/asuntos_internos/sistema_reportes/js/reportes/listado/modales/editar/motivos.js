@@ -12,7 +12,11 @@
 const motivosSeleccionados =
     new Map();
 
-    /* =========================================================
+
+const motivosRespaldo =
+    new Map();
+
+/* =========================================================
    CARGAR MOTIVOS EXISTENTES
 ========================================================= */
 
@@ -32,6 +36,8 @@ export function cargarMotivosEditar(
 
     motivosSeleccionados.clear();
 
+    motivosRespaldo.clear();
+
 
     /* =====================================================
        VALIDAR
@@ -46,6 +52,7 @@ export function cargarMotivosEditar(
         renderizarMotivosEditar(
             modal
         );
+
 
         return;
     }
@@ -139,7 +146,6 @@ export function cargarMotivosEditar(
         modal
     );
 }
-
 /* =========================================================
    INICIALIZAR
 ========================================================= */
@@ -276,6 +282,10 @@ export function inicializarMotivosEditar(
                 idMotivo
             );
 
+
+            motivosRespaldo.delete(
+                idMotivo
+            );
 
             renderizarMotivosEditar(
                 modal
@@ -955,8 +965,18 @@ export function limpiarMotivosEditar(
     modal
 ) {
 
+    /* =====================================================
+       LIMPIAR ESTADOS
+    ===================================================== */
+
     motivosSeleccionados.clear();
 
+    motivosRespaldo.clear();
+
+
+    /* =====================================================
+       BUSCADOR
+    ===================================================== */
 
     const buscador =
         modal?.querySelector(
@@ -983,6 +1003,10 @@ export function limpiarMotivosEditar(
             true;
     }
 
+
+    /* =====================================================
+       RENDERIZAR
+    ===================================================== */
 
     renderizarMotivosEditar(
         modal
@@ -1041,6 +1065,10 @@ export function establecerMotivosHabilitadosEditar(
         );
 
 
+    /* =====================================================
+       BUSCADOR
+    ===================================================== */
+
     if (buscador) {
 
         buscador.disabled =
@@ -1055,6 +1083,10 @@ export function establecerMotivosHabilitadosEditar(
     }
 
 
+    /* =====================================================
+       RESULTADOS
+    ===================================================== */
+
     if (resultados) {
 
         resultados.hidden =
@@ -1062,9 +1094,83 @@ export function establecerMotivosHabilitadosEditar(
     }
 
 
+    /* =====================================================
+       DESHABILITAR MOTIVOS
+    ===================================================== */
+
     if (!habilitados) {
 
+        /*
+         * Guardamos una copia de los motivos actuales
+         * antes de quitarlos de la interfaz.
+         */
+
+        motivosRespaldo.clear();
+
+
+        motivosSeleccionados.forEach(
+            (
+                motivo,
+                idMotivo
+            ) => {
+
+                motivosRespaldo.set(
+                    idMotivo,
+                    {
+                        ...motivo,
+                    }
+                );
+            }
+        );
+
+
+        /*
+         * Ahora sí quitamos los motivos activos.
+         */
+
         motivosSeleccionados.clear();
+
+
+        renderizarMotivosEditar(
+            modal
+        );
+
+
+        return;
+    }
+
+
+    /* =====================================================
+       VOLVER A HABILITAR MOTIVOS
+    ===================================================== */
+
+    /*
+     * Si no hay motivos activos pero tenemos un respaldo,
+     * significa que el usuario regresó a una situación
+     * donde los motivos sí aplican.
+     *
+     * Restauramos lo que tenía antes.
+     */
+
+    if (
+        motivosSeleccionados.size === 0
+        && motivosRespaldo.size > 0
+    ) {
+
+        motivosRespaldo.forEach(
+            (
+                motivo,
+                idMotivo
+            ) => {
+
+                motivosSeleccionados.set(
+                    idMotivo,
+                    {
+                        ...motivo,
+                    }
+                );
+            }
+        );
 
 
         renderizarMotivosEditar(

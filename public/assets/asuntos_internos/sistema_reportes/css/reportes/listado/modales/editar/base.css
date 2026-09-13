@@ -1,0 +1,344 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   EDITAR REPORTE
+   ESTILOS BASE
+========================================================= */
+
+
+/* =========================================================
+   FORMULARIO
+========================================================= */
+
+.modal-reporte__form--editar {
+    flex: 0 1 auto;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modal-reporte__dialog--editar {
+    width: min(1180px, 100%);
+
+    height: auto;
+    max-height: calc(100vh - 48px);
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   HEADER FIJO
+========================================================= */
+
+.modal-reporte__dialog--editar
+> .modal-reporte__header {
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   NAVEGACIÓN FIJA
+========================================================= */
+
+.modal-reporte__dialog--editar
+> .detalle-reporte-nav {
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+.modal-reporte__body--editar {
+    flex: 0 1 auto;
+    min-height: 0;
+
+    max-height: calc(100vh - 230px);
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding: 24px;
+
+    background: #ffffff;
+}
+
+
+/* =========================================================
+   FOOTER FIJO
+========================================================= */
+
+.modal-reporte__form--editar
+> .modal-reporte__footer {
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   BLOQUES
+========================================================= */
+
+.editar-reporte-seccion__bloque {
+    width: 100%;
+
+    margin-bottom: 24px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe7ef;
+    border-radius: 12px;
+
+    box-shadow:
+        0 4px 14px rgba(24, 54, 88, 0.05);
+}
+
+
+.editar-reporte-seccion__bloque:last-child {
+    margin-bottom: 0;
+}
+
+
+.editar-reporte-seccion__bloque
++ .editar-reporte-seccion__bloque {
+    margin-top: 24px;
+}
+
+
+/* =========================================================
+   HEADER DE BLOQUE
+========================================================= */
+
+.editar-reporte-seccion__bloque
+.detalle-reporte-seccion__header {
+    margin: 0;
+
+    padding: 18px 22px 16px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ffffff 0%,
+            #f7faff 100%
+        );
+
+    border-bottom: 1px solid #e8eef4;
+}
+
+
+.editar-reporte-seccion__bloque
+.detalle-reporte-seccion__header span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #1475bd;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
+
+
+.editar-reporte-seccion__bloque
+.detalle-reporte-seccion__header h3 {
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 17px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.editar-reporte-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+
+.editar-reporte-seccion__bloque
+.editar-reporte-grid {
+    padding: 22px;
+}
+
+
+/* =========================================================
+   CAMPOS
+========================================================= */
+
+.editar-reporte-campo {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+
+.editar-reporte-campo--full {
+    grid-column: 1 / -1;
+}
+
+
+.editar-reporte-campo label {
+    color: #243c5a;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   INPUTS / SELECT / TEXTAREA
+========================================================= */
+
+.editar-reporte-campo input,
+.editar-reporte-campo select,
+.editar-reporte-campo textarea {
+    width: 100%;
+
+    color: #183452;
+    background: #ffffff;
+
+    border: 1px solid #ccd8e4;
+    border-radius: 8px;
+
+    outline: none;
+
+    font-family: inherit;
+    font-size: 12px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+
+
+.editar-reporte-campo input,
+.editar-reporte-campo select {
+    min-height: 43px;
+
+    padding: 0 13px;
+}
+
+
+.editar-reporte-campo textarea {
+    min-height: 110px;
+
+    padding: 12px 13px;
+
+    resize: vertical;
+}
+
+
+/* =========================================================
+   FOCUS
+========================================================= */
+
+.editar-reporte-campo input:focus,
+.editar-reporte-campo select:focus,
+.editar-reporte-campo textarea:focus {
+    border-color: #2384c7;
+
+    box-shadow:
+        0 0 0 3px rgba(35, 132, 199, 0.11);
+}
+
+
+/* =========================================================
+   READONLY
+========================================================= */
+
+.editar-reporte-campo input[readonly] {
+    color: #536a83;
+
+    border-color: #d8e1ea;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f4f7fa,
+            #edf2f6
+        );
+
+    cursor: default;
+}
+
+
+/* =========================================================
+   OBLIGATORIOS
+========================================================= */
+
+.editar-reporte-campo .required {
+    color: #c73c3c;
+}
+
+
+/* =========================================================
+   TEXTOS AUXILIARES
+========================================================= */
+
+.editar-reporte-campo small {
+    display: block;
+
+    margin-top: 8px;
+    margin-bottom: 0;
+
+    color: #708295;
+
+    font-size: 10px;
+    font-weight: 500;
+
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .editar-reporte-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .editar-reporte-campo--full {
+        grid-column: auto;
+    }
+
+
+    .modal-reporte__footer {
+        flex-direction: column-reverse;
+    }
+
+
+    .modal-reporte__button {
+        width: 100%;
+    }
+}

@@ -1,0 +1,333 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   EDITAR REPORTE
+   EVIDENCIAS
+========================================================= */
+
+
+/* =========================================================
+   LISTA DE EVIDENCIAS
+========================================================= */
+
+.editar-evidencia__lista {
+    width: 100%;
+
+    padding: 14px;
+
+    color: #617487;
+    background: #f7f9fb;
+
+    border: 1px solid #e0e7ee;
+    border-radius: 8px;
+}
+
+
+/* =========================================================
+   ESTADO VACÍO
+========================================================= */
+
+.editar-evidencia__vacio {
+    display: block;
+
+    padding: 15px;
+
+    color: #7b8998;
+    background: #f8fafc;
+
+    border: 1px dashed #ccd9e4;
+    border-radius: 9px;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   CARGA DE EVIDENCIA
+========================================================= */
+
+.editar-evidencia-carga {
+    width: 100%;
+}
+
+
+.editar-evidencia-carga__input {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   ZONA DE SELECCIÓN
+========================================================= */
+
+.editar-evidencia-carga__zona {
+    width: 100%;
+    min-height: 110px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 16px;
+
+    padding: 20px;
+
+    color: #526779;
+
+    background:
+        linear-gradient(
+            180deg,
+            #fbfdff,
+            #f5f9fc
+        );
+
+    border: 1.5px dashed #aac1d4;
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.editar-evidencia-carga__zona:hover {
+    border-color: #1681c4;
+
+    background: #f2f9fe;
+
+    box-shadow:
+        0 6px 16px rgba(22, 129, 196, 0.08);
+}
+
+
+/* =========================================================
+   ICONO DE CARGA
+========================================================= */
+
+.editar-evidencia-carga__icono {
+    width: 46px;
+    height: 46px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #1475bd;
+    background: #e9f5fc;
+
+    border-radius: 10px;
+
+    font-size: 24px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   TEXTO DE CARGA
+========================================================= */
+
+.editar-evidencia-carga__texto {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+
+.editar-evidencia-carga__texto strong {
+    color: #173554;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+.editar-evidencia-carga__texto span {
+    color: #718293;
+
+    font-size: 10px;
+}
+
+
+.editar-evidencia-carga__texto small {
+    color: #98a6b3;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   ELEMENTO DE EVIDENCIA
+========================================================= */
+
+.editar-evidencia__item {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    min-width: 0;
+
+    padding: 12px;
+    margin-bottom: 10px;
+
+    background: #f8fbfd;
+
+    border: 1px solid #dce6ef;
+    border-radius: 10px;
+}
+
+
+/* =========================================================
+   PREVISUALIZACIÓN
+========================================================= */
+
+.editar-evidencia__preview {
+    flex: 0 0 90px;
+
+    width: 90px;
+    height: 68px;
+
+    padding: 0;
+
+    overflow: hidden;
+
+    background: #eef4f8;
+
+    border: 1px solid #d2e0e9;
+    border-radius: 8px;
+
+    cursor: pointer;
+}
+
+
+.editar-evidencia__preview img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+/* =========================================================
+   INFORMACIÓN DE LA EVIDENCIA
+========================================================= */
+
+.editar-evidencia__contenido {
+    display: flex;
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 4px;
+
+    min-width: 0;
+
+    flex: 1;
+}
+
+
+.editar-evidencia__nombre {
+    display: block;
+
+    width: 100%;
+
+    overflow: hidden;
+
+    color: #173554;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.editar-evidencia__tipo {
+    color: #7b8998;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   ACCIONES
+========================================================= */
+
+.editar-evidencia__acciones {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 4px;
+}
+
+
+.editar-evidencia__accion {
+    padding: 0;
+
+    background: transparent;
+
+    border: 0;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+.editar-evidencia__accion--ver {
+    color: #1475bd;
+}
+
+
+.editar-evidencia__accion--quitar {
+    color: #c84141;
+}
+
+
+.editar-evidencia__accion:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   ETIQUETA DE NUEVA EVIDENCIA
+========================================================= */
+
+.editar-evidencia__nueva-etiqueta {
+    display: inline-flex;
+
+    margin-top: 3px;
+
+    padding: 3px 7px;
+
+    color: #1475bd;
+    background: #eaf5fc;
+
+    border-radius: 20px;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+}

@@ -54,18 +54,18 @@
 
 
         <!-- EXPEDIENTE -->
-        <div class="report-field">
+        <div class="editar-reporte-campo">
 
             <label for="editar-expediente">
                 Expediente
             </label>
 
-            <input type="text" id="editar-expediente" name="expediente" class="report-input"
-                placeholder="Ingresa el número de expediente" autocomplete="off">
+            <input type="text" id="editar-expediente" name="expediente" placeholder="Ingresa el número de expediente"
+                autocomplete="off">
 
         </div>
 
-        
+
         <!-- NOMENCLATURA -->
         <div class="editar-reporte-campo">
 

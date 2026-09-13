@@ -4,7 +4,6 @@
 ========================================================= */
 
 import {
-    asignarValorEditar,
     obtenerDatoFormulario,
     construirFolio,
     formatearFechaTabla,
@@ -13,7 +12,6 @@ import {
     escaparHTML,
     obtenerClaseEstado,
 } from './utilidades.js';
-
 
 import {
     cargarPersonalEditar,
@@ -71,6 +69,12 @@ import {
     cargarObservacionesEditar,
     limpiarObservacionesEditar,
 } from './observaciones.js';
+
+
+import {
+    cargarDatosReporteEditar,
+    limpiarDatosReporteEditar,
+} from './datosReporte.js';
 
 
 /* =========================================================
@@ -348,20 +352,12 @@ export function cargarReporteEnFormulario(
 
 
     /* =====================================================
-       DATOS DEL REPORTE
+    DATOS DEL REPORTE
     ===================================================== */
 
-    asignarValorEditar(
+    cargarDatosReporteEditar(
         modal,
-        '#editar-folio',
-        reporte.folio
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-fecha-registro',
-        reporte.fecha_registro
+        reporte
     );
 
 
@@ -891,6 +887,13 @@ export function limpiarFormularioEditar(
         }
     );
 
+    /* =====================================================
+    DATOS DEL REPORTE
+    ===================================================== */
+
+    limpiarDatosReporteEditar(
+        modal
+    );
 
     /* =====================================================
        PERSONAL

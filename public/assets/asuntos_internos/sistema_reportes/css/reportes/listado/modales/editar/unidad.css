@@ -1,0 +1,425 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+   EDITAR REPORTE
+   UNIDADES
+========================================================= */
+
+
+/* =========================================================
+   RESULTADOS - UNIDADES
+========================================================= */
+
+.editar-unidad-resultados__item {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 11px 14px;
+
+    text-align: left;
+
+    background: #ffffff;
+
+    border: 0;
+    border-bottom: 1px solid #edf2f6;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease;
+}
+
+
+.editar-unidad-resultados__item:last-child {
+    border-bottom: 0;
+}
+
+
+.editar-unidad-resultados__item:hover {
+    background: #f5faff;
+}
+
+
+/* =========================================================
+   ICONO DE RESULTADO
+========================================================= */
+
+.editar-unidad-resultados__icono {
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #ffffff;
+    background: #1681c4;
+
+    border-radius: 8px;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   DATOS DE RESULTADO
+========================================================= */
+
+.editar-unidad-resultados__datos {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+.editar-unidad-resultados__datos strong {
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+.editar-unidad-resultados__datos small {
+    color: #738698;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   UNIDAD SELECCIONADA
+========================================================= */
+
+.editar-unidad-seleccionada {
+    margin-top: 18px;
+
+    padding: 20px;
+
+    background: #f8fbfe;
+
+    border: 1px solid #dbe6ef;
+    border-radius: 12px;
+}
+
+
+.editar-unidad-seleccionada[hidden] {
+    display: none !important;
+}
+
+
+/* =========================================================
+   ACCIONES UNIDAD SELECCIONADA
+========================================================= */
+
+.editar-unidad-seleccionada__acciones {
+    display: flex;
+    justify-content: flex-end;
+
+    margin-top: 18px;
+}
+
+
+/* =========================================================
+   UNIDADES AGREGADAS
+========================================================= */
+
+.editar-unidades-agregadas {
+    margin-top: 22px;
+
+    background: #ffffff;
+
+    border: 1px solid #dce6ee;
+    border-radius: 12px;
+
+    overflow: hidden;
+}
+
+
+.editar-unidades-agregadas[hidden] {
+    display: none !important;
+}
+
+
+/* =========================================================
+   HEADER UNIDADES AGREGADAS
+========================================================= */
+
+.editar-unidades-agregadas__header {
+    padding: 14px 18px;
+
+    background: #f5f9fc;
+
+    border-bottom: 1px solid #e4ebf1;
+}
+
+
+.editar-unidades-agregadas__header span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #1475bd;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+
+.editar-unidades-agregadas__header strong {
+    color: #173554;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   WRAPPER TABLA
+========================================================= */
+
+.editar-unidades-agregadas__tabla-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+/* =========================================================
+   TABLA UNIDADES
+========================================================= */
+
+.editar-unidades-agregadas__tabla {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+
+.editar-unidades-agregadas__tabla th {
+    padding: 10px 11px;
+
+    color: #64798b;
+    background: #fbfcfd;
+
+    border-bottom: 1px solid #e5edf3;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    text-align: left;
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+
+.editar-unidades-agregadas__tabla td {
+    padding: 11px;
+
+    color: #29445c;
+
+    border-bottom: 1px solid #edf2f6;
+
+    font-size: 8.5px;
+    line-height: 1.45;
+
+    vertical-align: middle;
+}
+
+
+.editar-unidades-agregadas__tabla
+tbody
+tr:last-child
+td {
+    border-bottom: 0;
+}
+
+
+.editar-unidades-agregadas__tabla
+td strong {
+    display: block;
+
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   PLACAS EN TABLA
+========================================================= */
+
+.editar-unidad-tabla__placas {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #8292a0;
+
+    font-size: 8px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   MODALIDAD DE UNIDAD
+========================================================= */
+
+.unidad-modalidad {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin-top: 6px;
+}
+
+
+.unidad-modalidad__opcion {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    min-height: 38px;
+
+    padding: 8px 12px;
+
+    color: #40586d;
+    background: #ffffff;
+
+    border: 1px solid #d5e0e9;
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.unidad-modalidad__opcion:hover {
+    background: #f5faff;
+
+    border-color: #b9d7ea;
+}
+
+
+.unidad-modalidad__opcion
+input[type="radio"] {
+    width: 16px;
+    height: 16px;
+
+    min-width: 16px;
+    min-height: 16px;
+
+    margin: 0;
+
+    padding: 0;
+
+    flex: 0 0 16px;
+
+    accent-color: #1681c4;
+
+    box-shadow: none;
+}
+
+
+.unidad-modalidad__opcion:has(
+    input[type="radio"]:checked
+) {
+    color: #0f6298;
+
+    background: #eef8fe;
+
+    border-color: #79bce4;
+
+    box-shadow:
+        0 0 0 2px rgba(22, 129, 196, 0.07);
+}
+
+
+.unidad-modalidad__opcion span {
+    line-height: 1.2;
+}
+
+
+/* =========================================================
+   SIN UNIDAD / OFICINA
+========================================================= */
+
+.unidad-sin-unidad {
+    margin-top: 16px;
+
+    padding: 15px 16px;
+
+    background: #f6faff;
+
+    border: 1px solid #d5e7f3;
+    border-radius: 10px;
+}
+
+
+.unidad-sin-unidad[hidden] {
+    display: none !important;
+}
+
+
+.unidad-sin-unidad__contenido {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+
+.unidad-sin-unidad__contenido strong {
+    color: #173554;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+.unidad-sin-unidad__contenido p {
+    margin: 0;
+
+    color: #6f8293;
+
+    font-size: 10px;
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 800px) {
+
+    .editar-unidades-agregadas__tabla {
+        min-width: 900px;
+    }
+
+}

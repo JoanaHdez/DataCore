@@ -52,6 +52,10 @@
 @import url("./reportes/listado/modales/editar/ubicacion.css");
 @import url("./reportes/listado/modales/editar/quejoso.css");
 @import url("./reportes/listado/modales/editar/clasificacion.css");
+@import url("./reportes/listado/modales/editar/base.css");
+@import url("./reportes/listado/modales/editar/personal.css");
+@import url("./reportes/listado/modales/editar/unidad.css");
+@import url("./reportes/listado/modales/editar/evidencia.css");
 
 
 /* =========================================================
