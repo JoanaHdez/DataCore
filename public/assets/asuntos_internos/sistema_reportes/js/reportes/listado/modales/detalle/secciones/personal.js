@@ -13,6 +13,10 @@ import {
    RENDERIZAR PERSONAL
 ========================================================= */
 
+/* =========================================================
+   RENDERIZAR PERSONAL
+========================================================= */
+
 export function renderizarPersonalDetalle(
     modal,
     personal
@@ -90,39 +94,77 @@ export function renderizarPersonalDetalle(
                 );
 
 
+            /* =================================================
+               NOMBRE
+            ================================================= */
+
             const nombre =
                 String(
                     persona.nombre
-                    || ''
+                    ?? persona.nombre_snapshot
+                    ?? ''
                 )
                     .trim()
                     .toUpperCase();
 
+
+            /* =================================================
+               NÓMINA
+            ================================================= */
 
             const nomina =
                 String(
                     persona.nomina
-                    || ''
+                    ?? persona.perscod
+                    ?? ''
                 ).trim();
 
+
+            /* =================================================
+               ÁREA
+            ================================================= */
 
             const area =
                 String(
                     persona.area
-                    || ''
+                    ?? persona.area_snapshot
+                    ?? ''
                 )
                     .trim()
                     .toUpperCase();
 
+
+            /* =================================================
+               TURNO
+            ================================================= */
 
             const turno =
                 String(
                     persona.turno
-                    || ''
+                    ?? persona.turno_snapshot
+                    ?? ''
                 )
                     .trim()
                     .toUpperCase();
 
+
+            /* =================================================
+               ALIAS
+            ================================================= */
+
+            const alias =
+                String(
+                    persona.alias
+                    ?? persona.alias_snapshot
+                    ?? ''
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            /* =================================================
+               FOTO
+            ================================================= */
 
             const foto =
                 String(
@@ -138,7 +180,7 @@ export function renderizarPersonalDetalle(
 
 
             /* =================================================
-               FOTO
+               FOTO HTML
             ================================================= */
 
             const fotoHtml =
@@ -178,10 +220,13 @@ export function renderizarPersonalDetalle(
 
             fila.innerHTML = `
 
+                <!-- FOTO -->
                 <td>
                     ${fotoHtml}
                 </td>
 
+
+                <!-- NOMBRE -->
                 <td>
                     <strong>
                         ${escaparHtmlDetalle(
@@ -190,21 +235,35 @@ export function renderizarPersonalDetalle(
                     </strong>
                 </td>
 
+
+                <!-- NÓMINA -->
                 <td>
                     ${escaparHtmlDetalle(
                         nomina || '—'
                     )}
                 </td>
 
+
+                <!-- ÁREA -->
                 <td>
                     ${escaparHtmlDetalle(
                         area || '—'
                     )}
                 </td>
 
+
+                <!-- TURNO -->
                 <td>
                     ${escaparHtmlDetalle(
                         turno || '—'
+                    )}
+                </td>
+
+
+                <!-- ALIAS -->
+                <td>
+                    ${escaparHtmlDetalle(
+                        alias || '—'
                     )}
                 </td>
 
@@ -217,6 +276,10 @@ export function renderizarPersonalDetalle(
         }
     );
 
+
+    /* =====================================================
+       MOSTRAR TABLA
+    ===================================================== */
 
     vacio.hidden =
         true;
