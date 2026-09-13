@@ -79,8 +79,8 @@
                 </label>
 
 
-                <input type="number" id="editar-numero-anonimo" name="numero_anonimo" min="0" inputmode="numeric"
-                    autocomplete="off" placeholder="Ingresa el número asignado" disabled>
+                <input type="text" id="editar-numero-anonimo" name="numero_anonimo" autocomplete="off"
+                    placeholder="Ingresa el número asignado" disabled>
 
 
                 <small class="editar-reporte-campo__help">

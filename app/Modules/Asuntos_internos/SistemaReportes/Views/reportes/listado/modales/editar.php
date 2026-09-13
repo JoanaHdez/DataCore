@@ -23,19 +23,33 @@
                     Modificación del registro
                 </span>
 
+
                 <h2 class="modal-reporte__title" id="modal-editar-titulo">
                     Editar reporte
                 </h2>
 
 
-                <div class="editar-reporte-campo">
+                <!-- =========================================
+                     INFORMACIÓN FIJA DEL REGISTRO
+                ========================================== -->
+                <div class="detalle-reporte__meta">
 
-                    <label for="editar-expediente">
-                        Expediente
-                    </label>
+                    <span>
+                        Nomenclatura:
 
-                    <input type="text" id="editar-expediente" name="expediente"
-                        placeholder="Ingresa el número de expediente" autocomplete="off">
+                        <strong id="editar-meta-nomenclatura">
+                            —
+                        </strong>
+                    </span>
+
+
+                    <span>
+                        Estado:
+
+                        <strong id="editar-meta-estado">
+                            —
+                        </strong>
+                    </span>
 
                 </div>
 
@@ -59,17 +73,21 @@
                 Datos del reporte
             </button>
 
+
             <button type="button" class="detalle-reporte-nav__item" data-editar-seccion="hechos">
                 Datos de los hechos
             </button>
+
 
             <button type="button" class="detalle-reporte-nav__item" data-editar-seccion="personal">
                 Personal y unidades
             </button>
 
+
             <button type="button" class="detalle-reporte-nav__item" data-editar-seccion="quejoso">
                 Datos del quejoso
             </button>
+
 
             <button type="button" class="detalle-reporte-nav__item" data-editar-seccion="clasificacion">
                 Clasificación y seguimiento
@@ -88,9 +106,8 @@
 
 
             <!-- =================================================
-                 DATO ANÓNIMO
+                 BODY
             ================================================== -->
-
             <div class="modal-reporte__body modal-reporte__body--editar">
 
 
@@ -103,6 +120,7 @@
                     <?= $this->include(
                         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\datos_registro'
                     ) ?>
+
 
                     <?= $this->include(
                         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\identificacion'
@@ -121,6 +139,7 @@
                         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\datos_hechos'
                     ) ?>
 
+
                     <?= $this->include(
                         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\ubicacion'
                     ) ?>
@@ -137,6 +156,7 @@
                     <?= $this->include(
                         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\personal'
                     ) ?>
+
 
                     <?= $this->include(
                         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\unidad'
@@ -168,9 +188,11 @@
                         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\clasificacion'
                     ) ?>
 
+
                     <?= $this->include(
                         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\evidencia'
                     ) ?>
+
 
                     <?= $this->include(
                         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\observaciones'
@@ -190,6 +212,7 @@
                     data-cerrar-modal-editar>
                     Cancelar
                 </button>
+
 
                 <button type="submit" class="modal-reporte__button modal-reporte__button--primary">
                     Guardar cambios

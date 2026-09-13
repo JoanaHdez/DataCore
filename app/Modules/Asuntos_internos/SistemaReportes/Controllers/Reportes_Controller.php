@@ -1508,6 +1508,9 @@ class Reportes_Controller extends BaseController
                     'clasificacion',
                     'inspector',
                     'investigador',
+
+                    'baja_voluntaria',
+
                     'quien_emite_resolucion',
                     'resolucion',
                     'motivos',
@@ -1811,11 +1814,12 @@ class Reportes_Controller extends BaseController
                     'rm.id_motivo',
 
                     'm.motivo',
+                    'm.sancion AS sancion',
 
                     's.id_sancion',
-                    's.tipo AS sancion',
-                    's.descripcion_otro AS sancion_otro',
+                    's.tipo AS sancion_registrada',
                     's.folio_sancion',
+                    's.origen AS sancion_origen',
                 ])
                 ->join(
                     'ai_cat_motivos m',
@@ -1824,8 +1828,8 @@ class Reportes_Controller extends BaseController
                 )
                 ->join(
                     'ai_reporte_sanciones s',
-                    's.id_reporte_motivo = rm.id_reporte_motivo'
-                        . ' AND s.eliminado = 0',
+                    's.id_reporte_motivo = rm.id_reporte_motivo
+             AND s.eliminado = 0',
                     'left'
                 )
                 ->where(

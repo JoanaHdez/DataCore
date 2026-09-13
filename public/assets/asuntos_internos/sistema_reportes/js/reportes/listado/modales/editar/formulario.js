@@ -4,15 +4,7 @@
 ========================================================= */
 
 import {
-    estadoPersonal,
-    estadoUnidades,
-    establecerPersonal,
-    establecerUnidades,
-} from './estado.js';
-
-import {
     asignarValorEditar,
-    asignarSelectSeguro,
     obtenerDatoFormulario,
     construirFolio,
     formatearFechaTabla,
@@ -22,26 +14,63 @@ import {
     obtenerClaseEstado,
 } from './utilidades.js';
 
+
 import {
-    renderizarPersonalEditar,
-    limpiarSelectorPersonal,
+    cargarPersonalEditar,
+    obtenerPersonalEditar,
+    limpiarPersonalEditar,
 } from './personal.js';
 
-import {
-    renderizarUnidadesEditar,
-    limpiarSelectorUnidad,
-    establecerModalidadUnidadEditar,
-} from './unidades.js';
 
 import {
-    mostrarEvidenciaExistente,
-    mostrarEvidenciaNueva,
+    cargarUnidadesEditar,
+    obtenerUnidadesEditar,
+    limpiarUnidadesEditar,
+} from './unidades.js';
+
+
+import {
+    cargarEvidenciaEditar,
+    limpiarEvidenciaEditar,
     obtenerNuevasEvidencias,
 } from './evidencia.js';
 
+
 import {
-    cargarQuejosoEditar
+    cargarQuejosoEditar,
 } from './quejoso.js';
+
+
+import {
+    cargarIdentificacionEditar,
+} from './identificacion.js';
+
+
+import {
+    cargarDatosHechosEditar,
+} from './datosHechos.js';
+
+
+import {
+    cargarUbicacionEditar,
+} from './ubicacion.js';
+
+
+import {
+    cargarClasificacionEditar,
+} from './clasificacion.js';
+
+
+import {
+    cargarMotivosEditar,
+    limpiarMotivosEditar,
+} from './motivos.js';
+
+
+import {
+    cargarObservacionesEditar,
+    limpiarObservacionesEditar,
+} from './observaciones.js';
 
 
 /* =========================================================
@@ -69,21 +98,26 @@ export function crearReporteTemporalDesdeFila(
 
         folio,
 
+
         prefijo:
             obtenerPrefijoTemporal(
                 folio
             ),
+
 
         numero_folio:
             obtenerNumeroTemporal(
                 folio
             ),
 
+
         fecha_registro:
             '',
 
+
         folio_ip:
             '',
+
 
         fecha_queja:
             convertirFechaInput(
@@ -93,8 +127,10 @@ export function crearReporteTemporalDesdeFila(
                 || ''
             ),
 
+
         fecha_acuerdo:
             '',
+
 
         expediente:
             celdas[2]
@@ -102,67 +138,90 @@ export function crearReporteTemporalDesdeFila(
                 .trim()
             || '',
 
+
         nomenclatura:
             '',
+
 
         no_oficio:
             '',
 
 
-        /* HECHOS */
+        /* =====================================================
+           HECHOS
+        ===================================================== */
 
         fecha_hechos:
             '',
 
+
         hora_hechos:
             '',
+
 
         descripcion:
             '',
 
 
-        /* UBICACIÓN */
+        /* =====================================================
+           UBICACIÓN
+        ===================================================== */
 
         calle:
             '',
 
+
         numero:
             '',
+
 
         colonia:
             '',
 
+
         entre_calle:
             '',
+
 
         y_calle:
             '',
 
+
         municipio:
             '',
+
 
         estado:
             '',
 
+
         sector:
             '',
+
 
         cuadrante:
             '',
 
+
         id_cuadra:
             '',
+
 
         latitud:
             '',
 
+
         longitud:
             '',
+
 
         origen_ubicacion:
             '',
 
-        /* PERSONAL */
+
+        /* =====================================================
+           PERSONAL
+        ===================================================== */
 
         personal:
             leerDatasetArray(
@@ -170,7 +229,9 @@ export function crearReporteTemporalDesdeFila(
             ),
 
 
-        /* UNIDADES */
+        /* =====================================================
+           UNIDADES
+        ===================================================== */
 
         unidades:
             leerDatasetArray(
@@ -178,7 +239,9 @@ export function crearReporteTemporalDesdeFila(
             ),
 
 
-        /* QUEJOSO */
+        /* =====================================================
+           QUEJOSO
+        ===================================================== */
 
         quejoso:
             celdas[4]
@@ -186,20 +249,26 @@ export function crearReporteTemporalDesdeFila(
                 .trim()
             || '',
 
+
         edad:
             '',
+
 
         genero:
             '',
 
+
         telefono:
             '',
+
 
         correo:
             '',
 
 
-        /* CLASIFICACIÓN */
+        /* =====================================================
+           CLASIFICACIÓN
+        ===================================================== */
 
         clasificacion:
             celdas[3]
@@ -207,14 +276,18 @@ export function crearReporteTemporalDesdeFila(
                 .trim()
             || '',
 
+
         inspector:
             '',
+
 
         investigador:
             '',
 
+
         quien_emite_resolucion:
             '',
+
 
         resolucion:
             celdas[7]
@@ -222,23 +295,26 @@ export function crearReporteTemporalDesdeFila(
                 .trim()
             || '',
 
+
         motivos:
-            '',
+            [],
 
 
-        /* ADICIONAL */
+        /* =====================================================
+           ADICIONAL
+        ===================================================== */
 
         observaciones:
             '',
 
 
-        /* EVIDENCIA */
+        /* =====================================================
+           EVIDENCIA
+        ===================================================== */
 
         evidencias:
             [],
-
     };
-
 }
 
 
@@ -251,6 +327,19 @@ export function cargarReporteEnFormulario(
     formulario,
     reporte
 ) {
+
+    if (
+        !modal
+        || !formulario
+        || !reporte
+    ) {
+        return;
+    }
+
+
+    /* =====================================================
+       LIMPIAR ESTADO ANTERIOR
+    ===================================================== */
 
     limpiarFormularioEditar(
         modal,
@@ -280,70 +369,19 @@ export function cargarReporteEnFormulario(
        IDENTIFICACIÓN
     ===================================================== */
 
-    asignarValorEditar(
+    cargarIdentificacionEditar(
         modal,
-        '#editar-folio-ip',
-        reporte.folio_ip
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-fecha-queja',
-        reporte.fecha_queja
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-fecha-acuerdo',
-        reporte.fecha_acuerdo
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-expediente',
-        reporte.expediente
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-nomenclatura',
-        reporte.nomenclatura
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-no-oficio',
-        reporte.no_oficio
+        reporte
     );
 
 
     /* =====================================================
-       HECHOS
+       DATOS DE LOS HECHOS
     ===================================================== */
 
-    asignarValorEditar(
+    cargarDatosHechosEditar(
         modal,
-        '#editar-fecha-hechos',
-        reporte.fecha_hechos
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-hora-hechos',
-        reporte.hora_hechos
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-descripcion',
-        reporte.descripcion
+        reporte
     );
 
 
@@ -351,143 +389,9 @@ export function cargarReporteEnFormulario(
        UBICACIÓN
     ===================================================== */
 
-    asignarValorEditar(
+    cargarUbicacionEditar(
         modal,
-        '#editar-calle',
-        reporte.calle
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-numero',
-        reporte.numero
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-colonia',
-        reporte.colonia
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-entre-calle',
-        reporte.entre_calle
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-y-calle',
-        reporte.y_calle
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-municipio',
-        reporte.municipio
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-estado',
-        reporte.estado
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-sector',
-        reporte.sector
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-cuadrante',
-        reporte.cuadrante
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-id-cuadra',
-        reporte.id_cuadra
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-latitud',
-        reporte.latitud
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-longitud',
-        reporte.longitud
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-origen-ubicacion',
-        reporte.origen_ubicacion
-    );
-
-
-    /*
-     * Coordenadas visibles.
-     *
-     * X = Longitud
-     * Y = Latitud
-     */
-
-    asignarValorEditar(
-        modal,
-        '#editar-longitud-visible',
-        reporte.longitud
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-latitud-visible',
-        reporte.latitud
-    );
-
-
-    const latitudEditar =
-        String(
-            reporte.latitud
-            || ''
-        ).trim();
-
-
-    const longitudEditar =
-        String(
-            reporte.longitud
-            || ''
-        ).trim();
-
-
-    const coordenadasEditar =
-        latitudEditar
-        && longitudEditar
-            ? `${latitudEditar}, ${longitudEditar}`
-            : '';
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-coordenadas',
-        coordenadasEditar
+        reporte
     );
 
 
@@ -495,100 +399,9 @@ export function cargarReporteEnFormulario(
        PERSONAL
     ===================================================== */
 
-    const personalEditar =
-        Array.isArray(
-            reporte.personal
-        )
-            ? reporte.personal.map(
-                (persona) => ({
-
-                    ...persona,
-
-                    id:
-                        Number(
-                            persona.id
-                            ?? persona.plantilla_id
-                            ?? 0
-                        ),
-
-                    plantilla_id:
-                        Number(
-                            persona.plantilla_id
-                            ?? persona.id
-                            ?? 0
-                        ),
-
-                    perscod:
-                        String(
-                            persona.perscod
-                            ?? ''
-                        ).trim(),
-
-                    nombre:
-                        String(
-                            persona.nombre
-                            ?? persona.nombre_snapshot
-                            ?? ''
-                        )
-                            .trim()
-                            .toUpperCase(),
-
-                    nomina:
-                        String(
-                            persona.nomina
-                            ?? ''
-                        ).trim(),
-
-                    area:
-                        String(
-                            persona.area
-                            ?? persona.area_snapshot
-                            ?? ''
-                        )
-                            .trim()
-                            .toUpperCase(),
-
-                    turno:
-                        String(
-                            persona.turno
-                            ?? persona.turno_snapshot
-                            ?? ''
-                        )
-                            .trim()
-                            .toUpperCase(),
-
-                    alias:
-                        String(
-                            persona.alias
-                            ?? persona.alias_snapshot
-                            ?? ''
-                        )
-                            .trim()
-                            .toUpperCase(),
-
-                    foto:
-                        String(
-                            persona.foto
-                            ?? ''
-                        ).trim(),
-
-                })
-            )
-            : [];
-
-
-    establecerPersonal(
-        personalEditar
-    );
-
-
-    limpiarSelectorPersonal(
-        modal
-    );
-
-
-    renderizarPersonalEditar(
-        modal
+    cargarPersonalEditar(
+        modal,
+        reporte
     );
 
 
@@ -596,28 +409,9 @@ export function cargarReporteEnFormulario(
        UNIDADES
     ===================================================== */
 
-    establecerUnidades(
-        Array.isArray(
-            reporte.unidades
-        )
-            ? reporte.unidades
-            : []
-    );
-
-
-    limpiarSelectorUnidad(
-        modal
-    );
-
-
-    establecerModalidadUnidadEditar(
+    cargarUnidadesEditar(
         modal,
-        reporte.modalidad_unidad
-    );
-
-
-    renderizarUnidadesEditar(
-        modal
+        reporte
     );
 
 
@@ -625,113 +419,28 @@ export function cargarReporteEnFormulario(
        QUEJOSO
     ===================================================== */
 
-    asignarValorEditar(
-        modal,
-        '#editar-quejoso',
-        reporte.quejoso
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-edad',
-        reporte.edad
-    );
-
-
-    asignarSelectSeguro(
-        modal,
-        '#editar-genero',
-        reporte.genero
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-telefono',
-        reporte.telefono
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-correo',
-        reporte.correo
-    );
-
-    /* =====================================================
-    ESTADO DEL QUEJOSO
-    ANÓNIMO / NO ANÓNIMO
-    ===================================================== */
-
     cargarQuejosoEditar(
         modal,
         reporte
     );
 
+
     /* =====================================================
        CLASIFICACIÓN Y SEGUIMIENTO
     ===================================================== */
 
-    asignarValorEditar(
+    cargarClasificacionEditar(
         modal,
-        '#editar-clasificacion',
-        reporte.clasificacion
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-inspector',
-        reporte.inspector
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-investigador',
-        reporte.investigador
+        reporte
     );
 
 
     /* =====================================================
-       ESTADO ACTUAL
-
-       Si el reporte todavía no tiene un estado registrado,
-       Editar debe iniciar en "Pendiente", igual que Nuevo.
+       MOTIVOS
     ===================================================== */
 
-    asignarSelectSeguro(
+    cargarMotivosEditar(
         modal,
-        '#editar-estado-actual',
-        reporte.estado_actual || 'Pendiente'
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-quien-emite-resolucion',
-        reporte.quien_emite_resolucion
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-resolucion',
-        reporte.resolucion
-    );
-
-
-    /*
-     * Este campo pertenece a la estructura anterior de motivos.
-     * Por ahora lo conservamos sin modificar su lógica.
-     * Lo reemplazaremos cuando conectemos el nuevo módulo
-     * de Motivos y Sanciones.
-     */
-
-    asignarValorEditar(
-        modal,
-        '#editar-motivos',
         reporte.motivos
     );
 
@@ -740,10 +449,9 @@ export function cargarReporteEnFormulario(
        OBSERVACIONES
     ===================================================== */
 
-    asignarValorEditar(
+    cargarObservacionesEditar(
         modal,
-        '#editar-observaciones',
-        reporte.observaciones
+        reporte
     );
 
 
@@ -751,15 +459,9 @@ export function cargarReporteEnFormulario(
        EVIDENCIA
     ===================================================== */
 
-    mostrarEvidenciaExistente(
+    cargarEvidenciaEditar(
         modal,
-        reporte.evidencias
-    );
-
-
-    mostrarEvidenciaNueva(
-        modal,
-        []
+        reporte
     );
 }
 
@@ -786,8 +488,17 @@ export function obtenerReporteDesdeFormulario(
 
     const campos = [
 
+        /* =====================================================
+           DATOS DEL REPORTE
+        ===================================================== */
+
         'folio',
         'fecha_registro',
+
+
+        /* =====================================================
+           IDENTIFICACIÓN
+        ===================================================== */
 
         'folio_ip',
         'fecha_queja',
@@ -796,9 +507,19 @@ export function obtenerReporteDesdeFormulario(
         'nomenclatura',
         'no_oficio',
 
+
+        /* =====================================================
+           HECHOS
+        ===================================================== */
+
         'fecha_hechos',
         'hora_hechos',
         'descripcion',
+
+
+        /* =====================================================
+           UBICACIÓN
+        ===================================================== */
 
         'calle',
         'numero',
@@ -815,11 +536,21 @@ export function obtenerReporteDesdeFormulario(
         'origen_ubicacion',
         'modalidad_unidad',
 
+
+        /* =====================================================
+           QUEJOSO
+        ===================================================== */
+
         'quejoso',
         'edad',
         'genero',
         'telefono',
         'correo',
+
+
+        /* =====================================================
+           CLASIFICACIÓN
+        ===================================================== */
 
         'clasificacion',
         'inspector',
@@ -828,8 +559,12 @@ export function obtenerReporteDesdeFormulario(
         'resolucion',
         'motivos',
 
-        'observaciones',
 
+        /* =====================================================
+           OBSERVACIONES
+        ===================================================== */
+
+        'observaciones',
     ];
 
 
@@ -850,7 +585,6 @@ export function obtenerReporteDesdeFormulario(
                     datos,
                     campo
                 );
-
         }
     );
 
@@ -860,11 +594,7 @@ export function obtenerReporteDesdeFormulario(
     ===================================================== */
 
     reporte.personal =
-        estadoPersonal.elementos.map(
-            (persona) => ({
-                ...persona,
-            })
-        );
+        obtenerPersonalEditar();
 
 
     /* =====================================================
@@ -872,11 +602,7 @@ export function obtenerReporteDesdeFormulario(
     ===================================================== */
 
     reporte.unidades =
-        estadoUnidades.elementos.map(
-            (unidad) => ({
-                ...unidad,
-            })
-        );
+        obtenerUnidadesEditar();
 
 
     /* =====================================================
@@ -905,11 +631,10 @@ export function obtenerReporteDesdeFormulario(
             ...existentes,
             ...nuevas,
         ];
-
     }
 
-    return reporte;
 
+    return reporte;
 }
 
 
@@ -943,11 +668,19 @@ export function actualizarFilaDesdeReporte(
         );
 
 
+    /* =====================================================
+       FOLIO
+    ===================================================== */
+
     celdas[0].innerHTML =
         `<strong>${escaparHTML(
             folio
         )}</strong>`;
 
+
+    /* =====================================================
+       FECHA
+    ===================================================== */
 
     celdas[1].textContent =
         formatearFechaTabla(
@@ -955,20 +688,36 @@ export function actualizarFilaDesdeReporte(
         );
 
 
+    /* =====================================================
+       EXPEDIENTE
+    ===================================================== */
+
     celdas[2].textContent =
         reporte.expediente
         || '';
 
+
+    /* =====================================================
+       CLASIFICACIÓN
+    ===================================================== */
 
     celdas[3].textContent =
         reporte.clasificacion
         || '';
 
 
+    /* =====================================================
+       QUEJOSO
+    ===================================================== */
+
     celdas[4].textContent =
         reporte.quejoso
         || '';
 
+
+    /* =====================================================
+       PERSONAL
+    ===================================================== */
 
     /*
      * Por ahora el listado conserva
@@ -976,6 +725,7 @@ export function actualizarFilaDesdeReporte(
      *
      * Utilizamos la primera persona.
      */
+
     const primeraPersona =
         Array.isArray(
             reporte.personal
@@ -994,6 +744,10 @@ export function actualizarFilaDesdeReporte(
         primeraPersona?.turno
         || '';
 
+
+    /* =====================================================
+       ESTADO
+    ===================================================== */
 
     actualizarEstadoFila(
         celdas[7],
@@ -1025,6 +779,10 @@ export function actualizarFilaDesdeReporte(
         );
 
 
+    /* =====================================================
+       ACTUALIZAR FOLIO DE BOTONES
+    ===================================================== */
+
     fila.querySelectorAll(
         '[data-folio]'
     ).forEach(
@@ -1032,10 +790,8 @@ export function actualizarFilaDesdeReporte(
 
             boton.dataset.folio =
                 folio;
-
         }
     );
-
 }
 
 
@@ -1047,6 +803,18 @@ export function limpiarFormularioEditar(
     modal,
     formulario
 ) {
+
+    if (
+        !modal
+        || !formulario
+    ) {
+        return;
+    }
+
+
+    /* =====================================================
+       CAMPOS GENERALES
+    ===================================================== */
 
     modal.querySelectorAll(
         'input, select, textarea'
@@ -1082,7 +850,12 @@ export function limpiarFormularioEditar(
 
                 /*
                  * No modificamos .value porque contiene
-                 * CON_UNIDAD / SIN_UNIDAD_OFICINA.
+                 * valores como:
+                 *
+                 * CON_UNIDAD
+                 * SIN_UNIDAD_OFICINA
+                 * 0
+                 * 1
                  */
 
                 campo.checked =
@@ -1115,54 +888,54 @@ export function limpiarFormularioEditar(
 
             campo.value =
                 '';
-
         }
     );
 
 
-    establecerPersonal(
-        []
-    );
+    /* =====================================================
+       PERSONAL
+    ===================================================== */
 
-
-    establecerUnidades(
-        []
-    );
-
-
-    renderizarPersonalEditar(
+    limpiarPersonalEditar(
         modal
     );
 
 
-    renderizarUnidadesEditar(
+    /* =====================================================
+       UNIDADES
+    ===================================================== */
+
+    limpiarUnidadesEditar(
         modal
     );
 
 
-    limpiarSelectorPersonal(
+    /* =====================================================
+       MOTIVOS
+    ===================================================== */
+
+    limpiarMotivosEditar(
         modal
     );
 
 
-    limpiarSelectorUnidad(
+    /* =====================================================
+       OBSERVACIONES
+    ===================================================== */
+
+    limpiarObservacionesEditar(
         modal
     );
 
-    const inputEvidencia =
+
+    /* =====================================================
+       EVIDENCIA
+    ===================================================== */
+
+    limpiarEvidenciaEditar(
+        modal,
         formulario
-            ?.querySelector(
-                '#editar-evidencia-fotografica'
-            );
-
-
-    if (inputEvidencia) {
-
-        inputEvidencia.value =
-            '';
-
-    }
-
+    );
 }
 
 
@@ -1174,6 +947,11 @@ function actualizarEstadoFila(
     celda,
     estado
 ) {
+
+    if (!celda) {
+        return;
+    }
+
 
     celda.innerHTML =
         '';
@@ -1199,7 +977,6 @@ function actualizarEstadoFila(
     celda.appendChild(
         etiqueta
     );
-
 }
 
 
@@ -1218,20 +995,26 @@ function obtenerPrefijoTemporal(
 
 
     if (!valor) {
+
         return 'QJ';
     }
 
 
     const partes =
-        valor.split('-');
+        valor.split(
+            '-'
+        );
 
 
     return partes.length > 1
         ? partes[0]
         : 'QJ';
-
 }
 
+
+/* =========================================================
+   OBTENER NÚMERO TEMPORAL
+========================================================= */
 
 function obtenerNumeroTemporal(
     folio
@@ -1244,23 +1027,30 @@ function obtenerNumeroTemporal(
 
 
     if (!valor) {
+
         return '';
     }
 
 
     const partes =
-        valor.split('-');
+        valor.split(
+            '-'
+        );
 
 
     if (
         partes.length <= 1
     ) {
+
         return valor;
     }
 
 
     return partes
-        .slice(1)
-        .join('-');
-
+        .slice(
+            1
+        )
+        .join(
+            '-'
+        );
 }

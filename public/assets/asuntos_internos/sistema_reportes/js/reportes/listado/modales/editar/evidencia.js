@@ -57,6 +57,89 @@ export function inicializarEditarEvidencia(
 
 
 /* =========================================================
+   CARGAR EVIDENCIA DEL REPORTE
+========================================================= */
+
+export function cargarEvidenciaEditar(
+    modal,
+    reporte
+) {
+
+    if (
+        !modal
+        || !reporte
+    ) {
+        return;
+    }
+
+
+    /* =====================================================
+       EVIDENCIA EXISTENTE
+    ===================================================== */
+
+    mostrarEvidenciaExistente(
+        modal,
+        Array.isArray(
+            reporte.evidencias
+        )
+            ? reporte.evidencias
+            : []
+    );
+
+
+    /* =====================================================
+       EVIDENCIA NUEVA
+    ===================================================== */
+
+    limpiarEvidenciaNueva(
+        modal
+    );
+}
+
+
+/* =========================================================
+   LIMPIAR EVIDENCIA DE EDITAR
+========================================================= */
+
+export function limpiarEvidenciaEditar(
+    modal,
+    formulario = null
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    /* =====================================================
+       ESTADO INTERNO
+    ===================================================== */
+
+    limpiarEstadoEvidencias();
+
+
+    /* =====================================================
+       EVIDENCIA EXISTENTE
+    ===================================================== */
+
+    mostrarEvidenciaExistente(
+        modal,
+        []
+    );
+
+
+    /* =====================================================
+       EVIDENCIA NUEVA
+    ===================================================== */
+
+    limpiarEvidenciaNueva(
+        modal,
+        formulario
+    );
+}
+
+
+/* =========================================================
    EVIDENCIA EXISTENTE
 ========================================================= */
 

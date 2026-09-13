@@ -21,7 +21,6 @@ import {
 
 import {
     inicializarEditarUnidades,
-    establecerModalidadUnidadEditar,
 } from './unidades.js';
 
 import {
@@ -30,6 +29,11 @@ import {
     abrirModalEditar,
     cerrarModalEditar,
 } from './modal.js';
+
+import {
+    actualizarHeaderEditar,
+} from './header.js';
+
 
 import {
     inicializarEditarEvidencia,
@@ -68,6 +72,8 @@ import {
 import {
     inicializarMotivosEditar
 } from './motivos.js';
+
+
 
 /* =========================================================
    INICIALIZAR
@@ -262,12 +268,6 @@ export function inicializarEditarReporte() {
                     modal,
                     formulario,
                     reporte
-                );
-
-
-                establecerModalidadUnidadEditar(
-                    modal,
-                    reporte.modalidad_unidad
                 );
 
 
@@ -1054,6 +1054,7 @@ function construirReporteEditar(
             )
                 ? datos.personal.map(
                     (persona) => ({
+
                         ...persona,
 
                         nombre:
@@ -1075,13 +1076,19 @@ function construirReporteEditar(
                             valorEditar(
                                 persona.turno
                             ),
+
+                        alias:
+                            valorEditar(
+                                persona.alias
+                                ?? persona.alias_snapshot
+                            ),
                     })
                 )
                 : [],
 
 
         /* =====================================================
-        UNIDADES
+           UNIDADES
         ===================================================== */
 
         modalidad_unidad:
@@ -1096,6 +1103,7 @@ function construirReporteEditar(
             )
                 ? datos.unidades.map(
                     (unidad) => ({
+
                         ...unidad,
 
                         no_economico:
@@ -1137,6 +1145,16 @@ function construirReporteEditar(
                             valorEditar(
                                 unidad.tipo
                             ),
+
+                        modelo:
+                            valorEditar(
+                                unidad.modelo
+                            ),
+
+                        serie:
+                            valorEditar(
+                                unidad.serie
+                            ),
                     })
                 )
                 : [],
@@ -1173,6 +1191,37 @@ function construirReporteEditar(
 
 
         /* =====================================================
+           QUEJA ANÓNIMA
+        ===================================================== */
+
+        es_anonimo:
+            Number(
+                origen.es_anonimo
+                ?? 0
+            ),
+
+        numero_anonimo:
+            valorEditar(
+                origen.numero_anonimo
+            ),
+
+
+        /* =====================================================
+           CANALIZACIÓN
+        ===================================================== */
+
+        canalizacion_area:
+            valorEditar(
+                origen.canalizacion_area
+            ),
+
+        canalizacion_otro:
+            valorEditar(
+                origen.canalizacion_otro
+            ),
+
+
+        /* =====================================================
            CLASIFICACIÓN
         ===================================================== */
 
@@ -1190,6 +1239,72 @@ function construirReporteEditar(
             valorEditar(
                 origen.investigador
             ),
+
+
+        /* =====================================================
+           ESTADO ACTUAL
+        ===================================================== */
+
+        estado_actual:
+            valorEditar(
+                origen.estado_actual
+            ),
+
+
+        /* =====================================================
+           SITUACIÓN DE LA SANCIÓN
+        ===================================================== */
+
+        sin_sanciones:
+            Number(
+                origen.sin_sanciones
+                ?? 0
+            ),
+
+        baja_voluntaria:
+            Number(
+                origen.baja_voluntaria
+                ?? 0
+            ),
+
+
+        /* =====================================================
+           MOTIVOS
+        ===================================================== */
+
+        motivos:
+            Array.isArray(
+                datos.motivos
+            )
+                ? datos.motivos.map(
+                    (motivo) => ({
+
+                        ...motivo,
+
+                        id_motivo:
+                            Number(
+                                motivo.id_motivo
+                                ?? 0
+                            ),
+
+                        motivo:
+                            valorEditar(
+                                motivo.motivo
+                            ),
+
+                        sancion:
+                            valorEditar(
+                                motivo.sancion
+                                ?? motivo.tipo_sancion
+                            ),
+
+                        folio_sancion:
+                            valorEditar(
+                                motivo.folio_sancion
+                            ),
+                    })
+                )
+                : [],
 
 
         /* =====================================================
@@ -1249,6 +1364,10 @@ function construirReporteEditar(
                 : null,
 
 
+        /* =====================================================
+           RESOLUCIÓN
+        ===================================================== */
+
         quien_emite_resolucion:
             valorEditar(
                 origen.quien_emite_resolucion
@@ -1257,16 +1376,6 @@ function construirReporteEditar(
         resolucion:
             valorEditar(
                 origen.resolucion
-            ),
-
-        estado_actual:
-            valorEditar(
-                origen.estado_actual
-            ),
-
-        motivos:
-            valorEditar(
-                origen.motivos
             ),
 
 
@@ -1296,55 +1405,6 @@ function construirReporteEditar(
                 : [],
     };
 }
-
-
-/* =========================================================
-   HEADER
-========================================================= */
-
-function actualizarHeaderEditar(
-    modal,
-    reporte
-) {
-
-    const folio =
-        reporte.folio
-        || construirFolio(
-            reporte.prefijo,
-            reporte.numero_folio
-        );
-
-
-    asignarTextoEditar(
-        modal,
-        '#editar-meta-expediente',
-        reporte.expediente
-    );
-
-
-    asignarTextoEditar(
-        modal,
-        '#editar-meta-estado',
-        reporte.estado_actual
-        || reporte.resolucion
-    );
-
-
-    const titulo =
-        modal.querySelector(
-            '#modal-editar-titulo'
-        );
-
-
-    if (titulo) {
-
-        titulo.textContent =
-            folio
-                ? `Editar ${folio}`
-                : 'Editar reporte';
-    }
-}
-
 
 /* =========================================================
    FOLIO

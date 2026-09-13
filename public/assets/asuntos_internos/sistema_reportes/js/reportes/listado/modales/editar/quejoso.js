@@ -1,3 +1,9 @@
+import {
+    asignarValorEditar,
+    asignarSelectSeguro,
+} from './utilidades.js';
+
+
 /* =========================================================
    SISTEMA DE REPORTES - ASUNTOS INTERNOS
    EDITAR REPORTE
@@ -449,11 +455,11 @@ export function establecerAnonimoEditar(
 
 
     /* =====================================================
-       CANALIZACIÓN EN QUEJA ANÓNIMA
+   CANALIZACIÓN
 
-       Cuando la queja es anónima,
-       la canalización no debe enviarse.
-    ===================================================== */
+   La canalización es independiente de que
+   la queja sea anónima o no.
+===================================================== */
 
     const botonCanalizacion =
         modal.querySelector(
@@ -461,36 +467,21 @@ export function establecerAnonimoEditar(
         );
 
 
-    const inputCanalizacion =
-        modal.querySelector(
-            '#editar-canalizacion'
-        );
-
-
     if (botonCanalizacion) {
 
         botonCanalizacion.disabled =
-            esAnonimo;
+            false;
     }
 
 
-    if (esAnonimo) {
+    /*
+     * Conservamos y mostramos la canalización
+     * que ya tenga registrada el reporte.
+     */
 
-        cerrarCanalizacionEditar(
-            modal
-        );
-
-
-        ocultarCanalizacionOtroEditar(
-            modal
-        );
-
-    } else {
-
-        actualizarCanalizacionEditar(
-            modal
-        );
-    }
+    actualizarCanalizacionEditar(
+        modal
+    );
 }
 
 
@@ -808,6 +799,45 @@ export function cargarQuejosoEditar(
     ) {
         return;
     }
+
+
+    /* =====================================================
+       DATOS PERSONALES
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-quejoso',
+        reporte.quejoso
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-edad',
+        reporte.edad
+    );
+
+
+    asignarSelectSeguro(
+        modal,
+        '#editar-genero',
+        reporte.genero
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-telefono',
+        reporte.telefono
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-correo',
+        reporte.correo
+    );
 
 
     /* =====================================================

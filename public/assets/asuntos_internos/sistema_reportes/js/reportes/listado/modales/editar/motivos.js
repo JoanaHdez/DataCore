@@ -12,6 +12,133 @@
 const motivosSeleccionados =
     new Map();
 
+    /* =========================================================
+   CARGAR MOTIVOS EXISTENTES
+========================================================= */
+
+export function cargarMotivosEditar(
+    modal,
+    motivos = []
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    /* =====================================================
+       LIMPIAR ESTADO ANTERIOR
+    ===================================================== */
+
+    motivosSeleccionados.clear();
+
+
+    /* =====================================================
+       VALIDAR
+    ===================================================== */
+
+    if (
+        !Array.isArray(
+            motivos
+        )
+    ) {
+
+        renderizarMotivosEditar(
+            modal
+        );
+
+        return;
+    }
+
+
+    /* =====================================================
+       CARGAR MOTIVOS
+    ===================================================== */
+
+    motivos.forEach(
+        (motivo) => {
+
+            const idMotivo =
+                String(
+                    motivo.id_motivo
+                    ?? ''
+                ).trim();
+
+
+            if (!idMotivo) {
+                return;
+            }
+
+
+            motivosSeleccionados.set(
+                idMotivo,
+                {
+
+                    id_motivo:
+                        idMotivo,
+
+                    motivo:
+                        String(
+                            motivo.motivo
+                            ?? ''
+                        ).trim(),
+
+                    sancion:
+                        String(
+                            motivo.sancion
+                            ?? motivo.tipo_sancion
+                            ?? ''
+                        ).trim(),
+
+                    folio_sancion:
+                        String(
+                            motivo.folio_sancion
+                            ?? ''
+                        ).trim(),
+                }
+            );
+        }
+    );
+
+
+    /* =====================================================
+       LIMPIAR BUSCADOR
+    ===================================================== */
+
+    const buscador =
+        modal.querySelector(
+            '#editar-buscar-motivo'
+        );
+
+
+    if (buscador) {
+
+        buscador.value =
+            '';
+    }
+
+
+    const resultados =
+        modal.querySelector(
+            '#editar-motivos-resultados'
+        );
+
+
+    if (resultados) {
+
+        resultados.hidden =
+            true;
+    }
+
+
+    /* =====================================================
+       RENDERIZAR
+    ===================================================== */
+
+    renderizarMotivosEditar(
+        modal
+    );
+}
 
 /* =========================================================
    INICIALIZAR

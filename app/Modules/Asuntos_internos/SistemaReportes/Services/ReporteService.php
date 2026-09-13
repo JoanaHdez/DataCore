@@ -906,6 +906,24 @@ class ReporteService
                     ?? 'Pendiente'
             ),
 
+
+            /* =================================================
+                SIN SANCIONES
+            ================================================= */
+
+            'sin_sanciones' =>
+            (int) (
+                $datos['sin_sanciones']
+                ?? 0
+            ) === 1
+                ? 1
+                : 0,
+
+
+            /* =================================================
+                BAJA VOLUNTARIA
+            ================================================= */
+
             'baja_voluntaria' =>
             (int) (
                 $datos['baja_voluntaria']
@@ -913,6 +931,7 @@ class ReporteService
             ) === 1
                 ? 1
                 : 0,
+
 
             'observaciones' =>
             $this->valorNullable(

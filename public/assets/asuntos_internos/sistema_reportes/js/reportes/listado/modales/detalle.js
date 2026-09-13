@@ -433,10 +433,9 @@ function cargarDetalleReporte(
 
     asignarTextoDetalle(
         modal,
-        '#detalle-meta-expediente',
-        reporte.expediente
+        '#detalle-meta-nomenclatura',
+        reporte.nomenclatura
     );
-
 
     asignarTextoDetalle(
         modal,
@@ -886,7 +885,7 @@ function limpiarDetalleReporte(
 
     asignarTextoDetalle(
         modal,
-        '#detalle-meta-expediente',
+        '#detalle-meta-nomenclatura',
         ''
     );
 

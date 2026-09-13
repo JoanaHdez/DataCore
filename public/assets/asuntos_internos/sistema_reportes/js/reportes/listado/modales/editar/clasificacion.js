@@ -1,3 +1,8 @@
+import {
+    asignarValorEditar,
+    asignarSelectSeguro,
+} from './utilidades.js';
+
 /* =========================================================
    SISTEMA DE REPORTES - ASUNTOS INTERNOS
    EDITAR REPORTE
@@ -335,33 +340,126 @@ export function cargarClasificacionEditar(
     }
 
 
+    /* =====================================================
+       CLASIFICACIÓN
+    ===================================================== */
+
     const inputClasificacion =
         modal.querySelector(
             '#editar-clasificacion'
         );
 
 
-    if (!inputClasificacion) {
-        return;
+    if (inputClasificacion) {
+
+        inputClasificacion.value =
+            String(
+                reporte.clasificacion
+                || ''
+            ).trim();
     }
-
-
-    const clasificacion =
-        String(
-            reporte.clasificacion
-            || ''
-        ).trim();
-
-
-    inputClasificacion.value =
-        clasificacion;
 
 
     actualizarClasificacionEditar(
         modal
     );
-}
 
+
+    /* =====================================================
+       INSPECTOR
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-inspector',
+        reporte.inspector
+    );
+
+
+    /* =====================================================
+       INVESTIGADOR
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-investigador',
+        reporte.investigador
+    );
+
+
+    /* =====================================================
+       ESTADO ACTUAL
+    ===================================================== */
+
+    asignarSelectSeguro(
+        modal,
+        '#editar-estado-actual',
+        reporte.estado_actual
+        || 'Pendiente'
+    );
+
+
+    /* =====================================================
+       SIN SANCIONES
+    ===================================================== */
+
+    const sinSanciones =
+        modal.querySelector(
+            '#editar-sin-sanciones'
+        );
+
+
+    if (sinSanciones) {
+
+        sinSanciones.checked =
+            Number(
+                reporte.sin_sanciones
+                ?? 0
+            ) === 1;
+    }
+
+
+    /* =====================================================
+       BAJA VOLUNTARIA
+    ===================================================== */
+
+    const bajaVoluntaria =
+        modal.querySelector(
+            '#editar-baja-voluntaria'
+        );
+
+
+    if (bajaVoluntaria) {
+
+        bajaVoluntaria.checked =
+            Number(
+                reporte.baja_voluntaria
+                ?? 0
+            ) === 1;
+    }
+
+
+    /* =====================================================
+       QUIÉN EMITE LA RESOLUCIÓN
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-quien-emite-resolucion',
+        reporte.quien_emite_resolucion
+    );
+
+
+    /* =====================================================
+       RESOLUCIÓN
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-resolucion',
+        reporte.resolucion
+    );
+}
 
 /* =========================================================
    LIMPIAR

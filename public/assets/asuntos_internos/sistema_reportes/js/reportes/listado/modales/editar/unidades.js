@@ -7,14 +7,202 @@ import {
     estadoUnidades,
     agregarUnidad,
     eliminarUnidad,
+    establecerUnidades,
     establecerUnidadSeleccionada,
 } from './estado.js';
+
 
 import {
     asignarValorEditar,
     escaparHTML,
     normalizarMayuscula,
 } from './utilidades.js';
+
+
+/* =========================================================
+   CARGAR UNIDADES DEL REPORTE
+========================================================= */
+
+export function cargarUnidadesEditar(
+    modal,
+    reporte
+) {
+
+    if (
+        !modal
+        || !reporte
+    ) {
+        return;
+    }
+
+
+    const unidades =
+        Array.isArray(
+            reporte.unidades
+        )
+            ? reporte.unidades.map(
+                (unidad) => ({
+
+                    ...unidad,
+
+
+                    /* =========================================
+                       IDENTIFICADOR
+                    ========================================== */
+
+                    id:
+                        Number(
+                            unidad.id
+                            ?? unidad.parque_vehicular_id
+                            ?? 0
+                        ),
+
+
+                    parque_vehicular_id:
+                        Number(
+                            unidad.parque_vehicular_id
+                            ?? unidad.id
+                            ?? 0
+                        ),
+
+
+                    /* =========================================
+                       DATOS DE LA UNIDAD
+                    ========================================== */
+
+                    no_economico:
+                        normalizarMayuscula(
+                            unidad.no_economico
+                        ),
+
+
+                    placas:
+                        normalizarMayuscula(
+                            unidad.placas
+                        ),
+
+
+                    marca:
+                        normalizarMayuscula(
+                            unidad.marca
+                        ),
+
+
+                    submarca:
+                        normalizarMayuscula(
+                            unidad.submarca
+                        ),
+
+
+                    color:
+                        normalizarMayuscula(
+                            unidad.color
+                        ),
+
+
+                    estatus:
+                        normalizarMayuscula(
+                            unidad.estatus
+                        ),
+
+
+                    servicio:
+                        normalizarMayuscula(
+                            unidad.servicio
+                        ),
+
+
+                    tipo:
+                        normalizarMayuscula(
+                            unidad.tipo
+                        ),
+
+
+                    modelo:
+                        normalizarMayuscula(
+                            unidad.modelo
+                        ),
+
+
+                    serie:
+                        normalizarMayuscula(
+                            unidad.serie
+                        ),
+
+                })
+            )
+            : [];
+
+
+    establecerUnidades(
+        unidades
+    );
+
+
+    limpiarSelectorUnidad(
+        modal
+    );
+
+
+    establecerModalidadUnidadEditar(
+        modal,
+        reporte.modalidad_unidad
+    );
+
+
+    renderizarUnidadesEditar(
+        modal
+    );
+}
+
+
+/* =========================================================
+   OBTENER UNIDADES ACTUALES
+========================================================= */
+
+export function obtenerUnidadesEditar() {
+
+    return estadoUnidades.elementos.map(
+        (unidad) => ({
+            ...unidad,
+        })
+    );
+}
+
+
+/* =========================================================
+   LIMPIAR UNIDADES
+========================================================= */
+
+export function limpiarUnidadesEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    establecerUnidades(
+        []
+    );
+
+
+    limpiarSelectorUnidad(
+        modal
+    );
+
+
+    establecerModalidadUnidadEditar(
+        modal,
+        'CON_UNIDAD'
+    );
+
+
+    renderizarUnidadesEditar(
+        modal
+    );
+}
 
 
 /* =========================================================

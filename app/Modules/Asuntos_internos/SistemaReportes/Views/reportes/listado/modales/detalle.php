@@ -32,13 +32,16 @@
 
                     <span>
                         Nomenclatura:
+
                         <strong id="detalle-meta-nomenclatura">
                             —
                         </strong>
                     </span>
 
+
                     <span>
                         Estado:
+
                         <strong id="detalle-meta-estado">
                             —
                         </strong>
@@ -66,17 +69,21 @@
                 Datos del reporte
             </button>
 
+
             <button type="button" class="detalle-reporte-nav__item" data-detalle-seccion="hechos">
                 Datos de los hechos
             </button>
+
 
             <button type="button" class="detalle-reporte-nav__item" data-detalle-seccion="personal">
                 Personal y unidades
             </button>
 
+
             <button type="button" class="detalle-reporte-nav__item" data-detalle-seccion="quejoso">
                 Datos del quejoso
             </button>
+
 
             <button type="button" class="detalle-reporte-nav__item" data-detalle-seccion="clasificacion">
                 Clasificación y seguimiento
@@ -112,7 +119,6 @@
             <!-- =============================================
                  PASO 2
                  DATOS DE LOS HECHOS
-                 Lo construiremos después
             ============================================== -->
             <section class="detalle-reporte-seccion" data-detalle-panel="hechos">
 
@@ -120,9 +126,11 @@
                     'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\detalle\sections\datos_hechos'
                 ) ?>
 
+
                 <?= $this->include(
                     'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\detalle\sections\ubicacion'
                 ) ?>
+
             </section>
 
 
@@ -136,14 +144,17 @@
                     'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\detalle\sections\personal'
                 ) ?>
 
+
                 <?= $this->include(
                     'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\detalle\sections\unidad'
                 ) ?>
+
             </section>
+
 
             <!-- =============================================
                  PASO 4
-                 QUEJOSO
+                 DATOS DEL QUEJOSO
             ============================================== -->
             <section class="detalle-reporte-seccion" data-detalle-panel="quejoso">
 
@@ -164,13 +175,16 @@
                     'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\detalle\sections\clasificacion'
                 ) ?>
 
+
                 <?= $this->include(
                     'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\detalle\sections\evidencia'
                 ) ?>
 
+
                 <?= $this->include(
                     'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\detalle\sections\observaciones'
                 ) ?>
+
             </section>
 
         </div>

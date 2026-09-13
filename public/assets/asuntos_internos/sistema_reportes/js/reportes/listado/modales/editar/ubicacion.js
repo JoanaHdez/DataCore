@@ -1,3 +1,7 @@
+import {
+    asignarValorEditar,
+} from './utilidades.js';
+
 /* =============================================================
    EDITAR REPORTE
    UBICACIÓN
@@ -5,6 +9,209 @@
 ============================================================= */
 
 let instanciaUbicacionEditar = null;
+
+
+/* =========================================================
+   CARGAR UBICACIÓN EN FORMULARIO
+========================================================= */
+
+export function cargarUbicacionEditar(
+    modal,
+    reporte
+) {
+
+    if (
+        !modal
+        || !reporte
+    ) {
+        return;
+    }
+
+
+    /* =====================================================
+       CALLE
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-calle',
+        reporte.calle
+    );
+
+
+    /* =====================================================
+       NÚMERO EXTERIOR
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-numero',
+        reporte.numero
+    );
+
+
+    /* =====================================================
+       COLONIA
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-colonia',
+        reporte.colonia
+    );
+
+
+    /* =====================================================
+       ENTRE CALLE
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-entre-calle',
+        reporte.entre_calle
+    );
+
+
+    /* =====================================================
+       Y CALLE
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-y-calle',
+        reporte.y_calle
+    );
+
+
+    /* =====================================================
+       MUNICIPIO
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-municipio',
+        reporte.municipio
+    );
+
+
+    /* =====================================================
+       ESTADO
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-estado',
+        reporte.estado
+    );
+
+
+    /* =====================================================
+       SECTOR
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-sector',
+        reporte.sector
+    );
+
+
+    /* =====================================================
+       CUADRANTE
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-cuadrante',
+        reporte.cuadrante
+    );
+
+
+    /* =====================================================
+       ID DE CUADRA / CALLE
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-id-cuadra',
+        reporte.id_cuadra
+    );
+
+
+    /* =====================================================
+       DATOS QUE SE GUARDAN
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-latitud',
+        reporte.latitud
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-longitud',
+        reporte.longitud
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-origen-ubicacion',
+        reporte.origen_ubicacion
+    );
+
+
+    /* =====================================================
+       COORDENADAS VISIBLES
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-longitud-visible',
+        reporte.longitud
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-latitud-visible',
+        reporte.latitud
+    );
+
+
+    /* =====================================================
+       COORDENADAS COMPLETAS
+    ===================================================== */
+
+    const latitud =
+        String(
+            reporte.latitud
+            || ''
+        ).trim();
+
+
+    const longitud =
+        String(
+            reporte.longitud
+            || ''
+        ).trim();
+
+
+    const coordenadas =
+        latitud
+        && longitud
+            ? `${latitud}, ${longitud}`
+            : '';
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-coordenadas',
+        coordenadas
+    );
+}
 
 
 /* =============================================================

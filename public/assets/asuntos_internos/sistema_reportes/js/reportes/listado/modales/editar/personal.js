@@ -7,6 +7,7 @@ import {
     estadoPersonal,
     agregarPersonal,
     eliminarPersonal,
+    establecerPersonal,
     establecerPersonaSeleccionada,
 } from './estado.js';
 
@@ -16,6 +17,204 @@ import {
     obtenerInicialEditar,
 } from './utilidades.js';
 
+
+/* =========================================================
+   CARGAR PERSONAL DEL REPORTE
+========================================================= */
+
+export function cargarPersonalEditar(
+    modal,
+    reporte
+) {
+
+    if (
+        !modal
+        || !reporte
+    ) {
+        return;
+    }
+
+
+    const personal =
+        Array.isArray(
+            reporte.personal
+        )
+            ? reporte.personal.map(
+                (persona) => ({
+
+                    ...persona,
+
+
+                    /* =========================================
+                       IDENTIFICADOR
+                    ========================================== */
+
+                    id:
+                        Number(
+                            persona.id
+                            ?? persona.plantilla_id
+                            ?? 0
+                        ),
+
+
+                    plantilla_id:
+                        Number(
+                            persona.plantilla_id
+                            ?? persona.id
+                            ?? 0
+                        ),
+
+
+                    /* =========================================
+                       CÓDIGO
+                    ========================================== */
+
+                    perscod:
+                        String(
+                            persona.perscod
+                            ?? ''
+                        ).trim(),
+
+
+                    /* =========================================
+                       NOMBRE
+                    ========================================== */
+
+                    nombre:
+                        String(
+                            persona.nombre
+                            ?? persona.nombre_snapshot
+                            ?? ''
+                        )
+                            .trim()
+                            .toUpperCase(),
+
+
+                    /* =========================================
+                       NÓMINA
+                    ========================================== */
+
+                    nomina:
+                        String(
+                            persona.nomina
+                            ?? ''
+                        ).trim(),
+
+
+                    /* =========================================
+                       ÁREA
+                    ========================================== */
+
+                    area:
+                        String(
+                            persona.area
+                            ?? persona.area_snapshot
+                            ?? ''
+                        )
+                            .trim()
+                            .toUpperCase(),
+
+
+                    /* =========================================
+                       TURNO
+                    ========================================== */
+
+                    turno:
+                        String(
+                            persona.turno
+                            ?? persona.turno_snapshot
+                            ?? ''
+                        )
+                            .trim()
+                            .toUpperCase(),
+
+
+                    /* =========================================
+                       ALIAS
+                    ========================================== */
+
+                    alias:
+                        String(
+                            persona.alias
+                            ?? persona.alias_snapshot
+                            ?? ''
+                        )
+                            .trim()
+                            .toUpperCase(),
+
+
+                    /* =========================================
+                       FOTO
+                    ========================================== */
+
+                    foto:
+                        String(
+                            persona.foto
+                            ?? ''
+                        ).trim(),
+
+                })
+            )
+            : [];
+
+
+    establecerPersonal(
+        personal
+    );
+
+
+    limpiarSelectorPersonal(
+        modal
+    );
+
+
+    renderizarPersonalEditar(
+        modal
+    );
+}
+
+
+/* =========================================================
+   OBTENER PERSONAL ACTUAL
+========================================================= */
+
+export function obtenerPersonalEditar() {
+
+    return estadoPersonal.elementos.map(
+        (persona) => ({
+            ...persona,
+        })
+    );
+}
+
+
+/* =========================================================
+   LIMPIAR PERSONAL
+========================================================= */
+
+export function limpiarPersonalEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    establecerPersonal(
+        []
+    );
+
+
+    renderizarPersonalEditar(
+        modal
+    );
+
+
+    limpiarSelectorPersonal(
+        modal
+    );
+}
 
 /* =========================================================
    INICIALIZAR
