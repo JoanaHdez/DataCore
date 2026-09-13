@@ -1234,7 +1234,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                    'No fue posible identificar al usuario.',
+                        'No fue posible identificar al usuario.',
                 ]);
         }
 
@@ -1246,7 +1246,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                    'El reporte proporcionado no es válido.',
+                        'El reporte proporcionado no es válido.',
                 ]);
         }
 
@@ -1257,7 +1257,7 @@ class Reportes_Controller extends BaseController
 
         $datos =
             $this->request
-            ->getPost();
+                ->getPost();
 
 
         /* =========================================================
@@ -1266,9 +1266,9 @@ class Reportes_Controller extends BaseController
 
         $personal =
             $this->request
-            ->getPost(
-                'personal'
-            );
+                ->getPost(
+                    'personal'
+                );
 
 
         if (!is_array($personal)) {
@@ -1283,9 +1283,9 @@ class Reportes_Controller extends BaseController
 
         $unidades =
             $this->request
-            ->getPost(
-                'unidades'
-            );
+                ->getPost(
+                    'unidades'
+                );
 
 
         if (!is_array($unidades)) {
@@ -1300,9 +1300,9 @@ class Reportes_Controller extends BaseController
 
         $evidenciasEliminadas =
             $this->request
-            ->getPost(
-                'evidencias_eliminadas'
-            );
+                ->getPost(
+                    'evidencias_eliminadas'
+                );
 
 
         if (!is_array($evidenciasEliminadas)) {
@@ -1321,7 +1321,7 @@ class Reportes_Controller extends BaseController
 
         $files =
             $this->request
-            ->getFiles();
+                ->getFiles();
 
 
         if (
@@ -1367,28 +1367,33 @@ class Reportes_Controller extends BaseController
 
             return $this->response
                 ->setJSON([
-                    'success' => true,
+                    'success' =>
+                        true,
 
                     'message' =>
-                    'El reporte fue actualizado correctamente.',
+                        'El reporte fue actualizado correctamente.',
 
                     'id_reporte' =>
-                    $resultado['id_reporte']
+                        $resultado['id_reporte']
                         ?? $idReporte,
 
                     'folio' =>
-                    $resultado['folio']
+                        $resultado['folio']
                         ?? null,
                 ]);
+
         } catch (\InvalidArgumentException $e) {
 
             return $this->response
                 ->setStatusCode(422)
                 ->setJSON([
-                    'success' => false,
+                    'success' =>
+                        false,
+
                     'message' =>
-                    $e->getMessage(),
+                        $e->getMessage(),
                 ]);
+
         } catch (\Throwable $e) {
 
             log_message(
@@ -1396,20 +1401,27 @@ class Reportes_Controller extends BaseController
                 'Error actualizando reporte {id}: {mensaje}',
                 [
                     'id' =>
-                    $idReporte,
+                        $idReporte,
 
                     'mensaje' =>
-                    $e->getMessage(),
+                        $e->getMessage(),
                 ]
             );
 
 
+            /*
+            * TEMPORAL:
+            * devolvemos el mensaje real para poder detectar
+            * exactamente qué está fallando durante las pruebas.
+            */
             return $this->response
                 ->setStatusCode(500)
                 ->setJSON([
-                    'success' => false,
+                    'success' =>
+                        false,
+
                     'message' =>
-                    'No fue posible actualizar el reporte.',
+                        $e->getMessage(),
                 ]);
         }
     }

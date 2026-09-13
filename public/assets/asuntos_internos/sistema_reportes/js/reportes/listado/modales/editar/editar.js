@@ -333,9 +333,10 @@ export function inicializarEditarReporte() {
     );
 
 
-    /* =====================================================
-       GUARDAR CAMBIOS
-    ===================================================== */
+    /* =========================================================
+    GUARDAR CAMBIOS
+    ========================================================= */
+
 
     formulario.addEventListener(
         'submit',
@@ -344,9 +345,9 @@ export function inicializarEditarReporte() {
             evento.preventDefault();
 
 
-            /* =================================================
+            /* =====================================================
                REPORTE ACTUAL
-            ================================================= */
+            ===================================================== */
 
             const filaActual =
                 estadoEdicion.filaActual;
@@ -360,6 +361,19 @@ export function inicializarEditarReporte() {
                 !filaActual
                 || !folioActual
             ) {
+
+                mostrarResultado({
+                    tipo:
+                        'error',
+
+                    titulo:
+                        'No fue posible guardar',
+
+                    mensaje:
+                        'No fue posible identificar el reporte que estás editando.',
+                });
+
+
                 return;
             }
 
@@ -386,31 +400,39 @@ export function inicializarEditarReporte() {
                 || idReporte <= 0
             ) {
 
-                window.alert(
-                    'No fue posible identificar el reporte que deseas actualizar.'
-                );
+                mostrarResultado({
+                    tipo:
+                        'error',
+
+                    titulo:
+                        'No fue posible guardar',
+
+                    mensaje:
+                        'No fue posible identificar el reporte que deseas actualizar.',
+                });
 
 
                 return;
             }
 
 
-            /* =================================================
+            /* =====================================================
                VALIDACIÓN HTML
-            ================================================= */
+            ===================================================== */
 
             if (
                 typeof formulario.reportValidity
                 === 'function'
                 && !formulario.reportValidity()
             ) {
+
                 return;
             }
 
 
-            /* =================================================
+            /* =====================================================
                OBTENER ESTADO FINAL DEL FORMULARIO
-            ================================================= */
+            ===================================================== */
 
             const reporteEditado =
                 obtenerReporteDesdeFormulario(
@@ -435,9 +457,9 @@ export function inicializarEditarReporte() {
                 idReporte;
 
 
-            /* =================================================
-               FORM DATA REAL
-            ================================================= */
+            /* =====================================================
+               FORM DATA
+            ===================================================== */
 
             const datos =
                 new FormData(
@@ -445,20 +467,121 @@ export function inicializarEditarReporte() {
                 );
 
 
-            /*
-             * El folio también lo enviamos construido
-             * explícitamente.
-             */
-
             datos.set(
                 'folio',
                 nuevoFolio
             );
 
 
-            /* =================================================
+            /* =====================================================
+               ESTADO ACTUAL
+            ===================================================== */
+
+            const estadoActual =
+                modal.querySelector(
+                    '#editar-estado-actual'
+                );
+
+
+            if (estadoActual) {
+
+                datos.set(
+                    'estado_actual',
+                    String(
+                        estadoActual.value
+                        || 'Pendiente'
+                    ).trim()
+                );
+            }
+
+
+            /* =====================================================
+               QUEJOSO / ANÓNIMO
+            ===================================================== */
+
+            const anonimoSeleccionado =
+                modal.querySelector(
+                    'input[name="anonimo"]:checked'
+                );
+
+
+            const esAnonimo =
+                String(
+                    anonimoSeleccionado?.value
+                    || '0'
+                ).trim() === '1';
+
+
+            datos.set(
+                'es_anonimo',
+                esAnonimo
+                    ? '1'
+                    : '0'
+            );
+
+
+            const numeroAnonimo =
+                modal.querySelector(
+                    '#editar-numero-anonimo'
+                );
+
+
+            datos.set(
+                'numero_anonimo',
+                esAnonimo
+                    ? String(
+                        numeroAnonimo?.value
+                        || ''
+                    ).trim()
+                    : ''
+            );
+
+
+            /*
+             * El backend usa "es_anonimo",
+             * no "anonimo".
+             */
+
+            datos.delete(
+                'anonimo'
+            );
+
+
+            /* =====================================================
+               SITUACIÓN DE LA SANCIÓN
+            ===================================================== */
+
+            const sinSanciones =
+                modal.querySelector(
+                    '#editar-sin-sanciones'
+                );
+
+
+            const bajaVoluntaria =
+                modal.querySelector(
+                    '#editar-baja-voluntaria'
+                );
+
+
+            datos.set(
+                'sin_sanciones',
+                sinSanciones?.checked
+                    ? '1'
+                    : '0'
+            );
+
+
+            datos.set(
+                'baja_voluntaria',
+                bajaVoluntaria?.checked
+                    ? '1'
+                    : '0'
+            );
+
+
+            /* =====================================================
                PERSONAL
-            ================================================= */
+            ===================================================== */
 
             eliminarClavesFormData(
                 datos,
@@ -475,13 +598,17 @@ export function inicializarEditarReporte() {
 
 
             personal.forEach(
-                (persona, indice) => {
+                (
+                    persona,
+                    indice
+                ) => {
 
                     agregarValorFormData(
                         datos,
                         `personal[${indice}][plantilla_id]`,
                         persona.plantilla_id
                         ?? persona.id
+                        ?? ''
                     );
 
 
@@ -489,6 +616,7 @@ export function inicializarEditarReporte() {
                         datos,
                         `personal[${indice}][perscod]`,
                         persona.perscod
+                        ?? ''
                     );
 
 
@@ -496,6 +624,7 @@ export function inicializarEditarReporte() {
                         datos,
                         `personal[${indice}][nombre]`,
                         persona.nombre
+                        ?? ''
                     );
 
 
@@ -503,6 +632,7 @@ export function inicializarEditarReporte() {
                         datos,
                         `personal[${indice}][area]`,
                         persona.area
+                        ?? ''
                     );
 
 
@@ -510,15 +640,25 @@ export function inicializarEditarReporte() {
                         datos,
                         `personal[${indice}][turno]`,
                         persona.turno
+                        ?? ''
+                    );
+
+
+                    agregarValorFormData(
+                        datos,
+                        `personal[${indice}][alias]`,
+                        persona.alias
+                        ?? persona.alias_snapshot
+                        ?? ''
                     );
 
                 }
             );
 
 
-            /* =================================================
+            /* =====================================================
                UNIDADES
-            ================================================= */
+            ===================================================== */
 
             eliminarClavesFormData(
                 datos,
@@ -535,13 +675,17 @@ export function inicializarEditarReporte() {
 
 
             unidades.forEach(
-                (unidad, indice) => {
+                (
+                    unidad,
+                    indice
+                ) => {
 
                     agregarValorFormData(
                         datos,
                         `unidades[${indice}][parque_vehicular_id]`,
                         unidad.parque_vehicular_id
                         ?? unidad.id
+                        ?? ''
                     );
 
 
@@ -549,6 +693,7 @@ export function inicializarEditarReporte() {
                         datos,
                         `unidades[${indice}][no_economico]`,
                         unidad.no_economico
+                        ?? ''
                     );
 
 
@@ -556,6 +701,7 @@ export function inicializarEditarReporte() {
                         datos,
                         `unidades[${indice}][placas]`,
                         unidad.placas
+                        ?? ''
                     );
 
 
@@ -563,6 +709,7 @@ export function inicializarEditarReporte() {
                         datos,
                         `unidades[${indice}][marca]`,
                         unidad.marca
+                        ?? ''
                     );
 
 
@@ -570,6 +717,7 @@ export function inicializarEditarReporte() {
                         datos,
                         `unidades[${indice}][submarca]`,
                         unidad.submarca
+                        ?? ''
                     );
 
 
@@ -577,6 +725,7 @@ export function inicializarEditarReporte() {
                         datos,
                         `unidades[${indice}][color]`,
                         unidad.color
+                        ?? ''
                     );
 
 
@@ -584,6 +733,7 @@ export function inicializarEditarReporte() {
                         datos,
                         `unidades[${indice}][estatus]`,
                         unidad.estatus
+                        ?? ''
                     );
 
 
@@ -591,6 +741,7 @@ export function inicializarEditarReporte() {
                         datos,
                         `unidades[${indice}][servicio]`,
                         unidad.servicio
+                        ?? ''
                     );
 
 
@@ -598,15 +749,32 @@ export function inicializarEditarReporte() {
                         datos,
                         `unidades[${indice}][tipo]`,
                         unidad.tipo
+                        ?? ''
+                    );
+
+
+                    agregarValorFormData(
+                        datos,
+                        `unidades[${indice}][modelo]`,
+                        unidad.modelo
+                        ?? ''
+                    );
+
+
+                    agregarValorFormData(
+                        datos,
+                        `unidades[${indice}][serie]`,
+                        unidad.serie
+                        ?? ''
                     );
 
                 }
             );
 
 
-            /* =================================================
+            /* =====================================================
                EVIDENCIAS ELIMINADAS
-            ================================================= */
+            ===================================================== */
 
             datos.delete(
                 'evidencias_eliminadas[]'
@@ -631,9 +799,33 @@ export function inicializarEditarReporte() {
             );
 
 
-            /* =================================================
+            /* =====================================================
+               DEBUG TEMPORAL
+            ===================================================== */
+
+            console.group(
+                'EDITAR REPORTE - DATOS ENVIADOS'
+            );
+
+
+            for (
+                const [clave, valor]
+                of datos.entries()
+            ) {
+
+                console.log(
+                    clave,
+                    valor
+                );
+            }
+
+
+            console.groupEnd();
+
+
+            /* =====================================================
                BOTÓN GUARDAR
-            ================================================= */
+            ===================================================== */
 
             const botonGuardar =
                 formulario.querySelector(
@@ -661,7 +853,7 @@ export function inicializarEditarReporte() {
             try {
 
                 /* =================================================
-                   ENVIAR AL BACKEND
+                   ENVIAR
                 ================================================= */
 
                 const resultado =
@@ -684,12 +876,14 @@ export function inicializarEditarReporte() {
 
 
                 /* =================================================
-                   ACTUALIZAR ESTADO LOCAL
+                   ESTADO LOCAL
                 ================================================= */
 
                 const folioGuardado =
-                    resultado.folio
-                    || nuevoFolio;
+                    String(
+                        resultado.folio
+                        || nuevoFolio
+                    ).trim();
 
 
                 reporteEditado.folio =
@@ -714,7 +908,7 @@ export function inicializarEditarReporte() {
 
 
                 /* =================================================
-                   CERRAR MODAL
+                   CERRAR
                 ================================================= */
 
                 cerrarModalEditar(
@@ -751,7 +945,7 @@ export function inicializarEditarReporte() {
                         window.location.reload();
 
                     },
-                    1800
+                    1500
                 );
 
 
@@ -763,10 +957,17 @@ export function inicializarEditarReporte() {
                 );
 
 
-                window.alert(
-                    error.message
-                    || 'No fue posible actualizar el reporte.'
-                );
+                mostrarResultado({
+                    tipo:
+                        'error',
+
+                    titulo:
+                        'No fue posible actualizar',
+
+                    mensaje:
+                        error.message
+                        || 'No fue posible actualizar el reporte.',
+                });
 
 
             } finally {
@@ -1573,25 +1774,12 @@ async function actualizarReporteBackend(
     datos
 ) {
 
-    /* const baseUrl =
-        document
-            .querySelector('base')
-            ?.href
-        || `${window.location.origin}/`;
-
-
-    const url =
-        new URL(
-            `asuntos-internos/reportes/actualizar/${idReporte}`,
-            baseUrl
-        );
- */
-
     const url =
         new URL(
             `DataCore/public/asuntos-internos/reportes/actualizar/${idReporte}`,
             `${window.location.origin}/`
         );
+
 
     const respuesta =
         await fetch(
@@ -1614,6 +1802,10 @@ async function actualizarReporteBackend(
         );
 
 
+    const texto =
+        await respuesta.text();
+
+
     let resultado =
         null;
 
@@ -1621,9 +1813,19 @@ async function actualizarReporteBackend(
     try {
 
         resultado =
-            await respuesta.json();
+            texto
+                ? JSON.parse(
+                    texto
+                )
+                : null;
 
     } catch (error) {
+
+        console.error(
+            'RESPUESTA RAW DEL SERVIDOR:',
+            texto
+        );
+
 
         throw new Error(
             'El servidor devolvió una respuesta no válida.'
@@ -1633,9 +1835,20 @@ async function actualizarReporteBackend(
 
     if (!respuesta.ok) {
 
+        console.error(
+            'ERROR BACKEND:',
+            {
+                status:
+                    respuesta.status,
+
+                resultado,
+            }
+        );
+
+
         throw new Error(
             resultado?.message
-            || 'No fue posible actualizar el reporte.'
+            || `No fue posible actualizar el reporte. Código ${respuesta.status}.`
         );
     }
 
