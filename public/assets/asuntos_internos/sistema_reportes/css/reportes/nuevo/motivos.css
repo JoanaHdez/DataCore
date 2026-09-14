@@ -443,6 +443,20 @@
     opacity: 0.75;
 }
 
+/* =========================================================
+   TOTAL DE HORAS DE ARRESTO
+========================================================= */
+
+.report-field--horas-arresto {
+    max-width: 260px;
+}
+
+.report-input--contador {
+    width: 120px;
+    max-width: 120px;
+    text-align: center;
+    font-weight: 600;
+}
 
 /* =========================================================
    RESPONSIVE

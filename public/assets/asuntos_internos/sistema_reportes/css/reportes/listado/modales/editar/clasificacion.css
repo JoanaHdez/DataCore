@@ -176,6 +176,21 @@ span {
 }
 
 /* =========================================================
+   TOTAL DE HORAS DE ARRESTO
+========================================================= */
+
+.editar-reporte-campo--horas-arresto {
+    max-width: 260px;
+}
+
+.editar-reporte-input--contador {
+    width: 120px;
+    max-width: 120px;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* =========================================================
    RESPONSIVE
 ========================================================= */
 

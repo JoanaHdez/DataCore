@@ -74,6 +74,11 @@ function inicializarMotivos() {
         );
 
 
+    const inputTotalHoras =
+        document.querySelector(
+            '#total_horas_arresto'
+        );
+
     if (
         !buscador
         || !resultados
@@ -116,6 +121,77 @@ function inicializarMotivos() {
             .trim();
     }
 
+    /* =========================================================
+    CALCULAR TOTAL DE HORAS DE ARRESTO
+    ========================================================= */
+
+    function actualizarTotalHorasArresto() {
+
+        if (!inputTotalHoras) {
+            return;
+        }
+
+
+        let totalHoras =
+            0;
+
+
+        motivosSeleccionados.forEach(
+            (motivo) => {
+
+                const sancion =
+                    String(
+                        motivo.sancion
+                        || ''
+                    )
+                        .trim()
+                        .toUpperCase();
+
+
+                /*
+                * Solo contabilizamos sanciones con el formato:
+                *
+                * ARRESTO POR 8 HORAS
+                * ARRESTO POR 12 HORAS
+                * ARRESTO POR 24 HORAS
+                * ARRESTO POR 36 HORAS
+                */
+                const coincidencia =
+                    sancion.match(
+                        /^ARRESTO\s+POR\s+(\d+)\s+HORAS$/
+                    );
+
+
+                if (!coincidencia) {
+                    return;
+                }
+
+
+                const horas =
+                    Number(
+                        coincidencia[1]
+                    );
+
+
+                if (
+                    Number.isFinite(
+                        horas
+                    )
+                    && horas > 0
+                ) {
+
+                    totalHoras +=
+                        horas;
+                }
+            }
+        );
+
+
+        inputTotalHoras.value =
+            String(
+                totalHoras
+            );
+    }
 
     /* =====================================================
        CERRAR RESULTADOS
@@ -269,9 +345,9 @@ function inicializarMotivos() {
     }
 
 
-    /* =====================================================
-       RENDERIZAR MOTIVOS AGREGADOS
-    ===================================================== */
+    /* =========================================================
+    RENDERIZAR MOTIVOS AGREGADOS
+    ========================================================= */
 
     function renderizarMotivos() {
 
@@ -283,9 +359,9 @@ function inicializarMotivos() {
             '';
 
 
-        /* =================================================
-           SIN MOTIVOS
-        ================================================= */
+        /* =====================================================
+        SIN MOTIVOS
+        ===================================================== */
 
         if (
             motivosSeleccionados.size === 0
@@ -295,13 +371,20 @@ function inicializarMotivos() {
                 true;
 
 
+            /*
+            * Al no existir motivos,
+            * el total debe regresar a cero.
+            */
+            actualizarTotalHorasArresto();
+
+
             return;
         }
 
 
-        /* =================================================
-           MOSTRAR TABLA
-        ================================================= */
+        /* =====================================================
+        MOSTRAR TABLA
+        ===================================================== */
 
         contenedorAgregados.hidden =
             false;
@@ -315,7 +398,7 @@ function inicializarMotivos() {
             (motivo) => {
 
                 /* =============================================
-                   FILA VISUAL
+                FILA VISUAL
                 ============================================== */
 
                 const fila =
@@ -335,8 +418,8 @@ function inicializarMotivos() {
                         <span class="motivos-tabla__numero">
 
                             ${escaparHtml(
-                    motivo.id
-                )}
+                                motivo.id
+                            )}
 
                         </span>
 
@@ -348,8 +431,8 @@ function inicializarMotivos() {
                         <strong class="motivos-tabla__motivo">
 
                             ${escaparHtml(
-                    motivo.texto
-                )}
+                                motivo.texto
+                            )}
 
                         </strong>
 
@@ -361,9 +444,9 @@ function inicializarMotivos() {
                         <span class="motivos-tabla__sancion">
 
                             ${escaparHtml(
-                    motivo.sancion
-                    || 'Sin sanción definida'
-                )}
+                                motivo.sancion
+                                || 'Sin sanción definida'
+                            )}
 
                         </span>
 
@@ -377,11 +460,11 @@ function inicializarMotivos() {
                             class="report-input motivos-tabla__folio"
                             data-motivo-folio
                             data-motivo-id="${escaparHtml(
-                    motivo.id
-                )}"
+                                motivo.id
+                            )}"
                             value="${escaparHtml(
-                    motivo.folio
-                )}"
+                                motivo.folio
+                            )}"
                             placeholder="Opcional"
                             maxlength="150"
                             autocomplete="off"
@@ -397,8 +480,8 @@ function inicializarMotivos() {
                             class="motivos-tabla__eliminar"
                             data-motivo-eliminar
                             data-motivo-id="${escaparHtml(
-                    motivo.id
-                )}"
+                                motivo.id
+                            )}"
                         >
                             Quitar
                         </button>
@@ -414,7 +497,7 @@ function inicializarMotivos() {
 
 
                 /* =============================================
-                   INPUT ID MOTIVO
+                INPUT ID MOTIVO
                 ============================================== */
 
                 const inputId =
@@ -441,7 +524,7 @@ function inicializarMotivos() {
 
 
                 /* =============================================
-                   INPUT FOLIO SANCIÓN
+                INPUT FOLIO SANCIÓN
                 ============================================== */
 
                 const inputFolio =
@@ -476,31 +559,49 @@ function inicializarMotivos() {
         );
 
 
-        /* =================================================
-           EVENTOS DE LA TABLA
-        ================================================= */
+        /* =====================================================
+        TOTAL DE HORAS DE ARRESTO
+        ===================================================== */
+
+        actualizarTotalHorasArresto();
+
+
+        /* =====================================================
+        EVENTOS DE LA TABLA
+        ===================================================== */
 
         inicializarEventosTabla();
+
+
+        /* =====================================================
+        BAJA VOLUNTARIA
+        ===================================================== */
 
         actualizarBajaVoluntaria();
     }
 
 
-    /* =====================================================
-       AGREGAR MOTIVO
-    ===================================================== */
+    /* =========================================================
+    AGREGAR MOTIVO
+    ========================================================= */
 
     function agregarMotivo(
         opcion
     ) {
 
-        /*
-         * Si está marcada "Sin sanciones",
-         * no permitimos agregar motivos.
-         */
+        /* =====================================================
+        NO PERMITIR MOTIVOS CUANDO NO APLICAN
+        ===================================================== */
+
         if (
-            checkboxSinSanciones
-            && checkboxSinSanciones.checked
+            (
+                checkboxSinSanciones
+                && checkboxSinSanciones.checked
+            )
+            || (
+                checkboxBajaVoluntaria
+                && checkboxBajaVoluntaria.checked
+            )
         ) {
             return;
         }

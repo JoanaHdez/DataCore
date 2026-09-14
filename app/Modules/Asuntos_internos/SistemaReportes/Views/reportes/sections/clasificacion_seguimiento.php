@@ -447,6 +447,26 @@
 
 
             <!-- =====================================================
+                TOTAL DE HORAS DE ARRESTO
+            ====================================================== -->
+
+            <div class="report-field report-field--horas-arresto">
+
+                <label for="total_horas_arresto">
+                    Total de horas de arresto
+                </label>
+
+                <input type="text" id="total_horas_arresto" name="total_horas_arresto"
+                    class="report-input report-input--readonly report-input--contador" value="0" readonly>
+
+                <small class="report-field__help">
+                    Se calcula automáticamente con las sanciones
+                    de arresto seleccionadas.
+                </small>
+
+            </div>
+
+            <!-- =====================================================
                  QUIÉN EMITE LA RESOLUCIÓN
             ====================================================== -->
 

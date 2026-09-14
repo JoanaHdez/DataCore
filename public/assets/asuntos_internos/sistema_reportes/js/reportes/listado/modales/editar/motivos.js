@@ -84,11 +84,13 @@ export function cargarMotivosEditar(
                     id_motivo:
                         idMotivo,
 
+
                     motivo:
                         String(
                             motivo.motivo
                             ?? ''
                         ).trim(),
+
 
                     sancion:
                         String(
@@ -97,11 +99,13 @@ export function cargarMotivosEditar(
                             ?? ''
                         ).trim(),
 
+
                     folio_sancion:
                         String(
                             motivo.folio_sancion
                             ?? ''
                         ).trim(),
+
                 }
             );
         }
@@ -139,13 +143,93 @@ export function cargarMotivosEditar(
 
 
     /* =====================================================
-       RENDERIZAR
+       RENDERIZAR MOTIVOS REGISTRADOS
     ===================================================== */
 
     renderizarMotivosEditar(
         modal
     );
+
+
+    /* =====================================================
+       ESTADO ACTUAL DE LA SANCIÓN
+
+       Es importante hacerlo DESPUÉS de cargar los motivos.
+
+       De esta manera, si el registro ya estaba guardado como
+       Baja voluntaria o Sin sanciones, guardamos primero los
+       motivos existentes en respaldo y después deshabilitamos
+       el catálogo.
+    ===================================================== */
+
+    const sinSanciones =
+        modal.querySelector(
+            '#editar-sin-sanciones'
+        );
+
+
+    const bajaVoluntaria =
+        modal.querySelector(
+            '#editar-baja-voluntaria'
+        );
+
+
+    /* =====================================================
+       BAJA VOLUNTARIA
+
+       Los motivos registrados se conservan temporalmente
+       para que vuelvan a aparecer si el usuario desmarca
+       Baja voluntaria antes de guardar.
+    ===================================================== */
+
+    if (
+        bajaVoluntaria
+        && bajaVoluntaria.checked
+    ) {
+
+        establecerMotivosHabilitadosEditar(
+            modal,
+            false,
+            true
+        );
+
+
+        return;
+    }
+
+
+    /* =====================================================
+       SIN SANCIONES
+    ===================================================== */
+
+    if (
+        sinSanciones
+        && sinSanciones.checked
+    ) {
+
+        establecerMotivosHabilitadosEditar(
+            modal,
+            false,
+            true
+        );
+
+
+        return;
+    }
+
+
+    /* =====================================================
+       SITUACIÓN NORMAL
+    ===================================================== */
+
+    establecerMotivosHabilitadosEditar(
+        modal,
+        true,
+        true
+    );
 }
+
+
 /* =========================================================
    INICIALIZAR
 ========================================================= */
@@ -578,10 +662,6 @@ function agregarMotivoEditar(
    RENDERIZAR MOTIVOS
 ========================================================= */
 
-/* =========================================================
-   RENDERIZAR MOTIVOS
-========================================================= */
-
 export function renderizarMotivosEditar(
     modal
 ) {
@@ -635,6 +715,11 @@ export function renderizarMotivosEditar(
 
 
         actualizarInputsMotivosEditar(
+            modal
+        );
+
+
+        actualizarTotalHorasArrestoEditar(
             modal
         );
 
@@ -876,6 +961,15 @@ export function renderizarMotivosEditar(
     actualizarInputsMotivosEditar(
         modal
     );
+
+
+    /* =====================================================
+       TOTAL DE HORAS DE ARRESTO
+    ===================================================== */
+
+    actualizarTotalHorasArrestoEditar(
+        modal
+    );
 }
 
 /* =========================================================
@@ -1039,6 +1133,85 @@ function normalizarTextoMotivoEditar(
         );
 }
 
+
+/* =========================================================
+   ACTUALIZAR TOTAL DE HORAS DE ARRESTO
+========================================================= */
+
+function actualizarTotalHorasArrestoEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const inputTotal =
+        modal.querySelector(
+            '#editar-total-horas-arresto'
+        );
+
+
+    if (!inputTotal) {
+        return;
+    }
+
+
+    let totalHoras =
+        0;
+
+
+    motivosSeleccionados.forEach(
+        (motivo) => {
+
+            const sancion =
+                String(
+                    motivo.sancion
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            const coincidencia =
+                sancion.match(
+                    /^ARRESTO\s+POR\s+(\d+)\s+HORAS$/
+                );
+
+
+            if (!coincidencia) {
+                return;
+            }
+
+
+            const horas =
+                Number(
+                    coincidencia[1]
+                );
+
+
+            if (
+                Number.isFinite(
+                    horas
+                )
+                && horas > 0
+            ) {
+
+                totalHoras +=
+                    horas;
+            }
+        }
+    );
+
+
+    inputTotal.value =
+        String(
+            totalHoras
+        );
+}
+
+
 /* =========================================================
    HABILITAR / DESHABILITAR MOTIVOS
 ========================================================= */
@@ -1123,38 +1296,49 @@ export function establecerMotivosHabilitadosEditar(
         /* =================================================
            CONSERVAR RESPALDO
 
-           Esto puede utilizarse para situaciones donde
-           posteriormente se desea restaurar lo seleccionado.
+           IMPORTANTE:
+
+           Solo reemplazamos el respaldo cuando realmente
+           existen motivos activos.
+
+           Si estamos cambiando directamente entre:
+           - Baja voluntaria
+           - Sin sanciones
+
+           los motivos activos ya estarán vacíos, pero el
+           respaldo original debe conservarse.
         ================================================= */
 
         if (conservarRespaldo) {
 
-            motivosRespaldo.clear();
+            if (
+                motivosSeleccionados.size > 0
+            ) {
+
+                motivosRespaldo.clear();
 
 
-            motivosSeleccionados.forEach(
-                (
-                    motivo,
-                    idMotivo
-                ) => {
+                motivosSeleccionados.forEach(
+                    (
+                        motivo,
+                        idMotivo
+                    ) => {
 
-                    motivosRespaldo.set(
-                        idMotivo,
-                        {
-                            ...motivo,
-                        }
-                    );
-                }
-            );
+                        motivosRespaldo.set(
+                            idMotivo,
+                            {
+                                ...motivo,
+                            }
+                        );
+                    }
+                );
+            }
 
         } else {
 
-            /*
-             * Baja voluntaria:
-             *
-             * los motivos dejan de aplicar completamente,
-             * por lo que tampoco conservamos un respaldo.
-             */
+            /* =================================================
+               ELIMINAR RESPALDO DEFINITIVAMENTE
+            ================================================= */
 
             motivosRespaldo.clear();
         }
@@ -1180,13 +1364,6 @@ export function establecerMotivosHabilitadosEditar(
        VOLVER A HABILITAR
     ===================================================== */
 
-    /*
-     * Solamente restauramos si expresamente existe
-     * un respaldo.
-     *
-     * Baja voluntaria habrá eliminado dicho respaldo.
-     */
-
     if (
         motivosSeleccionados.size === 0
         && motivosRespaldo.size > 0
@@ -1207,6 +1384,13 @@ export function establecerMotivosHabilitadosEditar(
             }
         );
 
+
+        /* =================================================
+           YA FUERON RESTAURADOS
+
+           Limpiamos el respaldo para que el próximo cambio
+           genere uno nuevo con el estado actual.
+        ================================================= */
 
         motivosRespaldo.clear();
 
