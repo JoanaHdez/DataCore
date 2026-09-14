@@ -1045,7 +1045,8 @@ function normalizarTextoMotivoEditar(
 
 export function establecerMotivosHabilitadosEditar(
     modal,
-    habilitados
+    habilitados,
+    conservarRespaldo = true
 ) {
 
     if (!modal) {
@@ -1075,6 +1076,12 @@ export function establecerMotivosHabilitadosEditar(
             !habilitados;
 
 
+        buscador.classList.toggle(
+            'report-input--disabled',
+            !habilitados
+        );
+
+
         if (!habilitados) {
 
             buscador.value =
@@ -1091,6 +1098,19 @@ export function establecerMotivosHabilitadosEditar(
 
         resultados.hidden =
             true;
+
+
+        resultados
+            .querySelectorAll(
+                '[data-editar-motivo-opcion]'
+            )
+            .forEach(
+                (opcion) => {
+
+                    opcion.hidden =
+                        true;
+                }
+            );
     }
 
 
@@ -1100,33 +1120,49 @@ export function establecerMotivosHabilitadosEditar(
 
     if (!habilitados) {
 
-        /*
-         * Guardamos una copia de los motivos actuales
-         * antes de quitarlos de la interfaz.
-         */
+        /* =================================================
+           CONSERVAR RESPALDO
 
-        motivosRespaldo.clear();
+           Esto puede utilizarse para situaciones donde
+           posteriormente se desea restaurar lo seleccionado.
+        ================================================= */
 
+        if (conservarRespaldo) {
 
-        motivosSeleccionados.forEach(
-            (
-                motivo,
-                idMotivo
-            ) => {
-
-                motivosRespaldo.set(
-                    idMotivo,
-                    {
-                        ...motivo,
-                    }
-                );
-            }
-        );
+            motivosRespaldo.clear();
 
 
-        /*
-         * Ahora sí quitamos los motivos activos.
-         */
+            motivosSeleccionados.forEach(
+                (
+                    motivo,
+                    idMotivo
+                ) => {
+
+                    motivosRespaldo.set(
+                        idMotivo,
+                        {
+                            ...motivo,
+                        }
+                    );
+                }
+            );
+
+        } else {
+
+            /*
+             * Baja voluntaria:
+             *
+             * los motivos dejan de aplicar completamente,
+             * por lo que tampoco conservamos un respaldo.
+             */
+
+            motivosRespaldo.clear();
+        }
+
+
+        /* =================================================
+           ELIMINAR MOTIVOS ACTIVOS
+        ================================================= */
 
         motivosSeleccionados.clear();
 
@@ -1141,15 +1177,14 @@ export function establecerMotivosHabilitadosEditar(
 
 
     /* =====================================================
-       VOLVER A HABILITAR MOTIVOS
+       VOLVER A HABILITAR
     ===================================================== */
 
     /*
-     * Si no hay motivos activos pero tenemos un respaldo,
-     * significa que el usuario regresó a una situación
-     * donde los motivos sí aplican.
+     * Solamente restauramos si expresamente existe
+     * un respaldo.
      *
-     * Restauramos lo que tenía antes.
+     * Baja voluntaria habrá eliminado dicho respaldo.
      */
 
     if (
@@ -1171,6 +1206,9 @@ export function establecerMotivosHabilitadosEditar(
                 );
             }
         );
+
+
+        motivosRespaldo.clear();
 
 
         renderizarMotivosEditar(

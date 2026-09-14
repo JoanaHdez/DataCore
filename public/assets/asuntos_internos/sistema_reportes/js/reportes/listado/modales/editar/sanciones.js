@@ -79,13 +79,15 @@ export function inicializarSancionesEditar(
 
                 establecerMotivosHabilitadosEditar(
                     modal,
-                    false
+                    false,
+                    true
                 );
 
             } else {
 
                 establecerMotivosHabilitadosEditar(
                     modal,
+                    true,
                     true
                 );
             }
@@ -110,12 +112,37 @@ export function inicializarSancionesEditar(
                 bajaVoluntaria.checked
             ) {
 
+                /* =========================================
+                   NO PUEDE COEXISTIR CON SIN SANCIONES
+                ========================================== */
+
                 sinSanciones.checked =
                     false;
 
 
+                /* =========================================
+                   BAJA VOLUNTARIA
+
+                   En Editar sí conservamos los motivos
+                   existentes para restaurarlos si el
+                   usuario desmarca Baja voluntaria.
+                ========================================== */
+
                 establecerMotivosHabilitadosEditar(
                     modal,
+                    false,
+                    true
+                );
+
+            } else {
+
+                /* =========================================
+                   RESTAURAR MOTIVOS EXISTENTES
+                ========================================== */
+
+                establecerMotivosHabilitadosEditar(
+                    modal,
+                    true,
                     true
                 );
             }
@@ -326,17 +353,42 @@ export function cargarSancionesEditar(
 
     /* =====================================================
        MOTIVOS
-
-       Si está marcado "Sin sanciones",
-       el buscador debe quedar deshabilitado.
-
-       En cualquier otro caso debe quedar habilitado.
     ===================================================== */
 
-    establecerMotivosHabilitadosEditar(
-        modal,
-        !sinSanciones.checked
-    );
+    if (
+        bajaVoluntaria.checked
+    ) {
+
+        /*
+         * En Editar:
+         * ocultamos/deshabilitamos,
+         * pero conservamos respaldo.
+         */
+
+        establecerMotivosHabilitadosEditar(
+            modal,
+            false,
+            true
+        );
+
+    } else if (
+        sinSanciones.checked
+    ) {
+
+        establecerMotivosHabilitadosEditar(
+            modal,
+            false,
+            true
+        );
+
+    } else {
+
+        establecerMotivosHabilitadosEditar(
+            modal,
+            true,
+            true
+        );
+    }
 
 
     /* =====================================================
@@ -347,7 +399,6 @@ export function cargarSancionesEditar(
         modal
     );
 }
-
 /* =========================================================
    LIMPIAR
 ========================================================= */
@@ -419,13 +470,14 @@ export function limpiarSancionesEditar(
     /* =====================================================
        MOTIVOS
 
-       Al limpiar Editar, el buscador debe volver
-       a quedar disponible.
+       Limpiamos cualquier respaldo anterior
+       y dejamos disponible nuevamente el catálogo.
     ===================================================== */
 
     establecerMotivosHabilitadosEditar(
         modal,
-        true
+        true,
+        false
     );
 }
 

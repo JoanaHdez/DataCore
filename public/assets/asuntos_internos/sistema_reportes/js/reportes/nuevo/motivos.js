@@ -73,7 +73,7 @@ function inicializarMotivos() {
             '#estado_actual'
         );
 
-    
+
     if (
         !buscador
         || !resultados
@@ -142,8 +142,14 @@ function inicializarMotivos() {
          * utilizar el catálogo.
          */
         if (
-            checkboxSinSanciones
-            && checkboxSinSanciones.checked
+            (
+                checkboxSinSanciones
+                && checkboxSinSanciones.checked
+            )
+            || (
+                checkboxBajaVoluntaria
+                && checkboxBajaVoluntaria.checked
+            )
         ) {
 
             cerrarResultados();
@@ -329,8 +335,8 @@ function inicializarMotivos() {
                         <span class="motivos-tabla__numero">
 
                             ${escaparHtml(
-                                motivo.id
-                            )}
+                    motivo.id
+                )}
 
                         </span>
 
@@ -342,8 +348,8 @@ function inicializarMotivos() {
                         <strong class="motivos-tabla__motivo">
 
                             ${escaparHtml(
-                                motivo.texto
-                            )}
+                    motivo.texto
+                )}
 
                         </strong>
 
@@ -355,9 +361,9 @@ function inicializarMotivos() {
                         <span class="motivos-tabla__sancion">
 
                             ${escaparHtml(
-                                motivo.sancion
-                                || 'Sin sanción definida'
-                            )}
+                    motivo.sancion
+                    || 'Sin sanción definida'
+                )}
 
                         </span>
 
@@ -371,11 +377,11 @@ function inicializarMotivos() {
                             class="report-input motivos-tabla__folio"
                             data-motivo-folio
                             data-motivo-id="${escaparHtml(
-                                motivo.id
-                            )}"
+                    motivo.id
+                )}"
                             value="${escaparHtml(
-                                motivo.folio
-                            )}"
+                    motivo.folio
+                )}"
                             placeholder="Opcional"
                             maxlength="150"
                             autocomplete="off"
@@ -391,8 +397,8 @@ function inicializarMotivos() {
                             class="motivos-tabla__eliminar"
                             data-motivo-eliminar
                             data-motivo-id="${escaparHtml(
-                                motivo.id
-                            )}"
+                    motivo.id
+                )}"
                         >
                             Quitar
                         </button>
@@ -793,22 +799,22 @@ function inicializarMotivos() {
             checkboxSinSanciones.checked;
 
 
-            /* =====================================================
-            NO PUEDE COEXISTIR CON BAJA VOLUNTARIA
-            ===================================================== */
+        /* =====================================================
+        NO PUEDE COEXISTIR CON BAJA VOLUNTARIA
+        ===================================================== */
 
-            if (
-                sinSanciones
-                && checkboxBajaVoluntaria
-                && checkboxBajaVoluntaria.checked
-            ) {
+        if (
+            sinSanciones
+            && checkboxBajaVoluntaria
+            && checkboxBajaVoluntaria.checked
+        ) {
 
-                checkboxBajaVoluntaria.checked =
-                    false;
+            checkboxBajaVoluntaria.checked =
+                false;
 
 
-                actualizarBajaVoluntaria();
-            }
+            actualizarBajaVoluntaria();
+        }
 
 
         /* =====================================================
@@ -920,9 +926,6 @@ function inicializarMotivos() {
 
             checkboxSinSanciones.checked =
                 false;
-
-
-            actualizarSinSanciones();
         }
 
 
@@ -939,7 +942,8 @@ function inicializarMotivos() {
             ) {
 
                 /*
-                * Guardamos el estado anterior.
+                * Guardamos el estado anterior
+                * únicamente la primera vez.
                 */
                 if (
                     !selectEstado.dataset.estadoAnterior
@@ -959,7 +963,8 @@ function inicializarMotivos() {
 
                 /*
                 * Solo estado visual.
-                * NO usamos disabled.
+                * NO usamos disabled para que el valor
+                * pueda seguir enviándose al backend.
                 */
                 selectEstado.classList.add(
                     'report-select--readonly'
@@ -990,37 +995,83 @@ function inicializarMotivos() {
 
 
         /* =====================================================
-        FOLIOS DE SANCIÓN
+        DESHABILITAR / HABILITAR CATÁLOGO DE MOTIVOS
         ===================================================== */
 
-        const inputsFolio =
-            tablaBody.querySelectorAll(
-                '[data-motivo-folio]'
+        buscador.disabled =
+            bajaVoluntaria;
+
+
+        buscador.classList.toggle(
+            'report-input--disabled',
+            bajaVoluntaria
+        );
+
+
+        /* =====================================================
+        BAJA VOLUNTARIA ACTIVA
+        ===================================================== */
+
+        if (
+            bajaVoluntaria
+        ) {
+
+            /* =================================================
+            LIMPIAR BÚSQUEDA
+            ================================================= */
+
+            buscador.value =
+                '';
+
+
+            /* =================================================
+            CERRAR RESULTADOS
+            ================================================= */
+
+            cerrarResultados();
+
+
+            /* =================================================
+            OCULTAR OPCIONES
+            ================================================= */
+
+            opciones.forEach(
+                (opcion) => {
+
+                    opcion.hidden =
+                        true;
+                }
             );
 
 
-        inputsFolio.forEach(
-            (input) => {
+            /* =================================================
+            ELIMINAR MOTIVOS SELECCIONADOS
 
-                input.disabled =
-                    bajaVoluntaria;
+            Baja voluntaria no lleva motivos.
+            Esto también elimina:
+            - filas de tabla
+            - folios de sanción
+            - inputs hidden
+            ================================================= */
 
-
-                if (
-                    bajaVoluntaria
-                ) {
-
-                    input.value =
-                        '';
+            motivosSeleccionados.clear();
 
 
-                    actualizarFolio(
-                        input.dataset.motivoId,
-                        ''
-                    );
-                }
-            }
-        );
+            renderizarMotivos();
+
+
+            return;
+        }
+
+
+        /* =====================================================
+        VOLVER A HABILITAR
+
+        No restauramos motivos anteriores.
+        ===================================================== */
+
+        buscador.disabled =
+            false;
     }
 
 
