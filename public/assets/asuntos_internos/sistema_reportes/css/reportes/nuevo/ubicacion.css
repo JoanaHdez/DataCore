@@ -59,3 +59,58 @@
 .report-location__fields {
     margin-top: 0;
 }
+
+/* =========================================================
+   ADVERTENCIA - DIRECCIÓN FORÁNEA
+========================================================= */
+
+.report-notification-warning {
+    margin-top: 14px;
+    margin-bottom: 18px;
+
+    padding: 12px 14px;
+
+    color: #b42318;
+    background: #fff5f5;
+
+    border: 1px solid #f1b7b3;
+    border-left: 4px solid #d14343;
+
+    border-radius: 8px;
+
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.report-notification-warning[hidden] {
+    display: none !important;
+}
+
+/* =========================================================
+   ESPACIO DESPUÉS DE AYUDA DE NOTIFICACIÓN
+========================================================= */
+
+.report-field__help--notificacion {
+    display: block;
+    margin-bottom: 16px;
+}
+
+/* =========================================================
+   DIRECCIÓN PARA NOTIFICACIÓN DESHABILITADA
+========================================================= */
+
+.report-section--disabled {
+    opacity: 0.58;
+}
+
+.report-section--disabled .report-location__map {
+    pointer-events: none;
+}
+
+.report-section--disabled input,
+.report-section--disabled select,
+.report-section--disabled textarea,
+.report-section--disabled button {
+    cursor: not-allowed;
+}

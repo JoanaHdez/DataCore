@@ -1,4 +1,4 @@
-<section class="report-section">
+<section class="report-section" id="seccion-direccion-notificacion">
 
     <div class="report-section__header">
 
@@ -14,7 +14,7 @@
 
             <p class="report-section__description">
                 Indica si la dirección pertenece al municipio de Nezahualcóyotl
-                y, si lo deseas, captura el domicilio para notificación.
+                y captura el domicilio para notificación.
             </p>
 
         </div>
@@ -35,6 +35,7 @@
 
                 <label>
                     ¿Pertenece al municipio de Nezahualcóyotl?
+                    <span class="required">*</span>
                 </label>
 
 
@@ -45,7 +46,7 @@
                     <label class="report-option">
 
                         <input type="radio" name="notificacion_pertenece_neza" id="notificacion-pertenece-neza-si"
-                            value="1">
+                            value="1" required>
 
                         <span>
                             Sí
@@ -59,7 +60,7 @@
                     <label class="report-option">
 
                         <input type="radio" name="notificacion_pertenece_neza" id="notificacion-pertenece-neza-no"
-                            value="0">
+                            value="0" required>
 
                         <span>
                             No
@@ -70,10 +71,21 @@
                 </div>
 
 
-                <small class="report-field__help">
+                <small class="report-field__help report-field__help--notificacion">
                     Selecciona “No” cuando la dirección para notificación
                     se encuentre fuera del municipio de Nezahualcóyotl.
                 </small>
+
+
+                <!-- =================================================
+                     ADVERTENCIA PARA DOMICILIO FORÁNEO
+                ================================================== -->
+
+                <div class="report-notification-warning" id="notificacion-advertencia-foraneo" hidden>
+                    Se debe de ingresar un domicilio dentro del municipio
+                    de Nezahualcóyotl para continuar con su proceso de
+                    seguimiento y notificación.
+                </div>
 
             </div>
 
@@ -86,10 +98,11 @@
 
                 <label for="notificacion-ubicacion-busqueda">
                     Buscar ubicación
+                    <span class="required">*</span>
                 </label>
 
                 <input type="text" id="notificacion-ubicacion-busqueda" name="notificacion_ubicacion_busqueda"
-                    class="report-input" placeholder="Busca una calle, colonia o dirección" autocomplete="off">
+                    class="report-input" placeholder="Busca una calle, colonia o dirección" autocomplete="off" required>
 
                 <small class="report-field__help">
                     También puedes seleccionar directamente un punto
@@ -120,10 +133,11 @@
 
                     <label for="notificacion-calle">
                         Calle
+                        <span class="required">*</span>
                     </label>
 
                     <input type="text" id="notificacion-calle" name="notificacion_calle" class="report-input"
-                        autocomplete="off">
+                        autocomplete="off" required>
 
                 </div>
 
@@ -134,10 +148,11 @@
 
                     <label for="notificacion-numero">
                         No. Ext.
+                        <span class="required">*</span>
                     </label>
 
                     <input type="text" id="notificacion-numero" name="notificacion_numero_exterior" class="report-input"
-                        autocomplete="off">
+                        autocomplete="off" required>
 
                 </div>
 
@@ -148,10 +163,11 @@
 
                     <label for="notificacion-colonia">
                         Colonia
+                        <span class="required">*</span>
                     </label>
 
                     <input type="text" id="notificacion-colonia" name="notificacion_colonia" class="report-input"
-                        autocomplete="off">
+                        autocomplete="off" required>
 
                 </div>
 
@@ -162,10 +178,11 @@
 
                     <label for="notificacion-entre-calle">
                         Entre calle
+                        <span class="required">*</span>
                     </label>
 
                     <input type="text" id="notificacion-entre-calle" name="notificacion_entre_calle"
-                        class="report-input" autocomplete="off">
+                        class="report-input" autocomplete="off" required>
 
                 </div>
 
@@ -176,10 +193,11 @@
 
                     <label for="notificacion-y-calle">
                         Y calle
+                        <span class="required">*</span>
                     </label>
 
                     <input type="text" id="notificacion-y-calle" name="notificacion_y_calle" class="report-input"
-                        autocomplete="off">
+                        autocomplete="off" required>
 
                 </div>
 
@@ -190,10 +208,11 @@
 
                     <label for="notificacion-municipio">
                         Ciudad / Municipio
+                        <span class="required">*</span>
                     </label>
 
                     <input type="text" id="notificacion-municipio" name="notificacion_municipio" class="report-input"
-                        autocomplete="off">
+                        autocomplete="off" required>
 
                 </div>
 
@@ -204,10 +223,11 @@
 
                     <label for="notificacion-estado">
                         Estado
+                        <span class="required">*</span>
                     </label>
 
                     <input type="text" id="notificacion-estado" name="notificacion_estado" class="report-input"
-                        autocomplete="off">
+                        autocomplete="off" required>
 
                 </div>
 
@@ -218,10 +238,11 @@
 
                     <label for="notificacion-sector">
                         Sector
+                        <span class="required">*</span>
                     </label>
 
                     <input type="text" id="notificacion-sector" name="notificacion_sector" class="report-input"
-                        autocomplete="off">
+                        autocomplete="off" required>
 
                 </div>
 
@@ -232,10 +253,11 @@
 
                     <label for="notificacion-cuadrante">
                         Cuadrante
+                        <span class="required">*</span>
                     </label>
 
                     <input type="text" id="notificacion-cuadrante" name="notificacion_cuadrante" class="report-input"
-                        autocomplete="off">
+                        autocomplete="off" required>
 
                 </div>
 
@@ -246,10 +268,11 @@
 
                     <label for="notificacion-id-cuadra">
                         ID de cuadra / calle
+                        <span class="required">*</span>
                     </label>
 
                     <input type="text" id="notificacion-id-cuadra" name="notificacion_id_cuadra" class="report-input"
-                        autocomplete="off" readonly>
+                        autocomplete="off" readonly required>
 
                 </div>
 
@@ -286,10 +309,11 @@
 
                     <label for="notificacion-coordenadas">
                         Coordenadas
+                        <span class="required">*</span>
                     </label>
 
                     <input type="text" id="notificacion-coordenadas" name="notificacion_coordenadas"
-                        class="report-input" readonly>
+                        class="report-input" readonly required>
 
                     <small class="report-field__help">
                         Formato: latitud, longitud.
@@ -304,17 +328,19 @@
                  DATOS OCULTOS REALES
             ====================================================== -->
 
-            <input type="hidden" id="notificacion-latitud" name="notificacion_latitud">
+            <input type="hidden" id="notificacion-latitud" name="notificacion_latitud" required>
 
-            <input type="hidden" id="notificacion-longitud" name="notificacion_longitud">
+            <input type="hidden" id="notificacion-longitud" name="notificacion_longitud" required>
 
-            <input type="hidden" id="notificacion-origen-ubicacion" name="notificacion_origen_ubicacion" value="manual">
+            <input type="hidden" id="notificacion-origen-ubicacion" name="notificacion_origen_ubicacion" value="manual"
+                required>
 
         </div>
 
     </div>
 
 </section>
+
 
 <!-- =============================================================
      GOOGLE MAPS

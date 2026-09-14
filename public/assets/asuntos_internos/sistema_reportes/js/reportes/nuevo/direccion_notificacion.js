@@ -139,6 +139,12 @@ export function inicializarDireccionNotificacion() {
         );
 
 
+    const advertenciaForaneo =
+        document.querySelector(
+            '#notificacion-advertencia-foraneo'
+        );
+
+
     if (!contenedorMapa) {
         return;
     }
@@ -265,6 +271,21 @@ export function inicializarDireccionNotificacion() {
     }
 
 
+    /* =========================================================
+    ACTUALIZAR ADVERTENCIA FORÁNEA
+    ========================================================= */
+
+    function actualizarAdvertenciaForaneo() {
+
+        if (!advertenciaForaneo) {
+            return;
+        }
+
+
+        advertenciaForaneo.hidden =
+            !esForaneo();
+    }
+
     /* =====================================================
        CAMBIO: PERTENECE A NEZA
     ===================================================== */
@@ -276,6 +297,9 @@ export function inicializarDireccionNotificacion() {
             if (!opcionNezaSi.checked) {
                 return;
             }
+
+
+            actualizarAdvertenciaForaneo();
 
 
             actualizandoAutomaticamente =
@@ -406,6 +430,9 @@ export function inicializarDireccionNotificacion() {
             if (!opcionNezaNo.checked) {
                 return;
             }
+
+
+            actualizarAdvertenciaForaneo();
 
 
             llenarCampo(
@@ -1378,6 +1405,9 @@ export function inicializarDireccionNotificacion() {
                     }
 
 
+                    actualizarAdvertenciaForaneo();
+
+
                     /* =============================================
                     SECTOR
                     ============================================= */
@@ -1534,6 +1564,9 @@ export function inicializarDireccionNotificacion() {
                     opcionNezaNo.checked =
                         true;
                 }
+
+
+                actualizarAdvertenciaForaneo();
 
 
                 llenarCampo(
@@ -1811,4 +1844,12 @@ export function inicializarDireccionNotificacion() {
             true
         );
     }
+
+    /* =====================================================
+    ESTADO INICIAL DE LA ADVERTENCIA
+    ===================================================== */
+
+    actualizarAdvertenciaForaneo();
+
+
 }

@@ -323,6 +323,30 @@ function inicializarQuejosoAnonimo() {
         ),
     ];
 
+    /* =====================================================
+    DIRECCIÓN PARA NOTIFICACIÓN
+    ===================================================== */
+
+    const seccionNotificacion =
+        document.querySelector(
+            '#seccion-direccion-notificacion'
+        );
+
+
+    const advertenciaForaneo =
+        document.querySelector(
+            '#notificacion-advertencia-foraneo'
+        );
+
+
+    const controlesNotificacion =
+        seccionNotificacion
+            ? Array.from(
+                seccionNotificacion.querySelectorAll(
+                    'input, select, textarea, button'
+                )
+            )
+            : [];
 
     if (
         !radioAnonimo
@@ -415,6 +439,98 @@ function inicializarQuejosoAnonimo() {
                 }
             }
         );
+
+
+        /* =================================================
+   DIRECCIÓN PARA NOTIFICACIÓN
+================================================= */
+
+        if (seccionNotificacion) {
+
+            seccionNotificacion.classList.toggle(
+                'report-section--disabled',
+                esAnonimo
+            );
+        }
+
+
+        controlesNotificacion.forEach(
+            (control) => {
+
+                if (!control) {
+                    return;
+                }
+
+
+                /*
+                 * Guardamos si originalmente estaba
+                 * deshabilitado o era obligatorio.
+                 */
+                if (
+                    control.dataset.disabledOriginal
+                    === undefined
+                ) {
+
+                    control.dataset.disabledOriginal =
+                        control.disabled
+                            ? '1'
+                            : '0';
+                }
+
+
+                if (
+                    control.dataset.requiredOriginal
+                    === undefined
+                ) {
+
+                    control.dataset.requiredOriginal =
+                        control.required
+                            ? '1'
+                            : '0';
+                }
+
+
+                if (esAnonimo) {
+
+                    control.disabled =
+                        true;
+
+
+                    control.required =
+                        false;
+
+                } else {
+
+                    control.disabled =
+                        control.dataset.disabledOriginal
+                        === '1';
+
+
+                    control.required =
+                        control.dataset.requiredOriginal
+                        === '1';
+
+
+                    delete control.dataset.disabledOriginal;
+
+                    delete control.dataset.requiredOriginal;
+                }
+            }
+        );
+
+
+        /* =================================================
+           OCULTAR ADVERTENCIA CUANDO ES ANÓNIMO
+        ================================================= */
+
+        if (
+            advertenciaForaneo
+            && esAnonimo
+        ) {
+
+            advertenciaForaneo.hidden =
+                true;
+        }
 
 
         /* =================================================
