@@ -10,6 +10,132 @@ let instanciaDireccionNotificacionEditar =
 
 
 /* =========================================================
+   ACTUALIZAR ADVERTENCIA DE DOMICILIO FORÁNEO
+========================================================= */
+
+function actualizarAdvertenciaForaneoEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const opcionNo =
+        modal.querySelector(
+            '#editar-notificacion-pertenece-neza-no'
+        );
+
+
+    const anonimoSi =
+        modal.querySelector(
+            '#editar-anonimo-si'
+        );
+
+
+    const advertencia =
+        modal.querySelector(
+            '#editar-notificacion-advertencia-foraneo'
+        );
+
+
+    if (!advertencia) {
+        return;
+    }
+
+
+    const esForaneo =
+        opcionNo?.checked === true;
+
+
+    const esAnonimo =
+        anonimoSi?.checked === true;
+
+
+    advertencia.hidden =
+        !esForaneo
+        || esAnonimo;
+}
+
+
+/* =========================================================
+   INICIALIZAR ADVERTENCIA DE DOMICILIO FORÁNEO
+========================================================= */
+
+function inicializarAdvertenciaForaneoEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    /*
+     * El listener se coloca en el modal y no en los radios.
+     *
+     * Así seguirá funcionando aunque el contenido interno
+     * del modal sea reemplazado al abrir otro reporte.
+     */
+
+    if (
+        modal.dataset
+            .advertenciaNotificacionInicializada
+        !== '1'
+    ) {
+
+        modal.dataset
+            .advertenciaNotificacionInicializada =
+            '1';
+
+
+        modal.addEventListener(
+            'change',
+            (evento) => {
+
+                const elemento =
+                    evento.target;
+
+
+                if (!elemento) {
+                    return;
+                }
+
+
+                if (
+                    elemento.id
+                    !== 'editar-notificacion-pertenece-neza-si'
+
+                    && elemento.id
+                    !== 'editar-notificacion-pertenece-neza-no'
+
+                    && elemento.id
+                    !== 'editar-anonimo-si'
+
+                    && elemento.id
+                    !== 'editar-anonimo-no'
+                ) {
+
+                    return;
+                }
+
+
+                actualizarAdvertenciaForaneoEditar(
+                    modal
+                );
+            }
+        );
+    }
+
+
+    actualizarAdvertenciaForaneoEditar(
+        modal
+    );
+}
+
+
+/* =========================================================
    CARGAR DIRECCIÓN EXISTENTE
 ========================================================= */
 
@@ -28,6 +154,15 @@ export function cargarDireccionNotificacionEditar(
         && typeof direccion === 'object'
             ? direccion
             : {};
+
+
+    /* =====================================================
+       ADVERTENCIA FORÁNEO
+    ===================================================== */
+
+    inicializarAdvertenciaForaneoEditar(
+        modal
+    );
 
 
     /* =====================================================
@@ -70,6 +205,11 @@ export function cargarDireccionNotificacionEditar(
         opcionNo.checked =
             perteneceNeza === 0;
     }
+
+
+    actualizarAdvertenciaForaneoEditar(
+        modal
+    );
 
 
     /* =====================================================
@@ -210,9 +350,6 @@ export function cargarDireccionNotificacionEditar(
 
     /* =====================================================
        BUSCADOR
-
-       No guardamos el texto del buscador en BD,
-       así que lo limpiamos al cargar.
     ===================================================== */
 
     asignarValor(
@@ -234,6 +371,15 @@ export function cargarDireccionNotificacionEditar(
         instanciaDireccionNotificacionEditar
             .actualizarDesdeFormulario();
     }
+
+
+    /* =====================================================
+       ESTADO FINAL DE ADVERTENCIA
+    ===================================================== */
+
+    actualizarAdvertenciaForaneoEditar(
+        modal
+    );
 }
 
 
@@ -251,6 +397,15 @@ export function inicializarDireccionNotificacionEditar(
 
 
     /* =====================================================
+       ADVERTENCIA DOMICILIO FORÁNEO
+    ===================================================== */
+
+    inicializarAdvertenciaForaneoEditar(
+        modal
+    );
+
+
+    /* =====================================================
        ELEMENTOS
     ===================================================== */
 
@@ -259,8 +414,7 @@ export function inicializarDireccionNotificacionEditar(
             '#editar-notificacion-mapa-ubicacion'
         );
 
-
-    const inputBusqueda =
+        const inputBusqueda =
         modal.querySelector(
             '#editar-notificacion-ubicacion-busqueda'
         );
@@ -372,6 +526,18 @@ export function inicializarDireccionNotificacionEditar(
         modal.querySelector(
             '#editar-notificacion-pertenece-neza-no'
         );
+
+
+    /* =====================================================
+       ACTUALIZAR ADVERTENCIA
+    ===================================================== */
+
+    function actualizarAdvertenciaForaneo() {
+
+        actualizarAdvertenciaForaneoEditar(
+            modal
+        );
+    }
 
 
     if (!contenedorMapa) {
@@ -531,11 +697,7 @@ export function inicializarDireccionNotificacionEditar(
             }
 
 
-            if (opcionNezaNo) {
-
-                opcionNezaNo.checked =
-                    false;
-            }
+            actualizarAdvertenciaForaneo();
 
 
             actualizandoAutomaticamente =
@@ -652,11 +814,7 @@ export function inicializarDireccionNotificacionEditar(
             }
 
 
-            if (opcionNezaSi) {
-
-                opcionNezaSi.checked =
-                    false;
-            }
+            actualizarAdvertenciaForaneo();
 
 
             llenarCampo(
@@ -678,8 +836,7 @@ export function inicializarDireccionNotificacionEditar(
         }
     );
 
-
-    /* =====================================================
+        /* =====================================================
        CLIC EN MAPA
     ===================================================== */
 
@@ -1198,8 +1355,7 @@ export function inicializarDireccionNotificacionEditar(
         }
     }
 
-
-    /* =====================================================
+        /* =====================================================
        SELECCIONAR PUNTO
     ===================================================== */
 
@@ -1292,14 +1448,6 @@ export function inicializarDireccionNotificacionEditar(
             miSecuencia
         );
 
-
-        /*
-         * La consulta territorial se realiza siempre.
-         *
-         * Además de obtener sector/cuadrante,
-         * determina automáticamente si pertenece
-         * a Nezahualcóyotl.
-         */
 
         completarTerritorio(
             posicion.lat,
@@ -1568,6 +1716,9 @@ export function inicializarDireccionNotificacionEditar(
                     }
 
 
+                    actualizarAdvertenciaForaneo();
+
+
                     llenarCampo(
                         inputSector,
                         normalizarMayusculas(
@@ -1687,6 +1838,9 @@ export function inicializarDireccionNotificacionEditar(
                 }
 
 
+                actualizarAdvertenciaForaneo();
+
+
                 llenarCampo(
                     inputSector,
                     'FORÁNEO'
@@ -1737,8 +1891,7 @@ export function inicializarDireccionNotificacionEditar(
         }
     }
 
-
-    /* =====================================================
+        /* =====================================================
        OBTENER COMPONENTE GOOGLE
     ===================================================== */
 
@@ -2041,8 +2194,7 @@ export function inicializarDireccionNotificacionEditar(
             );
     }
 
-
-    /* =====================================================
+        /* =====================================================
        GUARDAR INSTANCIA
     ===================================================== */
 
@@ -2060,6 +2212,8 @@ export function inicializarDireccionNotificacionEditar(
     /* =====================================================
        POSICIÓN INICIAL
     ===================================================== */
+
+    actualizarAdvertenciaForaneo();
 
     actualizarDesdeFormulario();
 }

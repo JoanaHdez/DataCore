@@ -14,7 +14,7 @@
 
 
     <!-- =====================================================
-         PERTENECE A NEZAHUALCÓYOTL
+        PERTENECE A NEZAHUALCÓYOTL
     ====================================================== -->
 
     <div class="editar-reporte-grid">
@@ -60,6 +60,17 @@
                 Selecciona “No” cuando la dirección para notificación
                 se encuentre fuera del municipio de Nezahualcóyotl.
             </small>
+
+
+            <!-- =================================================
+                ADVERTENCIA PARA DOMICILIO FORÁNEO
+            ================================================== -->
+
+            <div class="report-notification-warning" id="editar-notificacion-advertencia-foraneo" hidden>
+                Se debe de ingresar un domicilio dentro del municipio
+                de Nezahualcóyotl para continuar con su proceso de
+                seguimiento y notificación.
+            </div>
 
         </div>
 

@@ -9,12 +9,17 @@
 ========================================================= */
 
 .editar-reporte-seccion__bloque:has(> #editar-mapa-ubicacion)
-> .editar-reporte-campo--completo,
+> .editar-reporte-campo--completo {
+
+    margin-top: 22px;
+    margin-left: 22px;
+    margin-right: 22px;
+}
 
 .editar-reporte-seccion__bloque:has(> #editar-notificacion-mapa-ubicacion)
 > .editar-reporte-campo--completo {
 
-    margin-top: 22px;
+    margin-top: 0;
     margin-left: 22px;
     margin-right: 22px;
 }
@@ -176,7 +181,7 @@
     .editar-reporte-seccion__bloque:has(> #editar-notificacion-mapa-ubicacion)
     > .editar-reporte-campo--completo {
 
-        margin-top: 18px;
+        margin-top: 10px;
         margin-left: 16px;
         margin-right: 16px;
     }

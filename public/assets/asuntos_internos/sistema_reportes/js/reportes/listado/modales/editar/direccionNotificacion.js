@@ -1,7 +1,125 @@
 let instanciaDireccionNotificacionEditar =
     null;
 
-    
+/* =========================================================
+   ACTUALIZAR ADVERTENCIA DE DOMICILIO FORÁNEO
+========================================================= */
+
+function actualizarAdvertenciaForaneoEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const opcionNo =
+        modal.querySelector(
+            '#editar-notificacion-pertenece-neza-no'
+        );
+
+
+    const anonimoSi =
+        modal.querySelector(
+            '#editar-anonimo-si'
+        );
+
+
+    const advertencia =
+        modal.querySelector(
+            '#editar-notificacion-advertencia-foraneo'
+        );
+
+
+    if (!advertencia) {
+        return;
+    }
+
+
+    const esForaneo =
+        opcionNo?.checked === true;
+
+
+    const esAnonimo =
+        anonimoSi?.checked === true;
+
+
+    advertencia.hidden =
+        !esForaneo
+        || esAnonimo;
+}
+
+
+/* =========================================================
+   INICIALIZAR ADVERTENCIA DE DOMICILIO FORÁNEO
+========================================================= */
+
+function inicializarAdvertenciaForaneoEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    if (
+        modal.dataset
+            .advertenciaNotificacionInicializada
+        !== '1'
+    ) {
+
+        modal.dataset
+            .advertenciaNotificacionInicializada =
+            '1';
+
+
+        modal.addEventListener(
+            'change',
+            (evento) => {
+
+                const elemento =
+                    evento.target;
+
+
+                if (!elemento) {
+                    return;
+                }
+
+
+                if (
+                    elemento.id
+                    !== 'editar-notificacion-pertenece-neza-si'
+
+                    && elemento.id
+                    !== 'editar-notificacion-pertenece-neza-no'
+
+                    && elemento.id
+                    !== 'editar-anonimo-si'
+
+                    && elemento.id
+                    !== 'editar-anonimo-no'
+                ) {
+
+                    return;
+                }
+
+
+                actualizarAdvertenciaForaneoEditar(
+                    modal
+                );
+            }
+        );
+    }
+
+
+    actualizarAdvertenciaForaneoEditar(
+        modal
+    );
+}
+
+
 /* =========================================================
    CARGAR DIRECCIÓN EXISTENTE
 ========================================================= */
@@ -14,6 +132,11 @@ export function cargarDireccionNotificacionEditar(
     if (!modal) {
         return;
     }
+
+
+    inicializarAdvertenciaForaneoEditar(
+        modal
+    );
 
 
     const datos =
@@ -64,6 +187,9 @@ export function cargarDireccionNotificacionEditar(
             perteneceNeza === 0;
     }
 
+    actualizarAdvertenciaForaneoEditar(
+        modal
+    );
 
     /* =====================================================
        DIRECCIÓN
@@ -246,6 +372,11 @@ export function inicializarDireccionNotificacionEditar(
     if (!modal) {
         return;
     }
+
+
+    inicializarAdvertenciaForaneoEditar(
+        modal
+    );
 
 
     /* =====================================================
@@ -861,245 +992,263 @@ export function inicializarDireccionNotificacionEditar(
     ===================================================== */
 
     async function completarTerritorio(
-        latitud,
-        longitud,
-        miSecuencia
-    ) {
+    latitud,
+    longitud,
+    miSecuencia
+) {
+
+    try {
+
+        const url =
+            new URL(
+                'DataCore/public/asuntos-internos/reportes/ubicacion/territorio',
+                `${window.location.origin}/`
+            );
+
+
+        url.searchParams.set(
+            'lat',
+            String(
+                latitud
+            )
+        );
+
+
+        url.searchParams.set(
+            'lng',
+            String(
+                longitud
+            )
+        );
+
+
+        const respuesta =
+            await fetch(
+                url.toString(),
+                {
+
+                    headers: {
+
+                        Accept:
+                            'application/json',
+
+                    },
+
+                    credentials:
+                        'same-origin',
+
+                }
+            );
+
+
+        const datos =
+            await respuesta.json();
+
+
+        if (
+            miSecuencia !== secuencia
+        ) {
+
+            return;
+        }
+
+
+        if (!respuesta.ok) {
+
+            throw new Error(
+                datos?.message
+                || 'No fue posible consultar el territorio.'
+            );
+        }
+
+
+        actualizandoAutomaticamente =
+            true;
+
 
         try {
 
-            const url =
-                new URL(
-                    'DataCore/public/asuntos-internos/reportes/ubicacion/territorio',
-                    `${window.location.origin}/`
-                );
-
-
-            url.searchParams.set(
-                'lat',
-                String(
-                    latitud
-                )
-            );
-
-
-            url.searchParams.set(
-                'lng',
-                String(
-                    longitud
-                )
-            );
-
-
-            const respuesta =
-                await fetch(
-                    url.toString(),
-                    {
-
-                        headers: {
-
-                            Accept:
-                                'application/json',
-
-                        },
-
-                        credentials:
-                            'same-origin',
-
-                    }
-                );
-
-
-            const datos =
-                await respuesta.json();
-
+            /* =================================================
+               DENTRO DE NEZA
+            ================================================= */
 
             if (
-                miSecuencia !== secuencia
+                datos.matched
             ) {
-
-                return;
-            }
-
-
-            if (!respuesta.ok) {
-
-                throw new Error(
-                    datos?.message
-                    || 'No fue posible consultar el territorio.'
-                );
-            }
-
-
-            actualizandoAutomaticamente =
-                true;
-
-
-            try {
-
-                /* =================================================
-                   DENTRO DE NEZA
-                ================================================= */
-
-                if (
-                    datos.matched
-                ) {
-
-                    if (opcionNezaSi) {
-
-                        opcionNezaSi.checked =
-                            true;
-                    }
-
-
-                    if (opcionNezaNo) {
-
-                        opcionNezaNo.checked =
-                            false;
-                    }
-
-
-                    llenarCampo(
-                        inputSector,
-                        normalizarMayusculas(
-                            datos.sector
-                        )
-                    );
-
-
-                    llenarCampo(
-                        inputCuadrante,
-                        normalizarMayusculas(
-                            datos.cuadrante
-                        )
-                    );
-
-
-                    llenarCampo(
-                        inputIdCuadra,
-                        datos.id_cuadra
-                        ?? ''
-                    );
-
-
-                    if (datos.calle) {
-
-                        llenarCampo(
-                            inputCalle,
-                            normalizarMayusculas(
-                                datos.calle
-                            )
-                        );
-                    }
-
-
-                    if (datos.colonia) {
-
-                        llenarCampo(
-                            inputColonia,
-                            normalizarMayusculas(
-                                datos.colonia
-                            )
-                        );
-                    }
-
-
-                    if (datos.entre_calle) {
-
-                        llenarCampo(
-                            inputEntreCalle,
-                            normalizarMayusculas(
-                                datos.entre_calle
-                            )
-                        );
-                    }
-
-
-                    if (datos.y_calle) {
-
-                        llenarCampo(
-                            inputYCalle,
-                            normalizarMayusculas(
-                                datos.y_calle
-                            )
-                        );
-                    }
-
-
-                    if (
-                        !inputMunicipio?.value.trim()
-                    ) {
-
-                        llenarCampo(
-                            inputMunicipio,
-                            'NEZAHUALCÓYOTL'
-                        );
-                    }
-
-
-                    if (
-                        !inputEstado?.value.trim()
-                    ) {
-
-                        llenarCampo(
-                            inputEstado,
-                            'ESTADO DE MÉXICO'
-                        );
-                    }
-
-
-                    return;
-                }
-
-
-                /* =================================================
-                   FORÁNEO
-                ================================================= */
 
                 if (opcionNezaSi) {
 
                     opcionNezaSi.checked =
-                        false;
+                        true;
                 }
 
 
                 if (opcionNezaNo) {
 
                     opcionNezaNo.checked =
-                        true;
+                        false;
                 }
+
+
+                /* =================================================
+                   ACTUALIZAR ADVERTENCIA
+                ================================================= */
+
+                actualizarAdvertenciaForaneoEditar(
+                    modal
+                );
 
 
                 llenarCampo(
                     inputSector,
-                    'FORÁNEO'
+                    normalizarMayusculas(
+                        datos.sector
+                    )
                 );
 
 
                 llenarCampo(
                     inputCuadrante,
-                    'FORÁNEO'
+                    normalizarMayusculas(
+                        datos.cuadrante
+                    )
                 );
 
 
                 llenarCampo(
                     inputIdCuadra,
-                    ''
+                    datos.id_cuadra
+                    ?? ''
                 );
 
-            } finally {
 
-                actualizandoAutomaticamente =
+                if (datos.calle) {
+
+                    llenarCampo(
+                        inputCalle,
+                        normalizarMayusculas(
+                            datos.calle
+                        )
+                    );
+                }
+
+
+                if (datos.colonia) {
+
+                    llenarCampo(
+                        inputColonia,
+                        normalizarMayusculas(
+                            datos.colonia
+                        )
+                    );
+                }
+
+
+                if (datos.entre_calle) {
+
+                    llenarCampo(
+                        inputEntreCalle,
+                        normalizarMayusculas(
+                            datos.entre_calle
+                        )
+                    );
+                }
+
+
+                if (datos.y_calle) {
+
+                    llenarCampo(
+                        inputYCalle,
+                        normalizarMayusculas(
+                            datos.y_calle
+                        )
+                    );
+                }
+
+
+                if (
+                    !inputMunicipio?.value.trim()
+                ) {
+
+                    llenarCampo(
+                        inputMunicipio,
+                        'NEZAHUALCÓYOTL'
+                    );
+                }
+
+
+                if (
+                    !inputEstado?.value.trim()
+                ) {
+
+                    llenarCampo(
+                        inputEstado,
+                        'ESTADO DE MÉXICO'
+                    );
+                }
+
+
+                return;
+            }
+
+
+            /* =================================================
+               FORÁNEO
+            ================================================= */
+
+            if (opcionNezaSi) {
+
+                opcionNezaSi.checked =
                     false;
             }
 
-        } catch (error) {
 
-            console.error(
-                'Error consultando información territorial para notificación:',
-                error
+            if (opcionNezaNo) {
+
+                opcionNezaNo.checked =
+                    true;
+            }
+
+
+            /* =================================================
+               ACTUALIZAR ADVERTENCIA
+            ================================================= */
+
+            actualizarAdvertenciaForaneoEditar(
+                modal
             );
+
+
+            llenarCampo(
+                inputSector,
+                'FORÁNEO'
+            );
+
+
+            llenarCampo(
+                inputCuadrante,
+                'FORÁNEO'
+            );
+
+
+            llenarCampo(
+                inputIdCuadra,
+                ''
+            );
+
+        } finally {
+
+            actualizandoAutomaticamente =
+                false;
         }
+
+    } catch (error) {
+
+        console.error(
+            'Error consultando información territorial para notificación:',
+            error
+        );
+    }
     }
 
 
