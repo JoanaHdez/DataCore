@@ -1,4 +1,4 @@
-<div class="editar-reporte-seccion__bloque">
+<div class="editar-reporte-seccion__bloque" id="editar-seccion-direccion-notificacion">
 
     <div class="detalle-reporte-seccion__header">
 

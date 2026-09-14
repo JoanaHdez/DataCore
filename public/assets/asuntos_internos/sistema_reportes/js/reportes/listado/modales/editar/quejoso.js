@@ -365,7 +365,6 @@ export function establecerAnonimoEditar(
                 'important'
             );
         }
-
     }
 
 
@@ -455,11 +454,174 @@ export function establecerAnonimoEditar(
 
 
     /* =====================================================
-   CANALIZACIÓN
+       DIRECCIÓN PARA NOTIFICACIÓN
+    ===================================================== */
 
-   La canalización es independiente de que
-   la queja sea anónima o no.
-===================================================== */
+    const seccionNotificacion =
+        modal.querySelector(
+            '#editar-seccion-direccion-notificacion'
+        );
+
+
+    const advertenciaForaneo =
+        modal.querySelector(
+            '#editar-notificacion-advertencia-foraneo'
+        );
+
+
+    const mapaNotificacion =
+        modal.querySelector(
+            '#editar-notificacion-mapa-ubicacion'
+        );
+
+
+    const controlesNotificacion =
+        seccionNotificacion
+            ? Array.from(
+                seccionNotificacion.querySelectorAll(
+                    'input, select, textarea, button'
+                )
+            )
+            : [];
+
+
+    if (seccionNotificacion) {
+
+        seccionNotificacion.classList.toggle(
+            'editar-reporte-seccion--disabled',
+            esAnonimo
+        );
+    }
+
+
+    /* =====================================================
+       CONTROLES DE DIRECCIÓN
+    ===================================================== */
+
+    controlesNotificacion.forEach(
+        (control) => {
+
+            if (!control) {
+                return;
+            }
+
+
+            /* =================================================
+               GUARDAR ESTADO ORIGINAL
+            ================================================= */
+
+            if (
+                control.dataset.disabledOriginal
+                === undefined
+            ) {
+
+                control.dataset.disabledOriginal =
+                    control.disabled
+                        ? '1'
+                        : '0';
+            }
+
+
+            if (
+                control.dataset.requiredOriginal
+                === undefined
+            ) {
+
+                control.dataset.requiredOriginal =
+                    control.required
+                        ? '1'
+                        : '0';
+            }
+
+
+            /* =================================================
+               ANÓNIMO
+            ================================================= */
+
+            if (esAnonimo) {
+
+                control.disabled =
+                    true;
+
+
+                control.required =
+                    false;
+
+            } else {
+
+                /* =================================================
+                   RESTAURAR ESTADO ORIGINAL
+                ================================================= */
+
+                control.disabled =
+                    control.dataset.disabledOriginal
+                    === '1';
+
+
+                control.required =
+                    control.dataset.requiredOriginal
+                    === '1';
+
+
+                delete control.dataset.disabledOriginal;
+
+                delete control.dataset.requiredOriginal;
+            }
+        }
+    );
+
+
+    /* =====================================================
+       MAPA DE DIRECCIÓN PARA NOTIFICACIÓN
+    ===================================================== */
+
+    if (mapaNotificacion) {
+
+        if (esAnonimo) {
+
+            mapaNotificacion.style.pointerEvents =
+                'none';
+
+
+            mapaNotificacion.setAttribute(
+                'aria-disabled',
+                'true'
+            );
+
+        } else {
+
+            mapaNotificacion.style.removeProperty(
+                'pointer-events'
+            );
+
+
+            mapaNotificacion.removeAttribute(
+                'aria-disabled'
+            );
+        }
+    }
+
+
+    /* =====================================================
+       OCULTAR ADVERTENCIA SI ES ANÓNIMO
+    ===================================================== */
+
+    if (
+        advertenciaForaneo
+        && esAnonimo
+    ) {
+
+        advertenciaForaneo.hidden =
+            true;
+    }
+
+
+    /* =====================================================
+       CANALIZACIÓN
+
+       La canalización es independiente de que
+       la queja sea anónima o no.
+    ===================================================== */
 
     const botonCanalizacion =
         modal.querySelector(
@@ -483,7 +645,6 @@ export function establecerAnonimoEditar(
         modal
     );
 }
-
 
 /* =========================================================
    SELECCIONAR CANALIZACIÓN
