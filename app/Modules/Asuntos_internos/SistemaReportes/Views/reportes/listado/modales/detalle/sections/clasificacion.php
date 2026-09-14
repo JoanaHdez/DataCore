@@ -170,10 +170,27 @@
 
 
         <!-- =====================================================
-             QUIÉN EMITE LA RESOLUCIÓN
+            TOTAL DE HORAS DE ARRESTO
         ====================================================== -->
 
-        <div class="detalle-reporte-campo detalle-reporte-campo--full detalle-clasificacion__resolucion-emisor">
+        <div class="detalle-reporte-campo detalle-reporte-campo--horas-arresto">
+
+            <span>
+                Total de horas de arresto
+            </span>
+
+            <strong id="detalle-total-horas-arresto">
+                0
+            </strong>
+
+        </div>
+
+
+        <!-- =====================================================
+            QUIÉN EMITE LA RESOLUCIÓN
+        ====================================================== -->
+
+        <div class="detalle-reporte-campo detalle-clasificacion__resolucion-emisor">
 
             <span>
                 Quién emite la resolución

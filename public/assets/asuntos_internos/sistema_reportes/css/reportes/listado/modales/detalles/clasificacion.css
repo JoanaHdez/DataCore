@@ -266,7 +266,7 @@ td:nth-child(4) {
 ========================================================= */
 
 .detalle-clasificacion__resolucion-emisor {
-    grid-column: 1 / -1;
+    grid-column: auto;
 }
 
 
@@ -278,6 +278,21 @@ td:nth-child(4) {
     grid-column: 1 / -1;
 }
 
+
+/* =========================================================
+   TOTAL DE HORAS DE ARRESTO
+========================================================= */
+
+.detalle-reporte-campo--horas-arresto {
+    max-width: 260px;
+}
+
+#detalle-total-horas-arresto {
+    width: 120px;
+    max-width: 120px;
+    text-align: center;
+    font-weight: 600;
+}
 
 /* =========================================================
    RESPONSIVE

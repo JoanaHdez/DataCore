@@ -92,6 +92,11 @@ export function cargarClasificacionDetalle(
         modal,
         motivos
     );
+
+    actualizarTotalHorasArrestoDetalle(
+        modal,
+        motivos
+    );
 }
 
 
@@ -147,6 +152,93 @@ function renderizarSituacionSancion(
 
 
 /* =========================================================
+   TOTAL DE HORAS DE ARRESTO
+========================================================= */
+
+function actualizarTotalHorasArrestoDetalle(
+    modal,
+    motivos = []
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const campoTotal =
+        modal.querySelector(
+            '#detalle-total-horas-arresto'
+        );
+
+
+    if (!campoTotal) {
+        return;
+    }
+
+
+    let totalHoras =
+        0;
+
+
+    if (
+        Array.isArray(
+            motivos
+        )
+    ) {
+
+        motivos.forEach(
+            (motivo) => {
+
+                const sancion =
+                    String(
+                        motivo.sancion
+                        ?? motivo.tipo_sancion
+                        ?? ''
+                    )
+                        .trim()
+                        .toUpperCase();
+
+
+                const coincidencia =
+                    sancion.match(
+                        /^ARRESTO\s+POR\s+(\d+)\s+HORAS$/
+                    );
+
+
+                if (!coincidencia) {
+                    return;
+                }
+
+
+                const horas =
+                    Number(
+                        coincidencia[1]
+                    );
+
+
+                if (
+                    Number.isFinite(
+                        horas
+                    )
+                    && horas > 0
+                ) {
+
+                    totalHoras +=
+                        horas;
+                }
+            }
+        );
+    }
+
+
+    campoTotal.textContent =
+        String(
+            totalHoras
+        );
+}
+
+
+/* =========================================================
    MOTIVOS
 ========================================================= */
 
@@ -154,11 +246,6 @@ function renderizarMotivosDetalle(
     modal,
     motivos
 ) {
-
-    console.log(
-    'MOTIVOS DETALLE:',
-    motivos
-);
 
     const vacio =
         modal.querySelector(
@@ -250,32 +337,32 @@ function renderizarMotivosDetalle(
 
                 <td>
                     ${escaparHtmlDetalle(
-                        numero
-                    )}
+                numero
+            )}
                 </td>
 
 
                 <td>
                     ${escaparHtmlDetalle(
-                        textoMotivo
-                        || '—'
-                    )}
+                textoMotivo
+                || '—'
+            )}
                 </td>
 
 
                 <td>
                     ${escaparHtmlDetalle(
-                        sancion
-                        || 'Sin sanción'
-                    )}
+                sancion
+                || 'Sin sanción'
+            )}
                 </td>
 
 
                 <td>
                     ${escaparHtmlDetalle(
-                        folioSancion
-                        || '—'
-                    )}
+                folioSancion
+                || '—'
+            )}
                 </td>
 
             `;
