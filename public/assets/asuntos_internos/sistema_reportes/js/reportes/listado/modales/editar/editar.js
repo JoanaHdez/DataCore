@@ -798,31 +798,6 @@ export function inicializarEditarReporte() {
                 }
             );
 
-
-            /* =====================================================
-               DEBUG TEMPORAL
-            ===================================================== */
-
-            console.group(
-                'EDITAR REPORTE - DATOS ENVIADOS'
-            );
-
-
-            for (
-                const [clave, valor]
-                of datos.entries()
-            ) {
-
-                console.log(
-                    clave,
-                    valor
-                );
-            }
-
-
-            console.groupEnd();
-
-
             /* =====================================================
                BOTÓN GUARDAR
             ===================================================== */
@@ -1821,11 +1796,6 @@ async function actualizarReporteBackend(
 
     } catch (error) {
 
-        console.error(
-            'RESPUESTA RAW DEL SERVIDOR:',
-            texto
-        );
-
 
         throw new Error(
             'El servidor devolvió una respuesta no válida.'
@@ -1834,17 +1804,6 @@ async function actualizarReporteBackend(
 
 
     if (!respuesta.ok) {
-
-        console.error(
-            'ERROR BACKEND:',
-            {
-                status:
-                    respuesta.status,
-
-                resultado,
-            }
-        );
-
 
         throw new Error(
             resultado?.message

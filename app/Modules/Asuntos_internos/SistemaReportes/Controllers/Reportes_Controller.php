@@ -1409,11 +1409,6 @@ class Reportes_Controller extends BaseController
             );
 
 
-            /*
-            * TEMPORAL:
-            * devolvemos el mensaje real para poder detectar
-            * exactamente qué está fallando durante las pruebas.
-            */
             return $this->response
                 ->setStatusCode(500)
                 ->setJSON([
@@ -1421,7 +1416,7 @@ class Reportes_Controller extends BaseController
                         false,
 
                     'message' =>
-                        $e->getMessage(),
+                        'No fue posible actualizar el reporte.',
                 ]);
         }
     }

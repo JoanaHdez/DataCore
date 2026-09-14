@@ -155,6 +155,11 @@ function renderizarMotivosDetalle(
     motivos
 ) {
 
+    console.log(
+    'MOTIVOS DETALLE:',
+    motivos
+);
+
     const vacio =
         modal.querySelector(
             '#detalle-motivos-vacio'
