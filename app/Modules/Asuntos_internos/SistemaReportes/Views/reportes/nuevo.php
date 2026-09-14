@@ -203,6 +203,10 @@ Nuevo registro | Asuntos Internos
                     'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\datos_quejoso'
                 ) ?>
 
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\direccion_notificacion'
+                ) ?>
+
             </div>
 
 

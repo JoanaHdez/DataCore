@@ -1,5 +1,6 @@
 /* =========================================================
    EDITAR REPORTE - UBICACIÓN
+   UBICACIÓN DE LOS HECHOS + DIRECCIÓN PARA NOTIFICACIÓN
 ========================================================= */
 
 
@@ -8,6 +9,9 @@
 ========================================================= */
 
 .editar-reporte-seccion__bloque:has(> #editar-mapa-ubicacion)
+> .editar-reporte-campo--completo,
+
+.editar-reporte-seccion__bloque:has(> #editar-notificacion-mapa-ubicacion)
 > .editar-reporte-campo--completo {
 
     margin-top: 22px;
@@ -17,10 +21,11 @@
 
 
 /* =========================================================
-   MAPA
+   MAPAS
 ========================================================= */
 
-#editar-mapa-ubicacion {
+#editar-mapa-ubicacion,
+#editar-notificacion-mapa-ubicacion {
 
     width: calc(100% - 44px);
 
@@ -53,6 +58,9 @@
 ========================================================= */
 
 .editar-reporte-seccion__bloque:has(> #editar-mapa-ubicacion)
+> .editar-reporte-grid,
+
+.editar-reporte-seccion__bloque:has(> #editar-notificacion-mapa-ubicacion)
 > .editar-reporte-grid {
 
     padding-top: 22px;
@@ -60,6 +68,101 @@
     row-gap: 20px;
 }
 
+/* =========================================================
+   DIRECCIÓN PARA NOTIFICACIÓN
+   OPCIONES SÍ / NO
+========================================================= */
+
+#modal-editar-reporte
+.editar-report-option:has(
+    #editar-notificacion-pertenece-neza-si
+),
+
+#modal-editar-reporte
+.editar-report-option:has(
+    #editar-notificacion-pertenece-neza-no
+) {
+
+    width: 90px !important;
+    min-width: 90px !important;
+    max-width: 90px !important;
+
+    min-height: 38px !important;
+
+    flex: 0 0 90px !important;
+
+    padding: 8px 12px !important;
+
+    gap: 8px !important;
+
+    justify-content: center !important;
+}
+
+
+/* =========================================================
+   DIRECCIÓN PARA NOTIFICACIÓN
+   OPCIÓN SELECCIONADA
+========================================================= */
+
+#modal-editar-reporte
+.editar-report-option:has(
+    #editar-notificacion-pertenece-neza-si:checked
+),
+
+#modal-editar-reporte
+.editar-report-option:has(
+    #editar-notificacion-pertenece-neza-no:checked
+) {
+
+    color: #0d639c !important;
+
+    background: #eef8fe !important;
+
+    border-color: #4aaee5 !important;
+
+    box-shadow:
+        0 0 0 2px rgba(74, 174, 229, 0.08) !important;
+}
+
+
+#modal-editar-reporte
+.editar-report-option:has(
+    #editar-notificacion-pertenece-neza-si:checked
+) span,
+
+#modal-editar-reporte
+.editar-report-option:has(
+    #editar-notificacion-pertenece-neza-no:checked
+) span {
+
+    color: #0d639c !important;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    #modal-editar-reporte
+    .editar-report-option:has(
+        #editar-notificacion-pertenece-neza-si
+    ),
+
+    #modal-editar-reporte
+    .editar-report-option:has(
+        #editar-notificacion-pertenece-neza-no
+    ) {
+
+        width: 90px !important;
+        min-width: 90px !important;
+        max-width: 90px !important;
+
+        flex: 0 0 90px !important;
+    }
+
+}
 
 /* =========================================================
    RESPONSIVE
@@ -68,6 +171,9 @@
 @media (max-width: 768px) {
 
     .editar-reporte-seccion__bloque:has(> #editar-mapa-ubicacion)
+    > .editar-reporte-campo--completo,
+
+    .editar-reporte-seccion__bloque:has(> #editar-notificacion-mapa-ubicacion)
     > .editar-reporte-campo--completo {
 
         margin-top: 18px;
@@ -76,7 +182,8 @@
     }
 
 
-    #editar-mapa-ubicacion {
+    #editar-mapa-ubicacion,
+    #editar-notificacion-mapa-ubicacion {
 
         width: calc(100% - 32px);
 
@@ -96,6 +203,9 @@
 
 
     .editar-reporte-seccion__bloque:has(> #editar-mapa-ubicacion)
+    > .editar-reporte-grid,
+
+    .editar-reporte-seccion__bloque:has(> #editar-notificacion-mapa-ubicacion)
     > .editar-reporte-grid {
 
         padding-top: 18px;

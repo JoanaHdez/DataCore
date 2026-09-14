@@ -54,7 +54,7 @@ class ReporteService
 
 
     /* =========================================================
-       GUARDAR REPORTE COMPLETO
+    GUARDAR REPORTE COMPLETO
     ========================================================= */
 
     public function guardar(
@@ -98,9 +98,9 @@ class ReporteService
 
             $folioGenerado =
                 $this->folioService
-                ->generar(
-                    'QUEJA'
-                );
+                    ->generar(
+                        'QUEJA'
+                    );
 
 
             $datosReporte['tipo_registro'] =
@@ -125,10 +125,10 @@ class ReporteService
 
             $idReporte =
                 $this->reporteModel
-                ->insert(
-                    $datosReporte,
-                    true
-                );
+                    ->insert(
+                        $datosReporte,
+                        true
+                    );
 
 
             if (!$idReporte) {
@@ -165,6 +165,17 @@ class ReporteService
 
 
             /* =================================================
+            DIRECCIÓN PARA NOTIFICACIÓN
+            ================================================= */
+
+            $this->guardarDireccionNotificacion(
+                $idReporte,
+                $datos,
+                $idUsuario
+            );
+
+
+            /* =================================================
             MOTIVOS Y SANCIONES
             ================================================= */
 
@@ -173,7 +184,6 @@ class ReporteService
                 $datos,
                 $idUsuario
             );
-
 
 
             /* =================================================
@@ -209,24 +219,25 @@ class ReporteService
             return [
 
                 'success' =>
-                true,
+                    true,
 
                 'id_reporte' =>
-                $idReporte,
+                    $idReporte,
 
                 'tipo_registro' =>
-                $datosReporte['tipo_registro'],
+                    $datosReporte['tipo_registro'],
 
                 'numero_folio' =>
-                $datosReporte['numero_folio'],
+                    $datosReporte['numero_folio'],
 
                 'folio' =>
-                $datosReporte['folio'],
+                    $datosReporte['folio'],
 
                 'nomenclatura' =>
-                $datosReporte['nomenclatura'],
+                    $datosReporte['nomenclatura'],
 
             ];
+
         } catch (\Throwable $e) {
 
             $this->db->transRollback();
@@ -296,19 +307,19 @@ class ReporteService
 
         $reporteActual =
             $this->db
-            ->table(
-                'ai_reportes'
-            )
-            ->where(
-                'id_reporte',
-                $idReporte
-            )
-            ->where(
-                'eliminado',
-                0
-            )
-            ->get()
-            ->getRowArray();
+                ->table(
+                    'ai_reportes'
+                )
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->get()
+                ->getRowArray();
 
 
         if (!$reporteActual) {
@@ -328,8 +339,8 @@ class ReporteService
         try {
 
             /* =================================================
-           PREPARAR DATOS PRINCIPALES
-        ================================================= */
+            PREPARAR DATOS PRINCIPALES
+            ================================================= */
 
             $datosReporte =
                 $this->prepararDatosReporte(
@@ -339,9 +350,9 @@ class ReporteService
 
 
             /*
-         * En edición nunca modificamos datos
-         * propios de la creación del registro.
-         */
+            * En edición nunca modificamos datos
+            * propios de la creación del registro.
+            */
 
             unset(
                 $datosReporte['created_by'],
@@ -358,15 +369,15 @@ class ReporteService
 
 
             /* =================================================
-           ACTUALIZAR REPORTE
-        ================================================= */
+            ACTUALIZAR REPORTE
+            ================================================= */
 
             $actualizado =
                 $this->reporteModel
-                ->update(
-                    $idReporte,
-                    $datosReporte
-                );
+                    ->update(
+                        $idReporte,
+                        $datosReporte
+                    );
 
 
             if ($actualizado === false) {
@@ -378,8 +389,8 @@ class ReporteService
 
 
             /* =================================================
-           PERSONAL
-        ================================================= */
+            PERSONAL
+            ================================================= */
 
             $this->db
                 ->table(
@@ -399,8 +410,8 @@ class ReporteService
 
 
             /* =================================================
-           UNIDADES
-        ================================================= */
+            UNIDADES
+            ================================================= */
 
             $this->db
                 ->table(
@@ -421,10 +432,10 @@ class ReporteService
 
 
             /* =================================================
-           MOTIVOS Y SANCIONES DE LOS MOTIVOS
-        ================================================= */
+            DIRECCIÓN PARA NOTIFICACIÓN
+            ================================================= */
 
-            $this->actualizarMotivosYSancionesDesdeEdicion(
+            $this->actualizarDireccionNotificacion(
                 $idReporte,
                 $datos,
                 $idUsuario
@@ -432,8 +443,8 @@ class ReporteService
 
 
             /* =================================================
-           SANCIÓN DISCIPLINARIA GENERAL
-        ================================================= */
+            SANCIÓN DISCIPLINARIA
+            ================================================= */
 
             $this->corregirSancionDesdeEdicion(
                 $idReporte,
@@ -443,8 +454,8 @@ class ReporteService
 
 
             /* =================================================
-           EVIDENCIAS ELIMINADAS
-        ================================================= */
+            EVIDENCIAS ELIMINADAS
+            ================================================= */
 
             $this->marcarEvidenciasEliminadas(
                 $idReporte,
@@ -454,8 +465,8 @@ class ReporteService
 
 
             /* =================================================
-           EVIDENCIAS NUEVAS
-        ================================================= */
+            EVIDENCIAS NUEVAS
+            ================================================= */
 
             $rutasCreadas =
                 $this->guardarEvidencias(
@@ -466,8 +477,8 @@ class ReporteService
 
 
             /* =================================================
-           VALIDAR TRANSACCIÓN
-        ================================================= */
+            VALIDAR TRANSACCIÓN
+            ================================================= */
 
             if (
                 $this->db->transStatus()
@@ -486,31 +497,35 @@ class ReporteService
             return [
 
                 'success' =>
-                true,
+                    true,
 
                 'id_reporte' =>
-                $idReporte,
+                    $idReporte,
 
+                /*
+                * Conservamos siempre el folio original.
+                */
                 'folio' =>
-                (string) (
-                    $reporteActual['folio']
-                    ?? ''
-                ),
+                    (string) (
+                        $reporteActual['folio']
+                        ?? ''
+                    ),
 
                 'numero_folio' =>
-                isset(
-                    $reporteActual['numero_folio']
-                )
-                    ? (int) $reporteActual['numero_folio']
-                    : null,
+                    isset(
+                        $reporteActual['numero_folio']
+                    )
+                        ? (int) $reporteActual['numero_folio']
+                        : null,
 
                 'tipo_registro' =>
-                (string) (
-                    $reporteActual['tipo_registro']
-                    ?? 'QUEJA'
-                ),
+                    (string) (
+                        $reporteActual['tipo_registro']
+                        ?? 'QUEJA'
+                    ),
 
             ];
+
         } catch (\Throwable $e) {
 
             $this->db->transRollback();
@@ -1634,301 +1649,413 @@ class ReporteService
     }
 
     /* =========================================================
-   ACTUALIZAR MOTIVOS Y SANCIONES DESDE EDICIÓN
-========================================================= */
+    ACTUALIZAR MOTIVOS Y SANCIONES DESDE EDICIÓN
+    ========================================================= */
 
-protected function actualizarMotivosYSancionesDesdeEdicion(
-    int $idReporte,
-    array $datos,
-    int $idUsuario
-): void {
-
-    if (
-        $idReporte <= 0
-        || $idUsuario <= 0
-    ) {
-
-        throw new \RuntimeException(
-            'No fue posible identificar el reporte o usuario.'
-        );
-    }
-
-
-    /* =====================================================
-       SIN SANCIONES
-    ===================================================== */
-
-    $sinSanciones =
-        (int) (
-            $datos['sin_sanciones']
-            ?? 0
-        ) === 1;
-
-
-    /* =====================================================
-       BAJA VOLUNTARIA
-    ===================================================== */
-
-    $bajaVoluntaria =
-        (int) (
-            $datos['baja_voluntaria']
-            ?? 0
-        ) === 1;
-
-
-    /* =====================================================
-       MOTIVOS RECIBIDOS DESDE EDITAR
-    ===================================================== */
-
-    $motivos =
-        $datos['motivos_seleccionados']
-        ?? [];
-
-
-    if (!is_array($motivos)) {
-
-        $motivos = [];
-    }
-
-
-    /* =====================================================
-       MOTIVOS ACTUALES DEL REPORTE
-    ===================================================== */
-
-    $motivosActuales =
-        $this->db
-            ->table(
-                'ai_reporte_motivos'
-            )
-            ->where(
-                'id_reporte',
-                $idReporte
-            )
-            ->where(
-                'eliminado',
-                0
-            )
-            ->get()
-            ->getResultArray();
-
-
-    $actualesPorMotivo = [];
-
-
-    foreach (
-        $motivosActuales
-        as $motivoActual
-    ) {
-
-        $idMotivoActual =
-            (int) (
-                $motivoActual['id_motivo']
-                ?? 0
-            );
-
-
-        if ($idMotivoActual <= 0) {
-
-            continue;
-        }
-
-
-        $actualesPorMotivo[
-            $idMotivoActual
-        ] = $motivoActual;
-    }
-
-
-    /* =====================================================
-       IDS QUE DEBEN PERMANECER
-    ===================================================== */
-
-    $idsRecibidos = [];
-
-
-    foreach (
-        $motivos
-        as $motivoFormulario
-    ) {
-
-        if (!is_array($motivoFormulario)) {
-
-            continue;
-        }
-
-
-        $idMotivo =
-            (int) (
-                $motivoFormulario['id_motivo']
-                ?? 0
-            );
-
-
-        if ($idMotivo <= 0) {
-
-            throw new \InvalidArgumentException(
-                'Existe un motivo seleccionado sin identificador válido.'
-            );
-        }
-
+    protected function actualizarMotivosYSancionesDesdeEdicion(
+        int $idReporte,
+        array $datos,
+        int $idUsuario
+    ): void {
 
         if (
-            in_array(
-                $idMotivo,
-                $idsRecibidos,
-                true
-            )
+            $idReporte <= 0
+            || $idUsuario <= 0
         ) {
-
-            continue;
-        }
-
-
-        $idsRecibidos[] =
-            $idMotivo;
-
-
-        /* =================================================
-           VALIDAR MOTIVO EN CATÁLOGO
-        ================================================= */
-
-        $motivoCatalogo =
-            $this->db
-                ->table(
-                    'ai_cat_motivos'
-                )
-                ->select([
-                    'id_motivo',
-                    'motivo',
-                    'sancion',
-                    'activo',
-                ])
-                ->where(
-                    'id_motivo',
-                    $idMotivo
-                )
-                ->where(
-                    'activo',
-                    1
-                )
-                ->get()
-                ->getRowArray();
-
-
-        if (!$motivoCatalogo) {
-
-            throw new \InvalidArgumentException(
-                'Uno de los motivos seleccionados ya no está disponible.'
-            );
-        }
-
-
-        /* =================================================
-           SI EL MOTIVO YA EXISTE, CONSERVARLO
-        ================================================= */
-
-        if (
-            isset(
-                $actualesPorMotivo[
-                    $idMotivo
-                ]
-            )
-        ) {
-
-            $idReporteMotivo =
-                (int) (
-                    $actualesPorMotivo[
-                        $idMotivo
-                    ]['id_reporte_motivo']
-                    ?? 0
-                );
-        } else {
-
-            /* =============================================
-               NUEVO MOTIVO
-            ============================================= */
-
-            $insertadoMotivo =
-                $this->db
-                    ->table(
-                        'ai_reporte_motivos'
-                    )
-                    ->insert([
-
-                        'id_reporte' =>
-                            $idReporte,
-
-                        'id_motivo' =>
-                            $idMotivo,
-
-                        'created_by' =>
-                            $idUsuario,
-
-                        'eliminado' =>
-                            0,
-                    ]);
-
-
-            if ($insertadoMotivo === false) {
-
-                throw new \RuntimeException(
-                    'No fue posible guardar uno de los motivos del reporte.'
-                );
-            }
-
-
-            $idReporteMotivo =
-                (int)
-                $this->db
-                    ->insertID();
-        }
-
-
-        if ($idReporteMotivo <= 0) {
 
             throw new \RuntimeException(
-                'No fue posible identificar el motivo registrado.'
+                'No fue posible identificar el reporte o usuario.'
             );
         }
 
 
-        /* =================================================
-           SANCIÓN ACTUAL DEL MOTIVO
-        ================================================= */
+        /* =====================================================
+        SIN SANCIONES
+        ===================================================== */
 
-        $sancionActual =
+        $sinSanciones =
+            (int) (
+                $datos['sin_sanciones']
+                ?? 0
+            ) === 1;
+
+
+        /* =====================================================
+        BAJA VOLUNTARIA
+        ===================================================== */
+
+        $bajaVoluntaria =
+            (int) (
+                $datos['baja_voluntaria']
+                ?? 0
+            ) === 1;
+
+
+        /* =====================================================
+        MOTIVOS RECIBIDOS DESDE EDITAR
+        ===================================================== */
+
+        $motivos =
+            $datos['motivos_seleccionados']
+            ?? [];
+
+
+        if (!is_array($motivos)) {
+
+            $motivos = [];
+        }
+
+
+        /* =====================================================
+        MOTIVOS ACTUALES DEL REPORTE
+        ===================================================== */
+
+        $motivosActuales =
             $this->db
                 ->table(
-                    'ai_reporte_sanciones'
+                    'ai_reporte_motivos'
                 )
                 ->where(
                     'id_reporte',
                     $idReporte
                 )
                 ->where(
-                    'id_reporte_motivo',
-                    $idReporteMotivo
-                )
-                ->where(
                     'eliminado',
                     0
                 )
-                ->orderBy(
-                    'id_sancion',
-                    'DESC'
-                )
                 ->get()
-                ->getRowArray();
+                ->getResultArray();
 
 
-        /* =================================================
-           SIN SANCIONES / BAJA VOLUNTARIA
-        ================================================= */
+        $actualesPorMotivo = [];
 
-        if (
-            $sinSanciones
-            || $bajaVoluntaria
+
+        foreach (
+            $motivosActuales
+            as $motivoActual
         ) {
+
+            $idMotivoActual =
+                (int) (
+                    $motivoActual['id_motivo']
+                    ?? 0
+                );
+
+
+            if ($idMotivoActual <= 0) {
+
+                continue;
+            }
+
+
+            $actualesPorMotivo[
+                $idMotivoActual
+            ] = $motivoActual;
+        }
+
+
+        /* =====================================================
+        IDS QUE DEBEN PERMANECER
+        ===================================================== */
+
+        $idsRecibidos = [];
+
+
+        foreach (
+            $motivos
+            as $motivoFormulario
+        ) {
+
+            if (!is_array($motivoFormulario)) {
+
+                continue;
+            }
+
+
+            $idMotivo =
+                (int) (
+                    $motivoFormulario['id_motivo']
+                    ?? 0
+                );
+
+
+            if ($idMotivo <= 0) {
+
+                throw new \InvalidArgumentException(
+                    'Existe un motivo seleccionado sin identificador válido.'
+                );
+            }
+
+
+            if (
+                in_array(
+                    $idMotivo,
+                    $idsRecibidos,
+                    true
+                )
+            ) {
+
+                continue;
+            }
+
+
+            $idsRecibidos[] =
+                $idMotivo;
+
+
+            /* =================================================
+            VALIDAR MOTIVO EN CATÁLOGO
+            ================================================= */
+
+            $motivoCatalogo =
+                $this->db
+                    ->table(
+                        'ai_cat_motivos'
+                    )
+                    ->select([
+                        'id_motivo',
+                        'motivo',
+                        'sancion',
+                        'activo',
+                    ])
+                    ->where(
+                        'id_motivo',
+                        $idMotivo
+                    )
+                    ->where(
+                        'activo',
+                        1
+                    )
+                    ->get()
+                    ->getRowArray();
+
+
+            if (!$motivoCatalogo) {
+
+                throw new \InvalidArgumentException(
+                    'Uno de los motivos seleccionados ya no está disponible.'
+                );
+            }
+
+
+            /* =================================================
+            SI EL MOTIVO YA EXISTE, CONSERVARLO
+            ================================================= */
+
+            if (
+                isset(
+                    $actualesPorMotivo[
+                        $idMotivo
+                    ]
+                )
+            ) {
+
+                $idReporteMotivo =
+                    (int) (
+                        $actualesPorMotivo[
+                            $idMotivo
+                        ]['id_reporte_motivo']
+                        ?? 0
+                    );
+            } else {
+
+                /* =============================================
+                NUEVO MOTIVO
+                ============================================= */
+
+                $insertadoMotivo =
+                    $this->db
+                        ->table(
+                            'ai_reporte_motivos'
+                        )
+                        ->insert([
+
+                            'id_reporte' =>
+                                $idReporte,
+
+                            'id_motivo' =>
+                                $idMotivo,
+
+                            'created_by' =>
+                                $idUsuario,
+
+                            'eliminado' =>
+                                0,
+                        ]);
+
+
+                if ($insertadoMotivo === false) {
+
+                    throw new \RuntimeException(
+                        'No fue posible guardar uno de los motivos del reporte.'
+                    );
+                }
+
+
+                $idReporteMotivo =
+                    (int)
+                    $this->db
+                        ->insertID();
+            }
+
+
+            if ($idReporteMotivo <= 0) {
+
+                throw new \RuntimeException(
+                    'No fue posible identificar el motivo registrado.'
+                );
+            }
+
+
+            /* =================================================
+            SANCIÓN ACTUAL DEL MOTIVO
+            ================================================= */
+
+            $sancionActual =
+                $this->db
+                    ->table(
+                        'ai_reporte_sanciones'
+                    )
+                    ->where(
+                        'id_reporte',
+                        $idReporte
+                    )
+                    ->where(
+                        'id_reporte_motivo',
+                        $idReporteMotivo
+                    )
+                    ->where(
+                        'eliminado',
+                        0
+                    )
+                    ->orderBy(
+                        'id_sancion',
+                        'DESC'
+                    )
+                    ->get()
+                    ->getRowArray();
+
+
+            /* =================================================
+            SIN SANCIONES / BAJA VOLUNTARIA
+            ================================================= */
+
+            if (
+                $sinSanciones
+                || $bajaVoluntaria
+            ) {
+
+                if ($sancionActual) {
+
+                    $actualizado =
+                        $this->db
+                            ->table(
+                                'ai_reporte_sanciones'
+                            )
+                            ->where(
+                                'id_sancion',
+                                (int)
+                                $sancionActual[
+                                    'id_sancion'
+                                ]
+                            )
+                            ->update([
+
+                                'es_actual' =>
+                                    0,
+
+                                'eliminado' =>
+                                    1,
+
+                                'updated_by' =>
+                                    $idUsuario,
+
+                                'updated_at' =>
+                                    date(
+                                        'Y-m-d H:i:s'
+                                    ),
+
+                                'eliminado_at' =>
+                                    date(
+                                        'Y-m-d H:i:s'
+                                    ),
+
+                                'eliminado_por' =>
+                                    $idUsuario,
+                            ]);
+
+
+                    if ($actualizado === false) {
+
+                        throw new \RuntimeException(
+                            'No fue posible actualizar la sanción relacionada con el motivo.'
+                        );
+                    }
+                }
+
+
+                continue;
+            }
+
+
+            /* =================================================
+            SANCIÓN DEL CATÁLOGO
+            ================================================= */
+
+            $tipoSancion =
+                trim(
+                    (string) (
+                        $motivoCatalogo[
+                            'sancion'
+                        ]
+                        ?? ''
+                    )
+                );
+
+
+            if ($tipoSancion === '') {
+
+                continue;
+            }
+
+
+            /* =================================================
+            FOLIO DE SANCIÓN
+            ================================================= */
+
+            $folioSancion =
+                trim(
+                    (string) (
+                        $motivoFormulario[
+                            'folio_sancion'
+                        ]
+                        ?? ''
+                    )
+                );
+
+
+            if ($folioSancion === '') {
+
+                $folioSancion = null;
+            }
+
+
+            if (
+                $folioSancion !== null
+                && mb_strlen(
+                    $folioSancion
+                ) > 150
+            ) {
+
+                throw new \InvalidArgumentException(
+                    'El folio de la sanción no puede exceder 150 caracteres.'
+                );
+            }
+
+
+            /* =================================================
+            ACTUALIZAR SANCIÓN EXISTENTE
+            ================================================= */
 
             if ($sancionActual) {
 
@@ -1946,10 +2073,13 @@ protected function actualizarMotivosYSancionesDesdeEdicion(
                         )
                         ->update([
 
-                            'es_actual' =>
-                                0,
+                            'tipo' =>
+                                $tipoSancion,
 
-                            'eliminado' =>
+                            'folio_sancion' =>
+                                $folioSancion,
+
+                            'es_actual' =>
                                 1,
 
                             'updated_by' =>
@@ -1959,14 +2089,6 @@ protected function actualizarMotivosYSancionesDesdeEdicion(
                                 date(
                                     'Y-m-d H:i:s'
                                 ),
-
-                            'eliminado_at' =>
-                                date(
-                                    'Y-m-d H:i:s'
-                                ),
-
-                            'eliminado_por' =>
-                                $idUsuario,
                         ]);
 
 
@@ -1976,283 +2098,176 @@ protected function actualizarMotivosYSancionesDesdeEdicion(
                         'No fue posible actualizar la sanción relacionada con el motivo.'
                     );
                 }
+            } else {
+
+                /* =============================================
+                CREAR SANCIÓN DEL NUEVO MOTIVO
+                ============================================= */
+
+                $insertadoSancion =
+                    $this->db
+                        ->table(
+                            'ai_reporte_sanciones'
+                        )
+                        ->insert([
+
+                            'id_reporte' =>
+                                $idReporte,
+
+                            'id_reporte_motivo' =>
+                                $idReporteMotivo,
+
+                            'tipo' =>
+                                $tipoSancion,
+
+                            'descripcion_otro' =>
+                                null,
+
+                            'folio_sancion' =>
+                                $folioSancion,
+
+                            'origen' =>
+                                'edicion',
+
+                            'id_seguimiento' =>
+                                null,
+
+                            'es_actual' =>
+                                1,
+
+                            'created_by' =>
+                                $idUsuario,
+
+                            'eliminado' =>
+                                0,
+                        ]);
+
+
+                if ($insertadoSancion === false) {
+
+                    throw new \RuntimeException(
+                        'No fue posible guardar la sanción relacionada con el motivo.'
+                    );
+                }
             }
-
-
-            continue;
         }
 
 
-        /* =================================================
-           SANCIÓN DEL CATÁLOGO
-        ================================================= */
+        /* =====================================================
+        MOTIVOS QUE FUERON QUITADOS EN EDITAR
+        ===================================================== */
 
-        $tipoSancion =
-            trim(
-                (string) (
-                    $motivoCatalogo[
-                        'sancion'
-                    ]
-                    ?? ''
-                )
-            );
-
-
-        if ($tipoSancion === '') {
-
-            continue;
-        }
-
-
-        /* =================================================
-           FOLIO DE SANCIÓN
-        ================================================= */
-
-        $folioSancion =
-            trim(
-                (string) (
-                    $motivoFormulario[
-                        'folio_sancion'
-                    ]
-                    ?? ''
-                )
-            );
-
-
-        if ($folioSancion === '') {
-
-            $folioSancion = null;
-        }
-
-
-        if (
-            $folioSancion !== null
-            && mb_strlen(
-                $folioSancion
-            ) > 150
+        foreach (
+            $actualesPorMotivo
+            as $idMotivoActual =>
+            $motivoActual
         ) {
 
-            throw new \InvalidArgumentException(
-                'El folio de la sanción no puede exceder 150 caracteres.'
-            );
-        }
+            if (
+                in_array(
+                    $idMotivoActual,
+                    $idsRecibidos,
+                    true
+                )
+            ) {
 
-
-        /* =================================================
-           ACTUALIZAR SANCIÓN EXISTENTE
-        ================================================= */
-
-        if ($sancionActual) {
-
-            $actualizado =
-                $this->db
-                    ->table(
-                        'ai_reporte_sanciones'
-                    )
-                    ->where(
-                        'id_sancion',
-                        (int)
-                        $sancionActual[
-                            'id_sancion'
-                        ]
-                    )
-                    ->update([
-
-                        'tipo' =>
-                            $tipoSancion,
-
-                        'folio_sancion' =>
-                            $folioSancion,
-
-                        'es_actual' =>
-                            1,
-
-                        'updated_by' =>
-                            $idUsuario,
-
-                        'updated_at' =>
-                            date(
-                                'Y-m-d H:i:s'
-                            ),
-                    ]);
-
-
-            if ($actualizado === false) {
-
-                throw new \RuntimeException(
-                    'No fue posible actualizar la sanción relacionada con el motivo.'
-                );
+                continue;
             }
-        } else {
-
-            /* =============================================
-               CREAR SANCIÓN DEL NUEVO MOTIVO
-            ============================================= */
-
-            $insertadoSancion =
-                $this->db
-                    ->table(
-                        'ai_reporte_sanciones'
-                    )
-                    ->insert([
-
-                        'id_reporte' =>
-                            $idReporte,
-
-                        'id_reporte_motivo' =>
-                            $idReporteMotivo,
-
-                        'tipo' =>
-                            $tipoSancion,
-
-                        'descripcion_otro' =>
-                            null,
-
-                        'folio_sancion' =>
-                            $folioSancion,
-
-                        'origen' =>
-                            'edicion',
-
-                        'id_seguimiento' =>
-                            null,
-
-                        'es_actual' =>
-                            1,
-
-                        'created_by' =>
-                            $idUsuario,
-
-                        'eliminado' =>
-                            0,
-                    ]);
 
 
-            if ($insertadoSancion === false) {
-
-                throw new \RuntimeException(
-                    'No fue posible guardar la sanción relacionada con el motivo.'
+            $idReporteMotivo =
+                (int) (
+                    $motivoActual[
+                        'id_reporte_motivo'
+                    ]
+                    ?? 0
                 );
+
+
+            if ($idReporteMotivo <= 0) {
+
+                continue;
             }
-        }
-    }
 
 
-    /* =====================================================
-       MOTIVOS QUE FUERON QUITADOS EN EDITAR
-    ===================================================== */
+            /* =================================================
+            ELIMINAR LÓGICAMENTE SUS SANCIONES
+            ================================================= */
 
-    foreach (
-        $actualesPorMotivo
-        as $idMotivoActual =>
-        $motivoActual
-    ) {
-
-        if (
-            in_array(
-                $idMotivoActual,
-                $idsRecibidos,
-                true
-            )
-        ) {
-
-            continue;
-        }
-
-
-        $idReporteMotivo =
-            (int) (
-                $motivoActual[
-                    'id_reporte_motivo'
-                ]
-                ?? 0
-            );
-
-
-        if ($idReporteMotivo <= 0) {
-
-            continue;
-        }
-
-
-        /* =================================================
-           ELIMINAR LÓGICAMENTE SUS SANCIONES
-        ================================================= */
-
-        $this->db
-            ->table(
-                'ai_reporte_sanciones'
-            )
-            ->where(
-                'id_reporte',
-                $idReporte
-            )
-            ->where(
-                'id_reporte_motivo',
-                $idReporteMotivo
-            )
-            ->where(
-                'eliminado',
-                0
-            )
-            ->update([
-
-                'es_actual' =>
-                    0,
-
-                'eliminado' =>
-                    1,
-
-                'updated_by' =>
-                    $idUsuario,
-
-                'updated_at' =>
-                    date(
-                        'Y-m-d H:i:s'
-                    ),
-
-                'eliminado_at' =>
-                    date(
-                        'Y-m-d H:i:s'
-                    ),
-
-                'eliminado_por' =>
-                    $idUsuario,
-            ]);
-
-
-        /* =================================================
-           ELIMINAR LÓGICAMENTE EL MOTIVO
-        ================================================= */
-
-        $eliminadoMotivo =
             $this->db
                 ->table(
-                    'ai_reporte_motivos'
+                    'ai_reporte_sanciones'
+                )
+                ->where(
+                    'id_reporte',
+                    $idReporte
                 )
                 ->where(
                     'id_reporte_motivo',
                     $idReporteMotivo
                 )
                 ->where(
-                    'id_reporte',
-                    $idReporte
+                    'eliminado',
+                    0
                 )
                 ->update([
 
+                    'es_actual' =>
+                        0,
+
                     'eliminado' =>
                         1,
+
+                    'updated_by' =>
+                        $idUsuario,
+
+                    'updated_at' =>
+                        date(
+                            'Y-m-d H:i:s'
+                        ),
+
+                    'eliminado_at' =>
+                        date(
+                            'Y-m-d H:i:s'
+                        ),
+
+                    'eliminado_por' =>
+                        $idUsuario,
                 ]);
 
 
-        if ($eliminadoMotivo === false) {
+            /* =================================================
+            ELIMINAR LÓGICAMENTE EL MOTIVO
+            ================================================= */
 
-            throw new \RuntimeException(
-                'No fue posible eliminar uno de los motivos del reporte.'
-            );
+            $eliminadoMotivo =
+                $this->db
+                    ->table(
+                        'ai_reporte_motivos'
+                    )
+                    ->where(
+                        'id_reporte_motivo',
+                        $idReporteMotivo
+                    )
+                    ->where(
+                        'id_reporte',
+                        $idReporte
+                    )
+                    ->update([
+
+                        'eliminado' =>
+                            1,
+                    ]);
+
+
+            if ($eliminadoMotivo === false) {
+
+                throw new \RuntimeException(
+                    'No fue posible eliminar uno de los motivos del reporte.'
+                );
+            }
         }
     }
-}
 
     /* =========================================================
     CORREGIR SANCIÓN DESDE EDITAR
@@ -2817,6 +2832,711 @@ protected function actualizarMotivosYSancionesDesdeEdicion(
         }
     }
 
+
+    /* =========================================================
+    GUARDAR DIRECCIÓN PARA NOTIFICACIÓN
+    ========================================================= */
+
+    protected function guardarDireccionNotificacion(
+        int $idReporte,
+        array $datos,
+        int $idUsuario
+    ): void {
+
+        /* =====================================================
+        VALIDAR IDENTIFICADORES
+        ===================================================== */
+
+        if (
+            $idReporte <= 0
+            || $idUsuario <= 0
+        ) {
+
+            throw new \RuntimeException(
+                'No fue posible identificar el reporte o usuario para la dirección de notificación.'
+            );
+        }
+
+
+        /* =====================================================
+        PERTENECE A NEZAHUALCÓYOTL
+        ===================================================== */
+
+        $perteneceNeza =
+            $datos['notificacion_pertenece_neza']
+            ?? null;
+
+
+        if (
+            $perteneceNeza !== null
+            && $perteneceNeza !== ''
+        ) {
+
+            $perteneceNeza =
+                (int) $perteneceNeza;
+
+
+            if (
+                !in_array(
+                    $perteneceNeza,
+                    [
+                        0,
+                        1,
+                    ],
+                    true
+                )
+            ) {
+
+                throw new \InvalidArgumentException(
+                    'La opción de pertenencia al municipio de Nezahualcóyotl no es válida.'
+                );
+            }
+
+        } else {
+
+            $perteneceNeza =
+                null;
+        }
+
+
+        /* =====================================================
+        CALLE
+        ===================================================== */
+
+        $calle =
+            $this->valorNullable(
+                $datos['notificacion_calle']
+                ?? null
+            );
+
+
+        /* =====================================================
+        NÚMERO EXTERIOR
+        ===================================================== */
+
+        $numeroExterior =
+            $this->valorNullable(
+                $datos['notificacion_numero_exterior']
+                ?? null
+            );
+
+
+        /* =====================================================
+        COLONIA
+        ===================================================== */
+
+        $colonia =
+            $this->valorNullable(
+                $datos['notificacion_colonia']
+                ?? null
+            );
+
+
+        /* =====================================================
+        ENTRE CALLE
+        ===================================================== */
+
+        $entreCalle =
+            $this->valorNullable(
+                $datos['notificacion_entre_calle']
+                ?? null
+            );
+
+
+        /* =====================================================
+        Y CALLE
+        ===================================================== */
+
+        $yCalle =
+            $this->valorNullable(
+                $datos['notificacion_y_calle']
+                ?? null
+            );
+
+
+        /* =====================================================
+        MUNICIPIO
+        ===================================================== */
+
+        $municipio =
+            $this->valorNullable(
+                $datos['notificacion_municipio']
+                ?? null
+            );
+
+
+        /* =====================================================
+        ESTADO
+        ===================================================== */
+
+        $estado =
+            $this->valorNullable(
+                $datos['notificacion_estado']
+                ?? null
+            );
+
+
+        /* =====================================================
+        SECTOR
+        ===================================================== */
+
+        $sector =
+            $this->valorNullable(
+                $datos['notificacion_sector']
+                ?? null
+            );
+
+
+        /* =====================================================
+        CUADRANTE
+        ===================================================== */
+
+        $cuadrante =
+            $this->valorNullable(
+                $datos['notificacion_cuadrante']
+                ?? null
+            );
+
+
+        /* =====================================================
+        ID CUADRA
+        ===================================================== */
+
+        $idCuadra =
+            $this->valorNullable(
+                $datos['notificacion_id_cuadra']
+                ?? null
+            );
+
+
+        /* =====================================================
+        LATITUD
+        ===================================================== */
+
+        $latitud =
+            $this->decimalNullable(
+                $datos['notificacion_latitud']
+                ?? null
+            );
+
+
+        /* =====================================================
+        LONGITUD
+        ===================================================== */
+
+        $longitud =
+            $this->decimalNullable(
+                $datos['notificacion_longitud']
+                ?? null
+            );
+
+
+        /* =====================================================
+        ORIGEN DE UBICACIÓN
+        ===================================================== */
+
+        $origenUbicacion =
+            $this->normalizarOrigenUbicacion(
+                $datos['notificacion_origen_ubicacion']
+                ?? null
+            );
+
+
+        /* =====================================================
+        VERIFICAR SI REALMENTE EXISTEN DATOS
+
+        La dirección para notificación es opcional.
+
+        Si el usuario no seleccionó Sí/No y tampoco capturó
+        ningún dato de dirección, no insertamos una fila.
+        ===================================================== */
+
+        $tieneDatos =
+            $perteneceNeza !== null
+            || $calle !== null
+            || $numeroExterior !== null
+            || $colonia !== null
+            || $entreCalle !== null
+            || $yCalle !== null
+            || $municipio !== null
+            || $estado !== null
+            || $sector !== null
+            || $cuadrante !== null
+            || $idCuadra !== null
+            || $latitud !== null
+            || $longitud !== null;
+
+
+        if (!$tieneDatos) {
+
+            return;
+        }
+
+
+        /* =====================================================
+        GUARDAR DIRECCIÓN
+        ===================================================== */
+
+        $insertado =
+            $this->db
+                ->table(
+                    'ai_reporte_direccion_notificacion'
+                )
+                ->insert([
+
+                    'id_reporte' =>
+                        $idReporte,
+
+                    'pertenece_neza' =>
+                        $perteneceNeza,
+
+                    'calle' =>
+                        $calle,
+
+                    'numero_exterior' =>
+                        $numeroExterior,
+
+                    'colonia' =>
+                        $colonia,
+
+                    'entre_calle' =>
+                        $entreCalle,
+
+                    'y_calle' =>
+                        $yCalle,
+
+                    'municipio' =>
+                        $municipio,
+
+                    'estado' =>
+                        $estado,
+
+                    'sector' =>
+                        $sector,
+
+                    'cuadrante' =>
+                        $cuadrante,
+
+                    'id_cuadra' =>
+                        $idCuadra,
+
+                    'latitud' =>
+                        $latitud,
+
+                    'longitud' =>
+                        $longitud,
+
+                    'origen_ubicacion' =>
+                        $origenUbicacion,
+
+                    'created_by' =>
+                        $idUsuario,
+
+                    'eliminado' =>
+                        0,
+
+                ]);
+
+
+        if ($insertado === false) {
+
+            throw new \RuntimeException(
+                'No fue posible guardar la dirección para notificación.'
+            );
+        }
+    }
+
+    /* =========================================================
+    ACTUALIZAR DIRECCIÓN PARA NOTIFICACIÓN
+    ========================================================= */
+
+    protected function actualizarDireccionNotificacion(
+        int $idReporte,
+        array $datos,
+        int $idUsuario
+    ): void {
+
+        if (
+            $idReporte <= 0
+            || $idUsuario <= 0
+        ) {
+
+            throw new \RuntimeException(
+                'No fue posible identificar el reporte o usuario para actualizar la dirección de notificación.'
+            );
+        }
+
+
+        /* =====================================================
+        PERTENECE A NEZAHUALCÓYOTL
+        ===================================================== */
+
+        $perteneceNeza =
+            $datos['notificacion_pertenece_neza']
+            ?? null;
+
+
+        if (
+            $perteneceNeza !== null
+            && $perteneceNeza !== ''
+        ) {
+
+            $perteneceNeza =
+                (int) $perteneceNeza;
+
+
+            if (
+                !in_array(
+                    $perteneceNeza,
+                    [
+                        0,
+                        1,
+                    ],
+                    true
+                )
+            ) {
+
+                throw new \InvalidArgumentException(
+                    'La opción de pertenencia al municipio de Nezahualcóyotl no es válida.'
+                );
+            }
+
+        } else {
+
+            $perteneceNeza =
+                null;
+        }
+
+
+        /* =====================================================
+        DATOS DE DIRECCIÓN
+        ===================================================== */
+
+        $calle =
+            $this->valorNullable(
+                $datos['notificacion_calle']
+                ?? null
+            );
+
+
+        $numeroExterior =
+            $this->valorNullable(
+                $datos['notificacion_numero_exterior']
+                ?? null
+            );
+
+
+        $colonia =
+            $this->valorNullable(
+                $datos['notificacion_colonia']
+                ?? null
+            );
+
+
+        $entreCalle =
+            $this->valorNullable(
+                $datos['notificacion_entre_calle']
+                ?? null
+            );
+
+
+        $yCalle =
+            $this->valorNullable(
+                $datos['notificacion_y_calle']
+                ?? null
+            );
+
+
+        $municipio =
+            $this->valorNullable(
+                $datos['notificacion_municipio']
+                ?? null
+            );
+
+
+        $estado =
+            $this->valorNullable(
+                $datos['notificacion_estado']
+                ?? null
+            );
+
+
+        $sector =
+            $this->valorNullable(
+                $datos['notificacion_sector']
+                ?? null
+            );
+
+
+        $cuadrante =
+            $this->valorNullable(
+                $datos['notificacion_cuadrante']
+                ?? null
+            );
+
+
+        $idCuadra =
+            $this->valorNullable(
+                $datos['notificacion_id_cuadra']
+                ?? null
+            );
+
+
+        $latitud =
+            $this->decimalNullable(
+                $datos['notificacion_latitud']
+                ?? null
+            );
+
+
+        $longitud =
+            $this->decimalNullable(
+                $datos['notificacion_longitud']
+                ?? null
+            );
+
+
+        $origenUbicacion =
+            $this->normalizarOrigenUbicacion(
+                $datos['notificacion_origen_ubicacion']
+                ?? null
+            );
+
+
+        /* =====================================================
+        ¿HAY INFORMACIÓN CAPTURADA?
+        ===================================================== */
+
+        $tieneDatos =
+            $perteneceNeza !== null
+            || $calle !== null
+            || $numeroExterior !== null
+            || $colonia !== null
+            || $entreCalle !== null
+            || $yCalle !== null
+            || $municipio !== null
+            || $estado !== null
+            || $sector !== null
+            || $cuadrante !== null
+            || $idCuadra !== null
+            || $latitud !== null
+            || $longitud !== null;
+
+
+        /* =====================================================
+        BUSCAR REGISTRO EXISTENTE
+
+        Incluimos incluso registros eliminados porque existe
+        UNIQUE(id_reporte).
+
+        Si en algún momento se eliminó lógicamente la dirección
+        y posteriormente vuelven a capturarla, reutilizamos
+        la misma fila.
+        ===================================================== */
+
+        $direccionActual =
+            $this->db
+                ->table(
+                    'ai_reporte_direccion_notificacion'
+                )
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->get()
+                ->getRowArray();
+
+
+        /* =====================================================
+        SECCIÓN COMPLETAMENTE VACÍA
+        ===================================================== */
+
+        if (!$tieneDatos) {
+
+            /*
+            * Si nunca existió una dirección,
+            * no tenemos nada que hacer.
+            */
+
+            if (!$direccionActual) {
+
+                return;
+            }
+
+
+            /*
+            * Si existía, la retiramos lógicamente.
+            */
+
+            $actualizado =
+                $this->db
+                    ->table(
+                        'ai_reporte_direccion_notificacion'
+                    )
+                    ->where(
+                        'id_reporte',
+                        $idReporte
+                    )
+                    ->update([
+
+                        'eliminado' =>
+                            1,
+
+                        'eliminado_at' =>
+                            date(
+                                'Y-m-d H:i:s'
+                            ),
+
+                        'eliminado_por' =>
+                            $idUsuario,
+
+                        'updated_by' =>
+                            $idUsuario,
+
+                    ]);
+
+
+            if ($actualizado === false) {
+
+                throw new \RuntimeException(
+                    'No fue posible retirar la dirección para notificación.'
+                );
+            }
+
+
+            return;
+        }
+
+
+        /* =====================================================
+        DATOS A GUARDAR
+        ===================================================== */
+
+        $datosDireccion = [
+
+            'pertenece_neza' =>
+                $perteneceNeza,
+
+            'calle' =>
+                $calle,
+
+            'numero_exterior' =>
+                $numeroExterior,
+
+            'colonia' =>
+                $colonia,
+
+            'entre_calle' =>
+                $entreCalle,
+
+            'y_calle' =>
+                $yCalle,
+
+            'municipio' =>
+                $municipio,
+
+            'estado' =>
+                $estado,
+
+            'sector' =>
+                $sector,
+
+            'cuadrante' =>
+                $cuadrante,
+
+            'id_cuadra' =>
+                $idCuadra,
+
+            'latitud' =>
+                $latitud,
+
+            'longitud' =>
+                $longitud,
+
+            'origen_ubicacion' =>
+                $origenUbicacion,
+
+            'updated_by' =>
+                $idUsuario,
+
+            /*
+            * Si estaba eliminada y vuelven a capturar
+            * una dirección, la reactivamos.
+            */
+
+            'eliminado' =>
+                0,
+
+            'eliminado_at' =>
+                null,
+
+            'eliminado_por' =>
+                null,
+
+        ];
+
+
+        /* =====================================================
+        YA EXISTE
+        ===================================================== */
+
+        if ($direccionActual) {
+
+            $actualizado =
+                $this->db
+                    ->table(
+                        'ai_reporte_direccion_notificacion'
+                    )
+                    ->where(
+                        'id_reporte',
+                        $idReporte
+                    )
+                    ->update(
+                        $datosDireccion
+                    );
+
+
+            if ($actualizado === false) {
+
+                throw new \RuntimeException(
+                    'No fue posible actualizar la dirección para notificación.'
+                );
+            }
+
+
+            return;
+        }
+
+
+        /* =====================================================
+        NO EXISTE TODAVÍA
+        ===================================================== */
+
+        $datosDireccion['id_reporte'] =
+            $idReporte;
+
+
+        $datosDireccion['created_by'] =
+            $idUsuario;
+
+
+        $insertado =
+            $this->db
+                ->table(
+                    'ai_reporte_direccion_notificacion'
+                )
+                ->insert(
+                    $datosDireccion
+                );
+
+
+        if ($insertado === false) {
+
+            throw new \RuntimeException(
+                'No fue posible registrar la dirección para notificación.'
+            );
+        }
+    }
 
     /* =========================================================
        EVIDENCIAS

@@ -77,6 +77,10 @@ import {
 } from './datosReporte.js';
 
 
+import {
+    cargarDireccionNotificacionEditar,
+} from './direccionNotificacion.js';
+
 /* =========================================================
    CREAR REPORTE TEMPORAL DESDE FILA
 ========================================================= */
@@ -352,7 +356,7 @@ export function cargarReporteEnFormulario(
 
 
     /* =====================================================
-    DATOS DEL REPORTE
+       DATOS DEL REPORTE
     ===================================================== */
 
     cargarDatosReporteEditar(
@@ -382,7 +386,7 @@ export function cargarReporteEnFormulario(
 
 
     /* =====================================================
-       UBICACIÓN
+       UBICACIÓN DE LOS HECHOS
     ===================================================== */
 
     cargarUbicacionEditar(
@@ -418,6 +422,16 @@ export function cargarReporteEnFormulario(
     cargarQuejosoEditar(
         modal,
         reporte
+    );
+
+
+    /* =====================================================
+       DIRECCIÓN PARA NOTIFICACIÓN
+    ===================================================== */
+
+    cargarDireccionNotificacionEditar(
+        modal,
+        reporte.direccion_notificacion
     );
 
 

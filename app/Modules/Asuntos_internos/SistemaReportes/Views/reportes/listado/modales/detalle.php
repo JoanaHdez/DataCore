@@ -153,13 +153,18 @@
 
 
             <!-- =============================================
-                 PASO 4
-                 DATOS DEL QUEJOSO
+                PASO 4
+                DATOS DEL QUEJOSO
             ============================================== -->
             <section class="detalle-reporte-seccion" data-detalle-panel="quejoso">
 
                 <?= $this->include(
                     'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\detalle\sections\datos_quejoso'
+                ) ?>
+
+
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\detalle\sections\direccion_notificacion'
                 ) ?>
 
             </section>

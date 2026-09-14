@@ -1053,6 +1053,13 @@ function construirReporteEditar(
         || {};
 
 
+    const direccionNotificacion =
+        datos.direccion_notificacion
+        && typeof datos.direccion_notificacion === 'object'
+            ? datos.direccion_notificacion
+            : {};
+
+
     const folio =
         String(
             origen.folio
@@ -1218,6 +1225,87 @@ function construirReporteEditar(
             valorEditar(
                 origen.origen_ubicacion
             ),
+
+
+        /* =====================================================
+           DIRECCIÓN PARA NOTIFICACIÓN
+        ===================================================== */
+
+        direccion_notificacion: {
+
+            pertenece_neza:
+                direccionNotificacion.pertenece_neza !== null
+                && direccionNotificacion.pertenece_neza !== undefined
+                    ? Number(
+                        direccionNotificacion.pertenece_neza
+                    )
+                    : null,
+
+            calle:
+                valorEditar(
+                    direccionNotificacion.calle
+                ),
+
+            numero_exterior:
+                valorEditar(
+                    direccionNotificacion.numero_exterior
+                ),
+
+            colonia:
+                valorEditar(
+                    direccionNotificacion.colonia
+                ),
+
+            entre_calle:
+                valorEditar(
+                    direccionNotificacion.entre_calle
+                ),
+
+            y_calle:
+                valorEditar(
+                    direccionNotificacion.y_calle
+                ),
+
+            municipio:
+                valorEditar(
+                    direccionNotificacion.municipio
+                ),
+
+            estado:
+                valorEditar(
+                    direccionNotificacion.estado
+                ),
+
+            sector:
+                valorEditar(
+                    direccionNotificacion.sector
+                ),
+
+            cuadrante:
+                valorEditar(
+                    direccionNotificacion.cuadrante
+                ),
+
+            id_cuadra:
+                valorEditar(
+                    direccionNotificacion.id_cuadra
+                ),
+
+            latitud:
+                valorEditar(
+                    direccionNotificacion.latitud
+                ),
+
+            longitud:
+                valorEditar(
+                    direccionNotificacion.longitud
+                ),
+
+            origen_ubicacion:
+                valorEditar(
+                    direccionNotificacion.origen_ubicacion
+                ),
+        },
 
 
         /* =====================================================
@@ -1489,7 +1577,7 @@ function construirReporteEditar(
 
         sancion:
             datos.sancion
-                && typeof datos.sancion === 'object'
+            && typeof datos.sancion === 'object'
                 ? {
 
                     ...datos.sancion,
@@ -1526,10 +1614,8 @@ function construirReporteEditar(
                         ),
 
                     id_seguimiento:
-                        datos.sancion.id_seguimiento
-                            !== null
-                            && datos.sancion.id_seguimiento
-                            !== undefined
+                        datos.sancion.id_seguimiento !== null
+                        && datos.sancion.id_seguimiento !== undefined
                             ? Number(
                                 datos.sancion.id_seguimiento
                                 || 0

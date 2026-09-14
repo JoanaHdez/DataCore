@@ -171,11 +171,16 @@
                 ========================================== -->
                 <section class="detalle-reporte-seccion" data-editar-panel="quejoso">
 
-                    <?= $this->include(
-                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\datos_quejoso'
-                    ) ?>
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\datos_quejoso'
+                ) ?>
 
-                </section>
+
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\listado\modales\editar\sections\direccion_notificacion'
+                ) ?>
+
+            </section>
 
 
                 <!-- =========================================

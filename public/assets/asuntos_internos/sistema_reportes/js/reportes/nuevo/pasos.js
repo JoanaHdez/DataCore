@@ -2,6 +2,9 @@ import {
     mostrarResultadoYRedirigir
 } from '../notificaciones/resultado.js';
 
+import {
+    inicializarDireccionNotificacion
+} from './direccion_notificacion.js';
 
 document.addEventListener(
     'DOMContentLoaded',
@@ -78,6 +81,9 @@ function inicializarFormularioPorPasos() {
 
     let guardando = false;
 
+    let direccionNotificacionInicializada =
+        false;
+
 
     const totalPasos =
         pasos.length;
@@ -91,108 +97,139 @@ function inicializarFormularioPorPasos() {
        MOSTRAR PASO
     ===================================================== */
 
-    function mostrarPaso(
-        numeroPaso
+    function mostrarPaso(numeroPaso) 
+    {
+
+    pasoActual =
+        numeroPaso;
+
+
+    /* =================================================
+       CONTENIDO
+    ================================================= */
+
+    pasos.forEach(
+        (paso) => {
+
+            const numero =
+                Number(
+                    paso.dataset.step
+                );
+
+
+            paso.classList.toggle(
+                'report-step--active',
+                numero === pasoActual
+            );
+
+        }
+    );
+
+
+    /* =================================================
+       DIRECCIÓN PARA NOTIFICACIÓN
+
+       El mapa se inicializa únicamente cuando el
+       paso 4 ya está visible.
+
+       Esto evita que Google Maps intente calcular
+       dimensiones mientras el contenedor está oculto.
+    ================================================= */
+
+    if (
+        pasoActual === 4
+        && !direccionNotificacionInicializada
     ) {
 
-        pasoActual =
-            numeroPaso;
+        direccionNotificacionInicializada =
+            true;
 
 
-        /* =================================================
-           CONTENIDO
-        ================================================= */
+        window.setTimeout(
+            () => {
 
-        pasos.forEach(
-            (paso) => {
+                inicializarDireccionNotificacion();
 
-                const numero =
-                    Number(
-                        paso.dataset.step
-                    );
-
-
-                paso.classList.toggle(
-                    'report-step--active',
-                    numero === pasoActual
-                );
-
-            }
+            },
+            100
         );
+    }
 
 
-        /* =================================================
-           INDICADORES
-        ================================================= */
+    /* =================================================
+       INDICADORES
+    ================================================= */
 
-        indicadores.forEach(
-            (indicador) => {
+    indicadores.forEach(
+        (indicador) => {
 
-                const numero =
-                    Number(
-                        indicador
-                            .dataset
-                            .stepIndicator
-                    );
-
-
-                indicador.classList.toggle(
-                    'report-steps__item--active',
-                    numero === pasoActual
+            const numero =
+                Number(
+                    indicador
+                        .dataset
+                        .stepIndicator
                 );
 
 
-                indicador.classList.toggle(
-                    'report-steps__item--completed',
-                    pasosCompletados.has(
-                        numero
-                    )
-                    && numero !== pasoActual
-                );
-
-            }
-        );
+            indicador.classList.toggle(
+                'report-steps__item--active',
+                numero === pasoActual
+            );
 
 
-        /* =================================================
-           ANTERIOR
-        ================================================= */
+            indicador.classList.toggle(
+                'report-steps__item--completed',
+                pasosCompletados.has(
+                    numero
+                )
+                && numero !== pasoActual
+            );
 
-        botonAnterior.classList.toggle(
-            'report-step-control--hidden',
-            pasoActual === 1
-        );
-
-
-        /* =================================================
-           SIGUIENTE
-        ================================================= */
-
-        botonSiguiente.classList.toggle(
-            'report-step-control--hidden',
-            pasoActual === totalPasos
-        );
+        }
+    );
 
 
-        /* =================================================
-           GUARDAR
-        ================================================= */
+    /* =================================================
+       ANTERIOR
+    ================================================= */
 
-        botonGuardar.classList.toggle(
-            'report-step-control--hidden',
-            pasoActual !== totalPasos
-        );
+    botonAnterior.classList.toggle(
+        'report-step-control--hidden',
+        pasoActual === 1
+    );
 
 
-        /* =================================================
-           SCROLL
-        ================================================= */
+    /* =================================================
+       SIGUIENTE
+    ================================================= */
 
-        formulario.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-        });
+    botonSiguiente.classList.toggle(
+        'report-step-control--hidden',
+        pasoActual === totalPasos
+    );
 
+
+    /* =================================================
+       GUARDAR
+    ================================================= */
+
+    botonGuardar.classList.toggle(
+        'report-step-control--hidden',
+        pasoActual !== totalPasos
+    );
+
+
+    /* =================================================
+       SCROLL
+    ================================================= */
+
+    formulario.scrollIntoView({
+        behavior:
+            'smooth',
+
+        block:
+            'start',
+    });
     }
 
     /* =====================================================

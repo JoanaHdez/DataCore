@@ -59,6 +59,11 @@ import {
 } from './detalle/secciones/observaciones.js';
 
 
+import {
+    cargarDireccionNotificacionDetalle,
+} from './detalle/secciones/direccionNotificacion.js';
+
+
 /* =========================================================
    SISTEMA DE REPORTES - ASUNTOS INTERNOS
    Listado - Detalle real del reporte
@@ -381,6 +386,13 @@ function cargarDetalleReporte(
         || {};
 
 
+    const direccionNotificacion =
+        datos.direccion_notificacion
+            && typeof datos.direccion_notificacion === 'object'
+            ? datos.direccion_notificacion
+            : null;
+
+
     const personal =
         Array.isArray(
             datos.personal
@@ -437,6 +449,7 @@ function cargarDetalleReporte(
         reporte.nomenclatura
     );
 
+
     asignarTextoDetalle(
         modal,
         '#detalle-meta-estado',
@@ -456,12 +469,11 @@ function cargarDetalleReporte(
             folio
                 ? `Reporte ${folio}`
                 : 'Reporte';
-
     }
 
 
     /* =====================================================
-    DATOS DEL REPORTE
+       DATOS DEL REPORTE
     ===================================================== */
 
     cargarDatosReporteDetalle(
@@ -471,7 +483,7 @@ function cargarDetalleReporte(
 
 
     /* =====================================================
-    IDENTIFICACIÓN
+       IDENTIFICACIÓN
     ===================================================== */
 
     cargarIdentificacionDetalle(
@@ -481,7 +493,7 @@ function cargarDetalleReporte(
 
 
     /* =====================================================
-    DATOS DE LOS HECHOS
+       DATOS DE LOS HECHOS
     ===================================================== */
 
     cargarDatosHechosDetalle(
@@ -491,7 +503,7 @@ function cargarDetalleReporte(
 
 
     /* =====================================================
-    UBICACIÓN
+       UBICACIÓN
     ===================================================== */
 
     cargarUbicacionDetalle(
@@ -516,8 +528,9 @@ function cargarDetalleReporte(
         reporte.modalidad_unidad
     );
 
+
     /* =====================================================
-    QUEJOSO
+       QUEJOSO
     ===================================================== */
 
     cargarQuejosoDetalle(
@@ -527,7 +540,17 @@ function cargarDetalleReporte(
 
 
     /* =====================================================
-    CLASIFICACIÓN Y SEGUIMIENTO
+       DIRECCIÓN PARA NOTIFICACIÓN
+    ===================================================== */
+
+    cargarDireccionNotificacionDetalle(
+        modal,
+        direccionNotificacion
+    );
+
+
+    /* =====================================================
+       CLASIFICACIÓN Y SEGUIMIENTO
     ===================================================== */
 
     cargarClasificacionDetalle(
@@ -536,8 +559,9 @@ function cargarDetalleReporte(
         motivos
     );
 
+
     /* =====================================================
-    OBSERVACIONES
+       OBSERVACIONES
     ===================================================== */
 
     cargarObservacionesDetalle(
@@ -554,9 +578,7 @@ function cargarDetalleReporte(
         modal,
         evidencias
     );
-
 }
-
 
 /* =========================================================
    SANCIÓN DISCIPLINARIA
@@ -684,8 +706,6 @@ function renderizarSancionDetalle(
     avisoOrigen.hidden =
         false;
 }
-
-
 
 
 /* =========================================================
