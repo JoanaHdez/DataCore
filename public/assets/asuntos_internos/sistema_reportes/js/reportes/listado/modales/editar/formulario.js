@@ -58,10 +58,15 @@ import {
     cargarClasificacionEditar,
 } from './clasificacion.js';
 
+import {
+    cargarSancionesEditar,
+} from './sanciones.js';
+
 
 import {
     cargarMotivosEditar,
     limpiarMotivosEditar,
+    obtenerMotivosEditar,
 } from './motivos.js';
 
 
@@ -446,6 +451,16 @@ export function cargarReporteEnFormulario(
 
 
     /* =====================================================
+       SITUACIÓN DE LA SANCIÓN
+    ===================================================== */
+
+    cargarSancionesEditar(
+        modal,
+        reporte
+    );
+
+
+    /* =====================================================
        MOTIVOS
     ===================================================== */
 
@@ -613,6 +628,34 @@ export function obtenerReporteDesdeFormulario(
 
     reporte.unidades =
         obtenerUnidadesEditar();
+
+
+    /* =====================================================
+       SITUACIÓN DE LA SANCIÓN
+    ===================================================== */
+
+    reporte.sin_sanciones =
+        datos.get(
+            'sin_sanciones'
+        ) === '1'
+            ? 1
+            : 0;
+
+
+    reporte.baja_voluntaria =
+        datos.get(
+            'baja_voluntaria'
+        ) === '1'
+            ? 1
+            : 0;
+
+
+    /* =====================================================
+       MOTIVOS
+    ===================================================== */
+
+    reporte.motivos =
+        obtenerMotivosEditar();
 
 
     /* =====================================================

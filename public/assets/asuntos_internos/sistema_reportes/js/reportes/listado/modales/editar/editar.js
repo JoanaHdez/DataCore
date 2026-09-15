@@ -70,9 +70,9 @@ import {
 } from './sanciones.js';
 
 import {
-    inicializarMotivosEditar
+    inicializarMotivosEditar,
+    obtenerMotivosEditar
 } from './motivos.js';
-
 
 
 /* =========================================================
@@ -1835,6 +1835,19 @@ async function actualizarReporteBackend(
     datos
 ) {
 
+    /* =====================================================
+       SINCRONIZAR MOTIVOS
+    ===================================================== */
+
+    sincronizarMotivosFormDataEditar(
+        datos
+    );
+
+
+    /* =====================================================
+       URL
+    ===================================================== */
+
     const url =
         new URL(
             `DataCore/public/asuntos-internos/reportes/actualizar/${idReporte}`,
@@ -1842,16 +1855,23 @@ async function actualizarReporteBackend(
         );
 
 
+    /* =====================================================
+       PETICIÓN
+    ===================================================== */
+
     const respuesta =
         await fetch(
             url.toString(),
             {
+
                 method:
                     'POST',
 
                 headers: {
+
                     Accept:
                         'application/json',
+
                 },
 
                 credentials:
@@ -1859,9 +1879,14 @@ async function actualizarReporteBackend(
 
                 body:
                     datos,
+
             }
         );
 
+
+    /* =====================================================
+       RESPUESTA
+    ===================================================== */
 
     const texto =
         await respuesta.text();
@@ -1882,12 +1907,15 @@ async function actualizarReporteBackend(
 
     } catch (error) {
 
-
         throw new Error(
             'El servidor devolvió una respuesta no válida.'
         );
     }
 
+
+    /* =====================================================
+       VALIDAR RESPUESTA
+    ===================================================== */
 
     if (!respuesta.ok) {
 
@@ -1899,6 +1927,86 @@ async function actualizarReporteBackend(
 
 
     return resultado;
+}
+
+
+/* =========================================================
+   SINCRONIZAR MOTIVOS EN FORM DATA
+========================================================= */
+
+function sincronizarMotivosFormDataEditar(
+    datos
+) {
+
+    if (
+        !(datos instanceof FormData)
+    ) {
+
+        return;
+    }
+
+
+    /* =====================================================
+       ELIMINAR MOTIVOS QUE YA ESTUVIERAN EN FORMDATA
+    ===================================================== */
+
+    eliminarClavesFormData(
+        datos,
+        'motivos_seleccionados['
+    );
+
+
+    /* =====================================================
+       OBTENER INPUTS DINÁMICOS DE MOTIVOS
+    ===================================================== */
+
+    const contenedor =
+        document.querySelector(
+            '#editar-motivos-inputs'
+        );
+
+
+    if (!contenedor) {
+
+        return;
+    }
+
+
+    const inputs =
+        contenedor.querySelectorAll(
+            'input[name^="motivos_seleccionados["]'
+        );
+
+
+    /* =====================================================
+       RECONSTRUIR MOTIVOS
+    ===================================================== */
+
+    inputs.forEach(
+        (input) => {
+
+            const nombre =
+                String(
+                    input.name
+                    || ''
+                ).trim();
+
+
+            if (!nombre) {
+
+                return;
+            }
+
+
+            datos.append(
+                nombre,
+                String(
+                    input.value
+                    ?? ''
+                )
+            );
+        }
+    );
 }
 
 

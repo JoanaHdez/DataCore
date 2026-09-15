@@ -1400,3 +1400,36 @@ export function establecerMotivosHabilitadosEditar(
         );
     }
 }
+
+/* =========================================================
+   OBTENER MOTIVOS ACTUALES DE EDITAR
+========================================================= */
+
+export function obtenerMotivosEditar() {
+
+    const motivos = [];
+
+
+    motivosSeleccionados.forEach(
+        (motivo) => {
+
+            motivos.push({
+                id_motivo:
+                    motivo.id_motivo,
+
+                motivo:
+                    motivo.motivo,
+
+                sancion:
+                    motivo.sancion,
+
+                folio_sancion:
+                    motivo.folio_sancion
+                    || '',
+            });
+        }
+    );
+
+
+    return motivos;
+}

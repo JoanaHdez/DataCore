@@ -443,6 +443,17 @@ class ReporteService
 
 
             /* =================================================
+            MOTIVOS Y SANCIONES POR MOTIVO
+            ================================================= */
+
+            $this->actualizarMotivosYSancionesDesdeEdicion(
+                $idReporte,
+                $datos,
+                $idUsuario
+            );
+
+
+            /* =================================================
             SANCIÓN DISCIPLINARIA
             ================================================= */
 

@@ -1516,6 +1516,7 @@ class Reportes_Controller extends BaseController
                         'inspector',
                         'investigador',
 
+                        'sin_sanciones',
                         'baja_voluntaria',
 
                         'quien_emite_resolucion',
