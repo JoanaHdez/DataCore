@@ -994,6 +994,13 @@ class ReporteService
                         ?? null
                 ),
 
+            'direccion_quejoso' =>
+            $esAnonimo
+                ? null
+                : $this->valorNullable(
+                    $datos['direccion_quejoso']
+                        ?? null
+                ),
 
             'canalizacion_area' =>
             $this->valorNullable(

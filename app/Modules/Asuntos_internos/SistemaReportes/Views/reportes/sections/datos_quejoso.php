@@ -229,7 +229,26 @@
 
             </div>
 
+            <!-- =====================================================
+                DIRECCIÓN DEL QUEJOSO
+            ====================================================== -->
 
+            <div class="report-field report-field--full">
+
+                <label for="direccion_quejoso">
+                    Dirección del quejoso
+                </label>
+
+                <textarea id="direccion_quejoso" name="direccion_quejoso" class="report-textarea" rows="3"
+                    placeholder="Ingresa la dirección del quejoso" autocomplete="street-address"></textarea>
+
+                <small class="report-field__help">
+                    Ingresa la dirección proporcionada por el quejoso.
+                </small>
+
+            </div>
+
+            
             <!-- =====================================================
                  CANALIZACIÓN
             ====================================================== -->

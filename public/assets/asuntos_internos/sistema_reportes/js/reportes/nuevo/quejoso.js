@@ -321,6 +321,10 @@ function inicializarQuejosoAnonimo() {
         document.querySelector(
             '#correo'
         ),
+
+        document.querySelector(
+            '#direccion_quejoso'
+        ),
     ];
 
     /* =====================================================

@@ -1505,6 +1505,7 @@ class Reportes_Controller extends BaseController
                         'genero_quejoso',
                         'telefono_quejoso',
                         'correo_quejoso',
+                        'direccion_quejoso',
 
                         'es_anonimo',
                         'numero_anonimo',

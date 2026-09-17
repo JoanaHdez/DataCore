@@ -158,8 +158,13 @@
 
 .report-field
 .report-input:disabled,
+
 .report-field
-.report-select:disabled {
+.report-select:disabled,
+
+.report-field
+.report-textarea:disabled {
+
     color: #8999a8;
 
     background: #eef2f5;

@@ -118,6 +118,11 @@ export function cargarQuejosoDetalle(
         reporte.correo_quejoso
     );
 
+    asignarTextoDetalle(
+        modal,
+        '#detalle-direccion-quejoso',
+        reporte.direccion_quejoso
+    );
 
     /* =====================================================
        CANALIZACIÓN

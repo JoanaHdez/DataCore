@@ -53,6 +53,7 @@ class ReporteModel extends Model
     'genero_quejoso',
     'telefono_quejoso',
     'correo_quejoso',
+    'direccion_quejoso',
 
     'canalizacion_area',
     'canalizacion_otro',

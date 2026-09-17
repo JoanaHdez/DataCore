@@ -136,6 +136,22 @@
 
 
         <!-- =====================================================
+            DIRECCIÓN DEL QUEJOSO
+        ====================================================== -->
+
+        <div class="detalle-reporte-campo detalle-reporte-campo--full" id="detalle-direccion-quejoso-contenedor">
+
+            <span>
+                Dirección del quejoso
+            </span>
+
+            <strong id="detalle-direccion-quejoso">
+                —
+            </strong>
+
+        </div>
+
+        <!-- =====================================================
              CANALIZACIÓN
         ====================================================== -->
 
