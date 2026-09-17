@@ -86,14 +86,14 @@ function inicializarResumenReportes() {
                 fila.querySelectorAll('td');
 
 
-            if (celdas.length < 8) {
+            if (celdas.length < 7) {
                 return;
             }
 
 
             const resolucion =
                 normalizarEstado(
-                    celdas[7].textContent
+                    celdas[5].textContent
                 );
 
 
@@ -183,3 +183,4 @@ function normalizarEstado(
         );
 
 }
+

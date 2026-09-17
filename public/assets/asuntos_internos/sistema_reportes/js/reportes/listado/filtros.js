@@ -206,7 +206,7 @@ function inicializarFiltrosReportes() {
 
 
                 if (
-                    celdas.length < 8
+                    celdas.length < 7
                 ) {
 
                     fila.hidden =
@@ -229,11 +229,15 @@ function inicializarFiltrosReportes() {
                     );
 
 
+                const personalFila =
+                    obtenerPersonalFila(
+                        fila
+                    );
+
+
                 const areaTexto =
-                    String(
-                        celdas[5]
-                            .textContent
-                        || ''
+                    obtenerTextoAreas(
+                        personalFila
                     );
 
 
@@ -258,14 +262,15 @@ function inicializarFiltrosReportes() {
 
                 const turnoFila =
                     normalizarTexto(
-                        celdas[6]
-                            .textContent
+                        obtenerTextoTurnos(
+                            personalFila
+                        )
                     );
 
 
                 const resolucionFila =
                     normalizarTexto(
-                        celdas[7]
+                        celdas[5]
                             .textContent
                     );
 
@@ -607,7 +612,7 @@ function cargarOpcionesFiltros(
 
 
             if (
-                celdas.length < 8
+                celdas.length < 7
             ) {
 
                 return;
@@ -615,15 +620,37 @@ function cargarOpcionesFiltros(
             }
 
 
-            agregarValorSet(
-                areas,
-                celdas[5].textContent
+            const personalFila =
+                obtenerPersonalFila(
+                    fila
+                );
+
+
+            obtenerValoresAreas(
+                personalFila
+            ).forEach(
+                (area) => {
+
+                    agregarValorSet(
+                        areas,
+                        area
+                    );
+
+                }
             );
 
 
-            agregarValorSet(
-                turnos,
-                celdas[6].textContent
+            obtenerValoresTurnos(
+                personalFila
+            ).forEach(
+                (turno) => {
+
+                    agregarValorSet(
+                        turnos,
+                        turno
+                    );
+
+                }
             );
 
         }
@@ -643,6 +670,178 @@ function cargarOpcionesFiltros(
 
 }
 
+
+
+/* =========================================================
+   PERSONAL DE LA FILA
+========================================================= */
+
+function obtenerPersonalFila(
+    fila
+) {
+
+    if (!fila) {
+
+        return [];
+
+    }
+
+
+    try {
+
+        const personal =
+            JSON.parse(
+                fila.dataset.personal
+                || '[]'
+            );
+
+
+        return Array.isArray(
+            personal
+        )
+            ? personal
+            : [];
+
+    } catch (error) {
+
+        return [];
+
+    }
+
+}
+
+
+function obtenerValoresAreas(
+    personal
+) {
+
+    return obtenerValoresPersonal(
+        personal,
+        [
+            'area',
+            'area_snapshot',
+        ]
+    );
+
+}
+
+
+function obtenerValoresTurnos(
+    personal
+) {
+
+    return obtenerValoresPersonal(
+        personal,
+        [
+            'turno',
+            'turno_snapshot',
+        ]
+    );
+
+}
+
+
+function obtenerTextoAreas(
+    personal
+) {
+
+    return obtenerValoresAreas(
+        personal
+    ).join(
+        ', '
+    );
+
+}
+
+
+function obtenerTextoTurnos(
+    personal
+) {
+
+    return obtenerValoresTurnos(
+        personal
+    ).join(
+        ', '
+    );
+
+}
+
+
+function obtenerValoresPersonal(
+    personal,
+    campos
+) {
+
+    const valores =
+        [];
+
+
+    if (
+        !Array.isArray(
+            personal
+        )
+    ) {
+
+        return valores;
+
+    }
+
+
+    personal.forEach(
+        (persona) => {
+
+            if (
+                !persona
+                || typeof persona !== 'object'
+            ) {
+
+                return;
+
+            }
+
+
+            campos.some(
+                (campo) => {
+
+                    const valor =
+                        String(
+                            persona[campo]
+                            || ''
+                        ).trim();
+
+
+                    if (!valor) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        !valores.includes(
+                            valor
+                        )
+                    ) {
+
+                        valores.push(
+                            valor
+                        );
+
+                    }
+
+
+                    return true;
+
+                }
+            );
+
+        }
+    );
+
+
+    return valores;
+
+}
 
 /* =========================================================
    OBTENER SECTORES DESDE EL ÁREA DEL PERSONAL
@@ -1070,7 +1269,7 @@ function actualizarEstadoVacio(
 
     fila.innerHTML = `
 
-        <td colspan="9">
+        <td colspan="7">
 
             <div class="reportes-tabla__empty-content">
 
@@ -1118,3 +1317,5 @@ function normalizarTexto(
         );
 
 }
+
+

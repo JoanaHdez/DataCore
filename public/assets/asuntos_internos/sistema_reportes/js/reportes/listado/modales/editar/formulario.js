@@ -302,11 +302,15 @@ export function crearReporteTemporalDesdeFila(
             '',
 
 
-        resolucion:
-            celdas[7]
+        estado_actual:
+            celdas[5]
                 ?.textContent
                 .trim()
             || '',
+
+
+        resolucion:
+            '',
 
 
         motivos:
@@ -707,7 +711,7 @@ export function actualizarFilaDesdeReporte(
 
 
     if (
-        celdas.length < 8
+        celdas.length < 7
     ) {
         return;
     }
@@ -769,42 +773,12 @@ export function actualizarFilaDesdeReporte(
 
 
     /* =====================================================
-       PERSONAL
-    ===================================================== */
-
-    /*
-     * Por ahora el listado conserva
-     * una sola columna de Área y Turno.
-     *
-     * Utilizamos la primera persona.
-     */
-
-    const primeraPersona =
-        Array.isArray(
-            reporte.personal
-        )
-            && reporte.personal.length > 0
-            ? reporte.personal[0]
-            : null;
-
-
-    celdas[5].textContent =
-        primeraPersona?.area
-        || '';
-
-
-    celdas[6].textContent =
-        primeraPersona?.turno
-        || '';
-
-
-    /* =====================================================
        ESTADO
     ===================================================== */
 
     actualizarEstadoFila(
-        celdas[7],
-        reporte.resolucion
+        celdas[5],
+        reporte.estado_actual
     );
 
 
@@ -1114,3 +1088,5 @@ function obtenerNumeroTemporal(
             '-'
         );
 }
+
+

@@ -3196,14 +3196,14 @@ function actualizarEstadoReporte(
 
 
     if (
-        celdas.length < 8
+        celdas.length < 7
     ) {
         return;
     }
 
 
     const celdaEstado =
-        celdas[7];
+        celdas[5];
 
 
     celdaEstado.innerHTML =
@@ -3586,3 +3586,4 @@ function obtenerBaseUrl() {
     return `${window.location.origin}/DataCore/public/`;
 
 }
+

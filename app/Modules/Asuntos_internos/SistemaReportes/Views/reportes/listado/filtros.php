@@ -91,11 +91,11 @@
         </div>
 
 
-        <!-- RESOLUCIÓN -->
+        <!-- ESTADO -->
         <div class="reportes-filtros__field">
 
             <label for="filtro_resolucion">
-                Resolución
+                Estado
             </label>
 
             <select id="filtro_resolucion" class="reportes-filtros__select">

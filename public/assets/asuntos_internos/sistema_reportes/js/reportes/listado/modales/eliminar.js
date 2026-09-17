@@ -1158,7 +1158,7 @@ function actualizarTablaVacia() {
 
 
     fila.innerHTML = `
-        <td colspan="9">
+        <td colspan="7">
 
             <div class="reportes-tabla__empty-content">
 

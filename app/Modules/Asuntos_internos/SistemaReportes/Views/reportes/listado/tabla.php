@@ -39,10 +39,6 @@
                 <tr>
 
                     <th>
-                        No.
-                    </th>
-
-                    <th>
                         Folio
                     </th>
 
@@ -63,15 +59,7 @@
                     </th>
 
                     <th>
-                        Área
-                    </th>
-
-                    <th>
-                        Turno
-                    </th>
-
-                    <th>
-                        Resolución
+                        Estado
                     </th>
 
                     <th class="reportes-tabla__acciones-columna">
@@ -144,38 +132,19 @@
                                 )
                             );
 
-
-                        $area =
+                        $estadoActual =
                             trim(
                                 (string) (
-                                    $reporte['area']
+                                    $reporte['estado_actual']
                                     ?? ''
                                 )
                             );
 
 
-                        $turno =
-                            trim(
-                                (string) (
-                                    $reporte['turno']
-                                    ?? ''
-                                )
-                            );
-
-
-                        $resolucion =
-                            trim(
-                                (string) (
-                                    $reporte['resolucion']
-                                    ?? ''
-                                )
-                            );
-
-
-                        $claseResolucion =
+                        $claseEstado =
                             match (
                                 mb_strtolower(
-                                    $resolucion
+                                    $estadoActual
                                 )
                             ) {
 
@@ -193,18 +162,9 @@
                         ?>
 
 
-                <tr data-id-reporte="<?= $idReporte ?>" data-folio="<?= esc($folio) ?>">
-
-
-                    <!-- =================================================
-                                 NÚMERO CONSECUTIVO
-                            ================================================== -->
-
-                    <td>
-
-                        <?= $idReporte ?>
-
-                    </td>
+                <tr data-id-reporte="<?= $idReporte ?>" data-folio="<?= esc($folio) ?>"
+                    data-personal="<?= esc(json_encode($reporte['personal'] ?? []), 'attr') ?>"
+                    data-unidades="<?= esc(json_encode($reporte['unidades'] ?? []), 'attr') ?>">
 
 
                     <!-- =================================================
@@ -280,43 +240,15 @@
 
 
                     <!-- =================================================
-                                 ÁREA
+                                 ESTADO
                             ================================================== -->
 
                     <td>
 
-                        <?= esc(
-                                    $area
-                                    ?: '—'
-                                ) ?>
-
-                    </td>
-
-
-                    <!-- =================================================
-                                 TURNO
-                            ================================================== -->
-
-                    <td>
-
-                        <?= esc(
-                                    $turno
-                                    ?: '—'
-                                ) ?>
-
-                    </td>
-
-
-                    <!-- =================================================
-                                 RESOLUCIÓN
-                            ================================================== -->
-
-                    <td>
-
-                        <span class="reportes-tabla__estado <?= esc($claseResolucion) ?>">
+                        <span class="reportes-tabla__estado <?= esc($claseEstado) ?>">
 
                             <?= esc(
-                                        $resolucion
+                                        $estadoActual
                                         ?: 'Pendiente'
                                     ) ?>
 
@@ -387,7 +319,7 @@
 
                 <tr class="reportes-tabla__empty">
 
-                    <td colspan="10">
+                    <td colspan="7">
 
                         <div class="reportes-tabla__empty-content">
 
@@ -415,3 +347,4 @@
     </div>
 
 </section>
+
