@@ -216,6 +216,29 @@
 
 
         <!-- =====================================================
+            DIRECCIÓN DEL QUEJOSO
+        ====================================================== -->
+
+        <div class="editar-reporte-campo editar-reporte-campo--full">
+
+            <label for="editar-direccion-quejoso">
+                Dirección del quejoso
+            </label>
+
+            <textarea
+                id="editar-direccion-quejoso"
+                name="direccion_quejoso"
+                rows="3"
+                placeholder="Ingresa la dirección del quejoso"
+                autocomplete="street-address"></textarea>
+
+            <small class="editar-reporte-campo__help">
+                Ingresa la dirección proporcionada por el quejoso.
+            </small>
+
+        </div>
+
+        <!-- =====================================================
              CANALIZACIÓN
         ====================================================== -->
 
@@ -296,9 +319,9 @@
 
                 <?php if (!empty($canalizaciones)): ?>
 
-                <?php foreach ($canalizaciones as $canalizacion): ?>
+                    <?php foreach ($canalizaciones as $canalizacion): ?>
 
-                <?php
+                        <?php
 
                         $nombreCanalizacion =
                             trim(
@@ -333,7 +356,6 @@
 
                             $letraCanalizacion =
                                 'B';
-
                         } elseif (
                             str_contains(
                                 $nombreMayusculas,
@@ -347,7 +369,6 @@
 
                             $letraCanalizacion =
                                 'V';
-
                         } elseif (
                             str_contains(
                                 $nombreMayusculas,
@@ -370,33 +391,33 @@
                         ?>
 
 
-                <?php if ($nombreCanalizacion !== ''): ?>
+                        <?php if ($nombreCanalizacion !== ''): ?>
 
-                <button type="button" class="canalizacion-resultados__item" data-editar-canalizacion-opcion
-                    data-canalizacion-nombre="<?= esc($nombreCanalizacion) ?>">
+                            <button type="button" class="canalizacion-resultados__item" data-editar-canalizacion-opcion
+                                data-canalizacion-nombre="<?= esc($nombreCanalizacion) ?>">
 
-                    <span class="canalizacion-resultados__avatar">
-                        <?= esc($letraCanalizacion) ?>
-                    </span>
+                                <span class="canalizacion-resultados__avatar">
+                                    <?= esc($letraCanalizacion) ?>
+                                </span>
 
 
-                    <span class="canalizacion-resultados__datos">
+                                <span class="canalizacion-resultados__datos">
 
-                        <strong>
-                            <?= esc($nombreCanalizacion) ?>
-                        </strong>
+                                    <strong>
+                                        <?= esc($nombreCanalizacion) ?>
+                                    </strong>
 
-                        <small>
-                            Área de canalización
-                        </small>
+                                    <small>
+                                        Área de canalización
+                                    </small>
 
-                    </span>
+                                </span>
 
-                </button>
+                            </button>
 
-                <?php endif; ?>
+                        <?php endif; ?>
 
-                <?php endforeach; ?>
+                    <?php endforeach; ?>
 
                 <?php endif; ?>
 

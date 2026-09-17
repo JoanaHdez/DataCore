@@ -425,6 +425,14 @@ export function establecerAnonimoEditar(
                 false,
         },
 
+        {
+            selector:
+                '#editar-direccion-quejoso',
+
+            requerido:
+                false,
+        },
+
     ];
 
 
@@ -1000,6 +1008,11 @@ export function cargarQuejosoEditar(
         reporte.correo
     );
 
+    asignarValorEditar(
+        modal,
+        '#editar-direccion-quejoso',
+        reporte.direccion_quejoso
+    );
 
     /* =====================================================
        ANÓNIMO
@@ -1133,6 +1146,18 @@ export function limpiarQuejosoEditar(
             true;
     }
 
+
+    const direccionQuejoso =
+        modal.querySelector(
+            '#editar-direccion-quejoso'
+        );
+
+
+    if (direccionQuejoso) {
+
+        direccionQuejoso.value =
+            '';
+    }
 
     /* =====================================================
        CANALIZACIÓN

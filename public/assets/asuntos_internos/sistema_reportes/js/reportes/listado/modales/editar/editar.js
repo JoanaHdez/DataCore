@@ -1055,7 +1055,7 @@ function construirReporteEditar(
 
     const direccionNotificacion =
         datos.direccion_notificacion
-        && typeof datos.direccion_notificacion === 'object'
+            && typeof datos.direccion_notificacion === 'object'
             ? datos.direccion_notificacion
             : {};
 
@@ -1235,7 +1235,7 @@ function construirReporteEditar(
 
             pertenece_neza:
                 direccionNotificacion.pertenece_neza !== null
-                && direccionNotificacion.pertenece_neza !== undefined
+                    && direccionNotificacion.pertenece_neza !== undefined
                     ? Number(
                         direccionNotificacion.pertenece_neza
                     )
@@ -1453,6 +1453,10 @@ function construirReporteEditar(
                 origen.correo_quejoso
             ),
 
+        direccion_quejoso:
+            valorEditar(
+                origen.direccion_quejoso
+            ),
 
         /* =====================================================
            QUEJA ANÓNIMA
@@ -1577,7 +1581,7 @@ function construirReporteEditar(
 
         sancion:
             datos.sancion
-            && typeof datos.sancion === 'object'
+                && typeof datos.sancion === 'object'
                 ? {
 
                     ...datos.sancion,
@@ -1615,7 +1619,7 @@ function construirReporteEditar(
 
                     id_seguimiento:
                         datos.sancion.id_seguimiento !== null
-                        && datos.sancion.id_seguimiento !== undefined
+                            && datos.sancion.id_seguimiento !== undefined
                             ? Number(
                                 datos.sancion.id_seguimiento
                                 || 0
