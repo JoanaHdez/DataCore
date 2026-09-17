@@ -7,7 +7,7 @@
         </span>
 
         <h3 class="modal-felicitacion__seccion-title">
-            Datos generales
+            Identificación de la felicitación
         </h3>
 
     </div>
@@ -15,6 +15,7 @@
 
     <div class="modal-felicitacion__grid">
 
+        <!-- FOLIO -->
         <div class="modal-felicitacion__campo">
 
             <label for="editar-felicitacion-folio">
@@ -26,6 +27,7 @@
         </div>
 
 
+        <!-- FECHA -->
         <div class="modal-felicitacion__campo">
 
             <label for="editar-felicitacion-fecha">
@@ -37,14 +39,29 @@
         </div>
 
 
+        <!-- NOMENCLATURA -->
         <div class="modal-felicitacion__campo modal-felicitacion__campo--full">
 
-            <label for="editar-felicitacion-felicitante">
-                Nombre de la persona que felicita
+            <label for="editar-felicitacion-nomenclatura-parte">
+                Nomenclatura
             </label>
 
-            <input type="text" id="editar-felicitacion-felicitante" name="nombre_felicitante" class="report-input"
-                maxlength="255" autocomplete="off" required>
+            <div class="editar-nomenclatura">
+
+                <span class="editar-nomenclatura__prefijo" id="editar-felicitacion-nomenclatura-prefijo">
+                    CGSC/CAI/FEL/
+                </span>
+
+                <input type="text" id="editar-felicitacion-nomenclatura-parte" class="editar-nomenclatura__input"
+                    placeholder="Ej. 1295/2026" autocomplete="off">
+
+            </div>
+
+            <small>
+                Captura únicamente la parte final de la nomenclatura.
+            </small>
+
+            <input type="hidden" id="editar-felicitacion-nomenclatura" name="nomenclatura" value="">
 
         </div>
 

@@ -1,0 +1,640 @@
+/* =========================================================
+   CONTENIDO DE UNIDADES
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar {
+    padding: 30px 20px;
+}
+
+
+/* =========================================================
+   GRUPOS
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__grupo {
+    margin: 0;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__grupo
++
+.modal-felicitacion-unidades-editar__grupo {
+    margin-top: 38px;
+}
+
+
+/* =========================================================
+   LABEL
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__label {
+    display: block;
+
+    margin-bottom: 18px;
+
+    color: #173554;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   OPCIONES DE ASIGNACIÓN
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__opciones {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__opcion {
+    min-height: 38px;
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 8px 12px;
+
+    color: #173554;
+
+    background: #ffffff;
+
+    border: 1px solid #cad9e5;
+    border-radius: 7px;
+
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 700;
+
+    line-height: 1.2;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__opcion:hover {
+    border-color: #9fc7df;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__opcion:has(input:checked) {
+    color: #0d639c;
+
+    background: #eef8fe;
+
+    border-color: #4aaee5;
+
+    box-shadow:
+        0 0 0 2px rgba(74, 174, 229, 0.08);
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__opcion input {
+    width: 15px;
+    height: 15px;
+
+    flex: 0 0 15px;
+
+    margin: 0;
+
+    accent-color: #1688c9;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   TEXTO DE AYUDA
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__ayuda {
+    display: block;
+
+    margin-top: 12px;
+    margin-bottom: 30px;
+
+    color: #71869a;
+
+    font-size: 8px;
+    font-weight: 400;
+
+    line-height: 1.4;
+}
+
+/* =========================================================
+   BUSCADOR DE UNIDAD
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__busqueda {
+    margin-top: 60px;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__busqueda label {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: #173554;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    line-height: 1.3;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__busqueda
+.report-input {
+    width: 100%;
+
+    min-height: 42px;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__busqueda small {
+    display: block;
+
+    margin-top: 16px;
+
+    color: #71869a;
+
+    font-size: 8px;
+    font-weight: 400;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   RESULTADOS DE BÚSQUEDA
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__resultados {
+    position: relative;
+
+    width: 100%;
+
+    margin-top: 4px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #d6e1ea;
+    border-radius: 8px;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__resultados[hidden] {
+    display: none !important;
+}
+
+
+/* =========================================================
+   UNIDADES AGREGADAS
+   CUADRO INTERNO COMO QUEJAS
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__agregadas {
+    margin-top: 48px;
+
+    margin-left: -20px;
+    margin-right: -20px;
+    margin-bottom: -30px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border-top: 1px solid #d8e3ec;
+
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+
+    border-radius: 0;
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   SUBHEADER UNIDADES AGREGADAS
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__subheader {
+    padding: 14px 18px;
+
+    background: #f5f8fa;
+
+    border-bottom: 1px solid #dce5ed;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__subheader
+.modal-felicitacion__eyebrow {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #1279bb;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 1.1px;
+
+    line-height: 1.2;
+
+    text-transform: uppercase;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__subheader strong {
+    display: block;
+
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   TABLA DE UNIDADES
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar
+.modal-felicitacion__tabla-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar
+.modal-felicitacion__tabla {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    background: #ffffff;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar
+.modal-felicitacion__tabla thead th {
+    padding: 10px 12px;
+
+    color: #5f7387;
+
+    background: #f5f8fa;
+
+    border-bottom: 1px solid #dce5ed;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    line-height: 1.25;
+
+    text-align: left;
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar
+.modal-felicitacion__tabla tbody td {
+    padding: 12px;
+
+    color: #304b64;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #e5ecf2;
+
+    font-size: 9px;
+    font-weight: 500;
+
+    line-height: 1.35;
+
+    vertical-align: middle;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar
+.modal-felicitacion__tabla tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+
+/* =========================================================
+   NOMBRE / DATOS PRINCIPALES DE UNIDAD
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__unidad-nombre {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #173554;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    line-height: 1.25;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__unidad-detalle {
+    display: block;
+
+    color: #71869a;
+
+    font-size: 8px;
+    font-weight: 400;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   ESTADO SIN UNIDAD / OFICINA
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__sin-unidad {
+    margin-top: 38px;
+
+    padding: 16px 18px;
+
+    background: #f4f9fd;
+
+    border: 1px solid #c9deec;
+    border-radius: 10px;
+
+    box-shadow:
+        0 2px 5px rgba(24, 56, 88, 0.02);
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__sin-unidad strong {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    line-height: 1.3;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__sin-unidad p {
+    margin: 0;
+
+    color: #60788e;
+
+    font-size: 9px;
+    font-weight: 400;
+
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   ELEMENTOS OCULTOS
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar [hidden] {
+    display: none !important;
+}
+
+
+
+/* =========================================================
+   RESULTADOS DEL BUSCADOR DE UNIDADES
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__resultados {
+    margin-top: 5px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #d7e2eb;
+    border-radius: 10px;
+
+    box-shadow:
+        0 4px 12px rgba(24, 56, 88, 0.04);
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__resultados[hidden] {
+    display: none !important;
+}
+
+
+/* =========================================================
+   CADA RESULTADO
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__resultado {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        38px
+        minmax(0, 1fr);
+
+    align-items: center;
+
+    column-gap: 12px;
+
+    padding: 12px 14px;
+
+    color: #173554;
+
+    background: #ffffff;
+
+    border: 0;
+    border-bottom: 1px solid #e5edf3;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__resultado:last-child {
+    border-bottom: 0;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__resultado:hover {
+    background: #f5f9fc;
+}
+
+
+/* =========================================================
+   ICONO
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__resultado::before {
+    content: "U";
+
+    grid-row: 1 / span 3;
+
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #ffffff;
+
+    background: #0d7fc5;
+
+    border-radius: 7px;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   NÚMERO ECONÓMICO
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__resultado strong {
+    display: block;
+
+    margin: 0 0 2px;
+
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   PLACAS
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__resultado span {
+    display: block;
+
+    margin: 0 0 2px;
+
+    color: #60768a;
+
+    font-size: 8px;
+    font-weight: 400;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   MARCA / SUBMARCA
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__resultado small {
+    display: block;
+
+    color: #60768a;
+
+    font-size: 8px;
+    font-weight: 400;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   RESULTADO VACÍO
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-unidades-editar__resultado-vacio {
+    padding: 14px;
+
+    color: #6f8395;
+
+    background: #ffffff;
+
+    font-size: 9px;
+
+    text-align: center;
+}

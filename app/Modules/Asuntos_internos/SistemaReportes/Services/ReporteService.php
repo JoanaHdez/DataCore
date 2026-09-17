@@ -98,9 +98,9 @@ class ReporteService
 
             $folioGenerado =
                 $this->folioService
-                    ->generar(
-                        'QUEJA'
-                    );
+                ->generar(
+                    'QUEJA'
+                );
 
 
             $datosReporte['tipo_registro'] =
@@ -115,9 +115,68 @@ class ReporteService
                 $folioGenerado['folio'];
 
 
-            $datosReporte['nomenclatura'] =
-                $folioGenerado['nomenclatura'];
+            /* =================================================
+            NOMENCLATURA CAPTURADA POR USUARIO
+            ================================================= */
 
+            $nomenclatura =
+                strtoupper(
+                    trim(
+                        (string) (
+                            $datos['nomenclatura']
+                            ?? ''
+                        )
+                    )
+                );
+
+
+            if ($nomenclatura === '') {
+
+                throw new \InvalidArgumentException(
+                    'La nomenclatura es obligatoria.'
+                );
+            }
+
+
+            $prefijoEsperado =
+                'CGSC/CAI/QJ/';
+
+
+            if (
+                !str_starts_with(
+                    $nomenclatura,
+                    $prefijoEsperado
+                )
+            ) {
+
+                throw new \InvalidArgumentException(
+                    'La nomenclatura no tiene un formato válido.'
+                );
+            }
+
+
+            $parteVariable =
+                trim(
+                    substr(
+                        $nomenclatura,
+                        strlen(
+                            $prefijoEsperado
+                        )
+                    )
+                );
+
+
+            if ($parteVariable === '') {
+
+                throw new \InvalidArgumentException(
+                    'Captura la parte final de la nomenclatura.'
+                );
+            }
+
+
+            $datosReporte['nomenclatura'] =
+                $prefijoEsperado
+                . $parteVariable;
 
             /* =================================================
             GUARDAR REPORTE
@@ -125,10 +184,10 @@ class ReporteService
 
             $idReporte =
                 $this->reporteModel
-                    ->insert(
-                        $datosReporte,
-                        true
-                    );
+                ->insert(
+                    $datosReporte,
+                    true
+                );
 
 
             if (!$idReporte) {
@@ -219,25 +278,24 @@ class ReporteService
             return [
 
                 'success' =>
-                    true,
+                true,
 
                 'id_reporte' =>
-                    $idReporte,
+                $idReporte,
 
                 'tipo_registro' =>
-                    $datosReporte['tipo_registro'],
+                $datosReporte['tipo_registro'],
 
                 'numero_folio' =>
-                    $datosReporte['numero_folio'],
+                $datosReporte['numero_folio'],
 
                 'folio' =>
-                    $datosReporte['folio'],
+                $datosReporte['folio'],
 
                 'nomenclatura' =>
-                    $datosReporte['nomenclatura'],
+                $datosReporte['nomenclatura'],
 
             ];
-
         } catch (\Throwable $e) {
 
             $this->db->transRollback();
@@ -270,6 +328,7 @@ class ReporteService
             throw $e;
         }
     }
+
 
     /* =========================================================
     ACTUALIZAR REPORTE COMPLETO
@@ -307,19 +366,19 @@ class ReporteService
 
         $reporteActual =
             $this->db
-                ->table(
-                    'ai_reportes'
-                )
-                ->where(
-                    'id_reporte',
-                    $idReporte
-                )
-                ->where(
-                    'eliminado',
-                    0
-                )
-                ->get()
-                ->getRowArray();
+            ->table(
+                'ai_reportes'
+            )
+            ->where(
+                'id_reporte',
+                $idReporte
+            )
+            ->where(
+                'eliminado',
+                0
+            )
+            ->get()
+            ->getRowArray();
 
 
         if (!$reporteActual) {
@@ -360,8 +419,71 @@ class ReporteService
                 $datosReporte['tipo_registro'],
                 $datosReporte['numero_folio'],
                 $datosReporte['folio'],
-                $datosReporte['nomenclatura']
             );
+
+
+            /* =================================================
+            NOMENCLATURA CAPTURADA POR USUARIO
+            ================================================= */
+
+            $nomenclatura =
+                strtoupper(
+                    trim(
+                        (string) (
+                            $datos['nomenclatura']
+                            ?? ''
+                        )
+                    )
+                );
+
+
+            if ($nomenclatura === '') {
+
+                throw new \InvalidArgumentException(
+                    'La nomenclatura es obligatoria.'
+                );
+            }
+
+
+            $prefijoEsperado =
+                'CGSC/CAI/QJ/';
+
+
+            if (
+                !str_starts_with(
+                    $nomenclatura,
+                    $prefijoEsperado
+                )
+            ) {
+
+                throw new \InvalidArgumentException(
+                    'La nomenclatura no tiene un formato válido.'
+                );
+            }
+
+
+            $parteVariable =
+                trim(
+                    substr(
+                        $nomenclatura,
+                        strlen(
+                            $prefijoEsperado
+                        )
+                    )
+                );
+
+
+            if ($parteVariable === '') {
+
+                throw new \InvalidArgumentException(
+                    'Captura la parte final de la nomenclatura.'
+                );
+            }
+
+
+            $datosReporte['nomenclatura'] =
+                $prefijoEsperado
+                . $parteVariable;
 
 
             $datosReporte['updated_by'] =
@@ -374,10 +496,10 @@ class ReporteService
 
             $actualizado =
                 $this->reporteModel
-                    ->update(
-                        $idReporte,
-                        $datosReporte
-                    );
+                ->update(
+                    $idReporte,
+                    $datosReporte
+                );
 
 
             if ($actualizado === false) {
@@ -508,35 +630,34 @@ class ReporteService
             return [
 
                 'success' =>
-                    true,
+                true,
 
                 'id_reporte' =>
-                    $idReporte,
+                $idReporte,
 
                 /*
                 * Conservamos siempre el folio original.
                 */
                 'folio' =>
-                    (string) (
-                        $reporteActual['folio']
-                        ?? ''
-                    ),
+                (string) (
+                    $reporteActual['folio']
+                    ?? ''
+                ),
 
                 'numero_folio' =>
-                    isset(
-                        $reporteActual['numero_folio']
-                    )
-                        ? (int) $reporteActual['numero_folio']
-                        : null,
+                isset(
+                    $reporteActual['numero_folio']
+                )
+                    ? (int) $reporteActual['numero_folio']
+                    : null,
 
                 'tipo_registro' =>
-                    (string) (
-                        $reporteActual['tipo_registro']
-                        ?? 'QUEJA'
-                    ),
+                (string) (
+                    $reporteActual['tipo_registro']
+                    ?? 'QUEJA'
+                ),
 
             ];
-
         } catch (\Throwable $e) {
 
             $this->db->transRollback();
@@ -564,6 +685,7 @@ class ReporteService
         }
     }
 
+    
     /* =========================================================
        PREPARAR REPORTE PRINCIPAL
     ========================================================= */
@@ -1185,6 +1307,7 @@ class ReporteService
         }
     }
 
+
     /* =========================================================
     SANCIÓN DISCIPLINARIA INICIAL
     ========================================================= */
@@ -1324,6 +1447,7 @@ class ReporteService
             );
         }
     }
+
 
     /* =========================================================
     GUARDAR MOTIVOS Y SANCIONES
@@ -1659,6 +1783,7 @@ class ReporteService
         }
     }
 
+
     /* =========================================================
     ACTUALIZAR MOTIVOS Y SANCIONES DESDE EDICIÓN
     ========================================================= */
@@ -1723,19 +1848,19 @@ class ReporteService
 
         $motivosActuales =
             $this->db
-                ->table(
-                    'ai_reporte_motivos'
-                )
-                ->where(
-                    'id_reporte',
-                    $idReporte
-                )
-                ->where(
-                    'eliminado',
-                    0
-                )
-                ->get()
-                ->getResultArray();
+            ->table(
+                'ai_reporte_motivos'
+            )
+            ->where(
+                'id_reporte',
+                $idReporte
+            )
+            ->where(
+                'eliminado',
+                0
+            )
+            ->get()
+            ->getResultArray();
 
 
         $actualesPorMotivo = [];
@@ -1759,9 +1884,7 @@ class ReporteService
             }
 
 
-            $actualesPorMotivo[
-                $idMotivoActual
-            ] = $motivoActual;
+            $actualesPorMotivo[$idMotivoActual] = $motivoActual;
         }
 
 
@@ -1820,25 +1943,25 @@ class ReporteService
 
             $motivoCatalogo =
                 $this->db
-                    ->table(
-                        'ai_cat_motivos'
-                    )
-                    ->select([
-                        'id_motivo',
-                        'motivo',
-                        'sancion',
-                        'activo',
-                    ])
-                    ->where(
-                        'id_motivo',
-                        $idMotivo
-                    )
-                    ->where(
-                        'activo',
-                        1
-                    )
-                    ->get()
-                    ->getRowArray();
+                ->table(
+                    'ai_cat_motivos'
+                )
+                ->select([
+                    'id_motivo',
+                    'motivo',
+                    'sancion',
+                    'activo',
+                ])
+                ->where(
+                    'id_motivo',
+                    $idMotivo
+                )
+                ->where(
+                    'activo',
+                    1
+                )
+                ->get()
+                ->getRowArray();
 
 
             if (!$motivoCatalogo) {
@@ -1855,17 +1978,13 @@ class ReporteService
 
             if (
                 isset(
-                    $actualesPorMotivo[
-                        $idMotivo
-                    ]
+                    $actualesPorMotivo[$idMotivo]
                 )
             ) {
 
                 $idReporteMotivo =
                     (int) (
-                        $actualesPorMotivo[
-                            $idMotivo
-                        ]['id_reporte_motivo']
+                        $actualesPorMotivo[$idMotivo]['id_reporte_motivo']
                         ?? 0
                     );
             } else {
@@ -1876,23 +1995,23 @@ class ReporteService
 
                 $insertadoMotivo =
                     $this->db
-                        ->table(
-                            'ai_reporte_motivos'
-                        )
-                        ->insert([
+                    ->table(
+                        'ai_reporte_motivos'
+                    )
+                    ->insert([
 
-                            'id_reporte' =>
-                                $idReporte,
+                        'id_reporte' =>
+                        $idReporte,
 
-                            'id_motivo' =>
-                                $idMotivo,
+                        'id_motivo' =>
+                        $idMotivo,
 
-                            'created_by' =>
-                                $idUsuario,
+                        'created_by' =>
+                        $idUsuario,
 
-                            'eliminado' =>
-                                0,
-                        ]);
+                        'eliminado' =>
+                        0,
+                    ]);
 
 
                 if ($insertadoMotivo === false) {
@@ -1924,27 +2043,27 @@ class ReporteService
 
             $sancionActual =
                 $this->db
-                    ->table(
-                        'ai_reporte_sanciones'
-                    )
-                    ->where(
-                        'id_reporte',
-                        $idReporte
-                    )
-                    ->where(
-                        'id_reporte_motivo',
-                        $idReporteMotivo
-                    )
-                    ->where(
-                        'eliminado',
-                        0
-                    )
-                    ->orderBy(
-                        'id_sancion',
-                        'DESC'
-                    )
-                    ->get()
-                    ->getRowArray();
+                ->table(
+                    'ai_reporte_sanciones'
+                )
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'id_reporte_motivo',
+                    $idReporteMotivo
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->orderBy(
+                    'id_sancion',
+                    'DESC'
+                )
+                ->get()
+                ->getRowArray();
 
 
             /* =================================================
@@ -1960,40 +2079,38 @@ class ReporteService
 
                     $actualizado =
                         $this->db
-                            ->table(
-                                'ai_reporte_sanciones'
-                            )
-                            ->where(
-                                'id_sancion',
-                                (int)
-                                $sancionActual[
-                                    'id_sancion'
-                                ]
-                            )
-                            ->update([
+                        ->table(
+                            'ai_reporte_sanciones'
+                        )
+                        ->where(
+                            'id_sancion',
+                            (int)
+                            $sancionActual['id_sancion']
+                        )
+                        ->update([
 
-                                'es_actual' =>
-                                    0,
+                            'es_actual' =>
+                            0,
 
-                                'eliminado' =>
-                                    1,
+                            'eliminado' =>
+                            1,
 
-                                'updated_by' =>
-                                    $idUsuario,
+                            'updated_by' =>
+                            $idUsuario,
 
-                                'updated_at' =>
-                                    date(
-                                        'Y-m-d H:i:s'
-                                    ),
+                            'updated_at' =>
+                            date(
+                                'Y-m-d H:i:s'
+                            ),
 
-                                'eliminado_at' =>
-                                    date(
-                                        'Y-m-d H:i:s'
-                                    ),
+                            'eliminado_at' =>
+                            date(
+                                'Y-m-d H:i:s'
+                            ),
 
-                                'eliminado_por' =>
-                                    $idUsuario,
-                            ]);
+                            'eliminado_por' =>
+                            $idUsuario,
+                        ]);
 
 
                     if ($actualizado === false) {
@@ -2016,9 +2133,7 @@ class ReporteService
             $tipoSancion =
                 trim(
                     (string) (
-                        $motivoCatalogo[
-                            'sancion'
-                        ]
+                        $motivoCatalogo['sancion']
                         ?? ''
                     )
                 );
@@ -2037,9 +2152,7 @@ class ReporteService
             $folioSancion =
                 trim(
                     (string) (
-                        $motivoFormulario[
-                            'folio_sancion'
-                        ]
+                        $motivoFormulario['folio_sancion']
                         ?? ''
                     )
                 );
@@ -2072,35 +2185,33 @@ class ReporteService
 
                 $actualizado =
                     $this->db
-                        ->table(
-                            'ai_reporte_sanciones'
-                        )
-                        ->where(
-                            'id_sancion',
-                            (int)
-                            $sancionActual[
-                                'id_sancion'
-                            ]
-                        )
-                        ->update([
+                    ->table(
+                        'ai_reporte_sanciones'
+                    )
+                    ->where(
+                        'id_sancion',
+                        (int)
+                        $sancionActual['id_sancion']
+                    )
+                    ->update([
 
-                            'tipo' =>
-                                $tipoSancion,
+                        'tipo' =>
+                        $tipoSancion,
 
-                            'folio_sancion' =>
-                                $folioSancion,
+                        'folio_sancion' =>
+                        $folioSancion,
 
-                            'es_actual' =>
-                                1,
+                        'es_actual' =>
+                        1,
 
-                            'updated_by' =>
-                                $idUsuario,
+                        'updated_by' =>
+                        $idUsuario,
 
-                            'updated_at' =>
-                                date(
-                                    'Y-m-d H:i:s'
-                                ),
-                        ]);
+                        'updated_at' =>
+                        date(
+                            'Y-m-d H:i:s'
+                        ),
+                    ]);
 
 
                 if ($actualizado === false) {
@@ -2117,41 +2228,41 @@ class ReporteService
 
                 $insertadoSancion =
                     $this->db
-                        ->table(
-                            'ai_reporte_sanciones'
-                        )
-                        ->insert([
+                    ->table(
+                        'ai_reporte_sanciones'
+                    )
+                    ->insert([
 
-                            'id_reporte' =>
-                                $idReporte,
+                        'id_reporte' =>
+                        $idReporte,
 
-                            'id_reporte_motivo' =>
-                                $idReporteMotivo,
+                        'id_reporte_motivo' =>
+                        $idReporteMotivo,
 
-                            'tipo' =>
-                                $tipoSancion,
+                        'tipo' =>
+                        $tipoSancion,
 
-                            'descripcion_otro' =>
-                                null,
+                        'descripcion_otro' =>
+                        null,
 
-                            'folio_sancion' =>
-                                $folioSancion,
+                        'folio_sancion' =>
+                        $folioSancion,
 
-                            'origen' =>
-                                'edicion',
+                        'origen' =>
+                        'edicion',
 
-                            'id_seguimiento' =>
-                                null,
+                        'id_seguimiento' =>
+                        null,
 
-                            'es_actual' =>
-                                1,
+                        'es_actual' =>
+                        1,
 
-                            'created_by' =>
-                                $idUsuario,
+                        'created_by' =>
+                        $idUsuario,
 
-                            'eliminado' =>
-                                0,
-                        ]);
+                        'eliminado' =>
+                        0,
+                    ]);
 
 
                 if ($insertadoSancion === false) {
@@ -2188,9 +2299,7 @@ class ReporteService
 
             $idReporteMotivo =
                 (int) (
-                    $motivoActual[
-                        'id_reporte_motivo'
-                    ]
+                    $motivoActual['id_reporte_motivo']
                     ?? 0
                 );
 
@@ -2224,26 +2333,26 @@ class ReporteService
                 ->update([
 
                     'es_actual' =>
-                        0,
+                    0,
 
                     'eliminado' =>
-                        1,
+                    1,
 
                     'updated_by' =>
-                        $idUsuario,
+                    $idUsuario,
 
                     'updated_at' =>
-                        date(
-                            'Y-m-d H:i:s'
-                        ),
+                    date(
+                        'Y-m-d H:i:s'
+                    ),
 
                     'eliminado_at' =>
-                        date(
-                            'Y-m-d H:i:s'
-                        ),
+                    date(
+                        'Y-m-d H:i:s'
+                    ),
 
                     'eliminado_por' =>
-                        $idUsuario,
+                    $idUsuario,
                 ]);
 
 
@@ -2253,22 +2362,22 @@ class ReporteService
 
             $eliminadoMotivo =
                 $this->db
-                    ->table(
-                        'ai_reporte_motivos'
-                    )
-                    ->where(
-                        'id_reporte_motivo',
-                        $idReporteMotivo
-                    )
-                    ->where(
-                        'id_reporte',
-                        $idReporte
-                    )
-                    ->update([
+                ->table(
+                    'ai_reporte_motivos'
+                )
+                ->where(
+                    'id_reporte_motivo',
+                    $idReporteMotivo
+                )
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->update([
 
-                        'eliminado' =>
-                            1,
-                    ]);
+                    'eliminado' =>
+                    1,
+                ]);
 
 
             if ($eliminadoMotivo === false) {
@@ -2279,6 +2388,7 @@ class ReporteService
             }
         }
     }
+
 
     /* =========================================================
     CORREGIR SANCIÓN DESDE EDITAR
@@ -2902,7 +3012,6 @@ class ReporteService
                     'La opción de pertenencia al municipio de Nezahualcóyotl no es válida.'
                 );
             }
-
         } else {
 
             $perteneceNeza =
@@ -2917,7 +3026,7 @@ class ReporteService
         $calle =
             $this->valorNullable(
                 $datos['notificacion_calle']
-                ?? null
+                    ?? null
             );
 
 
@@ -2928,7 +3037,7 @@ class ReporteService
         $numeroExterior =
             $this->valorNullable(
                 $datos['notificacion_numero_exterior']
-                ?? null
+                    ?? null
             );
 
 
@@ -2939,7 +3048,7 @@ class ReporteService
         $colonia =
             $this->valorNullable(
                 $datos['notificacion_colonia']
-                ?? null
+                    ?? null
             );
 
 
@@ -2950,7 +3059,7 @@ class ReporteService
         $entreCalle =
             $this->valorNullable(
                 $datos['notificacion_entre_calle']
-                ?? null
+                    ?? null
             );
 
 
@@ -2961,7 +3070,7 @@ class ReporteService
         $yCalle =
             $this->valorNullable(
                 $datos['notificacion_y_calle']
-                ?? null
+                    ?? null
             );
 
 
@@ -2972,7 +3081,7 @@ class ReporteService
         $municipio =
             $this->valorNullable(
                 $datos['notificacion_municipio']
-                ?? null
+                    ?? null
             );
 
 
@@ -2983,7 +3092,7 @@ class ReporteService
         $estado =
             $this->valorNullable(
                 $datos['notificacion_estado']
-                ?? null
+                    ?? null
             );
 
 
@@ -2994,7 +3103,7 @@ class ReporteService
         $sector =
             $this->valorNullable(
                 $datos['notificacion_sector']
-                ?? null
+                    ?? null
             );
 
 
@@ -3005,7 +3114,7 @@ class ReporteService
         $cuadrante =
             $this->valorNullable(
                 $datos['notificacion_cuadrante']
-                ?? null
+                    ?? null
             );
 
 
@@ -3016,7 +3125,7 @@ class ReporteService
         $idCuadra =
             $this->valorNullable(
                 $datos['notificacion_id_cuadra']
-                ?? null
+                    ?? null
             );
 
 
@@ -3027,7 +3136,7 @@ class ReporteService
         $latitud =
             $this->decimalNullable(
                 $datos['notificacion_latitud']
-                ?? null
+                    ?? null
             );
 
 
@@ -3038,7 +3147,7 @@ class ReporteService
         $longitud =
             $this->decimalNullable(
                 $datos['notificacion_longitud']
-                ?? null
+                    ?? null
             );
 
 
@@ -3049,7 +3158,7 @@ class ReporteService
         $origenUbicacion =
             $this->normalizarOrigenUbicacion(
                 $datos['notificacion_origen_ubicacion']
-                ?? null
+                    ?? null
             );
 
 
@@ -3090,63 +3199,63 @@ class ReporteService
 
         $insertado =
             $this->db
-                ->table(
-                    'ai_reporte_direccion_notificacion'
-                )
-                ->insert([
+            ->table(
+                'ai_reporte_direccion_notificacion'
+            )
+            ->insert([
 
-                    'id_reporte' =>
-                        $idReporte,
+                'id_reporte' =>
+                $idReporte,
 
-                    'pertenece_neza' =>
-                        $perteneceNeza,
+                'pertenece_neza' =>
+                $perteneceNeza,
 
-                    'calle' =>
-                        $calle,
+                'calle' =>
+                $calle,
 
-                    'numero_exterior' =>
-                        $numeroExterior,
+                'numero_exterior' =>
+                $numeroExterior,
 
-                    'colonia' =>
-                        $colonia,
+                'colonia' =>
+                $colonia,
 
-                    'entre_calle' =>
-                        $entreCalle,
+                'entre_calle' =>
+                $entreCalle,
 
-                    'y_calle' =>
-                        $yCalle,
+                'y_calle' =>
+                $yCalle,
 
-                    'municipio' =>
-                        $municipio,
+                'municipio' =>
+                $municipio,
 
-                    'estado' =>
-                        $estado,
+                'estado' =>
+                $estado,
 
-                    'sector' =>
-                        $sector,
+                'sector' =>
+                $sector,
 
-                    'cuadrante' =>
-                        $cuadrante,
+                'cuadrante' =>
+                $cuadrante,
 
-                    'id_cuadra' =>
-                        $idCuadra,
+                'id_cuadra' =>
+                $idCuadra,
 
-                    'latitud' =>
-                        $latitud,
+                'latitud' =>
+                $latitud,
 
-                    'longitud' =>
-                        $longitud,
+                'longitud' =>
+                $longitud,
 
-                    'origen_ubicacion' =>
-                        $origenUbicacion,
+                'origen_ubicacion' =>
+                $origenUbicacion,
 
-                    'created_by' =>
-                        $idUsuario,
+                'created_by' =>
+                $idUsuario,
 
-                    'eliminado' =>
-                        0,
+                'eliminado' =>
+                0,
 
-                ]);
+            ]);
 
 
         if ($insertado === false) {
@@ -3156,6 +3265,7 @@ class ReporteService
             );
         }
     }
+
 
     /* =========================================================
     ACTUALIZAR DIRECCIÓN PARA NOTIFICACIÓN
@@ -3211,7 +3321,6 @@ class ReporteService
                     'La opción de pertenencia al municipio de Nezahualcóyotl no es válida.'
                 );
             }
-
         } else {
 
             $perteneceNeza =
@@ -3226,91 +3335,91 @@ class ReporteService
         $calle =
             $this->valorNullable(
                 $datos['notificacion_calle']
-                ?? null
+                    ?? null
             );
 
 
         $numeroExterior =
             $this->valorNullable(
                 $datos['notificacion_numero_exterior']
-                ?? null
+                    ?? null
             );
 
 
         $colonia =
             $this->valorNullable(
                 $datos['notificacion_colonia']
-                ?? null
+                    ?? null
             );
 
 
         $entreCalle =
             $this->valorNullable(
                 $datos['notificacion_entre_calle']
-                ?? null
+                    ?? null
             );
 
 
         $yCalle =
             $this->valorNullable(
                 $datos['notificacion_y_calle']
-                ?? null
+                    ?? null
             );
 
 
         $municipio =
             $this->valorNullable(
                 $datos['notificacion_municipio']
-                ?? null
+                    ?? null
             );
 
 
         $estado =
             $this->valorNullable(
                 $datos['notificacion_estado']
-                ?? null
+                    ?? null
             );
 
 
         $sector =
             $this->valorNullable(
                 $datos['notificacion_sector']
-                ?? null
+                    ?? null
             );
 
 
         $cuadrante =
             $this->valorNullable(
                 $datos['notificacion_cuadrante']
-                ?? null
+                    ?? null
             );
 
 
         $idCuadra =
             $this->valorNullable(
                 $datos['notificacion_id_cuadra']
-                ?? null
+                    ?? null
             );
 
 
         $latitud =
             $this->decimalNullable(
                 $datos['notificacion_latitud']
-                ?? null
+                    ?? null
             );
 
 
         $longitud =
             $this->decimalNullable(
                 $datos['notificacion_longitud']
-                ?? null
+                    ?? null
             );
 
 
         $origenUbicacion =
             $this->normalizarOrigenUbicacion(
                 $datos['notificacion_origen_ubicacion']
-                ?? null
+                    ?? null
             );
 
 
@@ -3347,15 +3456,15 @@ class ReporteService
 
         $direccionActual =
             $this->db
-                ->table(
-                    'ai_reporte_direccion_notificacion'
-                )
-                ->where(
-                    'id_reporte',
-                    $idReporte
-                )
-                ->get()
-                ->getRowArray();
+            ->table(
+                'ai_reporte_direccion_notificacion'
+            )
+            ->where(
+                'id_reporte',
+                $idReporte
+            )
+            ->get()
+            ->getRowArray();
 
 
         /* =====================================================
@@ -3381,30 +3490,30 @@ class ReporteService
 
             $actualizado =
                 $this->db
-                    ->table(
-                        'ai_reporte_direccion_notificacion'
-                    )
-                    ->where(
-                        'id_reporte',
-                        $idReporte
-                    )
-                    ->update([
+                ->table(
+                    'ai_reporte_direccion_notificacion'
+                )
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->update([
 
-                        'eliminado' =>
-                            1,
+                    'eliminado' =>
+                    1,
 
-                        'eliminado_at' =>
-                            date(
-                                'Y-m-d H:i:s'
-                            ),
+                    'eliminado_at' =>
+                    date(
+                        'Y-m-d H:i:s'
+                    ),
 
-                        'eliminado_por' =>
-                            $idUsuario,
+                    'eliminado_por' =>
+                    $idUsuario,
 
-                        'updated_by' =>
-                            $idUsuario,
+                    'updated_by' =>
+                    $idUsuario,
 
-                    ]);
+                ]);
 
 
             if ($actualizado === false) {
@@ -3426,49 +3535,49 @@ class ReporteService
         $datosDireccion = [
 
             'pertenece_neza' =>
-                $perteneceNeza,
+            $perteneceNeza,
 
             'calle' =>
-                $calle,
+            $calle,
 
             'numero_exterior' =>
-                $numeroExterior,
+            $numeroExterior,
 
             'colonia' =>
-                $colonia,
+            $colonia,
 
             'entre_calle' =>
-                $entreCalle,
+            $entreCalle,
 
             'y_calle' =>
-                $yCalle,
+            $yCalle,
 
             'municipio' =>
-                $municipio,
+            $municipio,
 
             'estado' =>
-                $estado,
+            $estado,
 
             'sector' =>
-                $sector,
+            $sector,
 
             'cuadrante' =>
-                $cuadrante,
+            $cuadrante,
 
             'id_cuadra' =>
-                $idCuadra,
+            $idCuadra,
 
             'latitud' =>
-                $latitud,
+            $latitud,
 
             'longitud' =>
-                $longitud,
+            $longitud,
 
             'origen_ubicacion' =>
-                $origenUbicacion,
+            $origenUbicacion,
 
             'updated_by' =>
-                $idUsuario,
+            $idUsuario,
 
             /*
             * Si estaba eliminada y vuelven a capturar
@@ -3476,13 +3585,13 @@ class ReporteService
             */
 
             'eliminado' =>
-                0,
+            0,
 
             'eliminado_at' =>
-                null,
+            null,
 
             'eliminado_por' =>
-                null,
+            null,
 
         ];
 
@@ -3495,16 +3604,16 @@ class ReporteService
 
             $actualizado =
                 $this->db
-                    ->table(
-                        'ai_reporte_direccion_notificacion'
-                    )
-                    ->where(
-                        'id_reporte',
-                        $idReporte
-                    )
-                    ->update(
-                        $datosDireccion
-                    );
+                ->table(
+                    'ai_reporte_direccion_notificacion'
+                )
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->update(
+                    $datosDireccion
+                );
 
 
             if ($actualizado === false) {
@@ -3533,12 +3642,12 @@ class ReporteService
 
         $insertado =
             $this->db
-                ->table(
-                    'ai_reporte_direccion_notificacion'
-                )
-                ->insert(
-                    $datosDireccion
-                );
+            ->table(
+                'ai_reporte_direccion_notificacion'
+            )
+            ->insert(
+                $datosDireccion
+            );
 
 
         if ($insertado === false) {
@@ -3548,6 +3657,7 @@ class ReporteService
             );
         }
     }
+
 
     /* =========================================================
        EVIDENCIAS

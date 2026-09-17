@@ -89,7 +89,26 @@
 ========================================================= */
 
 @import url('./reportes/felicitaciones/listado.css');
-@import url('./reportes/felicitaciones/detalle.css');
 @import url('./reportes/felicitaciones/editar.css');
 @import url('./reportes/felicitaciones/formulario.css');
+
+/* =========================================================
+FELICITACIONES - MODAL - EDITAR
+========================================================= */
+
+@import url('./reportes/felicitaciones/modales/editar/base.css');
+@import url('./reportes/felicitaciones/modales/editar/datos.css');
+@import url('./reportes/felicitaciones/modales/editar/personal.css');
+@import url('./reportes/felicitaciones/modales/editar/unidades.css');
+@import url('./reportes/felicitaciones/modales/editar/responsive.css');
+
+/* =========================================================
+FELICITACIONES - MODAL - DETALLES
+========================================================= */
+
+@import url('./reportes/felicitaciones/modales/detalle/base.css');
+@import url('./reportes/felicitaciones/modales/detalle/datos.css');
+@import url('./reportes/felicitaciones/modales/detalle/personal.css');
+@import url('./reportes/felicitaciones/modales/detalle/unidades.css');
+@import url('./reportes/felicitaciones/modales/detalle/responsive.css');
 

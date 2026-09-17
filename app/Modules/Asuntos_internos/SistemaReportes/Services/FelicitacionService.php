@@ -211,6 +211,74 @@ class FelicitacionService
 
 
         /* =====================================================
+        NOMENCLATURA CAPTURADA POR USUARIO
+        ===================================================== */
+
+        $nomenclatura =
+            strtoupper(
+                trim(
+                    (string) (
+                        $datos['nomenclatura']
+                        ?? ''
+                    )
+                )
+            );
+
+
+        if (
+            $nomenclatura === ''
+        ) {
+
+            throw new \InvalidArgumentException(
+                'La nomenclatura es obligatoria.'
+            );
+        }
+
+
+        $prefijoEsperado =
+            'CGSC/CAI/FEL/';
+
+
+        if (
+            !str_starts_with(
+                $nomenclatura,
+                $prefijoEsperado
+            )
+        ) {
+
+            throw new \InvalidArgumentException(
+                'La nomenclatura no tiene un formato válido.'
+            );
+        }
+
+
+        $parteVariable =
+            trim(
+                substr(
+                    $nomenclatura,
+                    strlen(
+                        $prefijoEsperado
+                    )
+                )
+            );
+
+
+        if (
+            $parteVariable === ''
+        ) {
+
+            throw new \InvalidArgumentException(
+                'Captura la parte final de la nomenclatura.'
+            );
+        }
+
+
+        $nomenclatura =
+            $prefijoEsperado
+            . $parteVariable;
+
+
+        /* =====================================================
            INICIAR TRANSACCIÓN
         ===================================================== */
 
@@ -243,6 +311,9 @@ class FelicitacionService
 
                         'folio' =>
                         $folioGenerado['folio'],
+
+                        'nomenclatura' =>
+                        $nomenclatura,
 
                         'fecha_registro' =>
                         $fechaRegistro,
@@ -338,7 +409,8 @@ class FelicitacionService
                 $folioGenerado['folio'],
 
                 'nomenclatura' =>
-                $folioGenerado['nomenclatura'],
+                $nomenclatura,
+
             ];
         } catch (\Throwable $e) {
 
@@ -450,6 +522,7 @@ class FelicitacionService
         }
     }
 
+
     /* =========================================================
     ACTUALIZAR FELICITACIÓN
     ========================================================= */
@@ -488,15 +561,15 @@ class FelicitacionService
 
         $felicitacion =
             $this->felicitacionModel
-                ->where(
-                    'id_felicitacion',
-                    $idFelicitacion
-                )
-                ->where(
-                    'eliminado',
-                    0
-                )
-                ->first();
+            ->where(
+                'id_felicitacion',
+                $idFelicitacion
+            )
+            ->where(
+                'eliminado',
+                0
+            )
+            ->first();
 
 
         if (!$felicitacion) {
@@ -559,6 +632,74 @@ class FelicitacionService
                 'La razón de la felicitación es obligatoria.'
             );
         }
+
+
+        /* =====================================================
+        NOMENCLATURA
+        ===================================================== */
+
+        $nomenclatura =
+            strtoupper(
+                trim(
+                    (string) (
+                        $datos['nomenclatura']
+                        ?? ''
+                    )
+                )
+            );
+
+
+        if (
+            $nomenclatura === ''
+        ) {
+
+            throw new \InvalidArgumentException(
+                'La nomenclatura es obligatoria.'
+            );
+        }
+
+
+        $prefijoEsperado =
+            'CGSC/CAI/FEL/';
+
+
+        if (
+            !str_starts_with(
+                $nomenclatura,
+                $prefijoEsperado
+            )
+        ) {
+
+            throw new \InvalidArgumentException(
+                'La nomenclatura no tiene un formato válido.'
+            );
+        }
+
+
+        $parteVariable =
+            trim(
+                substr(
+                    $nomenclatura,
+                    strlen(
+                        $prefijoEsperado
+                    )
+                )
+            );
+
+
+        if (
+            $parteVariable === ''
+        ) {
+
+            throw new \InvalidArgumentException(
+                'Captura la parte final de la nomenclatura.'
+            );
+        }
+
+
+        $nomenclatura =
+            $prefijoEsperado
+            . $parteVariable;
 
 
         /* =====================================================
@@ -675,20 +816,20 @@ class FelicitacionService
 
             $registroPlantilla =
                 $dbPlantilla
-                    ->table('plantilla')
-                    ->select([
-                        'ID',
-                        'PERSCOD',
-                        'NOMBRE_COMPLETO',
-                        'AREA',
-                        'TURNO',
-                    ])
-                    ->where(
-                        'ID',
-                        $plantillaId
-                    )
-                    ->get()
-                    ->getRowArray();
+                ->table('plantilla')
+                ->select([
+                    'ID',
+                    'PERSCOD',
+                    'NOMBRE_COMPLETO',
+                    'AREA',
+                    'TURNO',
+                ])
+                ->where(
+                    'ID',
+                    $plantillaId
+                )
+                ->get()
+                ->getRowArray();
 
             if (!$registroPlantilla) {
 
@@ -733,37 +874,37 @@ class FelicitacionService
             $personalPreparado[] = [
 
                 'plantilla_id' =>
-                    $plantillaId,
+                $plantillaId,
 
                 'perscod' =>
-                    trim(
-                        (string) (
-                            $registroPlantilla['PERSCOD']
-                            ?? ''
-                        )
-                    ),
+                trim(
+                    (string) (
+                        $registroPlantilla['PERSCOD']
+                        ?? ''
+                    )
+                ),
 
                 'nombre' =>
-                    $nombre,
+                $nombre,
 
                 'area' =>
-                    trim(
-                        (string) (
-                            $registroPlantilla['AREA']
-                            ?? ''
-                        )
-                    ),
+                trim(
+                    (string) (
+                        $registroPlantilla['AREA']
+                        ?? ''
+                    )
+                ),
 
                 'turno' =>
-                    $turno,
+                $turno,
 
                 'alias' =>
-                    trim(
-                        (string) (
-                            $persona['alias']
-                            ?? ''
-                        )
-                    ),
+                trim(
+                    (string) (
+                        $persona['alias']
+                        ?? ''
+                    )
+                ),
             ];
 
 
@@ -829,24 +970,24 @@ class FelicitacionService
 
                 $registroUnidad =
                     $dbUnidades
-                        ->table('parque_vehicular')
-                        ->select([
-                            'id',
-                            'no_economico',
-                            'placas',
-                            'marca',
-                            'submarca',
-                            'color',
-                            'estatus',
-                            'servicio',
-                            'tipo',
-                        ])
-                        ->where(
-                            'id',
-                            $parqueId
-                        )
-                        ->get()
-                        ->getRowArray();
+                    ->table('parque_vehicular')
+                    ->select([
+                        'id',
+                        'no_economico',
+                        'placas',
+                        'marca',
+                        'submarca',
+                        'color',
+                        'estatus',
+                        'servicio',
+                        'tipo',
+                    ])
+                    ->where(
+                        'id',
+                        $parqueId
+                    )
+                    ->get()
+                    ->getRowArray();
 
 
                 if (!$registroUnidad) {
@@ -860,71 +1001,71 @@ class FelicitacionService
                 $unidadesPreparadas[] = [
 
                     'parque_vehicular_id' =>
-                        $parqueId,
+                    $parqueId,
 
                     'no_economico' =>
-                        trim(
-                            (string) (
-                                $registroUnidad['no_economico']
-                                ?? ''
-                            )
-                        ),
+                    trim(
+                        (string) (
+                            $registroUnidad['no_economico']
+                            ?? ''
+                        )
+                    ),
 
                     'placas' =>
-                        trim(
-                            (string) (
-                                $registroUnidad['placas']
-                                ?? ''
-                            )
-                        ),
+                    trim(
+                        (string) (
+                            $registroUnidad['placas']
+                            ?? ''
+                        )
+                    ),
 
                     'marca' =>
-                        trim(
-                            (string) (
-                                $registroUnidad['marca']
-                                ?? ''
-                            )
-                        ),
+                    trim(
+                        (string) (
+                            $registroUnidad['marca']
+                            ?? ''
+                        )
+                    ),
 
                     'submarca' =>
-                        trim(
-                            (string) (
-                                $registroUnidad['submarca']
-                                ?? ''
-                            )
-                        ),
+                    trim(
+                        (string) (
+                            $registroUnidad['submarca']
+                            ?? ''
+                        )
+                    ),
 
                     'color' =>
-                        trim(
-                            (string) (
-                                $registroUnidad['color']
-                                ?? ''
-                            )
-                        ),
+                    trim(
+                        (string) (
+                            $registroUnidad['color']
+                            ?? ''
+                        )
+                    ),
 
                     'estatus' =>
-                        trim(
-                            (string) (
-                                $registroUnidad['estatus']
-                                ?? ''
-                            )
-                        ),
+                    trim(
+                        (string) (
+                            $registroUnidad['estatus']
+                            ?? ''
+                        )
+                    ),
 
                     'servicio' =>
-                        trim(
-                            (string) (
-                                $registroUnidad['servicio']
-                                ?? ''
-                            )
-                        ),
+                    trim(
+                        (string) (
+                            $registroUnidad['servicio']
+                            ?? ''
+                        )
+                    ),
 
                     'tipo' =>
-                        trim(
-                            (string) (
-                                $registroUnidad['tipo']
-                                ?? ''
-                            )
-                        ),
+                    trim(
+                        (string) (
+                            $registroUnidad['tipo']
+                            ?? ''
+                        )
+                    ),
 
                     /*
                     * El buscador actual obtiene las unidades
@@ -932,7 +1073,7 @@ class FelicitacionService
                     * una clave de origen.
                     */
                     'origen' =>
-                        null,
+                    null,
                 ];
 
 
@@ -967,19 +1108,22 @@ class FelicitacionService
 
             $actualizado =
                 $this->felicitacionModel
-                    ->update(
-                        $idFelicitacion,
-                        [
-                            'nombre_felicitante' =>
-                                $nombreFelicitante,
+                ->update(
+                    $idFelicitacion,
+                    [
+                        'nombre_felicitante' =>
+                        $nombreFelicitante,
 
-                            'razon_felicitacion' =>
-                                $razonFelicitacion,
+                        'razon_felicitacion' =>
+                        $razonFelicitacion,
 
-                            'updated_by' =>
-                                $idUsuario,
-                        ]
-                    );
+                        'nomenclatura' =>
+                        $nomenclatura,
+
+                        'updated_by' =>
+                        $idUsuario,
+                    ]
+                );
 
 
             if ($actualizado === false) {
@@ -996,11 +1140,11 @@ class FelicitacionService
 
             $eliminadoPersonal =
                 $this->personalModel
-                    ->where(
-                        'id_felicitacion',
-                        $idFelicitacion
-                    )
-                    ->delete();
+                ->where(
+                    'id_felicitacion',
+                    $idFelicitacion
+                )
+                ->delete();
 
 
             if ($eliminadoPersonal === false) {
@@ -1023,11 +1167,11 @@ class FelicitacionService
 
             $eliminadoUnidades =
                 $this->unidadModel
-                    ->where(
-                        'id_felicitacion',
-                        $idFelicitacion
-                    )
-                    ->delete();
+                ->where(
+                    'id_felicitacion',
+                    $idFelicitacion
+                )
+                ->delete();
 
 
             if ($eliminadoUnidades === false) {
@@ -1073,17 +1217,15 @@ class FelicitacionService
 
             return [
                 'success' =>
-                    true,
+                true,
 
                 'id_felicitacion' =>
-                    $idFelicitacion,
+                $idFelicitacion,
 
                 'folio' =>
-                    $felicitacion['folio']
+                $felicitacion['folio']
                     ?? null,
             ];
-
-
         } catch (\Throwable $e) {
 
             $this->db->transRollback();

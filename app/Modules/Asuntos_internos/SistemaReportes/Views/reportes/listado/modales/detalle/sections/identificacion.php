@@ -103,7 +103,7 @@
             </div>
 
             <small class="detalle-reporte-campo-ayuda">
-                Se genera automáticamente con el número de folio asignado.
+                Corresponde a la nomenclatura asignada al registro.
             </small>
 
         </div>

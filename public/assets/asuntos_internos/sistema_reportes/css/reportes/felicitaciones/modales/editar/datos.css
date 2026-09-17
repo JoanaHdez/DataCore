@@ -1,0 +1,224 @@
+/* =========================================================
+   GRID GENERAL
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion__grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    column-gap: 16px;
+    row-gap: 20px;
+
+    padding: 22px;
+}
+
+
+/* =========================================================
+   CAMPO GENERAL
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion__campo {
+    min-width: 0;
+
+    padding: 0;
+
+    background: transparent;
+
+    border: 0;
+    border-radius: 0;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion__campo--full {
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   LABELS
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion__campo label,
+#modal-editar-felicitacion
+.report-search label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #173554;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+#modal-editar-felicitacion
+.report-input,
+#modal-editar-felicitacion
+.report-select,
+#modal-editar-felicitacion
+.report-textarea {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    color: #304b64;
+
+    background: #ffffff;
+
+    border: 1px solid #c9d8e5;
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 400;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+#modal-editar-felicitacion
+.report-input,
+#modal-editar-felicitacion
+.report-select {
+    min-height: 42px;
+
+    padding: 10px 12px;
+}
+
+
+#modal-editar-felicitacion
+.report-textarea {
+    min-height: 120px;
+
+    padding: 11px 12px;
+
+    line-height: 1.5;
+
+    resize: vertical;
+}
+
+
+/* =========================================================
+   FOCUS
+========================================================= */
+
+#modal-editar-felicitacion
+.report-input:focus,
+#modal-editar-felicitacion
+.report-select:focus,
+#modal-editar-felicitacion
+.report-textarea:focus {
+    border-color: #55aee0;
+
+    box-shadow:
+        0 0 0 3px rgba(43, 150, 213, 0.10);
+}
+
+
+/* =========================================================
+   READONLY
+========================================================= */
+
+#modal-editar-felicitacion
+.report-input[readonly],
+#modal-editar-felicitacion
+.report-input:disabled {
+    color: #5f7588;
+
+    background: #eef3f7;
+
+    border-color: #d3dee7;
+}
+
+
+/* =========================================================
+   RAZÓN
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion__campo--texto {
+    margin: 0;
+
+    padding: 22px;
+
+    background: transparent;
+
+    border: 0;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion__campo--texto
+.report-textarea {
+    min-height: 130px;
+}
+
+
+/* =========================================================
+   RAZÓN
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion__campo--texto {
+
+    margin: 0;
+
+    padding: 0;
+
+    background: transparent;
+
+    border: 0;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion__campo--texto
+.report-textarea {
+
+    width: 100%;
+
+    min-height: 130px;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   AYUDA DE NOMENCLATURA
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion__campo
+> small {
+
+    display: block;
+
+    margin-top: 7px;
+
+    color: #8a98a8;
+
+    font-size: 8px;
+    font-weight: 400;
+
+    line-height: 1.4;
+}

@@ -21,13 +21,12 @@ class FelicitacionModel extends Model
     protected $allowedFields = [
         'numero_folio',
         'folio',
+        'nomenclatura',
         'fecha_registro',
         'nombre_felicitante',
         'razon_felicitacion',
-
         'created_by',
         'updated_by',
-
         'eliminado',
         'eliminado_at',
         'eliminado_por',

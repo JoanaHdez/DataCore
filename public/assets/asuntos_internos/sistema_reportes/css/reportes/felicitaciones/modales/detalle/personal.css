@@ -1,0 +1,155 @@
+/* =========================================================
+   PERSONAL FELICITADO
+========================================================= */
+
+#modal-detalle-felicitacion
+.detalle-felicitacion-personal__tabla-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+#modal-detalle-felicitacion
+.detalle-felicitacion-personal__tabla {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    background: #ffffff;
+}
+
+
+/* =========================================================
+   HEADER TABLA PERSONAL
+========================================================= */
+
+#modal-detalle-felicitacion
+.detalle-felicitacion-personal__tabla th {
+    padding: 11px 14px;
+
+    color: #5f7387;
+
+    background: #f5f8fa;
+
+    border-bottom: 1px solid #dce5ed;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    text-align: left;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   CELDAS PERSONAL
+========================================================= */
+
+#modal-detalle-felicitacion
+.detalle-felicitacion-personal__tabla td {
+    padding: 12px 14px;
+
+    color: #304b64;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #e5ecf2;
+
+    font-size: 9px;
+    font-weight: 500;
+
+    vertical-align: middle;
+}
+
+
+#modal-detalle-felicitacion
+.detalle-felicitacion-personal__tabla tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+
+/* =========================================================
+   NOMBRE PERSONAL
+========================================================= */
+
+#modal-detalle-felicitacion
+.detalle-felicitacion-personal__nombre {
+    color: #173554;
+
+    font-size: 9px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   FOTO PERSONAL
+========================================================= */
+
+#modal-detalle-felicitacion
+.detalle-felicitacion-personal__foto {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background: #eaf4fb;
+
+    border: 1px solid #c8deed;
+    border-radius: 50%;
+}
+
+
+#modal-detalle-felicitacion
+.detalle-felicitacion-personal__foto img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+#modal-detalle-felicitacion
+.detalle-felicitacion-personal__foto span {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #0e669f;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   PERSONAL VACÍO
+========================================================= */
+
+#modal-detalle-felicitacion
+.detalle-felicitacion-personal__vacio {
+    padding: 20px;
+
+    color: #687d90;
+
+    font-size: 10px;
+    font-weight: 500;
+
+    text-align: left;
+}
+
+
+#modal-detalle-felicitacion
+.detalle-felicitacion-personal__vacio[hidden] {
+    display: none !important;
+}

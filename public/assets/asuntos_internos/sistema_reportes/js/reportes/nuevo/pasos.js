@@ -988,6 +988,119 @@ function validarRelacionesDelPaso(
 
 
 /* =========================================================
+   INICIALIZAR NOMENCLATURA MANUAL
+========================================================= */
+
+function inicializarNomenclaturaManual(
+    formulario
+) {
+
+    if (!formulario) {
+        return;
+    }
+
+
+    const inputParte =
+        formulario.querySelector(
+            '#nomenclatura_parte'
+        );
+
+
+    const inputCompleto =
+        formulario.querySelector(
+            '#nomenclatura'
+        );
+
+
+    if (
+        !inputParte
+        || !inputCompleto
+    ) {
+
+        return;
+    }
+
+
+    const PREFIJO =
+        'CGSC/CAI/QJ/';
+
+
+    /* =====================================================
+       CONSTRUIR NOMENCLATURA COMPLETA
+    ===================================================== */
+
+    function actualizarNomenclatura() {
+
+        let parte =
+            String(
+                inputParte.value
+                || ''
+            ).trim();
+
+
+        /*
+         * Evitar que el usuario genere:
+         *
+         * CGSC/CAI/QJ//1295/2026
+         *
+         * si escribe "/" al principio.
+         */
+
+        parte =
+            parte.replace(
+                /^\/+/,
+                ''
+            );
+
+
+        inputParte.value =
+            parte;
+
+
+        inputCompleto.value =
+            parte !== ''
+                ? `${PREFIJO}${parte}`
+                : '';
+    }
+
+
+    /* =====================================================
+       EVITAR LISTENER DUPLICADO
+    ===================================================== */
+
+    if (
+        inputParte.dataset
+            .nomenclaturaInicializada
+        !== '1'
+    ) {
+
+        inputParte.dataset
+            .nomenclaturaInicializada =
+            '1';
+
+
+        inputParte.addEventListener(
+            'input',
+            actualizarNomenclatura
+        );
+
+
+        inputParte.addEventListener(
+            'change',
+            actualizarNomenclatura
+        );
+    }
+
+
+    /* =====================================================
+       ESTADO INICIAL
+    ===================================================== */
+
+    actualizarNomenclatura();
+}
+
+
+/* =========================================================
    PREVISUALIZAR FOLIO
 ========================================================= */
 
@@ -995,26 +1108,36 @@ async function cargarPrevisualizacionFolio(
     formulario
 ) {
 
+    if (!formulario) {
+        return;
+    }
+
+
+    /* =====================================================
+       NOMENCLATURA MANUAL
+    ===================================================== */
+
+    inicializarNomenclaturaManual(
+        formulario
+    );
+
+
+    /* =====================================================
+       CAMPO DE FOLIO
+    ===================================================== */
+
     const inputFolio =
         formulario.querySelector(
             '#folio_visual'
         );
 
 
-    const inputNomenclatura =
-        formulario.querySelector(
-            '#nomenclatura'
-        );
-
-
-    if (
-        !inputFolio
-        || !inputNomenclatura
-    ) {
+    if (!inputFolio) {
 
         console.warn(
-            'No se encontraron los campos visuales del folio automático.'
+            'No se encontró el campo visual del folio automático.'
         );
+
 
         return;
     }
@@ -1047,16 +1170,20 @@ async function cargarPrevisualizacionFolio(
             await fetch(
                 url.toString(),
                 {
+
                     method:
                         'GET',
 
                     headers: {
+
                         Accept:
                             'application/json',
+
                     },
 
                     credentials:
                         'same-origin',
+
                 }
             );
 
@@ -1091,7 +1218,7 @@ async function cargarPrevisualizacionFolio(
 
 
         /* =====================================================
-           MOSTRAR FOLIO
+           MOSTRAR ÚNICAMENTE EL FOLIO
         ===================================================== */
 
         const folio =
@@ -1101,16 +1228,8 @@ async function cargarPrevisualizacionFolio(
             ).trim();
 
 
-        const nomenclatura =
-            String(
-                resultado.nomenclatura
-                || ''
-            ).trim();
-
-
         if (
             folio === ''
-            || nomenclatura === ''
         ) {
 
             throw new Error(
@@ -1123,10 +1242,6 @@ async function cargarPrevisualizacionFolio(
             folio;
 
 
-        inputNomenclatura.value =
-            nomenclatura;
-
-
     } catch (error) {
 
         console.error(
@@ -1137,13 +1252,8 @@ async function cargarPrevisualizacionFolio(
 
         inputFolio.value =
             'QJ- — No disponible';
-
-
-        inputNomenclatura.value =
-            'CGSC/CAI/QJ/ — No disponible';
     }
 }
-
 
 /* =========================================================
    URL GUARDAR

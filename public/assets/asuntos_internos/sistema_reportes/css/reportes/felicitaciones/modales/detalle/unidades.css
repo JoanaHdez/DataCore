@@ -1,0 +1,138 @@
+/* =========================================================
+   TABLA GENERAL
+========================================================= */
+
+#modal-detalle-felicitacion
+.modal-felicitacion__tabla {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    background: #ffffff;
+}
+
+
+/* =========================================================
+   UNIDADES
+========================================================= */
+
+#modal-detalle-felicitacion
+#detalle-felicitacion-unidades-contenedor {
+    width: 100%;
+}
+
+
+#modal-detalle-felicitacion
+#detalle-felicitacion-unidades-contenedor
+.modal-felicitacion__tabla-wrapper {
+    width: 100%;
+
+    margin: 0;
+
+    overflow-x: auto;
+
+    border: 0;
+    border-radius: 0;
+}
+
+
+/* =========================================================
+   HEADER TABLA UNIDADES
+========================================================= */
+
+#modal-detalle-felicitacion
+#detalle-felicitacion-unidades-contenedor
+.modal-felicitacion__tabla thead th {
+    padding: 11px 14px;
+
+    color: #5f7387;
+
+    background: #f5f8fa;
+
+    border-bottom: 1px solid #dce5ed;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    text-align: left;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   CELDAS UNIDADES
+========================================================= */
+
+#modal-detalle-felicitacion
+#detalle-felicitacion-unidades-contenedor
+.modal-felicitacion__tabla tbody td {
+    padding: 12px 14px;
+
+    color: #304b64;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #e5ecf2;
+
+    font-size: 9px;
+    font-weight: 500;
+
+    vertical-align: middle;
+}
+
+
+#modal-detalle-felicitacion
+#detalle-felicitacion-unidades-contenedor
+.modal-felicitacion__tabla tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+
+/* =========================================================
+   SIN UNIDAD / OFICINA
+========================================================= */
+
+#modal-detalle-felicitacion
+#detalle-felicitacion-sin-unidad {
+    margin: 0;
+}
+
+
+#modal-detalle-felicitacion
+#detalle-felicitacion-sin-unidad[hidden] {
+    display: none !important;
+}
+
+
+#modal-detalle-felicitacion
+#detalle-felicitacion-sin-unidad
+.unidad-sin-unidad__contenido {
+    padding: 18px 20px;
+
+    background: #f5f8fa;
+
+    border: 0;
+    border-radius: 0;
+}
+
+
+#modal-detalle-felicitacion
+#detalle-felicitacion-sin-unidad strong {
+    display: block;
+
+    margin: 0;
+
+    color: #62768a;
+
+    font-size: 9px;
+    font-weight: 500;
+}
+
+
+#modal-detalle-felicitacion
+#detalle-felicitacion-sin-unidad p {
+    display: none;
+}

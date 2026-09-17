@@ -69,15 +69,27 @@
         <!-- NOMENCLATURA -->
         <div class="editar-reporte-campo">
 
-            <label for="editar-nomenclatura">
+            <label for="editar-nomenclatura-parte">
                 Nomenclatura
             </label>
 
-            <input type="text" id="editar-nomenclatura" name="nomenclatura" readonly>
+            <div class="editar-nomenclatura">
+
+                <span class="editar-nomenclatura__prefijo" id="editar-nomenclatura-prefijo">
+                    CGSC/CAI/QJ/
+                </span>
+
+                <input type="text" id="editar-nomenclatura-parte" class="editar-nomenclatura__input"
+                    placeholder="Ej. 1295/2026" autocomplete="off">
+
+            </div>
 
             <small>
-                Se genera automáticamente con el número de folio asignado.
+                Captura únicamente la parte final de la nomenclatura.
             </small>
+
+            <!-- VALOR COMPLETO QUE SE ENVÍA AL BACKEND -->
+            <input type="hidden" id="editar-nomenclatura" name="nomenclatura" value="">
 
         </div>
 

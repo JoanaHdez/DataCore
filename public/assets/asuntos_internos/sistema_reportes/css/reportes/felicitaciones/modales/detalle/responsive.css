@@ -1,0 +1,82 @@
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    #modal-detalle-felicitacion {
+        padding: 10px;
+    }
+
+
+    #modal-detalle-felicitacion
+    .modal-felicitacion__contenido {
+        width: calc(100vw - 20px);
+
+        max-height: 96vh;
+    }
+
+
+    #modal-detalle-felicitacion
+    .modal-felicitacion__header {
+        padding: 18px;
+    }
+
+
+    #modal-detalle-felicitacion
+    .modal-felicitacion__titulo {
+        font-size: 18px;
+    }
+
+
+    #modal-detalle-felicitacion
+    .detalle-felicitacion-nav {
+        overflow-x: auto;
+
+        padding: 10px 14px;
+    }
+
+
+    #modal-detalle-felicitacion
+    .detalle-felicitacion-nav__item {
+        flex: 0 0 auto;
+
+        white-space: nowrap;
+    }
+
+
+    #modal-detalle-felicitacion
+    .modal-felicitacion__body {
+        padding: 14px;
+    }
+
+
+    #modal-detalle-felicitacion
+    .modal-felicitacion__grid {
+        grid-template-columns: 1fr;
+
+        padding: 16px;
+    }
+
+
+    #modal-detalle-felicitacion
+    .modal-felicitacion__campo--full {
+        grid-column: auto;
+    }
+
+
+    #modal-detalle-felicitacion
+    .modal-felicitacion__texto {
+        margin: 16px;
+    }
+
+
+    #modal-detalle-felicitacion
+    .detalle-felicitacion-personal__tabla,
+    #modal-detalle-felicitacion
+    #detalle-felicitacion-unidades-contenedor
+    .modal-felicitacion__tabla {
+        min-width: 650px;
+    }
+
+}

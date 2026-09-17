@@ -74,11 +74,130 @@ export function cargarIdentificacionEditar(
        NOMENCLATURA
     ===================================================== */
 
-    asignarValorEditar(
-        modal,
-        '#editar-nomenclatura',
-        reporte.nomenclatura
-    );
+    const inputParte =
+        modal.querySelector(
+            '#editar-nomenclatura-parte'
+        );
+
+
+    const inputCompleto =
+        modal.querySelector(
+            '#editar-nomenclatura'
+        );
+
+
+    const PREFIJO =
+        'CGSC/CAI/QJ/';
+
+
+    const nomenclaturaGuardada =
+        String(
+            reporte.nomenclatura
+            || ''
+        ).trim();
+
+
+    let parteVariable =
+        nomenclaturaGuardada;
+
+
+    if (
+        nomenclaturaGuardada.startsWith(
+            PREFIJO
+        )
+    ) {
+
+        parteVariable =
+            nomenclaturaGuardada
+                .substring(
+                    PREFIJO.length
+                )
+                .trim();
+    }
+
+
+    if (inputParte) {
+
+        inputParte.value =
+            parteVariable;
+    }
+
+
+    if (inputCompleto) {
+
+        inputCompleto.value =
+            nomenclaturaGuardada;
+    }
+
+
+    /* =====================================================
+       ACTUALIZAR NOMENCLATURA AL EDITAR
+    ===================================================== */
+
+    function actualizarNomenclatura() {
+
+        if (
+            !inputParte
+            || !inputCompleto
+        ) {
+            return;
+        }
+
+
+        let parte =
+            String(
+                inputParte.value
+                || ''
+            ).trim();
+
+
+        /* Evitar doble diagonal al inicio */
+
+        parte =
+            parte.replace(
+                /^\/+/,
+                ''
+            );
+
+
+        inputParte.value =
+            parte;
+
+
+        inputCompleto.value =
+            parte !== ''
+                ? `${PREFIJO}${parte}`
+                : '';
+    }
+
+
+    /* =====================================================
+       EVITAR LISTENERS DUPLICADOS
+    ===================================================== */
+
+    if (
+        inputParte
+        && inputParte.dataset
+            .nomenclaturaInicializada
+        !== '1'
+    ) {
+
+        inputParte.dataset
+            .nomenclaturaInicializada =
+            '1';
+
+
+        inputParte.addEventListener(
+            'input',
+            actualizarNomenclatura
+        );
+
+
+        inputParte.addEventListener(
+            'change',
+            actualizarNomenclatura
+        );
+    }
 
 
     /* =====================================================

@@ -28,6 +28,7 @@
 
                 <h2 class="modal-felicitacion__titulo" id="titulo-detalle-felicitacion">
                     Felicitación
+
                     <span id="detalle-felicitacion-titulo-folio"></span>
                 </h2>
 
@@ -76,94 +77,14 @@
             <section class="detalle-felicitacion-panel detalle-felicitacion-panel--active"
                 data-detalle-felicitacion-panel="datos">
 
-                <!-- =========================================
-                     DATOS GENERALES
-                ========================================== -->
-
-                <section class="modal-felicitacion__seccion">
-
-                    <div class="modal-felicitacion__seccion-header">
-
-                        <span class="modal-felicitacion__eyebrow">
-                            Información general
-                        </span>
-
-                        <h3 class="modal-felicitacion__seccion-title">
-                            Datos generales
-                        </h3>
-
-                    </div>
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\felicitaciones\modales\detalle\sections\identificacion'
+                ) ?>
 
 
-                    <div class="modal-felicitacion__grid">
-
-                        <div class="modal-felicitacion__campo">
-
-                            <span>
-                                Folio
-                            </span>
-
-                            <strong id="detalle-felicitacion-folio">
-                                —
-                            </strong>
-
-                        </div>
-
-
-                        <div class="modal-felicitacion__campo">
-
-                            <span>
-                                Fecha
-                            </span>
-
-                            <strong id="detalle-felicitacion-fecha">
-                                —
-                            </strong>
-
-                        </div>
-
-
-                        <div class="modal-felicitacion__campo modal-felicitacion__campo--full">
-
-                            <span>
-                                Felicitante
-                            </span>
-
-                            <strong id="detalle-felicitacion-felicitante">
-                                —
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-                <!-- =========================================
-                     RAZÓN
-                ========================================== -->
-
-                <section class="modal-felicitacion__seccion">
-
-                    <div class="modal-felicitacion__seccion-header">
-
-                        <span class="modal-felicitacion__eyebrow">
-                            Descripción
-                        </span>
-
-                        <h3 class="modal-felicitacion__seccion-title">
-                            Razón de la felicitación
-                        </h3>
-
-                    </div>
-
-
-                    <div class="modal-felicitacion__texto" id="detalle-felicitacion-razon">
-                        —
-                    </div>
-
-                </section>
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\felicitaciones\modales\detalle\sections\informacion'
+                ) ?>
 
             </section>
 
@@ -175,151 +96,14 @@
 
             <section class="detalle-felicitacion-panel" data-detalle-felicitacion-panel="personal" hidden>
 
-                <!-- =========================================
-     PERSONAL
-========================================== -->
-
-                <section class="modal-felicitacion__seccion">
-
-                    <div class="modal-felicitacion__seccion-header">
-
-                        <span class="modal-felicitacion__eyebrow">
-                            Personal relacionado
-                        </span>
-
-                        <h3 class="modal-felicitacion__seccion-title">
-                            Personal felicitado
-                        </h3>
-
-                    </div>
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\felicitaciones\modales\detalle\sections\personal'
+                ) ?>
 
 
-                    <div class="detalle-felicitacion-personal__vacio" id="detalle-felicitacion-personal-vacio" hidden>
-                        Sin personal relacionado
-                    </div>
-
-
-                    <div class="detalle-felicitacion-personal__tabla-wrapper"
-                        id="detalle-felicitacion-personal-tabla-wrapper">
-
-                        <table class="detalle-felicitacion-personal__tabla">
-
-                            <thead>
-
-                                <tr>
-                                    <th>Foto</th>
-                                    <th>Nombre</th>
-                                    <th>Nómina</th>
-                                    <th>Área</th>
-                                    <th>Turno</th>
-                                    <th>Alias</th>
-                                </tr>
-
-                            </thead>
-
-
-                            <tbody id="detalle-felicitacion-personal">
-
-                                    <tr>
-
-                                        <td colspan="6">
-                                            —
-                                        </td>
-
-                                    </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </section>
-
-
-                <!-- =========================================
-                     UNIDADES
-                ========================================== -->
-
-                <section class="modal-felicitacion__seccion">
-
-                    <div class="modal-felicitacion__seccion-header">
-
-                        <span class="modal-felicitacion__eyebrow">
-                            Unidades relacionadas
-                        </span>
-
-                        <h3 class="modal-felicitacion__seccion-title">
-                            Unidades relacionadas
-                        </h3>
-
-                    </div>
-
-
-                    <!-- =====================================
-                         CON UNIDAD
-                    ====================================== -->
-
-                    <div id="detalle-felicitacion-unidades-contenedor">
-
-                        <div class="modal-felicitacion__tabla-wrapper">
-
-                            <table class="modal-felicitacion__tabla">
-
-                                <thead>
-
-                                    <tr>
-                                        <th>Unidad</th>
-                                        <th>Marca / Submarca</th>
-                                        <th>Color</th>
-                                        <th>Estatus</th>
-                                        <th>Servicio</th>
-                                        <th>Tipo</th>
-                                    </tr>
-
-                                </thead>
-
-
-                                <tbody id="detalle-felicitacion-unidades">
-
-                                    <tr>
-
-                                        <td colspan="7">
-                                            —
-                                        </td>
-
-                                    </tr>
-
-                                </tbody>
-
-                            </table>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- =====================================
-                         SIN UNIDAD
-                    ====================================== -->
-
-                    <div class="unidad-sin-unidad" id="detalle-felicitacion-sin-unidad" hidden>
-
-                        <div class="unidad-sin-unidad__contenido">
-
-                            <strong>
-                                Sin unidad / Oficina
-                            </strong>
-
-                            <p>
-                                El personal felicitado no cuenta con una unidad vehicular relacionada.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </section>
+                <?= $this->include(
+                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\felicitaciones\modales\detalle\sections\unidades'
+                ) ?>
 
             </section>
 

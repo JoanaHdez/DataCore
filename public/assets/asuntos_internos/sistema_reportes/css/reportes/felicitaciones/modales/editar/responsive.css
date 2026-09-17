@@ -1,0 +1,113 @@
+
+/* =========================================================
+   RESPONSIVE UNIDADES
+========================================================= */
+
+@media (max-width: 700px) {
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-unidades-editar__contenido {
+        padding: 18px;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-unidades-editar__opciones {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-unidades-editar__opcion {
+        width: 100%;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-unidades-editar
+    .modal-felicitacion__tabla {
+        min-width: 720px;
+    }
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    #modal-editar-felicitacion {
+        padding: 10px;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-editar__contenido {
+        width: calc(100vw - 20px);
+
+        height: 96vh;
+        max-height: 96vh;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-editar__header {
+        padding: 18px;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-editar__titulo {
+        font-size: 18px;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-editar__nav {
+        overflow-x: auto;
+
+        padding: 10px 14px;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-editar__nav-btn {
+        flex: 0 0 auto;
+
+        white-space: nowrap;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-editar__body {
+        padding: 14px;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion__grid {
+        grid-template-columns: 1fr;
+
+        padding: 18px;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion__campo--full {
+        grid-column: auto;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion__tabla {
+        min-width: 700px;
+    }
+
+
+    #modal-editar-felicitacion
+    .modal-felicitacion-editar__footer {
+        padding: 12px 14px;
+    }
+
+}

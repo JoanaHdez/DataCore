@@ -45,6 +45,15 @@ function inicializarFormularioFelicitacion() {
         false;
 
 
+    /* =====================================================
+    NOMENCLATURA
+    ===================================================== */
+
+    inicializarNomenclaturaFelicitacion(
+        formulario
+    );
+
+
     formulario.addEventListener(
         'submit',
         async (evento) => {
@@ -268,6 +277,123 @@ function inicializarFormularioFelicitacion() {
             }
         }
     );
+}
+
+
+/* =========================================================
+   INICIALIZAR NOMENCLATURA MANUAL
+========================================================= */
+
+function inicializarNomenclaturaFelicitacion(
+    formulario
+) {
+
+    if (!formulario) {
+        return;
+    }
+
+
+    const inputParte =
+        formulario.querySelector(
+            '#felicitacion-nomenclatura-parte'
+        );
+
+
+    const inputCompleto =
+        formulario.querySelector(
+            '#felicitacion-nomenclatura'
+        );
+
+
+    if (
+        !inputParte
+        || !inputCompleto
+    ) {
+
+        return;
+    }
+
+
+    const PREFIJO =
+        'CGSC/CAI/FEL/';
+
+
+    /* =====================================================
+       ACTUALIZAR NOMENCLATURA COMPLETA
+    ===================================================== */
+
+    function actualizarNomenclatura() {
+
+    let parte =
+        String(
+            inputParte.value
+            || ''
+        );
+
+
+    /*
+     * Evitar doble diagonal si el usuario
+     * comienza escribiendo "/".
+     *
+     * No usamos trim() aquí porque impediría
+     * capturar espacios normalmente.
+     */
+
+    parte =
+        parte.replace(
+            /^\/+/,
+            ''
+        );
+
+
+    inputParte.value =
+        parte;
+
+
+    const parteConContenido =
+        parte.trim();
+
+
+    inputCompleto.value =
+        parteConContenido !== ''
+            ? `${PREFIJO}${parte}`
+            : '';
+}
+
+
+    /* =====================================================
+       EVITAR LISTENERS DUPLICADOS
+    ===================================================== */
+
+    if (
+        inputParte.dataset
+            .nomenclaturaInicializada
+        !== '1'
+    ) {
+
+        inputParte.dataset
+            .nomenclaturaInicializada =
+            '1';
+
+
+        inputParte.addEventListener(
+            'input',
+            actualizarNomenclatura
+        );
+
+
+        inputParte.addEventListener(
+            'change',
+            actualizarNomenclatura
+        );
+    }
+
+
+    /* =====================================================
+       ESTADO INICIAL
+    ===================================================== */
+
+    actualizarNomenclatura();
 }
 
 

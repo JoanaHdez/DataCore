@@ -186,7 +186,7 @@ function inicializarPersonalFelicitacion() {
 
 
     /* =====================================================
-       BUSCAR PERSONAL
+    BUSCAR PERSONAL
     ===================================================== */
 
     inputBusqueda.addEventListener(
@@ -196,10 +196,13 @@ function inicializarPersonalFelicitacion() {
             const termino =
                 inputBusqueda.value.trim();
 
+
             personaSeleccionada =
                 null;
 
+
             limpiarPersonaSeleccionada();
+
 
             if (
                 temporizadorBusqueda
@@ -210,8 +213,16 @@ function inicializarPersonalFelicitacion() {
                 );
             }
 
+
+            /*
+            * Buscar desde el primer carácter.
+            *
+            * Únicamente ocultamos los resultados
+            * cuando el campo está completamente vacío.
+            */
+
             if (
-                termino.length < 2
+                termino.length === 0
             ) {
 
                 ocultarResultados();
@@ -219,12 +230,15 @@ function inicializarPersonalFelicitacion() {
                 return;
             }
 
+
             temporizadorBusqueda =
                 window.setTimeout(
                     () => {
+
                         buscarPersonal(
                             termino
                         );
+
                     },
                     300
                 );

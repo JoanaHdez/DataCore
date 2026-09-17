@@ -262,6 +262,10 @@ function renderizarDetalle(
         felicitacion.fecha_registro
     );
 
+    asignarTexto(
+        '#detalle-felicitacion-nomenclatura',
+        felicitacion.nomenclatura
+    );
 
     asignarTexto(
         '#detalle-felicitacion-felicitante',
