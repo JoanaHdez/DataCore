@@ -279,14 +279,18 @@
 
 
 /* =========================================================
-   INPUT TURNO
+   INPUTS EDITABLES
+   TURNO / ALIAS
 ========================================================= */
 
 #modal-editar-felicitacion
-.modal-felicitacion-personal-editar__turno {
+.modal-felicitacion-personal-editar__turno,
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__alias {
     width: 100%;
 
-    min-width: 150px;
+    min-width: 120px;
     min-height: 34px;
 
     padding: 7px 10px;
@@ -298,13 +302,30 @@
     border: 1px solid #cad9e5;
     border-radius: 7px;
 
+    outline: none;
+
     font-family: inherit;
     font-size: 9px;
     font-weight: 600;
 
     box-sizing: border-box;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__turno:focus,
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar__alias:focus {
+    border-color: #2384c7;
+
+    box-shadow:
+        0 0 0 3px rgba(35, 132, 199, 0.10);
+}
 
 /* =========================================================
    BOTÓN QUITAR
@@ -530,4 +551,85 @@
     font-size: 9px;
 
     text-align: center;
+}
+
+
+/* =========================================================
+   ANCHOS DE COLUMNAS - PERSONAL
+========================================================= */
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar
+.modal-felicitacion__tabla {
+    min-width: 820px;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar
+.modal-felicitacion__tabla th:nth-child(1),
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar
+.modal-felicitacion__tabla td:nth-child(1) {
+    width: 55px;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar
+.modal-felicitacion__tabla th:nth-child(2),
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar
+.modal-felicitacion__tabla td:nth-child(2) {
+    min-width: 150px;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar
+.modal-felicitacion__tabla th:nth-child(3),
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar
+.modal-felicitacion__tabla td:nth-child(3) {
+    min-width: 85px;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar
+.modal-felicitacion__tabla th:nth-child(4),
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar
+.modal-felicitacion__tabla td:nth-child(4) {
+    min-width: 140px;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar
+.modal-felicitacion__tabla th:nth-child(5),
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar
+.modal-felicitacion__tabla td:nth-child(5) {
+    min-width: 140px;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar
+.modal-felicitacion__tabla th:nth-child(6),
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar
+.modal-felicitacion__tabla td:nth-child(6) {
+    min-width: 120px;
+}
+
+
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar
+.modal-felicitacion__tabla th:nth-child(7),
+#modal-editar-felicitacion
+.modal-felicitacion-personal-editar
+.modal-felicitacion__tabla td:nth-child(7) {
+    width: 75px;
 }

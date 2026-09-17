@@ -58,7 +58,7 @@ export function cargarPersonalEditar(
 
         tbody.innerHTML = `
             <tr>
-                <td colspan="6">
+                <td colspan="7">
                     Sin personal relacionado
                 </td>
             </tr>
@@ -277,6 +277,22 @@ export function cargarPersonalEditar(
                         class="modal-felicitacion-personal-editar__turno"
                         value="${escaparHtml(turno)}"
                         data-turno-personal-felicitacion
+                        autocomplete="off"
+                    >
+
+                </td>
+
+
+                <!-- ALIAS -->
+
+                <td>
+
+                    <input
+                        type="text"
+                        class="modal-felicitacion-personal-editar__alias"
+                        value="${escaparHtml(alias)}"
+                        data-alias-personal-felicitacion
+                        placeholder="Alias"
                         autocomplete="off"
                     >
 

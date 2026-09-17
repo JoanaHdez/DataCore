@@ -323,7 +323,7 @@ function renderizarPersonal(
 
         tbody.innerHTML = `
             <tr>
-                <td colspan="5">
+                <td colspan="6">
                     Sin personal relacionado
                 </td>
             </tr>
@@ -353,6 +353,14 @@ function renderizarPersonal(
                 )
                     .trim()
                     .toUpperCase();
+
+
+            const nomina =
+                String(
+                    persona.nomina
+                    || persona.perscod
+                    || ''
+                ).trim();
 
 
             const area =
@@ -423,8 +431,8 @@ function renderizarPersonal(
                             data-fallback-detalle-felicitacion
                         >
                             ${escaparHtml(
-                                inicial
-                            )}
+                inicial
+            )}
                         </span>
 
                     </div>
@@ -443,15 +451,25 @@ function renderizarPersonal(
 
                 </td>
 
+                <!-- NÓMINA -->
+
+                <td>
+
+                    ${escaparHtml(
+                        nomina
+                        || '—'
+                    )}
+
+                </td>
 
                 <!-- ÁREA -->
 
                 <td>
 
                     ${escaparHtml(
-                        area
-                        || '—'
-                    )}
+                area
+                || '—'
+            )}
 
                 </td>
 
@@ -461,9 +479,9 @@ function renderizarPersonal(
                 <td>
 
                     ${escaparHtml(
-                        turno
-                        || '—'
-                    )}
+                turno
+                || '—'
+            )}
 
                 </td>
 
@@ -473,9 +491,9 @@ function renderizarPersonal(
                 <td>
 
                     ${escaparHtml(
-                        alias
-                        || '—'
-                    )}
+                alias
+                || '—'
+            )}
 
                 </td>
             `;

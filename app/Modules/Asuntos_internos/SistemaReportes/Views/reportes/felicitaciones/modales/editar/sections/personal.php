@@ -175,6 +175,7 @@
                         <th>Nómina</th>
                         <th>Área</th>
                         <th>Turno</th>
+                        <th>Alias</th>
                         <th>Acciones</th>
                     </tr>
 
@@ -185,7 +186,7 @@
 
                     <tr>
 
-                        <td colspan="6">
+                        <td colspan="7">
                             Sin personal relacionado
                         </td>
 

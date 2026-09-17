@@ -626,7 +626,7 @@ function actualizarEstadoVacio(
 
 
     fila.innerHTML = `
-        <td colspan="5">
+        <td colspan="4">
 
             <div class="felicitaciones-tabla__empty-content">
 

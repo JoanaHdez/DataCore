@@ -37,10 +37,6 @@
 
                 <tr>
 
-                    <th class="felicitaciones-tabla__numero">
-                        No.
-                    </th>
-
                     <th class="felicitaciones-tabla__folio">
                         Folio
                     </th>
@@ -247,17 +243,6 @@
                     data-sectores="<?= esc($sectoresFiltro) ?>">
 
                     <!-- =====================================
-                                 NO.
-                            ====================================== -->
-
-                    <td class="felicitaciones-tabla__numero">
-
-                        <?= $idFelicitacion ?>
-
-                    </td>
-
-
-                    <!-- =====================================
                                  FOLIO
                             ====================================== -->
 
@@ -349,7 +334,7 @@
 
                 <tr class="felicitaciones-tabla__empty">
 
-                    <td colspan="5">
+                    <td colspan="4">
 
                         <div class="felicitaciones-tabla__empty-content">
 

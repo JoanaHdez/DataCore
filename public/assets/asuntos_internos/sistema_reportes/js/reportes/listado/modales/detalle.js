@@ -1486,6 +1486,14 @@ function renderizarPersonalDetalleFelicitacion(
                     .toUpperCase();
 
 
+            const alias =
+                String(
+                    persona.alias_snapshot
+                    || persona.alias
+                    || ''
+                ).trim();
+
+
             const foto =
                 String(
                     persona.foto
@@ -1567,6 +1575,30 @@ function renderizarPersonalDetalleFelicitacion(
                 </td>
 
             `;
+
+
+            const celdaAlias =
+                document.createElement(
+                    'td'
+                );
+
+
+            celdaAlias.textContent =
+                alias;
+
+
+            if (!alias) {
+
+                celdaAlias.textContent =
+                    String.fromCharCode(
+                        8212
+                    );
+            }
+
+
+            fila.appendChild(
+                celdaAlias
+            );
 
 
             tbody.appendChild(

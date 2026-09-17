@@ -312,14 +312,6 @@ export function inicializarGuardadoEditar(
                             || ''
                         ).trim();
 
-
-                    const alias =
-                        String(
-                            fila.dataset.alias
-                            || ''
-                        ).trim();
-
-
                     const inputTurno =
                         fila.querySelector(
                             '[data-turno-personal-felicitacion]'
@@ -332,6 +324,18 @@ export function inicializarGuardadoEditar(
                             || ''
                         ).trim();
 
+
+                    const inputAlias =
+                        fila.querySelector(
+                            '[data-alias-personal-felicitacion]'
+                        );
+
+
+                    const alias =
+                        String(
+                            inputAlias?.value
+                            || ''
+                        ).trim();
 
                     datos.append(
                         `personal[${indice}][plantilla_id]`,
