@@ -33,6 +33,24 @@
         </div>
 
 
+        <!-- FOLIO IMP -->
+        <div class="detalle-reporte-campo-grupo">
+
+            <div class="detalle-reporte-campo">
+
+                <span>
+                    Folio IMP
+                </span>
+
+                <strong id="detalle-folio-imp">
+                    —
+                </strong>
+
+            </div>
+
+        </div>
+
+
         <!-- FECHA DE QUEJA -->
         <div class="detalle-reporte-campo-grupo">
 

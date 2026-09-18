@@ -40,6 +40,13 @@ export function cargarIdentificacionDetalle(
 
     asignarTextoDetalle(
         modal,
+        '#detalle-folio-imp',
+        reporte.folio_imp
+    );
+
+
+    asignarTextoDetalle(
+        modal,
         '#detalle-fecha-queja',
         formatearFechaDetalle(
             reporte.fecha_queja

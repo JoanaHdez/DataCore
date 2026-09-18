@@ -24,6 +24,7 @@ class ReporteModel extends Model
     'folio',
     'fecha_registro',
     'folio_ip',
+    'folio_imp',
     'fecha_queja',
     'fecha_acuerdo',
     'expediente',

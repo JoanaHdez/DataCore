@@ -65,6 +65,10 @@ class ReporteService
         int $idUsuario
     ): array {
 
+        /* =========================================================
+        VALIDAR USUARIO
+        ========================================================= */
+
         if ($idUsuario <= 0) {
 
             throw new \RuntimeException(
@@ -73,17 +77,25 @@ class ReporteService
         }
 
 
+        /* =========================================================
+        ARCHIVOS CREADOS
+        ========================================================= */
+
         $rutasCreadas = [];
 
+
+        /* =========================================================
+        INICIAR TRANSACCIÓN
+        ========================================================= */
 
         $this->db->transBegin();
 
 
         try {
 
-            /* =================================================
+            /* =====================================================
             PREPARAR DATOS DEL REPORTE
-            ================================================= */
+            ===================================================== */
 
             $datosReporte =
                 $this->prepararDatosReporte(
@@ -92,9 +104,18 @@ class ReporteService
                 );
 
 
-            /* =================================================
+            /* =====================================================
+            VALIDAR FOLIOS IP / IMP ÚNICOS
+            ===================================================== */
+
+            $this->validarFoliosUnicos(
+                $datosReporte
+            );
+
+
+            /* =====================================================
             GENERAR FOLIO AUTOMÁTICO
-            ================================================= */
+            ===================================================== */
 
             $folioGenerado =
                 $this->folioService
@@ -115,9 +136,9 @@ class ReporteService
                 $folioGenerado['folio'];
 
 
-            /* =================================================
+            /* =====================================================
             NOMENCLATURA CAPTURADA POR USUARIO
-            ================================================= */
+            ===================================================== */
 
             $nomenclatura =
                 strtoupper(
@@ -178,9 +199,10 @@ class ReporteService
                 $prefijoEsperado
                 . $parteVariable;
 
-            /* =================================================
+
+            /* =====================================================
             GUARDAR REPORTE
-            ================================================= */
+            ===================================================== */
 
             $idReporte =
                 $this->reporteModel
@@ -202,9 +224,9 @@ class ReporteService
                 (int) $idReporte;
 
 
-            /* =================================================
+            /* =====================================================
             PERSONAL
-            ================================================= */
+            ===================================================== */
 
             $this->guardarPersonal(
                 $idReporte,
@@ -212,9 +234,9 @@ class ReporteService
             );
 
 
-            /* =================================================
+            /* =====================================================
             UNIDADES
-            ================================================= */
+            ===================================================== */
 
             $this->guardarUnidades(
                 $idReporte,
@@ -223,9 +245,9 @@ class ReporteService
             );
 
 
-            /* =================================================
+            /* =====================================================
             DIRECCIÓN PARA NOTIFICACIÓN
-            ================================================= */
+            ===================================================== */
 
             $this->guardarDireccionNotificacion(
                 $idReporte,
@@ -234,9 +256,9 @@ class ReporteService
             );
 
 
-            /* =================================================
+            /* =====================================================
             MOTIVOS Y SANCIONES
-            ================================================= */
+            ===================================================== */
 
             $this->guardarMotivosYSanciones(
                 $idReporte,
@@ -245,9 +267,9 @@ class ReporteService
             );
 
 
-            /* =================================================
+            /* =====================================================
             EVIDENCIAS
-            ================================================= */
+            ===================================================== */
 
             $rutasCreadas =
                 $this->guardarEvidencias(
@@ -257,9 +279,9 @@ class ReporteService
                 );
 
 
-            /* =================================================
+            /* =====================================================
             VALIDAR TRANSACCIÓN
-            ================================================= */
+            ===================================================== */
 
             if (
                 $this->db->transStatus()
@@ -272,8 +294,16 @@ class ReporteService
             }
 
 
+            /* =====================================================
+            CONFIRMAR
+            ===================================================== */
+
             $this->db->transCommit();
 
+
+            /* =====================================================
+            RESPUESTA
+            ===================================================== */
 
             return [
 
@@ -298,14 +328,16 @@ class ReporteService
             ];
         } catch (\Throwable $e) {
 
+            /* =====================================================
+            REVERTIR TRANSACCIÓN
+            ===================================================== */
+
             $this->db->transRollback();
 
 
-            /*
-            * Si alcanzamos a mover archivos físicos,
-            * pero la transacción no se completó,
-            * eliminamos esos archivos.
-            */
+            /* =====================================================
+            ELIMINAR ARCHIVOS FÍSICOS CREADOS
+            ===================================================== */
 
             foreach (
                 $rutasCreadas
@@ -324,6 +356,10 @@ class ReporteService
                 }
             }
 
+
+            /* =====================================================
+            PROPAGAR ERROR
+            ===================================================== */
 
             throw $e;
         }
@@ -685,7 +721,7 @@ class ReporteService
         }
     }
 
-    
+
     /* =========================================================
        PREPARAR REPORTE PRINCIPAL
     ========================================================= */
@@ -752,6 +788,12 @@ class ReporteService
                     ?? null
             ),
 
+
+            'folio_imp' =>
+            $this->valorNullable(
+                $datos['folio_imp']
+                    ?? null
+            ),
 
             'fecha_queja' =>
             $this->normalizarFecha(
@@ -4436,5 +4478,136 @@ class ReporteService
 
 
         return $origen;
+    }
+
+    /* =========================================================
+    VALIDAR FOLIOS IP / IMP ÚNICOS
+    ========================================================= */
+
+    private function validarFoliosUnicos(
+        array $datosReporte,
+        ?int $idReporteExcluir = null
+    ): void {
+
+        /* =====================================================
+        FOLIO IP
+        ===================================================== */
+
+        $folioIp =
+            trim(
+                (string) (
+                    $datosReporte['folio_ip']
+                    ?? ''
+                )
+            );
+
+
+        if ($folioIp !== '') {
+
+            $builder =
+                $this->db
+                ->table(
+                    'ai_reportes'
+                )
+                ->select(
+                    'id_reporte'
+                )
+                ->where(
+                    'folio_ip',
+                    $folioIp
+                )
+                ->where(
+                    'eliminado',
+                    0
+                );
+
+
+            if (
+                $idReporteExcluir !== null
+                && $idReporteExcluir > 0
+            ) {
+
+                $builder->where(
+                    'id_reporte !=',
+                    $idReporteExcluir
+                );
+            }
+
+
+            $existe =
+                $builder
+                ->limit(1)
+                ->get()
+                ->getRowArray();
+
+
+            if ($existe) {
+
+                throw new \InvalidArgumentException(
+                    'El Folio IP ya se encuentra registrado. Debes ingresar uno diferente.'
+                );
+            }
+        }
+
+
+        /* =====================================================
+        FOLIO IMP
+        ===================================================== */
+
+        $folioImp =
+            trim(
+                (string) (
+                    $datosReporte['folio_imp']
+                    ?? ''
+                )
+            );
+
+
+        if ($folioImp !== '') {
+
+            $builder =
+                $this->db
+                ->table(
+                    'ai_reportes'
+                )
+                ->select(
+                    'id_reporte'
+                )
+                ->where(
+                    'folio_imp',
+                    $folioImp
+                )
+                ->where(
+                    'eliminado',
+                    0
+                );
+
+
+            if (
+                $idReporteExcluir !== null
+                && $idReporteExcluir > 0
+            ) {
+
+                $builder->where(
+                    'id_reporte !=',
+                    $idReporteExcluir
+                );
+            }
+
+
+            $existe =
+                $builder
+                ->limit(1)
+                ->get()
+                ->getRowArray();
+
+
+            if ($existe) {
+
+                throw new \InvalidArgumentException(
+                    'El Folio IMP ya se encuentra registrado. Debes ingresar uno diferente.'
+                );
+            }
+        }
     }
 }

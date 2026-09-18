@@ -97,139 +97,138 @@ function inicializarFormularioPorPasos() {
        MOSTRAR PASO
     ===================================================== */
 
-    function mostrarPaso(numeroPaso) 
-    {
+    function mostrarPaso(numeroPaso) {
 
-    pasoActual =
-        numeroPaso;
+        pasoActual =
+            numeroPaso;
 
 
-    /* =================================================
-       CONTENIDO
-    ================================================= */
+        /* =================================================
+           CONTENIDO
+        ================================================= */
 
-    pasos.forEach(
-        (paso) => {
+        pasos.forEach(
+            (paso) => {
 
-            const numero =
-                Number(
-                    paso.dataset.step
+                const numero =
+                    Number(
+                        paso.dataset.step
+                    );
+
+
+                paso.classList.toggle(
+                    'report-step--active',
+                    numero === pasoActual
                 );
 
-
-            paso.classList.toggle(
-                'report-step--active',
-                numero === pasoActual
-            );
-
-        }
-    );
-
-
-    /* =================================================
-       DIRECCIÓN PARA NOTIFICACIÓN
-
-       El mapa se inicializa únicamente cuando el
-       paso 4 ya está visible.
-
-       Esto evita que Google Maps intente calcular
-       dimensiones mientras el contenedor está oculto.
-    ================================================= */
-
-    if (
-        pasoActual === 4
-        && !direccionNotificacionInicializada
-    ) {
-
-        direccionNotificacionInicializada =
-            true;
-
-
-        window.setTimeout(
-            () => {
-
-                inicializarDireccionNotificacion();
-
-            },
-            100
+            }
         );
-    }
 
 
-    /* =================================================
-       INDICADORES
-    ================================================= */
+        /* =================================================
+           DIRECCIÓN PARA NOTIFICACIÓN
+    
+           El mapa se inicializa únicamente cuando el
+           paso 4 ya está visible.
+    
+           Esto evita que Google Maps intente calcular
+           dimensiones mientras el contenedor está oculto.
+        ================================================= */
 
-    indicadores.forEach(
-        (indicador) => {
+        if (
+            pasoActual === 4
+            && !direccionNotificacionInicializada
+        ) {
 
-            const numero =
-                Number(
-                    indicador
-                        .dataset
-                        .stepIndicator
+            direccionNotificacionInicializada =
+                true;
+
+
+            window.setTimeout(
+                () => {
+
+                    inicializarDireccionNotificacion();
+
+                },
+                100
+            );
+        }
+
+
+        /* =================================================
+           INDICADORES
+        ================================================= */
+
+        indicadores.forEach(
+            (indicador) => {
+
+                const numero =
+                    Number(
+                        indicador
+                            .dataset
+                            .stepIndicator
+                    );
+
+
+                indicador.classList.toggle(
+                    'report-steps__item--active',
+                    numero === pasoActual
                 );
 
 
-            indicador.classList.toggle(
-                'report-steps__item--active',
-                numero === pasoActual
-            );
+                indicador.classList.toggle(
+                    'report-steps__item--completed',
+                    pasosCompletados.has(
+                        numero
+                    )
+                    && numero !== pasoActual
+                );
+
+            }
+        );
 
 
-            indicador.classList.toggle(
-                'report-steps__item--completed',
-                pasosCompletados.has(
-                    numero
-                )
-                && numero !== pasoActual
-            );
+        /* =================================================
+           ANTERIOR
+        ================================================= */
 
-        }
-    );
+        botonAnterior.classList.toggle(
+            'report-step-control--hidden',
+            pasoActual === 1
+        );
 
 
-    /* =================================================
-       ANTERIOR
-    ================================================= */
+        /* =================================================
+           SIGUIENTE
+        ================================================= */
 
-    botonAnterior.classList.toggle(
-        'report-step-control--hidden',
-        pasoActual === 1
-    );
-
-
-    /* =================================================
-       SIGUIENTE
-    ================================================= */
-
-    botonSiguiente.classList.toggle(
-        'report-step-control--hidden',
-        pasoActual === totalPasos
-    );
+        botonSiguiente.classList.toggle(
+            'report-step-control--hidden',
+            pasoActual === totalPasos
+        );
 
 
-    /* =================================================
-       GUARDAR
-    ================================================= */
+        /* =================================================
+           GUARDAR
+        ================================================= */
 
-    botonGuardar.classList.toggle(
-        'report-step-control--hidden',
-        pasoActual !== totalPasos
-    );
+        botonGuardar.classList.toggle(
+            'report-step-control--hidden',
+            pasoActual !== totalPasos
+        );
 
 
-    /* =================================================
-       SCROLL
-    ================================================= */
+        /* =================================================
+           SCROLL
+        ================================================= */
 
-    formulario.scrollIntoView({
-        behavior:
-            'smooth',
+        formulario.scrollIntoView({
+            behavior:
+                'smooth',
 
-        block:
-            'start',
-    });
+            block:
+                'start',
+        });
     }
 
     /* =====================================================
@@ -283,6 +282,27 @@ function inicializarFormularioPorPasos() {
                 )
             ) {
                 return;
+            }
+
+            /* =====================================================
+            VALIDAR FOLIOS IP / IMP EN PASO 1
+            ===================================================== */
+
+            if (
+                pasoActual === 1
+            ) {
+
+                const foliosValidos =
+                    await validarFoliosPasoUno(
+                        formulario
+                    );
+
+
+                if (
+                    !foliosValidos
+                ) {
+                    return;
+                }
             }
 
             pasosCompletados.add(
@@ -386,29 +406,29 @@ function inicializarFormularioPorPasos() {
                     );
 
                 console.log(
-    'PRUEBA QUEJOSO:',
-    {
-        es_anonimo:
-            datos.get(
-                'es_anonimo'
-            ),
+                    'PRUEBA QUEJOSO:',
+                    {
+                        es_anonimo:
+                            datos.get(
+                                'es_anonimo'
+                            ),
 
-        numero_anonimo:
-            datos.get(
-                'numero_anonimo'
-            ),
+                        numero_anonimo:
+                            datos.get(
+                                'numero_anonimo'
+                            ),
 
-        canalizacion:
-            datos.get(
-                'canalizacion'
-            ),
+                        canalizacion:
+                            datos.get(
+                                'canalizacion'
+                            ),
 
-        canalizacion_otro:
-            datos.get(
-                'canalizacion_otro'
-            ),
-    }
-);
+                        canalizacion_otro:
+                            datos.get(
+                                'canalizacion_otro'
+                            ),
+                    }
+                );
                 /* =============================================
                    ENDPOINT
                 ============================================= */
@@ -1255,6 +1275,224 @@ async function cargarPrevisualizacionFolio(
     }
 }
 
+
+/* =========================================================
+   VALIDAR FOLIOS IP / IMP
+========================================================= */
+
+async function validarFoliosPasoUno(
+    formulario
+) {
+
+    const inputFolioIp =
+        formulario.querySelector(
+            '#folio_ip'
+        );
+
+
+    const inputFolioImp =
+        formulario.querySelector(
+            '#folio_imp'
+        );
+
+
+    const folioIp =
+        String(
+            inputFolioIp?.value
+            || ''
+        ).trim();
+
+
+    const folioImp =
+        String(
+            inputFolioImp?.value
+            || ''
+        ).trim();
+
+
+    /* =====================================================
+       AMBOS VACÍOS
+    ===================================================== */
+
+    if (
+        folioIp === ''
+        && folioImp === ''
+    ) {
+        return true;
+    }
+
+
+    try {
+
+        /* =================================================
+           URL
+        ================================================= */
+
+        const url =
+            new URL(
+                'DataCore/public/asuntos-internos/reportes/validar-folio',
+                `${window.location.origin}/`
+            );
+
+
+        if (
+            folioIp !== ''
+        ) {
+
+            url.searchParams.set(
+                'folio_ip',
+                folioIp
+            );
+        }
+
+
+        if (
+            folioImp !== ''
+        ) {
+
+            url.searchParams.set(
+                'folio_imp',
+                folioImp
+            );
+        }
+
+
+        /* =================================================
+           REQUEST
+        ================================================= */
+
+        const respuesta =
+            await fetch(
+                url.toString(),
+                {
+                    method:
+                        'GET',
+
+                    headers: {
+                        Accept:
+                            'application/json',
+                    },
+
+                    credentials:
+                        'same-origin',
+                }
+            );
+
+
+        const resultado =
+            await respuesta.json();
+
+
+        if (
+            !respuesta.ok
+            || resultado?.success !== true
+        ) {
+
+            throw new Error(
+                resultado?.message
+                || 'No fue posible validar los folios.'
+            );
+        }
+
+
+        /* =================================================
+           FOLIO IP REPETIDO
+        ================================================= */
+
+        if (
+            resultado?.folio_ip?.existe
+        ) {
+
+            mostrarResultadoYRedirigir({
+
+                tipo:
+                    'warning',
+
+                titulo:
+                    'Folio IP repetido',
+
+                mensaje:
+                    'El Folio IP ya se encuentra registrado. Debes ingresar uno diferente para continuar.',
+
+                duracion:
+                    3000,
+
+            });
+
+
+            inputFolioIp?.focus();
+
+
+            return false;
+        }
+
+
+        /* =================================================
+           FOLIO IMP REPETIDO
+        ================================================= */
+
+        if (
+            resultado?.folio_imp?.existe
+        ) {
+
+            mostrarResultadoYRedirigir({
+
+                tipo:
+                    'warning',
+
+                titulo:
+                    'Folio IMP repetido',
+
+                mensaje:
+                    'El Folio IMP ya se encuentra registrado. Debes ingresar uno diferente para continuar.',
+
+                duracion:
+                    3000,
+
+            });
+
+
+            inputFolioImp?.focus();
+
+
+            return false;
+        }
+
+
+        return true;
+
+
+    } catch (error) {
+
+        console.error(
+            'Error validando Folio IP / IMP:',
+            error
+        );
+
+
+        mostrarResultadoYRedirigir({
+
+            tipo:
+                'error',
+
+            titulo:
+                'No fue posible validar',
+
+            mensaje:
+                error.message
+                || 'No fue posible validar los folios.',
+
+            duracion:
+                3000,
+
+        });
+
+
+        return false;
+    }
+}
+
+
 /* =========================================================
    URL GUARDAR
 ========================================================= */
@@ -1339,5 +1577,6 @@ function actualizarIndicadoresGuardados(
 
         }
     );
+
 
 }

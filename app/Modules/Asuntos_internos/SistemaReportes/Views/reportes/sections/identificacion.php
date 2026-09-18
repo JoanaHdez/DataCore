@@ -36,6 +36,18 @@
 
             </div>
 
+            <!-- FOLIO IMP -->
+            <div class="report-field">
+
+                <label for="folio_imp">
+                    Folio IMP
+                </label>
+
+                <input type="text" id="folio_imp" name="folio_imp" class="report-input"
+                    placeholder="Ingresa el folio IMP" autocomplete="off">
+
+            </div>
+
 
             <!-- FECHA DE QUEJA -->
             <div class="report-field">

@@ -1476,6 +1476,7 @@ class Reportes_Controller extends BaseController
                         'folio',
                         'fecha_registro',
                         'folio_ip',
+                        'folio_imp',
                         'fecha_queja',
                         'fecha_acuerdo',
                         'expediente',
@@ -7459,10 +7460,15 @@ class Reportes_Controller extends BaseController
 
     public function validarFolio()
     {
+        /* =========================================================
+        VALIDAR SESIÓN
+        ========================================================= */
+
         if (
             session()->get('reportes_autenticado') !== true
             || !session()->has('usuario_reportes')
         ) {
+
             return $this->response
                 ->setStatusCode(401)
                 ->setJSON([
@@ -7472,22 +7478,52 @@ class Reportes_Controller extends BaseController
         }
 
 
+        /* =========================================================
+        PARÁMETROS
+        ========================================================= */
+
         $folio =
             trim(
-                (string)
-                $this->request->getGet(
-                    'folio'
+                (string) (
+                    $this->request->getGet('folio')
+                    ?? ''
                 )
             );
 
 
-        if ($folio === '') {
+        $folioIp =
+            trim(
+                (string) (
+                    $this->request->getGet('folio_ip')
+                    ?? ''
+                )
+            );
+
+
+        $folioImp =
+            trim(
+                (string) (
+                    $this->request->getGet('folio_imp')
+                    ?? ''
+                )
+            );
+
+
+        /* =========================================================
+        VALIDAR QUE EXISTA ALGO QUE REVISAR
+        ========================================================= */
+
+        if (
+            $folio === ''
+            && $folioIp === ''
+            && $folioImp === ''
+        ) {
 
             return $this->response
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'El folio es obligatorio.',
+                    'message' => 'No se recibió ningún folio para validar.',
                 ]);
         }
 
@@ -7500,38 +7536,150 @@ class Reportes_Controller extends BaseController
                 );
 
 
-            $existe =
-                $db
-                ->table('ai_reportes')
-                ->select('id_reporte')
-                ->where(
-                    'folio',
-                    $folio
-                )
-                ->get()
-                ->getRowArray();
+            /* =====================================================
+            RESPUESTA BASE
+            ===================================================== */
+
+            $resultado = [
+
+                'success' =>
+                    true,
+
+                'folio' => [
+                    'valor' => $folio,
+                    'existe' => false,
+                ],
+
+                'folio_ip' => [
+                    'valor' => $folioIp,
+                    'existe' => false,
+                ],
+
+                'folio_imp' => [
+                    'valor' => $folioImp,
+                    'existe' => false,
+                ],
+
+            ];
+
+
+            /* =====================================================
+            FOLIO GENERAL
+            ===================================================== */
+
+            if ($folio !== '') {
+
+                $existeFolio =
+                    $db
+                        ->table('ai_reportes')
+                        ->select('id_reporte')
+                        ->where(
+                            'folio',
+                            $folio
+                        )
+                        ->where(
+                            'eliminado',
+                            0
+                        )
+                        ->limit(1)
+                        ->get()
+                        ->getRowArray();
+
+
+                $resultado['folio']['existe'] =
+                    !empty($existeFolio);
+            }
+
+
+            /* =====================================================
+            FOLIO IP
+            ===================================================== */
+
+            if ($folioIp !== '') {
+
+                $existeFolioIp =
+                    $db
+                        ->table('ai_reportes')
+                        ->select('id_reporte')
+                        ->where(
+                            'folio_ip',
+                            $folioIp
+                        )
+                        ->where(
+                            'eliminado',
+                            0
+                        )
+                        ->limit(1)
+                        ->get()
+                        ->getRowArray();
+
+
+                $resultado['folio_ip']['existe'] =
+                    !empty($existeFolioIp);
+            }
+
+
+            /* =====================================================
+            FOLIO IMP
+            ===================================================== */
+
+            if ($folioImp !== '') {
+
+                $existeFolioImp =
+                    $db
+                        ->table('ai_reportes')
+                        ->select('id_reporte')
+                        ->where(
+                            'folio_imp',
+                            $folioImp
+                        )
+                        ->where(
+                            'eliminado',
+                            0
+                        )
+                        ->limit(1)
+                        ->get()
+                        ->getRowArray();
+
+
+                $resultado['folio_imp']['existe'] =
+                    !empty($existeFolioImp);
+            }
+
+
+            /* =====================================================
+            MENSAJE GENERAL
+            ===================================================== */
+
+            if (
+                $resultado['folio_ip']['existe']
+                || $resultado['folio_imp']['existe']
+                || $resultado['folio']['existe']
+            ) {
+
+                $resultado['message'] =
+                    'Se encontró al menos un folio ya registrado.';
+
+            } else {
+
+                $resultado['message'] =
+                    'Los folios están disponibles.';
+            }
 
 
             return $this->response
-                ->setJSON([
-                    'success' => true,
+                ->setJSON(
+                    $resultado
+                );
 
-                    'existe' =>
-                    !empty($existe),
-
-                    'message' =>
-                    !empty($existe)
-                        ? 'Ya existe un reporte registrado con este folio.'
-                        : 'El folio está disponible.',
-                ]);
         } catch (\Throwable $e) {
 
             log_message(
                 'error',
-                'Error validando folio de reporte: {mensaje}',
+                'Error validando folios de reporte: {mensaje}',
                 [
                     'mensaje' =>
-                    $e->getMessage(),
+                        $e->getMessage(),
                 ]
             );
 
@@ -7541,7 +7689,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                    'No fue posible validar el folio.',
+                        'No fue posible validar los folios.',
                 ]);
         }
     }
