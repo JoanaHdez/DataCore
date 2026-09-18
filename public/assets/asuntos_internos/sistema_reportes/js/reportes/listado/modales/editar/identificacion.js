@@ -27,6 +27,65 @@ export function cargarIdentificacionEditar(
 
 
     /* =====================================================
+       TIPO DE FOLIO
+    ===================================================== */
+
+    const selectTipoFolio =
+        modal.querySelector(
+            '#editar-tipo-folio'
+        );
+
+
+    const folioActual =
+        String(
+            reporte.folio
+            || ''
+        )
+            .trim()
+            .toUpperCase();
+
+
+    let claveFolio =
+        'QJ';
+
+
+    if (
+        folioActual.startsWith(
+            'QJV-'
+        )
+    ) {
+
+        claveFolio =
+            'QJV';
+
+    } else if (
+        folioActual.startsWith(
+            'QJF-'
+        )
+    ) {
+
+        claveFolio =
+            'QJF';
+
+    } else if (
+        folioActual.startsWith(
+            'QJ-'
+        )
+    ) {
+
+        claveFolio =
+            'QJ';
+    }
+
+
+    if (selectTipoFolio) {
+
+        selectTipoFolio.value =
+            claveFolio;
+    }
+
+
+    /* =====================================================
        FOLIO IP
     ===================================================== */
 
@@ -38,7 +97,7 @@ export function cargarIdentificacionEditar(
 
 
     /* =====================================================
-    FOLIO IMP
+       FOLIO IMP
     ===================================================== */
 
     asignarValorEditar(
@@ -85,130 +144,11 @@ export function cargarIdentificacionEditar(
        NOMENCLATURA
     ===================================================== */
 
-    const inputParte =
-        modal.querySelector(
-            '#editar-nomenclatura-parte'
-        );
-
-
-    const inputCompleto =
-        modal.querySelector(
-            '#editar-nomenclatura'
-        );
-
-
-    const PREFIJO =
-        'CGSC/CAI/QJ/';
-
-
-    const nomenclaturaGuardada =
-        String(
-            reporte.nomenclatura
-            || ''
-        ).trim();
-
-
-    let parteVariable =
-        nomenclaturaGuardada;
-
-
-    if (
-        nomenclaturaGuardada.startsWith(
-            PREFIJO
-        )
-    ) {
-
-        parteVariable =
-            nomenclaturaGuardada
-                .substring(
-                    PREFIJO.length
-                )
-                .trim();
-    }
-
-
-    if (inputParte) {
-
-        inputParte.value =
-            parteVariable;
-    }
-
-
-    if (inputCompleto) {
-
-        inputCompleto.value =
-            nomenclaturaGuardada;
-    }
-
-
-    /* =====================================================
-       ACTUALIZAR NOMENCLATURA AL EDITAR
-    ===================================================== */
-
-    function actualizarNomenclatura() {
-
-        if (
-            !inputParte
-            || !inputCompleto
-        ) {
-            return;
-        }
-
-
-        let parte =
-            String(
-                inputParte.value
-                || ''
-            ).trim();
-
-
-        /* Evitar doble diagonal al inicio */
-
-        parte =
-            parte.replace(
-                /^\/+/,
-                ''
-            );
-
-
-        inputParte.value =
-            parte;
-
-
-        inputCompleto.value =
-            parte !== ''
-                ? `${PREFIJO}${parte}`
-                : '';
-    }
-
-
-    /* =====================================================
-       EVITAR LISTENERS DUPLICADOS
-    ===================================================== */
-
-    if (
-        inputParte
-        && inputParte.dataset
-            .nomenclaturaInicializada
-        !== '1'
-    ) {
-
-        inputParte.dataset
-            .nomenclaturaInicializada =
-            '1';
-
-
-        inputParte.addEventListener(
-            'input',
-            actualizarNomenclatura
-        );
-
-
-        inputParte.addEventListener(
-            'change',
-            actualizarNomenclatura
-        );
-    }
+    asignarValorEditar(
+        modal,
+        '#editar-nomenclatura',
+        reporte.nomenclatura
+    );
 
 
     /* =====================================================
@@ -219,5 +159,6 @@ export function cargarIdentificacionEditar(
         modal,
         '#editar-no-oficio',
         reporte.no_oficio
+        ?? reporte.numero_oficio
     );
 }

@@ -380,7 +380,47 @@
 }
 
 
+/* =========================================================
+   EDITAR REPORTE
+   QJF - ESTADO VACÍO PERSONAL / UNIDADES
+========================================================= */
 
+.editar-qjf-vacio {
+
+    overflow: hidden;
+
+    border-top: 1px solid #e6edf3;
+}
+
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+.editar-qjf-vacio__contenido {
+
+    padding: 18px 20px;
+
+    color: #718498;
+
+    background: #f8fbfd;
+
+    border-top: 1px solid #e5edf3;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   OCULTO
+========================================================= */
+
+.editar-qjf-vacio[hidden] {
+
+    display: none !important;
+}
 
 /* =========================================================
    RESPONSIVE

@@ -1,4 +1,4 @@
-<div class="editar-reporte-seccion__bloque">
+<div class="editar-reporte-seccion__bloque" id="editar-seccion-personal">
 
     <div class="detalle-reporte-seccion__header">
 
@@ -12,113 +12,47 @@
 
     </div>
 
-
     <!-- =====================================================
-         BUSCADOR
+        QJF - SIN PERSONAL
     ====================================================== -->
 
-    <div class="editar-reporte-grid">
+    <div id="editar-personal-qjf-vacio" class="editar-qjf-vacio" hidden>
+        <div class="editar-qjf-vacio__contenido">
 
-        <div class="editar-reporte-campo editar-reporte-campo--full">
-
-            <label for="editar-personal-busqueda">
-                Buscar personal
-                <span class="required">*</span>
-            </label>
-
-            <input type="text" id="editar-personal-busqueda" class="report-input" autocomplete="off"
-                placeholder="Busca por nombre o nómina">
-
-            <small class="editar-reporte-campo__help">
-                Selecciona una persona para cargar automáticamente sus datos.
-            </small>
-
-
-            <div class="editar-personal-resultados personal-resultados" id="editar-personal-resultados" hidden></div>
+            No hay personal relacionado con este reporte.
 
         </div>
-
     </div>
 
 
     <!-- =====================================================
-         PERSONA SELECCIONADA
+        CONTENIDO NORMAL
     ====================================================== -->
 
-    <div class="editar-personal-seleccionado personal-seleccionado" id="editar-personal-seleccionado" hidden>
+    <div id="editar-personal-contenido">
 
-        <div class="editar-personal-seleccionado__foto personal-seleccionado__foto">
+        <!-- =====================================================
+            BUSCADOR
+        ====================================================== -->
 
-            <img id="editar-personal-foto" src="" alt="" hidden>
+        <div class="editar-reporte-grid">
 
-            <span id="editar-personal-foto-fallback">
-                —
-            </span>
+            <div class="editar-reporte-campo editar-reporte-campo--full">
 
-        </div>
+                <label for="editar-personal-busqueda">
+                    Buscar personal
+                    <span class="required">*</span>
+                </label>
 
+                <input type="text" id="editar-personal-busqueda" class="report-input" autocomplete="off"
+                    placeholder="Busca por nombre o nómina">
 
-        <div class="editar-personal-seleccionado__datos personal-seleccionado__datos">
-
-            <input type="hidden" id="editar-personal-plantilla-id">
-
-            <input type="hidden" id="editar-personal-perscod">
-
-
-            <div class="editar-reporte-grid">
-
-                <!-- NOMBRE -->
-                <div class="editar-reporte-campo editar-reporte-campo--full">
-
-                    <label for="editar-personal-nombre">
-                        Nombre
-                    </label>
-
-                    <input type="text" id="editar-personal-nombre" class="report-input report-input--readonly" readonly>
-
-                </div>
+                <small class="editar-reporte-campo__help">
+                    Selecciona una persona para cargar automáticamente sus datos.
+                </small>
 
 
-                <!-- ÁREA -->
-                <div class="editar-reporte-campo">
-
-                    <label for="editar-personal-area">
-                        Área
-                    </label>
-
-                    <input type="text" id="editar-personal-area" class="report-input report-input--readonly" readonly>
-
-                </div>
-
-
-                <!-- TURNO -->
-                <div class="editar-reporte-campo">
-
-                    <label for="editar-personal-turno">
-                        Turno
-                        <span class="required">*</span>
-                    </label>
-
-                    <input type="text" id="editar-personal-turno" class="report-input" placeholder="Turno"
-                        autocomplete="off">
-
-                </div>
-
-
-                <!-- ALIAS -->
-                <div class="editar-reporte-campo">
-
-                    <label for="editar-personal-alias">
-                        Alias
-                    </label>
-
-                    <input type="text" id="editar-personal-alias" class="report-input" placeholder="Ingresa el alias"
-                        autocomplete="off">
-
-                    <small class="editar-reporte-campo__help">
-                        Campo opcional.
-                    </small>
-
+                <div class="editar-personal-resultados personal-resultados" id="editar-personal-resultados" hidden>
                 </div>
 
             </div>
@@ -126,71 +60,159 @@
         </div>
 
 
-        <div class="editar-personal-seleccionado__acciones personal-seleccionado__acciones">
+        <!-- =====================================================
+            PERSONA SELECCIONADA
+        ====================================================== -->
 
-            <button type="button" class="button button--primary" id="btn-editar-agregar-personal">
-                Agregar personal
-            </button>
+        <div class="editar-personal-seleccionado personal-seleccionado" id="editar-personal-seleccionado" hidden>
 
-        </div>
+            <div class="editar-personal-seleccionado__foto personal-seleccionado__foto">
 
-    </div>
+                <img id="editar-personal-foto" src="" alt="" hidden>
 
-
-    <!-- =====================================================
-         PERSONAL ACTUAL DEL REPORTE
-    ====================================================== -->
-
-    <div class="editar-personal-agregado personal-agregado" id="editar-personal-agregado" hidden>
-
-        <div class="editar-personal-agregado__header personal-agregado__header">
-
-            <div>
-
-                <span>
-                    Personal agregado
+                <span id="editar-personal-foto-fallback">
+                    —
                 </span>
 
-                <strong>
-                    Elementos relacionados con el reporte
-                </strong>
+            </div>
+
+
+            <div class="editar-personal-seleccionado__datos personal-seleccionado__datos">
+
+                <input type="hidden" id="editar-personal-plantilla-id">
+
+                <input type="hidden" id="editar-personal-perscod">
+
+
+                <div class="editar-reporte-grid">
+
+                    <!-- NOMBRE -->
+                    <div class="editar-reporte-campo editar-reporte-campo--full">
+
+                        <label for="editar-personal-nombre">
+                            Nombre
+                        </label>
+
+                        <input type="text" id="editar-personal-nombre" class="report-input report-input--readonly"
+                            readonly>
+
+                    </div>
+
+
+                    <!-- ÁREA -->
+                    <div class="editar-reporte-campo">
+
+                        <label for="editar-personal-area">
+                            Área
+                        </label>
+
+                        <input type="text" id="editar-personal-area" class="report-input report-input--readonly"
+                            readonly>
+
+                    </div>
+
+
+                    <!-- TURNO -->
+                    <div class="editar-reporte-campo">
+
+                        <label for="editar-personal-turno">
+                            Turno
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="text" id="editar-personal-turno" class="report-input" placeholder="Turno"
+                            autocomplete="off">
+
+                    </div>
+
+
+                    <!-- ALIAS -->
+                    <div class="editar-reporte-campo">
+
+                        <label for="editar-personal-alias">
+                            Alias
+                        </label>
+
+                        <input type="text" id="editar-personal-alias" class="report-input"
+                            placeholder="Ingresa el alias" autocomplete="off">
+
+                        <small class="editar-reporte-campo__help">
+                            Campo opcional.
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="editar-personal-seleccionado__acciones personal-seleccionado__acciones">
+
+                <button type="button" class="button button--primary" id="btn-editar-agregar-personal">
+                    Agregar personal
+                </button>
 
             </div>
 
         </div>
 
 
-        <div class="editar-personal-agregado__tabla-wrapper personal-agregado__tabla-wrapper">
+        <!-- =====================================================
+            PERSONAL ACTUAL DEL REPORTE
+        ====================================================== -->
 
-            <table class="editar-personal-agregado__tabla personal-agregado__tabla">
+        <div class="editar-personal-agregado personal-agregado" id="editar-personal-agregado" hidden>
 
-                <thead>
+            <div class="editar-personal-agregado__header personal-agregado__header">
 
-                    <tr>
-                        <th>Foto</th>
-                        <th>Nombre</th>
-                        <th>Nómina</th>
-                        <th>Área</th>
-                        <th>Turno</th>
-                        <th>Alias</th>
-                        <th>Acciones</th>
-                    </tr>
+                <div>
 
-                </thead>
+                    <span>
+                        Personal agregado
+                    </span>
 
-                <tbody id="editar-personal-agregado-body"></tbody>
+                    <strong>
+                        Elementos relacionados con el reporte
+                    </strong>
 
-            </table>
+                </div>
+
+            </div>
+
+
+            <div class="editar-personal-agregado__tabla-wrapper personal-agregado__tabla-wrapper">
+
+                <table class="editar-personal-agregado__tabla personal-agregado__tabla">
+
+                    <thead>
+
+                        <tr>
+                            <th>Foto</th>
+                            <th>Nombre</th>
+                            <th>Nómina</th>
+                            <th>Área</th>
+                            <th>Turno</th>
+                            <th>Alias</th>
+                            <th>Acciones</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="editar-personal-agregado-body"></tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
+
+        <!-- =====================================================
+            DATOS PARA BACKEND
+        ====================================================== -->
+
+        <div id="editar-personal-hidden-inputs"></div>
+
     </div>
-
-
-    <!-- =====================================================
-         DATOS PARA BACKEND
-    ====================================================== -->
-
-    <div id="editar-personal-hidden-inputs"></div>
-
 </div>

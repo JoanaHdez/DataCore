@@ -15,7 +15,44 @@
 
     <div class="editar-reporte-grid">
 
-        <!-- NÚMERO DE FOLIO -->
+        <!-- =====================================================
+             TIPO DE FOLIO
+        ====================================================== -->
+
+        <div class="editar-reporte-campo">
+
+            <label for="editar-tipo-folio">
+                Tipo de folio
+                <span class="required">*</span>
+            </label>
+
+            <select id="editar-tipo-folio" name="tipo_folio" required>
+
+                <option value="QJ">
+                    QJ - Queja
+                </option>
+
+                <option value="QJV">
+                    QJV - Queja verbal
+                </option>
+
+                <option value="QJF">
+                    QJF - Queja foránea
+                </option>
+
+            </select>
+
+            <small>
+                El consecutivo depende del tipo de folio seleccionado.
+            </small>
+
+        </div>
+
+
+        <!-- =====================================================
+             NÚMERO DE FOLIO
+        ====================================================== -->
+
         <div class="editar-reporte-campo">
 
             <label for="editar-folio">
@@ -31,7 +68,10 @@
         </div>
 
 
-        <!-- FECHA DE REGISTRO -->
+        <!-- =====================================================
+             FECHA DE REGISTRO
+        ====================================================== -->
+
         <div class="editar-reporte-campo">
 
             <label for="editar-fecha-registro">

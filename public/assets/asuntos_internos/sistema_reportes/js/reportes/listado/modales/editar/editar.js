@@ -151,6 +151,9 @@ export function inicializarEditarReporte() {
     );
 
 
+    inicializarTipoFolioEditar(
+        modal
+    );
     /* =====================================================
        ABRIR EDITAR
     ===================================================== */
@@ -270,6 +273,53 @@ export function inicializarEditarReporte() {
                     reporte
                 );
 
+
+                /* =================================================
+                ESTADO ORIGINAL DEL TIPO DE FOLIO
+                ================================================= */
+
+                const selectTipoFolio =
+                    modal.querySelector(
+                        '#editar-tipo-folio'
+                    );
+
+
+                if (selectTipoFolio) {
+
+                    selectTipoFolio.dataset
+                        .tipoFolioOriginal =
+                        String(
+                            reporte.prefijo
+                            || 'QJ'
+                        )
+                            .trim()
+                            .toUpperCase();
+
+
+                    selectTipoFolio.dataset
+                        .folioOriginal =
+                        String(
+                            reporte.folio
+                            || ''
+                        ).trim();
+
+
+                    selectTipoFolio.dataset
+                        .nomenclaturaOriginal =
+                        String(
+                            reporte.nomenclatura
+                            || ''
+                        ).trim();
+                }
+
+
+                /* =================================================
+                ACTUALIZAR ESTADO QJF
+                ================================================= */
+
+                actualizarEstadoQjfEditar(
+                    modal
+                );
 
                 /* =================================================
                    UBICACIÓN / GOOGLE MAPS
@@ -977,6 +1027,449 @@ export function inicializarEditarReporte() {
 
         }
     );
+}
+
+
+/* =========================================================
+   TIPO DE FOLIO EN EDITAR
+========================================================= */
+
+function inicializarTipoFolioEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const selectTipoFolio =
+        modal.querySelector(
+            '#editar-tipo-folio'
+        );
+
+
+    const inputFolio =
+        modal.querySelector(
+            '#editar-folio'
+        );
+
+
+    const inputNomenclatura =
+        modal.querySelector(
+            '#editar-nomenclatura'
+        );
+
+
+    const inputFechaRegistro =
+        modal.querySelector(
+            '#editar-fecha-registro'
+        );
+
+
+    if (
+        !selectTipoFolio
+        || !inputFolio
+        || !inputNomenclatura
+    ) {
+        return;
+    }
+
+
+    /* =====================================================
+       EVITAR LISTENER DUPLICADO
+    ===================================================== */
+
+    if (
+        selectTipoFolio.dataset
+            .tipoFolioInicializado
+        === '1'
+    ) {
+
+        actualizarEstadoQjfEditar(
+            modal
+        );
+
+        return;
+    }
+
+
+    selectTipoFolio.dataset
+        .tipoFolioInicializado =
+        '1';
+
+
+    /* =====================================================
+       OBTENER AÑO
+    ===================================================== */
+
+    function obtenerAnioRegistro() {
+
+        const fecha =
+            String(
+                inputFechaRegistro?.value
+                || ''
+            ).trim();
+
+
+        const coincidenciaIso =
+            fecha.match(
+                /^(\d{4})-(\d{2})-(\d{2})$/
+            );
+
+
+        if (coincidenciaIso) {
+
+            return coincidenciaIso[1];
+        }
+
+
+        const coincidenciaVisual =
+            fecha.match(
+                /^(\d{2})\/(\d{2})\/(\d{4})$/
+            );
+
+
+        if (coincidenciaVisual) {
+
+            return coincidenciaVisual[3];
+        }
+
+
+        return String(
+            new Date().getFullYear()
+        );
+    }
+
+
+    /* =====================================================
+       PREVISUALIZAR NUEVA FAMILIA
+    ===================================================== */
+
+    async function previsualizarNuevoFolio(
+        claveFolio
+    ) {
+
+        const url =
+            new URL(
+                'DataCore/public/asuntos-internos/reportes/previsualizar-folio',
+                `${window.location.origin}/`
+            );
+
+
+        url.searchParams.set(
+            'clave_folio',
+            claveFolio
+        );
+
+
+        const respuesta =
+            await fetch(
+                url.toString(),
+                {
+                    method:
+                        'GET',
+
+                    headers: {
+                        Accept:
+                            'application/json',
+                    },
+
+                    credentials:
+                        'same-origin',
+                }
+            );
+
+
+        const resultado =
+            await respuesta.json();
+
+
+        if (
+            !respuesta.ok
+            || resultado?.success !== true
+        ) {
+
+            throw new Error(
+                resultado?.message
+                || 'No fue posible consultar el siguiente folio.'
+            );
+        }
+
+
+        const numeroFolio =
+            Number(
+                resultado.numero_folio
+                || 0
+            );
+
+
+        const folio =
+            String(
+                resultado.folio
+                || ''
+            ).trim();
+
+
+        if (
+            numeroFolio <= 0
+            || folio === ''
+        ) {
+
+            throw new Error(
+                'El servidor no devolvió un folio válido.'
+            );
+        }
+
+
+        inputFolio.value =
+            folio;
+
+
+        inputNomenclatura.value =
+            `CGSC/CAI/${claveFolio}/${numeroFolio}/${obtenerAnioRegistro()}`;
+    }
+
+
+    /* =====================================================
+       CAMBIO DE TIPO
+    ===================================================== */
+
+    selectTipoFolio.addEventListener(
+        'change',
+        async () => {
+
+            const claveSeleccionada =
+                String(
+                    selectTipoFolio.value
+                    || 'QJ'
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            /*
+             * Primero actualizamos el estado visual
+             * de Personal y Unidades.
+             */
+            actualizarEstadoQjfEditar(
+                modal
+            );
+
+
+            const claveOriginal =
+                String(
+                    selectTipoFolio.dataset
+                        .tipoFolioOriginal
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            /* =================================================
+               VOLVIÓ AL TIPO ORIGINAL
+            ================================================= */
+
+            if (
+                claveOriginal !== ''
+                && claveSeleccionada
+                === claveOriginal
+            ) {
+
+                inputFolio.value =
+                    String(
+                        selectTipoFolio.dataset
+                            .folioOriginal
+                        || ''
+                    );
+
+
+                inputNomenclatura.value =
+                    String(
+                        selectTipoFolio.dataset
+                            .nomenclaturaOriginal
+                        || ''
+                    );
+
+
+                return;
+            }
+
+
+            /* =================================================
+               CAMBIÓ DE FAMILIA
+            ================================================= */
+
+            try {
+
+                await previsualizarNuevoFolio(
+                    claveSeleccionada
+                );
+
+            } catch (error) {
+
+                console.error(
+                    'Error previsualizando folio en edición:',
+                    error
+                );
+
+
+                mostrarResultado({
+
+                    tipo:
+                        'error',
+
+                    titulo:
+                        'No fue posible cambiar el tipo de folio',
+
+                    mensaje:
+                        error.message
+                        || 'No fue posible consultar el siguiente consecutivo.',
+
+                });
+
+
+                /*
+                 * Si falla, regresamos al tipo original.
+                 */
+
+                if (claveOriginal !== '') {
+
+                    selectTipoFolio.value =
+                        claveOriginal;
+
+
+                    inputFolio.value =
+                        String(
+                            selectTipoFolio.dataset
+                                .folioOriginal
+                            || ''
+                        );
+
+
+                    inputNomenclatura.value =
+                        String(
+                            selectTipoFolio.dataset
+                                .nomenclaturaOriginal
+                            || ''
+                        );
+
+
+                    /*
+                     * Como regresamos al tipo original,
+                     * restauramos también Personal y Unidades.
+                     */
+                    actualizarEstadoQjfEditar(
+                        modal
+                    );
+                }
+            }
+        }
+    );
+
+
+    /* =====================================================
+       ESTADO INICIAL
+    ===================================================== */
+
+    actualizarEstadoQjfEditar(
+        modal
+    );
+}
+
+
+/* =========================================================
+   QJF - PERSONAL Y UNIDADES EN EDITAR
+========================================================= */
+
+function actualizarEstadoQjfEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    /* =====================================================
+       TIPO DE FOLIO
+    ===================================================== */
+
+    const selectTipoFolio =
+        modal.querySelector(
+            '#editar-tipo-folio'
+        );
+
+
+    const esQjf =
+        String(
+            selectTipoFolio?.value
+            || ''
+        )
+            .trim()
+            .toUpperCase()
+        === 'QJF';
+
+
+    /* =====================================================
+       PERSONAL
+    ===================================================== */
+
+    const personalContenido =
+        modal.querySelector(
+            '#editar-personal-contenido'
+        );
+
+
+    const personalVacio =
+        modal.querySelector(
+            '#editar-personal-qjf-vacio'
+        );
+
+
+    if (personalContenido) {
+
+        personalContenido.hidden =
+            esQjf;
+    }
+
+
+    if (personalVacio) {
+
+        personalVacio.hidden =
+            !esQjf;
+    }
+
+
+    /* =====================================================
+       UNIDADES
+    ===================================================== */
+
+    const unidadesContenido =
+        modal.querySelector(
+            '#editar-unidades-contenido'
+        );
+
+
+    const unidadesVacio =
+        modal.querySelector(
+            '#editar-unidades-qjf-vacio'
+        );
+
+
+    if (unidadesContenido) {
+
+        unidadesContenido.hidden =
+            esQjf;
+    }
+
+
+    if (unidadesVacio) {
+
+        unidadesVacio.hidden =
+            !esQjf;
+    }
 }
 
 /* =========================================================

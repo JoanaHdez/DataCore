@@ -438,6 +438,10 @@ class ReporteService
         int $idUsuario
     ): array {
 
+        /* =========================================================
+        VALIDAR IDENTIFICADORES
+        ========================================================= */
+
         if ($idReporte <= 0) {
 
             throw new \InvalidArgumentException(
@@ -454,25 +458,25 @@ class ReporteService
         }
 
 
-        /* =====================================================
-        VALIDAR REPORTE
-        ===================================================== */
+        /* =========================================================
+        VALIDAR REPORTE ACTUAL
+        ========================================================= */
 
         $reporteActual =
             $this->db
-            ->table(
-                'ai_reportes'
-            )
-            ->where(
-                'id_reporte',
-                $idReporte
-            )
-            ->where(
-                'eliminado',
-                0
-            )
-            ->get()
-            ->getRowArray();
+                ->table(
+                    'ai_reportes'
+                )
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->get()
+                ->getRowArray();
 
 
         if (!$reporteActual) {
@@ -483,17 +487,25 @@ class ReporteService
         }
 
 
+        /* =========================================================
+        ARCHIVOS CREADOS
+        ========================================================= */
+
         $rutasCreadas = [];
 
+
+        /* =========================================================
+        INICIAR TRANSACCIÓN
+        ========================================================= */
 
         $this->db->transBegin();
 
 
         try {
 
-            /* =================================================
+            /* =====================================================
             PREPARAR DATOS PRINCIPALES
-            ================================================= */
+            ===================================================== */
 
             $datosReporte =
                 $this->prepararDatosReporte(
@@ -503,25 +515,20 @@ class ReporteService
 
 
             /*
-            * En edición nunca modificamos datos
-            * propios de la creación del registro.
+            * Estos campos no deben tomarse directamente
+            * del formulario durante una edición.
             */
 
             unset(
                 $datosReporte['created_by'],
                 $datosReporte['eliminado'],
-                $datosReporte['tipo_registro'],
-                $datosReporte['numero_folio'],
-                $datosReporte['folio'],
+                $datosReporte['tipo_registro']
             );
 
 
-            /* =================================================
+            /* =====================================================
             VALIDAR FOLIOS IP / IMP ÚNICOS
-
-            En edición excluimos el propio reporte para que
-            sus valores actuales no se consideren duplicados.
-            ================================================= */
+            ===================================================== */
 
             $this->validarFoliosUnicos(
                 $datosReporte,
@@ -529,84 +536,270 @@ class ReporteService
             );
 
 
-            /* =================================================
-            NOMENCLATURA CAPTURADA POR USUARIO
-            ================================================= */
+            /* =====================================================
+            TIPO DE FOLIO SELECCIONADO
+            ===================================================== */
 
-            $nomenclatura =
+            $claveFolioNueva =
                 strtoupper(
                     trim(
                         (string) (
-                            $datos['nomenclatura']
+                            $datos['tipo_folio']
                             ?? ''
                         )
                     )
                 );
 
 
-            if ($nomenclatura === '') {
-
-                throw new \InvalidArgumentException(
-                    'La nomenclatura es obligatoria.'
-                );
-            }
-
-
-            $prefijoEsperado =
-                'CGSC/CAI/QJ/';
+            $clavesPermitidas = [
+                'QJ',
+                'QJV',
+                'QJF',
+            ];
 
 
             if (
-                !str_starts_with(
-                    $nomenclatura,
-                    $prefijoEsperado
+                !in_array(
+                    $claveFolioNueva,
+                    $clavesPermitidas,
+                    true
                 )
             ) {
 
                 throw new \InvalidArgumentException(
-                    'La nomenclatura no tiene un formato válido.'
+                    'El tipo de folio seleccionado no es válido.'
                 );
             }
 
 
-            $parteVariable =
-                trim(
-                    substr(
-                        $nomenclatura,
-                        strlen(
-                            $prefijoEsperado
+            /* =====================================================
+            DETERMINAR TIPO DE FOLIO ACTUAL
+            ===================================================== */
+
+            $folioActual =
+                strtoupper(
+                    trim(
+                        (string) (
+                            $reporteActual['folio']
+                            ?? ''
                         )
                     )
                 );
 
 
-            if ($parteVariable === '') {
+            $claveFolioActual =
+                'QJ';
+
+
+            if (
+                str_starts_with(
+                    $folioActual,
+                    'QJV-'
+                )
+            ) {
+
+                $claveFolioActual =
+                    'QJV';
+
+            } elseif (
+                str_starts_with(
+                    $folioActual,
+                    'QJF-'
+                )
+            ) {
+
+                $claveFolioActual =
+                    'QJF';
+
+            } elseif (
+                str_starts_with(
+                    $folioActual,
+                    'QJ-'
+                )
+            ) {
+
+                $claveFolioActual =
+                    'QJ';
+            }
+
+
+            /* =====================================================
+            VALIDAR SI CAMBIÓ LA FAMILIA DEL FOLIO
+            ===================================================== */
+
+            $cambioTipoFolio =
+                $claveFolioNueva
+                !== $claveFolioActual;
+
+
+            /* =====================================================
+            FOLIO Y CONSECUTIVO
+            ===================================================== */
+
+            if ($cambioTipoFolio) {
+
+                /*
+                * Cambió, por ejemplo:
+                *
+                * QJ -> QJV
+                * QJ -> QJF
+                * QJF -> QJ
+                *
+                * Consumimos el siguiente consecutivo
+                * de la nueva familia.
+                */
+
+                $folioGenerado =
+                    $this->folioService
+                        ->generar(
+                            $claveFolioNueva
+                        );
+
+
+                $datosReporte['numero_folio'] =
+                    (int) (
+                        $folioGenerado['numero_folio']
+                        ?? 0
+                    );
+
+
+                $datosReporte['folio'] =
+                    (string) (
+                        $folioGenerado['folio']
+                        ?? ''
+                    );
+
+
+                if (
+                    $datosReporte['numero_folio'] <= 0
+                    || trim(
+                        $datosReporte['folio']
+                    ) === ''
+                ) {
+
+                    throw new \RuntimeException(
+                        'No fue posible generar el nuevo folio.'
+                    );
+                }
+
+            } else {
+
+                /*
+                * Si conserva la misma familia,
+                * conserva exactamente su número y folio.
+                */
+
+                $datosReporte['numero_folio'] =
+                    (int) (
+                        $reporteActual['numero_folio']
+                        ?? 0
+                    );
+
+
+                $datosReporte['folio'] =
+                    (string) (
+                        $reporteActual['folio']
+                        ?? ''
+                    );
+
+
+                if (
+                    $datosReporte['numero_folio'] <= 0
+                    || trim(
+                        $datosReporte['folio']
+                    ) === ''
+                ) {
+
+                    throw new \RuntimeException(
+                        'No fue posible identificar el folio actual del reporte.'
+                    );
+                }
+            }
+
+
+            /* =====================================================
+            NOMENCLATURA AUTOMÁTICA
+            ===================================================== */
+
+            $fechaRegistro =
+                trim(
+                    (string) (
+                        $datosReporte['fecha_registro']
+                        ?? $reporteActual['fecha_registro']
+                        ?? ''
+                    )
+                );
+
+
+            if ($fechaRegistro === '') {
 
                 throw new \InvalidArgumentException(
-                    'Captura la parte final de la nomenclatura.'
+                    'La fecha de registro no es válida para generar la nomenclatura.'
                 );
             }
 
 
-            $datosReporte['nomenclatura'] =
-                $prefijoEsperado
-                . $parteVariable;
+            $timestampFechaRegistro =
+                strtotime(
+                    $fechaRegistro
+                );
 
+
+            if ($timestampFechaRegistro === false) {
+
+                throw new \InvalidArgumentException(
+                    'La fecha de registro no tiene un formato válido.'
+                );
+            }
+
+
+            $anioRegistro =
+                date(
+                    'Y',
+                    $timestampFechaRegistro
+                );
+
+
+            $datosReporte['nomenclatura'] =
+                'CGSC/CAI/'
+                . $claveFolioNueva
+                . '/'
+                . $datosReporte['numero_folio']
+                . '/'
+                . $anioRegistro;
+
+
+            /* =====================================================
+            MODALIDAD DE UNIDAD
+
+            QJF no utiliza Personal ni Unidades.
+            ===================================================== */
+
+            if ($claveFolioNueva === 'QJF') {
+
+                $datosReporte['modalidad_unidad'] =
+                    'NO_APLICA';
+            }
+
+
+            /* =====================================================
+            AUDITORÍA
+            ===================================================== */
 
             $datosReporte['updated_by'] =
                 $idUsuario;
 
 
-            /* =================================================
-            ACTUALIZAR REPORTE
-            ================================================= */
+            /* =====================================================
+            ACTUALIZAR REPORTE PRINCIPAL
+            ===================================================== */
 
             $actualizado =
                 $this->reporteModel
-                ->update(
-                    $idReporte,
-                    $datosReporte
-                );
+                    ->update(
+                        $idReporte,
+                        $datosReporte
+                    );
 
 
             if ($actualizado === false) {
@@ -617,9 +810,13 @@ class ReporteService
             }
 
 
-            /* =================================================
-            PERSONAL
-            ================================================= */
+            /* =====================================================
+            LIMPIAR PERSONAL ACTUAL
+
+            Siempre limpiamos primero para que:
+            - QJ/QJV puedan reconstruirse con los datos editados;
+            - QJF no conserve personal anterior.
+            ===================================================== */
 
             $this->db
                 ->table(
@@ -632,15 +829,12 @@ class ReporteService
                 ->delete();
 
 
-            $this->guardarPersonal(
-                $idReporte,
-                $personal
-            );
+            /* =====================================================
+            LIMPIAR UNIDADES ACTUALES
 
-
-            /* =================================================
-            UNIDADES
-            ================================================= */
+            QJF tampoco debe conservar unidades de una
+            clasificación anterior.
+            ===================================================== */
 
             $this->db
                 ->table(
@@ -653,16 +847,37 @@ class ReporteService
                 ->delete();
 
 
-            $this->guardarUnidades(
-                $idReporte,
-                $unidades,
-                $datosReporte['modalidad_unidad']
-            );
+            /* =====================================================
+            PERSONAL Y UNIDADES PARA QJ / QJV
+            ===================================================== */
+
+            if ($claveFolioNueva !== 'QJF') {
+
+                /* =================================================
+                PERSONAL
+                ================================================= */
+
+                $this->guardarPersonal(
+                    $idReporte,
+                    $personal
+                );
 
 
-            /* =================================================
+                /* =================================================
+                UNIDADES
+                ================================================= */
+
+                $this->guardarUnidades(
+                    $idReporte,
+                    $unidades,
+                    $datosReporte['modalidad_unidad']
+                );
+            }
+
+
+            /* =====================================================
             DIRECCIÓN PARA NOTIFICACIÓN
-            ================================================= */
+            ===================================================== */
 
             $this->actualizarDireccionNotificacion(
                 $idReporte,
@@ -671,9 +886,9 @@ class ReporteService
             );
 
 
-            /* =================================================
+            /* =====================================================
             MOTIVOS Y SANCIONES POR MOTIVO
-            ================================================= */
+            ===================================================== */
 
             $this->actualizarMotivosYSancionesDesdeEdicion(
                 $idReporte,
@@ -682,9 +897,9 @@ class ReporteService
             );
 
 
-            /* =================================================
+            /* =====================================================
             SANCIÓN DISCIPLINARIA
-            ================================================= */
+            ===================================================== */
 
             $this->corregirSancionDesdeEdicion(
                 $idReporte,
@@ -693,9 +908,9 @@ class ReporteService
             );
 
 
-            /* =================================================
+            /* =====================================================
             EVIDENCIAS ELIMINADAS
-            ================================================= */
+            ===================================================== */
 
             $this->marcarEvidenciasEliminadas(
                 $idReporte,
@@ -704,9 +919,9 @@ class ReporteService
             );
 
 
-            /* =================================================
+            /* =====================================================
             EVIDENCIAS NUEVAS
-            ================================================= */
+            ===================================================== */
 
             $rutasCreadas =
                 $this->guardarEvidencias(
@@ -716,9 +931,9 @@ class ReporteService
                 );
 
 
-            /* =================================================
+            /* =====================================================
             VALIDAR TRANSACCIÓN
-            ================================================= */
+            ===================================================== */
 
             if (
                 $this->db->transStatus()
@@ -731,44 +946,63 @@ class ReporteService
             }
 
 
+            /* =====================================================
+            CONFIRMAR
+            ===================================================== */
+
             $this->db->transCommit();
 
+
+            /* =====================================================
+            RESPUESTA
+            ===================================================== */
 
             return [
 
                 'success' =>
-                true,
+                    true,
 
                 'id_reporte' =>
-                $idReporte,
-
-                /*
-                * Conservamos siempre el folio original.
-                */
-                'folio' =>
-                (string) (
-                    $reporteActual['folio']
-                    ?? ''
-                ),
-
-                'numero_folio' =>
-                isset(
-                    $reporteActual['numero_folio']
-                )
-                    ? (int) $reporteActual['numero_folio']
-                    : null,
+                    $idReporte,
 
                 'tipo_registro' =>
-                (string) (
-                    $reporteActual['tipo_registro']
-                    ?? 'QUEJA'
-                ),
+                    (string) (
+                        $reporteActual['tipo_registro']
+                        ?? 'QUEJA'
+                    ),
+
+                'clave_folio' =>
+                    $claveFolioNueva,
+
+                'numero_folio' =>
+                    (int) $datosReporte['numero_folio'],
+
+                'folio' =>
+                    (string) $datosReporte['folio'],
+
+                'nomenclatura' =>
+                    (string) $datosReporte['nomenclatura'],
+
+                'modalidad_unidad' =>
+                    (string) (
+                        $datosReporte['modalidad_unidad']
+                        ?? ''
+                    ),
 
             ];
+
         } catch (\Throwable $e) {
+
+            /* =====================================================
+            REVERTIR TRANSACCIÓN
+            ===================================================== */
 
             $this->db->transRollback();
 
+
+            /* =====================================================
+            ELIMINAR ARCHIVOS CREADOS DURANTE EL INTENTO
+            ===================================================== */
 
             foreach (
                 $rutasCreadas
@@ -791,7 +1025,6 @@ class ReporteService
             throw $e;
         }
     }
-
 
     /* =========================================================
        PREPARAR REPORTE PRINCIPAL
