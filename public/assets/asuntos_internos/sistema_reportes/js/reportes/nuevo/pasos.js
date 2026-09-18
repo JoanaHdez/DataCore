@@ -1121,7 +1121,7 @@ function inicializarNomenclaturaManual(
 
 
 /* =========================================================
-   PREVISUALIZAR FOLIO
+   PREVISUALIZAR FOLIO Y NOMENCLATURA
 ========================================================= */
 
 async function cargarPrevisualizacionFolio(
@@ -1134,21 +1134,30 @@ async function cargarPrevisualizacionFolio(
 
 
     /* =====================================================
-       NOMENCLATURA MANUAL
-    ===================================================== */
-
-    inicializarNomenclaturaManual(
-        formulario
-    );
-
-
-    /* =====================================================
-       CAMPO DE FOLIO
+       CAMPOS
     ===================================================== */
 
     const inputFolio =
         formulario.querySelector(
             '#folio_visual'
+        );
+
+
+    const inputNomenclatura =
+        formulario.querySelector(
+            '#nomenclatura_visual'
+        );
+
+
+    const selectTipoFolio =
+        formulario.querySelector(
+            '#tipo_folio'
+        );
+
+
+    const inputFechaRegistro =
+        formulario.querySelector(
+            '#fecha_registro'
         );
 
 
@@ -1163,118 +1172,245 @@ async function cargarPrevisualizacionFolio(
     }
 
 
-    try {
+    /* =====================================================
+       OBTENER AÑO DE REGISTRO
+    ===================================================== */
 
-        /* =====================================================
-           ENDPOINT
-        ===================================================== */
+    function obtenerAnioRegistro() {
 
-        const url =
-            new URL(
-                'DataCore/public/asuntos-internos/reportes/previsualizar-folio',
-                `${window.location.origin}/`
-            );
-
-
-        url.searchParams.set(
-            'tipo_registro',
-            'QUEJA'
-        );
-
-
-        /* =====================================================
-           CONSULTAR
-        ===================================================== */
-
-        const respuesta =
-            await fetch(
-                url.toString(),
-                {
-
-                    method:
-                        'GET',
-
-                    headers: {
-
-                        Accept:
-                            'application/json',
-
-                    },
-
-                    credentials:
-                        'same-origin',
-
-                }
-            );
-
-
-        let resultado =
-            null;
-
-
-        try {
-
-            resultado =
-                await respuesta.json();
-
-        } catch (error) {
-
-            throw new Error(
-                'El servidor devolvió una respuesta no válida al consultar el folio.'
-            );
-        }
-
-
-        if (
-            !respuesta.ok
-            || resultado?.success !== true
-        ) {
-
-            throw new Error(
-                resultado?.message
-                || 'No fue posible consultar el siguiente folio.'
-            );
-        }
-
-
-        /* =====================================================
-           MOSTRAR ÚNICAMENTE EL FOLIO
-        ===================================================== */
-
-        const folio =
+        const fecha =
             String(
-                resultado.folio
+                inputFechaRegistro?.value
                 || ''
             ).trim();
 
 
-        if (
-            folio === ''
-        ) {
+        /*
+         * El campo fecha_registro actualmente se muestra:
+         * dd/mm/aaaa
+         */
 
-            throw new Error(
-                'El servidor no devolvió un folio válido.'
+        const coincidencia =
+            fecha.match(
+                /^(\d{2})\/(\d{2})\/(\d{4})$/
             );
+
+
+        if (coincidencia) {
+
+            return coincidencia[3];
         }
 
 
-        inputFolio.value =
-            folio;
+        /*
+         * Respaldo por si en algún momento
+         * se utiliza formato yyyy-mm-dd.
+         */
+
+        const coincidenciaIso =
+            fecha.match(
+                /^(\d{4})-(\d{2})-(\d{2})$/
+            );
 
 
-    } catch (error) {
+        if (coincidenciaIso) {
 
-        console.error(
-            'Error previsualizando folio:',
-            error
+            return coincidenciaIso[1];
+        }
+
+
+        return String(
+            new Date().getFullYear()
         );
-
-
-        inputFolio.value =
-            'QJ- — No disponible';
     }
-}
 
+
+    /* =====================================================
+       ACTUALIZAR PREVISUALIZACIÓN
+    ===================================================== */
+
+    async function actualizarPrevisualizacion() {
+
+        const claveFolio =
+            String(
+                selectTipoFolio?.value
+                || 'QJ'
+            )
+                .trim()
+                .toUpperCase();
+
+
+        try {
+
+            /* =================================================
+               ENDPOINT
+            ================================================= */
+
+            const url =
+                new URL(
+                    'DataCore/public/asuntos-internos/reportes/previsualizar-folio',
+                    `${window.location.origin}/`
+                );
+
+
+            url.searchParams.set(
+                'clave_folio',
+                claveFolio
+            );
+
+
+            /* =================================================
+               CONSULTAR
+            ================================================= */
+
+            const respuesta =
+                await fetch(
+                    url.toString(),
+                    {
+                        method:
+                            'GET',
+
+                        headers: {
+                            Accept:
+                                'application/json',
+                        },
+
+                        credentials:
+                            'same-origin',
+                    }
+                );
+
+
+            let resultado =
+                null;
+
+
+            try {
+
+                resultado =
+                    await respuesta.json();
+
+            } catch (error) {
+
+                throw new Error(
+                    'El servidor devolvió una respuesta no válida al consultar el folio.'
+                );
+            }
+
+
+            if (
+                !respuesta.ok
+                || resultado?.success !== true
+            ) {
+
+                throw new Error(
+                    resultado?.message
+                    || 'No fue posible consultar el siguiente folio.'
+                );
+            }
+
+
+            /* =================================================
+               FOLIO
+            ================================================= */
+
+            const folio =
+                String(
+                    resultado.folio
+                    || ''
+                ).trim();
+
+
+            const numeroFolio =
+                Number(
+                    resultado.numero_folio
+                    || 0
+                );
+
+
+            if (
+                folio === ''
+                || numeroFolio <= 0
+            ) {
+
+                throw new Error(
+                    'El servidor no devolvió un folio válido.'
+                );
+            }
+
+
+            inputFolio.value =
+                folio;
+
+
+            /* =================================================
+               NOMENCLATURA
+            ================================================= */
+
+            if (inputNomenclatura) {
+
+                const anioRegistro =
+                    obtenerAnioRegistro();
+
+
+                inputNomenclatura.value =
+                    `CGSC/CAI/${claveFolio}/${numeroFolio}/${anioRegistro}`;
+            }
+
+
+        } catch (error) {
+
+            console.error(
+                'Error previsualizando folio:',
+                error
+            );
+
+
+            inputFolio.value =
+                `${claveFolio}- — No disponible`;
+
+
+            if (inputNomenclatura) {
+
+                inputNomenclatura.value =
+                    'No disponible';
+            }
+        }
+    }
+
+
+    /* =====================================================
+       CAMBIO DE TIPO DE FOLIO
+    ===================================================== */
+
+    if (
+        selectTipoFolio
+        && selectTipoFolio.dataset
+            .folioInicializado
+        !== '1'
+    ) {
+
+        selectTipoFolio.dataset
+            .folioInicializado =
+            '1';
+
+
+        selectTipoFolio.addEventListener(
+            'change',
+            () => {
+
+                actualizarPrevisualizacion();
+            }
+        );
+    }
+
+
+    /* =====================================================
+       ESTADO INICIAL
+    ===================================================== */
+
+    await actualizarPrevisualizacion();
+}
 
 /* =========================================================
    VALIDAR FOLIOS IP / IMP

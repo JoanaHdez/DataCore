@@ -114,15 +114,56 @@ class ReporteService
 
 
             /* =====================================================
+            CLAVE DEL FOLIO
+            ===================================================== */
+
+            $claveFolio =
+                strtoupper(
+                    trim(
+                        (string) (
+                            $datos['tipo_folio']
+                            ?? 'QJ'
+                        )
+                    )
+                );
+
+
+            $clavesPermitidas = [
+                'QJ',
+                'QJV',
+                'QJF',
+            ];
+
+
+            if (
+                !in_array(
+                    $claveFolio,
+                    $clavesPermitidas,
+                    true
+                )
+            ) {
+
+                throw new \InvalidArgumentException(
+                    'El tipo de folio seleccionado no es válido.'
+                );
+            }
+
+
+            /* =====================================================
             GENERAR FOLIO AUTOMÁTICO
             ===================================================== */
 
             $folioGenerado =
                 $this->folioService
                 ->generar(
-                    'QUEJA'
+                    $claveFolio
                 );
 
+
+            /*
+         * Aunque QJ, QJV y QJF tengan consecutivos separados,
+         * todos siguen perteneciendo al tipo general QUEJA.
+         */
 
             $datosReporte['tipo_registro'] =
                 $folioGenerado['tipo_registro'];
@@ -137,67 +178,54 @@ class ReporteService
 
 
             /* =====================================================
-            NOMENCLATURA CAPTURADA POR USUARIO
-            ===================================================== */
+   NOMENCLATURA AUTOMÁTICA
+===================================================== */
 
-            $nomenclatura =
-                strtoupper(
-                    trim(
-                        (string) (
-                            $datos['nomenclatura']
-                            ?? ''
-                        )
-                    )
-                );
-
-
-            if ($nomenclatura === '') {
-
-                throw new \InvalidArgumentException(
-                    'La nomenclatura es obligatoria.'
-                );
-            }
-
-
-            $prefijoEsperado =
-                'CGSC/CAI/QJ/';
-
-
-            if (
-                !str_starts_with(
-                    $nomenclatura,
-                    $prefijoEsperado
-                )
-            ) {
-
-                throw new \InvalidArgumentException(
-                    'La nomenclatura no tiene un formato válido.'
-                );
-            }
-
-
-            $parteVariable =
+            $fechaRegistro =
                 trim(
-                    substr(
-                        $nomenclatura,
-                        strlen(
-                            $prefijoEsperado
-                        )
+                    (string) (
+                        $datosReporte['fecha_registro']
+                        ?? ''
                     )
                 );
 
 
-            if ($parteVariable === '') {
+            if ($fechaRegistro === '') {
 
                 throw new \InvalidArgumentException(
-                    'Captura la parte final de la nomenclatura.'
+                    'La fecha de registro no es válida para generar la nomenclatura.'
                 );
             }
+
+
+            $timestampFechaRegistro =
+                strtotime(
+                    $fechaRegistro
+                );
+
+
+            if ($timestampFechaRegistro === false) {
+
+                throw new \InvalidArgumentException(
+                    'La fecha de registro no tiene un formato válido.'
+                );
+            }
+
+
+            $anioRegistro =
+                date(
+                    'Y',
+                    $timestampFechaRegistro
+                );
 
 
             $datosReporte['nomenclatura'] =
-                $prefijoEsperado
-                . $parteVariable;
+                'CGSC/CAI/'
+                . $claveFolio
+                . '/'
+                . $datosReporte['numero_folio']
+                . '/'
+                . $anioRegistro;
 
 
             /* =====================================================
@@ -315,6 +343,10 @@ class ReporteService
 
                 'tipo_registro' =>
                 $datosReporte['tipo_registro'],
+
+                'clave_folio' =>
+                $folioGenerado['clave_folio']
+                    ?? $claveFolio,
 
                 'numero_folio' =>
                 $datosReporte['numero_folio'],
@@ -468,9 +500,9 @@ class ReporteService
             $this->validarFoliosUnicos(
                 $datosReporte,
                 $idReporte
-            );  
+            );
 
-            
+
             /* =================================================
             NOMENCLATURA CAPTURADA POR USUARIO
             ================================================= */

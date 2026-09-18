@@ -25,7 +25,44 @@
 
         <div class="report-form-grid">
 
-            <!-- NÚMERO DE FOLIO -->
+            <!-- =====================================================
+                TIPO DE FOLIO
+            ====================================================== -->
+
+            <div class="report-field">
+
+                <label for="tipo_folio">
+                    Tipo de folio
+                    <span class="required">*</span>
+                </label>
+
+                <select id="tipo_folio" name="tipo_folio" class="report-select" required>
+
+                    <option value="QJ" selected>
+                        QJ - Queja
+                    </option>
+
+                    <option value="QJV">
+                        QJV - Queja verbal
+                    </option>
+
+                    <option value="QJF">
+                        QJF - Queja foránea
+                    </option>
+
+                </select>
+
+                <small class="report-field__help">
+                    El consecutivo se asignará de acuerdo con el tipo de folio seleccionado.
+                </small>
+
+            </div>
+
+
+            <!-- =====================================================
+                NÚMERO DE FOLIO
+            ====================================================== -->
+
             <div class="report-field">
 
                 <label for="folio_visual">

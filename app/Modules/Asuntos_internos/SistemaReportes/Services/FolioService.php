@@ -30,37 +30,43 @@ class FolioService
     ========================================================= */
 
     public function generar(
-        string $tipoRegistro
+        string $claveFolio
     ): array {
 
         /* =====================================================
-           NORMALIZAR TIPO
+           NORMALIZAR CLAVE
         ===================================================== */
 
-        $tipoRegistro =
+        $claveFolio =
             strtoupper(
                 trim(
-                    $tipoRegistro
+                    $claveFolio
                 )
             );
 
 
-        $tiposPermitidos = [
-            'QUEJA',
-            'FELICITACION',
+        /* =====================================================
+           VALIDAR CLAVE
+        ===================================================== */
+
+        $clavesPermitidas = [
+            'QJ',
+            'QJV',
+            'QJF',
+            'FEL',
         ];
 
 
         if (
             !in_array(
-                $tipoRegistro,
-                $tiposPermitidos,
+                $claveFolio,
+                $clavesPermitidas,
                 true
             )
         ) {
 
             throw new \InvalidArgumentException(
-                'El tipo de registro para generar el folio no es válido.'
+                'La clave de folio solicitada no es válida.'
             );
         }
 
@@ -76,14 +82,15 @@ class FolioService
                     SELECT
                         id_consecutivo,
                         tipo_registro,
+                        clave_folio,
                         nomenclatura,
                         ultimo_numero
                     FROM ai_folios_consecutivos
-                    WHERE tipo_registro = ?
+                    WHERE clave_folio = ?
                     FOR UPDATE
                     ",
                     [
-                        $tipoRegistro,
+                        $claveFolio,
                     ]
                 )
                 ->getRowArray();
@@ -92,7 +99,39 @@ class FolioService
         if (!$registro) {
 
             throw new \RuntimeException(
-                'No existe configuración de folio para el tipo de registro solicitado.'
+                'No existe configuración de folio para la clave solicitada.'
+            );
+        }
+
+
+        /* =====================================================
+           TIPO GENERAL DEL REGISTRO
+        ===================================================== */
+
+        $tipoRegistro =
+            strtoupper(
+                trim(
+                    (string) (
+                        $registro['tipo_registro']
+                        ?? ''
+                    )
+                )
+            );
+
+
+        if (
+            !in_array(
+                $tipoRegistro,
+                [
+                    'QUEJA',
+                    'FELICITACION',
+                ],
+                true
+            )
+        ) {
+
+            throw new \RuntimeException(
+                'El tipo de registro asociado al folio no es válido.'
             );
         }
 
@@ -142,30 +181,22 @@ class FolioService
 
 
         /* =====================================================
-           PREFIJO CORTO
-        ===================================================== */
-
-        $prefijoFolio =
-            match ($tipoRegistro) {
-
-                'QUEJA' =>
-                    'QJ',
-
-                'FELICITACION' =>
-                    'FEL',
-
-            };
-
-
-        /* =====================================================
-           CONSTRUIR IDENTIFICADORES
+           CONSTRUIR FOLIO
         ===================================================== */
 
         $folio =
-            $prefijoFolio
+            $claveFolio
             . '-'
             . $numeroFolio;
 
+
+        /* =====================================================
+           NOMENCLATURA
+           
+           Por ahora conservamos la construcción existente.
+           Más adelante la ajustaremos para incluir el año
+           automáticamente según fecha_registro.
+        ===================================================== */
 
         $nomenclatura =
             $nomenclaturaBase
@@ -186,8 +217,8 @@ class FolioService
                     (int) $registro['id_consecutivo']
                 )
                 ->where(
-                    'tipo_registro',
-                    $tipoRegistro
+                    'clave_folio',
+                    $claveFolio
                 )
                 ->update([
                     'ultimo_numero' =>
@@ -212,11 +243,14 @@ class FolioService
             'tipo_registro' =>
                 $tipoRegistro,
 
+            'clave_folio' =>
+                $claveFolio,
+
             'numero_folio' =>
                 $numeroFolio,
 
             'prefijo_folio' =>
-                $prefijoFolio,
+                $claveFolio,
 
             'folio' =>
                 $folio,
@@ -227,48 +261,55 @@ class FolioService
         ];
     }
 
+
     /* =========================================================
-    PREVISUALIZAR SIGUIENTE FOLIO
+       PREVISUALIZAR SIGUIENTE FOLIO
     ========================================================= */
 
     public function previsualizar(
-        string $tipoRegistro
+        string $claveFolio
     ): array {
 
         /* =====================================================
-        NORMALIZAR TIPO
+           NORMALIZAR CLAVE
         ===================================================== */
 
-        $tipoRegistro =
+        $claveFolio =
             strtoupper(
                 trim(
-                    $tipoRegistro
+                    $claveFolio
                 )
             );
 
 
-        $tiposPermitidos = [
-            'QUEJA',
-            'FELICITACION',
+        /* =====================================================
+           VALIDAR CLAVE
+        ===================================================== */
+
+        $clavesPermitidas = [
+            'QJ',
+            'QJV',
+            'QJF',
+            'FEL',
         ];
 
 
         if (
             !in_array(
-                $tipoRegistro,
-                $tiposPermitidos,
+                $claveFolio,
+                $clavesPermitidas,
                 true
             )
         ) {
 
             throw new \InvalidArgumentException(
-                'El tipo de registro para consultar el folio no es válido.'
+                'La clave de folio solicitada no es válida.'
             );
         }
 
 
         /* =====================================================
-        CONSULTAR CONSECUTIVO ACTUAL
+           CONSULTAR CONSECUTIVO ACTUAL
         ===================================================== */
 
         $registro =
@@ -278,12 +319,13 @@ class FolioService
                 )
                 ->select([
                     'tipo_registro',
+                    'clave_folio',
                     'nomenclatura',
                     'ultimo_numero',
                 ])
                 ->where(
-                    'tipo_registro',
-                    $tipoRegistro
+                    'clave_folio',
+                    $claveFolio
                 )
                 ->get()
                 ->getRowArray();
@@ -292,13 +334,28 @@ class FolioService
         if (!$registro) {
 
             throw new \RuntimeException(
-                'No existe configuración de folio para el tipo de registro solicitado.'
+                'No existe configuración de folio para la clave solicitada.'
             );
         }
 
 
         /* =====================================================
-        SIGUIENTE NÚMERO
+           TIPO GENERAL
+        ===================================================== */
+
+        $tipoRegistro =
+            strtoupper(
+                trim(
+                    (string) (
+                        $registro['tipo_registro']
+                        ?? ''
+                    )
+                )
+            );
+
+
+        /* =====================================================
+           SIGUIENTE NÚMERO
         ===================================================== */
 
         $numeroFolio =
@@ -308,6 +365,18 @@ class FolioService
             )
             + 1;
 
+
+        if ($numeroFolio <= 0) {
+
+            throw new \RuntimeException(
+                'No fue posible determinar el siguiente número de folio.'
+            );
+        }
+
+
+        /* =====================================================
+           NOMENCLATURA BASE
+        ===================================================== */
 
         $nomenclaturaBase =
             trim(
@@ -319,23 +388,7 @@ class FolioService
 
 
         /* =====================================================
-        PREFIJO
-        ===================================================== */
-
-        $prefijoFolio =
-            match ($tipoRegistro) {
-
-                'QUEJA' =>
-                    'QJ',
-
-                'FELICITACION' =>
-                    'FEL',
-
-            };
-
-
-        /* =====================================================
-        RESPUESTA
+           RESPUESTA
         ===================================================== */
 
         return [
@@ -343,11 +396,17 @@ class FolioService
             'tipo_registro' =>
                 $tipoRegistro,
 
+            'clave_folio' =>
+                $claveFolio,
+
             'numero_folio' =>
                 $numeroFolio,
 
+            'prefijo_folio' =>
+                $claveFolio,
+
             'folio' =>
-                $prefijoFolio
+                $claveFolio
                 . '-'
                 . $numeroFolio,
 
