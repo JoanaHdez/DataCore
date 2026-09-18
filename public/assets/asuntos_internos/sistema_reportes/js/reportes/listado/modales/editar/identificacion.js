@@ -38,6 +38,17 @@ export function cargarIdentificacionEditar(
 
 
     /* =====================================================
+    FOLIO IMP
+    ===================================================== */
+
+    asignarValorEditar(
+        modal,
+        '#editar-folio-imp',
+        reporte.folio_imp
+    );
+
+
+    /* =====================================================
        FECHA DE QUEJA
     ===================================================== */
 

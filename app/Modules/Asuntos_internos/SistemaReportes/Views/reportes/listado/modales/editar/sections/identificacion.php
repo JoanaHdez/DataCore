@@ -28,6 +28,19 @@
         </div>
 
 
+        <!-- FOLIO IMP -->
+        <div class="editar-reporte-campo">
+
+            <label for="editar-folio-imp">
+                Folio IMP
+            </label>
+
+            <input type="text" id="editar-folio-imp" name="folio_imp" placeholder="Ingresa el folio IMP"
+                autocomplete="off">
+
+        </div>
+
+
         <!-- FECHA DE QUEJA -->
         <div class="editar-reporte-campo">
 

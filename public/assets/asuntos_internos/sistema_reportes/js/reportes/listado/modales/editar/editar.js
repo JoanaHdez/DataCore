@@ -1111,6 +1111,11 @@ function construirReporteEditar(
                 origen.folio_ip
             ),
 
+        folio_imp:
+            valorEditar(
+                origen.folio_imp
+            ),
+
         fecha_queja:
             convertirFechaEditar(
                 origen.fecha_queja
