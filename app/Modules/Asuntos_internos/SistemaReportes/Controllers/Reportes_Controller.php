@@ -1234,7 +1234,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'No fue posible identificar al usuario.',
+                    'No fue posible identificar al usuario.',
                 ]);
         }
 
@@ -1246,7 +1246,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'El reporte proporcionado no es válido.',
+                    'El reporte proporcionado no es válido.',
                 ]);
         }
 
@@ -1257,7 +1257,7 @@ class Reportes_Controller extends BaseController
 
         $datos =
             $this->request
-                ->getPost();
+            ->getPost();
 
 
         /* =========================================================
@@ -1266,9 +1266,9 @@ class Reportes_Controller extends BaseController
 
         $personal =
             $this->request
-                ->getPost(
-                    'personal'
-                );
+            ->getPost(
+                'personal'
+            );
 
 
         if (!is_array($personal)) {
@@ -1283,9 +1283,9 @@ class Reportes_Controller extends BaseController
 
         $unidades =
             $this->request
-                ->getPost(
-                    'unidades'
-                );
+            ->getPost(
+                'unidades'
+            );
 
 
         if (!is_array($unidades)) {
@@ -1300,9 +1300,9 @@ class Reportes_Controller extends BaseController
 
         $evidenciasEliminadas =
             $this->request
-                ->getPost(
-                    'evidencias_eliminadas'
-                );
+            ->getPost(
+                'evidencias_eliminadas'
+            );
 
 
         if (!is_array($evidenciasEliminadas)) {
@@ -1321,7 +1321,7 @@ class Reportes_Controller extends BaseController
 
         $files =
             $this->request
-                ->getFiles();
+            ->getFiles();
 
 
         if (
@@ -1368,32 +1368,30 @@ class Reportes_Controller extends BaseController
             return $this->response
                 ->setJSON([
                     'success' =>
-                        true,
+                    true,
 
                     'message' =>
-                        'El reporte fue actualizado correctamente.',
+                    'El reporte fue actualizado correctamente.',
 
                     'id_reporte' =>
-                        $resultado['id_reporte']
+                    $resultado['id_reporte']
                         ?? $idReporte,
 
                     'folio' =>
-                        $resultado['folio']
+                    $resultado['folio']
                         ?? null,
                 ]);
-
         } catch (\InvalidArgumentException $e) {
 
             return $this->response
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' =>
-                        false,
+                    false,
 
                     'message' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
                 ]);
-
         } catch (\Throwable $e) {
 
             log_message(
@@ -1401,10 +1399,10 @@ class Reportes_Controller extends BaseController
                 'Error actualizando reporte {id}: {mensaje}',
                 [
                     'id' =>
-                        $idReporte,
+                    $idReporte,
 
                     'mensaje' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
                 ]
             );
 
@@ -1413,10 +1411,10 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(500)
                 ->setJSON([
                     'success' =>
-                        false,
+                    false,
 
                     'message' =>
-                        'No fue posible actualizar el reporte.',
+                    'No fue posible actualizar el reporte.',
                 ]);
         }
     }
@@ -1470,77 +1468,77 @@ class Reportes_Controller extends BaseController
 
             $reporte =
                 $db
-                    ->table('ai_reportes')
-                    ->select([
-                        'id_reporte',
-                        'folio',
-                        'fecha_registro',
-                        'folio_ip',
-                        'folio_imp',
-                        'fecha_queja',
-                        'fecha_acuerdo',
-                        'expediente',
-                        'nomenclatura',
-                        'numero_oficio',
+                ->table('ai_reportes')
+                ->select([
+                    'id_reporte',
+                    'folio',
+                    'fecha_registro',
+                    'folio_ip',
+                    'folio_imp',
+                    'fecha_queja',
+                    'fecha_acuerdo',
+                    'expediente',
+                    'nomenclatura',
+                    'numero_oficio',
 
-                        'fecha_hechos',
-                        'hora_hechos',
-                        'descripcion_hechos',
+                    'fecha_hechos',
+                    'hora_hechos',
+                    'descripcion_hechos',
 
-                        'calle',
-                        'numero_exterior',
-                        'colonia',
-                        'entre_calle',
-                        'y_calle',
-                        'municipio',
-                        'estado',
-                        'sector',
-                        'cuadrante',
-                        'id_cuadra',
-                        'latitud',
-                        'longitud',
-                        'origen_ubicacion',
+                    'calle',
+                    'numero_exterior',
+                    'colonia',
+                    'entre_calle',
+                    'y_calle',
+                    'municipio',
+                    'estado',
+                    'sector',
+                    'cuadrante',
+                    'id_cuadra',
+                    'latitud',
+                    'longitud',
+                    'origen_ubicacion',
 
-                        'nombre_quejoso',
-                        'edad_quejoso',
-                        'genero_quejoso',
-                        'telefono_quejoso',
-                        'correo_quejoso',
-                        'direccion_quejoso',
+                    'nombre_quejoso',
+                    'edad_quejoso',
+                    'genero_quejoso',
+                    'telefono_quejoso',
+                    'correo_quejoso',
+                    'direccion_quejoso',
 
-                        'es_anonimo',
-                        'numero_anonimo',
+                    'es_anonimo',
+                    'numero_anonimo',
 
-                        'canalizacion_area',
-                        'canalizacion_otro',
+                    'canalizacion_area',
+                    'canalizacion_otro',
 
-                        'clasificacion',
-                        'inspector',
-                        'investigador',
+                    'clasificacion',
+                    'inspector',
+                    'investigador',
 
-                        'sin_sanciones',
-                        'baja_voluntaria',
+                    'sin_sanciones',
+                    'baja_voluntaria',
 
-                        'quien_emite_resolucion',
-                        'resolucion',
-                        'motivos',
-                        'estado_actual',
-                        'observaciones',
-                        'modalidad_unidad',
+                    'quien_emite_resolucion',
+                    'resolucion',
+                    'motivos',
+                    'estado_actual',
+                    'observaciones',
+                    'modalidad_unidad',
 
-                        'created_at',
-                        'updated_at',
-                    ])
-                    ->where(
-                        'id_reporte',
-                        $idReporte
-                    )
-                    ->where(
-                        'eliminado',
-                        0
-                    )
-                    ->get()
-                    ->getRowArray();
+                    'created_at',
+                    'updated_at',
+                ])
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->get()
+                ->getRowArray();
 
 
             if (!$reporte) {
@@ -1550,7 +1548,7 @@ class Reportes_Controller extends BaseController
                     ->setJSON([
                         'success' => false,
                         'message' =>
-                            'El reporte no existe.',
+                        'El reporte no existe.',
                     ]);
             }
 
@@ -1561,39 +1559,39 @@ class Reportes_Controller extends BaseController
 
             $direccionNotificacion =
                 $db
-                    ->table(
-                        'ai_reporte_direccion_notificacion'
-                    )
-                    ->select([
-                        'id_direccion_notificacion',
-                        'id_reporte',
-                        'pertenece_neza',
-                        'calle',
-                        'numero_exterior',
-                        'colonia',
-                        'entre_calle',
-                        'y_calle',
-                        'municipio',
-                        'estado',
-                        'sector',
-                        'cuadrante',
-                        'id_cuadra',
-                        'latitud',
-                        'longitud',
-                        'origen_ubicacion',
-                        'created_at',
-                        'updated_at',
-                    ])
-                    ->where(
-                        'id_reporte',
-                        $idReporte
-                    )
-                    ->where(
-                        'eliminado',
-                        0
-                    )
-                    ->get()
-                    ->getRowArray();
+                ->table(
+                    'ai_reporte_direccion_notificacion'
+                )
+                ->select([
+                    'id_direccion_notificacion',
+                    'id_reporte',
+                    'pertenece_neza',
+                    'calle',
+                    'numero_exterior',
+                    'colonia',
+                    'entre_calle',
+                    'y_calle',
+                    'municipio',
+                    'estado',
+                    'sector',
+                    'cuadrante',
+                    'id_cuadra',
+                    'latitud',
+                    'longitud',
+                    'origen_ubicacion',
+                    'created_at',
+                    'updated_at',
+                ])
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->get()
+                ->getRowArray();
 
 
             /*
@@ -1616,26 +1614,26 @@ class Reportes_Controller extends BaseController
 
             $personalBD =
                 $db
-                    ->table('ai_reporte_personal')
-                    ->select([
-                        'id_reporte_personal',
-                        'plantilla_id',
-                        'perscod',
-                        'nombre_snapshot',
-                        'area_snapshot',
-                        'turno_snapshot',
-                        'alias_snapshot',
-                    ])
-                    ->where(
-                        'id_reporte',
-                        $idReporte
-                    )
-                    ->orderBy(
-                        'id_reporte_personal',
-                        'ASC'
-                    )
-                    ->get()
-                    ->getResultArray();
+                ->table('ai_reporte_personal')
+                ->select([
+                    'id_reporte_personal',
+                    'plantilla_id',
+                    'perscod',
+                    'nombre_snapshot',
+                    'area_snapshot',
+                    'turno_snapshot',
+                    'alias_snapshot',
+                ])
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->orderBy(
+                    'id_reporte_personal',
+                    'ASC'
+                )
+                ->get()
+                ->getResultArray();
 
 
             $personal =
@@ -1674,16 +1672,16 @@ class Reportes_Controller extends BaseController
 
                     $personaPlantilla =
                         $dbPlantilla
-                            ->table('plantilla')
-                            ->select(
-                                'NO_NOMINA'
-                            )
-                            ->where(
-                                'ID',
-                                $plantillaId
-                            )
-                            ->get()
-                            ->getRowArray();
+                        ->table('plantilla')
+                        ->select(
+                            'NO_NOMINA'
+                        )
+                        ->where(
+                            'ID',
+                            $plantillaId
+                        )
+                        ->get()
+                        ->getRowArray();
 
 
                     if ($personaPlantilla) {
@@ -1715,36 +1713,36 @@ class Reportes_Controller extends BaseController
                 $personal[] = [
 
                     'id' =>
-                        $plantillaId,
+                    $plantillaId,
 
                     'perscod' =>
-                        $perscod,
+                    $perscod,
 
                     'nombre' =>
-                        $persona['nombre_snapshot']
+                    $persona['nombre_snapshot']
                         ?? '',
 
                     'nomina' =>
-                        $nomina,
+                    $nomina,
 
                     'area' =>
-                        $persona['area_snapshot']
+                    $persona['area_snapshot']
                         ?? '',
 
                     'turno' =>
-                        $persona['turno_snapshot']
+                    $persona['turno_snapshot']
                         ?? '',
 
                     'alias' =>
-                        trim(
-                            (string) (
-                                $persona['alias_snapshot']
-                                ?? ''
-                            )
-                        ),
+                    trim(
+                        (string) (
+                            $persona['alias_snapshot']
+                            ?? ''
+                        )
+                    ),
 
                     'foto' =>
-                        $foto,
+                    $foto,
 
                 ];
             }
@@ -1756,29 +1754,29 @@ class Reportes_Controller extends BaseController
 
             $unidadesBD =
                 $db
-                    ->table('ai_reporte_unidades u')
-                    ->select([
-                        'u.id_reporte_unidad',
-                        'u.parque_vehicular_id',
-                        'u.no_economico_snapshot',
-                        'u.placas_snapshot',
-                        'u.marca_snapshot',
-                        'u.submarca_snapshot',
-                        'u.color_snapshot',
-                        'u.estatus_snapshot',
-                        'u.servicio_snapshot',
-                        'u.tipo_snapshot',
-                    ])
-                    ->where(
-                        'u.id_reporte',
-                        $idReporte
-                    )
-                    ->orderBy(
-                        'u.id_reporte_unidad',
-                        'ASC'
-                    )
-                    ->get()
-                    ->getResultArray();
+                ->table('ai_reporte_unidades u')
+                ->select([
+                    'u.id_reporte_unidad',
+                    'u.parque_vehicular_id',
+                    'u.no_economico_snapshot',
+                    'u.placas_snapshot',
+                    'u.marca_snapshot',
+                    'u.submarca_snapshot',
+                    'u.color_snapshot',
+                    'u.estatus_snapshot',
+                    'u.servicio_snapshot',
+                    'u.tipo_snapshot',
+                ])
+                ->where(
+                    'u.id_reporte',
+                    $idReporte
+                )
+                ->orderBy(
+                    'u.id_reporte_unidad',
+                    'ASC'
+                )
+                ->get()
+                ->getResultArray();
 
 
             $unidades =
@@ -1790,41 +1788,41 @@ class Reportes_Controller extends BaseController
                 $unidades[] = [
 
                     'id' =>
-                        (int) (
-                            $unidad['parque_vehicular_id']
-                            ?? 0
-                        ),
+                    (int) (
+                        $unidad['parque_vehicular_id']
+                        ?? 0
+                    ),
 
                     'no_economico' =>
-                        $unidad['no_economico_snapshot']
+                    $unidad['no_economico_snapshot']
                         ?? '',
 
                     'placas' =>
-                        $unidad['placas_snapshot']
+                    $unidad['placas_snapshot']
                         ?? '',
 
                     'marca' =>
-                        $unidad['marca_snapshot']
+                    $unidad['marca_snapshot']
                         ?? '',
 
                     'submarca' =>
-                        $unidad['submarca_snapshot']
+                    $unidad['submarca_snapshot']
                         ?? '',
 
                     'color' =>
-                        $unidad['color_snapshot']
+                    $unidad['color_snapshot']
                         ?? '',
 
                     'estatus' =>
-                        $unidad['estatus_snapshot']
+                    $unidad['estatus_snapshot']
                         ?? '',
 
                     'servicio' =>
-                        $unidad['servicio_snapshot']
+                    $unidad['servicio_snapshot']
                         ?? '',
 
                     'tipo' =>
-                        $unidad['tipo_snapshot']
+                    $unidad['tipo_snapshot']
                         ?? '',
                 ];
             }
@@ -1836,36 +1834,36 @@ class Reportes_Controller extends BaseController
 
             $evidencias =
                 $db
-                    ->table('ai_reporte_evidencias')
-                    ->select([
-                        'id_evidencia',
-                        'nombre_original',
-                        'nombre_archivo',
-                        'ruta_archivo',
-                        'extension',
-                        'mime_type',
-                        'tamano_bytes',
-                        'orden',
-                        'created_at',
-                    ])
-                    ->where(
-                        'id_reporte',
-                        $idReporte
-                    )
-                    ->where(
-                        'eliminado',
-                        0
-                    )
-                    ->orderBy(
-                        'orden',
-                        'ASC'
-                    )
-                    ->orderBy(
-                        'id_evidencia',
-                        'ASC'
-                    )
-                    ->get()
-                    ->getResultArray();
+                ->table('ai_reporte_evidencias')
+                ->select([
+                    'id_evidencia',
+                    'nombre_original',
+                    'nombre_archivo',
+                    'ruta_archivo',
+                    'extension',
+                    'mime_type',
+                    'tamano_bytes',
+                    'orden',
+                    'created_at',
+                ])
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->orderBy(
+                    'orden',
+                    'ASC'
+                )
+                ->orderBy(
+                    'id_evidencia',
+                    'ASC'
+                )
+                ->get()
+                ->getResultArray();
 
 
             /* =====================================================
@@ -1874,44 +1872,44 @@ class Reportes_Controller extends BaseController
 
             $motivos =
                 $db
-                    ->table('ai_reporte_motivos rm')
-                    ->select([
-                        'rm.id_reporte_motivo',
-                        'rm.id_motivo',
+                ->table('ai_reporte_motivos rm')
+                ->select([
+                    'rm.id_reporte_motivo',
+                    'rm.id_motivo',
 
-                        'm.motivo',
-                        'm.sancion AS sancion',
+                    'm.motivo',
+                    'm.sancion AS sancion',
 
-                        's.id_sancion',
-                        's.tipo AS sancion_registrada',
-                        's.folio_sancion',
-                        's.origen AS sancion_origen',
-                    ])
-                    ->join(
-                        'ai_cat_motivos m',
-                        'm.id_motivo = rm.id_motivo',
-                        'left'
-                    )
-                    ->join(
-                        'ai_reporte_sanciones s',
-                        's.id_reporte_motivo = rm.id_reporte_motivo
+                    's.id_sancion',
+                    's.tipo AS sancion_registrada',
+                    's.folio_sancion',
+                    's.origen AS sancion_origen',
+                ])
+                ->join(
+                    'ai_cat_motivos m',
+                    'm.id_motivo = rm.id_motivo',
+                    'left'
+                )
+                ->join(
+                    'ai_reporte_sanciones s',
+                    's.id_reporte_motivo = rm.id_reporte_motivo
                         AND s.eliminado = 0',
-                        'left'
-                    )
-                    ->where(
-                        'rm.id_reporte',
-                        $idReporte
-                    )
-                    ->where(
-                        'rm.eliminado',
-                        0
-                    )
-                    ->orderBy(
-                        'rm.id_reporte_motivo',
-                        'ASC'
-                    )
-                    ->get()
-                    ->getResultArray();
+                    'left'
+                )
+                ->where(
+                    'rm.id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'rm.eliminado',
+                    0
+                )
+                ->orderBy(
+                    'rm.id_reporte_motivo',
+                    'ASC'
+                )
+                ->get()
+                ->getResultArray();
 
 
             /* =====================================================
@@ -1920,35 +1918,35 @@ class Reportes_Controller extends BaseController
 
             $sancion =
                 $db
-                    ->table('ai_reporte_sanciones')
-                    ->select([
-                        'id_sancion',
-                        'tipo',
-                        'descripcion_otro',
-                        'origen',
-                        'id_seguimiento',
-                        'created_at',
-                        'updated_at',
-                    ])
-                    ->where(
-                        'id_reporte',
-                        $idReporte
-                    )
-                    ->where(
-                        'es_actual',
-                        1
-                    )
-                    ->where(
-                        'eliminado',
-                        0
-                    )
-                    ->orderBy(
-                        'id_sancion',
-                        'DESC'
-                    )
-                    ->limit(1)
-                    ->get()
-                    ->getRowArray();
+                ->table('ai_reporte_sanciones')
+                ->select([
+                    'id_sancion',
+                    'tipo',
+                    'descripcion_otro',
+                    'origen',
+                    'id_seguimiento',
+                    'created_at',
+                    'updated_at',
+                ])
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'es_actual',
+                    1
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->orderBy(
+                    'id_sancion',
+                    'DESC'
+                )
+                ->limit(1)
+                ->get()
+                ->getRowArray();
 
 
             /* =====================================================
@@ -2034,35 +2032,35 @@ class Reportes_Controller extends BaseController
                 $sancionDetalle = [
 
                     'id_sancion' =>
-                        (int) (
-                            $sancion['id_sancion']
-                            ?? 0
-                        ),
+                    (int) (
+                        $sancion['id_sancion']
+                        ?? 0
+                    ),
 
                     'tipo' =>
-                        $tipo,
+                    $tipo,
 
                     'descripcion_otro' =>
-                        $descripcionOtro,
+                    $descripcionOtro,
 
                     'texto' =>
-                        $texto !== ''
-                            ? $texto
-                            : 'Sin sanción registrada',
+                    $texto !== ''
+                        ? $texto
+                        : 'Sin sanción registrada',
 
                     'origen' =>
-                        $origen,
+                    $origen,
 
                     'id_seguimiento' =>
-                        !empty($sancion['id_seguimiento'])
-                            ? (int) $sancion['id_seguimiento']
-                            : null,
+                    !empty($sancion['id_seguimiento'])
+                        ? (int) $sancion['id_seguimiento']
+                        : null,
 
                     'actualizada_desde_seguimiento' =>
-                        $origen === 'seguimiento',
+                    $origen === 'seguimiento',
 
                     'fecha_actualizacion' =>
-                        $fechaFormateada,
+                    $fechaFormateada,
 
                 ];
             }
@@ -2076,31 +2074,30 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
 
                     'success' =>
-                        true,
+                    true,
 
                     'reporte' =>
-                        $reporte,
+                    $reporte,
 
                     'direccion_notificacion' =>
-                        $direccionNotificacion,
+                    $direccionNotificacion,
 
                     'personal' =>
-                        $personal,
+                    $personal,
 
                     'unidades' =>
-                        $unidades,
+                    $unidades,
 
                     'evidencias' =>
-                        $evidencias,
+                    $evidencias,
 
                     'motivos' =>
-                        $motivos,
+                    $motivos,
 
                     'sancion' =>
-                        $sancionDetalle,
+                    $sancionDetalle,
 
                 ]);
-
         } catch (\Throwable $e) {
 
             log_message(
@@ -2108,10 +2105,10 @@ class Reportes_Controller extends BaseController
                 'Error consultando detalle del reporte {id}: {mensaje}',
                 [
                     'id' =>
-                        $idReporte,
+                    $idReporte,
 
                     'mensaje' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
                 ]
             );
 
@@ -2121,7 +2118,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'No fue posible consultar el detalle del reporte.',
+                    'No fue posible consultar el detalle del reporte.',
                 ]);
         }
     }
@@ -7509,6 +7506,13 @@ class Reportes_Controller extends BaseController
             );
 
 
+        $idReporte =
+            (int) (
+                $this->request->getGet('id_reporte')
+                ?? 0
+            );
+
+
         /* =========================================================
         VALIDAR QUE EXISTA ALGO QUE REVISAR
         ========================================================= */
@@ -7543,7 +7547,7 @@ class Reportes_Controller extends BaseController
             $resultado = [
 
                 'success' =>
-                    true,
+                true,
 
                 'folio' => [
                     'valor' => $folio,
@@ -7569,21 +7573,34 @@ class Reportes_Controller extends BaseController
 
             if ($folio !== '') {
 
-                $existeFolio =
+                $builder =
                     $db
-                        ->table('ai_reportes')
-                        ->select('id_reporte')
-                        ->where(
-                            'folio',
-                            $folio
-                        )
-                        ->where(
-                            'eliminado',
-                            0
-                        )
-                        ->limit(1)
-                        ->get()
-                        ->getRowArray();
+                    ->table('ai_reportes')
+                    ->select('id_reporte')
+                    ->where(
+                        'folio',
+                        $folio
+                    )
+                    ->where(
+                        'eliminado',
+                        0
+                    );
+
+
+                if ($idReporte > 0) {
+
+                    $builder->where(
+                        'id_reporte !=',
+                        $idReporte
+                    );
+                }
+
+
+                $existeFolio =
+                    $builder
+                    ->limit(1)
+                    ->get()
+                    ->getRowArray();
 
 
                 $resultado['folio']['existe'] =
@@ -7597,21 +7614,34 @@ class Reportes_Controller extends BaseController
 
             if ($folioIp !== '') {
 
-                $existeFolioIp =
+                $builder =
                     $db
-                        ->table('ai_reportes')
-                        ->select('id_reporte')
-                        ->where(
-                            'folio_ip',
-                            $folioIp
-                        )
-                        ->where(
-                            'eliminado',
-                            0
-                        )
-                        ->limit(1)
-                        ->get()
-                        ->getRowArray();
+                    ->table('ai_reportes')
+                    ->select('id_reporte')
+                    ->where(
+                        'folio_ip',
+                        $folioIp
+                    )
+                    ->where(
+                        'eliminado',
+                        0
+                    );
+
+
+                if ($idReporte > 0) {
+
+                    $builder->where(
+                        'id_reporte !=',
+                        $idReporte
+                    );
+                }
+
+
+                $existeFolioIp =
+                    $builder
+                    ->limit(1)
+                    ->get()
+                    ->getRowArray();
 
 
                 $resultado['folio_ip']['existe'] =
@@ -7625,21 +7655,34 @@ class Reportes_Controller extends BaseController
 
             if ($folioImp !== '') {
 
-                $existeFolioImp =
+                $builder =
                     $db
-                        ->table('ai_reportes')
-                        ->select('id_reporte')
-                        ->where(
-                            'folio_imp',
-                            $folioImp
-                        )
-                        ->where(
-                            'eliminado',
-                            0
-                        )
-                        ->limit(1)
-                        ->get()
-                        ->getRowArray();
+                    ->table('ai_reportes')
+                    ->select('id_reporte')
+                    ->where(
+                        'folio_imp',
+                        $folioImp
+                    )
+                    ->where(
+                        'eliminado',
+                        0
+                    );
+
+
+                if ($idReporte > 0) {
+
+                    $builder->where(
+                        'id_reporte !=',
+                        $idReporte
+                    );
+                }
+
+
+                $existeFolioImp =
+                    $builder
+                    ->limit(1)
+                    ->get()
+                    ->getRowArray();
 
 
                 $resultado['folio_imp']['existe'] =
@@ -7659,7 +7702,6 @@ class Reportes_Controller extends BaseController
 
                 $resultado['message'] =
                     'Se encontró al menos un folio ya registrado.';
-
             } else {
 
                 $resultado['message'] =
@@ -7671,7 +7713,6 @@ class Reportes_Controller extends BaseController
                 ->setJSON(
                     $resultado
                 );
-
         } catch (\Throwable $e) {
 
             log_message(
@@ -7679,7 +7720,7 @@ class Reportes_Controller extends BaseController
                 'Error validando folios de reporte: {mensaje}',
                 [
                     'mensaje' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
                 ]
             );
 
@@ -7689,7 +7730,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'No fue posible validar los folios.',
+                    'No fue posible validar los folios.',
                 ]);
         }
     }

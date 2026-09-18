@@ -459,6 +459,19 @@ class ReporteService
 
 
             /* =================================================
+            VALIDAR FOLIOS IP / IMP ÚNICOS
+
+            En edición excluimos el propio reporte para que
+            sus valores actuales no se consideren duplicados.
+            ================================================= */
+
+            $this->validarFoliosUnicos(
+                $datosReporte,
+                $idReporte
+            );  
+
+            
+            /* =================================================
             NOMENCLATURA CAPTURADA POR USUARIO
             ================================================= */
 

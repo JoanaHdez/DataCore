@@ -431,6 +431,22 @@ export function inicializarEditarReporte() {
 
 
             /* =====================================================
+            VALIDAR FOLIOS IP / IMP
+            ===================================================== */
+
+            const foliosValidos =
+                await validarFoliosEditar(
+                    formulario,
+                    idReporte
+                );
+
+
+            if (!foliosValidos) {
+                return;
+            }
+
+
+            /* =====================================================
                OBTENER ESTADO FINAL DEL FORMULARIO
             ===================================================== */
 
@@ -963,6 +979,207 @@ export function inicializarEditarReporte() {
     );
 }
 
+/* =========================================================
+   VALIDAR FOLIOS IP / IMP EN EDICIÓN
+========================================================= */
+
+async function validarFoliosEditar(
+    formulario,
+    idReporte
+) {
+
+    const inputFolioIp =
+        formulario.querySelector(
+            '#editar-folio-ip'
+        );
+
+
+    const inputFolioImp =
+        formulario.querySelector(
+            '#editar-folio-imp'
+        );
+
+
+    const folioIp =
+        String(
+            inputFolioIp?.value
+            || ''
+        ).trim();
+
+
+    const folioImp =
+        String(
+            inputFolioImp?.value
+            || ''
+        ).trim();
+
+
+    /* =====================================================
+       SIN FOLIOS QUE VALIDAR
+    ===================================================== */
+
+    if (
+        folioIp === ''
+        && folioImp === ''
+    ) {
+        return true;
+    }
+
+
+    try {
+
+        const url =
+            new URL(
+                'DataCore/public/asuntos-internos/reportes/validar-folio',
+                `${window.location.origin}/`
+            );
+
+
+        url.searchParams.set(
+            'id_reporte',
+            String(idReporte)
+        );
+
+
+        if (folioIp !== '') {
+
+            url.searchParams.set(
+                'folio_ip',
+                folioIp
+            );
+        }
+
+
+        if (folioImp !== '') {
+
+            url.searchParams.set(
+                'folio_imp',
+                folioImp
+            );
+        }
+
+
+        const respuesta =
+            await fetch(
+                url.toString(),
+                {
+                    method:
+                        'GET',
+
+                    headers: {
+                        Accept:
+                            'application/json',
+                    },
+
+                    credentials:
+                        'same-origin',
+                }
+            );
+
+
+        const resultado =
+            await respuesta.json();
+
+
+        if (
+            !respuesta.ok
+            || resultado?.success !== true
+        ) {
+
+            throw new Error(
+                resultado?.message
+                || 'No fue posible validar los folios.'
+            );
+        }
+
+
+        /* =================================================
+           FOLIO IP REPETIDO
+        ================================================= */
+
+        if (
+            resultado?.folio_ip?.existe
+        ) {
+
+            mostrarResultado({
+
+                tipo:
+                    'warning',
+
+                titulo:
+                    'Folio IP repetido',
+
+                mensaje:
+                    'El Folio IP ya se encuentra registrado. Debes ingresar uno diferente para continuar.',
+
+            });
+
+
+            inputFolioIp?.focus();
+
+
+            return false;
+        }
+
+
+        /* =================================================
+           FOLIO IMP REPETIDO
+        ================================================= */
+
+        if (
+            resultado?.folio_imp?.existe
+        ) {
+
+            mostrarResultado({
+
+                tipo:
+                    'warning',
+
+                titulo:
+                    'Folio IMP repetido',
+
+                mensaje:
+                    'El Folio IMP ya se encuentra registrado. Debes ingresar uno diferente para continuar.',
+
+            });
+
+
+            inputFolioImp?.focus();
+
+
+            return false;
+        }
+
+
+        return true;
+
+
+    } catch (error) {
+
+        console.error(
+            'Error validando Folio IP / IMP en edición:',
+            error
+        );
+
+
+        mostrarResultado({
+
+            tipo:
+                'error',
+
+            titulo:
+                'No fue posible validar',
+
+            mensaje:
+                error.message
+                || 'No fue posible validar los folios.',
+
+        });
+
+
+        return false;
+    }
+}
 
 /* =========================================================
    CONSULTAR REPORTE REAL
