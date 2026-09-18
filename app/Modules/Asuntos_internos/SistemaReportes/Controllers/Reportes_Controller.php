@@ -4950,6 +4950,273 @@ class Reportes_Controller extends BaseController
         }
     }
 
+    public function buscarPersonalAsuntosInternos()
+    {
+        $termino =
+            trim(
+                (string)
+                $this->request->getGet('q')
+            );
+
+
+        /* =========================================================
+        NO BUSCAR SI EL CAMPO ESTÁ VACÍO
+        ========================================================= */
+
+        if (
+            mb_strlen($termino) === 0
+        ) {
+
+            return $this->response
+                ->setJSON([
+                    'success' => true,
+                    'personal' => [],
+                ]);
+        }
+
+
+        try {
+
+            /* =========================================================
+            CONEXIÓN A PLANTILLA
+            ========================================================= */
+
+            $db =
+                \Config\Database::connect(
+                    'plantilla'
+                );
+
+
+            /* =========================================================
+            CONSULTA
+            ========================================================= */
+
+            $builder =
+                $db
+                ->table(
+                    'plantilla'
+                )
+                ->select([
+                    'ID',
+                    'PERSCOD',
+                    'NOMBRE_COMPLETO',
+                    'NO_NOMINA',
+                    'AREA',
+                    'TURNO',
+                ])
+                ->where(
+                    'ESTADO',
+                    'ACTIVO'
+                )
+                ->where(
+                    'TIPO_NOMINA',
+                    'RAMO 33'
+                )
+                ->where(
+                    'AREA',
+                    'COORDINACION DE ASUNTOS INTERNOS'
+                );
+
+
+            /* =========================================================
+            BÚSQUEDA
+            ========================================================= */
+
+            $builder
+                ->groupStart()
+                ->like(
+                    'NOMBRE_COMPLETO',
+                    $termino
+                )
+                ->orLike(
+                    'NO_NOMINA',
+                    $termino
+                )
+                ->orLike(
+                    'PERSCOD',
+                    $termino
+                )
+                ->groupEnd();
+
+
+            /* =========================================================
+            RESULTADOS
+            ========================================================= */
+
+            $personal =
+                $builder
+                ->orderBy(
+                    'NOMBRE_COMPLETO',
+                    'ASC'
+                )
+                ->limit(10)
+                ->get()
+                ->getResultArray();
+
+
+            /* =========================================================
+            LIMPIAR TEXTO
+            ========================================================= */
+
+            $limpiarTexto =
+                static function ($valor): string {
+
+                    $texto =
+                        trim(
+                            (string)
+                            ($valor ?? '')
+                        );
+
+
+                    if ($texto === '') {
+
+                        return '';
+                    }
+
+
+                    if (
+                        mb_check_encoding(
+                            $texto,
+                            'UTF-8'
+                        )
+                    ) {
+
+                        return $texto;
+                    }
+
+
+                    $textoConvertido =
+                        mb_convert_encoding(
+                            $texto,
+                            'UTF-8',
+                            'ISO-8859-1'
+                        );
+
+
+                    if (
+                        !mb_check_encoding(
+                            $textoConvertido,
+                            'UTF-8'
+                        )
+                    ) {
+
+                        return '';
+                    }
+
+
+                    return $textoConvertido;
+                };
+
+
+            /* =========================================================
+            PREPARAR RESPUESTA
+            ========================================================= */
+
+            $resultado = [];
+
+
+            foreach (
+                $personal
+                as $persona
+            ) {
+
+                $perscod =
+                    $limpiarTexto(
+                        $persona['PERSCOD']
+                            ?? ''
+                    );
+
+
+                $foto =
+                    null;
+
+
+                if (
+                    $perscod !== ''
+                ) {
+
+                    $foto =
+                        'http://10.8.6.2:8083/dgsc/images/fotos/'
+                        . rawurlencode(
+                            $perscod
+                        )
+                        . '/F.F.R.E.jpg';
+                }
+
+
+                $resultado[] = [
+
+                    'id' =>
+                    (int)
+                    (
+                        $persona['ID']
+                        ?? 0
+                    ),
+
+                    'perscod' =>
+                    $perscod,
+
+                    'nombre' =>
+                    $limpiarTexto(
+                        $persona['NOMBRE_COMPLETO']
+                            ?? ''
+                    ),
+
+                    'nomina' =>
+                    $limpiarTexto(
+                        $persona['NO_NOMINA']
+                            ?? ''
+                    ),
+
+                    'area' =>
+                    $limpiarTexto(
+                        $persona['AREA']
+                            ?? ''
+                    ),
+
+                    'turno' =>
+                    $limpiarTexto(
+                        $persona['TURNO']
+                            ?? ''
+                    ),
+
+                    'foto' =>
+                    $foto,
+                ];
+            }
+
+
+            /* =========================================================
+            RESPUESTA
+            ========================================================= */
+
+            return $this->response
+                ->setJSON([
+                    'success' => true,
+                    'personal' => $resultado,
+                ]);
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error buscando personal de Asuntos Internos: {mensaje}',
+                [
+                    'mensaje' =>
+                    $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'No fue posible consultar el personal de Asuntos Internos.',
+                ]);
+        }
+    }
+
     public function verEvidencia(int $idEvidencia)
     {
         /* =========================================================

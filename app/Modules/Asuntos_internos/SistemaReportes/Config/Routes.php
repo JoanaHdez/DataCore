@@ -151,6 +151,15 @@ $routes->group(
                     '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::buscarPersonal'
                 );
 
+                
+                /* =================================================
+                PERSONAL DE ASUNTOS INTERNOS
+                ================================================= */
+
+                $routes->get(
+                    'personal/asuntos-internos/buscar',
+                    '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::buscarPersonalAsuntosInternos'
+                );
 
                 /* =================================================
                    UNIDADES

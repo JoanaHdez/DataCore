@@ -516,6 +516,433 @@
     line-height: 1.4;
 }
 
+/* =========================================================
+   INSPECTOR
+   CONTENEDOR
+========================================================= */
+
+.report-field--inspector {
+
+    position: relative;
+
+    overflow: visible !important;
+
+    z-index: 20;
+}
+
+
+.report-field--inspector:has(
+    #inspector-resultados:not([hidden])
+) {
+
+    z-index: 300;
+}
+
+
+/* =========================================================
+   PERMITIR RESULTADOS FLOTANTES
+========================================================= */
+
+.report-section:has(
+    #inspector-busqueda
+),
+
+.report-section__body:has(
+    #inspector-busqueda
+),
+
+.report-form-grid:has(
+    #inspector-busqueda
+) {
+
+    overflow: visible !important;
+}
+
+
+/* =========================================================
+   RESULTADOS
+========================================================= */
+
+.inspector-resultados {
+
+    position: absolute;
+
+    top: calc(100% - 2px);
+    left: 0;
+    right: 0;
+
+    z-index: 400;
+
+    width: 100%;
+
+    max-height: 320px;
+
+    margin-top: 8px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #d9e3eb;
+    border-radius: 10px;
+
+    box-shadow:
+        0 10px 28px rgba(31, 58, 88, 0.14);
+
+    box-sizing: border-box;
+}
+
+
+.inspector-resultados[hidden] {
+
+    display: none !important;
+}
+
+
+/* =========================================================
+   RESULTADO
+========================================================= */
+
+.inspector-resultados__item {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 11px 14px;
+
+    background: #ffffff;
+
+    border: 0;
+    border-bottom: 1px solid #edf2f6;
+
+    font-family: inherit;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease;
+}
+
+
+.inspector-resultados__item:last-child {
+
+    border-bottom: 0;
+}
+
+
+.inspector-resultados__item:hover {
+
+    background: #f5faff;
+}
+
+
+/* =========================================================
+   FOTO / AVATAR
+========================================================= */
+
+.inspector-resultados__avatar {
+
+    width: 38px;
+    height: 38px;
+
+    flex: 0 0 38px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    color: #1681c4;
+
+    background: #e8f3fb;
+
+    border: 1px solid #cfe1ed;
+    border-radius: 50%;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+.inspector-resultados__avatar img {
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+/* =========================================================
+   FOTO / FALLBACK
+========================================================= */
+
+.inspector-resultados__avatar img[hidden],
+.inspector-resultados__avatar span[hidden],
+.inspector-seleccionado__foto img[hidden],
+.inspector-seleccionado__foto span[hidden] {
+
+    display: none !important;
+}
+
+
+.inspector-resultados__avatar > span:not([hidden]),
+.inspector-seleccionado__foto > span:not([hidden]) {
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+/* =========================================================
+   DATOS
+========================================================= */
+
+.inspector-resultados__datos {
+
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+.inspector-resultados__datos strong {
+
+    overflow: hidden;
+
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+.inspector-resultados__datos small {
+
+    overflow: hidden;
+
+    color: #728596;
+
+    font-size: 9px;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SIN RESULTADOS
+========================================================= */
+
+.inspector-resultados__vacio {
+
+    padding: 16px;
+
+    color: #718498;
+
+    background: #f8fbfd;
+
+    font-size: 9px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   INSPECTOR SELECCIONADO
+========================================================= */
+
+.inspector-seleccionado {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 10px;
+
+    padding: 12px 14px;
+
+    background: #f7fbfe;
+
+    border: 1px solid #cfe1ed;
+    border-radius: 9px;
+
+    box-sizing: border-box;
+}
+
+
+.inspector-seleccionado[hidden] {
+
+    display: none !important;
+}
+
+
+/* =========================================================
+   FOTO SELECCIONADA
+========================================================= */
+
+.inspector-seleccionado__foto {
+
+    width: 40px;
+    height: 40px;
+
+    flex: 0 0 40px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    color: #1681c4;
+
+    background: #e8f3fb;
+
+    border: 1px solid #cfe1ed;
+    border-radius: 50%;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+.inspector-seleccionado__foto img {
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+
+/* =========================================================
+   INFORMACIÓN SELECCIONADA
+========================================================= */
+
+.inspector-seleccionado__datos {
+
+    min-width: 0;
+
+    flex: 1;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+.inspector-seleccionado__datos strong {
+
+    overflow: hidden;
+
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+.inspector-seleccionado__datos span {
+
+    color: #405d78;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+
+.inspector-seleccionado__datos small {
+
+    overflow: hidden;
+
+    color: #728596;
+
+    font-size: 9px;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   QUITAR
+========================================================= */
+
+.inspector-seleccionado__quitar {
+
+    width: 28px;
+    height: 28px;
+
+    flex: 0 0 28px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    color: #708397;
+
+    background: #ffffff;
+
+    border: 1px solid #d5e0e8;
+    border-radius: 50%;
+
+    font-size: 17px;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+
+.inspector-seleccionado__quitar:hover {
+
+    color: #c43d35;
+
+    border-color: #e2aaa6;
+
+    background: #fff8f7;
+}
+
 
 /* =========================================================
    RESPONSIVE

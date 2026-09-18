@@ -134,27 +134,93 @@
 
 
             <!-- =====================================================
-                 INSPECTOR
-            ====================================================== -->
+     INSPECTOR
+====================================================== -->
 
-            <div class="report-field">
+            <div class="report-field report-field--inspector">
 
-                <label for="inspector">
-
+                <label for="inspector-busqueda">
                     Inspector
-
-                    <span class="required">
-                        *
-                    </span>
-
+                    <span class="required">*</span>
                 </label>
 
 
-                <input type="text" id="inspector" name="inspector" class="report-input"
-                    placeholder="Ingresa el nombre del inspector" autocomplete="off" required>
+                <!-- =================================================
+         BUSCADOR
+    ================================================== -->
+
+                <input type="text" id="inspector-busqueda" class="report-input" placeholder="Busca por nombre o nómina"
+                    autocomplete="off">
+
+
+                <small class="report-field__help">
+                    Selecciona personal activo de la Coordinación de Asuntos Internos.
+                </small>
+
+
+                <!-- =================================================
+         VALOR REAL QUE SE ENVÍA AL BACKEND
+    ================================================== -->
+
+                <input type="hidden" id="inspector" name="inspector" value="" required>
+
+
+                <!-- =================================================
+         ID DE PLANTILLA SELECCIONADO
+    ================================================== -->
+
+                <input type="hidden" id="inspector-plantilla-id" value="">
+
+
+                <!-- =================================================
+         RESULTADOS
+    ================================================== -->
+
+                <div class="inspector-resultados" id="inspector-resultados" hidden></div>
+
+
+                <!-- =================================================
+         PERSONA SELECCIONADA
+    ================================================== -->
+
+                <div class="inspector-seleccionado" id="inspector-seleccionado" hidden>
+
+                    <div class="inspector-seleccionado__foto">
+
+                        <img id="inspector-foto" src="" alt="" hidden>
+
+                        <span id="inspector-foto-fallback">
+                            —
+                        </span>
+
+                    </div>
+
+
+                    <div class="inspector-seleccionado__datos">
+
+                        <strong id="inspector-nombre">
+                            —
+                        </strong>
+
+                        <span id="inspector-nomina">
+                            —
+                        </span>
+
+                        <small id="inspector-detalle">
+                            —
+                        </small>
+
+                    </div>
+
+
+                    <button type="button" class="inspector-seleccionado__quitar" id="btn-quitar-inspector"
+                        aria-label="Quitar inspector seleccionado">
+                        ×
+                    </button>
+
+                </div>
 
             </div>
-
 
             <!-- =====================================================
                  INVESTIGADOR
