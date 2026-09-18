@@ -138,45 +138,139 @@
 
 
         <!-- =====================================================
-             GÉNERO
+            GÉNERO
         ====================================================== -->
 
         <div class="editar-reporte-campo">
 
-            <label for="editar-genero">
-
+            <label>
                 Género
-
-                <span class="required">
-                    *
-                </span>
-
+                <span class="required">*</span>
             </label>
 
 
-            <select id="editar-genero" name="genero" required>
+            <!-- =================================================
+                VALOR REAL PARA BACKEND
+            ================================================== -->
 
-                <option value="" disabled>
+            <input type="hidden" id="editar-genero" name="genero" value="" required>
+
+
+            <!-- =================================================
+                SELECTOR VISUAL
+            ================================================== -->
+
+            <button type="button" class="genero-select" id="editar-genero-select" aria-expanded="false"
+                aria-controls="editar-genero-resultados">
+
+                <span class="genero-select__texto" id="editar-genero-select-texto">
                     Selecciona una opción
-                </option>
+                </span>
 
-                <option value="Mujer">
-                    Mujer
-                </option>
 
-                <option value="Hombre">
-                    Hombre
-                </option>
+                <span class="genero-select__flecha" aria-hidden="true">
+                    ▾
+                </span>
 
-                <option value="Otro">
-                    Otro
-                </option>
+            </button>
 
-                <option value="No especificado">
-                    No especificado
-                </option>
 
-            </select>
+            <!-- =================================================
+                CATÁLOGO
+            ================================================== -->
+
+            <div class="genero-resultados" id="editar-genero-resultados" hidden>
+
+
+                <!-- MUJER -->
+                <button type="button" class="genero-resultados__item" data-editar-genero-opcion data-genero="Mujer">
+
+                    <span class="genero-resultados__avatar">
+                        M
+                    </span>
+
+                    <span class="genero-resultados__datos">
+
+                        <strong>
+                            Mujer
+                        </strong>
+
+                        <small>
+                            Género femenino
+                        </small>
+
+                    </span>
+
+                </button>
+
+
+                <!-- HOMBRE -->
+                <button type="button" class="genero-resultados__item" data-editar-genero-opcion data-genero="Hombre">
+
+                    <span class="genero-resultados__avatar">
+                        H
+                    </span>
+
+                    <span class="genero-resultados__datos">
+
+                        <strong>
+                            Hombre
+                        </strong>
+
+                        <small>
+                            Género masculino
+                        </small>
+
+                    </span>
+
+                </button>
+
+
+                <!-- OTRO -->
+                <button type="button" class="genero-resultados__item" data-editar-genero-opcion data-genero="Otro">
+
+                    <span class="genero-resultados__avatar">
+                        O
+                    </span>
+
+                    <span class="genero-resultados__datos">
+
+                        <strong>
+                            Otro
+                        </strong>
+
+                        <small>
+                            Otra identidad de género
+                        </small>
+
+                    </span>
+
+                </button>
+
+
+                <!-- NO ESPECIFICADO -->
+                <button type="button" class="genero-resultados__item" data-editar-genero-opcion
+                    data-genero="No especificado">
+
+                    <span class="genero-resultados__avatar">
+                        —
+                    </span>
+
+                    <span class="genero-resultados__datos">
+
+                        <strong>
+                            No especificado
+                        </strong>
+
+                        <small>
+                            No se especifica el género
+                        </small>
+
+                    </span>
+
+                </button>
+
+            </div>
 
         </div>
 
@@ -225,12 +319,8 @@
                 Dirección del quejoso
             </label>
 
-            <textarea
-                id="editar-direccion-quejoso"
-                name="direccion_quejoso"
-                rows="3"
-                placeholder="Ingresa la dirección del quejoso"
-                autocomplete="street-address"></textarea>
+            <textarea id="editar-direccion-quejoso" name="direccion_quejoso" rows="3"
+                placeholder="Ingresa la dirección del quejoso" autocomplete="street-address"></textarea>
 
             <small class="editar-reporte-campo__help">
                 Ingresa la dirección proporcionada por el quejoso.
@@ -319,9 +409,9 @@
 
                 <?php if (!empty($canalizaciones)): ?>
 
-                    <?php foreach ($canalizaciones as $canalizacion): ?>
+                <?php foreach ($canalizaciones as $canalizacion): ?>
 
-                        <?php
+                <?php
 
                         $nombreCanalizacion =
                             trim(
@@ -391,33 +481,33 @@
                         ?>
 
 
-                        <?php if ($nombreCanalizacion !== ''): ?>
+                <?php if ($nombreCanalizacion !== ''): ?>
 
-                            <button type="button" class="canalizacion-resultados__item" data-editar-canalizacion-opcion
-                                data-canalizacion-nombre="<?= esc($nombreCanalizacion) ?>">
+                <button type="button" class="canalizacion-resultados__item" data-editar-canalizacion-opcion
+                    data-canalizacion-nombre="<?= esc($nombreCanalizacion) ?>">
 
-                                <span class="canalizacion-resultados__avatar">
-                                    <?= esc($letraCanalizacion) ?>
-                                </span>
+                    <span class="canalizacion-resultados__avatar">
+                        <?= esc($letraCanalizacion) ?>
+                    </span>
 
 
-                                <span class="canalizacion-resultados__datos">
+                    <span class="canalizacion-resultados__datos">
 
-                                    <strong>
-                                        <?= esc($nombreCanalizacion) ?>
-                                    </strong>
+                        <strong>
+                            <?= esc($nombreCanalizacion) ?>
+                        </strong>
 
-                                    <small>
-                                        Área de canalización
-                                    </small>
+                        <small>
+                            Área de canalización
+                        </small>
 
-                                </span>
+                    </span>
 
-                            </button>
+                </button>
 
-                        <?php endif; ?>
+                <?php endif; ?>
 
-                    <?php endforeach; ?>
+                <?php endforeach; ?>
 
                 <?php endif; ?>
 

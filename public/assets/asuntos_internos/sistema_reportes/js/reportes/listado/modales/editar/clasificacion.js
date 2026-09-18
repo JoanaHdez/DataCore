@@ -1,6 +1,5 @@
 import {
     asignarValorEditar,
-    asignarSelectSeguro,
 } from './utilidades.js';
 
 /* =========================================================
@@ -384,18 +383,6 @@ export function cargarClasificacionEditar(
         modal,
         '#editar-investigador',
         reporte.investigador
-    );
-
-
-    /* =====================================================
-       ESTADO ACTUAL
-    ===================================================== */
-
-    asignarSelectSeguro(
-        modal,
-        '#editar-estado-actual',
-        reporte.estado_actual
-        || 'Pendiente'
     );
 
 

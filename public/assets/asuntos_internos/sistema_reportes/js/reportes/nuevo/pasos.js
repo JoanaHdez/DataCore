@@ -619,6 +619,15 @@ function inicializarFormularioPorPasos() {
 
 
     /* =====================================================
+    CATÁLOGO TIPO DE FOLIO
+    ===================================================== */
+
+    inicializarCatalogoTipoFolio(
+        formulario
+    );
+
+
+    /* =====================================================
     PREVISUALIZAR FOLIO AUTOMÁTICO
     ===================================================== */
 
@@ -1213,6 +1222,326 @@ function validarRelacionesDelPaso(
 
     return true;
 
+}
+
+
+/* =========================================================
+   CATÁLOGO TIPO DE FOLIO
+   NUEVO REPORTE
+========================================================= */
+
+function inicializarCatalogoTipoFolio(
+    formulario
+) {
+
+    if (!formulario) {
+        return;
+    }
+
+
+    /* =====================================================
+       ELEMENTOS
+    ===================================================== */
+
+    const inputTipoFolio =
+        formulario.querySelector(
+            '#tipo_folio'
+        );
+
+
+    const selector =
+        formulario.querySelector(
+            '#tipo-folio-select'
+        );
+
+
+    const textoSelector =
+        formulario.querySelector(
+            '#tipo-folio-select-texto'
+        );
+
+
+    const resultados =
+        formulario.querySelector(
+            '#tipo-folio-resultados'
+        );
+
+
+    const opciones =
+        formulario.querySelectorAll(
+            '[data-tipo-folio-opcion]'
+        );
+
+
+    if (
+        !inputTipoFolio
+        || !selector
+        || !textoSelector
+        || !resultados
+    ) {
+        return;
+    }
+
+
+    /* =====================================================
+       EVITAR LISTENERS DUPLICADOS
+    ===================================================== */
+
+    if (
+        selector.dataset
+            .tipoFolioCatalogoInicializado
+        === '1'
+    ) {
+        return;
+    }
+
+
+    selector.dataset
+        .tipoFolioCatalogoInicializado =
+        '1';
+
+
+    /* =====================================================
+       ABRIR
+    ===================================================== */
+
+    function abrirCatalogo() {
+
+        resultados.hidden =
+            false;
+
+
+        selector.setAttribute(
+            'aria-expanded',
+            'true'
+        );
+
+
+        selector.classList.add(
+            'tipo-folio-select--activo'
+        );
+    }
+
+
+    /* =====================================================
+       CERRAR
+    ===================================================== */
+
+    function cerrarCatalogo() {
+
+        resultados.hidden =
+            true;
+
+
+        selector.setAttribute(
+            'aria-expanded',
+            'false'
+        );
+
+
+        selector.classList.remove(
+            'tipo-folio-select--activo'
+        );
+    }
+
+
+    /* =====================================================
+       NOMBRE VISUAL
+    ===================================================== */
+
+    function obtenerNombreTipoFolio(
+        clave
+    ) {
+
+        switch (
+            String(
+                clave
+                || ''
+            )
+                .trim()
+                .toUpperCase()
+        ) {
+
+            case 'QJV':
+
+                return 'QJV - Queja verbal';
+
+
+            case 'QJF':
+
+                return 'QJF - Queja foránea';
+
+
+            case 'QJ':
+            default:
+
+                return 'QJ - Queja';
+        }
+    }
+
+
+    /* =====================================================
+       SELECCIONAR
+    ===================================================== */
+
+    function seleccionarTipoFolio(
+        valor,
+        nombre
+    ) {
+
+        const clave =
+            String(
+                valor
+                || ''
+            )
+                .trim()
+                .toUpperCase();
+
+
+        if (
+            ![
+                'QJ',
+                'QJV',
+                'QJF',
+            ].includes(
+                clave
+            )
+        ) {
+            return;
+        }
+
+
+        inputTipoFolio.value =
+            clave;
+
+
+        textoSelector.textContent =
+            String(
+                nombre
+                || obtenerNombreTipoFolio(
+                    clave
+                )
+            ).trim();
+
+
+        cerrarCatalogo();
+
+
+        /*
+         * Esto activa la lógica que ya existe en
+         * cargarPrevisualizacionFolio():
+         *
+         * - actualiza folio;
+         * - actualiza nomenclatura;
+         * - activa/desactiva Paso 3 para QJF.
+         */
+
+        inputTipoFolio.dispatchEvent(
+            new Event(
+                'change',
+                {
+                    bubbles:
+                        true,
+                }
+            )
+        );
+    }
+
+
+    /* =====================================================
+       SELECTOR
+    ===================================================== */
+
+    selector.addEventListener(
+        'click',
+        () => {
+
+            if (
+                resultados.hidden
+            ) {
+
+                abrirCatalogo();
+
+            } else {
+
+                cerrarCatalogo();
+            }
+        }
+    );
+
+
+    /* =====================================================
+       OPCIONES
+    ===================================================== */
+
+    opciones.forEach(
+        (opcion) => {
+
+            opcion.addEventListener(
+                'click',
+                () => {
+
+                    seleccionarTipoFolio(
+                        opcion.dataset.tipoFolio,
+                        opcion.dataset.tipoFolioNombre
+                    );
+                }
+            );
+        }
+    );
+
+
+    /* =====================================================
+       CLICK FUERA
+    ===================================================== */
+
+    document.addEventListener(
+        'click',
+        (evento) => {
+
+            if (
+                selector.contains(
+                    evento.target
+                )
+                || resultados.contains(
+                    evento.target
+                )
+            ) {
+                return;
+            }
+
+
+            cerrarCatalogo();
+        }
+    );
+
+
+    /* =====================================================
+       ESC
+    ===================================================== */
+
+    document.addEventListener(
+        'keydown',
+        (evento) => {
+
+            if (
+                evento.key === 'Escape'
+            ) {
+
+                cerrarCatalogo();
+            }
+        }
+    );
+
+
+    /* =====================================================
+       ESTADO INICIAL
+    ===================================================== */
+
+    textoSelector.textContent =
+        obtenerNombreTipoFolio(
+            inputTipoFolio.value
+        );
 }
 
 

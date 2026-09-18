@@ -165,31 +165,123 @@
 
         <div class="editar-reporte-campo">
 
-            <label for="editar-estado-actual">
+            <label>
                 Estado
             </label>
 
 
-            <select id="editar-estado-actual" name="estado_actual">
+            <!-- =================================================
+                VALOR REAL PARA BACKEND
+            ================================================== -->
 
-                <option value="Pendiente" selected>
+            <input type="hidden" id="editar-estado-actual" name="estado_actual" value="Pendiente">
+
+
+            <!-- =================================================
+                SELECTOR VISUAL
+            ================================================== -->
+
+            <button type="button" class="estado-select" id="editar-estado-select" aria-expanded="false"
+                aria-controls="editar-estado-resultados">
+
+                <span class="estado-select__texto" id="editar-estado-select-texto">
                     Pendiente
-                </option>
+                </span>
 
-                <option value="En proceso">
-                    En proceso
-                </option>
 
-                <option value="Finalizado">
-                    Finalizado
-                </option>
+                <span class="estado-select__flecha" aria-hidden="true">
+                    ▾
+                </span>
 
-            </select>
+            </button>
 
 
             <small class="editar-reporte-campo__help">
                 Indica el estado actual de atención de la queja.
             </small>
+
+
+            <!-- =================================================
+                CATÁLOGO
+            ================================================== -->
+
+            <div class="estado-resultados" id="editar-estado-resultados" hidden>
+
+
+                <!-- PENDIENTE -->
+
+                <button type="button" class="estado-resultados__item" data-editar-estado-opcion data-estado="Pendiente">
+
+                    <span class="estado-resultados__avatar">
+                        P
+                    </span>
+
+
+                    <span class="estado-resultados__datos">
+
+                        <strong>
+                            Pendiente
+                        </strong>
+
+                        <small>
+                            Atención pendiente de seguimiento
+                        </small>
+
+                    </span>
+
+                </button>
+
+
+                <!-- EN PROCESO -->
+
+                <button type="button" class="estado-resultados__item" data-editar-estado-opcion
+                    data-estado="En proceso">
+
+                    <span class="estado-resultados__avatar">
+                        EP
+                    </span>
+
+
+                    <span class="estado-resultados__datos">
+
+                        <strong>
+                            En proceso
+                        </strong>
+
+                        <small>
+                            Reporte actualmente en atención
+                        </small>
+
+                    </span>
+
+                </button>
+
+
+                <!-- FINALIZADO -->
+
+                <button type="button" class="estado-resultados__item" data-editar-estado-opcion
+                    data-estado="Finalizado">
+
+                    <span class="estado-resultados__avatar">
+                        F
+                    </span>
+
+
+                    <span class="estado-resultados__datos">
+
+                        <strong>
+                            Finalizado
+                        </strong>
+
+                        <small>
+                            Atención del reporte concluida
+                        </small>
+
+                    </span>
+
+                </button>
+
+            </div>
 
         </div>
 

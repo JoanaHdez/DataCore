@@ -175,6 +175,16 @@ export function cargarMotivosEditar(
 
 
     /* =====================================================
+    LIMPIAR ESTADO TEMPORAL DE BAJA VOLUNTARIA
+    ===================================================== */
+
+    if (bajaVoluntaria) {
+
+        delete bajaVoluntaria.dataset.estadoAnterior;
+    }
+
+
+    /* =====================================================
        BAJA VOLUNTARIA
 
        Los motivos registrados se conservan temporalmente
@@ -275,6 +285,18 @@ export function inicializarMotivosEditar(
         );
 
 
+    const sinSanciones =
+        modal.querySelector(
+            '#editar-sin-sanciones'
+        );
+
+
+    const bajaVoluntaria =
+        modal.querySelector(
+            '#editar-baja-voluntaria'
+        );
+
+
     if (
         !buscador
         || !resultados
@@ -371,6 +393,7 @@ export function inicializarMotivosEditar(
                 idMotivo
             );
 
+
             renderizarMotivosEditar(
                 modal
             );
@@ -437,6 +460,371 @@ export function inicializarMotivosEditar(
                 modal
             );
         }
+    );
+
+
+    /* =====================================================
+       SIN SANCIONES
+    ===================================================== */
+
+    if (sinSanciones) {
+
+        sinSanciones.addEventListener(
+            'change',
+            () => {
+
+                if (
+                    sinSanciones.checked
+                ) {
+
+                    /*
+                     * No puede coexistir con
+                     * Baja voluntaria.
+                     */
+
+                    if (bajaVoluntaria) {
+
+                        bajaVoluntaria.checked =
+                            false;
+                    }
+
+
+                    /*
+                     * Restaurar estado si Baja voluntaria
+                     * lo había cambiado.
+                     */
+
+                    actualizarBajaVoluntariaEditar(
+                        modal
+                    );
+
+
+                    /*
+                     * Sin sanciones:
+                     * deshabilita motivos
+                     * y conserva respaldo.
+                     */
+
+                    establecerMotivosHabilitadosEditar(
+                        modal,
+                        false,
+                        true
+                    );
+
+
+                    return;
+                }
+
+
+                /*
+                 * Si no hay Baja voluntaria activa,
+                 * volvemos a habilitar motivos.
+                 */
+
+                if (
+                    !bajaVoluntaria
+                    || !bajaVoluntaria.checked
+                ) {
+
+                    establecerMotivosHabilitadosEditar(
+                        modal,
+                        true,
+                        true
+                    );
+                }
+            }
+        );
+    }
+
+
+    /* =====================================================
+       BAJA VOLUNTARIA
+    ===================================================== */
+
+    if (bajaVoluntaria) {
+
+        bajaVoluntaria.addEventListener(
+            'change',
+            () => {
+
+                if (
+                    bajaVoluntaria.checked
+                ) {
+
+                    /*
+                     * Baja voluntaria y Sin sanciones
+                     * son mutuamente excluyentes.
+                     */
+
+                    if (sinSanciones) {
+
+                        sinSanciones.checked =
+                            false;
+                    }
+
+
+                    /*
+                     * Conservamos motivos temporalmente.
+                     * Si se desmarca antes de guardar,
+                     * volverán a aparecer.
+                     */
+
+                    establecerMotivosHabilitadosEditar(
+                        modal,
+                        false,
+                        true
+                    );
+
+                } else {
+
+                    /*
+                     * Restaurar motivos previos.
+                     */
+
+                    establecerMotivosHabilitadosEditar(
+                        modal,
+                        true,
+                        true
+                    );
+                }
+
+
+                /*
+                 * Actualizar estado del reporte.
+                 */
+
+                actualizarBajaVoluntariaEditar(
+                    modal
+                );
+            }
+        );
+    }
+
+
+    /* =====================================================
+       ESTADO INICIAL
+    ===================================================== */
+
+    actualizarBajaVoluntariaEditar(
+        modal
+    );
+}
+
+
+/* =========================================================
+   ACTUALIZAR BAJA VOLUNTARIA
+========================================================= */
+
+export function actualizarBajaVoluntariaEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const bajaVoluntaria =
+        modal.querySelector(
+            '#editar-baja-voluntaria'
+        );
+
+
+    const estado =
+        modal.querySelector(
+            '#editar-estado-actual'
+        );
+
+
+    const textoEstado =
+        modal.querySelector(
+            '#editar-estado-select-texto'
+        );
+
+
+    const botonEstado =
+        modal.querySelector(
+            '#editar-estado-select'
+        );
+
+
+    if (
+        !bajaVoluntaria
+        || !estado
+    ) {
+        return;
+    }
+
+
+    /* =====================================================
+       BAJA VOLUNTARIA ACTIVADA
+    ===================================================== */
+
+    if (
+        bajaVoluntaria.checked
+    ) {
+
+        /* =================================================
+           GUARDAR ESTADO ANTERIOR
+
+           Lo almacenamos en Baja voluntaria para que no
+           dependa del input hidden de Estado.
+        ================================================= */
+
+        if (
+            !bajaVoluntaria.dataset.estadoAnterior
+        ) {
+
+            const estadoAnterior =
+                String(
+                    estado.value
+                    || 'Pendiente'
+                ).trim();
+
+
+            /*
+             * No guardamos Finalizado como estado anterior,
+             * porque es precisamente el valor forzado por
+             * Baja voluntaria.
+             */
+
+            bajaVoluntaria.dataset.estadoAnterior =
+                estadoAnterior !== 'Finalizado'
+                    ? estadoAnterior
+                    : 'Pendiente';
+        }
+
+
+        /* =================================================
+           FORZAR FINALIZADO
+        ================================================= */
+
+        estado.value =
+            'Finalizado';
+
+
+        /* =================================================
+           TEXTO VISUAL
+        ================================================= */
+
+        if (textoEstado) {
+
+            textoEstado.textContent =
+                'Finalizado';
+        }
+
+
+        /* =================================================
+           BLOQUEAR CATÁLOGO MIENTRAS EXISTA BAJA
+        ================================================= */
+
+        if (botonEstado) {
+
+            botonEstado.disabled =
+                true;
+
+
+            botonEstado.setAttribute(
+                'aria-expanded',
+                'false'
+            );
+
+
+            botonEstado.classList.remove(
+                'estado-select--activo'
+            );
+        }
+
+
+        const resultados =
+            modal.querySelector(
+                '#editar-estado-resultados'
+            );
+
+
+        if (resultados) {
+
+            resultados.hidden =
+                true;
+        }
+
+
+        /* =================================================
+           NOTIFICAR CAMBIO
+        ================================================= */
+
+        estado.dispatchEvent(
+            new Event(
+                'change',
+                {
+                    bubbles:
+                        true,
+                }
+            )
+        );
+
+
+        return;
+    }
+
+
+    /* =====================================================
+       BAJA VOLUNTARIA DESACTIVADA
+    ===================================================== */
+
+    const estadoAnterior =
+        String(
+            bajaVoluntaria.dataset.estadoAnterior
+            || ''
+        ).trim();
+
+
+    /* =====================================================
+       RESTAURAR
+    ===================================================== */
+
+    if (
+        estadoAnterior !== ''
+    ) {
+
+        estado.value =
+            estadoAnterior;
+
+
+        if (textoEstado) {
+
+            textoEstado.textContent =
+                estadoAnterior;
+        }
+
+
+        delete bajaVoluntaria.dataset.estadoAnterior;
+    }
+
+
+    /* =====================================================
+       VOLVER A HABILITAR CATÁLOGO
+    ===================================================== */
+
+    if (botonEstado) {
+
+        botonEstado.disabled =
+            false;
+    }
+
+
+    /* =====================================================
+       NOTIFICAR CAMBIO
+    ===================================================== */
+
+    estado.dispatchEvent(
+        new Event(
+            'change',
+            {
+                bubbles:
+                    true,
+            }
+        )
     );
 }
 

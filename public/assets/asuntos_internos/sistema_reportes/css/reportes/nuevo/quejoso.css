@@ -248,10 +248,89 @@
 
 
 /* =========================================================
+   CANALIZACIÓN
+   CONTENEDOR DEL CATÁLOGO
+========================================================= */
+
+/*
+ * El campo de canalización será la referencia
+ * para posicionar el catálogo flotante.
+ */
+.editar-reporte-campo:has(
+    #editar-canalizacion
+),
+.report-field:has(
+    #canalizacion
+) {
+
+    position: relative;
+
+    overflow: visible !important;
+}
+
+
+/* =========================================================
+   PERMITIR QUE EL CATÁLOGO SALGA DE LA SECCIÓN
+========================================================= */
+
+#modal-editar-reporte
+.editar-reporte-seccion__bloque:has(
+    #editar-canalizacion
+),
+
+#modal-editar-reporte
+.editar-reporte-grid:has(
+    #editar-canalizacion
+),
+
+.report-section:has(
+    #canalizacion
+),
+
+.report-section__body:has(
+    #canalizacion
+),
+
+.report-form-grid:has(
+    #canalizacion
+) {
+
+    overflow: visible !important;
+}
+
+
+/* =========================================================
+   CUANDO EL CATÁLOGO ESTÁ ABIERTO
+========================================================= */
+
+.editar-reporte-campo:has(
+    #editar-canalizacion-resultados:not([hidden])
+),
+
+.report-field:has(
+    #canalizacion-resultados:not([hidden])
+) {
+
+    z-index: 200;
+}
+
+
+/* =========================================================
    CANALIZACIÓN - RESULTADOS
 ========================================================= */
 
 .canalizacion-resultados {
+
+    position: absolute;
+
+    top: 100%;
+    left: 0;
+    right: 0;
+
+    z-index: 300;
+
+    width: 100%;
+
     margin-top: 8px;
 
     background: #ffffff;
@@ -260,13 +339,16 @@
     border-radius: 10px;
 
     box-shadow:
-        0 10px 28px rgba(31, 58, 88, 0.10);
+        0 10px 28px rgba(31, 58, 88, 0.14);
 
     overflow: hidden;
+
+    box-sizing: border-box;
 }
 
 
 .canalizacion-resultados[hidden] {
+
     display: none !important;
 }
 
@@ -276,9 +358,11 @@
 ========================================================= */
 
 .canalizacion-resultados__item {
+
     width: 100%;
 
     display: flex;
+
     align-items: center;
 
     gap: 12px;
@@ -300,11 +384,13 @@
 
 
 .canalizacion-resultados__item:last-child {
+
     border-bottom: 0;
 }
 
 
 .canalizacion-resultados__item:hover {
+
     background: #f5faff;
 }
 
@@ -314,12 +400,14 @@
 ========================================================= */
 
 .canalizacion-resultados__avatar {
+
     width: 36px;
     height: 36px;
 
     flex-shrink: 0;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -339,9 +427,11 @@
 ========================================================= */
 
 .canalizacion-resultados__datos {
+
     min-width: 0;
 
     display: flex;
+
     flex-direction: column;
 
     gap: 2px;
@@ -349,6 +439,7 @@
 
 
 .canalizacion-resultados__datos strong {
+
     color: #173554;
 
     font-size: 11px;
@@ -359,6 +450,7 @@
 
 
 .canalizacion-resultados__datos small {
+
     display: block;
 
     color: #728596;
@@ -374,6 +466,7 @@
 ========================================================= */
 
 .canalizacion-select:disabled {
+
     color: #8999a8;
 
     background: #eef2f5;
@@ -384,7 +477,6 @@
 
     opacity: 0.75;
 }
-
 
 
 /* =========================================================

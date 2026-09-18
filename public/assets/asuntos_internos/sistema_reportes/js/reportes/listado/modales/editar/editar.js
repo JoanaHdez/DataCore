@@ -151,9 +151,20 @@ export function inicializarEditarReporte() {
     );
 
 
+    inicializarCatalogoTipoFolioEditar(
+        modal
+    );
+
+
     inicializarTipoFolioEditar(
         modal
     );
+
+    inicializarCatalogoEstadoEditar(
+        modal
+    );
+
+
     /* =====================================================
        ABRIR EDITAR
     ===================================================== */
@@ -271,6 +282,11 @@ export function inicializarEditarReporte() {
                     modal,
                     formulario,
                     reporte
+                );
+
+
+                actualizarCatalogoEstadoEditar(
+                    modal
                 );
 
 
@@ -1031,355 +1047,6 @@ export function inicializarEditarReporte() {
 
 
 /* =========================================================
-   TIPO DE FOLIO EN EDITAR
-========================================================= */
-
-function inicializarTipoFolioEditar(
-    modal
-) {
-
-    if (!modal) {
-        return;
-    }
-
-
-    const selectTipoFolio =
-        modal.querySelector(
-            '#editar-tipo-folio'
-        );
-
-
-    const inputFolio =
-        modal.querySelector(
-            '#editar-folio'
-        );
-
-
-    const inputNomenclatura =
-        modal.querySelector(
-            '#editar-nomenclatura'
-        );
-
-
-    const inputFechaRegistro =
-        modal.querySelector(
-            '#editar-fecha-registro'
-        );
-
-
-    if (
-        !selectTipoFolio
-        || !inputFolio
-        || !inputNomenclatura
-    ) {
-        return;
-    }
-
-
-    /* =====================================================
-       EVITAR LISTENER DUPLICADO
-    ===================================================== */
-
-    if (
-        selectTipoFolio.dataset
-            .tipoFolioInicializado
-        === '1'
-    ) {
-
-        actualizarEstadoQjfEditar(
-            modal
-        );
-
-        return;
-    }
-
-
-    selectTipoFolio.dataset
-        .tipoFolioInicializado =
-        '1';
-
-
-    /* =====================================================
-       OBTENER AÑO
-    ===================================================== */
-
-    function obtenerAnioRegistro() {
-
-        const fecha =
-            String(
-                inputFechaRegistro?.value
-                || ''
-            ).trim();
-
-
-        const coincidenciaIso =
-            fecha.match(
-                /^(\d{4})-(\d{2})-(\d{2})$/
-            );
-
-
-        if (coincidenciaIso) {
-
-            return coincidenciaIso[1];
-        }
-
-
-        const coincidenciaVisual =
-            fecha.match(
-                /^(\d{2})\/(\d{2})\/(\d{4})$/
-            );
-
-
-        if (coincidenciaVisual) {
-
-            return coincidenciaVisual[3];
-        }
-
-
-        return String(
-            new Date().getFullYear()
-        );
-    }
-
-
-    /* =====================================================
-       PREVISUALIZAR NUEVA FAMILIA
-    ===================================================== */
-
-    async function previsualizarNuevoFolio(
-        claveFolio
-    ) {
-
-        const url =
-            new URL(
-                'DataCore/public/asuntos-internos/reportes/previsualizar-folio',
-                `${window.location.origin}/`
-            );
-
-
-        url.searchParams.set(
-            'clave_folio',
-            claveFolio
-        );
-
-
-        const respuesta =
-            await fetch(
-                url.toString(),
-                {
-                    method:
-                        'GET',
-
-                    headers: {
-                        Accept:
-                            'application/json',
-                    },
-
-                    credentials:
-                        'same-origin',
-                }
-            );
-
-
-        const resultado =
-            await respuesta.json();
-
-
-        if (
-            !respuesta.ok
-            || resultado?.success !== true
-        ) {
-
-            throw new Error(
-                resultado?.message
-                || 'No fue posible consultar el siguiente folio.'
-            );
-        }
-
-
-        const numeroFolio =
-            Number(
-                resultado.numero_folio
-                || 0
-            );
-
-
-        const folio =
-            String(
-                resultado.folio
-                || ''
-            ).trim();
-
-
-        if (
-            numeroFolio <= 0
-            || folio === ''
-        ) {
-
-            throw new Error(
-                'El servidor no devolvió un folio válido.'
-            );
-        }
-
-
-        inputFolio.value =
-            folio;
-
-
-        inputNomenclatura.value =
-            `CGSC/CAI/${claveFolio}/${numeroFolio}/${obtenerAnioRegistro()}`;
-    }
-
-
-    /* =====================================================
-       CAMBIO DE TIPO
-    ===================================================== */
-
-    selectTipoFolio.addEventListener(
-        'change',
-        async () => {
-
-            const claveSeleccionada =
-                String(
-                    selectTipoFolio.value
-                    || 'QJ'
-                )
-                    .trim()
-                    .toUpperCase();
-
-
-            /*
-             * Primero actualizamos el estado visual
-             * de Personal y Unidades.
-             */
-            actualizarEstadoQjfEditar(
-                modal
-            );
-
-
-            const claveOriginal =
-                String(
-                    selectTipoFolio.dataset
-                        .tipoFolioOriginal
-                    || ''
-                )
-                    .trim()
-                    .toUpperCase();
-
-
-            /* =================================================
-               VOLVIÓ AL TIPO ORIGINAL
-            ================================================= */
-
-            if (
-                claveOriginal !== ''
-                && claveSeleccionada
-                === claveOriginal
-            ) {
-
-                inputFolio.value =
-                    String(
-                        selectTipoFolio.dataset
-                            .folioOriginal
-                        || ''
-                    );
-
-
-                inputNomenclatura.value =
-                    String(
-                        selectTipoFolio.dataset
-                            .nomenclaturaOriginal
-                        || ''
-                    );
-
-
-                return;
-            }
-
-
-            /* =================================================
-               CAMBIÓ DE FAMILIA
-            ================================================= */
-
-            try {
-
-                await previsualizarNuevoFolio(
-                    claveSeleccionada
-                );
-
-            } catch (error) {
-
-                console.error(
-                    'Error previsualizando folio en edición:',
-                    error
-                );
-
-
-                mostrarResultado({
-
-                    tipo:
-                        'error',
-
-                    titulo:
-                        'No fue posible cambiar el tipo de folio',
-
-                    mensaje:
-                        error.message
-                        || 'No fue posible consultar el siguiente consecutivo.',
-
-                });
-
-
-                /*
-                 * Si falla, regresamos al tipo original.
-                 */
-
-                if (claveOriginal !== '') {
-
-                    selectTipoFolio.value =
-                        claveOriginal;
-
-
-                    inputFolio.value =
-                        String(
-                            selectTipoFolio.dataset
-                                .folioOriginal
-                            || ''
-                        );
-
-
-                    inputNomenclatura.value =
-                        String(
-                            selectTipoFolio.dataset
-                                .nomenclaturaOriginal
-                            || ''
-                        );
-
-
-                    /*
-                     * Como regresamos al tipo original,
-                     * restauramos también Personal y Unidades.
-                     */
-                    actualizarEstadoQjfEditar(
-                        modal
-                    );
-                }
-            }
-        }
-    );
-
-
-    /* =====================================================
-       ESTADO INICIAL
-    ===================================================== */
-
-    actualizarEstadoQjfEditar(
-        modal
-    );
-}
-
-
-/* =========================================================
    QJF - PERSONAL Y UNIDADES EN EDITAR
 ========================================================= */
 
@@ -1471,6 +1138,303 @@ function actualizarEstadoQjfEditar(
             !esQjf;
     }
 }
+
+/* =========================================================
+   CATÁLOGO ESTADO - EDITAR
+========================================================= */
+
+function inicializarCatalogoEstadoEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const input =
+        modal.querySelector(
+            '#editar-estado-actual'
+        );
+
+
+    const selector =
+        modal.querySelector(
+            '#editar-estado-select'
+        );
+
+
+    const texto =
+        modal.querySelector(
+            '#editar-estado-select-texto'
+        );
+
+
+    const resultados =
+        modal.querySelector(
+            '#editar-estado-resultados'
+        );
+
+
+    if (
+        !input
+        || !selector
+        || !texto
+        || !resultados
+    ) {
+        return;
+    }
+
+
+    /* =====================================================
+       EVITAR LISTENERS DUPLICADOS
+    ===================================================== */
+
+    if (
+        selector.dataset
+            .estadoInicializado
+        === '1'
+    ) {
+        return;
+    }
+
+
+    selector.dataset
+        .estadoInicializado =
+        '1';
+
+
+    /* =====================================================
+       ABRIR / CERRAR
+    ===================================================== */
+
+    selector.addEventListener(
+        'click',
+        () => {
+
+            const abierto =
+                !resultados.hidden;
+
+
+            resultados.hidden =
+                abierto;
+
+
+            selector.classList.toggle(
+                'estado-select--activo',
+                !abierto
+            );
+
+
+            selector.setAttribute(
+                'aria-expanded',
+                !abierto
+                    ? 'true'
+                    : 'false'
+            );
+        }
+    );
+
+
+    /* =====================================================
+       SELECCIONAR
+    ===================================================== */
+
+    resultados.addEventListener(
+        'click',
+        (evento) => {
+
+            const opcion =
+                evento.target.closest(
+                    '[data-editar-estado-opcion]'
+                );
+
+
+            if (!opcion) {
+                return;
+            }
+
+
+            const valor =
+                String(
+                    opcion.dataset.estado
+                    || ''
+                ).trim();
+
+
+            if (valor === '') {
+                return;
+            }
+
+
+            input.value =
+                valor;
+
+
+            texto.textContent =
+                valor;
+
+
+            cerrarCatalogoEstadoEditar(
+                modal
+            );
+
+
+            input.dispatchEvent(
+                new Event(
+                    'change',
+                    {
+                        bubbles:
+                            true,
+                    }
+                )
+            );
+        }
+    );
+
+
+    /* =====================================================
+       CLICK FUERA
+    ===================================================== */
+
+    document.addEventListener(
+        'click',
+        (evento) => {
+
+            if (
+                selector.contains(
+                    evento.target
+                )
+                || resultados.contains(
+                    evento.target
+                )
+            ) {
+                return;
+            }
+
+
+            cerrarCatalogoEstadoEditar(
+                modal
+            );
+        }
+    );
+
+
+    /* =====================================================
+       ESC
+    ===================================================== */
+
+    document.addEventListener(
+        'keydown',
+        (evento) => {
+
+            if (
+                evento.key
+                === 'Escape'
+            ) {
+
+                cerrarCatalogoEstadoEditar(
+                    modal
+                );
+            }
+        }
+    );
+}
+
+
+/* =========================================================
+   CERRAR CATÁLOGO ESTADO
+========================================================= */
+
+function cerrarCatalogoEstadoEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const selector =
+        modal.querySelector(
+            '#editar-estado-select'
+        );
+
+
+    const resultados =
+        modal.querySelector(
+            '#editar-estado-resultados'
+        );
+
+
+    if (resultados) {
+
+        resultados.hidden =
+            true;
+    }
+
+
+    if (selector) {
+
+        selector.classList.remove(
+            'estado-select--activo'
+        );
+
+
+        selector.setAttribute(
+            'aria-expanded',
+            'false'
+        );
+    }
+}
+
+
+/* =========================================================
+   SINCRONIZAR TEXTO DEL ESTADO
+========================================================= */
+
+function actualizarCatalogoEstadoEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const input =
+        modal.querySelector(
+            '#editar-estado-actual'
+        );
+
+
+    const texto =
+        modal.querySelector(
+            '#editar-estado-select-texto'
+        );
+
+
+    if (
+        !input
+        || !texto
+    ) {
+        return;
+    }
+
+
+    const valor =
+        String(
+            input.value
+            || 'Pendiente'
+        ).trim();
+
+
+    texto.textContent =
+        valor !== ''
+            ? valor
+            : 'Pendiente';
+}
+
 
 /* =========================================================
    VALIDAR FOLIOS IP / IMP EN EDICIÓN
@@ -2801,5 +2765,675 @@ function agregarValorFormData(
         String(
             valor
         )
+    );
+}
+
+/* =========================================================
+   CATÁLOGO TIPO DE FOLIO - EDITAR
+========================================================= */
+
+function inicializarCatalogoTipoFolioEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    /* =====================================================
+       ELEMENTOS
+    ===================================================== */
+
+    const inputTipoFolio =
+        modal.querySelector(
+            '#editar-tipo-folio'
+        );
+
+
+    const selector =
+        modal.querySelector(
+            '#editar-tipo-folio-select'
+        );
+
+
+    const textoSelector =
+        modal.querySelector(
+            '#editar-tipo-folio-select-texto'
+        );
+
+
+    const resultados =
+        modal.querySelector(
+            '#editar-tipo-folio-resultados'
+        );
+
+
+    const opciones =
+        modal.querySelectorAll(
+            '[data-editar-tipo-folio-opcion]'
+        );
+
+
+    if (
+        !inputTipoFolio
+        || !selector
+        || !textoSelector
+        || !resultados
+    ) {
+        return;
+    }
+
+
+    /* =====================================================
+       EVITAR LISTENERS DUPLICADOS
+    ===================================================== */
+
+    if (
+        selector.dataset
+            .tipoFolioCatalogoInicializado
+        === '1'
+    ) {
+        return;
+    }
+
+
+    selector.dataset
+        .tipoFolioCatalogoInicializado =
+        '1';
+
+
+    /* =====================================================
+       ABRIR CATÁLOGO
+    ===================================================== */
+
+    function abrirCatalogo() {
+
+        resultados.hidden =
+            false;
+
+
+        selector.setAttribute(
+            'aria-expanded',
+            'true'
+        );
+
+
+        selector.classList.add(
+            'tipo-folio-select--activo'
+        );
+    }
+
+
+    /* =====================================================
+       CERRAR CATÁLOGO
+    ===================================================== */
+
+    function cerrarCatalogo() {
+
+        resultados.hidden =
+            true;
+
+
+        selector.setAttribute(
+            'aria-expanded',
+            'false'
+        );
+
+
+        selector.classList.remove(
+            'tipo-folio-select--activo'
+        );
+    }
+
+
+    /* =====================================================
+       ACTUALIZAR TEXTO VISUAL
+    ===================================================== */
+
+    function obtenerNombreTipoFolio(
+        clave
+    ) {
+
+        switch (
+            String(
+                clave
+                || ''
+            )
+                .trim()
+                .toUpperCase()
+        ) {
+
+            case 'QJV':
+
+                return 'QJV - Queja verbal';
+
+
+            case 'QJF':
+
+                return 'QJF - Queja foránea';
+
+
+            case 'QJ':
+            default:
+
+                return 'QJ - Queja';
+        }
+    }
+
+
+    /* =====================================================
+       SELECCIONAR OPCIÓN
+    ===================================================== */
+
+    function seleccionarTipoFolio(
+        valor,
+        nombre
+    ) {
+
+        const clave =
+            String(
+                valor
+                || ''
+            )
+                .trim()
+                .toUpperCase();
+
+
+        if (
+            ![
+                'QJ',
+                'QJV',
+                'QJF',
+            ].includes(
+                clave
+            )
+        ) {
+            return;
+        }
+
+
+        inputTipoFolio.value =
+            clave;
+
+
+        textoSelector.textContent =
+            String(
+                nombre
+                || obtenerNombreTipoFolio(
+                    clave
+                )
+            ).trim();
+
+
+        cerrarCatalogo();
+
+
+        /*
+         * Disparamos CHANGE porque la función
+         * inicializarTipoFolioEditar() ya escucha
+         * este evento y actualiza:
+         *
+         * - folio
+         * - nomenclatura
+         * - estado QJF
+         * - personal
+         * - unidades
+         */
+
+        inputTipoFolio.dispatchEvent(
+            new Event(
+                'change',
+                {
+                    bubbles:
+                        true,
+                }
+            )
+        );
+    }
+
+
+    /* =====================================================
+       CLICK EN SELECTOR
+    ===================================================== */
+
+    selector.addEventListener(
+        'click',
+        () => {
+
+            if (
+                resultados.hidden
+            ) {
+
+                abrirCatalogo();
+
+            } else {
+
+                cerrarCatalogo();
+            }
+        }
+    );
+
+
+    /* =====================================================
+       CLICK EN OPCIONES
+    ===================================================== */
+
+    opciones.forEach(
+        (opcion) => {
+
+            opcion.addEventListener(
+                'click',
+                () => {
+
+                    seleccionarTipoFolio(
+                        opcion.dataset.tipoFolio,
+                        opcion.dataset.tipoFolioNombre
+                    );
+                }
+            );
+        }
+    );
+
+
+    /* =====================================================
+       CLICK FUERA
+    ===================================================== */
+
+    document.addEventListener(
+        'click',
+        (evento) => {
+
+            if (
+                selector.contains(
+                    evento.target
+                )
+                || resultados.contains(
+                    evento.target
+                )
+            ) {
+                return;
+            }
+
+
+            cerrarCatalogo();
+        }
+    );
+
+
+    /* =====================================================
+       ESC
+    ===================================================== */
+
+    document.addEventListener(
+        'keydown',
+        (evento) => {
+
+            if (
+                evento.key === 'Escape'
+            ) {
+
+                cerrarCatalogo();
+            }
+        }
+    );
+
+
+    /* =====================================================
+       ESTADO VISUAL INICIAL
+    ===================================================== */
+
+    textoSelector.textContent =
+        obtenerNombreTipoFolio(
+            inputTipoFolio.value
+        );
+}
+
+
+/* =========================================================
+   TIPO DE FOLIO EN EDITAR
+========================================================= */
+
+function inicializarTipoFolioEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const selectTipoFolio =
+        modal.querySelector(
+            '#editar-tipo-folio'
+        );
+
+
+    const inputFolio =
+        modal.querySelector(
+            '#editar-folio'
+        );
+
+
+    const inputNomenclatura =
+        modal.querySelector(
+            '#editar-nomenclatura'
+        );
+
+
+    const inputFechaRegistro =
+        modal.querySelector(
+            '#editar-fecha-registro'
+        );
+
+
+    if (
+        !selectTipoFolio
+        || !inputFolio
+        || !inputNomenclatura
+    ) {
+        return;
+    }
+
+
+    /* =====================================================
+       EVITAR LISTENER DUPLICADO
+    ===================================================== */
+
+    if (
+        selectTipoFolio.dataset
+            .tipoFolioInicializado
+        === '1'
+    ) {
+
+        actualizarEstadoQjfEditar(
+            modal
+        );
+
+        return;
+    }
+
+
+    selectTipoFolio.dataset
+        .tipoFolioInicializado =
+        '1';
+
+
+    /* =====================================================
+       OBTENER AÑO
+    ===================================================== */
+
+    function obtenerAnioRegistro() {
+
+        const fecha =
+            String(
+                inputFechaRegistro?.value
+                || ''
+            ).trim();
+
+
+        const coincidenciaIso =
+            fecha.match(
+                /^(\d{4})-(\d{2})-(\d{2})$/
+            );
+
+
+        if (coincidenciaIso) {
+
+            return coincidenciaIso[1];
+        }
+
+
+        const coincidenciaVisual =
+            fecha.match(
+                /^(\d{2})\/(\d{2})\/(\d{4})$/
+            );
+
+
+        if (coincidenciaVisual) {
+
+            return coincidenciaVisual[3];
+        }
+
+
+        return String(
+            new Date().getFullYear()
+        );
+    }
+
+
+    /* =====================================================
+       PREVISUALIZAR NUEVA FAMILIA
+    ===================================================== */
+
+    async function previsualizarNuevoFolio(
+        claveFolio
+    ) {
+
+        const url =
+            new URL(
+                'DataCore/public/asuntos-internos/reportes/previsualizar-folio',
+                `${window.location.origin}/`
+            );
+
+
+        url.searchParams.set(
+            'clave_folio',
+            claveFolio
+        );
+
+
+        const respuesta =
+            await fetch(
+                url.toString(),
+                {
+                    method:
+                        'GET',
+
+                    headers: {
+                        Accept:
+                            'application/json',
+                    },
+
+                    credentials:
+                        'same-origin',
+                }
+            );
+
+
+        const resultado =
+            await respuesta.json();
+
+
+        if (
+            !respuesta.ok
+            || resultado?.success !== true
+        ) {
+
+            throw new Error(
+                resultado?.message
+                || 'No fue posible consultar el siguiente folio.'
+            );
+        }
+
+
+        const numeroFolio =
+            Number(
+                resultado.numero_folio
+                || 0
+            );
+
+
+        const folio =
+            String(
+                resultado.folio
+                || ''
+            ).trim();
+
+
+        if (
+            numeroFolio <= 0
+            || folio === ''
+        ) {
+
+            throw new Error(
+                'El servidor no devolvió un folio válido.'
+            );
+        }
+
+
+        inputFolio.value =
+            folio;
+
+
+        inputNomenclatura.value =
+            `CGSC/CAI/${claveFolio}/${numeroFolio}/${obtenerAnioRegistro()}`;
+    }
+
+
+    /* =====================================================
+       CAMBIO DE TIPO
+    ===================================================== */
+
+    selectTipoFolio.addEventListener(
+        'change',
+        async () => {
+
+            const claveSeleccionada =
+                String(
+                    selectTipoFolio.value
+                    || 'QJ'
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            /*
+             * Primero actualizamos el estado visual
+             * de Personal y Unidades.
+             */
+            actualizarEstadoQjfEditar(
+                modal
+            );
+
+
+            const claveOriginal =
+                String(
+                    selectTipoFolio.dataset
+                        .tipoFolioOriginal
+                    || ''
+                )
+                    .trim()
+                    .toUpperCase();
+
+
+            /* =================================================
+               VOLVIÓ AL TIPO ORIGINAL
+            ================================================= */
+
+            if (
+                claveOriginal !== ''
+                && claveSeleccionada
+                === claveOriginal
+            ) {
+
+                inputFolio.value =
+                    String(
+                        selectTipoFolio.dataset
+                            .folioOriginal
+                        || ''
+                    );
+
+
+                inputNomenclatura.value =
+                    String(
+                        selectTipoFolio.dataset
+                            .nomenclaturaOriginal
+                        || ''
+                    );
+
+
+                return;
+            }
+
+
+            /* =================================================
+               CAMBIÓ DE FAMILIA
+            ================================================= */
+
+            try {
+
+                await previsualizarNuevoFolio(
+                    claveSeleccionada
+                );
+
+            } catch (error) {
+
+                console.error(
+                    'Error previsualizando folio en edición:',
+                    error
+                );
+
+
+                mostrarResultado({
+
+                    tipo:
+                        'error',
+
+                    titulo:
+                        'No fue posible cambiar el tipo de folio',
+
+                    mensaje:
+                        error.message
+                        || 'No fue posible consultar el siguiente consecutivo.',
+
+                });
+
+
+                /*
+                 * Si falla, regresamos al tipo original.
+                 */
+
+                if (claveOriginal !== '') {
+
+                    selectTipoFolio.value =
+                        claveOriginal;
+
+
+                    inputFolio.value =
+                        String(
+                            selectTipoFolio.dataset
+                                .folioOriginal
+                            || ''
+                        );
+
+
+                    inputNomenclatura.value =
+                        String(
+                            selectTipoFolio.dataset
+                                .nomenclaturaOriginal
+                            || ''
+                        );
+
+
+                    /*
+                     * Como regresamos al tipo original,
+                     * restauramos también Personal y Unidades.
+                     */
+                    actualizarEstadoQjfEditar(
+                        modal
+                    );
+                }
+            }
+        }
+    );
+
+
+    /* =====================================================
+       ESTADO INICIAL
+    ===================================================== */
+
+    actualizarEstadoQjfEditar(
+        modal
     );
 }

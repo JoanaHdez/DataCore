@@ -1,6 +1,5 @@
 import {
     asignarValorEditar,
-    asignarSelectSeguro,
 } from './utilidades.js';
 
 
@@ -239,12 +238,326 @@ export function inicializarEditarQuejoso(
 
 
     /* =====================================================
+    CATÁLOGO DE GÉNERO
+    ===================================================== */
+
+    inicializarGeneroEditar(
+        modal
+    );
+
+
+    /* =====================================================
        ESTADO INICIAL
     ===================================================== */
 
     actualizarEstadoQuejosoEditar(
         modal
     );
+}
+
+
+/* =========================================================
+   CATÁLOGO DE GÉNERO - EDITAR
+========================================================= */
+
+function inicializarGeneroEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    /* =====================================================
+       ELEMENTOS
+    ===================================================== */
+
+    const input =
+        modal.querySelector(
+            '#editar-genero'
+        );
+
+
+    const boton =
+        modal.querySelector(
+            '#editar-genero-select'
+        );
+
+
+    const texto =
+        modal.querySelector(
+            '#editar-genero-select-texto'
+        );
+
+
+    const resultados =
+        modal.querySelector(
+            '#editar-genero-resultados'
+        );
+
+
+    if (
+        !input
+        || !boton
+        || !texto
+        || !resultados
+    ) {
+        return;
+    }
+
+
+    /* =====================================================
+       EVITAR LISTENERS DUPLICADOS
+    ===================================================== */
+
+    if (
+        boton.dataset
+            .generoInicializado
+        === '1'
+    ) {
+        return;
+    }
+
+
+    boton.dataset
+        .generoInicializado =
+        '1';
+
+
+    /* =====================================================
+       ABRIR / CERRAR
+    ===================================================== */
+
+    boton.addEventListener(
+        'click',
+        () => {
+
+            if (boton.disabled) {
+                return;
+            }
+
+
+            const estaAbierto =
+                !resultados.hidden;
+
+
+            resultados.hidden =
+                estaAbierto;
+
+
+            boton.classList.toggle(
+                'genero-select--activo',
+                !estaAbierto
+            );
+
+
+            boton.setAttribute(
+                'aria-expanded',
+                !estaAbierto
+                    ? 'true'
+                    : 'false'
+            );
+        }
+    );
+
+
+    /* =====================================================
+       SELECCIONAR OPCIÓN
+    ===================================================== */
+
+    resultados.addEventListener(
+        'click',
+        (evento) => {
+
+            const opcion =
+                evento.target.closest(
+                    '[data-editar-genero-opcion]'
+                );
+
+
+            if (!opcion) {
+                return;
+            }
+
+
+            const valor =
+                String(
+                    opcion.dataset.genero
+                    || ''
+                ).trim();
+
+
+            input.value =
+                valor;
+
+
+            texto.textContent =
+                valor !== ''
+                    ? valor
+                    : 'Selecciona una opción';
+
+
+            cerrarGeneroEditar(
+                modal
+            );
+
+
+            input.dispatchEvent(
+                new Event(
+                    'change',
+                    {
+                        bubbles:
+                            true,
+                    }
+                )
+            );
+        }
+    );
+
+
+    /* =====================================================
+       CLICK FUERA
+    ===================================================== */
+
+    document.addEventListener(
+        'click',
+        (evento) => {
+
+            if (
+                boton.contains(
+                    evento.target
+                )
+                || resultados.contains(
+                    evento.target
+                )
+            ) {
+                return;
+            }
+
+
+            cerrarGeneroEditar(
+                modal
+            );
+        }
+    );
+
+
+    /* =====================================================
+       ESC
+    ===================================================== */
+
+    document.addEventListener(
+        'keydown',
+        (evento) => {
+
+            if (
+                evento.key
+                !== 'Escape'
+            ) {
+                return;
+            }
+
+
+            cerrarGeneroEditar(
+                modal
+            );
+        }
+    );
+}
+
+
+/* =========================================================
+   CERRAR CATÁLOGO DE GÉNERO
+========================================================= */
+
+function cerrarGeneroEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const resultados =
+        modal.querySelector(
+            '#editar-genero-resultados'
+        );
+
+
+    const boton =
+        modal.querySelector(
+            '#editar-genero-select'
+        );
+
+
+    if (resultados) {
+
+        resultados.hidden =
+            true;
+    }
+
+
+    if (boton) {
+
+        boton.classList.remove(
+            'genero-select--activo'
+        );
+
+
+        boton.setAttribute(
+            'aria-expanded',
+            'false'
+        );
+    }
+}
+
+
+/* =========================================================
+   ACTUALIZAR INTERFAZ DE GÉNERO
+========================================================= */
+
+function actualizarGeneroEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const input =
+        modal.querySelector(
+            '#editar-genero'
+        );
+
+
+    const texto =
+        modal.querySelector(
+            '#editar-genero-select-texto'
+        );
+
+
+    if (
+        !input
+        || !texto
+    ) {
+        return;
+    }
+
+
+    const valor =
+        String(
+            input.value
+            || ''
+        ).trim();
+
+
+    texto.textContent =
+        valor !== ''
+            ? valor
+            : 'Selecciona una opción';
 }
 
 
@@ -459,6 +772,30 @@ export function establecerAnonimoEditar(
                 && !esAnonimo;
         }
     );
+
+    /* =====================================================
+    SELECTOR VISUAL DE GÉNERO
+    ===================================================== */
+
+    const botonGenero =
+        modal.querySelector(
+            '#editar-genero-select'
+        );
+
+
+    if (botonGenero) {
+
+        botonGenero.disabled =
+            esAnonimo;
+
+
+        if (esAnonimo) {
+
+            cerrarGeneroEditar(
+                modal
+            );
+        }
+    }
 
 
     /* =====================================================
@@ -988,10 +1325,28 @@ export function cargarQuejosoEditar(
     );
 
 
-    asignarSelectSeguro(
-        modal,
-        '#editar-genero',
-        reporte.genero
+    /* =====================================================
+    GÉNERO
+    ===================================================== */
+
+    const genero =
+        modal.querySelector(
+            '#editar-genero'
+        );
+
+
+    if (genero) {
+
+        genero.value =
+            String(
+                reporte.genero
+                || ''
+            ).trim();
+    }
+
+
+    actualizarGeneroEditar(
+        modal
     );
 
 
