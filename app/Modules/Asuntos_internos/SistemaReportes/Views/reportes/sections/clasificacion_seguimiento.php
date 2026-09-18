@@ -173,41 +173,124 @@
             </div>
 
             <!-- =====================================================
-                 ESTADO ACTUAL
+                ESTADO ACTUAL
             ====================================================== -->
 
             <div class="report-field">
 
-                <label for="estado_actual">
+                <label>
                     Estado
                 </label>
 
 
-                <select id="estado_actual" name="estado_actual" class="report-select">
+                <!-- =================================================
+                    VALOR REAL PARA BACKEND
+                ================================================== -->
 
-                    <option value="Pendiente" selected>
+                <input type="hidden" id="estado_actual" name="estado_actual" value="Pendiente">
+
+
+                <!-- =================================================
+                    SELECTOR VISUAL
+                ================================================== -->
+
+                <button type="button" class="estado-select" id="estado-select" aria-expanded="false"
+                    aria-controls="estado-resultados">
+
+                    <span class="estado-select__texto" id="estado-select-texto">
                         Pendiente
-                    </option>
+                    </span>
 
 
-                    <option value="En proceso">
-                        En proceso
-                    </option>
+                    <span class="estado-select__flecha" aria-hidden="true">
+                        ▾
+                    </span>
 
-
-                    <option value="Finalizado">
-                        Finalizado
-                    </option>
-
-                </select>
+                </button>
 
 
                 <small class="report-field__help">
                     Indica el estado actual de atención de la queja.
                 </small>
 
-            </div>
 
+                <!-- =================================================
+                    CATÁLOGO
+                ================================================== -->
+
+                <div class="estado-resultados" id="estado-resultados" hidden>
+
+                    <!-- PENDIENTE -->
+
+                    <button type="button" class="estado-resultados__item" data-estado-opcion data-estado="Pendiente">
+
+                        <span class="estado-resultados__avatar">
+                            P
+                        </span>
+
+                        <span class="estado-resultados__datos">
+
+                            <strong>
+                                Pendiente
+                            </strong>
+
+                            <small>
+                                Atención pendiente de seguimiento
+                            </small>
+
+                        </span>
+
+                    </button>
+
+
+                    <!-- EN PROCESO -->
+
+                    <button type="button" class="estado-resultados__item" data-estado-opcion data-estado="En proceso">
+
+                        <span class="estado-resultados__avatar">
+                            EP
+                        </span>
+
+                        <span class="estado-resultados__datos">
+
+                            <strong>
+                                En proceso
+                            </strong>
+
+                            <small>
+                                Reporte actualmente en atención
+                            </small>
+
+                        </span>
+
+                    </button>
+
+
+                    <!-- FINALIZADO -->
+
+                    <button type="button" class="estado-resultados__item" data-estado-opcion data-estado="Finalizado">
+
+                        <span class="estado-resultados__avatar">
+                            F
+                        </span>
+
+                        <span class="estado-resultados__datos">
+
+                            <strong>
+                                Finalizado
+                            </strong>
+
+                            <small>
+                                Atención del reporte concluida
+                            </small>
+
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </div>
 
             <!-- =====================================================
                  SITUACIÓN DE LA SANCIÓN

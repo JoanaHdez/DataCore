@@ -418,8 +418,8 @@ function inicializarMotivos() {
                         <span class="motivos-tabla__numero">
 
                             ${escaparHtml(
-                                motivo.id
-                            )}
+                    motivo.id
+                )}
 
                         </span>
 
@@ -431,8 +431,8 @@ function inicializarMotivos() {
                         <strong class="motivos-tabla__motivo">
 
                             ${escaparHtml(
-                                motivo.texto
-                            )}
+                    motivo.texto
+                )}
 
                         </strong>
 
@@ -444,9 +444,9 @@ function inicializarMotivos() {
                         <span class="motivos-tabla__sancion">
 
                             ${escaparHtml(
-                                motivo.sancion
-                                || 'Sin sanción definida'
-                            )}
+                    motivo.sancion
+                    || 'Sin sanción definida'
+                )}
 
                         </span>
 
@@ -460,11 +460,11 @@ function inicializarMotivos() {
                             class="report-input motivos-tabla__folio"
                             data-motivo-folio
                             data-motivo-id="${escaparHtml(
-                                motivo.id
-                            )}"
+                    motivo.id
+                )}"
                             value="${escaparHtml(
-                                motivo.folio
-                            )}"
+                    motivo.folio
+                )}"
                             placeholder="Opcional"
                             maxlength="150"
                             autocomplete="off"
@@ -480,8 +480,8 @@ function inicializarMotivos() {
                             class="motivos-tabla__eliminar"
                             data-motivo-eliminar
                             data-motivo-id="${escaparHtml(
-                                motivo.id
-                            )}"
+                    motivo.id
+                )}"
                         >
                             Quitar
                         </button>
@@ -884,6 +884,273 @@ function inicializarMotivos() {
 
 
     /* =========================================================
+    CATÁLOGO DE ESTADO
+    ========================================================= */
+
+    function inicializarCatalogoEstado() {
+
+        const inputEstado =
+            document.querySelector(
+                '#estado_actual'
+            );
+
+
+        const selector =
+            document.querySelector(
+                '#estado-select'
+            );
+
+
+        const texto =
+            document.querySelector(
+                '#estado-select-texto'
+            );
+
+
+        const resultadosEstado =
+            document.querySelector(
+                '#estado-resultados'
+            );
+
+
+        const opcionesEstado =
+            document.querySelectorAll(
+                '[data-estado-opcion]'
+            );
+
+
+        if (
+            !inputEstado
+            || !selector
+            || !texto
+            || !resultadosEstado
+        ) {
+            return;
+        }
+
+
+        /* =====================================================
+           EVITAR LISTENERS DUPLICADOS
+        ===================================================== */
+
+        if (
+            selector.dataset
+                .estadoInicializado
+            === '1'
+        ) {
+            return;
+        }
+
+
+        selector.dataset
+            .estadoInicializado =
+            '1';
+
+
+        /* =====================================================
+           CERRAR CATÁLOGO
+        ===================================================== */
+
+        function cerrarCatalogoEstado() {
+
+            resultadosEstado.hidden =
+                true;
+
+
+            selector.classList.remove(
+                'estado-select--activo'
+            );
+
+
+            selector.setAttribute(
+                'aria-expanded',
+                'false'
+            );
+        }
+
+
+        /* =====================================================
+           ABRIR / CERRAR
+        ===================================================== */
+
+        selector.addEventListener(
+            'click',
+            () => {
+
+                /*
+                 * Cuando Baja voluntaria está activa,
+                 * Estado queda bloqueado.
+                 */
+                if (
+                    selector.disabled
+                ) {
+                    return;
+                }
+
+
+                const estaAbierto =
+                    !resultadosEstado.hidden;
+
+
+                if (
+                    estaAbierto
+                ) {
+
+                    cerrarCatalogoEstado();
+
+                    return;
+                }
+
+
+                resultadosEstado.hidden =
+                    false;
+
+
+                selector.classList.add(
+                    'estado-select--activo'
+                );
+
+
+                selector.setAttribute(
+                    'aria-expanded',
+                    'true'
+                );
+            }
+        );
+
+
+        /* =====================================================
+           SELECCIONAR OPCIÓN
+        ===================================================== */
+
+        opcionesEstado.forEach(
+            (opcion) => {
+
+                opcion.addEventListener(
+                    'click',
+                    () => {
+
+                        const valor =
+                            String(
+                                opcion.dataset.estado
+                                || ''
+                            ).trim();
+
+
+                        if (
+                            valor === ''
+                        ) {
+                            return;
+                        }
+
+
+                        /* =========================================
+                           VALOR REAL
+                        ========================================== */
+
+                        inputEstado.value =
+                            valor;
+
+
+                        /* =========================================
+                           VALOR VISUAL
+                        ========================================== */
+
+                        texto.textContent =
+                            valor;
+
+
+                        /* =========================================
+                           CERRAR
+                        ========================================== */
+
+                        cerrarCatalogoEstado();
+
+
+                        /* =========================================
+                           NOTIFICAR CAMBIO
+                        ========================================== */
+
+                        inputEstado.dispatchEvent(
+                            new Event(
+                                'change',
+                                {
+                                    bubbles:
+                                        true,
+                                }
+                            )
+                        );
+                    }
+                );
+            }
+        );
+
+
+        /* =====================================================
+           CLICK FUERA
+        ===================================================== */
+
+        document.addEventListener(
+            'click',
+            (evento) => {
+
+                if (
+                    selector.contains(
+                        evento.target
+                    )
+                    || resultadosEstado.contains(
+                        evento.target
+                    )
+                ) {
+                    return;
+                }
+
+
+                cerrarCatalogoEstado();
+            }
+        );
+
+
+        /* =====================================================
+           ESC
+        ===================================================== */
+
+        document.addEventListener(
+            'keydown',
+            (evento) => {
+
+                if (
+                    evento.key
+                    !== 'Escape'
+                ) {
+                    return;
+                }
+
+
+                cerrarCatalogoEstado();
+            }
+        );
+
+
+        /* =====================================================
+           ESTADO VISUAL INICIAL
+        ===================================================== */
+
+        const valorInicial =
+            String(
+                inputEstado.value
+                || 'Pendiente'
+            ).trim();
+
+
+        texto.textContent =
+            valorInicial !== ''
+                ? valorInicial
+                : 'Pendiente';
+    }
+
+
+    /* =========================================================
        SIN SANCIONES
     ========================================================= */
 
@@ -1015,8 +1282,32 @@ function inicializarMotivos() {
             checkboxBajaVoluntaria.checked;
 
 
+        const inputEstado =
+            document.querySelector(
+                '#estado_actual'
+            );
+
+
+        const textoEstado =
+            document.querySelector(
+                '#estado-select-texto'
+            );
+
+
+        const botonEstado =
+            document.querySelector(
+                '#estado-select'
+            );
+
+
+        const resultadosEstado =
+            document.querySelector(
+                '#estado-resultados'
+            );
+
+
         /* =====================================================
-        NO PUEDE COEXISTIR CON "SIN SANCIONES"
+           NO PUEDE COEXISTIR CON SIN SANCIONES
         ===================================================== */
 
         if (
@@ -1031,72 +1322,196 @@ function inicializarMotivos() {
 
 
         /* =====================================================
-        ESTADO
+           ESTADO DEL REPORTE
         ===================================================== */
 
         if (
-            selectEstado
+            inputEstado
         ) {
+
+            /* =================================================
+               BAJA VOLUNTARIA ACTIVADA
+            ================================================= */
 
             if (
                 bajaVoluntaria
             ) {
 
                 /*
-                * Guardamos el estado anterior
-                * únicamente la primera vez.
-                */
+                 * Guardamos el estado anterior en el checkbox.
+                 *
+                 * Esto evita perderlo cuando cambiamos
+                 * #estado_actual a Finalizado.
+                 */
+
                 if (
-                    !selectEstado.dataset.estadoAnterior
+                    !checkboxBajaVoluntaria
+                        .dataset
+                        .estadoAnterior
                 ) {
 
-                    selectEstado.dataset.estadoAnterior =
-                        selectEstado.value;
+                    const estadoAnterior =
+                        String(
+                            inputEstado.value
+                            || 'Pendiente'
+                        ).trim();
+
+
+                    checkboxBajaVoluntaria
+                        .dataset
+                        .estadoAnterior =
+                        estadoAnterior !== 'Finalizado'
+                            ? estadoAnterior
+                            : 'Pendiente';
                 }
 
 
-                /*
-                * Baja voluntaria = cierre definitivo.
-                */
-                selectEstado.value =
+                /* =============================================
+                   FORZAR FINALIZADO
+                ============================================== */
+
+                inputEstado.value =
                     'Finalizado';
 
 
-                /*
-                * Solo estado visual.
-                * NO usamos disabled para que el valor
-                * pueda seguir enviándose al backend.
-                */
-                selectEstado.classList.add(
-                    'report-select--readonly'
+                /* =============================================
+                   TEXTO VISIBLE
+                ============================================== */
+
+                if (
+                    textoEstado
+                ) {
+
+                    textoEstado.textContent =
+                        'Finalizado';
+                }
+
+
+                /* =============================================
+                   BLOQUEAR CATÁLOGO
+                ============================================== */
+
+                if (
+                    botonEstado
+                ) {
+
+                    botonEstado.disabled =
+                        true;
+
+
+                    botonEstado.classList.remove(
+                        'estado-select--activo'
+                    );
+
+
+                    botonEstado.setAttribute(
+                        'aria-expanded',
+                        'false'
+                    );
+                }
+
+
+                /* =============================================
+                   CERRAR RESULTADOS
+                ============================================== */
+
+                if (
+                    resultadosEstado
+                ) {
+
+                    resultadosEstado.hidden =
+                        true;
+                }
+
+
+                /* =============================================
+                   NOTIFICAR CAMBIO
+                ============================================== */
+
+                inputEstado.dispatchEvent(
+                    new Event(
+                        'change',
+                        {
+                            bubbles:
+                                true,
+                        }
+                    )
                 );
 
             } else {
 
-                selectEstado.classList.remove(
-                    'report-select--readonly'
-                );
+                /* =================================================
+                   BAJA VOLUNTARIA DESACTIVADA
+                ================================================= */
+
+                const estadoAnterior =
+                    String(
+                        checkboxBajaVoluntaria
+                            .dataset
+                            .estadoAnterior
+                        || ''
+                    ).trim();
 
 
-                /*
-                * Restaurar estado anterior.
-                */
+                /* =============================================
+                   RESTAURAR ESTADO ANTERIOR
+                ============================================== */
+
                 if (
-                    selectEstado.dataset.estadoAnterior
+                    estadoAnterior !== ''
                 ) {
 
-                    selectEstado.value =
-                        selectEstado.dataset.estadoAnterior;
+                    inputEstado.value =
+                        estadoAnterior;
 
 
-                    delete selectEstado.dataset.estadoAnterior;
+                    if (
+                        textoEstado
+                    ) {
+
+                        textoEstado.textContent =
+                            estadoAnterior;
+                    }
+
+
+                    delete checkboxBajaVoluntaria
+                        .dataset
+                        .estadoAnterior;
                 }
+
+
+                /* =============================================
+                   VOLVER A HABILITAR CATÁLOGO
+                ============================================== */
+
+                if (
+                    botonEstado
+                ) {
+
+                    botonEstado.disabled =
+                        false;
+                }
+
+
+                /* =============================================
+                   NOTIFICAR CAMBIO
+                ============================================== */
+
+                inputEstado.dispatchEvent(
+                    new Event(
+                        'change',
+                        {
+                            bubbles:
+                                true,
+                        }
+                    )
+                );
             }
         }
 
 
         /* =====================================================
-        DESHABILITAR / HABILITAR CATÁLOGO DE MOTIVOS
+           CATÁLOGO DE MOTIVOS
         ===================================================== */
 
         buscador.disabled =
@@ -1110,7 +1525,7 @@ function inicializarMotivos() {
 
 
         /* =====================================================
-        BAJA VOLUNTARIA ACTIVA
+           BAJA VOLUNTARIA ACTIVA
         ===================================================== */
 
         if (
@@ -1118,7 +1533,7 @@ function inicializarMotivos() {
         ) {
 
             /* =================================================
-            LIMPIAR BÚSQUEDA
+               LIMPIAR BÚSQUEDA
             ================================================= */
 
             buscador.value =
@@ -1126,14 +1541,14 @@ function inicializarMotivos() {
 
 
             /* =================================================
-            CERRAR RESULTADOS
+               CERRAR RESULTADOS
             ================================================= */
 
             cerrarResultados();
 
 
             /* =================================================
-            OCULTAR OPCIONES
+               OCULTAR OPCIONES
             ================================================= */
 
             opciones.forEach(
@@ -1146,17 +1561,15 @@ function inicializarMotivos() {
 
 
             /* =================================================
-            ELIMINAR MOTIVOS SELECCIONADOS
-
-            Baja voluntaria no lleva motivos.
-            Esto también elimina:
-            - filas de tabla
-            - folios de sanción
-            - inputs hidden
+               ELIMINAR MOTIVOS SELECCIONADOS
             ================================================= */
 
             motivosSeleccionados.clear();
 
+
+            /* =================================================
+               ACTUALIZAR TABLA / INPUTS
+            ================================================= */
 
             renderizarMotivos();
 
@@ -1166,9 +1579,7 @@ function inicializarMotivos() {
 
 
         /* =====================================================
-        VOLVER A HABILITAR
-
-        No restauramos motivos anteriores.
+           BAJA VOLUNTARIA DESACTIVADA
         ===================================================== */
 
         buscador.disabled =
@@ -1204,6 +1615,13 @@ function inicializarMotivos() {
             actualizarSinSanciones
         );
     }
+
+
+    /* =====================================================
+    CATÁLOGO DE ESTADO
+    ===================================================== */
+
+    inicializarCatalogoEstado();
 
 
     /* =====================================================
