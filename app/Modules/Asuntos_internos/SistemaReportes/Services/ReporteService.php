@@ -178,8 +178,19 @@ class ReporteService
 
 
             /* =====================================================
-   NOMENCLATURA AUTOMÁTICA
-===================================================== */
+            MODALIDAD DE UNIDAD PARA QJF
+            ===================================================== */
+
+            if ($claveFolio === 'QJF') {
+
+                $datosReporte['modalidad_unidad'] =
+                    'NO_APLICA';
+            }
+
+
+            /* =====================================================
+            NOMENCLATURA AUTOMÁTICA
+            ===================================================== */
 
             $fechaRegistro =
                 trim(
@@ -253,24 +264,39 @@ class ReporteService
 
 
             /* =====================================================
-            PERSONAL
+            PERSONAL Y UNIDADES
+
+            QJF:
+            - No requiere personal relacionado.
+            - No requiere modalidad de unidad.
+            - No guarda unidades.
+
+            QJ / QJV:
+            - Conservan el comportamiento normal.
             ===================================================== */
 
-            $this->guardarPersonal(
-                $idReporte,
-                $personal
-            );
+            if ($claveFolio !== 'QJF') {
+
+                /* =================================================
+                PERSONAL
+                ================================================= */
+
+                $this->guardarPersonal(
+                    $idReporte,
+                    $personal
+                );
 
 
-            /* =====================================================
-            UNIDADES
-            ===================================================== */
+                /* =================================================
+                UNIDADES
+                ================================================= */
 
-            $this->guardarUnidades(
-                $idReporte,
-                $unidades,
-                $datosReporte['modalidad_unidad']
-            );
+                $this->guardarUnidades(
+                    $idReporte,
+                    $unidades,
+                    $datosReporte['modalidad_unidad']
+                );
+            }
 
 
             /* =====================================================

@@ -310,8 +310,24 @@ function inicializarFormularioPorPasos() {
             );
 
 
+            let siguientePaso =
+                pasoActual + 1;
+
+
+            if (
+                pasoActual === 2
+                && esQuejaForanea(
+                    formulario
+                )
+            ) {
+
+                siguientePaso =
+                    4;
+            }
+
+
             mostrarPaso(
-                pasoActual + 1
+                siguientePaso
             );
 
         }
@@ -334,8 +350,24 @@ function inicializarFormularioPorPasos() {
             }
 
 
+            let pasoAnterior =
+                pasoActual - 1;
+
+
+            if (
+                pasoActual === 4
+                && esQuejaForanea(
+                    formulario
+                )
+            ) {
+
+                pasoAnterior =
+                    2;
+            }
+
+
             mostrarPaso(
-                pasoActual - 1
+                pasoAnterior
             );
 
         }
@@ -605,6 +637,168 @@ function inicializarFormularioPorPasos() {
 
 }
 
+/* =========================================================
+   QJF - VALIDAR SI ES QUEJA FORÁNEA
+========================================================= */
+
+function esQuejaForanea(
+    formulario
+) {
+
+    if (!formulario) {
+        return false;
+    }
+
+
+    const tipoFolio =
+        formulario.querySelector(
+            '#tipo_folio'
+        );
+
+
+    return (
+        String(
+            tipoFolio?.value
+            || ''
+        )
+            .trim()
+            .toUpperCase()
+        === 'QJF'
+    );
+}
+
+
+/* =========================================================
+   QJF - ACTUALIZAR ESTADO DEL PASO 3
+========================================================= */
+
+function actualizarEstadoPasoTresQjf(
+    formulario
+) {
+
+    if (!formulario) {
+        return;
+    }
+
+
+    const pasoTres =
+        formulario.querySelector(
+            '.report-step[data-step="3"]'
+        );
+
+
+    const indicadorPasoTres =
+        formulario.querySelector(
+            '[data-step-indicator="3"]'
+        );
+
+
+    const esQjf =
+        esQuejaForanea(
+            formulario
+        );
+
+
+    /* =====================================================
+       INDICADOR
+    ===================================================== */
+
+    if (indicadorPasoTres) {
+
+        indicadorPasoTres.classList.toggle(
+            'report-steps__item--disabled',
+            esQjf
+        );
+
+
+        indicadorPasoTres.setAttribute(
+            'aria-disabled',
+            esQjf
+                ? 'true'
+                : 'false'
+        );
+    }
+
+
+    if (!pasoTres) {
+        return;
+    }
+
+
+    /* =====================================================
+       CAMPOS DEL PASO 3
+    ===================================================== */
+
+    const controles =
+        pasoTres.querySelectorAll(
+            'input, select, textarea, button'
+        );
+
+
+    controles.forEach(
+        (control) => {
+
+            if (esQjf) {
+
+                /*
+                 * Guardamos su estado anterior para poder
+                 * restaurarlo si cambia nuevamente a QJ/QJV.
+                 */
+
+                if (
+                    control.dataset
+                        .qjfEstadoGuardado
+                    !== '1'
+                ) {
+
+                    control.dataset
+                        .qjfEstadoGuardado =
+                        '1';
+
+
+                    control.dataset
+                        .qjfDisabledOriginal =
+                        control.disabled
+                            ? '1'
+                            : '0';
+                }
+
+
+                control.disabled =
+                    true;
+
+
+                return;
+            }
+
+
+            /* =================================================
+               RESTAURAR
+            ================================================= */
+
+            if (
+                control.dataset
+                    .qjfEstadoGuardado
+                === '1'
+            ) {
+
+                control.disabled =
+                    control.dataset
+                        .qjfDisabledOriginal
+                    === '1';
+
+
+                delete control.dataset
+                    .qjfEstadoGuardado;
+
+
+                delete control.dataset
+                    .qjfDisabledOriginal;
+            }
+        }
+    );
+}
+
 
 /* =========================================================
    OBTENER PASO
@@ -647,6 +841,21 @@ function validarFormularioCompleto(
             Number(
                 paso.dataset.step
             );
+
+
+        /* =====================================================
+        QJF NO UTILIZA PERSONAL NI UNIDADES
+        ===================================================== */
+
+        if (
+            numeroPaso === 3
+            && esQuejaForanea(
+                formulario
+            )
+        ) {
+
+            continue;
+        }
 
 
         /*
@@ -1008,119 +1217,6 @@ function validarRelacionesDelPaso(
 
 
 /* =========================================================
-   INICIALIZAR NOMENCLATURA MANUAL
-========================================================= */
-
-function inicializarNomenclaturaManual(
-    formulario
-) {
-
-    if (!formulario) {
-        return;
-    }
-
-
-    const inputParte =
-        formulario.querySelector(
-            '#nomenclatura_parte'
-        );
-
-
-    const inputCompleto =
-        formulario.querySelector(
-            '#nomenclatura'
-        );
-
-
-    if (
-        !inputParte
-        || !inputCompleto
-    ) {
-
-        return;
-    }
-
-
-    const PREFIJO =
-        'CGSC/CAI/QJ/';
-
-
-    /* =====================================================
-       CONSTRUIR NOMENCLATURA COMPLETA
-    ===================================================== */
-
-    function actualizarNomenclatura() {
-
-        let parte =
-            String(
-                inputParte.value
-                || ''
-            ).trim();
-
-
-        /*
-         * Evitar que el usuario genere:
-         *
-         * CGSC/CAI/QJ//1295/2026
-         *
-         * si escribe "/" al principio.
-         */
-
-        parte =
-            parte.replace(
-                /^\/+/,
-                ''
-            );
-
-
-        inputParte.value =
-            parte;
-
-
-        inputCompleto.value =
-            parte !== ''
-                ? `${PREFIJO}${parte}`
-                : '';
-    }
-
-
-    /* =====================================================
-       EVITAR LISTENER DUPLICADO
-    ===================================================== */
-
-    if (
-        inputParte.dataset
-            .nomenclaturaInicializada
-        !== '1'
-    ) {
-
-        inputParte.dataset
-            .nomenclaturaInicializada =
-            '1';
-
-
-        inputParte.addEventListener(
-            'input',
-            actualizarNomenclatura
-        );
-
-
-        inputParte.addEventListener(
-            'change',
-            actualizarNomenclatura
-        );
-    }
-
-
-    /* =====================================================
-       ESTADO INICIAL
-    ===================================================== */
-
-    actualizarNomenclatura();
-}
-
-
-/* =========================================================
    PREVISUALIZAR FOLIO Y NOMENCLATURA
 ========================================================= */
 
@@ -1400,6 +1496,11 @@ async function cargarPrevisualizacionFolio(
             () => {
 
                 actualizarPrevisualizacion();
+
+
+                actualizarEstadoPasoTresQjf(
+                    formulario
+                );
             }
         );
     }
@@ -1410,6 +1511,10 @@ async function cargarPrevisualizacionFolio(
     ===================================================== */
 
     await actualizarPrevisualizacion();
+
+    actualizarEstadoPasoTresQjf(
+        formulario
+    );
 }
 
 /* =========================================================

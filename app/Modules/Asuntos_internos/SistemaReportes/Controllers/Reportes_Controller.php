@@ -547,7 +547,7 @@ class Reportes_Controller extends BaseController
 
             $previsualizacion =
                 $folioService->previsualizar(
-                    'QUEJA'
+                    'QJ'
                 );
 
 
@@ -746,9 +746,9 @@ class Reportes_Controller extends BaseController
                 trim(
                     (string) (
                         $this->request
-                            ->getGet(
-                                'clave_folio'
-                            )
+                        ->getGet(
+                            'clave_folio'
+                        )
                         ?? 'QJ'
                     )
                 )
@@ -774,29 +774,28 @@ class Reportes_Controller extends BaseController
             return $this->response
                 ->setJSON([
                     'success' =>
-                        true,
+                    true,
 
                     'tipo_registro' =>
-                        $resultado['tipo_registro']
+                    $resultado['tipo_registro']
                         ?? null,
 
                     'clave_folio' =>
-                        $resultado['clave_folio']
+                    $resultado['clave_folio']
                         ?? $claveFolio,
 
                     'numero_folio' =>
-                        $resultado['numero_folio']
+                    $resultado['numero_folio']
                         ?? null,
 
                     'folio' =>
-                        $resultado['folio']
+                    $resultado['folio']
                         ?? null,
 
                     'nomenclatura' =>
-                        $resultado['nomenclatura']
+                    $resultado['nomenclatura']
                         ?? null,
                 ]);
-
         } catch (\InvalidArgumentException $e) {
 
             return $this->response
@@ -805,7 +804,6 @@ class Reportes_Controller extends BaseController
                     'success' => false,
                     'message' => $e->getMessage(),
                 ]);
-
         } catch (\Throwable $e) {
 
             log_message(
@@ -813,7 +811,7 @@ class Reportes_Controller extends BaseController
                 'Error previsualizando folio de Asuntos Internos: {mensaje}',
                 [
                     'mensaje' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
                 ]
             );
 
