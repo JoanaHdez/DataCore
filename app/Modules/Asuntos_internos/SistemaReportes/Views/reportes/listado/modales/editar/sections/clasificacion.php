@@ -156,15 +156,11 @@
                 PERSONA SELECCIONADA
             ================================================== -->
 
-            <div class="personal-seleccionado" id="editar-inspector-seleccionado" hidden>
+            <div class="editar-inspector-seleccionado inspector-seleccionado" id="editar-inspector-seleccionado" hidden>
 
-
-                <!-- FOTO -->
-
-                <div class="personal-seleccionado__foto">
+                <div class="editar-inspector-seleccionado__foto inspector-seleccionado__foto">
 
                     <img id="editar-inspector-foto" src="" alt="" hidden>
-
 
                     <span id="editar-inspector-foto-fallback">
                         —
@@ -173,19 +169,15 @@
                 </div>
 
 
-                <!-- DATOS -->
-
-                <div class="personal-seleccionado__datos">
+                <div class="editar-inspector-seleccionado__datos inspector-seleccionado__datos">
 
                     <strong id="editar-inspector-nombre">
                         —
                     </strong>
 
-
                     <span id="editar-inspector-nomina">
                         —
                     </span>
-
 
                     <small id="editar-inspector-area">
                         —
@@ -194,15 +186,13 @@
                 </div>
 
 
-                <!-- QUITAR -->
-
-                <button type="button" class="personal-seleccionado__quitar" id="btn-editar-quitar-inspector"
-                    aria-label="Quitar inspector" title="Quitar inspector">
+                <button type="button" class="editar-inspector-seleccionado__quitar inspector-seleccionado__quitar"
+                    id="btn-editar-quitar-inspector" aria-label="Quitar inspector seleccionado"
+                    title="Quitar inspector seleccionado">
                     ×
                 </button>
 
             </div>
-
 
             <!-- =================================================
                 VALORES PARA BACKEND

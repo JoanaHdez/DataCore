@@ -349,7 +349,9 @@ export function cargarClasificacionEditar(
         );
 
 
-    if (inputClasificacion) {
+    if (
+        inputClasificacion
+    ) {
 
         inputClasificacion.value =
             String(
@@ -368,15 +370,651 @@ export function cargarClasificacionEditar(
        INSPECTOR
     ===================================================== */
 
-    asignarValorEditar(
-        modal,
-        '#editar-inspector',
-        reporte.inspector
-    );
+    const inspectorGuardado =
+        String(
+            reporte.inspector
+            || ''
+        ).trim();
+
+
+    const inputInspector =
+        modal.querySelector(
+            '#editar-inspector'
+        );
+
+
+    const buscadorInspector =
+        modal.querySelector(
+            '#editar-inspector-busqueda'
+        );
+
+
+    const inputPlantillaId =
+        modal.querySelector(
+            '#editar-inspector-plantilla-id'
+        );
+
+
+    const inputPerscod =
+        modal.querySelector(
+            '#editar-inspector-perscod'
+        );
+
+
+    const seleccionado =
+        modal.querySelector(
+            '#editar-inspector-seleccionado'
+        );
+
+
+    const foto =
+        modal.querySelector(
+            '#editar-inspector-foto'
+        );
+
+
+    const fotoFallback =
+        modal.querySelector(
+            '#editar-inspector-foto-fallback'
+        );
+
+
+    const nombreInspector =
+        modal.querySelector(
+            '#editar-inspector-nombre'
+        );
+
+
+    const nominaInspector =
+        modal.querySelector(
+            '#editar-inspector-nomina'
+        );
+
+
+    const areaInspector =
+        modal.querySelector(
+            '#editar-inspector-area'
+        );
+
+
+    /* =====================================================
+       LETRA DEL PRIMER APELLIDO
+    ===================================================== */
+
+    function obtenerLetraApellido(
+        valor
+    ) {
+
+        const texto =
+            String(
+                valor
+                || ''
+            ).trim();
+
+
+        if (
+            texto === ''
+        ) {
+
+            return '—';
+        }
+
+
+        const partes =
+            texto
+                .split(/\s+/)
+                .filter(Boolean);
+
+
+        if (
+            partes.length === 0
+        ) {
+
+            return '—';
+        }
+
+
+        return partes[0]
+            .charAt(0)
+            .toUpperCase();
+    }
+
+
+    /* =====================================================
+       LIMPIAR FOTO
+    ===================================================== */
+
+    function limpiarFotoInspector() {
+
+        if (
+            foto
+        ) {
+
+            foto.onerror =
+                null;
+
+
+            foto.onload =
+                null;
+
+
+            foto.removeAttribute(
+                'src'
+            );
+
+
+            foto.hidden =
+                true;
+
+
+            foto.style.display =
+                'none';
+        }
+
+
+        if (
+            fotoFallback
+        ) {
+
+            fotoFallback.textContent =
+                '—';
+
+
+            fotoFallback.hidden =
+                false;
+
+
+            fotoFallback.style.display =
+                'flex';
+        }
+    }
+
+
+    /* =====================================================
+       MOSTRAR TARJETA DEL INSPECTOR
+    ===================================================== */
+
+    function mostrarInspectorSeleccionado(
+        persona = null
+    ) {
+
+        if (
+            inspectorGuardado === ''
+        ) {
+
+            if (
+                seleccionado
+            ) {
+
+                seleccionado.hidden =
+                    true;
+            }
+
+
+            return;
+        }
+
+
+        const nombre =
+            String(
+                persona?.nombre
+                || inspectorGuardado
+            ).trim();
+
+
+        const nomina =
+            String(
+                persona?.nomina
+                || ''
+            ).trim();
+
+
+        const area =
+            String(
+                persona?.area
+                || ''
+            ).trim();
+
+
+        const turno =
+            String(
+                persona?.turno
+                || ''
+            ).trim();
+
+
+        const fotoPersona =
+            String(
+                persona?.foto
+                || ''
+            ).trim();
+
+
+        /* =================================================
+           VALORES REALES
+        ================================================= */
+
+        if (
+            inputInspector
+        ) {
+
+            inputInspector.value =
+                nombre;
+        }
+
+
+        if (
+            buscadorInspector
+        ) {
+
+            buscadorInspector.value =
+                nombre;
+        }
+
+
+        if (
+            inputPlantillaId
+        ) {
+
+            inputPlantillaId.value =
+                persona?.id
+                    ? String(
+                        persona.id
+                    )
+                    : '';
+        }
+
+
+        if (
+            inputPerscod
+        ) {
+
+            inputPerscod.value =
+                String(
+                    persona?.perscod
+                    || ''
+                ).trim();
+        }
+
+
+        /* =================================================
+           NOMBRE
+        ================================================= */
+
+        if (
+            nombreInspector
+        ) {
+
+            nombreInspector.textContent =
+                nombre;
+        }
+
+
+        /* =================================================
+           NÓMINA
+        ================================================= */
+
+        if (
+            nominaInspector
+        ) {
+
+            nominaInspector.textContent =
+                nomina !== ''
+                    ? `Nómina: ${nomina}`
+                    : 'Nómina no disponible';
+        }
+
+
+        /* =================================================
+           ÁREA / TURNO
+        ================================================= */
+
+        if (
+            areaInspector
+        ) {
+
+            const datos =
+                [];
+
+
+            if (
+                area !== ''
+            ) {
+
+                datos.push(
+                    area
+                );
+            }
+
+
+            if (
+                turno !== ''
+            ) {
+
+                datos.push(
+                    `Turno: ${turno}`
+                );
+            }
+
+
+            areaInspector.textContent =
+                datos.length > 0
+                    ? datos.join(' · ')
+                    : 'Inspector registrado';
+        }
+
+
+        /* =================================================
+           FOTO / FALLBACK
+        ================================================= */
+
+        limpiarFotoInspector();
+
+
+        if (
+            foto
+            && fotoFallback
+        ) {
+
+            const letra =
+                obtenerLetraApellido(
+                    nombre
+                );
+
+
+            if (
+                fotoPersona !== ''
+            ) {
+
+                /*
+                 * IMPORTANTE:
+                 * eventos antes del src.
+                 */
+
+                foto.onerror =
+                    () => {
+
+                        foto.hidden =
+                            true;
+
+
+                        foto.style.display =
+                            'none';
+
+
+                        fotoFallback.textContent =
+                            letra;
+
+
+                        fotoFallback.hidden =
+                            false;
+
+
+                        fotoFallback.style.display =
+                            'flex';
+                    };
+
+
+                foto.onload =
+                    () => {
+
+                        foto.hidden =
+                            false;
+
+
+                        foto.style.display =
+                            'block';
+
+
+                        fotoFallback.hidden =
+                            true;
+
+
+                        fotoFallback.style.display =
+                            'none';
+                    };
+
+
+                foto.alt =
+                    nombre;
+
+
+                foto.src =
+                    fotoPersona;
+
+            } else {
+
+                fotoFallback.textContent =
+                    letra;
+
+
+                fotoFallback.hidden =
+                    false;
+
+
+                fotoFallback.style.display =
+                    'flex';
+            }
+        }
+
+
+        if (
+            seleccionado
+        ) {
+
+            seleccionado.hidden =
+                false;
+        }
+    }
+
+
+    /* =====================================================
+       CARGA INICIAL DEL INSPECTOR
+
+       Primero mostramos inmediatamente el nombre guardado.
+    ===================================================== */
+
+    if (
+        inspectorGuardado !== ''
+    ) {
+
+        mostrarInspectorSeleccionado();
+
+
+        /* =================================================
+           BUSCAR DATOS DE PLANTILLA
+        ================================================= */
+
+        const cargarDatosInspector =
+            async () => {
+
+                try {
+
+                    const url =
+                        new URL(
+                            'DataCore/public/asuntos-internos/reportes/personal/asuntos-internos/buscar',
+                            `${window.location.origin}/`
+                        );
+
+
+                    url.searchParams.set(
+                        'q',
+                        inspectorGuardado
+                    );
+
+
+                    const respuesta =
+                        await fetch(
+                            url.toString(),
+                            {
+                                method:
+                                    'GET',
+
+                                headers: {
+                                    Accept:
+                                        'application/json',
+                                },
+
+                                credentials:
+                                    'same-origin',
+                            }
+                        );
+
+
+                    const resultado =
+                        await respuesta.json();
+
+
+                    if (
+                        !respuesta.ok
+                        || resultado?.success !== true
+                    ) {
+
+                        return;
+                    }
+
+
+                    const personal =
+                        Array.isArray(
+                            resultado.personal
+                        )
+                            ? resultado.personal
+                            : [];
+
+
+                    /*
+                     * Buscamos coincidencia exacta porque
+                     * el reporte ya tiene guardado el nombre.
+                     */
+
+                    const inspectorEncontrado =
+                        personal.find(
+                            (persona) => {
+
+                                const nombrePersona =
+                                    String(
+                                        persona?.nombre
+                                        || ''
+                                    )
+                                        .trim()
+                                        .toUpperCase();
+
+
+                                return nombrePersona
+                                    === inspectorGuardado
+                                        .toUpperCase();
+                            }
+                        );
+
+
+                    if (
+                        !inspectorEncontrado
+                    ) {
+
+                        return;
+                    }
+
+
+                    /*
+                     * Antes de actualizar verificamos que
+                     * el usuario no haya cambiado manualmente
+                     * el inspector mientras respondía fetch.
+                     */
+
+                    const inspectorActual =
+                        String(
+                            inputInspector?.value
+                            || ''
+                        ).trim();
+
+
+                    if (
+                        inspectorActual.toUpperCase()
+                        !== inspectorGuardado.toUpperCase()
+                    ) {
+
+                        return;
+                    }
+
+
+                    mostrarInspectorSeleccionado(
+                        inspectorEncontrado
+                    );
+
+                } catch (error) {
+
+                    /*
+                     * Si la consulta falla, no rompemos Editar.
+                     * La tarjeta ya muestra al menos el nombre
+                     * guardado en el reporte.
+                     */
+
+                    console.error(
+                        'Error cargando datos del inspector en edición:',
+                        error
+                    );
+                }
+            };
+
+
+        cargarDatosInspector();
+
+    } else {
+
+        if (
+            inputInspector
+        ) {
+
+            inputInspector.value =
+                '';
+        }
+
+
+        if (
+            buscadorInspector
+        ) {
+
+            buscadorInspector.value =
+                '';
+        }
+
+
+        if (
+            inputPlantillaId
+        ) {
+
+            inputPlantillaId.value =
+                '';
+        }
+
+
+        if (
+            inputPerscod
+        ) {
+
+            inputPerscod.value =
+                '';
+        }
+
+
+        if (
+            seleccionado
+        ) {
+
+            seleccionado.hidden =
+                true;
+        }
+
+
+        limpiarFotoInspector();
+    }
 
 
     /* =====================================================
        INVESTIGADOR
+
+       Todavía conserva su funcionamiento actual.
+       Lo convertiremos al catálogo en el siguiente paso.
     ===================================================== */
 
     asignarValorEditar(
@@ -396,7 +1034,9 @@ export function cargarClasificacionEditar(
         );
 
 
-    if (sinSanciones) {
+    if (
+        sinSanciones
+    ) {
 
         sinSanciones.checked =
             Number(
@@ -416,7 +1056,9 @@ export function cargarClasificacionEditar(
         );
 
 
-    if (bajaVoluntaria) {
+    if (
+        bajaVoluntaria
+    ) {
 
         bajaVoluntaria.checked =
             Number(
@@ -447,6 +1089,7 @@ export function cargarClasificacionEditar(
         reporte.resolucion
     );
 }
+
 
 /* =========================================================
    LIMPIAR
