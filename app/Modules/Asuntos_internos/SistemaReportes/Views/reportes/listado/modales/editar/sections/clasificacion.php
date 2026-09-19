@@ -120,24 +120,101 @@
 
 
         <!-- =====================================================
-             INSPECTOR
+            INSPECTOR
         ====================================================== -->
 
         <div class="editar-reporte-campo">
 
-            <label for="editar-inspector">
-
+            <label for="editar-inspector-busqueda">
                 Inspector
-
-                <span class="required">
-                    *
-                </span>
-
+                <span class="required">*</span>
             </label>
 
 
-            <input type="text" id="editar-inspector" name="inspector" autocomplete="off"
-                placeholder="Ingresa el nombre del inspector" required>
+            <!-- =================================================
+                BUSCADOR
+            ================================================== -->
+
+            <input type="text" id="editar-inspector-busqueda" class="report-input" autocomplete="off"
+                placeholder="Busca al inspector por nombre o nómina">
+
+
+            <small class="editar-reporte-campo__help">
+                Busca y selecciona personal activo de la Coordinación de Asuntos Internos.
+            </small>
+
+
+            <!-- =================================================
+                RESULTADOS
+            ================================================== -->
+
+            <div class="personal-resultados" id="editar-inspector-resultados" hidden>
+            </div>
+
+
+            <!-- =================================================
+                PERSONA SELECCIONADA
+            ================================================== -->
+
+            <div class="personal-seleccionado" id="editar-inspector-seleccionado" hidden>
+
+
+                <!-- FOTO -->
+
+                <div class="personal-seleccionado__foto">
+
+                    <img id="editar-inspector-foto" src="" alt="" hidden>
+
+
+                    <span id="editar-inspector-foto-fallback">
+                        —
+                    </span>
+
+                </div>
+
+
+                <!-- DATOS -->
+
+                <div class="personal-seleccionado__datos">
+
+                    <strong id="editar-inspector-nombre">
+                        —
+                    </strong>
+
+
+                    <span id="editar-inspector-nomina">
+                        —
+                    </span>
+
+
+                    <small id="editar-inspector-area">
+                        —
+                    </small>
+
+                </div>
+
+
+                <!-- QUITAR -->
+
+                <button type="button" class="personal-seleccionado__quitar" id="btn-editar-quitar-inspector"
+                    aria-label="Quitar inspector" title="Quitar inspector">
+                    ×
+                </button>
+
+            </div>
+
+
+            <!-- =================================================
+                VALORES PARA BACKEND
+            ================================================== -->
+
+            <input type="hidden" id="editar-inspector" name="inspector" value="" required>
+
+
+            <input type="hidden" id="editar-inspector-plantilla-id" value="">
+
+
+            <input type="hidden" id="editar-inspector-perscod" value="">
 
         </div>
 
