@@ -70,6 +70,9 @@ export function inicializarEditarClasificacion(
         return;
     }
 
+    inicializarInvestigadorEditar(
+        modal
+    );
 
     /* =====================================================
        ABRIR / CERRAR SELECTOR
@@ -1011,17 +1014,790 @@ export function cargarClasificacionEditar(
 
 
     /* =====================================================
-       INVESTIGADOR
+   INVESTIGADOR
+===================================================== */
 
-       Todavía conserva su funcionamiento actual.
-       Lo convertiremos al catálogo en el siguiente paso.
+    const investigadorGuardado =
+        String(
+            reporte.investigador
+            || ''
+        ).trim();
+
+
+    const inputInvestigador =
+        modal.querySelector(
+            '#editar-investigador'
+        );
+
+
+    const buscadorInvestigador =
+        modal.querySelector(
+            '#editar-investigador-busqueda'
+        );
+
+
+    const investigadorPlantillaId =
+        modal.querySelector(
+            '#editar-investigador-plantilla-id'
+        );
+
+
+    const investigadorTipo =
+        modal.querySelector(
+            '#editar-investigador-tipo'
+        );
+
+
+    const investigadorSeleccionado =
+        modal.querySelector(
+            '#editar-investigador-seleccionado'
+        );
+
+
+    const investigadorFoto =
+        modal.querySelector(
+            '#editar-investigador-foto'
+        );
+
+
+    const investigadorFotoFallback =
+        modal.querySelector(
+            '#editar-investigador-foto-fallback'
+        );
+
+
+    const investigadorNombre =
+        modal.querySelector(
+            '#editar-investigador-nombre'
+        );
+
+
+    const investigadorNomina =
+        modal.querySelector(
+            '#editar-investigador-nomina'
+        );
+
+
+    const investigadorDetalle =
+        modal.querySelector(
+            '#editar-investigador-detalle'
+        );
+
+
+    const investigadorOtroContenedor =
+        modal.querySelector(
+            '#editar-investigador-otro-contenedor'
+        );
+
+
+    const investigadorOtroNombre =
+        modal.querySelector(
+            '#editar-investigador-otro-nombre'
+        );
+
+
+    /* =====================================================
+       LETRA DEL PRIMER APELLIDO
     ===================================================== */
 
-    asignarValorEditar(
-        modal,
-        '#editar-investigador',
-        reporte.investigador
-    );
+    function obtenerLetraInvestigador(
+        valor
+    ) {
+
+        const texto =
+            String(
+                valor
+                || ''
+            ).trim();
+
+
+        if (
+            texto === ''
+        ) {
+
+            return '—';
+        }
+
+
+        const partes =
+            texto
+                .split(/\s+/)
+                .filter(Boolean);
+
+
+        if (
+            partes.length === 0
+        ) {
+
+            return '—';
+        }
+
+
+        return partes[0]
+            .charAt(0)
+            .toUpperCase();
+    }
+
+
+    /* =====================================================
+       LIMPIAR FOTO DEL INVESTIGADOR
+    ===================================================== */
+
+    function limpiarFotoInvestigador() {
+
+        if (
+            investigadorFoto
+        ) {
+
+            investigadorFoto.onerror =
+                null;
+
+
+            investigadorFoto.onload =
+                null;
+
+
+            investigadorFoto.removeAttribute(
+                'src'
+            );
+
+
+            investigadorFoto.hidden =
+                true;
+
+
+            investigadorFoto.style.display =
+                'none';
+        }
+
+
+        if (
+            investigadorFotoFallback
+        ) {
+
+            investigadorFotoFallback.textContent =
+                '—';
+
+
+            investigadorFotoFallback.hidden =
+                false;
+
+
+            investigadorFotoFallback.style.display =
+                'flex';
+        }
+    }
+
+
+    /* =====================================================
+       MOSTRAR INVESTIGADOR DE PLANTILLA
+    ===================================================== */
+
+    function mostrarInvestigadorPersonal(
+        persona
+    ) {
+
+        if (
+            !persona
+        ) {
+            return;
+        }
+
+
+        const nombre =
+            String(
+                persona.nombre
+                || investigadorGuardado
+            ).trim();
+
+
+        const nomina =
+            String(
+                persona.nomina
+                || ''
+            ).trim();
+
+
+        const area =
+            String(
+                persona.area
+                || ''
+            ).trim();
+
+
+        const turno =
+            String(
+                persona.turno
+                || ''
+            ).trim();
+
+
+        const fotoPersona =
+            String(
+                persona.foto
+                || ''
+            ).trim();
+
+
+        /* =================================================
+           VALORES
+        ================================================= */
+
+        if (
+            inputInvestigador
+        ) {
+
+            inputInvestigador.value =
+                nombre;
+        }
+
+
+        if (
+            buscadorInvestigador
+        ) {
+
+            buscadorInvestigador.value =
+                nombre;
+        }
+
+
+        if (
+            investigadorPlantillaId
+        ) {
+
+            investigadorPlantillaId.value =
+                persona.id
+                    ? String(
+                        persona.id
+                    )
+                    : '';
+        }
+
+
+        if (
+            investigadorTipo
+        ) {
+
+            investigadorTipo.value =
+                'PERSONAL';
+        }
+
+
+        /* =================================================
+           OCULTAR OTRO
+        ================================================= */
+
+        if (
+            investigadorOtroContenedor
+        ) {
+
+            investigadorOtroContenedor.hidden =
+                true;
+        }
+
+
+        if (
+            investigadorOtroNombre
+        ) {
+
+            investigadorOtroNombre.value =
+                '';
+
+
+            investigadorOtroNombre.disabled =
+                true;
+
+
+            investigadorOtroNombre.required =
+                false;
+        }
+
+
+        /* =================================================
+           DATOS VISUALES
+        ================================================= */
+
+        if (
+            investigadorNombre
+        ) {
+
+            investigadorNombre.textContent =
+                nombre;
+        }
+
+
+        if (
+            investigadorNomina
+        ) {
+
+            investigadorNomina.textContent =
+                nomina !== ''
+                    ? `Nómina: ${nomina}`
+                    : 'Nómina no disponible';
+        }
+
+
+        if (
+            investigadorDetalle
+        ) {
+
+            const datos =
+                [];
+
+
+            if (
+                area !== ''
+            ) {
+
+                datos.push(
+                    area
+                );
+            }
+
+
+            if (
+                turno !== ''
+            ) {
+
+                datos.push(
+                    `Turno: ${turno}`
+                );
+            }
+
+
+            investigadorDetalle.textContent =
+                datos.length > 0
+                    ? datos.join(' · ')
+                    : 'Personal de Asuntos Internos';
+        }
+
+
+        /* =================================================
+           FOTO
+        ================================================= */
+
+        limpiarFotoInvestigador();
+
+
+        if (
+            investigadorFoto
+            && investigadorFotoFallback
+        ) {
+
+            const letra =
+                obtenerLetraInvestigador(
+                    nombre
+                );
+
+
+            if (
+                fotoPersona !== ''
+            ) {
+
+                investigadorFoto.onerror =
+                    () => {
+
+                        investigadorFoto.hidden =
+                            true;
+
+
+                        investigadorFoto.style.display =
+                            'none';
+
+
+                        investigadorFotoFallback.textContent =
+                            letra;
+
+
+                        investigadorFotoFallback.hidden =
+                            false;
+
+
+                        investigadorFotoFallback.style.display =
+                            'flex';
+                    };
+
+
+                investigadorFoto.onload =
+                    () => {
+
+                        investigadorFoto.hidden =
+                            false;
+
+
+                        investigadorFoto.style.display =
+                            'block';
+
+
+                        investigadorFotoFallback.hidden =
+                            true;
+
+
+                        investigadorFotoFallback.style.display =
+                            'none';
+                    };
+
+
+                investigadorFoto.alt =
+                    nombre;
+
+
+                investigadorFoto.src =
+                    fotoPersona;
+
+            } else {
+
+                investigadorFotoFallback.textContent =
+                    letra;
+
+
+                investigadorFotoFallback.hidden =
+                    false;
+
+
+                investigadorFotoFallback.style.display =
+                    'flex';
+            }
+        }
+
+
+        if (
+            investigadorSeleccionado
+        ) {
+
+            investigadorSeleccionado.hidden =
+                false;
+        }
+    }
+
+
+    /* =====================================================
+       MOSTRAR INVESTIGADOR "OTRO"
+    ===================================================== */
+
+    function mostrarInvestigadorOtro(
+        nombreGuardado
+    ) {
+
+        const nombre =
+            String(
+                nombreGuardado
+                || ''
+            ).trim();
+
+
+        if (
+            inputInvestigador
+        ) {
+
+            inputInvestigador.value =
+                nombre;
+        }
+
+
+        if (
+            buscadorInvestigador
+        ) {
+
+            buscadorInvestigador.value =
+                'Otro';
+        }
+
+
+        if (
+            investigadorPlantillaId
+        ) {
+
+            investigadorPlantillaId.value =
+                '';
+        }
+
+
+        if (
+            investigadorTipo
+        ) {
+
+            investigadorTipo.value =
+                'OTRO';
+        }
+
+
+        if (
+            investigadorSeleccionado
+        ) {
+
+            investigadorSeleccionado.hidden =
+                true;
+        }
+
+
+        limpiarFotoInvestigador();
+
+
+        if (
+            investigadorOtroContenedor
+        ) {
+
+            investigadorOtroContenedor.hidden =
+                false;
+        }
+
+
+        if (
+            investigadorOtroNombre
+        ) {
+
+            investigadorOtroNombre.disabled =
+                false;
+
+
+            investigadorOtroNombre.required =
+                true;
+
+
+            investigadorOtroNombre.value =
+                nombre;
+        }
+    }
+
+
+    /* =====================================================
+       CARGAR INVESTIGADOR GUARDADO
+    ===================================================== */
+
+    if (
+        investigadorGuardado !== ''
+    ) {
+
+        /*
+         * Conservamos inmediatamente el valor real.
+         */
+
+        if (
+            inputInvestigador
+        ) {
+
+            inputInvestigador.value =
+                investigadorGuardado;
+        }
+
+
+        /*
+         * Mientras consulta plantilla, mostramos el nombre.
+         */
+
+        if (
+            buscadorInvestigador
+        ) {
+
+            buscadorInvestigador.value =
+                investigadorGuardado;
+        }
+
+
+        const cargarDatosInvestigador =
+            async () => {
+
+                try {
+
+                    const url =
+                        new URL(
+                            'DataCore/public/asuntos-internos/reportes/personal/asuntos-internos/buscar',
+                            `${window.location.origin}/`
+                        );
+
+
+                    url.searchParams.set(
+                        'q',
+                        investigadorGuardado
+                    );
+
+
+                    const respuesta =
+                        await fetch(
+                            url.toString(),
+                            {
+                                method:
+                                    'GET',
+
+                                headers: {
+                                    Accept:
+                                        'application/json',
+                                },
+
+                                credentials:
+                                    'same-origin',
+                            }
+                        );
+
+
+                    const resultado =
+                        await respuesta.json();
+
+
+                    if (
+                        !respuesta.ok
+                        || resultado?.success !== true
+                    ) {
+
+                        mostrarInvestigadorOtro(
+                            investigadorGuardado
+                        );
+
+                        return;
+                    }
+
+
+                    const personal =
+                        Array.isArray(
+                            resultado.personal
+                        )
+                            ? resultado.personal
+                            : [];
+
+
+                    const investigadorEncontrado =
+                        personal.find(
+                            (persona) => {
+
+                                const nombrePersona =
+                                    String(
+                                        persona?.nombre
+                                        || ''
+                                    )
+                                        .trim()
+                                        .toUpperCase();
+
+
+                                return nombrePersona
+                                    === investigadorGuardado
+                                        .toUpperCase();
+                            }
+                        );
+
+
+                    /*
+                     * SI EXISTE EN PLANTILLA
+                     */
+
+                    if (
+                        investigadorEncontrado
+                    ) {
+
+                        mostrarInvestigadorPersonal(
+                            investigadorEncontrado
+                        );
+
+                        return;
+                    }
+
+
+                    /*
+                     * SI NO EXISTE EN PLANTILLA,
+                     * FUE CAPTURADO COMO "OTRO".
+                     */
+
+                    mostrarInvestigadorOtro(
+                        investigadorGuardado
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        'Error cargando investigador en edición:',
+                        error
+                    );
+
+
+                    /*
+                     * Ante cualquier problema con la consulta,
+                     * no perdemos el valor existente.
+                     */
+
+                    mostrarInvestigadorOtro(
+                        investigadorGuardado
+                    );
+                }
+            };
+
+
+        cargarDatosInvestigador();
+
+    } else {
+
+        if (
+            inputInvestigador
+        ) {
+
+            inputInvestigador.value =
+                '';
+        }
+
+
+        if (
+            buscadorInvestigador
+        ) {
+
+            buscadorInvestigador.value =
+                '';
+        }
+
+
+        if (
+            investigadorPlantillaId
+        ) {
+
+            investigadorPlantillaId.value =
+                '';
+        }
+
+
+        if (
+            investigadorTipo
+        ) {
+
+            investigadorTipo.value =
+                '';
+        }
+
+
+        if (
+            investigadorSeleccionado
+        ) {
+
+            investigadorSeleccionado.hidden =
+                true;
+        }
+
+
+        if (
+            investigadorOtroContenedor
+        ) {
+
+            investigadorOtroContenedor.hidden =
+                true;
+        }
+
+
+        if (
+            investigadorOtroNombre
+        ) {
+
+            investigadorOtroNombre.value =
+                '';
+
+
+            investigadorOtroNombre.disabled =
+                true;
+
+
+            investigadorOtroNombre.required =
+                false;
+        }
+
+
+        limpiarFotoInvestigador();
+    }
 
 
     /* =====================================================
@@ -1172,4 +1948,1399 @@ function cerrarClasificacionEditar(
             'clasificacion-select--activo'
         );
     }
+}
+
+/* =========================================================
+   INICIALIZAR INVESTIGADOR - EDITAR
+========================================================= */
+
+function inicializarInvestigadorEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const buscador =
+        modal.querySelector(
+            '#editar-investigador-busqueda'
+        );
+
+
+    const resultados =
+        modal.querySelector(
+            '#editar-investigador-resultados'
+        );
+
+
+    const inputInvestigador =
+        modal.querySelector(
+            '#editar-investigador'
+        );
+
+
+    const inputPlantillaId =
+        modal.querySelector(
+            '#editar-investigador-plantilla-id'
+        );
+
+
+    const inputTipo =
+        modal.querySelector(
+            '#editar-investigador-tipo'
+        );
+
+
+    const seleccionado =
+        modal.querySelector(
+            '#editar-investigador-seleccionado'
+        );
+
+
+    const foto =
+        modal.querySelector(
+            '#editar-investigador-foto'
+        );
+
+
+    const fotoFallback =
+        modal.querySelector(
+            '#editar-investigador-foto-fallback'
+        );
+
+
+    const nombre =
+        modal.querySelector(
+            '#editar-investigador-nombre'
+        );
+
+
+    const nomina =
+        modal.querySelector(
+            '#editar-investigador-nomina'
+        );
+
+
+    const detalle =
+        modal.querySelector(
+            '#editar-investigador-detalle'
+        );
+
+
+    const botonQuitar =
+        modal.querySelector(
+            '#btn-editar-quitar-investigador'
+        );
+
+
+    const contenedorOtro =
+        modal.querySelector(
+            '#editar-investigador-otro-contenedor'
+        );
+
+
+    const inputOtro =
+        modal.querySelector(
+            '#editar-investigador-otro-nombre'
+        );
+
+
+    if (
+        !buscador
+        || !resultados
+        || !inputInvestigador
+        || !seleccionado
+        || !contenedorOtro
+        || !inputOtro
+    ) {
+        return;
+    }
+
+
+    let temporizadorBusqueda =
+        null;
+
+
+    let controladorBusqueda =
+        null;
+
+
+    /* =====================================================
+       LETRA DEL PRIMER APELLIDO
+    ===================================================== */
+
+    function obtenerLetraApellido(
+        valor
+    ) {
+
+        const texto =
+            String(
+                valor
+                || ''
+            ).trim();
+
+
+        if (texto === '') {
+            return '—';
+        }
+
+
+        const partes =
+            texto
+                .split(/\s+/)
+                .filter(Boolean);
+
+
+        if (partes.length === 0) {
+            return '—';
+        }
+
+
+        return partes[0]
+            .charAt(0)
+            .toUpperCase();
+    }
+
+
+    /* =====================================================
+       CERRAR RESULTADOS
+    ===================================================== */
+
+    function cerrarResultados() {
+
+        resultados.hidden =
+            true;
+
+
+        resultados.innerHTML =
+            '';
+    }
+
+
+    /* =====================================================
+       LIMPIAR FOTO
+    ===================================================== */
+
+    function limpiarFoto() {
+
+        if (foto) {
+
+            foto.onerror =
+                null;
+
+
+            foto.onload =
+                null;
+
+
+            foto.removeAttribute(
+                'src'
+            );
+
+
+            foto.hidden =
+                true;
+
+
+            foto.style.display =
+                'none';
+        }
+
+
+        if (fotoFallback) {
+
+            fotoFallback.textContent =
+                '—';
+
+
+            fotoFallback.hidden =
+                false;
+
+
+            fotoFallback.style.display =
+                'flex';
+        }
+    }
+
+
+    /* =====================================================
+       LIMPIAR INVESTIGADOR
+    ===================================================== */
+
+    function limpiarInvestigador(
+        enfocar = true
+    ) {
+
+        inputInvestigador.value =
+            '';
+
+
+        if (inputPlantillaId) {
+
+            inputPlantillaId.value =
+                '';
+        }
+
+
+        if (inputTipo) {
+
+            inputTipo.value =
+                '';
+        }
+
+
+        buscador.value =
+            '';
+
+
+        seleccionado.hidden =
+            true;
+
+
+        contenedorOtro.hidden =
+            true;
+
+
+        inputOtro.value =
+            '';
+
+
+        inputOtro.disabled =
+            true;
+
+
+        inputOtro.required =
+            false;
+
+
+        limpiarFoto();
+
+
+        if (nombre) {
+
+            nombre.textContent =
+                '—';
+        }
+
+
+        if (nomina) {
+
+            nomina.textContent =
+                '—';
+        }
+
+
+        if (detalle) {
+
+            detalle.textContent =
+                '—';
+        }
+
+
+        cerrarResultados();
+
+
+        if (enfocar) {
+
+            buscador.focus();
+        }
+    }
+
+
+    /* =====================================================
+       MOSTRAR PERSONA SELECCIONADA
+    ===================================================== */
+
+    function seleccionarPersona(
+        persona
+    ) {
+
+        if (!persona) {
+            return;
+        }
+
+
+        const id =
+            Number(
+                persona.id
+                || 0
+            );
+
+
+        const nombrePersona =
+            String(
+                persona.nombre
+                || ''
+            ).trim();
+
+
+        const nominaPersona =
+            String(
+                persona.nomina
+                || ''
+            ).trim();
+
+
+        const areaPersona =
+            String(
+                persona.area
+                || ''
+            ).trim();
+
+
+        const turnoPersona =
+            String(
+                persona.turno
+                || ''
+            ).trim();
+
+
+        const fotoPersona =
+            String(
+                persona.foto
+                || ''
+            ).trim();
+
+
+        if (
+            id <= 0
+            || nombrePersona === ''
+        ) {
+            return;
+        }
+
+
+        /* =================================================
+           VALORES
+        ================================================= */
+
+        inputInvestigador.value =
+            nombrePersona;
+
+
+        buscador.value =
+            nombrePersona;
+
+
+        if (inputPlantillaId) {
+
+            inputPlantillaId.value =
+                String(
+                    id
+                );
+        }
+
+
+        if (inputTipo) {
+
+            inputTipo.value =
+                'PERSONAL';
+        }
+
+
+        /* =================================================
+           OCULTAR OTRO
+        ================================================= */
+
+        contenedorOtro.hidden =
+            true;
+
+
+        inputOtro.value =
+            '';
+
+
+        inputOtro.disabled =
+            true;
+
+
+        inputOtro.required =
+            false;
+
+
+        /* =================================================
+           DATOS
+        ================================================= */
+
+        if (nombre) {
+
+            nombre.textContent =
+                nombrePersona;
+        }
+
+
+        if (nomina) {
+
+            nomina.textContent =
+                nominaPersona !== ''
+                    ? `Nómina: ${nominaPersona}`
+                    : 'Nómina no disponible';
+        }
+
+
+        if (detalle) {
+
+            const datos =
+                [];
+
+
+            if (areaPersona !== '') {
+
+                datos.push(
+                    areaPersona
+                );
+            }
+
+
+            if (turnoPersona !== '') {
+
+                datos.push(
+                    `Turno: ${turnoPersona}`
+                );
+            }
+
+
+            detalle.textContent =
+                datos.length > 0
+                    ? datos.join(' · ')
+                    : 'Personal de Asuntos Internos';
+        }
+
+
+        /* =================================================
+           FOTO / FALLBACK
+        ================================================= */
+
+        limpiarFoto();
+
+
+        if (
+            foto
+            && fotoFallback
+        ) {
+
+            const letra =
+                obtenerLetraApellido(
+                    nombrePersona
+                );
+
+
+            if (fotoPersona !== '') {
+
+                foto.onerror =
+                    () => {
+
+                        foto.hidden =
+                            true;
+
+
+                        foto.style.display =
+                            'none';
+
+
+                        fotoFallback.textContent =
+                            letra;
+
+
+                        fotoFallback.hidden =
+                            false;
+
+
+                        fotoFallback.style.display =
+                            'flex';
+                    };
+
+
+                foto.onload =
+                    () => {
+
+                        foto.hidden =
+                            false;
+
+
+                        foto.style.display =
+                            'block';
+
+
+                        fotoFallback.hidden =
+                            true;
+
+
+                        fotoFallback.style.display =
+                            'none';
+                    };
+
+
+                foto.alt =
+                    nombrePersona;
+
+
+                foto.src =
+                    fotoPersona;
+
+            } else {
+
+                fotoFallback.textContent =
+                    letra;
+
+
+                fotoFallback.hidden =
+                    false;
+
+
+                fotoFallback.style.display =
+                    'flex';
+            }
+        }
+
+
+        seleccionado.hidden =
+            false;
+
+
+        cerrarResultados();
+
+
+        inputInvestigador.dispatchEvent(
+            new Event(
+                'change',
+                {
+                    bubbles: true,
+                }
+            )
+        );
+    }
+
+
+    /* =====================================================
+       SELECCIONAR OTRO
+    ===================================================== */
+
+    function seleccionarOtro() {
+
+        inputInvestigador.value =
+            '';
+
+
+        if (inputPlantillaId) {
+
+            inputPlantillaId.value =
+                '';
+        }
+
+
+        if (inputTipo) {
+
+            inputTipo.value =
+                'OTRO';
+        }
+
+
+        seleccionado.hidden =
+            true;
+
+
+        limpiarFoto();
+
+
+        buscador.value =
+            'Otro';
+
+
+        contenedorOtro.hidden =
+            false;
+
+
+        inputOtro.disabled =
+            false;
+
+
+        inputOtro.required =
+            true;
+
+
+        inputOtro.value =
+            '';
+
+
+        cerrarResultados();
+
+
+        inputOtro.focus();
+    }
+
+
+    /* =====================================================
+       CREAR AVATAR
+    ===================================================== */
+
+    function crearAvatar(
+        persona
+    ) {
+
+        const nombrePersona =
+            String(
+                persona.nombre
+                || ''
+            ).trim();
+
+
+        const fotoPersona =
+            String(
+                persona.foto
+                || ''
+            ).trim();
+
+
+        const letra =
+            obtenerLetraApellido(
+                nombrePersona
+            );
+
+
+        const avatar =
+            document.createElement(
+                'span'
+            );
+
+
+        avatar.className =
+            'investigador-resultados__avatar';
+
+
+        const imagen =
+            document.createElement(
+                'img'
+            );
+
+
+        const fallback =
+            document.createElement(
+                'span'
+            );
+
+
+        imagen.alt =
+            nombrePersona;
+
+
+        imagen.hidden =
+            true;
+
+
+        imagen.style.display =
+            'none';
+
+
+        fallback.textContent =
+            letra;
+
+
+        fallback.hidden =
+            true;
+
+
+        fallback.style.display =
+            'none';
+
+
+        if (fotoPersona !== '') {
+
+            imagen.onerror =
+                () => {
+
+                    imagen.hidden =
+                        true;
+
+
+                    imagen.style.display =
+                        'none';
+
+
+                    fallback.hidden =
+                        false;
+
+
+                    fallback.style.display =
+                        'flex';
+                };
+
+
+            imagen.onload =
+                () => {
+
+                    imagen.hidden =
+                        false;
+
+
+                    imagen.style.display =
+                        'block';
+
+
+                    fallback.hidden =
+                        true;
+
+
+                    fallback.style.display =
+                        'none';
+                };
+
+
+            imagen.src =
+                fotoPersona;
+
+        } else {
+
+            fallback.hidden =
+                false;
+
+
+            fallback.style.display =
+                'flex';
+        }
+
+
+        avatar.appendChild(
+            imagen
+        );
+
+
+        avatar.appendChild(
+            fallback
+        );
+
+
+        return avatar;
+    }
+
+
+    /* =====================================================
+       OPCIÓN OTRO
+    ===================================================== */
+
+    function agregarOpcionOtro() {
+
+        const boton =
+            document.createElement(
+                'button'
+            );
+
+
+        boton.type =
+            'button';
+
+
+        boton.className =
+            'investigador-resultados__item investigador-resultados__item--otro';
+
+
+        const avatar =
+            document.createElement(
+                'span'
+            );
+
+
+        avatar.className =
+            'investigador-resultados__avatar investigador-resultados__avatar--otro';
+
+
+        avatar.textContent =
+            '+';
+
+
+        const datos =
+            document.createElement(
+                'span'
+            );
+
+
+        datos.className =
+            'investigador-resultados__datos';
+
+
+        const titulo =
+            document.createElement(
+                'strong'
+            );
+
+
+        titulo.textContent =
+            'Otro';
+
+
+        const ayuda =
+            document.createElement(
+                'small'
+            );
+
+
+        ayuda.textContent =
+            'Capturar manualmente el nombre del investigador';
+
+
+        datos.appendChild(
+            titulo
+        );
+
+
+        datos.appendChild(
+            ayuda
+        );
+
+
+        boton.appendChild(
+            avatar
+        );
+
+
+        boton.appendChild(
+            datos
+        );
+
+
+        boton.addEventListener(
+            'click',
+            () => {
+
+                seleccionarOtro();
+            }
+        );
+
+
+        resultados.appendChild(
+            boton
+        );
+    }
+
+
+    /* =====================================================
+       RENDERIZAR RESULTADOS
+    ===================================================== */
+
+    function renderizarResultados(
+        personal
+    ) {
+
+        resultados.innerHTML =
+            '';
+
+
+        if (
+            Array.isArray(
+                personal
+            )
+        ) {
+
+            personal.forEach(
+                (persona) => {
+
+                    const boton =
+                        document.createElement(
+                            'button'
+                        );
+
+
+                    boton.type =
+                        'button';
+
+
+                    boton.className =
+                        'investigador-resultados__item';
+
+
+                    const nombrePersona =
+                        String(
+                            persona.nombre
+                            || ''
+                        ).trim();
+
+
+                    const nominaPersona =
+                        String(
+                            persona.nomina
+                            || ''
+                        ).trim();
+
+
+                    const turnoPersona =
+                        String(
+                            persona.turno
+                            || ''
+                        ).trim();
+
+
+                    boton.appendChild(
+                        crearAvatar(
+                            persona
+                        )
+                    );
+
+
+                    const datos =
+                        document.createElement(
+                            'span'
+                        );
+
+
+                    datos.className =
+                        'investigador-resultados__datos';
+
+
+                    const titulo =
+                        document.createElement(
+                            'strong'
+                        );
+
+
+                    titulo.textContent =
+                        nombrePersona;
+
+
+                    const ayuda =
+                        document.createElement(
+                            'small'
+                        );
+
+
+                    let textoAyuda =
+                        nominaPersona !== ''
+                            ? `Nómina: ${nominaPersona}`
+                            : 'Nómina no disponible';
+
+
+                    if (turnoPersona !== '') {
+
+                        textoAyuda +=
+                            ` · ${turnoPersona}`;
+                    }
+
+
+                    ayuda.textContent =
+                        textoAyuda;
+
+
+                    datos.appendChild(
+                        titulo
+                    );
+
+
+                    datos.appendChild(
+                        ayuda
+                    );
+
+
+                    boton.appendChild(
+                        datos
+                    );
+
+
+                    boton.addEventListener(
+                        'click',
+                        () => {
+
+                            seleccionarPersona(
+                                persona
+                            );
+                        }
+                    );
+
+
+                    resultados.appendChild(
+                        boton
+                    );
+                }
+            );
+        }
+
+
+        agregarOpcionOtro();
+
+
+        resultados.hidden =
+            false;
+    }
+
+
+    /* =====================================================
+       BUSCAR
+    ===================================================== */
+
+    async function buscarInvestigador(
+        termino
+    ) {
+
+        const busqueda =
+            String(
+                termino
+                || ''
+            ).trim();
+
+
+        if (busqueda === '') {
+
+            resultados.innerHTML =
+                '';
+
+
+            agregarOpcionOtro();
+
+
+            resultados.hidden =
+                false;
+
+
+            return;
+        }
+
+
+        if (controladorBusqueda) {
+
+            controladorBusqueda.abort();
+        }
+
+
+        controladorBusqueda =
+            new AbortController();
+
+
+        try {
+
+            const url =
+                new URL(
+                    'DataCore/public/asuntos-internos/reportes/personal/asuntos-internos/buscar',
+                    `${window.location.origin}/`
+                );
+
+
+            url.searchParams.set(
+                'q',
+                busqueda
+            );
+
+
+            const respuesta =
+                await fetch(
+                    url.toString(),
+                    {
+                        method:
+                            'GET',
+
+                        headers: {
+                            Accept:
+                                'application/json',
+                        },
+
+                        credentials:
+                            'same-origin',
+
+                        signal:
+                            controladorBusqueda.signal,
+                    }
+                );
+
+
+            const resultado =
+                await respuesta.json();
+
+
+            if (
+                !respuesta.ok
+                || resultado?.success !== true
+            ) {
+
+                throw new Error(
+                    resultado?.message
+                    || 'No fue posible consultar el personal.'
+                );
+            }
+
+
+            renderizarResultados(
+                resultado.personal
+                || []
+            );
+
+        } catch (error) {
+
+            if (
+                error.name === 'AbortError'
+            ) {
+                return;
+            }
+
+
+            console.error(
+                'Error buscando investigador en edición:',
+                error
+            );
+
+
+            resultados.innerHTML =
+                '';
+
+
+            const mensaje =
+                document.createElement(
+                    'div'
+                );
+
+
+            mensaje.className =
+                'investigador-resultados__vacio';
+
+
+            mensaje.textContent =
+                'No fue posible consultar el personal.';
+
+
+            resultados.appendChild(
+                mensaje
+            );
+
+
+            agregarOpcionOtro();
+
+
+            resultados.hidden =
+                false;
+        }
+    }
+
+
+    /* =====================================================
+       BUSCADOR
+    ===================================================== */
+
+    buscador.addEventListener(
+        'input',
+        () => {
+
+            const valor =
+                String(
+                    buscador.value
+                    || ''
+                ).trim();
+
+
+            const tipoActual =
+                String(
+                    inputTipo?.value
+                    || ''
+                ).trim();
+
+
+            /* =================================================
+               INVALIDAR PERSONAL SELECCIONADO
+            ================================================= */
+
+            if (
+                tipoActual === 'PERSONAL'
+                && valor !== String(
+                    inputInvestigador.value
+                    || ''
+                ).trim()
+            ) {
+
+                inputInvestigador.value =
+                    '';
+
+
+                if (inputPlantillaId) {
+
+                    inputPlantillaId.value =
+                        '';
+                }
+
+
+                if (inputTipo) {
+
+                    inputTipo.value =
+                        '';
+                }
+
+
+                seleccionado.hidden =
+                    true;
+
+
+                limpiarFoto();
+            }
+
+
+            /* =================================================
+               SALIR DE OTRO
+            ================================================= */
+
+            if (
+                tipoActual === 'OTRO'
+                && valor !== 'Otro'
+            ) {
+
+                inputInvestigador.value =
+                    '';
+
+
+                if (inputTipo) {
+
+                    inputTipo.value =
+                        '';
+                }
+
+
+                contenedorOtro.hidden =
+                    true;
+
+
+                inputOtro.value =
+                    '';
+
+
+                inputOtro.disabled =
+                    true;
+
+
+                inputOtro.required =
+                    false;
+            }
+
+
+            window.clearTimeout(
+                temporizadorBusqueda
+            );
+
+
+            temporizadorBusqueda =
+                window.setTimeout(
+                    () => {
+
+                        buscarInvestigador(
+                            valor
+                        );
+
+                    },
+                    250
+                );
+        }
+    );
+
+
+    /* =====================================================
+       FOCO
+    ===================================================== */
+
+    buscador.addEventListener(
+        'focus',
+        () => {
+
+            const valor =
+                String(
+                    buscador.value
+                    || ''
+                ).trim();
+
+
+            if (
+                String(
+                    inputTipo?.value
+                    || ''
+                ).trim() === ''
+            ) {
+
+                buscarInvestigador(
+                    valor
+                );
+            }
+        }
+    );
+
+
+    /* =====================================================
+       OTRO - NOMBRE MANUAL
+    ===================================================== */
+
+    inputOtro.addEventListener(
+        'input',
+        () => {
+
+            inputInvestigador.value =
+                String(
+                    inputOtro.value
+                    || ''
+                ).trim();
+
+
+            inputInvestigador.dispatchEvent(
+                new Event(
+                    'change',
+                    {
+                        bubbles: true,
+                    }
+                )
+            );
+        }
+    );
+
+
+    /* =====================================================
+       QUITAR
+    ===================================================== */
+
+    if (botonQuitar) {
+
+        botonQuitar.addEventListener(
+            'click',
+            () => {
+
+                limpiarInvestigador();
+            }
+        );
+    }
+
+
+    /* =====================================================
+       CLICK FUERA
+    ===================================================== */
+
+    document.addEventListener(
+        'click',
+        (evento) => {
+
+            if (
+                buscador.contains(
+                    evento.target
+                )
+                || resultados.contains(
+                    evento.target
+                )
+                || contenedorOtro.contains(
+                    evento.target
+                )
+            ) {
+                return;
+            }
+
+
+            cerrarResultados();
+        }
+    );
+
+
+    /* =====================================================
+       ESC
+    ===================================================== */
+
+    document.addEventListener(
+        'keydown',
+        (evento) => {
+
+            if (
+                evento.key === 'Escape'
+            ) {
+
+                cerrarResultados();
+            }
+        }
+    );
 }

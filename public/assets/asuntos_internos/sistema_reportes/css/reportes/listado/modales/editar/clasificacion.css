@@ -1122,6 +1122,598 @@ span {
 }
 
 /* =========================================================
+   INVESTIGADOR
+   CONTENEDOR DEL CATÁLOGO
+========================================================= */
+
+#modal-editar-reporte
+.editar-reporte-campo--investigador {
+
+    position: relative;
+
+    overflow: visible !important;
+
+    z-index: 20;
+}
+
+
+/* =========================================================
+   PERMITIR QUE EL CATÁLOGO SALGA DEL BLOQUE
+========================================================= */
+
+#modal-editar-reporte
+.editar-reporte-seccion__bloque:has(
+    #editar-investigador-busqueda
+),
+
+#modal-editar-reporte
+.editar-reporte-grid:has(
+    #editar-investigador-busqueda
+) {
+
+    overflow: visible !important;
+}
+
+
+/* =========================================================
+   CUANDO EL CATÁLOGO ESTÁ ABIERTO
+========================================================= */
+
+#modal-editar-reporte
+.editar-reporte-campo--investigador:has(
+    #editar-investigador-resultados:not([hidden])
+) {
+
+    z-index: 400;
+}
+
+
+/* =========================================================
+   RESULTADOS
+========================================================= */
+
+#modal-editar-reporte
+.editar-investigador-resultados {
+
+    position: absolute;
+
+    top: calc(100% - 2px);
+
+    left: 0;
+
+    right: 0;
+
+    z-index: 500;
+
+    width: 100%;
+
+    max-height: 320px;
+
+    margin-top: 8px;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #d9e3eb;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 10px 28px rgba(31, 58, 88, 0.14);
+
+    box-sizing: border-box;
+}
+
+
+#modal-editar-reporte
+.editar-investigador-resultados[hidden] {
+
+    display: none !important;
+}
+
+
+/* =========================================================
+   OPCIONES
+========================================================= */
+
+#modal-editar-reporte
+.investigador-resultados__item {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 11px 14px;
+
+    color: #405d78;
+
+    background: #ffffff;
+
+    border: 0;
+
+    border-bottom: 1px solid #edf2f6;
+
+    font-family: inherit;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+
+    transition:
+        background 0.2s ease;
+}
+
+
+#modal-editar-reporte
+.investigador-resultados__item:last-child {
+
+    border-bottom: 0;
+}
+
+
+#modal-editar-reporte
+.investigador-resultados__item:hover {
+
+    background: #f5faff;
+}
+
+
+/* =========================================================
+   OPCIÓN OTRO
+========================================================= */
+
+#modal-editar-reporte
+.investigador-resultados__item--otro {
+
+    background: #f8fbfd;
+}
+
+
+#modal-editar-reporte
+.investigador-resultados__item--otro:hover {
+
+    background: #eef8fe;
+}
+
+
+/* =========================================================
+   AVATAR
+========================================================= */
+
+#modal-editar-reporte
+.investigador-resultados__avatar {
+
+    width: 38px;
+
+    height: 38px;
+
+    flex: 0 0 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    overflow: hidden;
+
+    color: #1681c4;
+
+    background: #e8f3fb;
+
+    border: 1px solid #cfe1ed;
+
+    border-radius: 50%;
+
+    font-size: 10px;
+
+    font-weight: 800;
+}
+
+
+#modal-editar-reporte
+.investigador-resultados__avatar img {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+
+#modal-editar-reporte
+.investigador-resultados__avatar img[hidden],
+
+#modal-editar-reporte
+.investigador-resultados__avatar span[hidden] {
+
+    display: none !important;
+}
+
+
+#modal-editar-reporte
+.investigador-resultados__avatar
+> span:not([hidden]) {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+/* =========================================================
+   AVATAR OTRO
+========================================================= */
+
+#modal-editar-reporte
+.investigador-resultados__avatar--otro {
+
+    color: #ffffff;
+
+    background: #1681c4;
+
+    border-color: #1681c4;
+
+    font-size: 18px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   DATOS DEL RESULTADO
+========================================================= */
+
+#modal-editar-reporte
+.investigador-resultados__datos {
+
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+#modal-editar-reporte
+.investigador-resultados__datos strong {
+
+    overflow: hidden;
+
+    color: #173554;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+#modal-editar-reporte
+.investigador-resultados__datos small {
+
+    overflow: hidden;
+
+    color: #728596;
+
+    font-size: 9px;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   MENSAJE SIN RESULTADOS
+========================================================= */
+
+#modal-editar-reporte
+.investigador-resultados__vacio {
+
+    padding: 16px;
+
+    color: #718498;
+
+    background: #f8fbfd;
+
+    font-size: 9px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   INVESTIGADOR SELECCIONADO
+========================================================= */
+
+#modal-editar-reporte
+.editar-investigador-seleccionado {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 10px;
+
+    padding: 12px 14px;
+
+    background: #f7fbfe;
+
+    border: 1px solid #cfe1ed;
+
+    border-radius: 9px;
+
+    box-sizing: border-box;
+}
+
+
+#modal-editar-reporte
+.editar-investigador-seleccionado[hidden] {
+
+    display: none !important;
+}
+
+
+/* =========================================================
+   FOTO SELECCIONADA
+========================================================= */
+
+#modal-editar-reporte
+.editar-investigador-seleccionado__foto {
+
+    width: 40px;
+
+    height: 40px;
+
+    flex: 0 0 40px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    overflow: hidden;
+
+    color: #1681c4;
+
+    background: #e8f3fb;
+
+    border: 1px solid #cfe1ed;
+
+    border-radius: 50%;
+
+    font-size: 10px;
+
+    font-weight: 800;
+}
+
+
+#modal-editar-reporte
+.editar-investigador-seleccionado__foto img {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+
+#modal-editar-reporte
+.editar-investigador-seleccionado__foto img[hidden],
+
+#modal-editar-reporte
+.editar-investigador-seleccionado__foto span[hidden] {
+
+    display: none !important;
+}
+
+
+#modal-editar-reporte
+.editar-investigador-seleccionado__foto
+> span:not([hidden]) {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+/* =========================================================
+   DATOS SELECCIONADOS
+========================================================= */
+
+#modal-editar-reporte
+.editar-investigador-seleccionado__datos {
+
+    min-width: 0;
+
+    flex: 1;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+#modal-editar-reporte
+.editar-investigador-seleccionado__datos strong {
+
+    overflow: hidden;
+
+    color: #173554;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+#modal-editar-reporte
+.editar-investigador-seleccionado__datos span {
+
+    color: #405d78;
+
+    font-size: 9px;
+
+    font-weight: 700;
+}
+
+
+#modal-editar-reporte
+.editar-investigador-seleccionado__datos small {
+
+    overflow: hidden;
+
+    color: #728596;
+
+    font-size: 9px;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   BOTÓN QUITAR
+========================================================= */
+
+#modal-editar-reporte
+.editar-investigador-seleccionado__quitar {
+
+    width: 28px;
+
+    height: 28px;
+
+    flex: 0 0 28px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 0;
+
+    color: #708397;
+
+    background: #ffffff;
+
+    border: 1px solid #d5e0e8;
+
+    border-radius: 50%;
+
+    font-size: 17px;
+
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+
+#modal-editar-reporte
+.editar-investigador-seleccionado__quitar:hover {
+
+    color: #c43d35;
+
+    border-color: #e2aaa6;
+
+    background: #fff8f7;
+}
+
+
+/* =========================================================
+   INVESTIGADOR - OTRO
+========================================================= */
+
+#modal-editar-reporte
+.editar-investigador-otro {
+
+    width: 100%;
+
+    margin-top: 10px;
+
+    padding: 14px;
+
+    background: #f7fbfe;
+
+    border: 1px solid #b9d8ea;
+
+    border-left: 4px solid #1681c4;
+
+    border-radius: 9px;
+
+    box-sizing: border-box;
+}
+
+
+#modal-editar-reporte
+.editar-investigador-otro[hidden] {
+
+    display: none !important;
+}
+
+
+#modal-editar-reporte
+.editar-investigador-otro label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #173554;
+
+    font-size: 10px;
+
+    font-weight: 800;
+}
+
+
+/* =========================================================
    RESPONSIVE
 ========================================================= */
 

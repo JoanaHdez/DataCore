@@ -210,18 +210,122 @@
 
 
         <!-- =====================================================
-             INVESTIGADOR
-        ====================================================== -->
+     INVESTIGADOR
+====================================================== -->
 
-        <div class="editar-reporte-campo">
+        <div class="editar-reporte-campo editar-reporte-campo--investigador">
 
-            <label for="editar-investigador">
+            <label for="editar-investigador-busqueda">
                 Investigador
             </label>
 
 
-            <input type="text" id="editar-investigador" name="investigador" autocomplete="off"
-                placeholder="Ingresa el nombre del investigador">
+            <!-- =================================================
+         BUSCADOR
+    ================================================== -->
+
+            <input type="text" id="editar-investigador-busqueda" class="report-input" autocomplete="off"
+                placeholder="Busca por nombre o nómina">
+
+
+            <small class="editar-reporte-campo__help">
+                Selecciona personal activo de la Coordinación de Asuntos Internos o la opción “Otro”.
+            </small>
+
+
+            <!-- =================================================
+         RESULTADOS
+    ================================================== -->
+
+            <div class="editar-investigador-resultados investigador-resultados" id="editar-investigador-resultados"
+                hidden>
+            </div>
+
+
+            <!-- =================================================
+         PERSONA SELECCIONADA
+    ================================================== -->
+
+            <div class="editar-investigador-seleccionado investigador-seleccionado"
+                id="editar-investigador-seleccionado" hidden>
+
+                <!-- FOTO -->
+
+                <div class="editar-investigador-seleccionado__foto investigador-seleccionado__foto">
+
+                    <img id="editar-investigador-foto" src="" alt="" hidden>
+
+                    <span id="editar-investigador-foto-fallback">
+                        —
+                    </span>
+
+                </div>
+
+
+                <!-- DATOS -->
+
+                <div class="editar-investigador-seleccionado__datos investigador-seleccionado__datos">
+
+                    <strong id="editar-investigador-nombre">
+                        —
+                    </strong>
+
+                    <span id="editar-investigador-nomina">
+                        —
+                    </span>
+
+                    <small id="editar-investigador-detalle">
+                        —
+                    </small>
+
+                </div>
+
+
+                <!-- QUITAR -->
+
+                <button type="button" class="editar-investigador-seleccionado__quitar investigador-seleccionado__quitar"
+                    id="btn-editar-quitar-investigador" aria-label="Quitar investigador seleccionado"
+                    title="Quitar investigador seleccionado">
+                    ×
+                </button>
+
+            </div>
+
+
+            <!-- =================================================
+         OPCIÓN OTRO
+    ================================================== -->
+
+            <div class="editar-investigador-otro investigador-otro" id="editar-investigador-otro-contenedor" hidden>
+
+                <label for="editar-investigador-otro-nombre">
+                    Nombre del investigador
+                    <span class="required">*</span>
+                </label>
+
+
+                <input type="text" id="editar-investigador-otro-nombre" class="report-input" autocomplete="off"
+                    placeholder="Ingresa el nombre del investigador" disabled>
+
+
+                <small class="editar-reporte-campo__help">
+                    Este campo es obligatorio cuando se selecciona la opción “Otro”.
+                </small>
+
+            </div>
+
+
+            <!-- =================================================
+         VALORES PARA BACKEND
+    ================================================== -->
+
+            <input type="hidden" id="editar-investigador" name="investigador" value="">
+
+
+            <input type="hidden" id="editar-investigador-plantilla-id" value="">
+
+
+            <input type="hidden" id="editar-investigador-tipo" value="">
 
         </div>
 
