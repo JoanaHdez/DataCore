@@ -76,27 +76,27 @@
 
                     <?php
 
-                            $nombreClasificacion =
-                                trim(
-                                    (string) (
-                                        $clasificacion['nombre']
-                                        ?? ''
-                                    )
-                                );
+                    $nombreClasificacion =
+                        trim(
+                            (string) (
+                                $clasificacion['nombre']
+                                ?? ''
+                            )
+                        );
 
 
-                            $letraClasificacion =
-                                mb_strtoupper(
-                                    mb_substr(
-                                        $nombreClasificacion,
-                                        0,
-                                        1,
-                                        'UTF-8'
-                                    ),
-                                    'UTF-8'
-                                );
+                    $letraClasificacion =
+                        mb_strtoupper(
+                            mb_substr(
+                                $nombreClasificacion,
+                                0,
+                                1,
+                                'UTF-8'
+                            ),
+                            'UTF-8'
+                        );
 
-                            ?>
+                    ?>
 
                     <?php if ($nombreClasificacion !== ''): ?>
 
@@ -134,8 +134,8 @@
 
 
             <!-- =====================================================
-     INSPECTOR
-====================================================== -->
+                 INSPECTOR
+            ====================================================== -->
 
             <div class="report-field report-field--inspector">
 
@@ -146,8 +146,8 @@
 
 
                 <!-- =================================================
-         BUSCADOR
-    ================================================== -->
+                     BUSCADOR
+                ================================================== -->
 
                 <input type="text" id="inspector-busqueda" class="report-input" placeholder="Busca por nombre o nómina"
                     autocomplete="off">
@@ -159,29 +159,29 @@
 
 
                 <!-- =================================================
-         VALOR REAL QUE SE ENVÍA AL BACKEND
-    ================================================== -->
+                     VALOR REAL QUE SE ENVÍA AL BACKEND
+                ================================================== -->
 
                 <input type="hidden" id="inspector" name="inspector" value="" required>
 
 
                 <!-- =================================================
-         ID DE PLANTILLA SELECCIONADO
-    ================================================== -->
+                     ID DE PLANTILLA SELECCIONADO
+                ================================================== -->
 
                 <input type="hidden" id="inspector-plantilla-id" value="">
 
 
                 <!-- =================================================
-         RESULTADOS
-    ================================================== -->
+                     RESULTADOS
+                ================================================== -->
 
                 <div class="inspector-resultados" id="inspector-resultados" hidden></div>
 
 
                 <!-- =================================================
-         PERSONA SELECCIONADA
-    ================================================== -->
+                     PERSONA SELECCIONADA
+                ================================================== -->
 
                 <div class="inspector-seleccionado" id="inspector-seleccionado" hidden>
 
@@ -222,24 +222,129 @@
 
             </div>
 
+
             <!-- =====================================================
                  INVESTIGADOR
             ====================================================== -->
 
-            <div class="report-field">
+            <div class="report-field report-field--investigador">
 
-                <label for="investigador">
+                <label for="investigador-busqueda">
                     Investigador
+                    <span class="required">*</span>
                 </label>
 
 
-                <input type="text" id="investigador" name="investigador" class="report-input"
-                    placeholder="Ingresa el nombre del investigador" autocomplete="off">
+                <!-- =================================================
+                     BUSCADOR
+                ================================================== -->
+
+                <input type="text" id="investigador-busqueda" class="report-input"
+                    placeholder="Busca por nombre o nómina" autocomplete="off">
+
+
+                <small class="report-field__help">
+                    Selecciona personal activo de la Coordinación de Asuntos Internos o la opción “Otro”.
+                </small>
+
+
+                <!-- =================================================
+                     VALOR REAL QUE SE ENVÍA AL BACKEND
+                ================================================== -->
+
+                <input type="hidden" id="investigador" name="investigador" value="" required>
+
+
+                <!-- =================================================
+                     ID DE PLANTILLA
+                ================================================== -->
+
+                <input type="hidden" id="investigador-plantilla-id" value="">
+
+
+                <!-- =================================================
+                     TIPO DE INVESTIGADOR
+                ================================================== -->
+
+                <input type="hidden" id="investigador-tipo" value="">
+
+
+                <!-- =================================================
+                     RESULTADOS
+                ================================================== -->
+
+                <div class="investigador-resultados" id="investigador-resultados" hidden></div>
+
+
+                <!-- =================================================
+                     INVESTIGADOR SELECCIONADO
+                ================================================== -->
+
+                <div class="investigador-seleccionado" id="investigador-seleccionado" hidden>
+
+                    <div class="investigador-seleccionado__foto">
+
+                        <img id="investigador-foto" src="" alt="" hidden>
+
+                        <span id="investigador-foto-fallback">
+                            —
+                        </span>
+
+                    </div>
+
+
+                    <div class="investigador-seleccionado__datos">
+
+                        <strong id="investigador-nombre">
+                            —
+                        </strong>
+
+                        <span id="investigador-nomina">
+                            —
+                        </span>
+
+                        <small id="investigador-detalle">
+                            —
+                        </small>
+
+                    </div>
+
+
+                    <button type="button" class="investigador-seleccionado__quitar" id="btn-quitar-investigador"
+                        aria-label="Quitar investigador seleccionado">
+                        ×
+                    </button>
+
+                </div>
+
+
+                <!-- =================================================
+                     INVESTIGADOR OTRO
+                ================================================== -->
+
+                <div class="investigador-otro" id="investigador-otro-contenedor" hidden>
+
+                    <label for="investigador-otro-nombre">
+                        Nombre del investigador
+                        <span class="required">*</span>
+                    </label>
+
+
+                    <input type="text" id="investigador-otro-nombre" class="report-input"
+                        placeholder="Ingresa el nombre del investigador" autocomplete="off" disabled>
+
+
+                    <small class="report-field__help">
+                        Este campo es obligatorio cuando se selecciona la opción “Otro”.
+                    </small>
+
+                </div>
 
             </div>
 
+
             <!-- =====================================================
-                ESTADO ACTUAL
+                 ESTADO ACTUAL
             ====================================================== -->
 
             <div class="report-field">
@@ -250,14 +355,14 @@
 
 
                 <!-- =================================================
-                    VALOR REAL PARA BACKEND
+                     VALOR REAL PARA BACKEND
                 ================================================== -->
 
                 <input type="hidden" id="estado_actual" name="estado_actual" value="Pendiente">
 
 
                 <!-- =================================================
-                    SELECTOR VISUAL
+                     SELECTOR VISUAL
                 ================================================== -->
 
                 <button type="button" class="estado-select" id="estado-select" aria-expanded="false"
@@ -281,7 +386,7 @@
 
 
                 <!-- =================================================
-                    CATÁLOGO
+                     CATÁLOGO
                 ================================================== -->
 
                 <div class="estado-resultados" id="estado-resultados" hidden>
@@ -357,6 +462,7 @@
                 </div>
 
             </div>
+
 
             <!-- =====================================================
                  SITUACIÓN DE LA SANCIÓN
@@ -443,36 +549,36 @@
 
                     <?php
 
-                            $idMotivo =
-                                (int) (
-                                    $motivo['id_motivo']
-                                    ?? 0
-                                );
+                    $idMotivo =
+                        (int) (
+                            $motivo['id_motivo']
+                            ?? 0
+                        );
 
 
-                            $textoMotivo =
-                                trim(
-                                    (string) (
-                                        $motivo['motivo']
-                                        ?? ''
-                                    )
-                                );
+                    $textoMotivo =
+                        trim(
+                            (string) (
+                                $motivo['motivo']
+                                ?? ''
+                            )
+                        );
 
 
-                            $sancionMotivo =
-                                trim(
-                                    (string) (
-                                        $motivo['sancion']
-                                        ?? ''
-                                    )
-                                );
+                    $sancionMotivo =
+                        trim(
+                            (string) (
+                                $motivo['sancion']
+                                ?? ''
+                            )
+                        );
 
-                            ?>
+                    ?>
 
                     <?php if (
-                                $idMotivo > 0
-                                && $textoMotivo !== ''
-                            ): ?>
+                        $idMotivo > 0
+                        && $textoMotivo !== ''
+                    ): ?>
 
                     <button type="button" class="motivos-resultados__item" data-motivo-opcion
                         data-motivo-id="<?= $idMotivo ?>" data-motivo-texto="<?= esc($textoMotivo) ?>"
@@ -493,9 +599,9 @@
                             <small>
                                 Sanción sugerida:
                                 <?= esc(
-                                                $sancionMotivo
-                                                    ?: 'Sin sanción definida'
-                                            ) ?>
+                                    $sancionMotivo
+                                        ?: 'Sin sanción definida'
+                                ) ?>
                             </small>
 
                         </span>
@@ -596,7 +702,7 @@
 
 
             <!-- =====================================================
-                TOTAL DE HORAS DE ARRESTO
+                 TOTAL DE HORAS DE ARRESTO
             ====================================================== -->
 
             <div class="report-field report-field--horas-arresto">
@@ -614,6 +720,7 @@
                 </small>
 
             </div>
+
 
             <!-- =====================================================
                  QUIÉN EMITE LA RESOLUCIÓN

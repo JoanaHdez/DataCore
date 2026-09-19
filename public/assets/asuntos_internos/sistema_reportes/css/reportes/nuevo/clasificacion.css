@@ -10,6 +10,7 @@
 ========================================================= */
 
 .clasificacion-select {
+
     width: 100%;
     min-height: 42px;
 
@@ -42,17 +43,20 @@
 
 .clasificacion-select:hover,
 .clasificacion-select--activo {
+
     border-color: #1681c4;
 }
 
 
 .clasificacion-select--activo {
+
     box-shadow:
         0 0 0 3px rgba(22, 129, 196, 0.10);
 }
 
 
 .clasificacion-select__texto {
+
     min-width: 0;
 
     overflow: hidden;
@@ -68,6 +72,7 @@
 
 
 .clasificacion-select__flecha {
+
     flex-shrink: 0;
 
     color: #647d92;
@@ -81,15 +86,17 @@
 
 .clasificacion-select--activo
 .clasificacion-select__flecha {
+
     transform: rotate(180deg);
 }
 
 
 /* =========================================================
-   RESULTADOS
+   RESULTADOS CLASIFICACIÓN
 ========================================================= */
 
 .clasificacion-resultados {
+
     margin-top: 8px;
 
     background: #ffffff;
@@ -105,15 +112,17 @@
 
 
 .clasificacion-resultados[hidden] {
+
     display: none !important;
 }
 
 
 /* =========================================================
-   ITEM
+   ITEM CLASIFICACIÓN
 ========================================================= */
 
 .clasificacion-resultados__item {
+
     width: 100%;
 
     display: flex;
@@ -138,20 +147,23 @@
 
 
 .clasificacion-resultados__item:last-child {
+
     border-bottom: 0;
 }
 
 
 .clasificacion-resultados__item:hover {
+
     background: #f5faff;
 }
 
 
 /* =========================================================
-   AVATAR
+   AVATAR CLASIFICACIÓN
 ========================================================= */
 
 .clasificacion-resultados__avatar {
+
     width: 36px;
     height: 36px;
 
@@ -173,10 +185,11 @@
 
 
 /* =========================================================
-   DATOS
+   DATOS CLASIFICACIÓN
 ========================================================= */
 
 .clasificacion-resultados__datos {
+
     min-width: 0;
 
     display: flex;
@@ -187,6 +200,7 @@
 
 
 .clasificacion-resultados__datos strong {
+
     color: #173554;
 
     font-size: 11px;
@@ -197,6 +211,7 @@
 
 
 .clasificacion-resultados__datos small {
+
     display: block;
 
     color: #728596;
@@ -211,6 +226,7 @@
    NUEVO REPORTE
    ESTADO - SELECTOR PERSONALIZADO
 ========================================================= */
+
 
 /* =========================================================
    CONTENEDORES
@@ -258,7 +274,7 @@
 
 
 /* =========================================================
-   SELECTOR
+   SELECTOR ESTADO
 ========================================================= */
 
 .estado-select {
@@ -313,7 +329,7 @@
 
 
 /* =========================================================
-   DESHABILITADO
+   ESTADO DESHABILITADO
 ========================================================= */
 
 .estado-select:disabled {
@@ -338,7 +354,7 @@
 
 
 /* =========================================================
-   TEXTO
+   TEXTO ESTADO
 ========================================================= */
 
 .estado-select__texto {
@@ -358,7 +374,7 @@
 
 
 /* =========================================================
-   FLECHA
+   FLECHA ESTADO
 ========================================================= */
 
 .estado-select__flecha {
@@ -372,7 +388,7 @@
 
 
 /* =========================================================
-   RESULTADOS
+   RESULTADOS ESTADO
 ========================================================= */
 
 .estado-resultados {
@@ -410,7 +426,7 @@
 
 
 /* =========================================================
-   OPCIÓN
+   OPCIÓN ESTADO
 ========================================================= */
 
 .estado-resultados__item {
@@ -452,7 +468,7 @@
 
 
 /* =========================================================
-   AVATAR
+   AVATAR ESTADO
 ========================================================= */
 
 .estado-resultados__avatar {
@@ -479,7 +495,7 @@
 
 
 /* =========================================================
-   DATOS
+   DATOS ESTADO
 ========================================================= */
 
 .estado-resultados__datos {
@@ -516,12 +532,14 @@
     line-height: 1.4;
 }
 
+
 /* =========================================================
-   INSPECTOR
-   CONTENEDOR
+   INSPECTOR / INVESTIGADOR
+   CONTENEDORES
 ========================================================= */
 
-.report-field--inspector {
+.report-field--inspector,
+.report-field--investigador {
 
     position: relative;
 
@@ -533,6 +551,10 @@
 
 .report-field--inspector:has(
     #inspector-resultados:not([hidden])
+),
+
+.report-field--investigador:has(
+    #investigador-resultados:not([hidden])
 ) {
 
     z-index: 300;
@@ -547,12 +569,24 @@
     #inspector-busqueda
 ),
 
+.report-section:has(
+    #investigador-busqueda
+),
+
 .report-section__body:has(
     #inspector-busqueda
 ),
 
+.report-section__body:has(
+    #investigador-busqueda
+),
+
 .report-form-grid:has(
     #inspector-busqueda
+),
+
+.report-form-grid:has(
+    #investigador-busqueda
 ) {
 
     overflow: visible !important;
@@ -563,7 +597,8 @@
    RESULTADOS
 ========================================================= */
 
-.inspector-resultados {
+.inspector-resultados,
+.investigador-resultados {
 
     position: absolute;
 
@@ -594,7 +629,8 @@
 }
 
 
-.inspector-resultados[hidden] {
+.inspector-resultados[hidden],
+.investigador-resultados[hidden] {
 
     display: none !important;
 }
@@ -604,7 +640,8 @@
    RESULTADO
 ========================================================= */
 
-.inspector-resultados__item {
+.inspector-resultados__item,
+.investigador-resultados__item {
 
     width: 100%;
 
@@ -632,15 +669,34 @@
 }
 
 
-.inspector-resultados__item:last-child {
+.inspector-resultados__item:last-child,
+.investigador-resultados__item:last-child {
 
     border-bottom: 0;
 }
 
 
-.inspector-resultados__item:hover {
+.inspector-resultados__item:hover,
+.investigador-resultados__item:hover {
 
     background: #f5faff;
+}
+
+
+/* =========================================================
+   INVESTIGADOR
+   OPCIÓN OTRO
+========================================================= */
+
+.investigador-resultados__item--otro {
+
+    background: #f8fbfd;
+}
+
+
+.investigador-resultados__item--otro:hover {
+
+    background: #eef8fe;
 }
 
 
@@ -648,7 +704,8 @@
    FOTO / AVATAR
 ========================================================= */
 
-.inspector-resultados__avatar {
+.inspector-resultados__avatar,
+.investigador-resultados__avatar {
 
     width: 38px;
     height: 38px;
@@ -674,7 +731,8 @@
 }
 
 
-.inspector-resultados__avatar img {
+.inspector-resultados__avatar img,
+.investigador-resultados__avatar img {
 
     width: 100%;
     height: 100%;
@@ -684,6 +742,24 @@
     object-fit: cover;
 }
 
+
+/* =========================================================
+   AVATAR OTRO
+========================================================= */
+
+.investigador-resultados__avatar--otro {
+
+    color: #ffffff;
+
+    background: #1681c4;
+
+    border-color: #1681c4;
+
+    font-size: 18px;
+    font-weight: 600;
+}
+
+
 /* =========================================================
    FOTO / FALLBACK
 ========================================================= */
@@ -691,14 +767,22 @@
 .inspector-resultados__avatar img[hidden],
 .inspector-resultados__avatar span[hidden],
 .inspector-seleccionado__foto img[hidden],
-.inspector-seleccionado__foto span[hidden] {
+.inspector-seleccionado__foto span[hidden],
+
+.investigador-resultados__avatar img[hidden],
+.investigador-resultados__avatar span[hidden],
+.investigador-seleccionado__foto img[hidden],
+.investigador-seleccionado__foto span[hidden] {
 
     display: none !important;
 }
 
 
 .inspector-resultados__avatar > span:not([hidden]),
-.inspector-seleccionado__foto > span:not([hidden]) {
+.inspector-seleccionado__foto > span:not([hidden]),
+
+.investigador-resultados__avatar > span:not([hidden]),
+.investigador-seleccionado__foto > span:not([hidden]) {
 
     width: 100%;
     height: 100%;
@@ -709,11 +793,13 @@
     justify-content: center;
 }
 
+
 /* =========================================================
    DATOS
 ========================================================= */
 
-.inspector-resultados__datos {
+.inspector-resultados__datos,
+.investigador-resultados__datos {
 
     min-width: 0;
 
@@ -725,7 +811,8 @@
 }
 
 
-.inspector-resultados__datos strong {
+.inspector-resultados__datos strong,
+.investigador-resultados__datos strong {
 
     overflow: hidden;
 
@@ -740,7 +827,8 @@
 }
 
 
-.inspector-resultados__datos small {
+.inspector-resultados__datos small,
+.investigador-resultados__datos small {
 
     overflow: hidden;
 
@@ -758,7 +846,8 @@
    SIN RESULTADOS
 ========================================================= */
 
-.inspector-resultados__vacio {
+.inspector-resultados__vacio,
+.investigador-resultados__vacio {
 
     padding: 16px;
 
@@ -773,10 +862,11 @@
 
 
 /* =========================================================
-   INSPECTOR SELECCIONADO
+   PERSONA SELECCIONADA
 ========================================================= */
 
-.inspector-seleccionado {
+.inspector-seleccionado,
+.investigador-seleccionado {
 
     width: 100%;
 
@@ -799,7 +889,8 @@
 }
 
 
-.inspector-seleccionado[hidden] {
+.inspector-seleccionado[hidden],
+.investigador-seleccionado[hidden] {
 
     display: none !important;
 }
@@ -809,7 +900,8 @@
    FOTO SELECCIONADA
 ========================================================= */
 
-.inspector-seleccionado__foto {
+.inspector-seleccionado__foto,
+.investigador-seleccionado__foto {
 
     width: 40px;
     height: 40px;
@@ -835,7 +927,8 @@
 }
 
 
-.inspector-seleccionado__foto img {
+.inspector-seleccionado__foto img,
+.investigador-seleccionado__foto img {
 
     width: 100%;
     height: 100%;
@@ -850,7 +943,8 @@
    INFORMACIÓN SELECCIONADA
 ========================================================= */
 
-.inspector-seleccionado__datos {
+.inspector-seleccionado__datos,
+.investigador-seleccionado__datos {
 
     min-width: 0;
 
@@ -864,7 +958,8 @@
 }
 
 
-.inspector-seleccionado__datos strong {
+.inspector-seleccionado__datos strong,
+.investigador-seleccionado__datos strong {
 
     overflow: hidden;
 
@@ -879,7 +974,8 @@
 }
 
 
-.inspector-seleccionado__datos span {
+.inspector-seleccionado__datos span,
+.investigador-seleccionado__datos span {
 
     color: #405d78;
 
@@ -888,7 +984,8 @@
 }
 
 
-.inspector-seleccionado__datos small {
+.inspector-seleccionado__datos small,
+.investigador-seleccionado__datos small {
 
     overflow: hidden;
 
@@ -906,7 +1003,8 @@
    QUITAR
 ========================================================= */
 
-.inspector-seleccionado__quitar {
+.inspector-seleccionado__quitar,
+.investigador-seleccionado__quitar {
 
     width: 28px;
     height: 28px;
@@ -934,7 +1032,8 @@
 }
 
 
-.inspector-seleccionado__quitar:hover {
+.inspector-seleccionado__quitar:hover,
+.investigador-seleccionado__quitar:hover {
 
     color: #c43d35;
 
@@ -945,12 +1044,61 @@
 
 
 /* =========================================================
+   INVESTIGADOR
+   OTRO
+========================================================= */
+
+.investigador-otro {
+
+    width: 100%;
+
+    margin-top: 10px;
+
+    padding: 14px;
+
+    background: #f7fbfe;
+
+    border: 1px solid #b9d8ea;
+    border-left: 4px solid #1681c4;
+    border-radius: 9px;
+
+    box-sizing: border-box;
+}
+
+
+.investigador-otro[hidden] {
+
+    display: none !important;
+}
+
+
+.investigador-otro label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+.investigador-otro .required {
+
+    color: #c43d35;
+}
+
+
+/* =========================================================
    RESPONSIVE
 ========================================================= */
 
 @media (max-width: 600px) {
 
     .clasificacion-select {
+
         min-height: 40px;
 
         padding: 0 12px;
@@ -958,12 +1106,34 @@
 
 
     .clasificacion-resultados__item {
+
         padding: 11px 12px;
     }
 
 
     .clasificacion-resultados__avatar {
+
         width: 34px;
         height: 34px;
+    }
+
+
+    .inspector-resultados,
+    .investigador-resultados {
+
+        max-height: 280px;
+    }
+
+
+    .inspector-seleccionado,
+    .investigador-seleccionado {
+
+        padding: 10px 12px;
+    }
+
+
+    .investigador-otro {
+
+        padding: 12px;
     }
 }
