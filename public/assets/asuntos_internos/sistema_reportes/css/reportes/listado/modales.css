@@ -15,6 +15,7 @@
     padding: 24px;
 }
 
+
 .modal-reporte--visible {
     display: flex;
 }
@@ -44,6 +45,9 @@
     width: min(900px, 100%);
     max-height: 90vh;
 
+    display: flex;
+    flex-direction: column;
+
     overflow: hidden;
 
     background: #ffffff;
@@ -64,6 +68,8 @@
     align-items: center;
     justify-content: space-between;
 
+    flex-shrink: 0;
+
     gap: 20px;
 
     padding: 20px 24px;
@@ -75,6 +81,7 @@
             #0f5d94
         );
 }
+
 
 .modal-reporte__eyebrow {
     display: block;
@@ -90,6 +97,7 @@
     text-transform: uppercase;
 }
 
+
 .modal-reporte__title {
     margin: 0;
 
@@ -98,6 +106,7 @@
     font-size: 18px;
     font-weight: 800;
 }
+
 
 .modal-reporte__close {
     width: 34px;
@@ -129,6 +138,7 @@
     max-height: calc(90vh - 80px);
 
     overflow-y: auto;
+    overflow-x: hidden;
 
     padding: 24px;
 }
@@ -147,6 +157,7 @@
     gap: 16px;
 }
 
+
 .detalle-reporte-campo {
     padding: 14px 16px;
 
@@ -155,6 +166,7 @@
     border: 1px solid #e2e9f0;
     border-radius: 8px;
 }
+
 
 .detalle-reporte-campo span {
     display: block;
@@ -170,12 +182,14 @@
     text-transform: uppercase;
 }
 
+
 .detalle-reporte-campo strong {
     color: #203d59;
 
     font-size: 12px;
     font-weight: 700;
 }
+
 
 /* =========================================================
    BODY CON MODAL ABIERTO
@@ -185,6 +199,7 @@ body.modal-abierto {
     overflow: hidden;
 }
 
+
 /* =========================================================
    FORMULARIO DE EDICIÓN
 ========================================================= */
@@ -193,6 +208,7 @@ body.modal-abierto {
     width: 100%;
 }
 
+
 .editar-reporte-campo {
     display: flex;
     flex-direction: column;
@@ -200,12 +216,14 @@ body.modal-abierto {
     gap: 7px;
 }
 
+
 .editar-reporte-campo label {
     color: #526779;
 
     font-size: 10px;
     font-weight: 700;
 }
+
 
 .editar-reporte-campo input,
 .editar-reporte-campo select {
@@ -230,6 +248,7 @@ body.modal-abierto {
         box-shadow 0.2s ease;
 }
 
+
 .editar-reporte-campo input:focus,
 .editar-reporte-campo select:focus {
     border-color: #1681c4;
@@ -237,6 +256,7 @@ body.modal-abierto {
     box-shadow:
         0 0 0 3px rgba(22, 129, 196, 0.1);
 }
+
 
 .editar-reporte-campo input[readonly] {
     color: #718396;
@@ -255,6 +275,8 @@ body.modal-abierto {
     align-items: center;
     justify-content: flex-end;
 
+    flex-shrink: 0;
+
     gap: 10px;
 
     padding: 16px 24px;
@@ -263,6 +285,7 @@ body.modal-abierto {
 
     border-top: 1px solid #e5ebf0;
 }
+
 
 .modal-reporte__button {
     min-width: 110px;
@@ -283,6 +306,7 @@ body.modal-abierto {
         border-color 0.2s ease;
 }
 
+
 .modal-reporte__button--secondary {
     color: #526779;
     background: #ffffff;
@@ -290,9 +314,11 @@ body.modal-abierto {
     border: 1px solid #d5e0e9;
 }
 
+
 .modal-reporte__button--secondary:hover {
     background: #f1f5f8;
 }
+
 
 .modal-reporte__button--primary {
     color: #ffffff;
@@ -300,6 +326,7 @@ body.modal-abierto {
 
     border: 1px solid #1681c4;
 }
+
 
 .modal-reporte__button--primary:hover {
     background: #116da7;
@@ -353,6 +380,7 @@ body.modal-abierto {
         );
 }
 
+
 .tarjeta-reporte__institucion span {
     display: block;
 
@@ -366,6 +394,7 @@ body.modal-abierto {
     letter-spacing: 0.05em;
     text-transform: uppercase;
 }
+
 
 .tarjeta-reporte__institucion h3 {
     margin: 0;
@@ -392,6 +421,7 @@ body.modal-abierto {
     border-radius: 7px;
 }
 
+
 .tarjeta-reporte__folio span {
     display: block;
 
@@ -404,6 +434,7 @@ body.modal-abierto {
 
     text-transform: uppercase;
 }
+
 
 .tarjeta-reporte__folio strong {
     color: #ffffff;
@@ -423,9 +454,11 @@ body.modal-abierto {
     border-bottom: 1px solid #e7edf2;
 }
 
+
 .tarjeta-reporte__seccion:last-child {
     border-bottom: 0;
 }
+
 
 .tarjeta-reporte__seccion-titulo {
     margin-bottom: 12px;
@@ -453,6 +486,7 @@ body.modal-abierto {
     gap: 12px 20px;
 }
 
+
 .tarjeta-reporte__campo span {
     display: block;
 
@@ -463,6 +497,7 @@ body.modal-abierto {
     font-size: 9px;
     font-weight: 700;
 }
+
 
 .tarjeta-reporte__campo strong {
     color: #263f57;
@@ -484,6 +519,7 @@ body.modal-abierto {
     border: 1px solid #e1e8ee;
     border-radius: 7px;
 }
+
 
 .tarjeta-reporte__dato-destacado strong {
     color: #263f57;
@@ -509,41 +545,45 @@ body.modal-abierto {
     line-height: 1.6;
 }
 
+
 /* =========================================================
-   MODAL EDITAR - SCROLL INTERNO
+   MODAL EDITAR - DIÁLOGO
 ========================================================= */
 
-.modal-reporte__form--editar {
-    flex: 1;
-    min-height: 0;
+#modal-editar-reporte
+.modal-reporte__dialog {
+
+    width: min(900px, 100%);
+
+    height: 90vh;
+    max-height: 90vh;
 
     display: flex;
     flex-direction: column;
+
+    overflow: hidden;
 }
 
 
 /* =========================================================
-   CUERPO EDITABLE
+   MODAL EDITAR - HEADER
 ========================================================= */
 
-.modal-reporte__body--editar {
-    flex: 1;
-    min-height: 0;
+#modal-editar-reporte
+.modal-reporte__header {
 
-    overflow-y: auto;
-
-    padding: 24px;
-
-    background: #ffffff;
+    flex: 0 0 auto;
 }
 
+
 /* =========================================================
-   EDITAR REPORTE - ALTURA Y SCROLL CORRECTO
+   MODAL EDITAR - FORMULARIO
 ========================================================= */
 
-/* Formulario ocupa el espacio restante */
+#modal-editar-reporte
 .modal-reporte__form--editar {
-    flex: 0 1 auto;
+
+    flex: 1;
     min-height: 0;
 
     display: flex;
@@ -552,6 +592,73 @@ body.modal-abierto {
     overflow: hidden;
 }
 
+
+/* =========================================================
+   MODAL EDITAR - CUERPO CON SCROLL
+========================================================= */
+
+#modal-editar-reporte
+.modal-reporte__body--editar {
+
+    flex: 1;
+    min-height: 0;
+
+    max-height: none;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding: 24px;
+
+    background: #ffffff;
+
+    scrollbar-gutter: stable;
+}
+
+
+/* =========================================================
+   MODAL EDITAR - SCROLLBAR
+========================================================= */
+
+#modal-editar-reporte
+.modal-reporte__body--editar::-webkit-scrollbar {
+
+    width: 8px;
+}
+
+
+#modal-editar-reporte
+.modal-reporte__body--editar::-webkit-scrollbar-track {
+
+    background: transparent;
+}
+
+
+#modal-editar-reporte
+.modal-reporte__body--editar::-webkit-scrollbar-thumb {
+
+    background: #c6d3dd;
+
+    border-radius: 10px;
+}
+
+
+#modal-editar-reporte
+.modal-reporte__body--editar::-webkit-scrollbar-thumb:hover {
+
+    background: #aebfcb;
+}
+
+
+/* =========================================================
+   MODAL EDITAR - FOOTER
+========================================================= */
+
+#modal-editar-reporte
+.modal-reporte__footer {
+
+    flex: 0 0 auto;
+}
 
 
 /* =========================================================
@@ -570,6 +677,7 @@ body.modal-abierto {
 
     line-height: 1.45;
 }
+
 
 /* =========================================================
    CONFIRMACIÓN DE ELIMINACIÓN - ADMIN
@@ -716,6 +824,7 @@ body.modal-abierto {
     box-shadow:
         0 0 0 3px rgba(189, 59, 50, 0.18);
 }
+
 
 /* =========================================================
    MODAL AUTORIZACIÓN ADMINISTRATIVA
@@ -945,6 +1054,7 @@ body.modal-abierto {
         0 0 0 3px rgba(22, 129, 196, 0.18);
 }
 
+
 /* =========================================================
    TARJETA - ÚLTIMO SEGUIMIENTO
 ========================================================= */
@@ -955,13 +1065,16 @@ body.modal-abierto {
     display: block;
 }
 
+
 .tarjeta-reporte__seguimiento strong {
     margin-bottom: 6px;
 }
 
+
 .tarjeta-reporte__seguimiento span {
     margin-bottom: 6px;
 }
+
 
 .tarjeta-reporte__seguimiento p {
     margin: 0;
@@ -979,11 +1092,13 @@ body.modal-abierto {
         flex-direction: column;
     }
 
+
     .tarjeta-reporte__folio {
         width: 100%;
 
         text-align: left;
     }
+
 
     .tarjeta-reporte__grid {
         grid-template-columns: 1fr;
@@ -991,8 +1106,9 @@ body.modal-abierto {
 
 }
 
+
 /* =========================================================
-   RESPONSIVE
+   RESPONSIVE DETALLE
 ========================================================= */
 
 @media (max-width: 650px) {

@@ -101,6 +101,9 @@ export function inicializarEditarReporte() {
     }
 
 
+    inicializarBloqueoEnterEditar(
+        formulario
+    );
     /* =====================================================
        MÓDULOS
     ===================================================== */
@@ -1069,6 +1072,71 @@ export function inicializarEditarReporte() {
 
         }
     );
+}
+
+
+/* =========================================================
+   BLOQUEAR ENTER EN EDITAR
+========================================================= */
+
+function inicializarBloqueoEnterEditar(
+    formulario
+) {
+
+    if (!formulario) {
+        return;
+    }
+
+
+    if (
+        formulario.dataset
+            .bloqueoEnterInicializado
+        === '1'
+    ) {
+        return;
+    }
+
+
+    formulario.dataset
+        .bloqueoEnterInicializado =
+        '1';
+
+
+    formulario.addEventListener(
+        'keydown',
+        (evento) => {
+
+            if (
+                evento.key !== 'Enter'
+            ) {
+                return;
+            }
+
+
+            /* =================================================
+               TEXTAREA
+
+               Aquí Enter sí debe funcionar para permitir
+               saltos de línea.
+            ================================================= */
+
+            if (
+                evento.target
+                    instanceof HTMLTextAreaElement
+            ) {
+                return;
+            }
+
+
+            /* =================================================
+               EVITAR SUBMIT ACCIDENTAL
+            ================================================= */
+
+            evento.preventDefault();
+
+        }
+    );
+
 }
 
 
