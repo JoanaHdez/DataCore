@@ -29,10 +29,7 @@
          LISTA DE SEGUIMIENTOS
     ====================================================== -->
 
-    <div
-        class="seguimiento-historial__lista"
-        id="seguimiento-historial-lista"
-    >
+    <div class="seguimiento-historial__lista" id="seguimiento-historial-lista">
 
         <!-- =================================================
              ESTADO VACÍO
