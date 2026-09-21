@@ -1,0 +1,130 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+
+   MODAL DE SEGUIMIENTO
+
+   FORMULARIO
+========================================================= */
+
+
+/* =========================================================
+   SECCIÓN
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-reporte__section {
+
+    padding-top: 20px;
+
+    border-top: 1px solid #e1e8ef;
+}
+
+
+/* =========================================================
+   ENCABEZADO DE LA SECCIÓN
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-reporte__section-header {
+
+    margin-bottom: 18px;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-reporte__section-header span {
+
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #1683c4;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-reporte__section-header h3 {
+
+    margin: 0;
+
+    color: #203d59;
+
+    font-size: 15px;
+    font-weight: 800;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   GRID DEL FORMULARIO
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-reporte-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 18px 20px;
+}
+
+
+/* =========================================================
+   CAMPOS DE ANCHO COMPLETO
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-reporte-grid
+.editar-reporte-campo--full {
+
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   TEXTAREA
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-reporte__textarea {
+
+    width: 100%;
+    min-height: 110px;
+
+    resize: vertical;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   ACCIONES DURANTE EDICIÓN
+
+   Actualmente contiene "Cancelar edición".
+========================================================= */
+
+#modal-seguimiento-reporte
+#seguimiento-acciones-edicion {
+
+    margin-top: 18px;
+}
+
+
+#modal-seguimiento-reporte
+#seguimiento-acciones-edicion:not([hidden]) {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+}

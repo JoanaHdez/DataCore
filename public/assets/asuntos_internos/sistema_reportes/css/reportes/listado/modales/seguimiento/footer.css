@@ -1,0 +1,47 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+
+   MODAL DE SEGUIMIENTO
+
+   FOOTER
+========================================================= */
+
+
+/* =========================================================
+   CONTENEDOR
+
+   El footer permanece fuera del área con scroll.
+========================================================= */
+
+#modal-seguimiento-reporte
+.modal-reporte__footer {
+
+    flex: 0 0 auto;
+
+    padding: 16px 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    background: #ffffff;
+
+    border-top: 1px solid #e1e8ef;
+}
+
+
+/* =========================================================
+   BOTONES
+
+   Evita que los botones se compriman cuando cambia
+   el ancho disponible del modal.
+========================================================= */
+
+#modal-seguimiento-reporte
+.modal-reporte__footer
+.modal-reporte__button {
+
+    flex-shrink: 0;
+}

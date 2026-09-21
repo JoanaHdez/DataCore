@@ -1,0 +1,452 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+
+   MODAL DE SEGUIMIENTO
+
+   HISTORIAL
+========================================================= */
+
+
+/* =========================================================
+   CONTENEDOR
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-historial {
+
+    margin-top: 26px;
+    padding-top: 22px;
+
+    border-top: 1px solid #e5ebf0;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-historial__header {
+
+    margin-bottom: 16px;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-historial__header > span {
+
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #1681c4;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-historial__header h3 {
+
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 15px;
+    font-weight: 800;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-historial__header p {
+
+    margin: 5px 0 0;
+
+    color: #8291a0;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   LISTA
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-historial__lista {
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+
+/* =========================================================
+   MOVIMIENTO
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-historial__item {
+
+    position: relative;
+
+    padding: 14px 16px 14px 20px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e9f0;
+    border-radius: 8px;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-historial__item::before {
+
+    content: '';
+
+    position: absolute;
+
+    top: 0;
+    bottom: 0;
+    left: 0;
+
+    width: 4px;
+
+    background: #1681c4;
+
+    border-radius: 8px 0 0 8px;
+}
+
+
+/* =========================================================
+   CABECERA DEL MOVIMIENTO
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-historial__item-header {
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 8px;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-historial__tipo {
+
+    color: #203d59;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-historial__fecha {
+
+    color: #8291a0;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-historial__estado {
+
+    display: inline-flex;
+    align-items: center;
+
+    margin-bottom: 8px;
+
+    padding: 4px 8px;
+
+    border-radius: 20px;
+
+    font-size: 8px;
+    font-weight: 800;
+}
+
+
+/* PENDIENTE */
+
+#modal-seguimiento-reporte
+.seguimiento-historial__estado.estado--pendiente {
+
+    color: #66788a;
+
+    background: #edf2f6;
+}
+
+
+/* EN PROCESO */
+
+#modal-seguimiento-reporte
+.seguimiento-historial__estado.estado--proceso {
+
+    color: #9a6800;
+
+    background: #fff6dc;
+}
+
+
+/* FINALIZADO */
+
+#modal-seguimiento-reporte
+.seguimiento-historial__estado.estado--finalizado {
+
+    color: #147a4e;
+
+    background: #eaf8f1;
+}
+
+
+/* =========================================================
+   OBSERVACIONES
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-historial__observaciones {
+
+    margin: 0;
+
+    color: #526779;
+
+    font-size: 10px;
+
+    line-height: 1.6;
+
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   CAMBIO DE SANCIÓN
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-historial__sancion {
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+
+    margin-top: 8px;
+    margin-bottom: 6px;
+
+    padding: 10px 12px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5ebf0;
+    border-radius: 7px;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-historial__sancion strong {
+
+    color: #173554;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    line-height: 1.4;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-historial__sancion span {
+
+    color: #526779;
+
+    font-size: 10px;
+    font-weight: 500;
+
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   METADATA
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-historial__metadata {
+
+    display: block;
+
+    margin-top: 7px;
+
+    color: #8291a0;
+
+    font-size: 8.5px;
+    font-weight: 500;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   ACCIONES
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-historial__acciones {
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 10px;
+}
+
+
+/* =========================================================
+   BOTÓN EDITAR
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-historial__editar {
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 28px;
+
+    padding: 6px 10px;
+
+    color: #1475bd;
+
+    background: #eef7fd;
+
+    border: 1px solid #c7e2f3;
+    border-radius: 6px;
+
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 800;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-historial__editar:hover {
+
+    color: #0f639f;
+
+    background: #e3f2fb;
+
+    border-color: #a9d4ee;
+}
+
+
+/* =========================================================
+   ESTADO VACÍO
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-historial__vacio {
+
+    min-height: 90px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    gap: 4px;
+
+    padding: 20px;
+
+    background: #f8fafc;
+
+    border: 1px dashed #d5dfe8;
+    border-radius: 8px;
+
+    text-align: center;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-historial__vacio strong {
+
+    color: #607487;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-historial__vacio span {
+
+    color: #96a3af;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   RESPONSIVE DEL MOVIMIENTO
+
+   El responsive general del modal permanece en
+   responsive.css. Aquí solamente protegemos la tarjeta.
+========================================================= */
+
+@media (max-width: 520px) {
+
+    #modal-seguimiento-reporte
+    .seguimiento-historial__item-header {
+
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 3px;
+    }
+
+
+    #modal-seguimiento-reporte
+    .seguimiento-historial__acciones {
+
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+
+    #modal-seguimiento-reporte
+    .seguimiento-historial__editar {
+
+        width: 100%;
+    }
+
+}

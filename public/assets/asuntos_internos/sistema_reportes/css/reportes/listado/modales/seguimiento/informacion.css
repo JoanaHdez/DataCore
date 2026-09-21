@@ -1,0 +1,118 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+
+   MODAL DE SEGUIMIENTO
+
+   INFORMACIÓN DEL REPORTE
+========================================================= */
+
+
+/* =========================================================
+   CONTENEDOR
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-reporte__info {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 12px;
+
+    margin-bottom: 24px;
+}
+
+
+/* =========================================================
+   TARJETA DE INFORMACIÓN
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-reporte__dato {
+
+    padding: 13px 15px;
+
+    background: #f5f8fb;
+
+    border: 1px solid #e1e8ef;
+    border-radius: 8px;
+}
+
+
+/* =========================================================
+   ETIQUETA
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-reporte__dato span {
+
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #8291a0;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   VALOR PRINCIPAL
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-reporte__dato strong {
+
+    color: #203d59;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   TEXTO AUXILIAR
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-reporte__dato small,
+
+#modal-seguimiento-reporte
+.seguimiento-reporte__dato p {
+
+    display: block;
+
+    margin-top: 7px;
+    margin-bottom: 0;
+
+    color: #718396;
+
+    font-size: 9px;
+    font-weight: 500;
+
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   SEPARACIÓN
+
+   Cuando existe un valor principal seguido de un aviso.
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-reporte__dato strong + small,
+
+#modal-seguimiento-reporte
+.seguimiento-reporte__dato strong + p {
+
+    margin-top: 7px;
+}

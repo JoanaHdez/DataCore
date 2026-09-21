@@ -1,0 +1,150 @@
+/* =========================================================
+   SISTEMA DE REPORTES - ASUNTOS INTERNOS
+
+   MODAL DE SEGUIMIENTO
+
+   RESPONSIVE
+========================================================= */
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 768px) {
+
+    /* -----------------------------------------------------
+       MODAL
+    ----------------------------------------------------- */
+
+    #modal-seguimiento-reporte
+    .modal-reporte__dialog--seguimiento {
+
+        width: calc(100% - 24px);
+
+        height: 92vh;
+        max-height: 92vh;
+
+        margin: 12px;
+    }
+
+
+    /* -----------------------------------------------------
+       INFORMACIÓN DEL REPORTE
+    ----------------------------------------------------- */
+
+    #modal-seguimiento-reporte
+    .seguimiento-reporte__info {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
+    /* -----------------------------------------------------
+       FORMULARIO
+    ----------------------------------------------------- */
+
+    #modal-seguimiento-reporte
+    .seguimiento-reporte-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    #modal-seguimiento-reporte
+    .seguimiento-reporte-grid
+    .editar-reporte-campo--full {
+
+        grid-column: auto;
+    }
+
+}
+
+
+/* =========================================================
+   MÓVIL
+========================================================= */
+
+@media (max-width: 520px) {
+
+    /* -----------------------------------------------------
+       MODAL
+    ----------------------------------------------------- */
+
+    #modal-seguimiento-reporte
+    .modal-reporte__dialog--seguimiento {
+
+        width: calc(100% - 16px);
+
+        height: 94vh;
+        max-height: 94vh;
+
+        margin: 8px;
+    }
+
+
+    /* -----------------------------------------------------
+       INFORMACIÓN DEL REPORTE
+    ----------------------------------------------------- */
+
+    #modal-seguimiento-reporte
+    .seguimiento-reporte__info {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    /* -----------------------------------------------------
+       BODY
+    ----------------------------------------------------- */
+
+    #modal-seguimiento-reporte
+    .modal-reporte__body--seguimiento {
+
+        padding: 18px 16px;
+    }
+
+
+    /* -----------------------------------------------------
+       FOOTER
+    ----------------------------------------------------- */
+
+    #modal-seguimiento-reporte
+    .modal-reporte__footer {
+
+        padding: 14px 16px;
+
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+
+    #modal-seguimiento-reporte
+    .modal-reporte__footer
+    .modal-reporte__button {
+
+        width: 100%;
+    }
+
+
+    /* -----------------------------------------------------
+       ACCIONES DE EDICIÓN
+    ----------------------------------------------------- */
+
+    #modal-seguimiento-reporte
+    #seguimiento-acciones-edicion:not([hidden]) {
+
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+
+    #modal-seguimiento-reporte
+    #seguimiento-acciones-edicion
+    .modal-reporte__button {
+
+        width: 100%;
+    }
+
+}

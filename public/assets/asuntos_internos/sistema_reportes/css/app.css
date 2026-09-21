@@ -59,6 +59,18 @@
 
 
 /* =========================================================
+   REPORTES - MODAL SEGUIMIENTO
+========================================================= */
+
+@import url("./reportes/listado/modales/seguimiento/modal.css");
+@import url("./reportes/listado/modales/seguimiento/informacion.css");
+@import url("./reportes/listado/modales/seguimiento/formulario.css");
+@import url("./reportes/listado/modales/seguimiento/historial.css");
+@import url("./reportes/listado/modales/seguimiento/footer.css");
+@import url("./reportes/listado/modales/seguimiento/responsive.css");
+
+
+/* =========================================================
    REPORTES - NUEVO
 ========================================================= */
 
