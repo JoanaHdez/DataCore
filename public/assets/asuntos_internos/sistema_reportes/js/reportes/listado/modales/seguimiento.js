@@ -39,8 +39,20 @@ import {
 import {
     prepararFormularioSeguimiento,
     actualizarInterfazModoFormulario,
+    cargarDatosSeguimiento,
+    iniciarEdicionSeguimiento,
+    inicializarCancelarEdicion,
+    cancelarEdicionSeguimiento,
 } from './seguimiento/formulario.js';
 
+import {
+    normalizarSeguimientos,
+} from './seguimiento/normalizadores.js';
+
+import {
+    abrirModalSeguimiento,
+    cerrarModalSeguimiento,
+} from './seguimiento/modal.js';
 
 /* =========================================================
    SISTEMA DE REPORTES - ASUNTOS INTERNOS
@@ -128,7 +140,8 @@ function inicializarSeguimientoReporte() {
 
     inicializarCancelarEdicion(
         modal,
-        formulario
+        formulario,
+        estadoSeguimiento
     );
 
 
@@ -250,8 +263,7 @@ function inicializarSeguimientoReporte() {
                 cargarDatosSeguimiento(
                     modal,
                     formulario,
-                    datos.reporte,
-                    estadoSeguimiento.sancionActual
+                    datos.reporte
                 );
 
 
@@ -354,7 +366,8 @@ function inicializarSeguimientoReporte() {
             iniciarEdicionSeguimiento(
                 modal,
                 formulario,
-                seguimiento
+                seguimiento,
+                estadoSeguimiento
             );
 
         }
@@ -1007,199 +1020,6 @@ async function procesarNuevoSeguimiento(
 
 
 /* =========================================================
-   INICIAR EDICIÓN
-========================================================= */
-
-function iniciarEdicionSeguimiento(
-    modal,
-    formulario,
-    seguimiento
-) {
-
-    const idSeguimiento =
-        Number(
-            seguimiento?.id_seguimiento
-            || 0
-        );
-
-
-    if (
-        !Number.isInteger(idSeguimiento)
-        || idSeguimiento <= 0
-    ) {
-
-        window.alert(
-            'No fue posible identificar el seguimiento que deseas editar.'
-        );
-
-        return;
-    }
-
-
-    /* =====================================================
-       ESTADO DE EDICIÓN
-    ===================================================== */
-
-    estadoSeguimiento.modoEdicion =
-        true;
-
-
-    estadoSeguimiento.idSeguimientoEdicion =
-        idSeguimiento;
-
-
-    estadoSeguimiento.seguimientoEdicion =
-        seguimiento;
-
-
-    /* =====================================================
-       ID EN EL FORMULARIO
-    ===================================================== */
-
-    const inputId =
-        formulario.querySelector(
-            '#seguimiento-id-edicion'
-        );
-
-
-    if (inputId) {
-
-        inputId.value =
-            String(
-                idSeguimiento
-            );
-    }
-
-
-    /* =====================================================
-       DATOS
-    ===================================================== */
-
-    asignarValor(
-        formulario,
-        '#seguimiento-fecha',
-        seguimiento.fecha
-    );
-
-
-    asignarValor(
-        formulario,
-        '#seguimiento-tipo',
-        seguimiento.tipo
-    );
-
-
-    asignarValor(
-        formulario,
-        '#seguimiento-estado',
-        seguimiento.estado
-    );
-
-
-    asignarValor(
-        formulario,
-        '#seguimiento-observaciones',
-        seguimiento.observaciones
-    );
-
-
-    /* =====================================================
-       FOLIO IP ACTUAL DEL REPORTE
-    ===================================================== */
-
-    asignarValor(
-        formulario,
-        '#seguimiento-folio-ip',
-        estadoSeguimiento
-            .reporte
-            ?.folio_ip
-        || ''
-    );
-
-
-    /* =====================================================
-       SANCIÓN DEL SEGUIMIENTO
-    ===================================================== */
-
-    const sancion =
-        seguimiento.sancion;
-
-
-    const selectSancion =
-        modal.querySelector(
-            '#seguimiento-sancion'
-        );
-
-
-    const inputOtro =
-        modal.querySelector(
-            '#seguimiento-sancion-otro'
-        );
-
-
-    if (selectSancion) {
-
-        selectSancion.value =
-            sancion?.tipo
-            || '';
-    }
-
-
-    if (inputOtro) {
-
-        inputOtro.value =
-            sancion?.tipo === 'Otro'
-                ? sancion.descripcion_otro
-                : '';
-    }
-
-
-    actualizarCampoOtroSancion(
-        modal
-    );
-
-
-    if (
-        sancion?.tipo === 'Otro'
-        && inputOtro
-    ) {
-
-        inputOtro.value =
-            sancion.descripcion_otro
-            || '';
-    }
-
-
-    actualizarInterfazModoFormulario(
-        modal,
-        estadoSeguimiento.modoEdicion
-    );
-
-
-    /* =====================================================
-       SUBIR AL FORMULARIO
-    ===================================================== */
-
-    const seccion =
-        modal.querySelector(
-            '.seguimiento-reporte__section'
-        );
-
-
-    if (seccion) {
-
-        seccion.scrollIntoView({
-            behavior:
-                'smooth',
-
-            block:
-                'start',
-        });
-    }
-
-}
-
-/* =========================================================
    PROCESAR EDICIÓN
 ========================================================= */
 
@@ -1796,74 +1616,6 @@ async function procesarEdicionSeguimiento(
 
 
 /* =========================================================
-   CANCELAR EDICIÓN
-========================================================= */
-
-function inicializarCancelarEdicion(
-    modal,
-    formulario
-) {
-
-    const boton =
-        modal.querySelector(
-            '#seguimiento-cancelar-edicion'
-        );
-
-
-    if (!boton) {
-        return;
-    }
-
-
-    boton.addEventListener(
-        'click',
-        () => {
-
-            cancelarEdicionSeguimiento(
-                modal,
-                formulario
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   CANCELAR EDICIÓN
-========================================================= */
-
-function cancelarEdicionSeguimiento(
-    modal,
-    formulario
-) {
-
-    limpiarModoEdicion();
-
-
-    prepararFormularioSeguimiento(
-        formulario,
-        estadoSeguimiento.reporte
-            ?.estado_actual
-        || 'Pendiente'
-    );
-
-
-    actualizarCampoOtroSancion(
-        modal
-    );
-
-
-    actualizarInterfazModoFormulario(
-        modal,
-        estadoSeguimiento.modoEdicion
-    );
-
-}
-
-
-/* =========================================================
    LIMPIAR MODO EDICIÓN
 ========================================================= */
 
@@ -1998,218 +1750,6 @@ async function refrescarSeguimientoCompleto(
 
 }
 
-/* =========================================================
-   NORMALIZAR HISTORIAL
-========================================================= */
-
-function normalizarSeguimientos(
-    seguimientos
-) {
-
-    if (
-        !Array.isArray(
-            seguimientos
-        )
-    ) {
-        return [];
-    }
-
-
-    return seguimientos.map(
-        (seguimiento) => ({
-
-            id_seguimiento:
-                Number(
-                    seguimiento.id_seguimiento
-                    || 0
-                ),
-
-            fecha:
-                String(
-                    seguimiento.fecha
-                    || ''
-                ).trim(),
-
-            tipo:
-                String(
-                    seguimiento.tipo
-                    || ''
-                ).trim(),
-
-            estado:
-                String(
-                    seguimiento.estado_resultante
-                    || seguimiento.estado
-                    || ''
-                ).trim(),
-
-            observaciones:
-                String(
-                    seguimiento.observaciones
-                    || ''
-                ).trim(),
-
-            created_by:
-                Number(
-                    seguimiento.created_by
-                    || 0
-                ),
-
-            created_at:
-                String(
-                    seguimiento.created_at
-                    || ''
-                ).trim(),
-
-            sancion:
-                normalizarSancion(
-                    seguimiento.sancion
-                ),
-
-        })
-    );
-
-}
-
-
-/* =========================================================
-   DATOS DEL REPORTE
-========================================================= */
-
-function cargarDatosSeguimiento(
-    modal,
-    formulario,
-    reporte,
-    sancionActual
-) {
-
-    /* =====================================================
-       FOLIO
-    ===================================================== */
-
-    const folio =
-        String(
-            reporte.folio
-            || ''
-        ).trim();
-
-
-    /* =====================================================
-       NOMENCLATURA
-    ===================================================== */
-
-    const nomenclatura =
-        String(
-            reporte.nomenclatura
-            || ''
-        ).trim();
-
-
-    /* =====================================================
-       FOLIO IP
-    ===================================================== */
-
-    const folioIp =
-        String(
-            reporte.folio_ip
-            || ''
-        ).trim();
-
-
-    /* =====================================================
-       ESTADO
-    ===================================================== */
-
-    const estado =
-        String(
-            reporte.estado_actual
-            || 'Pendiente'
-        ).trim();
-
-
-    /* =====================================================
-       TÍTULO
-    ===================================================== */
-
-    const titulo =
-        modal.querySelector(
-            '#modal-seguimiento-titulo'
-        );
-
-
-    if (titulo) {
-
-        titulo.textContent =
-            folio
-                ? `Seguimiento ${folio}`
-                : 'Seguimiento';
-    }
-
-
-    /* =====================================================
-       INFORMACIÓN SUPERIOR
-    ===================================================== */
-
-    asignarTexto(
-        modal,
-        '#seguimiento-folio',
-        folio
-    );
-
-
-    asignarTexto(
-        modal,
-        '#seguimiento-nomenclatura',
-        nomenclatura
-    );
-
-
-    asignarTexto(
-        modal,
-        '#seguimiento-estado-actual',
-        estado
-    );
-
-
-    /* =====================================================
-       PREPARAR FORMULARIO
-    ===================================================== */
-
-    prepararFormularioSeguimiento(
-        formulario,
-        estado
-    );
-
-
-    /* =====================================================
-       FOLIO IP DEL REPORTE
-
-       Se asigna después del reset del formulario para que
-       no se pierda el valor existente.
-    ===================================================== */
-
-    const inputFolioIp =
-        formulario.querySelector(
-            '#seguimiento-folio-ip'
-        );
-
-
-    if (inputFolioIp) {
-
-        inputFolioIp.value =
-            folioIp;
-    }
-
-
-    /* =====================================================
-       CAMPO OTRO DE SANCIÓN
-    ===================================================== */
-
-    actualizarCampoOtroSancion(
-        modal
-    );
-}
-
 
 /* =========================================================
    ACTUALIZAR ESTADO LISTADO
@@ -2295,70 +1835,6 @@ function actualizarListadoRelacionado() {
                     true,
             }
         )
-    );
-
-}
-
-
-/* =========================================================
-   MODAL
-========================================================= */
-
-function abrirModalSeguimiento(
-    modal
-) {
-
-    modal.classList.add(
-        'modal-reporte--visible'
-    );
-
-
-    modal.setAttribute(
-        'aria-hidden',
-        'false'
-    );
-
-
-    document.body.classList.add(
-        'modal-abierto'
-    );
-
-}
-
-
-function cerrarModalSeguimiento(
-    modal
-) {
-
-    const activo =
-        document.activeElement;
-
-
-    if (
-        activo
-        && modal.contains(
-            activo
-        )
-    ) {
-
-        activo.blur();
-
-    }
-
-
-    modal.classList.remove(
-        'modal-reporte--visible'
-    );
-
-
-    modal.setAttribute(
-        'aria-hidden',
-        'true'
-    );
-
-
-    document.body.classList.remove(
-        'modal-abierto'
     );
 
 }
