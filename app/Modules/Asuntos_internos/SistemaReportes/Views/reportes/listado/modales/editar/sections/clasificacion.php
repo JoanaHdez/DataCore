@@ -496,12 +496,26 @@
 
                 </label>
 
+
+                <!-- DESISTIR -->
+
+                <label class="editar-report-option">
+
+                    <input type="checkbox" id="editar-desistir" name="desistir" value="1">
+
+                    <span>
+                        Desistir
+                    </span>
+
+                </label>
+
             </div>
 
 
             <small class="editar-reporte-campo__help">
                 “Sin sanciones” indica que todavía no se ha determinado una sanción.
                 “Baja voluntaria” corresponde a una baja definitiva.
+                “Desistir” indica que se da por concluido el seguimiento por desistimiento.
             </small>
 
         </div>

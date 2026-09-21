@@ -506,6 +506,17 @@
 
                     </label>
 
+
+                    <!-- =============================================
+                         DESISTIR
+                    ============================================== -->
+
+
+                    <label class="report-option">
+                        <input type="checkbox" id="desistir" name="desistir" value="1">
+                        Desistir
+                    </label>
+
                 </div>
 
 

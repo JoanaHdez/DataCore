@@ -73,6 +73,8 @@ class ReporteModel extends Model
     'estado_actual',
     'sin_sanciones',
     'baja_voluntaria',
+    'desistir',
+    
     'observaciones',
 
     'modalidad_unidad',

@@ -1845,6 +1845,15 @@ export function cargarClasificacionEditar(
 
 
     /* =====================================================
+    DESISTIR
+    ===================================================== */
+
+    cargarDesistirEditar(
+        modal,
+        reporte
+    );
+
+    /* =====================================================
        QUIÉN EMITE LA RESOLUCIÓN
     ===================================================== */
 
@@ -1864,6 +1873,44 @@ export function cargarClasificacionEditar(
         '#editar-resolucion',
         reporte.resolucion
     );
+}
+
+
+/* =========================================================
+   CARGAR DESISTIR
+========================================================= */
+
+function cargarDesistirEditar(
+    modal,
+    reporte
+) {
+
+    if (
+        !modal
+        || !reporte
+    ) {
+        return;
+    }
+
+
+    const desistir =
+        modal.querySelector(
+            '#editar-desistir'
+        );
+
+
+    if (
+        !desistir
+    ) {
+        return;
+    }
+
+
+    desistir.checked =
+        Number(
+            reporte.desistir
+            ?? 0
+        ) === 1;
 }
 
 

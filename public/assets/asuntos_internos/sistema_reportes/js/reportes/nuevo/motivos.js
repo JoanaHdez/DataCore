@@ -68,6 +68,11 @@ function inicializarMotivos() {
         );
 
 
+    const checkboxDesistir =
+        document.querySelector(
+            '#desistir'
+        );
+
     const selectEstado =
         document.querySelector(
             '#estado_actual'
@@ -205,7 +210,7 @@ function inicializarMotivos() {
 
 
     /* =====================================================
-       MOSTRAR RESULTADOS
+    MOSTRAR RESULTADOS
     ===================================================== */
 
     function mostrarResultados(
@@ -213,10 +218,10 @@ function inicializarMotivos() {
     ) {
 
         /*
-         * Si está marcada la opción
-         * "Sin sanciones", no permitimos
-         * utilizar el catálogo.
-         */
+        * Cuando alguna situación especial está activa,
+        * no permitimos utilizar el catálogo de motivos.
+        */
+
         if (
             (
                 checkboxSinSanciones
@@ -225,6 +230,10 @@ function inicializarMotivos() {
             || (
                 checkboxBajaVoluntaria
                 && checkboxBajaVoluntaria.checked
+            )
+            || (
+                checkboxDesistir
+                && checkboxDesistir.checked
             )
         ) {
 
@@ -241,9 +250,10 @@ function inicializarMotivos() {
 
 
         /*
-         * No mostramos los 54 motivos cuando
-         * el campo está vacío.
-         */
+        * No mostramos todos los motivos
+        * cuando el campo está vacío.
+        */
+
         if (
             busqueda === ''
         ) {
@@ -602,7 +612,12 @@ function inicializarMotivos() {
                 checkboxBajaVoluntaria
                 && checkboxBajaVoluntaria.checked
             )
+            || (
+                checkboxDesistir
+                && checkboxDesistir.checked
+            )
         ) {
+
             return;
         }
 
@@ -632,6 +647,7 @@ function inicializarMotivos() {
             id === ''
             || texto === ''
         ) {
+
             return;
         }
 
@@ -641,6 +657,7 @@ function inicializarMotivos() {
                 id
             )
         ) {
+
             return;
         }
 
@@ -665,7 +682,6 @@ function inicializarMotivos() {
 
         renderizarMotivos();
     }
-
 
     /* =====================================================
        QUITAR MOTIVO
@@ -1151,7 +1167,7 @@ function inicializarMotivos() {
 
 
     /* =========================================================
-       SIN SANCIONES
+    SIN SANCIONES
     ========================================================= */
 
     function actualizarSinSanciones() {
@@ -1159,6 +1175,7 @@ function inicializarMotivos() {
         if (
             !checkboxSinSanciones
         ) {
+
             return;
         }
 
@@ -1186,16 +1203,30 @@ function inicializarMotivos() {
 
 
         /* =====================================================
-           DESHABILITAR / HABILITAR CATÁLOGO
+        NO PUEDE COEXISTIR CON DESISTIR
+        ===================================================== */
+
+        if (
+            sinSanciones
+            && checkboxDesistir
+            && checkboxDesistir.checked
+        ) {
+
+            checkboxDesistir.checked =
+                false;
+
+
+            actualizarDesistir();
+        }
+
+
+        /* =====================================================
+        DESHABILITAR / HABILITAR CATÁLOGO
         ===================================================== */
 
         buscador.disabled =
             sinSanciones;
 
-
-        /* =====================================================
-           MARCAR VISUALMENTE
-        ===================================================== */
 
         buscador.classList.toggle(
             'report-input--disabled',
@@ -1208,7 +1239,7 @@ function inicializarMotivos() {
         ) {
 
             /* =================================================
-               LIMPIAR BÚSQUEDA
+            LIMPIAR BÚSQUEDA
             ================================================= */
 
             buscador.value =
@@ -1216,14 +1247,14 @@ function inicializarMotivos() {
 
 
             /* =================================================
-               CERRAR RESULTADOS
+            CERRAR RESULTADOS
             ================================================= */
 
             cerrarResultados();
 
 
             /* =================================================
-               OCULTAR TODAS LAS OPCIONES
+            OCULTAR TODAS LAS OPCIONES
             ================================================= */
 
             opciones.forEach(
@@ -1236,12 +1267,7 @@ function inicializarMotivos() {
 
 
             /* =================================================
-               ELIMINAR MOTIVOS YA SELECCIONADOS
-
-               Esto elimina también:
-               - filas de tabla
-               - folios de sanción
-               - inputs hidden
+            ELIMINAR MOTIVOS YA SELECCIONADOS
             ================================================= */
 
             motivosSeleccionados.clear();
@@ -1255,13 +1281,30 @@ function inicializarMotivos() {
 
 
         /* =====================================================
-           VOLVER A HABILITAR
+        VOLVER A HABILITAR
 
-           No restauramos selecciones anteriores.
+        Solo si Baja voluntaria y Desistir tampoco están activos.
         ===================================================== */
 
+        const bloqueadoPorOtraSituacion =
+            (
+                checkboxBajaVoluntaria
+                && checkboxBajaVoluntaria.checked
+            )
+            || (
+                checkboxDesistir
+                && checkboxDesistir.checked
+            );
+
+
         buscador.disabled =
-            false;
+            bloqueadoPorOtraSituacion;
+
+
+        buscador.classList.toggle(
+            'report-input--disabled',
+            bloqueadoPorOtraSituacion
+        );
     }
 
 
@@ -1274,6 +1317,7 @@ function inicializarMotivos() {
         if (
             !checkboxBajaVoluntaria
         ) {
+
             return;
         }
 
@@ -1307,7 +1351,7 @@ function inicializarMotivos() {
 
 
         /* =====================================================
-           NO PUEDE COEXISTIR CON SIN SANCIONES
+        NO PUEDE COEXISTIR CON SIN SANCIONES
         ===================================================== */
 
         if (
@@ -1322,7 +1366,25 @@ function inicializarMotivos() {
 
 
         /* =====================================================
-           ESTADO DEL REPORTE
+        NO PUEDE COEXISTIR CON DESISTIR
+        ===================================================== */
+
+        if (
+            bajaVoluntaria
+            && checkboxDesistir
+            && checkboxDesistir.checked
+        ) {
+
+            checkboxDesistir.checked =
+                false;
+
+
+            actualizarDesistir();
+        }
+
+
+        /* =====================================================
+        ESTADO DEL REPORTE
         ===================================================== */
 
         if (
@@ -1330,7 +1392,7 @@ function inicializarMotivos() {
         ) {
 
             /* =================================================
-               BAJA VOLUNTARIA ACTIVADA
+            BAJA VOLUNTARIA ACTIVADA
             ================================================= */
 
             if (
@@ -1338,11 +1400,8 @@ function inicializarMotivos() {
             ) {
 
                 /*
-                 * Guardamos el estado anterior en el checkbox.
-                 *
-                 * Esto evita perderlo cuando cambiamos
-                 * #estado_actual a Finalizado.
-                 */
+                * Guardamos el estado anterior.
+                */
 
                 if (
                     !checkboxBajaVoluntaria
@@ -1367,16 +1426,12 @@ function inicializarMotivos() {
 
 
                 /* =============================================
-                   FORZAR FINALIZADO
+                FORZAR FINALIZADO
                 ============================================== */
 
                 inputEstado.value =
                     'Finalizado';
 
-
-                /* =============================================
-                   TEXTO VISIBLE
-                ============================================== */
 
                 if (
                     textoEstado
@@ -1388,7 +1443,7 @@ function inicializarMotivos() {
 
 
                 /* =============================================
-                   BLOQUEAR CATÁLOGO
+                BLOQUEAR CATÁLOGO
                 ============================================== */
 
                 if (
@@ -1411,10 +1466,6 @@ function inicializarMotivos() {
                 }
 
 
-                /* =============================================
-                   CERRAR RESULTADOS
-                ============================================== */
-
                 if (
                     resultadosEstado
                 ) {
@@ -1424,16 +1475,11 @@ function inicializarMotivos() {
                 }
 
 
-                /* =============================================
-                   NOTIFICAR CAMBIO
-                ============================================== */
-
                 inputEstado.dispatchEvent(
                     new Event(
                         'change',
                         {
-                            bubbles:
-                                true,
+                            bubbles: true,
                         }
                     )
                 );
@@ -1441,7 +1487,7 @@ function inicializarMotivos() {
             } else {
 
                 /* =================================================
-                   BAJA VOLUNTARIA DESACTIVADA
+                BAJA VOLUNTARIA DESACTIVADA
                 ================================================= */
 
                 const estadoAnterior =
@@ -1453,12 +1499,18 @@ function inicializarMotivos() {
                     ).trim();
 
 
-                /* =============================================
-                   RESTAURAR ESTADO ANTERIOR
-                ============================================== */
+                /*
+                * Solo restauramos si Desistir no está activo.
+                */
+
+                const desistirActivo =
+                    checkboxDesistir
+                    && checkboxDesistir.checked;
+
 
                 if (
                     estadoAnterior !== ''
+                    && !desistirActivo
                 ) {
 
                     inputEstado.value =
@@ -1472,16 +1524,16 @@ function inicializarMotivos() {
                         textoEstado.textContent =
                             estadoAnterior;
                     }
-
-
-                    delete checkboxBajaVoluntaria
-                        .dataset
-                        .estadoAnterior;
                 }
 
 
+                delete checkboxBajaVoluntaria
+                    .dataset
+                    .estadoAnterior;
+
+
                 /* =============================================
-                   VOLVER A HABILITAR CATÁLOGO
+                HABILITAR ESTADO SOLO SI DESISTIR NO ESTÁ ACTIVO
                 ============================================== */
 
                 if (
@@ -1489,20 +1541,17 @@ function inicializarMotivos() {
                 ) {
 
                     botonEstado.disabled =
-                        false;
+                        Boolean(
+                            desistirActivo
+                        );
                 }
 
-
-                /* =============================================
-                   NOTIFICAR CAMBIO
-                ============================================== */
 
                 inputEstado.dispatchEvent(
                     new Event(
                         'change',
                         {
-                            bubbles:
-                                true,
+                            bubbles: true,
                         }
                     )
                 );
@@ -1511,45 +1560,49 @@ function inicializarMotivos() {
 
 
         /* =====================================================
-           CATÁLOGO DE MOTIVOS
+        CATÁLOGO DE MOTIVOS
         ===================================================== */
 
+        const desistirActivo =
+            checkboxDesistir
+            && checkboxDesistir.checked;
+
+
+        const sinSancionesActivo =
+            checkboxSinSanciones
+            && checkboxSinSanciones.checked;
+
+
+        const bloquearMotivos =
+            bajaVoluntaria
+            || desistirActivo
+            || sinSancionesActivo;
+
+
         buscador.disabled =
-            bajaVoluntaria;
+            bloquearMotivos;
 
 
         buscador.classList.toggle(
             'report-input--disabled',
-            bajaVoluntaria
+            bloquearMotivos
         );
 
 
         /* =====================================================
-           BAJA VOLUNTARIA ACTIVA
+        BAJA VOLUNTARIA ACTIVA
         ===================================================== */
 
         if (
             bajaVoluntaria
         ) {
 
-            /* =================================================
-               LIMPIAR BÚSQUEDA
-            ================================================= */
-
             buscador.value =
                 '';
 
 
-            /* =================================================
-               CERRAR RESULTADOS
-            ================================================= */
-
             cerrarResultados();
 
-
-            /* =================================================
-               OCULTAR OPCIONES
-            ================================================= */
 
             opciones.forEach(
                 (opcion) => {
@@ -1560,32 +1613,332 @@ function inicializarMotivos() {
             );
 
 
-            /* =================================================
-               ELIMINAR MOTIVOS SELECCIONADOS
-            ================================================= */
-
             motivosSeleccionados.clear();
 
 
-            /* =================================================
-               ACTUALIZAR TABLA / INPUTS
-            ================================================= */
-
             renderizarMotivos();
+        }
+    }
 
+
+    /* =========================================================
+    DESISTIR
+    ========================================================= */
+
+    function actualizarDesistir() {
+
+        if (
+            !checkboxDesistir
+        ) {
 
             return;
         }
 
 
+        const desistir =
+            checkboxDesistir.checked;
+
+
+        const inputEstado =
+            document.querySelector(
+                '#estado_actual'
+            );
+
+
+        const textoEstado =
+            document.querySelector(
+                '#estado-select-texto'
+            );
+
+
+        const botonEstado =
+            document.querySelector(
+                '#estado-select'
+            );
+
+
+        const resultadosEstado =
+            document.querySelector(
+                '#estado-resultados'
+            );
+
+
         /* =====================================================
-           BAJA VOLUNTARIA DESACTIVADA
+        NO PUEDE COEXISTIR CON SIN SANCIONES
         ===================================================== */
 
-        buscador.disabled =
-            false;
-    }
+        if (
+            desistir
+            && checkboxSinSanciones
+            && checkboxSinSanciones.checked
+        ) {
 
+            checkboxSinSanciones.checked =
+                false;
+        }
+
+
+        /* =====================================================
+        NO PUEDE COEXISTIR CON BAJA VOLUNTARIA
+        ===================================================== */
+
+        if (
+            desistir
+            && checkboxBajaVoluntaria
+            && checkboxBajaVoluntaria.checked
+        ) {
+
+            checkboxBajaVoluntaria.checked =
+                false;
+
+
+            actualizarBajaVoluntaria();
+        }
+
+
+        /* =====================================================
+        ESTADO DEL REPORTE
+        ===================================================== */
+
+        if (
+            inputEstado
+        ) {
+
+            /* =================================================
+            DESISTIR ACTIVADO
+            ================================================= */
+
+            if (
+                desistir
+            ) {
+
+                /*
+                * Conservamos el estado que existía antes
+                * de marcar Desistir.
+                */
+
+                if (
+                    !checkboxDesistir
+                        .dataset
+                        .estadoAnterior
+                ) {
+
+                    const estadoAnterior =
+                        String(
+                            inputEstado.value
+                            || 'Pendiente'
+                        ).trim();
+
+
+                    checkboxDesistir
+                        .dataset
+                        .estadoAnterior =
+                        estadoAnterior !== 'Finalizado'
+                            ? estadoAnterior
+                            : 'Pendiente';
+                }
+
+
+                /* =============================================
+                FORZAR FINALIZADO
+                ============================================== */
+
+                inputEstado.value =
+                    'Finalizado';
+
+
+                if (
+                    textoEstado
+                ) {
+
+                    textoEstado.textContent =
+                        'Finalizado';
+                }
+
+
+                /* =============================================
+                BLOQUEAR CATÁLOGO DE ESTADO
+                ============================================== */
+
+                if (
+                    botonEstado
+                ) {
+
+                    botonEstado.disabled =
+                        true;
+
+
+                    botonEstado.classList.remove(
+                        'estado-select--activo'
+                    );
+
+
+                    botonEstado.setAttribute(
+                        'aria-expanded',
+                        'false'
+                    );
+                }
+
+
+                if (
+                    resultadosEstado
+                ) {
+
+                    resultadosEstado.hidden =
+                        true;
+                }
+
+
+                inputEstado.dispatchEvent(
+                    new Event(
+                        'change',
+                        {
+                            bubbles: true,
+                        }
+                    )
+                );
+
+            } else {
+
+                /* =================================================
+                DESISTIR DESACTIVADO
+                ================================================= */
+
+                const estadoAnterior =
+                    String(
+                        checkboxDesistir
+                            .dataset
+                            .estadoAnterior
+                        || ''
+                    ).trim();
+
+
+                const bajaVoluntariaActiva =
+                    checkboxBajaVoluntaria
+                    && checkboxBajaVoluntaria.checked;
+
+
+                /*
+                * Restauramos únicamente cuando Baja voluntaria
+                * tampoco está obligando el estado Finalizado.
+                */
+
+                if (
+                    estadoAnterior !== ''
+                    && !bajaVoluntariaActiva
+                ) {
+
+                    inputEstado.value =
+                        estadoAnterior;
+
+
+                    if (
+                        textoEstado
+                    ) {
+
+                        textoEstado.textContent =
+                            estadoAnterior;
+                    }
+                }
+
+
+                delete checkboxDesistir
+                    .dataset
+                    .estadoAnterior;
+
+
+                /* =============================================
+                RESTAURAR CATÁLOGO DE ESTADO
+                ============================================== */
+
+                if (
+                    botonEstado
+                ) {
+
+                    botonEstado.disabled =
+                        Boolean(
+                            bajaVoluntariaActiva
+                        );
+                }
+
+
+                inputEstado.dispatchEvent(
+                    new Event(
+                        'change',
+                        {
+                            bubbles: true,
+                        }
+                    )
+                );
+            }
+        }
+
+
+        /* =====================================================
+        MOTIVOS
+        ===================================================== */
+
+        const bajaVoluntariaActiva =
+            checkboxBajaVoluntaria
+            && checkboxBajaVoluntaria.checked;
+
+
+        const sinSancionesActivo =
+            checkboxSinSanciones
+            && checkboxSinSanciones.checked;
+
+
+        const bloquearMotivos =
+            desistir
+            || bajaVoluntariaActiva
+            || sinSancionesActivo;
+
+
+        buscador.disabled =
+            bloquearMotivos;
+
+
+        buscador.classList.toggle(
+            'report-input--disabled',
+            bloquearMotivos
+        );
+
+
+        /* =====================================================
+        DESISTIR ACTIVO
+        ===================================================== */
+
+        if (
+            desistir
+        ) {
+
+            buscador.value =
+                '';
+
+
+            cerrarResultados();
+
+
+            opciones.forEach(
+                (opcion) => {
+
+                    opcion.hidden =
+                        true;
+                }
+            );
+
+
+            /*
+            * Un desistimiento no conserva motivos/sanciones
+            * anteriores.
+            */
+
+            motivosSeleccionados.clear();
+
+
+            renderizarMotivos();
+        }
+    }
 
     /* =========================================================
     EVENTO BAJA VOLUNTARIA
@@ -1617,6 +1970,21 @@ function inicializarMotivos() {
     }
 
 
+    /* =========================================================
+    EVENTO DESISTIR
+    ========================================================= */
+
+    if (
+        checkboxDesistir
+    ) {
+
+        checkboxDesistir.addEventListener(
+            'change',
+            actualizarDesistir
+        );
+    }
+
+
     /* =====================================================
     CATÁLOGO DE ESTADO
     ===================================================== */
@@ -1631,4 +1999,7 @@ function inicializarMotivos() {
     actualizarSinSanciones();
 
     actualizarBajaVoluntaria();
+
+    actualizarDesistir();
+
 }

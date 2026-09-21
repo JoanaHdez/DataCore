@@ -1070,11 +1070,98 @@ class ReporteService
                 );
             }
         }
+
+
+        /* =========================================================
+        SITUACIÓN DE LA SANCIÓN
+        ========================================================= */
+
+        $sinSanciones =
+            (int) (
+                $datos['sin_sanciones']
+                ?? 0
+            ) === 1;
+
+
+        $bajaVoluntaria =
+            (int) (
+                $datos['baja_voluntaria']
+                ?? 0
+            ) === 1;
+
+
+        $desistir =
+            (int) (
+                $datos['desistir']
+                ?? 0
+            ) === 1;
+
+
+        /* =========================================================
+        VALIDAR EXCLUSIÓN ENTRE OPCIONES
+        ========================================================= */
+
+        $situacionesActivas =
+            (
+                $sinSanciones
+                    ? 1
+                    : 0
+            )
+            +
+            (
+                $bajaVoluntaria
+                    ? 1
+                    : 0
+            )
+            +
+            (
+                $desistir
+                    ? 1
+                    : 0
+            );
+
+
+        if (
+            $situacionesActivas > 1
+        ) {
+
+            throw new \InvalidArgumentException(
+                'Sin sanciones, Baja voluntaria y Desistir no pueden seleccionarse al mismo tiempo.'
+            );
+        }
+
+
+        /* =========================================================
+        ESTADO ACTUAL
+        ========================================================= */
+
+        $estadoActual =
+            $this->normalizarEstadoActual(
+                $datos['estado_actual']
+                ?? 'Pendiente'
+            );
+
+
+        /*
+        * Baja voluntaria y Desistir
+        * siempre implican un reporte finalizado.
+        */
+
+        if (
+            $bajaVoluntaria
+            || $desistir
+        ) {
+
+            $estadoActual =
+                'Finalizado';
+        }
+
+
         return [
 
             /* =================================================
-                DATOS DEL REPORTE
-                ================================================= */
+            DATOS DEL REPORTE
+            ================================================= */
 
             'fecha_registro' =>
             $this->normalizarFecha(
@@ -1098,6 +1185,7 @@ class ReporteService
                 $datos['folio_imp']
                     ?? null
             ),
+
 
             'fecha_queja' =>
             $this->normalizarFecha(
@@ -1132,8 +1220,8 @@ class ReporteService
 
 
             /* =================================================
-                DATOS DE LOS HECHOS
-                ================================================= */
+            DATOS DE LOS HECHOS
+            ================================================= */
 
             'fecha_hechos' =>
             $this->normalizarFecha(
@@ -1165,8 +1253,8 @@ class ReporteService
 
 
             /* =================================================
-                UBICACIÓN
-                ================================================= */
+            UBICACIÓN
+            ================================================= */
 
             'calle' =>
             $this->valorRequerido(
@@ -1270,8 +1358,8 @@ class ReporteService
 
 
             /* =================================================
-                QUEJOSO
-                ================================================= */
+            QUEJOSO
+            ================================================= */
 
             'es_anonimo' =>
             $esAnonimo
@@ -1340,6 +1428,7 @@ class ReporteService
                         ?? null
                 ),
 
+
             'direccion_quejoso' =>
             $esAnonimo
                 ? null
@@ -1347,6 +1436,7 @@ class ReporteService
                     $datos['direccion_quejoso']
                         ?? null
                 ),
+
 
             'canalizacion_area' =>
             $this->valorNullable(
@@ -1362,9 +1452,10 @@ class ReporteService
                     ?? null
             ),
 
+
             /* =================================================
-                CLASIFICACIÓN
-                ================================================= */
+            CLASIFICACIÓN
+            ================================================= */
 
             'clasificacion' =>
             $this->valorRequerido(
@@ -1411,34 +1502,35 @@ class ReporteService
 
 
             'estado_actual' =>
-            $this->normalizarEstadoActual(
-                $datos['estado_actual']
-                    ?? 'Pendiente'
-            ),
+            $estadoActual,
 
 
             /* =================================================
-                SIN SANCIONES
+            SIN SANCIONES
             ================================================= */
 
             'sin_sanciones' =>
-            (int) (
-                $datos['sin_sanciones']
-                ?? 0
-            ) === 1
+            $sinSanciones
                 ? 1
                 : 0,
 
 
             /* =================================================
-                BAJA VOLUNTARIA
+            BAJA VOLUNTARIA
             ================================================= */
 
             'baja_voluntaria' =>
-            (int) (
-                $datos['baja_voluntaria']
-                ?? 0
-            ) === 1
+            $bajaVoluntaria
+                ? 1
+                : 0,
+
+
+            /* =================================================
+            DESISTIR
+            ================================================= */
+
+            'desistir' =>
+            $desistir
                 ? 1
                 : 0,
 
@@ -1451,8 +1543,8 @@ class ReporteService
 
 
             /* =================================================
-                MODALIDAD DE UNIDAD
-                ================================================= */
+            MODALIDAD DE UNIDAD
+            ================================================= */
 
             'modalidad_unidad' =>
             $this->normalizarModalidadUnidad(
@@ -1462,8 +1554,8 @@ class ReporteService
 
 
             /* =================================================
-                AUDITORÍA
-                ================================================= */
+            AUDITORÍA
+            ================================================= */
 
             'created_by' =>
             $idUsuario,

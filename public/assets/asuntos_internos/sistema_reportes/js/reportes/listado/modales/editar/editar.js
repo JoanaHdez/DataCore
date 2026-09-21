@@ -630,7 +630,7 @@ export function inicializarEditarReporte() {
 
 
             /* =====================================================
-               SITUACIÓN DE LA SANCIÓN
+            SITUACIÓN DE LA SANCIÓN
             ===================================================== */
 
             const sinSanciones =
@@ -645,6 +645,16 @@ export function inicializarEditarReporte() {
                 );
 
 
+            const desistir =
+                modal.querySelector(
+                    '#editar-desistir'
+                );
+
+
+            /* =====================================================
+            SIN SANCIONES
+            ===================================================== */
+
             datos.set(
                 'sin_sanciones',
                 sinSanciones?.checked
@@ -653,9 +663,25 @@ export function inicializarEditarReporte() {
             );
 
 
+            /* =====================================================
+            BAJA VOLUNTARIA
+            ===================================================== */
+
             datos.set(
                 'baja_voluntaria',
                 bajaVoluntaria?.checked
+                    ? '1'
+                    : '0'
+            );
+
+
+            /* =====================================================
+            DESISTIR
+            ===================================================== */
+
+            datos.set(
+                'desistir',
+                desistir?.checked
                     ? '1'
                     : '0'
             );
@@ -2199,7 +2225,7 @@ function construirReporteEditar(
 
 
         /* =====================================================
-           SITUACIÓN DE LA SANCIÓN
+        SITUACIÓN DE LA SANCIÓN
         ===================================================== */
 
         sin_sanciones:
@@ -2208,9 +2234,17 @@ function construirReporteEditar(
                 ?? 0
             ),
 
+
         baja_voluntaria:
             Number(
                 origen.baja_voluntaria
+                ?? 0
+            ),
+
+
+        desistir:
+            Number(
+                origen.desistir
                 ?? 0
             ),
 

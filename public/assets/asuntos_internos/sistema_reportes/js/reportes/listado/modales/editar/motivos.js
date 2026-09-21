@@ -153,13 +153,6 @@ export function cargarMotivosEditar(
 
     /* =====================================================
        ESTADO ACTUAL DE LA SANCIÓN
-
-       Es importante hacerlo DESPUÉS de cargar los motivos.
-
-       De esta manera, si el registro ya estaba guardado como
-       Baja voluntaria o Sin sanciones, guardamos primero los
-       motivos existentes en respaldo y después deshabilitamos
-       el catálogo.
     ===================================================== */
 
     const sinSanciones =
@@ -174,22 +167,34 @@ export function cargarMotivosEditar(
         );
 
 
+    const desistir =
+        modal.querySelector(
+            '#editar-desistir'
+        );
+
+
     /* =====================================================
-    LIMPIAR ESTADO TEMPORAL DE BAJA VOLUNTARIA
+       LIMPIAR ESTADOS TEMPORALES
     ===================================================== */
 
     if (bajaVoluntaria) {
 
-        delete bajaVoluntaria.dataset.estadoAnterior;
+        delete bajaVoluntaria
+            .dataset
+            .estadoAnterior;
+    }
+
+
+    if (desistir) {
+
+        delete desistir
+            .dataset
+            .estadoAnterior;
     }
 
 
     /* =====================================================
        BAJA VOLUNTARIA
-
-       Los motivos registrados se conservan temporalmente
-       para que vuelvan a aparecer si el usuario desmarca
-       Baja voluntaria antes de guardar.
     ===================================================== */
 
     if (
@@ -201,6 +206,36 @@ export function cargarMotivosEditar(
             modal,
             false,
             true
+        );
+
+
+        actualizarBajaVoluntariaEditar(
+            modal
+        );
+
+
+        return;
+    }
+
+
+    /* =====================================================
+       DESISTIR
+    ===================================================== */
+
+    if (
+        desistir
+        && desistir.checked
+    ) {
+
+        establecerMotivosHabilitadosEditar(
+            modal,
+            false,
+            true
+        );
+
+
+        actualizarDesistirEditar(
+            modal
         );
 
 
@@ -294,6 +329,12 @@ export function inicializarMotivosEditar(
     const bajaVoluntaria =
         modal.querySelector(
             '#editar-baja-voluntaria'
+        );
+
+
+    const desistir =
+        modal.querySelector(
+            '#editar-desistir'
         );
 
 
@@ -477,11 +518,6 @@ export function inicializarMotivosEditar(
                     sinSanciones.checked
                 ) {
 
-                    /*
-                     * No puede coexistir con
-                     * Baja voluntaria.
-                     */
-
                     if (bajaVoluntaria) {
 
                         bajaVoluntaria.checked =
@@ -489,21 +525,22 @@ export function inicializarMotivosEditar(
                     }
 
 
-                    /*
-                     * Restaurar estado si Baja voluntaria
-                     * lo había cambiado.
-                     */
+                    if (desistir) {
+
+                        desistir.checked =
+                            false;
+                    }
+
 
                     actualizarBajaVoluntariaEditar(
                         modal
                     );
 
 
-                    /*
-                     * Sin sanciones:
-                     * deshabilita motivos
-                     * y conserva respaldo.
-                     */
+                    actualizarDesistirEditar(
+                        modal
+                    );
+
 
                     establecerMotivosHabilitadosEditar(
                         modal,
@@ -516,14 +553,19 @@ export function inicializarMotivosEditar(
                 }
 
 
-                /*
-                 * Si no hay Baja voluntaria activa,
-                 * volvemos a habilitar motivos.
-                 */
+                const bajaActiva =
+                    bajaVoluntaria
+                    && bajaVoluntaria.checked;
+
+
+                const desistirActivo =
+                    desistir
+                    && desistir.checked;
+
 
                 if (
-                    !bajaVoluntaria
-                    || !bajaVoluntaria.checked
+                    !bajaActiva
+                    && !desistirActivo
                 ) {
 
                     establecerMotivosHabilitadosEditar(
@@ -551,11 +593,6 @@ export function inicializarMotivosEditar(
                     bajaVoluntaria.checked
                 ) {
 
-                    /*
-                     * Baja voluntaria y Sin sanciones
-                     * son mutuamente excluyentes.
-                     */
-
                     if (sinSanciones) {
 
                         sinSanciones.checked =
@@ -563,11 +600,12 @@ export function inicializarMotivosEditar(
                     }
 
 
-                    /*
-                     * Conservamos motivos temporalmente.
-                     * Si se desmarca antes de guardar,
-                     * volverán a aparecer.
-                     */
+                    if (desistir) {
+
+                        desistir.checked =
+                            false;
+                    }
+
 
                     establecerMotivosHabilitadosEditar(
                         modal,
@@ -577,21 +615,107 @@ export function inicializarMotivosEditar(
 
                 } else {
 
-                    /*
-                     * Restaurar motivos previos.
-                     */
+                    const desistirActivo =
+                        desistir
+                        && desistir.checked;
 
-                    establecerMotivosHabilitadosEditar(
-                        modal,
-                        true,
-                        true
-                    );
+
+                    const sinSancionesActivo =
+                        sinSanciones
+                        && sinSanciones.checked;
+
+
+                    if (
+                        !desistirActivo
+                        && !sinSancionesActivo
+                    ) {
+
+                        establecerMotivosHabilitadosEditar(
+                            modal,
+                            true,
+                            true
+                        );
+                    }
                 }
 
 
-                /*
-                 * Actualizar estado del reporte.
-                 */
+                actualizarBajaVoluntariaEditar(
+                    modal
+                );
+
+
+                actualizarDesistirEditar(
+                    modal
+                );
+            }
+        );
+    }
+
+
+    /* =====================================================
+       DESISTIR
+    ===================================================== */
+
+    if (desistir) {
+
+        desistir.addEventListener(
+            'change',
+            () => {
+
+                if (
+                    desistir.checked
+                ) {
+
+                    if (sinSanciones) {
+
+                        sinSanciones.checked =
+                            false;
+                    }
+
+
+                    if (bajaVoluntaria) {
+
+                        bajaVoluntaria.checked =
+                            false;
+                    }
+
+
+                    establecerMotivosHabilitadosEditar(
+                        modal,
+                        false,
+                        true
+                    );
+
+                } else {
+
+                    const bajaActiva =
+                        bajaVoluntaria
+                        && bajaVoluntaria.checked;
+
+
+                    const sinSancionesActivo =
+                        sinSanciones
+                        && sinSanciones.checked;
+
+
+                    if (
+                        !bajaActiva
+                        && !sinSancionesActivo
+                    ) {
+
+                        establecerMotivosHabilitadosEditar(
+                            modal,
+                            true,
+                            true
+                        );
+                    }
+                }
+
+
+                actualizarDesistirEditar(
+                    modal
+                );
+
 
                 actualizarBajaVoluntariaEditar(
                     modal
@@ -606,6 +730,11 @@ export function inicializarMotivosEditar(
     ===================================================== */
 
     actualizarBajaVoluntariaEditar(
+        modal
+    );
+
+
+    actualizarDesistirEditar(
         modal
     );
 }
@@ -627,6 +756,12 @@ export function actualizarBajaVoluntariaEditar(
     const bajaVoluntaria =
         modal.querySelector(
             '#editar-baja-voluntaria'
+        );
+
+
+    const desistir =
+        modal.querySelector(
+            '#editar-desistir'
         );
 
 
@@ -664,15 +799,10 @@ export function actualizarBajaVoluntariaEditar(
         bajaVoluntaria.checked
     ) {
 
-        /* =================================================
-           GUARDAR ESTADO ANTERIOR
-
-           Lo almacenamos en Baja voluntaria para que no
-           dependa del input hidden de Estado.
-        ================================================= */
-
         if (
-            !bajaVoluntaria.dataset.estadoAnterior
+            !bajaVoluntaria
+                .dataset
+                .estadoAnterior
         ) {
 
             const estadoAnterior =
@@ -682,30 +812,18 @@ export function actualizarBajaVoluntariaEditar(
                 ).trim();
 
 
-            /*
-             * No guardamos Finalizado como estado anterior,
-             * porque es precisamente el valor forzado por
-             * Baja voluntaria.
-             */
-
-            bajaVoluntaria.dataset.estadoAnterior =
+            bajaVoluntaria
+                .dataset
+                .estadoAnterior =
                 estadoAnterior !== 'Finalizado'
                     ? estadoAnterior
                     : 'Pendiente';
         }
 
 
-        /* =================================================
-           FORZAR FINALIZADO
-        ================================================= */
-
         estado.value =
             'Finalizado';
 
-
-        /* =================================================
-           TEXTO VISUAL
-        ================================================= */
 
         if (textoEstado) {
 
@@ -713,10 +831,6 @@ export function actualizarBajaVoluntariaEditar(
                 'Finalizado';
         }
 
-
-        /* =================================================
-           BLOQUEAR CATÁLOGO MIENTRAS EXISTA BAJA
-        ================================================= */
 
         if (botonEstado) {
 
@@ -749,16 +863,11 @@ export function actualizarBajaVoluntariaEditar(
         }
 
 
-        /* =================================================
-           NOTIFICAR CAMBIO
-        ================================================= */
-
         estado.dispatchEvent(
             new Event(
                 'change',
                 {
-                    bubbles:
-                        true,
+                    bubbles: true,
                 }
             )
         );
@@ -774,17 +883,21 @@ export function actualizarBajaVoluntariaEditar(
 
     const estadoAnterior =
         String(
-            bajaVoluntaria.dataset.estadoAnterior
+            bajaVoluntaria
+                .dataset
+                .estadoAnterior
             || ''
         ).trim();
 
 
-    /* =====================================================
-       RESTAURAR
-    ===================================================== */
+    const desistirActivo =
+        desistir
+        && desistir.checked;
+
 
     if (
         estadoAnterior !== ''
+        && !desistirActivo
     ) {
 
         estado.value =
@@ -796,33 +909,225 @@ export function actualizarBajaVoluntariaEditar(
             textoEstado.textContent =
                 estadoAnterior;
         }
-
-
-        delete bajaVoluntaria.dataset.estadoAnterior;
     }
 
 
-    /* =====================================================
-       VOLVER A HABILITAR CATÁLOGO
-    ===================================================== */
+    delete bajaVoluntaria
+        .dataset
+        .estadoAnterior;
+
 
     if (botonEstado) {
 
         botonEstado.disabled =
-            false;
+            Boolean(
+                desistirActivo
+            );
     }
 
-
-    /* =====================================================
-       NOTIFICAR CAMBIO
-    ===================================================== */
 
     estado.dispatchEvent(
         new Event(
             'change',
             {
-                bubbles:
-                    true,
+                bubbles: true,
+            }
+        )
+    );
+}
+
+
+/* =========================================================
+   ACTUALIZAR DESISTIR
+========================================================= */
+
+export function actualizarDesistirEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const desistir =
+        modal.querySelector(
+            '#editar-desistir'
+        );
+
+
+    const bajaVoluntaria =
+        modal.querySelector(
+            '#editar-baja-voluntaria'
+        );
+
+
+    const estado =
+        modal.querySelector(
+            '#editar-estado-actual'
+        );
+
+
+    const textoEstado =
+        modal.querySelector(
+            '#editar-estado-select-texto'
+        );
+
+
+    const botonEstado =
+        modal.querySelector(
+            '#editar-estado-select'
+        );
+
+
+    if (
+        !desistir
+        || !estado
+    ) {
+        return;
+    }
+
+
+    /* =====================================================
+       DESISTIR ACTIVADO
+    ===================================================== */
+
+    if (
+        desistir.checked
+    ) {
+
+        if (
+            !desistir
+                .dataset
+                .estadoAnterior
+        ) {
+
+            const estadoAnterior =
+                String(
+                    estado.value
+                    || 'Pendiente'
+                ).trim();
+
+
+            desistir
+                .dataset
+                .estadoAnterior =
+                estadoAnterior !== 'Finalizado'
+                    ? estadoAnterior
+                    : 'Pendiente';
+        }
+
+
+        estado.value =
+            'Finalizado';
+
+
+        if (textoEstado) {
+
+            textoEstado.textContent =
+                'Finalizado';
+        }
+
+
+        if (botonEstado) {
+
+            botonEstado.disabled =
+                true;
+
+
+            botonEstado.setAttribute(
+                'aria-expanded',
+                'false'
+            );
+
+
+            botonEstado.classList.remove(
+                'estado-select--activo'
+            );
+        }
+
+
+        const resultados =
+            modal.querySelector(
+                '#editar-estado-resultados'
+            );
+
+
+        if (resultados) {
+
+            resultados.hidden =
+                true;
+        }
+
+
+        estado.dispatchEvent(
+            new Event(
+                'change',
+                {
+                    bubbles: true,
+                }
+            )
+        );
+
+
+        return;
+    }
+
+
+    /* =====================================================
+       DESISTIR DESACTIVADO
+    ===================================================== */
+
+    const estadoAnterior =
+        String(
+            desistir
+                .dataset
+                .estadoAnterior
+            || ''
+        ).trim();
+
+
+    const bajaActiva =
+        bajaVoluntaria
+        && bajaVoluntaria.checked;
+
+
+    if (
+        estadoAnterior !== ''
+        && !bajaActiva
+    ) {
+
+        estado.value =
+            estadoAnterior;
+
+
+        if (textoEstado) {
+
+            textoEstado.textContent =
+                estadoAnterior;
+        }
+    }
+
+
+    delete desistir
+        .dataset
+        .estadoAnterior;
+
+
+    if (botonEstado) {
+
+        botonEstado.disabled =
+            Boolean(
+                bajaActiva
+            );
+    }
+
+
+    estado.dispatchEvent(
+        new Event(
+            'change',
+            {
+                bubbles: true,
             }
         )
     );

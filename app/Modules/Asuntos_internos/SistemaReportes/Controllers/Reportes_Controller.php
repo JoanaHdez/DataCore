@@ -1522,6 +1522,7 @@ class Reportes_Controller extends BaseController
 
                     'sin_sanciones',
                     'baja_voluntaria',
+                    'desistir',
 
                     'quien_emite_resolucion',
                     'resolucion',
