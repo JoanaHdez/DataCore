@@ -22,16 +22,16 @@
 
 
     <!-- =====================================================
-         EXPEDIENTE
+         NOMENCLATURA
     ====================================================== -->
 
     <div class="seguimiento-reporte__dato">
 
         <span>
-            Expediente
+            Nomenclatura
         </span>
 
-        <strong id="seguimiento-expediente">
+        <strong id="seguimiento-nomenclatura">
             —
         </strong>
 
@@ -51,30 +51,6 @@
         <strong id="seguimiento-estado-actual">
             —
         </strong>
-
-    </div>
-
-
-    <!-- =====================================================
-         SANCIÓN ACTUAL
-    ====================================================== -->
-
-    <div class="seguimiento-reporte__dato">
-
-        <span>
-            Sanción actual
-        </span>
-
-        <strong id="seguimiento-sancion-actual">
-            Sin sanción registrada
-        </strong>
-
-        <small
-            id="seguimiento-sancion-origen"
-            class="editar-reporte-campo__aviso"
-            hidden
-            style="display: none;"
-        ></small>
 
     </div>
 

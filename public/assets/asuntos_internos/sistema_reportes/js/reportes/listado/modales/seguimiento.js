@@ -1093,9 +1093,12 @@ async function procesarEdicionSeguimiento(
         || idSeguimiento <= 0
     ) {
 
-        window.alert(
-            'No fue posible identificar el seguimiento que deseas editar.'
-        );
+        mostrarResultado({
+            tipo: 'error',
+            titulo: 'Seguimiento no identificado',
+            mensaje:
+                'No fue posible identificar el seguimiento que deseas editar.',
+        });
 
         return;
     }
@@ -1290,6 +1293,23 @@ async function procesarEdicionSeguimiento(
     );
 
 
+    /* =====================================================
+       FOLIO IP
+    ===================================================== */
+
+    datos.set(
+        'folio_ip',
+        formulario.querySelector(
+            '#seguimiento-folio-ip'
+        )?.value
+        || ''
+    );
+
+
+    /* =====================================================
+       SANCIÓN
+    ===================================================== */
+
     datos.set(
         'sancion_accion',
         accionSancion
@@ -1353,6 +1373,9 @@ async function procesarEdicionSeguimiento(
 
                 estado:
                     datos.get('estado'),
+
+                folio_ip:
+                    datos.get('folio_ip'),
 
                 sancion_accion:
                     datos.get('sancion_accion'),
@@ -1462,7 +1485,8 @@ async function procesarEdicionSeguimiento(
         mostrarResultado({
             tipo: 'success',
             titulo: 'Seguimiento actualizado',
-            mensaje: 'Los cambios del seguimiento se guardaron correctamente.',
+            mensaje:
+                'Los cambios del seguimiento se guardaron correctamente.',
         });
 
 
@@ -1484,11 +1508,64 @@ async function procesarEdicionSeguimiento(
         );
 
 
-        window.alert(
-            error.message
-            || 'No fue posible actualizar el seguimiento.'
-        );
+        const mensaje =
+            String(
+                error?.message
+                || ''
+            ).trim();
 
+
+        /* =================================================
+           FOLIO IP REPETIDO
+        ================================================= */
+
+        if (
+            mensaje
+                .toLocaleLowerCase('es-MX')
+                .includes(
+                    'folio ip'
+                )
+            &&
+            mensaje
+                .toLocaleLowerCase('es-MX')
+                .includes(
+                    'registrado'
+                )
+        ) {
+
+            mostrarResultado({
+                tipo: 'warning',
+                titulo: 'Folio IP repetido',
+                mensaje:
+                    mensaje
+                    || 'El Folio IP ya se encuentra registrado. Debes ingresar uno diferente para continuar.',
+            });
+
+
+            const inputFolioIp =
+                formulario.querySelector(
+                    '#seguimiento-folio-ip'
+                );
+
+
+            inputFolioIp?.focus();
+
+
+            return;
+        }
+
+
+        /* =================================================
+           OTRO ERROR
+        ================================================= */
+
+        mostrarResultado({
+            tipo: 'error',
+            titulo: 'No fue posible actualizar',
+            mensaje:
+                mensaje
+                || 'No fue posible actualizar el seguimiento.',
+        });
 
     } finally {
 
@@ -1506,6 +1583,7 @@ async function procesarEdicionSeguimiento(
     }
 
 }
+
 
 /* =========================================================
    DETERMINAR ACCIÓN DE SANCIÓN EN EDICIÓN
@@ -2775,15 +2853,12 @@ function cargarDatosSeguimiento(
 
 
     /* =====================================================
-       EXPEDIENTE
-
-       Más adelante este dato será reemplazado visualmente
-       por Nomenclatura según nuestra lista de pendientes.
+       NOMENCLATURA
     ===================================================== */
 
-    const expediente =
+    const nomenclatura =
         String(
-            reporte.expediente
+            reporte.nomenclatura
             || ''
         ).trim();
 
@@ -2842,8 +2917,8 @@ function cargarDatosSeguimiento(
 
     asignarTexto(
         modal,
-        '#seguimiento-expediente',
-        expediente
+        '#seguimiento-nomenclatura',
+        nomenclatura
     );
 
 
@@ -2851,16 +2926,6 @@ function cargarDatosSeguimiento(
         modal,
         '#seguimiento-estado-actual',
         estado
-    );
-
-
-    /* =====================================================
-       SANCIÓN ACTUAL
-    ===================================================== */
-
-    cargarSancionActual(
-        modal,
-        sancionActual
     );
 
 

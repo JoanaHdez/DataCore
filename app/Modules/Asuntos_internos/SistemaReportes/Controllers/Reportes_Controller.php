@@ -6928,7 +6928,8 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(401)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'No fue posible identificar al usuario.',
+                    'message' =>
+                        'No fue posible identificar al usuario.',
                 ]);
         }
 
@@ -6939,7 +6940,8 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'El seguimiento proporcionado no es válido.',
+                    'message' =>
+                        'El seguimiento proporcionado no es válido.',
                 ]);
         }
 
@@ -6988,18 +6990,47 @@ class Reportes_Controller extends BaseController
             );
 
 
+        /* =====================================================
+        FOLIO IP
+        ===================================================== */
+
+        $folioIp =
+            trim(
+                (string) (
+                    $datos['folio_ip']
+                    ?? ''
+                )
+            );
+
+
+        if (
+            mb_strlen(
+                $folioIp
+            ) > 100
+        ) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                        'El Folio IP no puede exceder 100 caracteres.',
+                ]);
+        }
+
+
         /*
-     * En edición utilizaremos:
-     *
-     * sancion_accion:
-     * - sin_cambio
-     * - mantener
-     * - cambiar
-     * - quitar
-     *
-     * "mantener" significa que el seguimiento ya tenía
-     * una sanción asociada y no fue modificada.
-     */
+        * En edición utilizaremos:
+        *
+        * sancion_accion:
+        * - sin_cambio
+        * - mantener
+        * - cambiar
+        * - quitar
+        *
+        * "mantener" significa que el seguimiento ya tenía
+        * una sanción asociada y no fue modificada.
+        */
 
         $sancionAccion =
             trim(
@@ -7038,7 +7069,8 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'La fecha del seguimiento es obligatoria.',
+                    'message' =>
+                        'La fecha del seguimiento es obligatoria.',
                 ]);
         }
 
@@ -7059,7 +7091,8 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'La fecha del seguimiento no es válida.',
+                    'message' =>
+                        'La fecha del seguimiento no es válida.',
                 ]);
         }
 
@@ -7085,7 +7118,8 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'El tipo de seguimiento seleccionado no es válido.',
+                    'message' =>
+                        'El tipo de seguimiento seleccionado no es válido.',
                 ]);
         }
 
@@ -7109,7 +7143,8 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'El estado seleccionado no es válido.',
+                    'message' =>
+                        'El estado seleccionado no es válido.',
                 ]);
         }
 
@@ -7120,7 +7155,8 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'Las observaciones del seguimiento son obligatorias.',
+                    'message' =>
+                        'Las observaciones del seguimiento son obligatorias.',
                 ]);
         }
 
@@ -7145,7 +7181,8 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'La acción de sanción no es válida.',
+                    'message' =>
+                        'La acción de sanción no es válida.',
                 ]);
         }
 
@@ -7180,7 +7217,8 @@ class Reportes_Controller extends BaseController
                     ->setStatusCode(422)
                     ->setJSON([
                         'success' => false,
-                        'message' => 'La sanción disciplinaria seleccionada no es válida.',
+                        'message' =>
+                            'La sanción disciplinaria seleccionada no es válida.',
                     ]);
             }
 
@@ -7193,7 +7231,8 @@ class Reportes_Controller extends BaseController
                         ->setStatusCode(422)
                         ->setJSON([
                             'success' => false,
-                            'message' => 'Debes especificar la sanción disciplinaria.',
+                            'message' =>
+                                'Debes especificar la sanción disciplinaria.',
                         ]);
                 }
 
@@ -7208,9 +7247,11 @@ class Reportes_Controller extends BaseController
                         ->setStatusCode(422)
                         ->setJSON([
                             'success' => false,
-                            'message' => 'La descripción de la sanción no puede exceder 255 caracteres.',
+                            'message' =>
+                                'La descripción de la sanción no puede exceder 255 caracteres.',
                         ]);
                 }
+
             } else {
 
                 $sancionOtro =
@@ -7235,17 +7276,17 @@ class Reportes_Controller extends BaseController
 
         $seguimiento =
             $db
-            ->table('ai_reporte_seguimientos')
-            ->where(
-                'id_seguimiento',
-                $idSeguimiento
-            )
-            ->where(
-                'eliminado',
-                0
-            )
-            ->get()
-            ->getRowArray();
+                ->table('ai_reporte_seguimientos')
+                ->where(
+                    'id_seguimiento',
+                    $idSeguimiento
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->get()
+                ->getRowArray();
 
 
         if (!$seguimiento) {
@@ -7254,7 +7295,8 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(404)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'El seguimiento solicitado no existe.',
+                    'message' =>
+                        'El seguimiento solicitado no existe.',
                 ]);
         }
 
@@ -7272,8 +7314,89 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'El seguimiento no está relacionado con un reporte válido.',
+                    'message' =>
+                        'El seguimiento no está relacionado con un reporte válido.',
                 ]);
+        }
+
+
+        /* =====================================================
+        CONSULTAR REPORTE PRINCIPAL
+        ===================================================== */
+
+        $reporte =
+            $db
+                ->table('ai_reportes')
+                ->select([
+                    'id_reporte',
+                    'folio',
+                    'folio_ip',
+                    'estado_actual',
+                ])
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->get()
+                ->getRowArray();
+
+
+        if (!$reporte) {
+
+            return $this->response
+                ->setStatusCode(404)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                        'El reporte relacionado no existe.',
+                ]);
+        }
+
+
+        /* =====================================================
+        VALIDAR FOLIO IP DUPLICADO
+        ===================================================== */
+
+        if ($folioIp !== '') {
+
+            $folioIpExistente =
+                $db
+                    ->table('ai_reportes')
+                    ->select([
+                        'id_reporte',
+                        'folio',
+                    ])
+                    ->where(
+                        'folio_ip',
+                        $folioIp
+                    )
+                    ->where(
+                        'eliminado',
+                        0
+                    )
+                    ->where(
+                        'id_reporte !=',
+                        $idReporte
+                    )
+                    ->limit(1)
+                    ->get()
+                    ->getRowArray();
+
+
+            if ($folioIpExistente) {
+
+                return $this->response
+                    ->setStatusCode(422)
+                    ->setJSON([
+                        'success' => false,
+                        'message' =>
+                            'El Folio IP ya se encuentra registrado en otro reporte. Debes ingresar uno diferente para continuar.',
+                    ]);
+            }
         }
 
 
@@ -7283,34 +7406,34 @@ class Reportes_Controller extends BaseController
 
         $sancionSeguimiento =
             $db
-            ->table('ai_reporte_sanciones')
-            ->where(
-                'id_reporte',
-                $idReporte
-            )
-            ->where(
-                'id_seguimiento',
-                $idSeguimiento
-            )
-            ->where(
-                'eliminado',
-                0
-            )
-            ->orderBy(
-                'id_sancion',
-                'DESC'
-            )
-            ->limit(1)
-            ->get()
-            ->getRowArray();
+                ->table('ai_reporte_sanciones')
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'id_seguimiento',
+                    $idSeguimiento
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->orderBy(
+                    'id_sancion',
+                    'DESC'
+                )
+                ->limit(1)
+                ->get()
+                ->getRowArray();
 
 
         /*
-     * Guardamos si esta sanción ES la vigente.
-     *
-     * Esto es fundamental:
-     * editar una sanción histórica NO debe volverla actual.
-     */
+        * Guardamos si esta sanción ES la vigente.
+        *
+        * Esto es fundamental:
+        * editar una sanción histórica NO debe volverla actual.
+        */
 
         $sancionSeguimientoEsActual =
             $sancionSeguimiento
@@ -7335,36 +7458,36 @@ class Reportes_Controller extends BaseController
 
             $actualizado =
                 $db
-                ->table('ai_reporte_seguimientos')
-                ->where(
-                    'id_seguimiento',
-                    $idSeguimiento
-                )
-                ->where(
-                    'eliminado',
-                    0
-                )
-                ->update([
+                    ->table('ai_reporte_seguimientos')
+                    ->where(
+                        'id_seguimiento',
+                        $idSeguimiento
+                    )
+                    ->where(
+                        'eliminado',
+                        0
+                    )
+                    ->update([
 
-                    'fecha' =>
-                    $fecha,
+                        'fecha' =>
+                            $fecha,
 
-                    'tipo' =>
-                    $tipo,
+                        'tipo' =>
+                            $tipo,
 
-                    'estado_resultante' =>
-                    $estado,
+                        'estado_resultante' =>
+                            $estado,
 
-                    'observaciones' =>
-                    $observaciones,
+                        'observaciones' =>
+                            $observaciones,
 
-                    'updated_by' =>
-                    $idUsuario,
+                        'updated_by' =>
+                            $idUsuario,
 
-                    'updated_at' =>
-                    date('Y-m-d H:i:s'),
+                        'updated_at' =>
+                            date('Y-m-d H:i:s'),
 
-                ]);
+                    ]);
 
 
             if ($actualizado === false) {
@@ -7386,41 +7509,41 @@ class Reportes_Controller extends BaseController
 
                 $actualizarSancion =
                     $db
-                    ->table('ai_reporte_sanciones')
-                    ->where(
-                        'id_sancion',
-                        (int) $sancionSeguimiento['id_sancion']
-                    )
-                    ->where(
-                        'id_reporte',
-                        $idReporte
-                    )
-                    ->update([
+                        ->table('ai_reporte_sanciones')
+                        ->where(
+                            'id_sancion',
+                            (int) $sancionSeguimiento['id_sancion']
+                        )
+                        ->where(
+                            'id_reporte',
+                            $idReporte
+                        )
+                        ->update([
 
-                        'tipo' =>
-                        $sancionTipo,
+                            'tipo' =>
+                                $sancionTipo,
 
-                        'descripcion_otro' =>
-                        $sancionOtro,
+                            'descripcion_otro' =>
+                                $sancionOtro,
 
-                        /*
-                     * NO modificamos:
-                     *
-                     * origen
-                     * id_seguimiento
-                     * es_actual
-                     *
-                     * porque estamos corrigiendo el mismo
-                     * evento histórico.
-                     */
+                            /*
+                            * NO modificamos:
+                            *
+                            * origen
+                            * id_seguimiento
+                            * es_actual
+                            *
+                            * porque estamos corrigiendo
+                            * el mismo evento histórico.
+                            */
 
-                        'updated_by' =>
-                        $idUsuario,
+                            'updated_by' =>
+                                $idUsuario,
 
-                        'updated_at' =>
-                        date('Y-m-d H:i:s'),
+                            'updated_at' =>
+                                date('Y-m-d H:i:s'),
 
-                    ]);
+                        ]);
 
 
                 if ($actualizarSancion === false) {
@@ -7441,43 +7564,34 @@ class Reportes_Controller extends BaseController
                 && $sancionAccion === 'quitar'
             ) {
 
-                /*
-             * Estamos diciendo que este seguimiento
-             * realmente NO debió haber producido el cambio
-             * de sanción.
-             *
-             * La fila se conserva como auditoría mediante
-             * soft delete.
-             */
-
                 $eliminarSancion =
                     $db
-                    ->table('ai_reporte_sanciones')
-                    ->where(
-                        'id_sancion',
-                        (int) $sancionSeguimiento['id_sancion']
-                    )
-                    ->update([
+                        ->table('ai_reporte_sanciones')
+                        ->where(
+                            'id_sancion',
+                            (int) $sancionSeguimiento['id_sancion']
+                        )
+                        ->update([
 
-                        'es_actual' =>
-                        0,
+                            'es_actual' =>
+                                0,
 
-                        'eliminado' =>
-                        1,
+                            'eliminado' =>
+                                1,
 
-                        'updated_by' =>
-                        $idUsuario,
+                            'updated_by' =>
+                                $idUsuario,
 
-                        'updated_at' =>
-                        date('Y-m-d H:i:s'),
+                            'updated_at' =>
+                                date('Y-m-d H:i:s'),
 
-                        'eliminado_at' =>
-                        date('Y-m-d H:i:s'),
+                            'eliminado_at' =>
+                                date('Y-m-d H:i:s'),
 
-                        'eliminado_por' =>
-                        $idUsuario,
+                            'eliminado_por' =>
+                                $idUsuario,
 
-                    ]);
+                        ]);
 
 
                 if ($eliminarSancion === false) {
@@ -7489,34 +7603,34 @@ class Reportes_Controller extends BaseController
 
 
                 /*
-             * Si precisamente eliminamos la sanción que era
-             * vigente, recuperamos la sanción activa anterior.
-             */
+                * Si precisamente eliminamos la sanción que era
+                * vigente, recuperamos la sanción activa anterior.
+                */
 
                 if ($sancionSeguimientoEsActual) {
 
                     $anterior =
                         $db
-                        ->table('ai_reporte_sanciones')
-                        ->where(
-                            'id_reporte',
-                            $idReporte
-                        )
-                        ->where(
-                            'eliminado',
-                            0
-                        )
-                        ->where(
-                            'id_sancion <',
-                            (int) $sancionSeguimiento['id_sancion']
-                        )
-                        ->orderBy(
-                            'id_sancion',
-                            'DESC'
-                        )
-                        ->limit(1)
-                        ->get()
-                        ->getRowArray();
+                            ->table('ai_reporte_sanciones')
+                            ->where(
+                                'id_reporte',
+                                $idReporte
+                            )
+                            ->where(
+                                'eliminado',
+                                0
+                            )
+                            ->where(
+                                'id_sancion <',
+                                (int) $sancionSeguimiento['id_sancion']
+                            )
+                            ->orderBy(
+                                'id_sancion',
+                                'DESC'
+                            )
+                            ->limit(1)
+                            ->get()
+                            ->getRowArray();
 
 
                     if ($anterior) {
@@ -7530,13 +7644,13 @@ class Reportes_Controller extends BaseController
                             ->update([
 
                                 'es_actual' =>
-                                1,
+                                    1,
 
                                 'updated_by' =>
-                                $idUsuario,
+                                    $idUsuario,
 
                                 'updated_at' =>
-                                date('Y-m-d H:i:s'),
+                                    date('Y-m-d H:i:s'),
 
                             ]);
                     }
@@ -7553,21 +7667,132 @@ class Reportes_Controller extends BaseController
                 && $sancionAccion === 'cambiar'
             ) {
 
-                /*
-             * Necesitamos saber si este seguimiento es el
-             * movimiento más reciente del caso.
-             *
-             * Solamente en ese caso la sanción agregada
-             * mediante la corrección puede convertirse
-             * automáticamente en la sanción vigente.
-             */
-
                 $seguimientoMasReciente =
                     $db
+                        ->table('ai_reporte_seguimientos')
+                        ->select([
+                            'id_seguimiento',
+                            'fecha',
+                        ])
+                        ->where(
+                            'id_reporte',
+                            $idReporte
+                        )
+                        ->where(
+                            'eliminado',
+                            0
+                        )
+                        ->orderBy(
+                            'fecha',
+                            'DESC'
+                        )
+                        ->orderBy(
+                            'id_seguimiento',
+                            'DESC'
+                        )
+                        ->limit(1)
+                        ->get()
+                        ->getRowArray();
+
+
+                $esSeguimientoMasReciente =
+                    $seguimientoMasReciente
+                    && (int) (
+                        $seguimientoMasReciente['id_seguimiento']
+                        ?? 0
+                    ) === $idSeguimiento;
+
+
+                if ($esSeguimientoMasReciente) {
+
+                    $db
+                        ->table('ai_reporte_sanciones')
+                        ->where(
+                            'id_reporte',
+                            $idReporte
+                        )
+                        ->where(
+                            'es_actual',
+                            1
+                        )
+                        ->where(
+                            'eliminado',
+                            0
+                        )
+                        ->update([
+
+                            'es_actual' =>
+                                0,
+
+                            'updated_by' =>
+                                $idUsuario,
+
+                            'updated_at' =>
+                                date('Y-m-d H:i:s'),
+
+                        ]);
+                }
+
+
+                $insertarSancion =
+                    $db
+                        ->table('ai_reporte_sanciones')
+                        ->insert([
+
+                            'id_reporte' =>
+                                $idReporte,
+
+                            'tipo' =>
+                                $sancionTipo,
+
+                            'descripcion_otro' =>
+                                $sancionOtro,
+
+                            'origen' =>
+                                'seguimiento',
+
+                            'id_seguimiento' =>
+                                $idSeguimiento,
+
+                            'es_actual' =>
+                                $esSeguimientoMasReciente
+                                    ? 1
+                                    : 0,
+
+                            'created_by' =>
+                                $idUsuario,
+
+                            'eliminado' =>
+                                0,
+
+                        ]);
+
+
+                if ($insertarSancion === false) {
+
+                    throw new \RuntimeException(
+                        'No fue posible registrar la sanción corregida.'
+                    );
+                }
+            }
+
+
+            /* =================================================
+            ESTADO ACTUAL DEL REPORTE
+            ================================================= */
+
+            /*
+            * El estado_actual debe representar el último
+            * seguimiento cronológico, no necesariamente
+            * el seguimiento que acabamos de editar.
+            */
+
+            $ultimoSeguimiento =
+                $db
                     ->table('ai_reporte_seguimientos')
                     ->select([
                         'id_seguimiento',
-                        'fecha',
+                        'estado_resultante',
                     ])
                     ->where(
                         'id_reporte',
@@ -7590,131 +7815,6 @@ class Reportes_Controller extends BaseController
                     ->getRowArray();
 
 
-                $esSeguimientoMasReciente =
-                    $seguimientoMasReciente
-                    && (int) (
-                        $seguimientoMasReciente['id_seguimiento']
-                        ?? 0
-                    ) === $idSeguimiento;
-
-
-                if ($esSeguimientoMasReciente) {
-
-                    /*
-                 * La sanción vigente anterior deja de ser
-                 * actual, pero sigue en el historial.
-                 */
-
-                    $db
-                        ->table('ai_reporte_sanciones')
-                        ->where(
-                            'id_reporte',
-                            $idReporte
-                        )
-                        ->where(
-                            'es_actual',
-                            1
-                        )
-                        ->where(
-                            'eliminado',
-                            0
-                        )
-                        ->update([
-
-                            'es_actual' =>
-                            0,
-
-                            'updated_by' =>
-                            $idUsuario,
-
-                            'updated_at' =>
-                            date('Y-m-d H:i:s'),
-
-                        ]);
-                }
-
-
-                $insertarSancion =
-                    $db
-                    ->table('ai_reporte_sanciones')
-                    ->insert([
-
-                        'id_reporte' =>
-                        $idReporte,
-
-                        'tipo' =>
-                        $sancionTipo,
-
-                        'descripcion_otro' =>
-                        $sancionOtro,
-
-                        'origen' =>
-                        'seguimiento',
-
-                        'id_seguimiento' =>
-                        $idSeguimiento,
-
-                        'es_actual' =>
-                        $esSeguimientoMasReciente
-                            ? 1
-                            : 0,
-
-                        'created_by' =>
-                        $idUsuario,
-
-                        'eliminado' =>
-                        0,
-
-                    ]);
-
-
-                if ($insertarSancion === false) {
-
-                    throw new \RuntimeException(
-                        'No fue posible registrar la sanción corregida.'
-                    );
-                }
-            }
-
-
-            /* =================================================
-            ESTADO ACTUAL DEL REPORTE
-            ================================================= */
-
-            /*
-         * El estado_actual debe representar el último
-         * seguimiento cronológico, no necesariamente el
-         * seguimiento que acabamos de editar.
-         */
-
-            $ultimoSeguimiento =
-                $db
-                ->table('ai_reporte_seguimientos')
-                ->select([
-                    'id_seguimiento',
-                    'estado_resultante',
-                ])
-                ->where(
-                    'id_reporte',
-                    $idReporte
-                )
-                ->where(
-                    'eliminado',
-                    0
-                )
-                ->orderBy(
-                    'fecha',
-                    'DESC'
-                )
-                ->orderBy(
-                    'id_seguimiento',
-                    'DESC'
-                )
-                ->limit(1)
-                ->get()
-                ->getRowArray();
-
-
             $estadoActualReporte =
                 trim(
                     (string) (
@@ -7724,38 +7824,54 @@ class Reportes_Controller extends BaseController
                 );
 
 
+            /* =================================================
+            ACTUALIZAR REPORTE PRINCIPAL
+            ================================================= */
+
             $actualizarReporte =
                 $db
-                ->table('ai_reportes')
-                ->where(
-                    'id_reporte',
-                    $idReporte
-                )
-                ->where(
-                    'eliminado',
-                    0
-                )
-                ->update([
+                    ->table('ai_reportes')
+                    ->where(
+                        'id_reporte',
+                        $idReporte
+                    )
+                    ->where(
+                        'eliminado',
+                        0
+                    )
+                    ->update([
 
-                    'estado_actual' =>
-                    $estadoActualReporte,
+                        'folio_ip' =>
+                            $folioIp !== ''
+                                ? $folioIp
+                                : (
+                                    $reporte['folio_ip']
+                                    ?? null
+                                ),
 
-                    'updated_by' =>
-                    $idUsuario,
+                        'estado_actual' =>
+                            $estadoActualReporte,
 
-                    'updated_at' =>
-                    date('Y-m-d H:i:s'),
+                        'updated_by' =>
+                            $idUsuario,
 
-                ]);
+                        'updated_at' =>
+                            date('Y-m-d H:i:s'),
+
+                    ]);
 
 
             if ($actualizarReporte === false) {
 
                 throw new \RuntimeException(
-                    'No fue posible actualizar el estado del reporte.'
+                    'No fue posible actualizar el reporte.'
                 );
             }
 
+
+            /* =================================================
+            VALIDAR TRANSACCIÓN
+            ================================================= */
 
             if (
                 $db->transStatus()
@@ -7771,25 +7887,39 @@ class Reportes_Controller extends BaseController
             $db->transCommit();
 
 
+            /* =================================================
+            RESPUESTA
+            ================================================= */
+
             return $this->response
                 ->setJSON([
 
                     'success' =>
-                    true,
+                        true,
 
                     'message' =>
-                    'El seguimiento se actualizó correctamente.',
+                        'El seguimiento se actualizó correctamente.',
 
                     'id_reporte' =>
-                    $idReporte,
+                        $idReporte,
 
                     'id_seguimiento' =>
-                    $idSeguimiento,
+                        $idSeguimiento,
+
+                    'folio_ip' =>
+                        $folioIp !== ''
+                            ? $folioIp
+                            : (
+                                $reporte['folio_ip']
+                                ?? null
+                            ),
 
                     'estado_actual' =>
-                    $estadoActualReporte,
+                        $estadoActualReporte,
 
                 ]);
+
+
         } catch (\Throwable $e) {
 
             $db->transRollback();
@@ -7800,10 +7930,10 @@ class Reportes_Controller extends BaseController
                 'Error actualizando seguimiento {id}: {mensaje}',
                 [
                     'id' =>
-                    $idSeguimiento,
+                        $idSeguimiento,
 
                     'mensaje' =>
-                    $e->getMessage(),
+                        $e->getMessage(),
                 ]
             );
 
@@ -7812,7 +7942,8 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(500)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'No fue posible actualizar el seguimiento.',
+                    'message' =>
+                        'No fue posible actualizar el seguimiento.',
                 ]);
         }
     }
