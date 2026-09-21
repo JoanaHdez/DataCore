@@ -1068,6 +1068,24 @@ function iniciarEdicionSeguimiento(
 
 
     /* =====================================================
+       FOLIO IP ACTUAL DEL REPORTE
+
+       El Folio IP pertenece al reporte principal, no al
+       seguimiento histórico. Por eso utilizamos siempre
+       el valor actual de estadoSeguimiento.reporte.
+    ===================================================== */
+
+    asignarValor(
+        formulario,
+        '#seguimiento-folio-ip',
+        estadoSeguimiento
+            .reporte
+            ?.folio_ip
+        || ''
+    );
+
+
+    /* =====================================================
        SANCIÓN DEL SEGUIMIENTO
     ===================================================== */
 
@@ -1194,6 +1212,10 @@ async function procesarEdicionSeguimiento(
     }
 
 
+    /* =====================================================
+       VALIDACIÓN SANCIÓN
+    ===================================================== */
+
     if (
         !validarSancionSeguimiento(
             modal
@@ -1203,6 +1225,10 @@ async function procesarEdicionSeguimiento(
     }
 
 
+    /* =====================================================
+       VALIDACIÓN NATIVA
+    ===================================================== */
+
     if (
         !formulario.checkValidity()
     ) {
@@ -1210,6 +1236,103 @@ async function procesarEdicionSeguimiento(
         formulario.reportValidity();
 
         return;
+    }
+
+
+    /* =====================================================
+       ESTADO REGISTRADO EN EL SEGUIMIENTO
+    ===================================================== */
+
+    const estadoAnterior =
+        String(
+            seguimientoAnterior.estado
+            || ''
+        ).trim();
+
+
+    /* =====================================================
+       ESTADO SELECCIONADO
+    ===================================================== */
+
+    const estadoNuevo =
+        String(
+            formulario.querySelector(
+                '#seguimiento-estado'
+            )?.value
+            || ''
+        ).trim();
+
+
+    /* =====================================================
+       DETECTAR CAMBIO REAL DE ESTADO
+    ===================================================== */
+
+    const hayCambioEstado =
+        estadoNuevo !== ''
+        && estadoNuevo !== estadoAnterior;
+
+
+    /* =====================================================
+       CONFIRMAR CAMBIO DE ESTADO
+
+       Esta es la ÚNICA confirmación especial de la edición.
+    ===================================================== */
+
+    if (hayCambioEstado) {
+
+        let mensajeEstado =
+            'Estás cambiando el estado registrado en este seguimiento.'
+            + '\n\n'
+            + `Estado registrado: ${estadoAnterior}`
+            + '\n'
+            + `Nuevo estado: ${estadoNuevo}`
+            + '\n\n';
+
+
+        if (
+            estadoNuevo === 'Finalizado'
+        ) {
+
+            mensajeEstado +=
+                'El seguimiento quedará registrado con estado Finalizado.'
+                + '\n\n'
+                + '¿Deseas continuar?';
+
+        } else {
+
+            mensajeEstado +=
+                'El seguimiento se actualizará con el nuevo estado.'
+                + '\n\n'
+                + '¿Deseas continuar?';
+        }
+
+
+        const confirmado =
+            await confirmarAccion({
+
+                titulo:
+                    estadoNuevo === 'Finalizado'
+                        ? 'Confirmar cambio a Finalizado'
+                        : 'Confirmar cambio de estado',
+
+                mensaje:
+                    mensajeEstado,
+
+                textoConfirmar:
+                    estadoNuevo === 'Finalizado'
+                        ? 'Finalizar'
+                        : 'Cambiar estado',
+
+                textoCancelar:
+                    'Cancelar',
+
+            });
+
+
+        if (!confirmado) {
+            return;
+        }
+
     }
 
 
@@ -1226,6 +1349,12 @@ async function procesarEdicionSeguimiento(
             modal
         );
 
+
+    /*
+     * La sanción sigue funcionando exactamente igual.
+     *
+     * Solamente quitamos las confirmaciones antiguas.
+     */
 
     const accionSancion =
         determinarAccionSancionEdicion(
@@ -1247,96 +1376,6 @@ async function procesarEdicionSeguimiento(
                 accionSancion,
         }
     );
-
-
-    /* =====================================================
-       CONFIRMAR CORRECCIÓN DE SANCIÓN
-    ===================================================== */
-
-    if (
-        accionSancion === 'cambiar'
-    ) {
-
-        const textoAnterior =
-            obtenerTextoSancion(
-                sancionAnterior
-            );
-
-
-        const textoNuevo =
-            obtenerTextoSancion(
-                sancionNueva
-            );
-
-
-        const confirmado =
-            await confirmarAccion({
-
-                titulo:
-                    'Confirmar corrección de sanción',
-
-                mensaje:
-                    'Estás corrigiendo la sanción asociada a este seguimiento.'
-                    + '\n\n'
-                    + `Valor registrado: ${textoAnterior}`
-                    + '\n'
-                    + `Valor corregido: ${textoNuevo}`
-                    + '\n\n'
-                    + 'Esta acción corrige el movimiento existente y no crea un seguimiento nuevo.'
-                    + '\n\n'
-                    + '¿Deseas continuar?',
-
-                textoConfirmar:
-                    'Continuar',
-
-                textoCancelar:
-                    'Cancelar',
-
-            });
-
-
-        if (!confirmado) {
-            return;
-        }
-
-    }
-
-
-    /* =====================================================
-       CONFIRMAR ELIMINACIÓN DE SANCIÓN DEL MOVIMIENTO
-    ===================================================== */
-
-    if (
-        accionSancion === 'quitar'
-    ) {
-
-        const confirmado =
-            await confirmarAccion({
-
-                titulo:
-                    'Confirmar corrección de sanción',
-
-                mensaje:
-                    'Este seguimiento tiene una sanción asociada.'
-                    + '\n\n'
-                    + 'Si continúas, se corregirá el movimiento indicando que este seguimiento no produjo un cambio de sanción.'
-                    + '\n\n'
-                    + '¿Deseas continuar?',
-
-                textoConfirmar:
-                    'Continuar',
-
-                textoCancelar:
-                    'Cancelar',
-
-            });
-
-
-        if (!confirmado) {
-            return;
-        }
-
-    }
 
 
     /* =====================================================
@@ -1367,10 +1406,7 @@ async function procesarEdicionSeguimiento(
 
     datos.set(
         'estado',
-        formulario.querySelector(
-            '#seguimiento-estado'
-        )?.value
-        || ''
+        estadoNuevo
     );
 
 
@@ -1499,6 +1535,10 @@ async function procesarEdicionSeguimiento(
         );
 
 
+        /* =================================================
+           ACTUALIZAR SEGUIMIENTO
+        ================================================= */
+
         const resultado =
             await actualizarSeguimientoBackend(
                 idSeguimiento,
@@ -1527,6 +1567,10 @@ async function procesarEdicionSeguimiento(
 
         /* =================================================
            RECARGAR TODO
+
+           Importante:
+           primero refrescamos para que estadoSeguimiento tenga
+           los datos actuales antes de cerrar el modal.
         ================================================= */
 
         await refrescarSeguimientoCompleto(
@@ -1536,8 +1580,16 @@ async function procesarEdicionSeguimiento(
         );
 
 
+        /* =================================================
+           ACTUALIZAR LISTADO
+        ================================================= */
+
         actualizarListadoRelacionado();
 
+
+        /* =================================================
+           EVENTO GLOBAL
+        ================================================= */
 
         document.dispatchEvent(
             new CustomEvent(
@@ -1554,6 +1606,15 @@ async function procesarEdicionSeguimiento(
                                 .reporte
                                 ?.estado_actual
                             || '',
+
+                        estadoAnterior:
+                            estadoAnterior,
+
+                        estadoNuevo:
+                            estadoNuevo,
+
+                        cambioEstado:
+                            hayCambioEstado,
 
                         sancion:
                             estadoSeguimiento
@@ -1573,12 +1634,46 @@ async function procesarEdicionSeguimiento(
         ================================================= */
 
         mostrarResultado({
-            tipo: 'success',
-            titulo: 'Seguimiento actualizado',
+
+            tipo:
+                'success',
+
+            titulo:
+                hayCambioEstado
+                    ? (
+                        estadoNuevo === 'Finalizado'
+                            ? 'Estado actualizado a Finalizado'
+                            : 'Estado actualizado'
+                    )
+                    : 'Seguimiento actualizado',
+
             mensaje:
-                'Los cambios del seguimiento se guardaron correctamente.',
+                hayCambioEstado
+                    ? `Los cambios del seguimiento se guardaron correctamente y el estado registrado cambió de ${estadoAnterior} a ${estadoNuevo}.`
+                    : 'Los cambios del seguimiento se guardaron correctamente.',
+
         });
 
+
+        /* =================================================
+           CERRAR MODAL
+        ================================================= */
+
+        cerrarModalSeguimiento(
+            modal
+        );
+
+
+        /* =================================================
+           LIMPIAR ESTADO DEL MÓDULO
+        ================================================= */
+
+        limpiarEstadoSeguimiento();
+
+
+        /* =================================================
+           CERRAR NOTIFICACIÓN
+        ================================================= */
 
         window.setTimeout(
             () => {
@@ -1658,6 +1753,10 @@ async function procesarEdicionSeguimiento(
         });
 
     } finally {
+
+        /* =================================================
+           RESTAURAR BOTÓN
+        ================================================= */
 
         if (botonGuardar) {
 
