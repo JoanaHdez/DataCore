@@ -506,9 +506,12 @@ async function procesarNuevoSeguimiento(
         || idReporte <= 0
     ) {
 
-        window.alert(
-            'No fue posible identificar el reporte.'
-        );
+        mostrarResultado({
+            tipo: 'error',
+            titulo: 'Reporte no identificado',
+            mensaje:
+                'No fue posible identificar el reporte.',
+        });
 
         return;
     }
@@ -559,7 +562,10 @@ async function procesarNuevoSeguimiento(
 
 
     /* =====================================================
-       CONFIRMAR CAMBIO
+       CONFIRMACIÓN ACTUAL DE SANCIÓN
+
+       Esta lógica se eliminará cuando implementemos
+       el nuevo flujo de confirmación por cambio de Estado.
     ===================================================== */
 
     if (hayCambioSancion) {
@@ -641,6 +647,10 @@ async function procesarNuevoSeguimiento(
     }
 
 
+    /* =====================================================
+       BOTÓN GUARDAR
+    ===================================================== */
+
     const botonGuardar =
         formulario.querySelector(
             '[type="submit"]'
@@ -667,6 +677,10 @@ async function procesarNuevoSeguimiento(
 
     try {
 
+        /* =================================================
+           REGISTRAR
+        ================================================= */
+
         const resultado =
             await registrarSeguimiento(
                 idReporte,
@@ -686,6 +700,10 @@ async function procesarNuevoSeguimiento(
         }
 
 
+        /* =================================================
+           REFRESCAR
+        ================================================= */
+
         await refrescarSeguimientoCompleto(
             modal,
             formulario,
@@ -693,8 +711,16 @@ async function procesarNuevoSeguimiento(
         );
 
 
+        /* =================================================
+           ACTUALIZAR LISTADO
+        ================================================= */
+
         actualizarListadoRelacionado();
 
+
+        /* =================================================
+           EVENTO GLOBAL
+        ================================================= */
 
         document.dispatchEvent(
             new CustomEvent(
@@ -725,15 +751,36 @@ async function procesarNuevoSeguimiento(
 
 
         /* =================================================
-           RESULTADO
+           RESULTADO CORRECTO
         ================================================= */
 
         mostrarResultado({
             tipo: 'success',
             titulo: 'Seguimiento registrado',
-            mensaje: 'El seguimiento se registró correctamente.',
+            mensaje:
+                'El seguimiento se registró correctamente.',
         });
 
+
+        /* =================================================
+           CERRAR MODAL
+        ================================================= */
+
+        cerrarModalSeguimiento(
+            modal
+        );
+
+
+        /* =================================================
+           LIMPIAR ESTADO
+        ================================================= */
+
+        limpiarEstadoSeguimiento();
+
+
+        /* =================================================
+           CERRAR NOTIFICACIÓN
+        ================================================= */
 
         window.setTimeout(
             () => {
@@ -753,13 +800,70 @@ async function procesarNuevoSeguimiento(
         );
 
 
-        window.alert(
-            error.message
-            || 'No fue posible registrar el seguimiento.'
-        );
+        const mensaje =
+            String(
+                error?.message
+                || ''
+            ).trim();
 
+
+        /* =================================================
+           FOLIO IP REPETIDO
+        ================================================= */
+
+        if (
+            mensaje
+                .toLocaleLowerCase('es-MX')
+                .includes(
+                    'folio ip'
+                )
+            &&
+            mensaje
+                .toLocaleLowerCase('es-MX')
+                .includes(
+                    'registrado'
+                )
+        ) {
+
+            mostrarResultado({
+                tipo: 'warning',
+                titulo: 'Folio IP repetido',
+                mensaje:
+                    mensaje
+                    || 'El Folio IP ya se encuentra registrado. Debes ingresar uno diferente para continuar.',
+            });
+
+
+            const inputFolioIp =
+                formulario.querySelector(
+                    '#seguimiento-folio-ip'
+                );
+
+
+            inputFolioIp?.focus();
+
+
+            return;
+        }
+
+
+        /* =================================================
+           OTRO ERROR
+        ================================================= */
+
+        mostrarResultado({
+            tipo: 'error',
+            titulo: 'No fue posible guardar',
+            mensaje:
+                mensaje
+                || 'No fue posible registrar el seguimiento.',
+        });
 
     } finally {
+
+        /* =================================================
+           RESTAURAR BOTÓN
+        ================================================= */
 
         if (botonGuardar) {
 
@@ -2659,12 +2763,23 @@ function cargarDatosSeguimiento(
     sancionActual
 ) {
 
+    /* =====================================================
+       FOLIO
+    ===================================================== */
+
     const folio =
         String(
             reporte.folio
             || ''
         ).trim();
 
+
+    /* =====================================================
+       EXPEDIENTE
+
+       Más adelante este dato será reemplazado visualmente
+       por Nomenclatura según nuestra lista de pendientes.
+    ===================================================== */
 
     const expediente =
         String(
@@ -2673,12 +2788,31 @@ function cargarDatosSeguimiento(
         ).trim();
 
 
+    /* =====================================================
+       FOLIO IP
+    ===================================================== */
+
+    const folioIp =
+        String(
+            reporte.folio_ip
+            || ''
+        ).trim();
+
+
+    /* =====================================================
+       ESTADO
+    ===================================================== */
+
     const estado =
         String(
             reporte.estado_actual
             || 'Pendiente'
         ).trim();
 
+
+    /* =====================================================
+       TÍTULO
+    ===================================================== */
 
     const titulo =
         modal.querySelector(
@@ -2692,9 +2826,12 @@ function cargarDatosSeguimiento(
             folio
                 ? `Seguimiento ${folio}`
                 : 'Seguimiento';
-
     }
 
+
+    /* =====================================================
+       INFORMACIÓN SUPERIOR
+    ===================================================== */
 
     asignarTexto(
         modal,
@@ -2717,11 +2854,19 @@ function cargarDatosSeguimiento(
     );
 
 
+    /* =====================================================
+       SANCIÓN ACTUAL
+    ===================================================== */
+
     cargarSancionActual(
         modal,
         sancionActual
     );
 
+
+    /* =====================================================
+       PREPARAR FORMULARIO
+    ===================================================== */
 
     prepararFormularioSeguimiento(
         formulario,
@@ -2729,10 +2874,33 @@ function cargarDatosSeguimiento(
     );
 
 
+    /* =====================================================
+       FOLIO IP DEL REPORTE
+
+       Se asigna después del reset del formulario para que
+       no se pierda el valor existente.
+    ===================================================== */
+
+    const inputFolioIp =
+        formulario.querySelector(
+            '#seguimiento-folio-ip'
+        );
+
+
+    if (inputFolioIp) {
+
+        inputFolioIp.value =
+            folioIp;
+    }
+
+
+    /* =====================================================
+       CAMPO OTRO DE SANCIÓN
+    ===================================================== */
+
     actualizarCampoOtroSancion(
         modal
     );
-
 }
 
 

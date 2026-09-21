@@ -5687,7 +5687,9 @@ class Reportes_Controller extends BaseController
                 ->select([
                     'id_reporte',
                     'folio',
+                    'folio_ip',
                     'expediente',
+                    'nomenclatura',
                     'estado_actual',
                 ])
                 ->where(
@@ -6149,6 +6151,35 @@ class Reportes_Controller extends BaseController
 
 
         /* =====================================================
+        FOLIO IP
+        ===================================================== */
+
+        $folioIp =
+            trim(
+                (string)
+                $this->request->getPost(
+                    'folio_ip'
+                )
+            );
+
+
+        if (
+            mb_strlen(
+                $folioIp
+            ) > 100
+        ) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'El Folio IP no puede exceder 100 caracteres.',
+                ]);
+        }
+
+
+        /* =====================================================
         SANCIÓN
         ===================================================== */
 
@@ -6369,6 +6400,7 @@ class Reportes_Controller extends BaseController
             ->select([
                 'id_reporte',
                 'folio',
+                'folio_ip',
                 'expediente',
                 'estado_actual',
             ])
@@ -6393,6 +6425,49 @@ class Reportes_Controller extends BaseController
                     'message' =>
                     'El reporte no existe.',
                 ]);
+        }
+
+
+        /* =====================================================
+        VALIDAR FOLIO IP DUPLICADO
+        ===================================================== */
+
+        if ($folioIp !== '') {
+
+            $folioIpExistente =
+                $db
+                ->table('ai_reportes')
+                ->select([
+                    'id_reporte',
+                    'folio',
+                ])
+                ->where(
+                    'folio_ip',
+                    $folioIp
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->where(
+                    'id_reporte !=',
+                    $idReporte
+                )
+                ->limit(1)
+                ->get()
+                ->getRowArray();
+
+
+            if ($folioIpExistente) {
+
+                return $this->response
+                    ->setStatusCode(422)
+                    ->setJSON([
+                        'success' => false,
+                        'message' =>
+                        'El Folio IP ya se encuentra registrado en otro reporte. Debes ingresar uno diferente para continuar.',
+                    ]);
+            }
         }
 
 
@@ -6659,7 +6734,7 @@ class Reportes_Controller extends BaseController
 
 
             /* =================================================
-            ACTUALIZAR ESTADO DEL REPORTE
+            ACTUALIZAR REPORTE PRINCIPAL
             ================================================= */
 
             $actualizado =
@@ -6674,6 +6749,14 @@ class Reportes_Controller extends BaseController
                     0
                 )
                 ->update([
+
+                    'folio_ip' =>
+                    $folioIp !== ''
+                        ? $folioIp
+                        : (
+                            $reporte['folio_ip']
+                            ?? null
+                        ),
 
                     'estado_actual' =>
                     $estado,
@@ -6692,7 +6775,7 @@ class Reportes_Controller extends BaseController
             if ($actualizado === false) {
 
                 throw new \RuntimeException(
-                    'No fue posible actualizar el estado del reporte.'
+                    'No fue posible actualizar el reporte.'
                 );
             }
 
@@ -6749,6 +6832,14 @@ class Reportes_Controller extends BaseController
                         $observaciones,
 
                     ],
+
+                    'folio_ip' =>
+                    $folioIp !== ''
+                        ? $folioIp
+                        : (
+                            $reporte['folio_ip']
+                            ?? null
+                        ),
 
                     'estado_actual' =>
                     $estado,
