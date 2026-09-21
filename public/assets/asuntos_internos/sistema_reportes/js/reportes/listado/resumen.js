@@ -3,10 +3,19 @@
    Listado - Resumen
 ========================================================= */
 
-document.addEventListener('DOMContentLoaded', () => {
-    inicializarResumenReportes();
-});
+document.addEventListener(
+    'DOMContentLoaded',
+    () => {
 
+        inicializarResumenReportes();
+
+    }
+);
+
+
+/* =========================================================
+   INICIALIZAR
+========================================================= */
 
 function inicializarResumenReportes() {
 
@@ -15,10 +24,12 @@ function inicializarResumenReportes() {
             '#resumen-total-reportes'
         );
 
+
     const enProceso =
         document.querySelector(
             '#resumen-en-proceso'
         );
+
 
     const finalizados =
         document.querySelector(
@@ -26,28 +37,35 @@ function inicializarResumenReportes() {
         );
 
 
+    const conArresto =
+        document.querySelector(
+            '#resumen-con-arresto'
+        );
+
+
     if (
         !total
         || !enProceso
         || !finalizados
+        || !conArresto
     ) {
         return;
     }
 
 
-    /*
-     * Cálculo inicial usando
-     * las filas actualmente visibles.
-     */
+    /* =====================================================
+       CÁLCULO INICIAL
+    ===================================================== */
+
     actualizarResumen(
         obtenerFilasVisibles()
     );
 
 
-    /*
-     * Cada vez que filtros.js actualice
-     * la tabla, recalculamos las tarjetas.
-     */
+    /* =====================================================
+       ACTUALIZAR AL FILTRAR
+    ===================================================== */
+
     document.addEventListener(
         'reportesFiltradosActualizados',
         (evento) => {
@@ -76,58 +94,115 @@ function inicializarResumenReportes() {
         filas
     ) {
 
-        let cantidadProceso = 0;
-        let cantidadFinalizados = 0;
+        let cantidadProceso =
+            0;
 
 
-        filas.forEach((fila) => {
-
-            const celdas =
-                fila.querySelectorAll('td');
+        let cantidadFinalizados =
+            0;
 
 
-            if (celdas.length < 7) {
-                return;
+        let cantidadConArresto =
+            0;
+
+
+        filas.forEach(
+            (fila) => {
+
+                const celdas =
+                    fila.querySelectorAll(
+                        'td'
+                    );
+
+
+                if (
+                    celdas.length < 7
+                ) {
+                    return;
+                }
+
+
+                /* =============================================
+                   ESTADO
+                ============================================== */
+
+                const resolucion =
+                    normalizarEstado(
+                        celdas[5].textContent
+                    );
+
+
+                if (
+                    resolucion === 'en proceso'
+                ) {
+
+                    cantidadProceso++;
+
+                }
+
+
+                if (
+                    resolucion === 'finalizado'
+                    || resolucion === 'finalizados'
+                ) {
+
+                    cantidadFinalizados++;
+
+                }
+
+
+                /* =============================================
+                   ARRESTO
+
+                   Cada reporte cuenta una sola vez.
+
+                   data-tiene-arresto:
+                   1 = tiene al menos un arresto
+                   0 = no tiene arrestos
+                ============================================== */
+
+                const tieneArresto =
+                    String(
+                        fila.dataset
+                            .tieneArresto
+                        || '0'
+                    ) === '1';
+
+
+                if (
+                    tieneArresto
+                ) {
+
+                    cantidadConArresto++;
+
+                }
+
             }
-
-
-            const resolucion =
-                normalizarEstado(
-                    celdas[5].textContent
-                );
-
-
-            if (
-                resolucion === 'en proceso'
-            ) {
-
-                cantidadProceso++;
-
-            }
-
-
-            if (
-                resolucion === 'finalizado'
-                || resolucion === 'finalizados'
-            ) {
-
-                cantidadFinalizados++;
-
-            }
-
-        });
+        );
 
 
         total.textContent =
-            filas.length;
+            String(
+                filas.length
+            );
 
 
         enProceso.textContent =
-            cantidadProceso;
+            String(
+                cantidadProceso
+            );
 
 
         finalizados.textContent =
-            cantidadFinalizados;
+            String(
+                cantidadFinalizados
+            );
+
+
+        conArresto.textContent =
+            String(
+                cantidadConArresto
+            );
 
     }
 
@@ -152,15 +227,21 @@ function obtenerFilasVisibles() {
 
 
     return Array.from(
-        tbody.querySelectorAll('tr')
-    ).filter((fila) => {
-
-        return !fila.classList.contains(
-            'reportes-tabla__empty'
+        tbody.querySelectorAll(
+            'tr'
         )
-        && !fila.hidden;
+    ).filter(
+        (fila) => {
 
-    });
+            return (
+                !fila.classList.contains(
+                    'reportes-tabla__empty'
+                )
+                && !fila.hidden
+            );
+
+        }
+    );
 
 }
 
@@ -173,14 +254,18 @@ function normalizarEstado(
     estado
 ) {
 
-    return String(estado || '')
+    return String(
+        estado
+        || ''
+    )
         .trim()
         .toLowerCase()
-        .normalize('NFD')
+        .normalize(
+            'NFD'
+        )
         .replace(
             /[\u0300-\u036f]/g,
             ''
         );
 
 }
-

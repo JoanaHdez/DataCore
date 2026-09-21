@@ -62,28 +62,28 @@ class Reportes_Controller extends BaseController
 
         $reportes =
             $db
-            ->table('ai_reportes r')
-            ->select([
-                'r.id_reporte',
-                'r.folio',
-                'r.fecha_queja',
-                'r.expediente',
-                'r.clasificacion',
-                'r.nombre_quejoso',
-                'r.resolucion',
-                'r.estado_actual',
-                'r.created_at',
-            ])
-            ->where(
-                'r.eliminado',
-                0
-            )
-            ->orderBy(
-                'r.id_reporte',
-                'DESC'
-            )
-            ->get()
-            ->getResultArray();
+                ->table('ai_reportes r')
+                ->select([
+                    'r.id_reporte',
+                    'r.folio',
+                    'r.fecha_queja',
+                    'r.expediente',
+                    'r.clasificacion',
+                    'r.nombre_quejoso',
+                    'r.resolucion',
+                    'r.estado_actual',
+                    'r.created_at',
+                ])
+                ->where(
+                    'r.eliminado',
+                    0
+                )
+                ->orderBy(
+                    'r.id_reporte',
+                    'DESC'
+                )
+                ->get()
+                ->getResultArray();
 
 
         /* =========================================================
@@ -94,39 +94,40 @@ class Reportes_Controller extends BaseController
 
             $personal =
                 $db
-                ->table('ai_reporte_personal')
-                ->select([
-                    'nombre_snapshot',
-                    'area_snapshot',
-                    'turno_snapshot',
-                ])
-                ->where(
-                    'id_reporte',
-                    $reporte['id_reporte']
-                )
-                ->orderBy(
-                    'id_reporte_personal',
-                    'ASC'
-                )
-                ->get()
-                ->getResultArray();
+                    ->table('ai_reporte_personal')
+                    ->select([
+                        'nombre_snapshot',
+                        'area_snapshot',
+                        'turno_snapshot',
+                    ])
+                    ->where(
+                        'id_reporte',
+                        $reporte['id_reporte']
+                    )
+                    ->orderBy(
+                        'id_reporte_personal',
+                        'ASC'
+                    )
+                    ->get()
+                    ->getResultArray();
 
 
             /*
-         * Conservamos todo el personal porque más adelante
-         * lo necesitaremos para detalle, filtros y edición.
-         */
+            * Conservamos todo el personal porque más adelante
+            * lo necesitaremos para detalle, filtros y edición.
+            */
+
             $reporte['personal'] =
                 $personal;
 
 
             /*
-         * Por ahora la tabla principal necesita un valor
-         * simple para Área y Turno.
-         *
-         * Si hay varias personas relacionadas, obtenemos
-         * los valores únicos y los mostramos separados.
-         */
+            * Por ahora la tabla principal necesita un valor
+            * simple para Área y Turno.
+            *
+            * Si hay varias personas relacionadas, obtenemos
+            * los valores únicos y los mostramos separados.
+            */
 
             $areas = [];
 
@@ -175,14 +176,48 @@ class Reportes_Controller extends BaseController
 
             $reporte['area'] =
                 !empty($areas)
-                ? implode(', ', $areas)
-                : '—';
+                    ? implode(', ', $areas)
+                    : '—';
 
 
             $reporte['turno'] =
                 !empty($turnos)
-                ? implode(', ', $turnos)
-                : '—';
+                    ? implode(', ', $turnos)
+                    : '—';
+
+
+            /* =====================================================
+            ARRESTO RELACIONADO
+
+            Un reporte cuenta una sola vez si tiene al menos
+            una sanción de tipo ARRESTO, sin importar cuántas
+            sanciones de arresto tenga relacionadas.
+            ===================================================== */
+
+            $tieneArresto =
+                $db
+                    ->table('ai_reporte_sanciones rs')
+                    ->join(
+                        'ai_reporte_motivos rm',
+                        'rm.id_reporte_motivo = rs.id_reporte_motivo',
+                        'inner'
+                    )
+                    ->where(
+                        'rm.id_reporte',
+                        $reporte['id_reporte']
+                    )
+                    ->like(
+                        'rs.tipo',
+                        'ARRESTO',
+                        'after'
+                    )
+                    ->countAllResults() > 0;
+
+
+            $reporte['tiene_arresto'] =
+                $tieneArresto
+                    ? 1
+                    : 0;
 
 
             /* =====================================================
@@ -197,10 +232,10 @@ class Reportes_Controller extends BaseController
 
 
             /*
-         * Mientras la tabla siga utilizando "resolucion",
-         * mostramos primero la resolución real y, si todavía
-         * no existe, utilizamos el estado actual.
-         */
+            * Mientras la tabla siga utilizando "resolucion",
+            * mostramos primero la resolución real y, si todavía
+            * no existe, utilizamos el estado actual.
+            */
 
             $resolucion =
                 trim(
@@ -221,8 +256,8 @@ class Reportes_Controller extends BaseController
 
             $reporte['resolucion'] =
                 $resolucion !== ''
-                ? $resolucion
-                : '—';
+                    ? $resolucion
+                    : '—';
 
 
             /* =====================================================
@@ -255,6 +290,7 @@ class Reportes_Controller extends BaseController
             }
         }
 
+
         unset($reporte);
 
 
@@ -274,32 +310,32 @@ class Reportes_Controller extends BaseController
 
         $registrosSectores =
             $dbPlantilla
-            ->table('plantilla')
-            ->select('AREA')
-            ->where(
-                'ESTADO',
-                'ACTIVO'
-            )
-            ->where(
-                'AREA IS NOT NULL',
-                null,
-                false
-            )
-            ->where(
-                "TRIM(AREA) != ''",
-                null,
-                false
-            )
-            ->like(
-                'AREA',
-                'SECTOR',
-                'after'
-            )
-            ->groupBy(
-                'AREA'
-            )
-            ->get()
-            ->getResultArray();
+                ->table('plantilla')
+                ->select('AREA')
+                ->where(
+                    'ESTADO',
+                    'ACTIVO'
+                )
+                ->where(
+                    'AREA IS NOT NULL',
+                    null,
+                    false
+                )
+                ->where(
+                    "TRIM(AREA) != ''",
+                    null,
+                    false
+                )
+                ->like(
+                    'AREA',
+                    'SECTOR',
+                    'after'
+                )
+                ->groupBy(
+                    'AREA'
+                )
+                ->get()
+                ->getResultArray();
 
 
         $sectoresEncontrados =
@@ -324,7 +360,7 @@ class Reportes_Controller extends BaseController
                             'UTF-8'
                         )
                     )
-                        ?? ''
+                    ?? ''
                 );
 
 
@@ -373,6 +409,7 @@ class Reportes_Controller extends BaseController
         * SECTOR 02
         * ...
         */
+
         ksort(
             $sectoresEncontrados,
             SORT_NUMERIC
@@ -386,64 +423,64 @@ class Reportes_Controller extends BaseController
 
 
         /* =========================================================
-            CATÁLOGO DE CANALIZACIÓN
+        CATÁLOGO DE CANALIZACIÓN
 
-            Se utiliza también en el modal Editar para mantener
-            las mismas opciones que el formulario Nuevo.
-            ========================================================= */
+        Se utiliza también en el modal Editar para mantener
+        las mismas opciones que el formulario Nuevo.
+        ========================================================= */
 
         $canalizaciones =
             $db
-            ->table(
-                'ai_cat_canalizacion_areas'
-            )
-            ->select([
-                'id_area',
-                'nombre',
-            ])
-            ->where(
-                'activo',
-                1
-            )
-            ->orderBy(
-                'orden',
-                'ASC'
-            )
-            ->orderBy(
-                'nombre',
-                'ASC'
-            )
-            ->get()
-            ->getResultArray();
+                ->table(
+                    'ai_cat_canalizacion_areas'
+                )
+                ->select([
+                    'id_area',
+                    'nombre',
+                ])
+                ->where(
+                    'activo',
+                    1
+                )
+                ->orderBy(
+                    'orden',
+                    'ASC'
+                )
+                ->orderBy(
+                    'nombre',
+                    'ASC'
+                )
+                ->get()
+                ->getResultArray();
 
 
         /* =========================================================
-            CATÁLOGO DE CLASIFICACIONES
-            ========================================================= */
+        CATÁLOGO DE CLASIFICACIONES
+        ========================================================= */
 
         $clasificaciones =
             $db
-            ->table(
-                'ai_cat_clasificaciones'
-            )
-            ->select([
-                'id_clasificacion',
-                'nombre',
-            ])
-            ->where(
-                'activo',
-                1
-            )
-            ->orderBy(
-                'orden',
-                'ASC'
-            )
-            ->orderBy(
-                'nombre',
-                'ASC'
-            )
-            ->get()
-            ->getResultArray();
+                ->table(
+                    'ai_cat_clasificaciones'
+                )
+                ->select([
+                    'id_clasificacion',
+                    'nombre',
+                ])
+                ->where(
+                    'activo',
+                    1
+                )
+                ->orderBy(
+                    'orden',
+                    'ASC'
+                )
+                ->orderBy(
+                    'nombre',
+                    'ASC'
+                )
+                ->get()
+                ->getResultArray();
 
 
         /* =========================================================
@@ -452,24 +489,24 @@ class Reportes_Controller extends BaseController
 
         $motivos =
             $db
-            ->table(
-                'ai_cat_motivos'
-            )
-            ->select([
-                'id_motivo',
-                'motivo',
-                'sancion',
-            ])
-            ->where(
-                'activo',
-                1
-            )
-            ->orderBy(
-                'id_motivo',
-                'ASC'
-            )
-            ->get()
-            ->getResultArray();
+                ->table(
+                    'ai_cat_motivos'
+                )
+                ->select([
+                    'id_motivo',
+                    'motivo',
+                    'sancion',
+                ])
+                ->where(
+                    'activo',
+                    1
+                )
+                ->orderBy(
+                    'id_motivo',
+                    'ASC'
+                )
+                ->get()
+                ->getResultArray();
 
 
         /* =========================================================
@@ -480,19 +517,19 @@ class Reportes_Controller extends BaseController
             'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\index',
             [
                 'reportes' =>
-                $reportes,
+                    $reportes,
 
                 'sectores' =>
-                $sectores,
+                    $sectores,
 
                 'canalizaciones' =>
-                $canalizaciones,
+                    $canalizaciones,
 
                 'clasificaciones' =>
-                $clasificaciones,
+                    $clasificaciones,
 
                 'motivos' =>
-                $motivos,
+                    $motivos,
             ]
         );
     }

@@ -164,7 +164,8 @@
 
                 <tr data-id-reporte="<?= $idReporte ?>" data-folio="<?= esc($folio) ?>"
                     data-personal="<?= esc(json_encode($reporte['personal'] ?? []), 'attr') ?>"
-                    data-unidades="<?= esc(json_encode($reporte['unidades'] ?? []), 'attr') ?>">
+                    data-unidades="<?= esc(json_encode($reporte['unidades'] ?? []), 'attr') ?>"
+                    data-tiene-arresto="<?= (int) ($reporte['tiene_arresto'] ?? 0) ?>">
 
 
                     <!-- =================================================
@@ -347,4 +348,3 @@
     </div>
 
 </section>
-

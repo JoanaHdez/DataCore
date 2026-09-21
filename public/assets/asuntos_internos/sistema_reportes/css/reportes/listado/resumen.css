@@ -3,10 +3,11 @@
 ========================================================= */
 
 .reportes-resumen {
+
     display: grid;
 
     grid-template-columns:
-        repeat(3, minmax(0, 1fr));
+        repeat(4, minmax(0, 1fr));
 
     gap: 18px;
 
@@ -19,6 +20,7 @@
 ========================================================= */
 
 .resumen-card {
+
     position: relative;
 
     min-height: 110px;
@@ -47,6 +49,7 @@
 ========================================================= */
 
 .resumen-card--proceso {
+
     border-top-color: #e3a51d;
 
     background:
@@ -57,7 +60,9 @@
         );
 }
 
+
 .resumen-card--finalizados {
+
     border-top-color: #15935b;
 
     background:
@@ -69,11 +74,25 @@
 }
 
 
+.resumen-card--arrestos {
+
+    border-top-color: #c45c42;
+
+    background:
+        linear-gradient(
+            180deg,
+            #fffaf8,
+            #fff4f0
+        );
+}
+
+
 /* =========================================================
    TEXTO
 ========================================================= */
 
 .resumen-card__label {
+
     order: 2;
 
     margin-top: 5px;
@@ -87,22 +106,38 @@
     text-transform: uppercase;
 }
 
+
 .resumen-card__value {
+
     order: 1;
 
     color: #173554;
 
     font-size: 30px;
     font-weight: 800;
+
     line-height: 1;
 }
 
-.resumen-card--proceso .resumen-card__value {
+
+.resumen-card--proceso
+.resumen-card__value {
+
     color: #bf7f00;
 }
 
-.resumen-card--finalizados .resumen-card__value {
+
+.resumen-card--finalizados
+.resumen-card__value {
+
     color: #147a4e;
+}
+
+
+.resumen-card--arrestos
+.resumen-card__value {
+
+    color: #a94b35;
 }
 
 
@@ -110,10 +145,23 @@
    RESPONSIVE
 ========================================================= */
 
+@media (max-width: 950px) {
+
+    .reportes-resumen {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
 @media (max-width: 700px) {
 
     .reportes-resumen {
-        grid-template-columns: 1fr;
+
+        grid-template-columns:
+            1fr;
     }
 
 }
