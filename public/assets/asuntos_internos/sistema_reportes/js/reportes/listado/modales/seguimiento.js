@@ -545,60 +545,96 @@ async function procesarNuevoSeguimiento(
 
 
     /* =====================================================
-       SANCIÓN SELECCIONADA
+       ESTADO ACTUAL DEL REPORTE
     ===================================================== */
 
-    const sancionSeleccionada =
-        obtenerSancionSeleccionada(
-            modal
-        );
-
-
-    const hayCambioSancion =
-        existeCambioRealSancion(
-            estadoSeguimiento.sancionActual,
-            sancionSeleccionada
-        );
+    const estadoActual =
+        String(
+            estadoSeguimiento
+                .reporte
+                ?.estado_actual
+            || 'Pendiente'
+        ).trim();
 
 
     /* =====================================================
-       CONFIRMACIÓN ACTUAL DE SANCIÓN
-
-       Esta lógica se eliminará cuando implementemos
-       el nuevo flujo de confirmación por cambio de Estado.
+       ESTADO SELECCIONADO EN SEGUIMIENTO
     ===================================================== */
 
-    if (hayCambioSancion) {
-
-        const textoActual =
-            obtenerTextoSancion(
-                estadoSeguimiento.sancionActual
-            );
+    const inputEstado =
+        formulario.querySelector(
+            '#seguimiento-estado'
+        );
 
 
-        const textoNuevo =
-            obtenerTextoSancion(
-                sancionSeleccionada
-            );
+    const estadoNuevo =
+        String(
+            inputEstado?.value
+            || ''
+        ).trim();
+
+
+    /* =====================================================
+       DETECTAR CAMBIO REAL DE ESTADO
+    ===================================================== */
+
+    const hayCambioEstado =
+        estadoNuevo !== ''
+        && estadoNuevo !== estadoActual;
+
+
+    /* =====================================================
+       CONFIRMAR CAMBIO DE ESTADO
+    ===================================================== */
+
+    if (hayCambioEstado) {
+
+        let mensajeEstado =
+            'El estado seleccionado es diferente al estado actual de la queja.'
+            + '\n\n'
+            + `Estado actual: ${estadoActual}`
+            + '\n'
+            + `Nuevo estado: ${estadoNuevo}`
+            + '\n\n';
+
+
+        /* -------------------------------------------------
+           MENSAJE ESPECIAL AL FINALIZAR
+        ------------------------------------------------- */
+
+        if (
+            estadoNuevo === 'Finalizado'
+        ) {
+
+            mensajeEstado +=
+                'Al confirmar, la queja quedará finalizada desde este seguimiento.'
+                + '\n\n'
+                + '¿Deseas continuar?';
+
+        } else {
+
+            mensajeEstado +=
+                'Al confirmar, el estado general de la queja también será actualizado.'
+                + '\n\n'
+                + '¿Deseas continuar?';
+        }
 
 
         const confirmado =
             await confirmarAccion({
 
                 titulo:
-                    'Confirmar cambio de sanción',
+                    estadoNuevo === 'Finalizado'
+                        ? 'Confirmar finalización de la queja'
+                        : 'Confirmar cambio de estado',
 
                 mensaje:
-                    'La sanción seleccionada no coincide con la registrada actualmente.'
-                    + '\n\n'
-                    + `Sanción actual: ${textoActual}`
-                    + '\n'
-                    + `Nueva sanción: ${textoNuevo}`
-                    + '\n\n'
-                    + '¿Deseas actualizar la sanción como parte de este seguimiento?',
+                    mensajeEstado,
 
                 textoConfirmar:
-                    'Continuar',
+                    estadoNuevo === 'Finalizado'
+                        ? 'Finalizar'
+                        : 'Cambiar estado',
 
                 textoCancelar:
                     'Cancelar',
@@ -611,6 +647,32 @@ async function procesarNuevoSeguimiento(
         }
 
     }
+
+
+    /* =====================================================
+       SANCIÓN SELECCIONADA
+    ===================================================== */
+
+    const sancionSeleccionada =
+        obtenerSancionSeleccionada(
+            modal
+        );
+
+
+    /* =====================================================
+       DETECTAR CAMBIO REAL DE SANCIÓN
+
+       Ya NO genera confirmación.
+
+       Solamente se utiliza para decidir si realmente
+       debemos enviar una modificación de sanción.
+    ===================================================== */
+
+    const hayCambioSancion =
+        existeCambioRealSancion(
+            estadoSeguimiento.sancionActual,
+            sancionSeleccionada
+        );
 
 
     /* =====================================================
@@ -736,6 +798,15 @@ async function procesarNuevoSeguimiento(
                                 ?.estado_actual
                             || '',
 
+                        estadoAnterior:
+                            estadoActual,
+
+                        estadoNuevo:
+                            estadoNuevo,
+
+                        cambioEstado:
+                            hayCambioEstado,
+
                         sancion:
                             estadoSeguimiento
                                 .sancionActual,
@@ -755,10 +826,28 @@ async function procesarNuevoSeguimiento(
         ================================================= */
 
         mostrarResultado({
-            tipo: 'success',
-            titulo: 'Seguimiento registrado',
+
+            tipo:
+                'success',
+
+            titulo:
+                hayCambioEstado
+                    ? (
+                        estadoNuevo === 'Finalizado'
+                            ? 'Queja finalizada'
+                            : 'Estado actualizado'
+                    )
+                    : 'Seguimiento registrado',
+
             mensaje:
-                'El seguimiento se registró correctamente.',
+                hayCambioEstado
+                    ? (
+                        estadoNuevo === 'Finalizado'
+                            ? 'El seguimiento se registró correctamente y la queja quedó finalizada.'
+                            : `El seguimiento se registró correctamente y el estado cambió a ${estadoNuevo}.`
+                    )
+                    : 'El seguimiento se registró correctamente.',
+
         });
 
 
@@ -879,6 +968,7 @@ async function procesarNuevoSeguimiento(
     }
 
 }
+
 
 /* =========================================================
    INICIAR EDICIÓN

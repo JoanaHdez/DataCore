@@ -343,6 +343,76 @@ export function cargarClasificacionEditar(
 
 
     /* =====================================================
+    ESTADO ACTUAL
+    ===================================================== */
+
+    const estadoActual =
+        String(
+            reporte.estado_actual
+            || 'Pendiente'
+        ).trim();
+
+
+    const inputEstado =
+        modal.querySelector(
+            '#editar-estado-actual'
+        );
+
+
+    const textoEstado =
+        modal.querySelector(
+            '#editar-estado-select-texto'
+        );
+
+
+    const botonEstado =
+        modal.querySelector(
+            '#editar-estado-select'
+        );
+
+
+    const resultadosEstado =
+        modal.querySelector(
+            '#editar-estado-resultados'
+        );
+
+
+    if (inputEstado) {
+
+        inputEstado.value =
+            estadoActual;
+    }
+
+
+    if (textoEstado) {
+
+        textoEstado.textContent =
+            estadoActual;
+    }
+
+
+    if (botonEstado) {
+
+        botonEstado.setAttribute(
+            'aria-expanded',
+            'false'
+        );
+
+
+        botonEstado.classList.remove(
+            'estado-select--activo'
+        );
+    }
+
+
+    if (resultadosEstado) {
+
+        resultadosEstado.hidden =
+            true;
+    }
+
+
+    /* =====================================================
        CLASIFICACIÓN
     ===================================================== */
 
