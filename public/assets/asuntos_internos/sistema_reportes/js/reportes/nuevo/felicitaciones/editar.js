@@ -1,4 +1,3 @@
-
 import {
     abrirModalEditar,
     cerrarModalEditar,
@@ -32,6 +31,7 @@ import {
     inicializarGuardadoEditar,
 } from './editar/guardar.js';
 
+
 /* =========================================================
    SISTEMA DE REPORTES - ASUNTOS INTERNOS
    Felicitaciones - Editar
@@ -40,7 +40,9 @@ import {
 document.addEventListener(
     'DOMContentLoaded',
     () => {
+
         inicializarEditarFelicitacion();
+
     }
 );
 
@@ -79,21 +81,51 @@ function inicializarEditarFelicitacion() {
         modal
     );
 
+
+    /* =====================================================
+       BUSCADOR DE UNIDADES
+    ===================================================== */
+
     inicializarBuscadorUnidadesEditar(
         modal
     );
+
+
+    /* =====================================================
+       BUSCADOR DE PERSONAL
+    ===================================================== */
 
     inicializarBuscadorPersonalEditar(
         modal
     );
 
+
+    /* =====================================================
+       NAVEGACIÓN
+    ===================================================== */
+
     inicializarNavegacionEditar(
         modal
     );
 
+
+    /* =====================================================
+       GUARDADO
+    ===================================================== */
+
     inicializarGuardadoEditar(
         modal
     );
+
+
+    /* =====================================================
+       BLOQUEAR ENTER
+    ===================================================== */
+
+    inicializarBloqueoEnterEditarFelicitacion(
+        modal
+    );
+
 
     /* =====================================================
        ABRIR DESDE BOTÓN EDITAR
@@ -146,8 +178,10 @@ function inicializarEditarFelicitacion() {
                     abrirModalEditar(
                         modal
                     );
+
                 }
             );
+
         }
     );
 
@@ -170,8 +204,10 @@ function inicializarEditarFelicitacion() {
                         cerrarModalEditar(
                             modal
                         );
+
                     }
                 );
+
             }
         );
 
@@ -192,7 +228,94 @@ function inicializarEditarFelicitacion() {
                 cerrarModalEditar(
                     modal
                 );
+
             }
+
         }
     );
+
+}
+
+
+/* =========================================================
+   BLOQUEAR ENTER EN EDITAR FELICITACIÓN
+========================================================= */
+
+function inicializarBloqueoEnterEditarFelicitacion(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const formulario =
+        modal.querySelector(
+            'form'
+        );
+
+
+    if (!formulario) {
+        return;
+    }
+
+
+    /* =====================================================
+       EVITAR INICIALIZACIÓN DUPLICADA
+    ===================================================== */
+
+    if (
+        formulario.dataset
+            .bloqueoEnterInicializado
+        === '1'
+    ) {
+        return;
+    }
+
+
+    formulario.dataset
+        .bloqueoEnterInicializado =
+        '1';
+
+
+    /* =====================================================
+       BLOQUEAR ENTER
+    ===================================================== */
+
+    formulario.addEventListener(
+        'keydown',
+        (evento) => {
+
+            if (
+                evento.key !== 'Enter'
+            ) {
+                return;
+            }
+
+
+            /* =================================================
+               TEXTAREA
+
+               Enter se conserva para permitir saltos
+               de línea.
+            ================================================= */
+
+            if (
+                evento.target
+                    instanceof HTMLTextAreaElement
+            ) {
+                return;
+            }
+
+
+            /* =================================================
+               EVITAR ENVÍO ACCIDENTAL DEL FORMULARIO
+            ================================================= */
+
+            evento.preventDefault();
+
+        }
+    );
+
 }
