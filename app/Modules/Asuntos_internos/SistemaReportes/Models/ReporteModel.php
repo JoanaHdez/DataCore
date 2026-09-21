@@ -71,6 +71,7 @@ class ReporteModel extends Model
     'resolucion',
     'motivos',
     'estado_actual',
+    'origen_estado',
     'sin_sanciones',
     'baja_voluntaria',
     'desistir',

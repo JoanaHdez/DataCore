@@ -1528,6 +1528,7 @@ class Reportes_Controller extends BaseController
                     'resolucion',
                     'motivos',
                     'estado_actual',
+                    'origen_estado',
                     'observaciones',
                     'modalidad_unidad',
 

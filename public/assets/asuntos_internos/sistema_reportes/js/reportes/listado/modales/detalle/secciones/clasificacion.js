@@ -80,7 +80,8 @@ export function cargarClasificacionDetalle(
 
     renderizarSituacionSancion(
         modal,
-        reporte
+        reporte,
+        motivos
     );
 
 
@@ -106,40 +107,145 @@ export function cargarClasificacionDetalle(
 
 function renderizarSituacionSancion(
     modal,
-    reporte
+    reporte,
+    motivos = []
 ) {
 
-    const esBajaVoluntaria =
-        Number(
-            reporte.baja_voluntaria
-            ?? 0
-        ) === 1;
+    const origenEstado =
+        String(
+            reporte.origen_estado
+            ?? ''
+        ).trim();
 
 
-    const esSinSanciones =
-        Number(
-            reporte.sin_sanciones
-            ?? 0
-        ) === 1;
+    const estadoActual =
+        String(
+            reporte.estado_actual
+            ?? ''
+        ).trim();
+
+
+    const estaFinalizado =
+        estadoActual === 'Finalizado';
+
+
+    const tieneMotivos =
+        Array.isArray(
+            motivos
+        )
+        && motivos.length > 0;
 
 
     let texto =
-        'Con seguimiento de sanción';
+        'Sin motivos relacionados';
 
+
+    /* =====================================================
+       REPORTE FINALIZADO
+    ===================================================== */
+
+    if (estaFinalizado) {
+
+        switch (origenEstado) {
+
+            case 'sin_sancion':
+
+                texto =
+                    'Finalizado sin sanción';
+
+                break;
+
+
+            case 'baja_voluntaria':
+
+                texto =
+                    'Finalizado por baja voluntaria';
+
+                break;
+
+
+            case 'desistimiento':
+
+                texto =
+                    'Finalizado por desistimiento';
+
+                break;
+
+
+            case 'seguimiento':
+
+                texto =
+                    'Finalizado por seguimiento';
+
+                break;
+
+
+            case 'manual':
+
+                texto =
+                    'Finalizado manualmente';
+
+                break;
+
+
+            default:
+
+                texto =
+                    'Finalizado';
+
+                break;
+        }
+
+
+        asignarTextoDetalle(
+            modal,
+            '#detalle-situacion-sancion',
+            texto
+        );
+
+
+        return;
+    }
+
+
+    /* =====================================================
+       REPORTE NO FINALIZADO
+    ===================================================== */
 
     if (
-        esBajaVoluntaria
+        origenEstado === 'sin_sancion'
+        || Number(
+            reporte.sin_sanciones
+            ?? 0
+        ) === 1
     ) {
 
         texto =
-            'Baja voluntaria';
+            'Sin sanción asignada';
 
     } else if (
-        esSinSanciones
+        origenEstado === 'seguimiento'
     ) {
 
         texto =
-            'Sin sanciones';
+            'En seguimiento';
+
+    } else if (
+        origenEstado === 'manual'
+    ) {
+
+        texto =
+            'Estado actualizado manualmente';
+
+    } else if (tieneMotivos) {
+
+        texto =
+            'Con motivos relacionados';
+
+    } else {
+
+        texto =
+            'Sin motivos relacionados';
     }
 
 

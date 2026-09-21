@@ -105,6 +105,78 @@ class ReporteService
 
 
             /* =====================================================
+            ORIGEN INICIAL DEL ESTADO
+            ===================================================== */
+
+            $estadoInicial =
+                trim(
+                    (string) (
+                        $datosReporte['estado_actual']
+                        ?? 'Pendiente'
+                    )
+                );
+
+
+            $sinSanciones =
+                (int) (
+                    $datosReporte['sin_sanciones']
+                    ?? 0
+                ) === 1;
+
+
+            $bajaVoluntaria =
+                (int) (
+                    $datosReporte['baja_voluntaria']
+                    ?? 0
+                ) === 1;
+
+
+            $desistir =
+                (int) (
+                    $datosReporte['desistir']
+                    ?? 0
+                ) === 1;
+
+
+            /* =====================================================
+            DETERMINAR ORIGEN
+            ===================================================== */
+
+            if ($sinSanciones) {
+
+                $datosReporte['origen_estado'] =
+                    'sin_sancion';
+            } elseif ($bajaVoluntaria) {
+
+                $datosReporte['origen_estado'] =
+                    'baja_voluntaria';
+            } elseif ($desistir) {
+
+                $datosReporte['origen_estado'] =
+                    'desistimiento';
+            } elseif ($estadoInicial === 'Finalizado') {
+
+                /*
+                * Se registró directamente como Finalizado
+                * desde el formulario Nuevo.
+                */
+
+                $datosReporte['origen_estado'] =
+                    'manual';
+            } else {
+
+                /*
+                * Para un reporte nuevo Pendiente o En proceso
+                * todavía no necesitamos atribuir un origen
+                * especial al estado.
+                */
+
+                $datosReporte['origen_estado'] =
+                    null;
+            }
+
+
+            /* =====================================================
             VALIDAR FOLIOS IP / IMP ÚNICOS
             ===================================================== */
 
@@ -464,19 +536,19 @@ class ReporteService
 
         $reporteActual =
             $this->db
-                ->table(
-                    'ai_reportes'
-                )
-                ->where(
-                    'id_reporte',
-                    $idReporte
-                )
-                ->where(
-                    'eliminado',
-                    0
-                )
-                ->get()
-                ->getRowArray();
+            ->table(
+                'ai_reportes'
+            )
+            ->where(
+                'id_reporte',
+                $idReporte
+            )
+            ->where(
+                'eliminado',
+                0
+            )
+            ->get()
+            ->getRowArray();
 
 
         if (!$reporteActual) {
@@ -515,15 +587,155 @@ class ReporteService
 
 
             /*
-            * Estos campos no deben tomarse directamente
-            * del formulario durante una edición.
-            */
+         * Estos campos no deben tomarse directamente
+         * del formulario durante una edición.
+         */
 
             unset(
                 $datosReporte['created_by'],
                 $datosReporte['eliminado'],
                 $datosReporte['tipo_registro']
             );
+
+
+            /* =====================================================
+            DETERMINAR ORIGEN DEL ESTADO
+            ===================================================== */
+
+            $estadoAnterior =
+                trim(
+                    (string) (
+                        $reporteActual['estado_actual']
+                        ?? 'Pendiente'
+                    )
+                );
+
+
+            $estadoNuevo =
+                trim(
+                    (string) (
+                        $datosReporte['estado_actual']
+                        ?? $estadoAnterior
+                    )
+                );
+
+
+            $origenEstadoAnterior =
+                trim(
+                    (string) (
+                        $reporteActual['origen_estado']
+                        ?? ''
+                    )
+                );
+
+
+            /* -----------------------------------------------------
+            SITUACIÓN ANTERIOR
+            ----------------------------------------------------- */
+
+            $sinSancionesAnterior =
+                (int) (
+                    $reporteActual['sin_sanciones']
+                    ?? 0
+                ) === 1;
+
+
+            $bajaVoluntariaAnterior =
+                (int) (
+                    $reporteActual['baja_voluntaria']
+                    ?? 0
+                ) === 1;
+
+
+            $desistirAnterior =
+                (int) (
+                    $reporteActual['desistir']
+                    ?? 0
+                ) === 1;
+
+
+            $teniaSituacionEspecial =
+                $sinSancionesAnterior
+                || $bajaVoluntariaAnterior
+                || $desistirAnterior;
+
+
+            /* -----------------------------------------------------
+            SITUACIÓN NUEVA
+            ----------------------------------------------------- */
+
+            $sinSancionesNuevo =
+                (int) (
+                    $datosReporte['sin_sanciones']
+                    ?? 0
+                ) === 1;
+
+
+            $bajaVoluntariaNuevo =
+                (int) (
+                    $datosReporte['baja_voluntaria']
+                    ?? 0
+                ) === 1;
+
+
+            $desistirNuevo =
+                (int) (
+                    $datosReporte['desistir']
+                    ?? 0
+                ) === 1;
+
+
+            /* -----------------------------------------------------
+            ASIGNAR ORIGEN
+            ----------------------------------------------------- */
+
+            if ($sinSancionesNuevo) {
+
+                $datosReporte['origen_estado'] =
+                    'sin_sancion';
+            } elseif ($bajaVoluntariaNuevo) {
+
+                $datosReporte['origen_estado'] =
+                    'baja_voluntaria';
+            } elseif ($desistirNuevo) {
+
+                $datosReporte['origen_estado'] =
+                    'desistimiento';
+            } elseif (
+                $estadoNuevo !== $estadoAnterior
+                || $teniaSituacionEspecial
+            ) {
+
+                /*
+             * El estado fue modificado directamente desde
+             * Editar Queja.
+             *
+             * También entra aquí si se retiró una condición
+             * especial que anteriormente definía el origen.
+             */
+
+                $datosReporte['origen_estado'] =
+                    'manual';
+            } else {
+
+                /*
+             * Si no cambió el estado ni hubo una modificación
+             * de su situación especial, conservamos el origen
+             * anterior.
+             *
+             * Ejemplo:
+             *
+             * origen_estado = seguimiento
+             * y solamente se corrige una dirección.
+             *
+             * Debe continuar siendo seguimiento.
+             */
+
+                $datosReporte['origen_estado'] =
+                    $origenEstadoAnterior !== ''
+                    ? $origenEstadoAnterior
+                    : null;
+            }
 
 
             /* =====================================================
@@ -600,7 +812,6 @@ class ReporteService
 
                 $claveFolioActual =
                     'QJV';
-
             } elseif (
                 str_starts_with(
                     $folioActual,
@@ -610,7 +821,6 @@ class ReporteService
 
                 $claveFolioActual =
                     'QJF';
-
             } elseif (
                 str_starts_with(
                     $folioActual,
@@ -639,21 +849,21 @@ class ReporteService
             if ($cambioTipoFolio) {
 
                 /*
-                * Cambió, por ejemplo:
-                *
-                * QJ -> QJV
-                * QJ -> QJF
-                * QJF -> QJ
-                *
-                * Consumimos el siguiente consecutivo
-                * de la nueva familia.
-                */
+             * Cambió, por ejemplo:
+             *
+             * QJ -> QJV
+             * QJ -> QJF
+             * QJF -> QJ
+             *
+             * Consumimos el siguiente consecutivo
+             * de la nueva familia.
+             */
 
                 $folioGenerado =
                     $this->folioService
-                        ->generar(
-                            $claveFolioNueva
-                        );
+                    ->generar(
+                        $claveFolioNueva
+                    );
 
 
                 $datosReporte['numero_folio'] =
@@ -681,13 +891,12 @@ class ReporteService
                         'No fue posible generar el nuevo folio.'
                     );
                 }
-
             } else {
 
                 /*
-                * Si conserva la misma familia,
-                * conserva exactamente su número y folio.
-                */
+             * Si conserva la misma familia,
+             * conserva exactamente su número y folio.
+             */
 
                 $datosReporte['numero_folio'] =
                     (int) (
@@ -796,10 +1005,10 @@ class ReporteService
 
             $actualizado =
                 $this->reporteModel
-                    ->update(
-                        $idReporte,
-                        $datosReporte
-                    );
+                ->update(
+                    $idReporte,
+                    $datosReporte
+                );
 
 
             if ($actualizado === false) {
@@ -960,37 +1169,36 @@ class ReporteService
             return [
 
                 'success' =>
-                    true,
+                true,
 
                 'id_reporte' =>
-                    $idReporte,
+                $idReporte,
 
                 'tipo_registro' =>
-                    (string) (
-                        $reporteActual['tipo_registro']
-                        ?? 'QUEJA'
-                    ),
+                (string) (
+                    $reporteActual['tipo_registro']
+                    ?? 'QUEJA'
+                ),
 
                 'clave_folio' =>
-                    $claveFolioNueva,
+                $claveFolioNueva,
 
                 'numero_folio' =>
-                    (int) $datosReporte['numero_folio'],
+                (int) $datosReporte['numero_folio'],
 
                 'folio' =>
-                    (string) $datosReporte['folio'],
+                (string) $datosReporte['folio'],
 
                 'nomenclatura' =>
-                    (string) $datosReporte['nomenclatura'],
+                (string) $datosReporte['nomenclatura'],
 
                 'modalidad_unidad' =>
-                    (string) (
-                        $datosReporte['modalidad_unidad']
-                        ?? ''
-                    ),
+                (string) (
+                    $datosReporte['modalidad_unidad']
+                    ?? ''
+                ),
 
             ];
-
         } catch (\Throwable $e) {
 
             /* =====================================================
@@ -1104,20 +1312,20 @@ class ReporteService
         $situacionesActivas =
             (
                 $sinSanciones
-                    ? 1
-                    : 0
+                ? 1
+                : 0
             )
             +
             (
                 $bajaVoluntaria
-                    ? 1
-                    : 0
+                ? 1
+                : 0
             )
             +
             (
                 $desistir
-                    ? 1
-                    : 0
+                ? 1
+                : 0
             );
 
 
@@ -1138,7 +1346,7 @@ class ReporteService
         $estadoActual =
             $this->normalizarEstadoActual(
                 $datos['estado_actual']
-                ?? 'Pendiente'
+                    ?? 'Pendiente'
             );
 
 
