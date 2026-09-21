@@ -340,6 +340,38 @@ function crearMovimientoHistorial(
         'seguimiento-historial__acciones';
 
 
+    /* =====================================================
+       DETALLES
+    ===================================================== */
+
+    const botonDetalles =
+        document.createElement(
+            'button'
+        );
+
+
+    botonDetalles.type =
+        'button';
+
+
+    botonDetalles.className =
+        'seguimiento-historial__editar seguimiento-historial__detalles';
+
+
+    botonDetalles.dataset.detalleSeguimiento =
+        String(
+            seguimiento.id_seguimiento
+        );
+
+
+    botonDetalles.textContent =
+        'Detalles';
+
+
+    /* =====================================================
+       EDITAR
+    ===================================================== */
+
     const botonEditar =
         document.createElement(
             'button'
@@ -365,6 +397,11 @@ function crearMovimientoHistorial(
 
 
     acciones.appendChild(
+        botonDetalles
+    );
+
+
+    acciones.appendChild(
         botonEditar
     );
 
@@ -377,7 +414,6 @@ function crearMovimientoHistorial(
     return item;
 
 }
-
 
 /* =========================================================
    TEXTO SANCIÓN

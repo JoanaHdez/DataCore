@@ -84,7 +84,8 @@ export function prepararFormularioSeguimiento(
 
 export function actualizarInterfazModoFormulario(
     modal,
-    editando
+    editando,
+    detalle = false
 ) {
 
     const eyebrow =
@@ -111,40 +112,91 @@ export function actualizarInterfazModoFormulario(
         );
 
 
+    /* =====================================================
+       TEXTOS
+    ===================================================== */
+
     if (eyebrow) {
 
         eyebrow.textContent =
-            editando
-                ? 'Corrección de movimiento'
-                : 'Nuevo movimiento';
+            detalle
+                ? 'Consulta de movimiento'
+                : (
+                    editando
+                        ? 'Corrección de movimiento'
+                        : 'Nuevo movimiento'
+                );
     }
 
 
     if (titulo) {
 
         titulo.textContent =
-            editando
-                ? 'Editar seguimiento'
-                : 'Registrar seguimiento';
+            detalle
+                ? 'Detalle del seguimiento'
+                : (
+                    editando
+                        ? 'Editar seguimiento'
+                        : 'Registrar seguimiento'
+                );
     }
 
+
+    /* =====================================================
+       BOTÓN GUARDAR
+    ===================================================== */
 
     if (botonGuardar) {
 
-        botonGuardar.textContent =
-            editando
-                ? 'Guardar cambios'
-                : 'Registrar seguimiento';
+        if (detalle) {
+
+            botonGuardar.hidden =
+                true;
+
+
+            botonGuardar.style
+                .setProperty(
+                    'display',
+                    'none',
+                    'important'
+                );
+
+        } else {
+
+            botonGuardar.hidden =
+                false;
+
+
+            botonGuardar.style
+                .removeProperty(
+                    'display'
+                );
+
+
+            botonGuardar.textContent =
+                editando
+                    ? 'Guardar cambios'
+                    : 'Registrar seguimiento';
+        }
     }
 
 
+    /* =====================================================
+       ACCIONES DE EDICIÓN
+    ===================================================== */
+
     if (accionesEdicion) {
 
+        const mostrarAcciones =
+            editando
+            && !detalle;
+
+
         accionesEdicion.hidden =
-            !editando;
+            !mostrarAcciones;
 
 
-        if (editando) {
+        if (mostrarAcciones) {
 
             accionesEdicion.style
                 .removeProperty(
@@ -161,6 +213,35 @@ export function actualizarInterfazModoFormulario(
                 );
         }
     }
+
+
+    /* =====================================================
+       CAMPOS DEL FORMULARIO
+    ===================================================== */
+
+    const campos =
+        modal.querySelectorAll(
+            '#form-seguimiento-reporte input, '
+            + '#form-seguimiento-reporte select, '
+            + '#form-seguimiento-reporte textarea'
+        );
+
+
+    campos.forEach(
+        (campo) => {
+
+            if (
+                campo.type === 'hidden'
+            ) {
+                return;
+            }
+
+
+            campo.disabled =
+                detalle;
+        }
+    );
+
 }
 
 /* =========================================================
@@ -591,5 +672,189 @@ export function cancelarEdicionSeguimiento(
         modal,
         estadoSeguimiento.modoEdicion
     );
+
+}
+
+/* =========================================================
+   INICIAR DETALLE
+========================================================= */
+
+export function iniciarDetalleSeguimiento(
+    modal,
+    formulario,
+    seguimiento,
+    estadoSeguimiento
+) {
+
+    const idSeguimiento =
+        Number(
+            seguimiento?.id_seguimiento
+            || 0
+        );
+
+
+    if (
+        !Number.isInteger(idSeguimiento)
+        || idSeguimiento <= 0
+    ) {
+
+        window.alert(
+            'No fue posible identificar el seguimiento que deseas consultar.'
+        );
+
+        return;
+    }
+
+
+    /* =====================================================
+       ESTADO DE DETALLE
+    ===================================================== */
+
+    estadoSeguimiento.modoEdicion =
+        false;
+
+
+    estadoSeguimiento.modoDetalle =
+        true;
+
+
+    estadoSeguimiento.idSeguimientoEdicion =
+        0;
+
+
+    estadoSeguimiento.seguimientoEdicion =
+        null;
+
+
+    /* =====================================================
+       DATOS
+    ===================================================== */
+
+    asignarValor(
+        formulario,
+        '#seguimiento-fecha',
+        seguimiento.fecha
+    );
+
+
+    asignarValor(
+        formulario,
+        '#seguimiento-tipo',
+        seguimiento.tipo
+    );
+
+
+    asignarValor(
+        formulario,
+        '#seguimiento-estado',
+        seguimiento.estado
+    );
+
+
+    asignarValor(
+        formulario,
+        '#seguimiento-observaciones',
+        seguimiento.observaciones
+    );
+
+
+    /* =====================================================
+       FOLIO IP ACTUAL DEL REPORTE
+    ===================================================== */
+
+    asignarValor(
+        formulario,
+        '#seguimiento-folio-ip',
+        estadoSeguimiento
+            .reporte
+            ?.folio_ip
+        || ''
+    );
+
+
+    /* =====================================================
+       SANCIÓN DEL SEGUIMIENTO
+    ===================================================== */
+
+    const sancion =
+        seguimiento.sancion;
+
+
+    const selectSancion =
+        modal.querySelector(
+            '#seguimiento-sancion'
+        );
+
+
+    const inputOtro =
+        modal.querySelector(
+            '#seguimiento-sancion-otro'
+        );
+
+
+    if (selectSancion) {
+
+        selectSancion.value =
+            sancion?.tipo
+            || '';
+    }
+
+
+    if (inputOtro) {
+
+        inputOtro.value =
+            sancion?.tipo === 'Otro'
+                ? sancion.descripcion_otro
+                : '';
+    }
+
+
+    actualizarCampoOtroSancion(
+        modal
+    );
+
+
+    if (
+        sancion?.tipo === 'Otro'
+        && inputOtro
+    ) {
+
+        inputOtro.value =
+            sancion.descripcion_otro
+            || '';
+    }
+
+
+    /* =====================================================
+       INTERFAZ MODO DETALLE
+    ===================================================== */
+
+    actualizarInterfazModoFormulario(
+        modal,
+        false,
+        true
+    );
+
+
+    /* =====================================================
+       SUBIR AL FORMULARIO
+    ===================================================== */
+
+    const seccion =
+        modal.querySelector(
+            '.seguimiento-reporte__section'
+        );
+
+
+    if (seccion) {
+
+        seccion.scrollIntoView({
+            behavior:
+                'smooth',
+
+            block:
+                'start',
+        });
+    }
 
 }

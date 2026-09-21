@@ -41,6 +41,7 @@ import {
     actualizarInterfazModoFormulario,
     cargarDatosSeguimiento,
     iniciarEdicionSeguimiento,
+    iniciarDetalleSeguimiento,
     inicializarCancelarEdicion,
     cancelarEdicionSeguimiento,
 } from './seguimiento/formulario.js';
@@ -82,6 +83,9 @@ const estadoSeguimiento = {
         [],
 
     modoEdicion:
+        false,
+
+    modoDetalle:
         false,
 
     idSeguimientoEdicion:
@@ -304,6 +308,71 @@ function inicializarSeguimientoReporte() {
                     false;
 
             }
+
+        }
+    );
+
+
+    /* =====================================================
+    DETALLES DESDE HISTORIAL
+    ===================================================== */
+
+    modal.addEventListener(
+        'click',
+        (evento) => {
+
+            const botonDetalles =
+                evento.target.closest(
+                    '[data-detalle-seguimiento]'
+                );
+
+
+            if (!botonDetalles) {
+                return;
+            }
+
+
+            const idSeguimiento =
+                Number(
+                    botonDetalles.dataset
+                        .detalleSeguimiento
+                    || 0
+                );
+
+
+            if (
+                !Number.isInteger(idSeguimiento)
+                || idSeguimiento <= 0
+            ) {
+                return;
+            }
+
+
+            const seguimiento =
+                estadoSeguimiento.seguimientos
+                    .find(
+                        (item) =>
+                            item.id_seguimiento
+                            === idSeguimiento
+                    );
+
+
+            if (!seguimiento) {
+
+                window.alert(
+                    'No fue posible localizar el seguimiento.'
+                );
+
+                return;
+            }
+
+
+            iniciarDetalleSeguimiento(
+                modal,
+                formulario,
+                seguimiento,
+                estadoSeguimiento
+            );
 
         }
     );
@@ -1624,10 +1693,11 @@ function limpiarModoEdicion() {
     estadoSeguimiento.modoEdicion =
         false;
 
+    estadoSeguimiento.modoDetalle =
+        false;
 
     estadoSeguimiento.idSeguimientoEdicion =
         0;
-
 
     estadoSeguimiento.seguimientoEdicion =
         null;
