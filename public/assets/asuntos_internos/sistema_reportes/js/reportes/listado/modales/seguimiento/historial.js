@@ -182,6 +182,11 @@ function crearMovimientoHistorial(
     );
 
 
+    item.appendChild(
+        header
+    );
+
+
     /* =====================================================
        ESTADO
     ===================================================== */
@@ -203,9 +208,104 @@ function crearMovimientoHistorial(
         || 'Pendiente';
 
 
+    item.appendChild(
+        estado
+    );
+
+
+    /* =====================================================
+       SANCIÓN
+    ===================================================== */
+
+    if (
+        seguimiento.sancion
+        && seguimiento.sancion.tipo
+    ) {
+
+        const bloqueSancion =
+            document.createElement(
+                'div'
+            );
+
+
+        bloqueSancion.className =
+            'seguimiento-historial__sancion';
+
+
+        const etiquetaSancion =
+            document.createElement(
+                'strong'
+            );
+
+
+        etiquetaSancion.className =
+            'seguimiento-historial__sancion-etiqueta';
+
+
+        etiquetaSancion.textContent =
+            'Sanción';
+
+
+        const valorSancion =
+            document.createElement(
+                'span'
+            );
+
+
+        valorSancion.className =
+            'seguimiento-historial__sancion-valor';
+
+
+        valorSancion.textContent =
+            obtenerTextoSancion(
+                seguimiento.sancion
+            );
+
+
+        bloqueSancion.appendChild(
+            etiquetaSancion
+        );
+
+
+        bloqueSancion.appendChild(
+            valorSancion
+        );
+
+
+        item.appendChild(
+            bloqueSancion
+        );
+
+    }
+
+
     /* =====================================================
        OBSERVACIONES
     ===================================================== */
+
+    const bloqueObservaciones =
+        document.createElement(
+            'div'
+        );
+
+
+    bloqueObservaciones.className =
+        'seguimiento-historial__observaciones-bloque';
+
+
+    const etiquetaObservaciones =
+        document.createElement(
+            'strong'
+        );
+
+
+    etiquetaObservaciones.className =
+        'seguimiento-historial__observaciones-etiqueta';
+
+
+    etiquetaObservaciones.textContent =
+        'Observaciones';
+
 
     const observaciones =
         document.createElement(
@@ -222,77 +322,19 @@ function crearMovimientoHistorial(
         || 'Sin observaciones.';
 
 
-    item.appendChild(
-        header
+    bloqueObservaciones.appendChild(
+        etiquetaObservaciones
     );
 
 
-    item.appendChild(
-        estado
-    );
-
-
-    item.appendChild(
+    bloqueObservaciones.appendChild(
         observaciones
     );
 
 
-    /* =====================================================
-       SANCIÓN
-    ===================================================== */
-
-    if (
-        seguimiento.sancion
-        && seguimiento.sancion.tipo
-    ) {
-
-        const bloque =
-            document.createElement(
-                'div'
-            );
-
-
-        bloque.className =
-            'seguimiento-historial__sancion';
-
-
-        const etiqueta =
-            document.createElement(
-                'strong'
-            );
-
-
-        etiqueta.textContent =
-            'Cambio de sanción disciplinaria';
-
-
-        const valor =
-            document.createElement(
-                'span'
-            );
-
-
-        valor.textContent =
-            obtenerTextoSancion(
-                seguimiento.sancion
-            );
-
-
-        bloque.appendChild(
-            etiqueta
-        );
-
-
-        bloque.appendChild(
-            valor
-        );
-
-
-        item.appendChild(
-            bloque
-        );
-
-    }
+    item.appendChild(
+        bloqueObservaciones
+    );
 
 
     /* =====================================================
@@ -414,6 +456,7 @@ function crearMovimientoHistorial(
     return item;
 
 }
+
 
 /* =========================================================
    TEXTO SANCIÓN

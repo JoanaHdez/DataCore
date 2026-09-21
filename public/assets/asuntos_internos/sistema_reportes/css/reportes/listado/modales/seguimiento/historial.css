@@ -219,7 +219,88 @@
 
 
 /* =========================================================
-   OBSERVACIONES
+   SANCIÓN
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-historial__sancion {
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-historial__sancion-etiqueta {
+
+    color: #173554;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    line-height: 1.4;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-historial__sancion-valor {
+
+    color: #526779;
+
+    font-size: 10px;
+    font-weight: 500;
+
+    line-height: 1.45;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   OBSERVACIONES - CONTENEDOR
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-historial__observaciones-bloque {
+
+    margin-top: 8px;
+
+    padding: 10px 12px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5ebf0;
+    border-radius: 7px;
+}
+
+
+/* =========================================================
+   OBSERVACIONES - ETIQUETA
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-historial__observaciones-etiqueta {
+
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #173554;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   OBSERVACIONES - TEXTO
 ========================================================= */
 
 #modal-seguimiento-reporte
@@ -233,56 +314,14 @@
 
     line-height: 1.6;
 
-    white-space: pre-wrap;
     overflow-wrap: anywhere;
-}
 
+    display: -webkit-box;
 
-/* =========================================================
-   CAMBIO DE SANCIÓN
-========================================================= */
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 
-#modal-seguimiento-reporte
-.seguimiento-historial__sancion {
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 4px;
-
-    margin-top: 8px;
-    margin-bottom: 6px;
-
-    padding: 10px 12px;
-
-    background: #ffffff;
-
-    border: 1px solid #e5ebf0;
-    border-radius: 7px;
-}
-
-
-#modal-seguimiento-reporte
-.seguimiento-historial__sancion strong {
-
-    color: #173554;
-
-    font-size: 10px;
-    font-weight: 800;
-
-    line-height: 1.4;
-}
-
-
-#modal-seguimiento-reporte
-.seguimiento-historial__sancion span {
-
-    color: #526779;
-
-    font-size: 10px;
-    font-weight: 500;
-
-    line-height: 1.45;
+    overflow: hidden;
 }
 
 
@@ -323,7 +362,7 @@
 
 
 /* =========================================================
-   BOTÓN EDITAR
+   BOTONES DETALLES / EDITAR
 ========================================================= */
 
 #modal-seguimiento-reporte
@@ -426,12 +465,40 @@
 @media (max-width: 520px) {
 
     #modal-seguimiento-reporte
+    .seguimiento-historial__item {
+
+        padding:
+            13px
+            12px
+            13px
+            17px;
+    }
+
+
+    #modal-seguimiento-reporte
     .seguimiento-historial__item-header {
 
         align-items: flex-start;
         flex-direction: column;
 
         gap: 3px;
+    }
+
+
+    #modal-seguimiento-reporte
+    .seguimiento-historial__sancion {
+
+        margin-top: 6px;
+        margin-bottom: 6px;
+    }
+
+
+    #modal-seguimiento-reporte
+    .seguimiento-historial__observaciones-bloque {
+
+        margin-top: 6px;
+
+        padding: 9px 10px;
     }
 
 
