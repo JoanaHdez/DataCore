@@ -6761,6 +6761,9 @@ class Reportes_Controller extends BaseController
                     'estado_actual' =>
                     $estado,
 
+                    'origen_estado' =>
+                    'seguimiento',
+
                     'updated_by' =>
                     $idUsuario,
 
@@ -7851,6 +7854,9 @@ class Reportes_Controller extends BaseController
 
                         'estado_actual' =>
                             $estadoActualReporte,
+
+                        'origen_estado' =>
+                            'seguimiento',
 
                         'updated_by' =>
                             $idUsuario,
