@@ -13,6 +13,124 @@ import {
    Seguimiento - Formulario
 ========================================================= */
 
+/* =========================================================
+   INICIALIZAR MAYÚSCULAS
+========================================================= */
+
+export function inicializarMayusculasSeguimiento(
+    formulario
+) {
+
+    if (!formulario) {
+        return;
+    }
+
+
+    if (
+        formulario.dataset
+            .mayusculasInicializadas === '1'
+    ) {
+        return;
+    }
+
+
+    formulario.dataset
+        .mayusculasInicializadas = '1';
+
+
+    const camposMayusculas = [
+        '#seguimiento-folio-ip',
+        '#seguimiento-observaciones',
+        '#seguimiento-sancion-otro',
+    ];
+
+
+    formulario.addEventListener(
+        'input',
+        (evento) => {
+
+            const campo =
+                evento.target;
+
+
+            if (
+                !(campo instanceof HTMLInputElement)
+                && !(campo instanceof HTMLTextAreaElement)
+            ) {
+                return;
+            }
+
+
+            const aplicaMayusculas =
+                camposMayusculas.some(
+                    (selector) =>
+                        campo.matches(
+                            selector
+                        )
+                );
+
+
+            if (!aplicaMayusculas) {
+                return;
+            }
+
+
+            const valorActual =
+                String(
+                    campo.value
+                    || ''
+                );
+
+
+            const valorMayusculas =
+                valorActual
+                    .toLocaleUpperCase(
+                        'es-MX'
+                    );
+
+
+            if (
+                valorActual === valorMayusculas
+            ) {
+                return;
+            }
+
+
+            const inicioSeleccion =
+                campo.selectionStart;
+
+
+            const finSeleccion =
+                campo.selectionEnd;
+
+
+            campo.value =
+                valorMayusculas;
+
+
+            if (
+                inicioSeleccion !== null
+                && finSeleccion !== null
+            ) {
+
+                try {
+
+                    campo.setSelectionRange(
+                        inicioSeleccion,
+                        finSeleccion
+                    );
+
+                } catch (error) {
+                    // No requiere acción.
+                }
+
+            }
+
+        }
+    );
+
+}
+
 
 /* =========================================================
    PREPARAR FORMULARIO
@@ -398,13 +516,16 @@ export function iniciarEdicionSeguimiento(
 
 
     if (
-        !Number.isInteger(idSeguimiento)
+        !Number.isInteger(
+            idSeguimiento
+        )
         || idSeguimiento <= 0
     ) {
 
         window.alert(
             'No fue posible identificar el seguimiento que deseas editar.'
         );
+
 
         return;
     }
@@ -416,6 +537,10 @@ export function iniciarEdicionSeguimiento(
 
     estadoSeguimiento.modoEdicion =
         true;
+
+
+    estadoSeguimiento.modoDetalle =
+        false;
 
 
     estadoSeguimiento.idSeguimientoEdicion =
@@ -442,11 +567,12 @@ export function iniciarEdicionSeguimiento(
             String(
                 idSeguimiento
             );
+
     }
 
 
     /* =====================================================
-       DATOS
+       FECHA
     ===================================================== */
 
     asignarValor(
@@ -456,12 +582,20 @@ export function iniciarEdicionSeguimiento(
     );
 
 
+    /* =====================================================
+       TIPO
+    ===================================================== */
+
     asignarValor(
         formulario,
         '#seguimiento-tipo',
         seguimiento.tipo
     );
 
+
+    /* =====================================================
+       ESTADO
+    ===================================================== */
 
     asignarValor(
         formulario,
@@ -470,10 +604,21 @@ export function iniciarEdicionSeguimiento(
     );
 
 
+    /* =====================================================
+       OBSERVACIONES
+    ===================================================== */
+
     asignarValor(
         formulario,
         '#seguimiento-observaciones',
-        seguimiento.observaciones
+        String(
+            seguimiento.observaciones
+            || ''
+        )
+            .trim()
+            .toLocaleUpperCase(
+                'es-MX'
+            )
     );
 
 
@@ -484,10 +629,16 @@ export function iniciarEdicionSeguimiento(
     asignarValor(
         formulario,
         '#seguimiento-folio-ip',
-        estadoSeguimiento
-            .reporte
-            ?.folio_ip
-        || ''
+        String(
+            estadoSeguimiento
+                .reporte
+                ?.folio_ip
+            || ''
+        )
+            .trim()
+            .toLocaleUpperCase(
+                'es-MX'
+            )
     );
 
 
@@ -516,17 +667,38 @@ export function iniciarEdicionSeguimiento(
         selectSancion.value =
             sancion?.tipo
             || '';
+
     }
+
+
+    /* =====================================================
+       SANCIÓN OTRO
+    ===================================================== */
+
+    const descripcionOtro =
+        sancion?.tipo === 'Otro'
+            ? String(
+                sancion.descripcion_otro
+                || ''
+            )
+                .trim()
+                .toLocaleUpperCase(
+                    'es-MX'
+                )
+            : '';
 
 
     if (inputOtro) {
 
         inputOtro.value =
-            sancion?.tipo === 'Otro'
-                ? sancion.descripcion_otro
-                : '';
+            descripcionOtro;
+
     }
 
+
+    /* =====================================================
+       ACTUALIZAR CAMPO OTRO
+    ===================================================== */
 
     actualizarCampoOtroSancion(
         modal
@@ -534,10 +706,11 @@ export function iniciarEdicionSeguimiento(
 
 
     /*
-     * actualizarCampoOtroSancion() puede limpiar el input
-     * cuando la opción no es Otro.
+     * actualizarCampoOtroSancion() puede limpiar
+     * #seguimiento-sancion-otro dependiendo de la opción.
      *
-     * Si sí es Otro, aseguramos nuevamente el valor.
+     * Si la sanción es Otro, restauramos el valor ya
+     * normalizado a mayúsculas.
      */
 
     if (
@@ -546,10 +719,14 @@ export function iniciarEdicionSeguimiento(
     ) {
 
         inputOtro.value =
-            sancion.descripcion_otro
-            || '';
+            descripcionOtro;
+
     }
 
+
+    /* =====================================================
+       INTERFAZ MODO EDICIÓN
+    ===================================================== */
 
     actualizarInterfazModoFormulario(
         modal,
@@ -570,15 +747,19 @@ export function iniciarEdicionSeguimiento(
     if (seccion) {
 
         seccion.scrollIntoView({
+
             behavior:
                 'smooth',
 
             block:
                 'start',
+
         });
+
     }
 
 }
+
 
 /* =========================================================
    INICIALIZAR CANCELAR EDICIÓN

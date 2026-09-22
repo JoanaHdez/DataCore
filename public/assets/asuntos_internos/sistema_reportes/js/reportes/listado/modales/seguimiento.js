@@ -44,6 +44,7 @@ import {
     iniciarDetalleSeguimiento,
     inicializarCancelarEdicion,
     cancelarEdicionSeguimiento,
+    inicializarMayusculasSeguimiento,
 } from './seguimiento/formulario.js';
 
 import {
@@ -135,6 +136,10 @@ function inicializarSeguimientoReporte() {
     ) {
         return;
     }
+
+    inicializarMayusculasSeguimiento(
+        formulario
+    );
 
 
     inicializarSancionSeguimiento(
