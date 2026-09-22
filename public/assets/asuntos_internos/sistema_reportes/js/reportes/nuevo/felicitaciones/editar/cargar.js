@@ -34,17 +34,21 @@ export function cargarDatosGeneralesEditar(
         );
 
 
+    const folio =
+        String(
+            felicitacion.folio
+            || ''
+        )
+            .trim()
+            .toLocaleUpperCase(
+                'es-MX'
+            );
+
+
     if (inputFolio) {
 
         inputFolio.value =
-            String(
-                felicitacion.folio
-                || ''
-            )
-                .trim()
-                .toLocaleUpperCase(
-                    'es-MX'
-                );
+            folio;
 
     }
 
@@ -59,167 +63,157 @@ export function cargarDatosGeneralesEditar(
         );
 
 
+    const fechaRegistro =
+        String(
+            felicitacion.fecha_registro
+            || ''
+        ).trim();
+
+
     if (inputFecha) {
 
         inputFecha.value =
-            String(
-                felicitacion.fecha_registro
-                || ''
-            ).trim();
+            fechaRegistro;
 
     }
 
 
     /* =====================================================
-       NOMENCLATURA
+       NOMENCLATURA AUTOMÁTICA
     ===================================================== */
 
-    const inputNomenclaturaParte =
+    const inputNomenclaturaVisual =
         modal.querySelector(
-            '#editar-felicitacion-nomenclatura-parte'
+            '#editar-felicitacion-nomenclatura-visual'
         );
 
 
-    const inputNomenclaturaCompleta =
+    const inputNomenclatura =
         modal.querySelector(
             '#editar-felicitacion-nomenclatura'
         );
 
 
-    const PREFIJO_NOMENCLATURA =
-        'CGSC/CAI/FEL/';
+    /* =====================================================
+       EXTRAER NÚMERO DEL FOLIO
 
+       FEL-15
+       ↓
+       15
+    ===================================================== */
 
-    const nomenclaturaGuardada =
-        String(
-            felicitacion.nomenclatura
-            || ''
-        )
-            .trim()
-            .toLocaleUpperCase(
-                'es-MX'
-            );
-
-
-    let parteVariable =
-        nomenclaturaGuardada;
-
-
-    if (
-        nomenclaturaGuardada.startsWith(
-            PREFIJO_NOMENCLATURA
-        )
-    ) {
-
-        parteVariable =
-            nomenclaturaGuardada
-                .substring(
-                    PREFIJO_NOMENCLATURA.length
-                );
-
-    }
-
-
-    if (inputNomenclaturaParte) {
-
-        inputNomenclaturaParte.value =
-            parteVariable;
-
-    }
-
-
-    if (inputNomenclaturaCompleta) {
-
-        inputNomenclaturaCompleta.value =
-            nomenclaturaGuardada;
-
-    }
+    const numeroFolio =
+        folio
+            .replace(
+                /^FEL-/i,
+                ''
+            )
+            .trim();
 
 
     /* =====================================================
-       ACTUALIZAR NOMENCLATURA AL ESCRIBIR
+       EXTRAER AÑO DE LA FECHA
+
+       22/09/2026
+       ↓
+       2026
     ===================================================== */
 
-    function actualizarNomenclatura() {
+    let anio =
+        '';
+
+
+    if (
+        fechaRegistro !== ''
+    ) {
+
+        const partesFecha =
+            fechaRegistro.split(
+                '/'
+            );
+
 
         if (
-            !inputNomenclaturaParte
-            || !inputNomenclaturaCompleta
+            partesFecha.length === 3
         ) {
-            return;
+
+            anio =
+                String(
+                    partesFecha[2]
+                    || ''
+                ).trim();
+
         }
-
-
-        let parte =
-            String(
-                inputNomenclaturaParte.value
-                || ''
-            );
-
-
-        /* =================================================
-           EVITAR DIAGONAL INICIAL DUPLICADA
-        ================================================= */
-
-        parte =
-            parte.replace(
-                /^\/+/,
-                ''
-            );
-
-
-        /* =================================================
-           MAYÚSCULAS
-        ================================================= */
-
-        parte =
-            parte.toLocaleUpperCase(
-                'es-MX'
-            );
-
-
-        inputNomenclaturaParte.value =
-            parte;
-
-
-        const parteConContenido =
-            parte.trim();
-
-
-        inputNomenclaturaCompleta.value =
-            parteConContenido !== ''
-                ? `${PREFIJO_NOMENCLATURA}${parte}`
-                : '';
 
     }
 
 
     /* =====================================================
-       EVITAR LISTENERS DUPLICADOS
+       SOPORTE PARA FECHA ISO
+
+       2026-09-22
+       ↓
+       2026
+
+       Esto evita problemas si el backend devuelve
+       la fecha en formato Y-m-d.
     ===================================================== */
 
     if (
-        inputNomenclaturaParte
-        && inputNomenclaturaParte.dataset
-            .nomenclaturaInicializada
-        !== '1'
+        anio === ''
+        && /^\d{4}-\d{2}-\d{2}$/.test(
+            fechaRegistro
+        )
     ) {
 
-        inputNomenclaturaParte.dataset
-            .nomenclaturaInicializada =
-            '1';
+        anio =
+            fechaRegistro.substring(
+                0,
+                4
+            );
+
+    }
 
 
-        inputNomenclaturaParte.addEventListener(
-            'input',
-            actualizarNomenclatura
-        );
+    /* =====================================================
+       CONSTRUIR NOMENCLATURA
+
+       FEL-15 + 2026
+       ↓
+       CGSC/CAI/FEL/15/2026
+    ===================================================== */
+
+    const nomenclatura =
+        numeroFolio !== ''
+        && anio !== ''
+            ? `CGSC/CAI/FEL/${numeroFolio}/${anio}`
+            : '';
 
 
-        inputNomenclaturaParte.addEventListener(
-            'change',
-            actualizarNomenclatura
-        );
+    /* =====================================================
+       MOSTRAR NOMENCLATURA
+    ===================================================== */
+
+    if (
+        inputNomenclaturaVisual
+    ) {
+
+        inputNomenclaturaVisual.value =
+            nomenclatura;
+
+    }
+
+
+    /* =====================================================
+       VALOR QUE SE ENVÍA AL BACKEND
+    ===================================================== */
+
+    if (
+        inputNomenclatura
+    ) {
+
+        inputNomenclatura.value =
+            nomenclatura;
 
     }
 
