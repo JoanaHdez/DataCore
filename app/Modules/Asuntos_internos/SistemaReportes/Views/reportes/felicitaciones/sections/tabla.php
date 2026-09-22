@@ -22,6 +22,15 @@
 
         </div>
 
+
+        <div class="felicitaciones-tabla__actions">
+
+            <button type="button" class="felicitaciones-tabla__export" id="btn-exportar-felicitaciones">
+                Exportar Excel
+            </button>
+
+        </div>
+
     </div>
 
 
@@ -312,8 +321,9 @@
 
                             <!-- ELIMINAR -->
 
-                            <button type="button" class="felicitaciones-tabla__accion" data-accion-felicitacion="eliminar" 
-                                data-id-felicitacion="<?= $idFelicitacion ?>"data-folio="<?= esc($folio) ?>">
+                            <button type="button" class="felicitaciones-tabla__accion"
+                                data-accion-felicitacion="eliminar" data-id-felicitacion="<?= $idFelicitacion ?>"
+                                data-folio="<?= esc($folio) ?>">
                                 Eliminar
                             </button>
 

@@ -505,6 +505,96 @@
         0 0 0 3px rgba(189, 59, 50, 0.18);
 }
 
+/* =========================================================
+   ACCIONES DEL ENCABEZADO
+========================================================= */
+
+.felicitaciones-tabla__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   BOTÓN EXPORTAR
+========================================================= */
+
+.felicitaciones-tabla__export {
+    height: 38px;
+
+    padding: 0 16px;
+
+    color: #ffffff;
+    background: #147a4e;
+
+    border: 0;
+    border-radius: 6px;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    transition:
+        background 0.2s ease;
+}
+
+
+.felicitaciones-tabla__export:hover {
+    background: #10653f;
+}
+
+
+/* =========================================================
+   BOTÓN DESHABILITADO
+========================================================= */
+
+.felicitaciones-tabla__export:disabled {
+    opacity: 0.65;
+
+    cursor: not-allowed;
+}
+
+/* =========================================================
+   MODAL EXPORTAR - CANTIDAD DE REGISTROS
+========================================================= */
+
+.felicitaciones-exportar__cantidad-titulo {
+    margin-top: 20px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .felicitaciones-tabla__header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+
+    .felicitaciones-tabla__actions {
+        width: 100%;
+    }
+
+
+    .felicitaciones-tabla__export {
+        width: 100%;
+    }
+
+}
+
 
 /* =========================================================
    RESPONSIVE

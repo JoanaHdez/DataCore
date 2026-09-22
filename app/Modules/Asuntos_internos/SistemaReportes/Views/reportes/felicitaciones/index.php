@@ -124,6 +124,10 @@ $rolUsuario =
         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\felicitaciones\modales\confirmar_eliminacion'
     ) ?>
 
+    <?= $this->include(
+        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\felicitaciones\modales\exportar'
+    ) ?>
+
 </div>
 
 
