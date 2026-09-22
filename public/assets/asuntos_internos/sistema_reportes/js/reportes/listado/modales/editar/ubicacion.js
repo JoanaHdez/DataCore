@@ -201,7 +201,7 @@ export function cargarUbicacionEditar(
 
     const coordenadas =
         latitud
-        && longitud
+            && longitud
             ? `${latitud}, ${longitud}`
             : '';
 
@@ -503,24 +503,106 @@ export function inicializarUbicacionEditar(
 
 
     /* =========================================================
-       BUSCADOR
+    BUSCADOR
     ========================================================= */
 
-    inputBusqueda?.addEventListener(
-        'keydown',
-        (evento) => {
+    if (
+        inputBusqueda
+    ) {
 
-            if (evento.key !== 'Enter') {
-                return;
+        /* =====================================================
+           MAYÚSCULAS MIENTRAS SE ESCRIBE
+        ===================================================== */
+
+        inputBusqueda.addEventListener(
+            'input',
+            () => {
+
+                const valorActual =
+                    String(
+                        inputBusqueda.value
+                        || ''
+                    );
+
+
+                const valorMayusculas =
+                    valorActual
+                        .toLocaleUpperCase(
+                            'es-MX'
+                        );
+
+
+                if (
+                    valorActual
+                    === valorMayusculas
+                ) {
+                    return;
+                }
+
+
+                const inicioSeleccion =
+                    inputBusqueda.selectionStart;
+
+
+                const finSeleccion =
+                    inputBusqueda.selectionEnd;
+
+
+                inputBusqueda.value =
+                    valorMayusculas;
+
+
+                if (
+                    inicioSeleccion !== null
+                    && finSeleccion !== null
+                ) {
+
+                    try {
+
+                        inputBusqueda.setSelectionRange(
+                            inicioSeleccion,
+                            finSeleccion
+                        );
+
+                    } catch (error) {
+
+                        /*
+                         * No afecta el funcionamiento si el navegador
+                         * no permite restaurar la posición del cursor.
+                         */
+
+                    }
+
+                }
+
             }
+        );
 
 
-            evento.preventDefault();
+        /* =====================================================
+           BUSCAR CON ENTER
+        ===================================================== */
 
-            buscarDireccion();
+        inputBusqueda.addEventListener(
+            'keydown',
+            (evento) => {
 
-        }
-    );
+                if (
+                    evento.key !== 'Enter'
+                ) {
+                    return;
+                }
+
+
+                evento.preventDefault();
+
+
+                buscarDireccion();
+
+            }
+        );
+
+    }
 
 
     /* =========================================================
@@ -1003,8 +1085,8 @@ export function inicializarUbicacionEditar(
 
 
     /* =========================================================
-       GOOGLE MAPS
-       DOMICILIO POSTAL
+    GOOGLE MAPS
+    DOMICILIO POSTAL
     ========================================================= */
 
     function completarGoogle(
@@ -1097,27 +1179,28 @@ export function inicializarUbicacionEditar(
 
                 try {
 
+                    /* =================================================
+                       BUSCADOR
+                    ================================================= */
+
                     if (
                         inputBusqueda
                         && resultado.formatted_address
                     ) {
 
-                        inputBusqueda.value =
-                            resultado.formatted_address;
+                        llenarCampo(
+                            inputBusqueda,
+                            normalizarMayusculas(
+                                resultado.formatted_address
+                            )
+                        );
 
                     }
 
 
-                    /*
-                     * Google llena principalmente:
-                     *
-                     * número
-                     * municipio
-                     * estado
-                     *
-                     * Calle y colonia pueden ser reemplazadas
-                     * posteriormente por la base territorial.
-                     */
+                    /* =================================================
+                       CALLE
+                    ================================================= */
 
                     if (
                         !inputCalle?.value
@@ -1126,17 +1209,27 @@ export function inicializarUbicacionEditar(
 
                         llenarCampo(
                             inputCalle,
-                            calle
+                            normalizarMayusculas(
+                                calle
+                            )
                         );
 
                     }
 
+
+                    /* =================================================
+                       NÚMERO
+                    ================================================= */
 
                     llenarCampo(
                         inputNumero,
                         numero
                     );
 
+
+                    /* =================================================
+                       COLONIA
+                    ================================================= */
 
                     if (
                         !inputColonia?.value
@@ -1145,22 +1238,37 @@ export function inicializarUbicacionEditar(
 
                         llenarCampo(
                             inputColonia,
-                            colonia
+                            normalizarMayusculas(
+                                colonia
+                            )
                         );
 
                     }
 
 
+                    /* =================================================
+                       MUNICIPIO
+                    ================================================= */
+
                     llenarCampo(
                         inputMunicipio,
-                        municipio
+                        normalizarMayusculas(
+                            municipio
+                        )
                     );
 
+
+                    /* =================================================
+                       ESTADO
+                    ================================================= */
 
                     llenarCampo(
                         inputEstado,
-                        estado
+                        normalizarMayusculas(
+                            estado
+                        )
                     );
+
 
                 } finally {
 
@@ -1200,11 +1308,11 @@ export function inicializarUbicacionEditar(
                     base
                 ); */
 
-const url =
-    new URL(
-        'DataCore/public/asuntos-internos/reportes/ubicacion/territorio',
-        `${window.location.origin}/`
-    );
+            const url =
+                new URL(
+                    'DataCore/public/asuntos-internos/reportes/ubicacion/territorio',
+                    `${window.location.origin}/`
+                );
 
             url.searchParams.set(
                 'lat',
@@ -1545,93 +1653,93 @@ const url =
 
     function actualizarDesdeFormulario() {
 
-    const latitudInicial =
-        Number(
+        const latitudInicial =
+            Number(
+                inputLatitud?.value
+            );
+
+        const longitudInicial =
+            Number(
+                inputLongitud?.value
+            );
+
+
+        if (
             inputLatitud?.value
-        );
+            && inputLongitud?.value
+            && !Number.isNaN(
+                latitudInicial
+            )
+            && !Number.isNaN(
+                longitudInicial
+            )
+        ) {
 
-    const longitudInicial =
-        Number(
-            inputLongitud?.value
-        );
+            const posicion = {
+                lat:
+                    latitudInicial,
+
+                lng:
+                    longitudInicial,
+            };
 
 
-    if (
-        inputLatitud?.value
-        && inputLongitud?.value
-        && !Number.isNaN(
-            latitudInicial
-        )
-        && !Number.isNaN(
-            longitudInicial
-        )
-    ) {
+            marcador.setPosition(
+                posicion
+            );
 
-        const posicion = {
-            lat:
+            marcador.setVisible(
+                true
+            );
+
+
+            mapa.setCenter(
+                posicion
+            );
+
+            mapa.setZoom(
+                18
+            );
+
+
+            guardarCoordenadas(
                 latitudInicial,
+                longitudInicial
+            );
 
-            lng:
+
+            const miSecuencia =
+                ++secuencia;
+
+
+            completarTerritorio(
+                latitudInicial,
                 longitudInicial,
-        };
+                miSecuencia
+            );
 
 
-        marcador.setPosition(
-            posicion
-        );
+        } else {
 
-        marcador.setVisible(
-            true
-        );
+            marcador.setVisible(
+                false
+            );
 
 
-        mapa.setCenter(
-            posicion
-        );
+            mapa.setCenter(
+                CENTRO
+            );
 
-        mapa.setZoom(
-            18
-        );
+            mapa.setZoom(
+                16
+            );
 
-
-        guardarCoordenadas(
-            latitudInicial,
-            longitudInicial
-        );
+        }
 
 
-        const miSecuencia =
-            ++secuencia;
-
-
-        completarTerritorio(
-            latitudInicial,
-            longitudInicial,
-            miSecuencia
-        );
-
-
-    } else {
-
-        marcador.setVisible(
-            false
-        );
-
-
-        mapa.setCenter(
-            CENTRO
-        );
-
-        mapa.setZoom(
-            16
-        );
+        redibujarMapa();
 
     }
-
-
-    redibujarMapa();
-
-}
 
 
     /* =========================================================

@@ -141,7 +141,7 @@ export function cargarDireccionNotificacionEditar(
 
     const datos =
         direccion
-        && typeof direccion === 'object'
+            && typeof direccion === 'object'
             ? direccion
             : {};
 
@@ -164,10 +164,10 @@ export function cargarDireccionNotificacionEditar(
 
     const perteneceNeza =
         datos.pertenece_neza !== null
-        && datos.pertenece_neza !== undefined
-        && String(
-            datos.pertenece_neza
-        ).trim() !== ''
+            && datos.pertenece_neza !== undefined
+            && String(
+                datos.pertenece_neza
+            ).trim() !== ''
             ? Number(
                 datos.pertenece_neza
             )
@@ -651,7 +651,7 @@ export function inicializarDireccionNotificacionEditar(
 
         campo.value =
             valor === null
-            || valor === undefined
+                || valor === undefined
                 ? ''
                 : String(
                     valor
@@ -815,8 +815,8 @@ export function inicializarDireccionNotificacionEditar(
 
 
     /* =====================================================
-       GOOGLE MAPS - DIRECCIÓN
-    ===================================================== */
+   GOOGLE MAPS - DIRECCIÓN
+===================================================== */
 
     function completarGoogle(
         posicion,
@@ -909,15 +909,28 @@ export function inicializarDireccionNotificacionEditar(
 
                 try {
 
+                    /* =================================================
+                       BUSCADOR
+                    ================================================= */
+
                     if (
                         inputBusqueda
                         && resultado.formatted_address
                     ) {
 
-                        inputBusqueda.value =
-                            resultado.formatted_address;
+                        llenarCampo(
+                            inputBusqueda,
+                            normalizarMayusculas(
+                                resultado.formatted_address
+                            )
+                        );
+
                     }
 
+
+                    /* =================================================
+                       CALLE
+                    ================================================= */
 
                     if (
                         !inputCalle?.value
@@ -930,17 +943,29 @@ export function inicializarDireccionNotificacionEditar(
                                 calle
                             )
                         );
+
                     }
 
 
-                    if (numero) {
+                    /* =================================================
+                       NÚMERO
+                    ================================================= */
+
+                    if (
+                        numero
+                    ) {
 
                         llenarCampo(
                             inputNumero,
                             numero
                         );
+
                     }
 
+
+                    /* =================================================
+                       COLONIA
+                    ================================================= */
 
                     if (
                         !inputColonia?.value
@@ -953,10 +978,17 @@ export function inicializarDireccionNotificacionEditar(
                                 colonia
                             )
                         );
+
                     }
 
 
-                    if (municipio) {
+                    /* =================================================
+                       MUNICIPIO
+                    ================================================= */
+
+                    if (
+                        municipio
+                    ) {
 
                         llenarCampo(
                             inputMunicipio,
@@ -964,10 +996,17 @@ export function inicializarDireccionNotificacionEditar(
                                 municipio
                             )
                         );
+
                     }
 
 
-                    if (estado) {
+                    /* =================================================
+                       ESTADO
+                    ================================================= */
+
+                    if (
+                        estado
+                    ) {
 
                         llenarCampo(
                             inputEstado,
@@ -975,15 +1014,20 @@ export function inicializarDireccionNotificacionEditar(
                                 estado
                             )
                         );
+
                     }
+
 
                 } finally {
 
                     actualizandoAutomaticamente =
                         false;
+
                 }
+
             }
         );
+
     }
 
 
@@ -992,101 +1036,221 @@ export function inicializarDireccionNotificacionEditar(
     ===================================================== */
 
     async function completarTerritorio(
-    latitud,
-    longitud,
-    miSecuencia
-) {
-
-    try {
-
-        const url =
-            new URL(
-                'DataCore/public/asuntos-internos/reportes/ubicacion/territorio',
-                `${window.location.origin}/`
-            );
-
-
-        url.searchParams.set(
-            'lat',
-            String(
-                latitud
-            )
-        );
-
-
-        url.searchParams.set(
-            'lng',
-            String(
-                longitud
-            )
-        );
-
-
-        const respuesta =
-            await fetch(
-                url.toString(),
-                {
-
-                    headers: {
-
-                        Accept:
-                            'application/json',
-
-                    },
-
-                    credentials:
-                        'same-origin',
-
-                }
-            );
-
-
-        const datos =
-            await respuesta.json();
-
-
-        if (
-            miSecuencia !== secuencia
-        ) {
-
-            return;
-        }
-
-
-        if (!respuesta.ok) {
-
-            throw new Error(
-                datos?.message
-                || 'No fue posible consultar el territorio.'
-            );
-        }
-
-
-        actualizandoAutomaticamente =
-            true;
-
+        latitud,
+        longitud,
+        miSecuencia
+    ) {
 
         try {
 
-            /* =================================================
-               DENTRO DE NEZA
-            ================================================= */
+            const url =
+                new URL(
+                    'DataCore/public/asuntos-internos/reportes/ubicacion/territorio',
+                    `${window.location.origin}/`
+                );
+
+
+            url.searchParams.set(
+                'lat',
+                String(
+                    latitud
+                )
+            );
+
+
+            url.searchParams.set(
+                'lng',
+                String(
+                    longitud
+                )
+            );
+
+
+            const respuesta =
+                await fetch(
+                    url.toString(),
+                    {
+
+                        headers: {
+
+                            Accept:
+                                'application/json',
+
+                        },
+
+                        credentials:
+                            'same-origin',
+
+                    }
+                );
+
+
+            const datos =
+                await respuesta.json();
+
 
             if (
-                datos.matched
+                miSecuencia !== secuencia
             ) {
+
+                return;
+            }
+
+
+            if (!respuesta.ok) {
+
+                throw new Error(
+                    datos?.message
+                    || 'No fue posible consultar el territorio.'
+                );
+            }
+
+
+            actualizandoAutomaticamente =
+                true;
+
+
+            try {
+
+                /* =================================================
+                   DENTRO DE NEZA
+                ================================================= */
+
+                if (
+                    datos.matched
+                ) {
+
+                    if (opcionNezaSi) {
+
+                        opcionNezaSi.checked =
+                            true;
+                    }
+
+
+                    if (opcionNezaNo) {
+
+                        opcionNezaNo.checked =
+                            false;
+                    }
+
+
+                    /* =================================================
+                       ACTUALIZAR ADVERTENCIA
+                    ================================================= */
+
+                    actualizarAdvertenciaForaneoEditar(
+                        modal
+                    );
+
+
+                    llenarCampo(
+                        inputSector,
+                        normalizarMayusculas(
+                            datos.sector
+                        )
+                    );
+
+
+                    llenarCampo(
+                        inputCuadrante,
+                        normalizarMayusculas(
+                            datos.cuadrante
+                        )
+                    );
+
+
+                    llenarCampo(
+                        inputIdCuadra,
+                        datos.id_cuadra
+                        ?? ''
+                    );
+
+
+                    if (datos.calle) {
+
+                        llenarCampo(
+                            inputCalle,
+                            normalizarMayusculas(
+                                datos.calle
+                            )
+                        );
+                    }
+
+
+                    if (datos.colonia) {
+
+                        llenarCampo(
+                            inputColonia,
+                            normalizarMayusculas(
+                                datos.colonia
+                            )
+                        );
+                    }
+
+
+                    if (datos.entre_calle) {
+
+                        llenarCampo(
+                            inputEntreCalle,
+                            normalizarMayusculas(
+                                datos.entre_calle
+                            )
+                        );
+                    }
+
+
+                    if (datos.y_calle) {
+
+                        llenarCampo(
+                            inputYCalle,
+                            normalizarMayusculas(
+                                datos.y_calle
+                            )
+                        );
+                    }
+
+
+                    if (
+                        !inputMunicipio?.value.trim()
+                    ) {
+
+                        llenarCampo(
+                            inputMunicipio,
+                            'NEZAHUALCÓYOTL'
+                        );
+                    }
+
+
+                    if (
+                        !inputEstado?.value.trim()
+                    ) {
+
+                        llenarCampo(
+                            inputEstado,
+                            'ESTADO DE MÉXICO'
+                        );
+                    }
+
+
+                    return;
+                }
+
+
+                /* =================================================
+                   FORÁNEO
+                ================================================= */
 
                 if (opcionNezaSi) {
 
                     opcionNezaSi.checked =
-                        true;
+                        false;
                 }
 
 
                 if (opcionNezaNo) {
 
                     opcionNezaNo.checked =
-                        false;
+                        true;
                 }
 
 
@@ -1101,154 +1265,34 @@ export function inicializarDireccionNotificacionEditar(
 
                 llenarCampo(
                     inputSector,
-                    normalizarMayusculas(
-                        datos.sector
-                    )
+                    'FORÁNEO'
                 );
 
 
                 llenarCampo(
                     inputCuadrante,
-                    normalizarMayusculas(
-                        datos.cuadrante
-                    )
+                    'FORÁNEO'
                 );
 
 
                 llenarCampo(
                     inputIdCuadra,
-                    datos.id_cuadra
-                    ?? ''
+                    ''
                 );
 
+            } finally {
 
-                if (datos.calle) {
-
-                    llenarCampo(
-                        inputCalle,
-                        normalizarMayusculas(
-                            datos.calle
-                        )
-                    );
-                }
-
-
-                if (datos.colonia) {
-
-                    llenarCampo(
-                        inputColonia,
-                        normalizarMayusculas(
-                            datos.colonia
-                        )
-                    );
-                }
-
-
-                if (datos.entre_calle) {
-
-                    llenarCampo(
-                        inputEntreCalle,
-                        normalizarMayusculas(
-                            datos.entre_calle
-                        )
-                    );
-                }
-
-
-                if (datos.y_calle) {
-
-                    llenarCampo(
-                        inputYCalle,
-                        normalizarMayusculas(
-                            datos.y_calle
-                        )
-                    );
-                }
-
-
-                if (
-                    !inputMunicipio?.value.trim()
-                ) {
-
-                    llenarCampo(
-                        inputMunicipio,
-                        'NEZAHUALCÓYOTL'
-                    );
-                }
-
-
-                if (
-                    !inputEstado?.value.trim()
-                ) {
-
-                    llenarCampo(
-                        inputEstado,
-                        'ESTADO DE MÉXICO'
-                    );
-                }
-
-
-                return;
-            }
-
-
-            /* =================================================
-               FORÁNEO
-            ================================================= */
-
-            if (opcionNezaSi) {
-
-                opcionNezaSi.checked =
+                actualizandoAutomaticamente =
                     false;
             }
 
+        } catch (error) {
 
-            if (opcionNezaNo) {
-
-                opcionNezaNo.checked =
-                    true;
-            }
-
-
-            /* =================================================
-               ACTUALIZAR ADVERTENCIA
-            ================================================= */
-
-            actualizarAdvertenciaForaneoEditar(
-                modal
+            console.error(
+                'Error consultando información territorial para notificación:',
+                error
             );
-
-
-            llenarCampo(
-                inputSector,
-                'FORÁNEO'
-            );
-
-
-            llenarCampo(
-                inputCuadrante,
-                'FORÁNEO'
-            );
-
-
-            llenarCampo(
-                inputIdCuadra,
-                ''
-            );
-
-        } finally {
-
-            actualizandoAutomaticamente =
-                false;
         }
-
-    } catch (error) {
-
-        console.error(
-            'Error consultando información territorial para notificación:',
-            error
-        );
-    }
     }
 
 
@@ -1847,27 +1891,108 @@ export function inicializarDireccionNotificacionEditar(
 
 
     /* =====================================================
-       BUSCADOR
-    ===================================================== */
+   BUSCADOR
+===================================================== */
 
-    inputBusqueda?.addEventListener(
-        'keydown',
-        (evento) => {
+    if (
+        inputBusqueda
+    ) {
 
-            if (
-                evento.key !== 'Enter'
-            ) {
+        /* =================================================
+           MAYÚSCULAS MIENTRAS SE ESCRIBE
+        ================================================= */
 
-                return;
+        inputBusqueda.addEventListener(
+            'input',
+            () => {
+
+                const valorActual =
+                    String(
+                        inputBusqueda.value
+                        || ''
+                    );
+
+
+                const valorMayusculas =
+                    valorActual
+                        .toLocaleUpperCase(
+                            'es-MX'
+                        );
+
+
+                if (
+                    valorActual
+                    === valorMayusculas
+                ) {
+                    return;
+                }
+
+
+                const inicioSeleccion =
+                    inputBusqueda.selectionStart;
+
+
+                const finSeleccion =
+                    inputBusqueda.selectionEnd;
+
+
+                inputBusqueda.value =
+                    valorMayusculas;
+
+
+                if (
+                    inicioSeleccion !== null
+                    && finSeleccion !== null
+                ) {
+
+                    try {
+
+                        inputBusqueda.setSelectionRange(
+                            inicioSeleccion,
+                            finSeleccion
+                        );
+
+                    } catch (error) {
+
+                        /*
+                         * No afecta el funcionamiento
+                         * si el navegador no permite
+                         * restaurar la selección.
+                         */
+
+                    }
+
+                }
+
             }
+        );
 
 
-            evento.preventDefault();
+        /* =================================================
+           BUSCAR CON ENTER
+        ================================================= */
+
+        inputBusqueda.addEventListener(
+            'keydown',
+            (evento) => {
+
+                if (
+                    evento.key !== 'Enter'
+                ) {
+
+                    return;
+                }
 
 
-            buscarDireccion();
-        }
-    );
+                evento.preventDefault();
+
+
+                buscarDireccion();
+
+            }
+        );
+
+    }
 
 
     /* =====================================================
@@ -2091,7 +2216,7 @@ function asignarValor(
 
     campo.value =
         valor === null
-        || valor === undefined
+            || valor === undefined
             ? ''
             : String(
                 valor

@@ -101,9 +101,23 @@ export function inicializarEditarReporte() {
     }
 
 
+    /* =====================================================
+       MAYÚSCULAS AUTOMÁTICAS
+    ===================================================== */
+
+    inicializarMayusculasEditar(
+        formulario
+    );
+
+
+    /* =====================================================
+       BLOQUEAR ENTER
+    ===================================================== */
+
     inicializarBloqueoEnterEditar(
         formulario
     );
+
     /* =====================================================
        MÓDULOS
     ===================================================== */
@@ -1076,6 +1090,199 @@ export function inicializarEditarReporte() {
 
 
 /* =========================================================
+   MAYÚSCULAS AUTOMÁTICAS
+   EDITAR REPORTE
+========================================================= */
+
+function inicializarMayusculasEditar(
+    formulario
+) {
+
+    if (!formulario) {
+        return;
+    }
+
+
+    /* =====================================================
+       EVITAR LISTENER DUPLICADO
+    ===================================================== */
+
+    if (
+        formulario.dataset
+            .mayusculasInicializadas
+        === '1'
+    ) {
+        return;
+    }
+
+
+    formulario.dataset
+        .mayusculasInicializadas =
+        '1';
+
+
+    /* =====================================================
+       CONVERTIR MIENTRAS EL USUARIO ESCRIBE
+    ===================================================== */
+
+    formulario.addEventListener(
+        'input',
+        (evento) => {
+
+            const campo =
+                evento.target;
+
+
+            if (
+                !(
+                    campo
+                    instanceof HTMLInputElement
+                )
+                && !(
+                    campo
+                    instanceof HTMLTextAreaElement
+                )
+            ) {
+                return;
+            }
+
+
+            /* =================================================
+               INPUTS QUE NO DEBEN MODIFICARSE
+            ================================================= */
+
+            if (
+                campo
+                instanceof HTMLInputElement
+            ) {
+
+                const tiposIgnorados =
+                    [
+                        'checkbox',
+                        'radio',
+                        'file',
+                        'hidden',
+                        'number',
+                        'range',
+                        'date',
+                        'datetime-local',
+                        'time',
+                        'month',
+                        'week',
+                        'email',
+                        'password',
+                        'url',
+                    ];
+
+
+                if (
+                    tiposIgnorados.includes(
+                        campo.type
+                    )
+                ) {
+                    return;
+                }
+
+            }
+
+
+            /* =================================================
+               EXCLUSIÓN MANUAL
+
+               Si algún campo necesita conservar minúsculas:
+
+               data-sin-mayusculas="1"
+            ================================================= */
+
+            if (
+                campo.dataset
+                    .sinMayusculas
+                === '1'
+            ) {
+                return;
+            }
+
+
+            /* =================================================
+               VALOR ACTUAL
+            ================================================= */
+
+            const valorActual =
+                String(
+                    campo.value
+                    || ''
+                );
+
+
+            const valorMayusculas =
+                valorActual
+                    .toLocaleUpperCase(
+                        'es-MX'
+                    );
+
+
+            if (
+                valorActual
+                === valorMayusculas
+            ) {
+                return;
+            }
+
+
+            /* =================================================
+               POSICIÓN DEL CURSOR
+            ================================================= */
+
+            const inicioSeleccion =
+                campo.selectionStart;
+
+
+            const finSeleccion =
+                campo.selectionEnd;
+
+
+            /* =================================================
+               ASIGNAR MAYÚSCULAS
+            ================================================= */
+
+            campo.value =
+                valorMayusculas;
+
+
+            /* =================================================
+               RESTAURAR CURSOR
+            ================================================= */
+
+            if (
+                inicioSeleccion !== null
+                && finSeleccion !== null
+            ) {
+
+                try {
+
+                    campo.setSelectionRange(
+                        inicioSeleccion,
+                        finSeleccion
+                    );
+
+                } catch (error) {
+
+                    /*
+                     * Algunos tipos de input no permiten
+                     * controlar manualmente la selección.
+                     */
+
+                }
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
    BLOQUEAR ENTER EN EDITAR
 ========================================================= */
 
@@ -1122,7 +1329,7 @@ function inicializarBloqueoEnterEditar(
 
             if (
                 evento.target
-                    instanceof HTMLTextAreaElement
+                instanceof HTMLTextAreaElement
             ) {
                 return;
             }
@@ -2998,12 +3205,12 @@ function inicializarCatalogoTipoFolioEditar(
     ) {
 
         switch (
-            String(
-                clave
-                || ''
-            )
-                .trim()
-                .toUpperCase()
+        String(
+            clave
+            || ''
+        )
+            .trim()
+            .toUpperCase()
         ) {
 
             case 'QJV':

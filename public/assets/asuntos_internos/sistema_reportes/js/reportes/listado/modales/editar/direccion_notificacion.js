@@ -151,7 +151,7 @@ export function cargarDireccionNotificacionEditar(
 
     const datos =
         direccion
-        && typeof direccion === 'object'
+            && typeof direccion === 'object'
             ? direccion
             : {};
 
@@ -183,10 +183,10 @@ export function cargarDireccionNotificacionEditar(
 
     const perteneceNeza =
         datos.pertenece_neza !== null
-        && datos.pertenece_neza !== undefined
-        && String(
-            datos.pertenece_neza
-        ).trim() !== ''
+            && datos.pertenece_neza !== undefined
+            && String(
+                datos.pertenece_neza
+            ).trim() !== ''
             ? Number(
                 datos.pertenece_neza
             )
@@ -414,7 +414,7 @@ export function inicializarDireccionNotificacionEditar(
             '#editar-notificacion-mapa-ubicacion'
         );
 
-        const inputBusqueda =
+    const inputBusqueda =
         modal.querySelector(
             '#editar-notificacion-ubicacion-busqueda'
         );
@@ -836,8 +836,8 @@ export function inicializarDireccionNotificacionEditar(
         }
     );
 
-        /* =====================================================
-       CLIC EN MAPA
+    /* =====================================================
+    CLIC EN MAPA
     ===================================================== */
 
     mapa.addListener(
@@ -883,26 +883,106 @@ export function inicializarDireccionNotificacionEditar(
 
 
     /* =====================================================
-       BUSCADOR
+    BUSCADOR
     ===================================================== */
 
-    inputBusqueda?.addEventListener(
-        'keydown',
-        (evento) => {
+    if (
+        inputBusqueda
+    ) {
 
-            if (
-                evento.key !== 'Enter'
-            ) {
-                return;
+        /* =================================================
+           MAYÚSCULAS MIENTRAS SE ESCRIBE
+        ================================================= */
+
+        inputBusqueda.addEventListener(
+            'input',
+            () => {
+
+                const valorActual =
+                    String(
+                        inputBusqueda.value
+                        || ''
+                    );
+
+
+                const valorMayusculas =
+                    valorActual
+                        .toLocaleUpperCase(
+                            'es-MX'
+                        );
+
+
+                if (
+                    valorActual
+                    === valorMayusculas
+                ) {
+                    return;
+                }
+
+
+                const inicioSeleccion =
+                    inputBusqueda.selectionStart;
+
+
+                const finSeleccion =
+                    inputBusqueda.selectionEnd;
+
+
+                inputBusqueda.value =
+                    valorMayusculas;
+
+
+                if (
+                    inicioSeleccion !== null
+                    && finSeleccion !== null
+                ) {
+
+                    try {
+
+                        inputBusqueda.setSelectionRange(
+                            inicioSeleccion,
+                            finSeleccion
+                        );
+
+                    } catch (error) {
+
+                        /*
+                         * El buscador normalmente permite controlar
+                         * la posición del cursor.
+                         */
+
+                    }
+
+                }
+
             }
+        );
 
 
-            evento.preventDefault();
+        /* =================================================
+           BUSCAR CON ENTER
+        ================================================= */
+
+        inputBusqueda.addEventListener(
+            'keydown',
+            (evento) => {
+
+                if (
+                    evento.key !== 'Enter'
+                ) {
+                    return;
+                }
 
 
-            buscarDireccion();
-        }
-    );
+                evento.preventDefault();
+
+
+                buscarDireccion();
+
+            }
+        );
+
+    }
 
 
     /* =====================================================
@@ -1355,8 +1435,8 @@ export function inicializarDireccionNotificacionEditar(
         }
     }
 
-        /* =====================================================
-       SELECCIONAR PUNTO
+    /* =====================================================
+    SELECCIONAR PUNTO
     ===================================================== */
 
     function seleccionarPunto(
@@ -1457,9 +1537,10 @@ export function inicializarDireccionNotificacionEditar(
     }
 
 
-    /* =====================================================
-       GOOGLE MAPS
-    ===================================================== */
+    /* =========================================================
+    GOOGLE MAPS
+    DIRECCIÓN PARA NOTIFICACIÓN
+    ========================================================= */
 
     function completarGoogle(
         posicion,
@@ -1552,15 +1633,26 @@ export function inicializarDireccionNotificacionEditar(
 
                 try {
 
+                    /* =================================================
+                       DIRECCIÓN MOSTRADA EN EL BUSCADOR
+                    ================================================= */
+
                     if (
                         inputBusqueda
                         && resultado.formatted_address
                     ) {
 
-                        inputBusqueda.value =
-                            resultado.formatted_address;
+                        llenarCampo(
+                            inputBusqueda,
+                            resultado.formatted_address
+                        );
+
                     }
 
+
+                    /* =================================================
+                       CALLE
+                    ================================================= */
 
                     if (
                         !inputCalle?.value
@@ -1569,16 +1661,27 @@ export function inicializarDireccionNotificacionEditar(
 
                         llenarCampo(
                             inputCalle,
-                            calle
+                            normalizarMayusculas(
+                                calle
+                            )
                         );
+
                     }
 
+
+                    /* =================================================
+                       NÚMERO
+                    ================================================= */
 
                     llenarCampo(
                         inputNumero,
                         numero
                     );
 
+
+                    /* =================================================
+                       COLONIA
+                    ================================================= */
 
                     if (
                         !inputColonia?.value
@@ -1587,29 +1690,48 @@ export function inicializarDireccionNotificacionEditar(
 
                         llenarCampo(
                             inputColonia,
-                            colonia
+                            normalizarMayusculas(
+                                colonia
+                            )
                         );
+
                     }
 
 
+                    /* =================================================
+                       MUNICIPIO
+                    ================================================= */
+
                     llenarCampo(
                         inputMunicipio,
-                        municipio
+                        normalizarMayusculas(
+                            municipio
+                        )
                     );
 
+
+                    /* =================================================
+                       ESTADO
+                    ================================================= */
 
                     llenarCampo(
                         inputEstado,
-                        estado
+                        normalizarMayusculas(
+                            estado
+                        )
                     );
+
 
                 } finally {
 
                     actualizandoAutomaticamente =
                         false;
+
                 }
+
             }
         );
+
     }
 
 
@@ -1891,8 +2013,8 @@ export function inicializarDireccionNotificacionEditar(
         }
     }
 
-        /* =====================================================
-       OBTENER COMPONENTE GOOGLE
+    /* =====================================================
+    OBTENER COMPONENTE GOOGLE
     ===================================================== */
 
     function obtenerComponente(
@@ -2154,7 +2276,7 @@ export function inicializarDireccionNotificacionEditar(
 
 
     /* =====================================================
-       UTILIDADES
+    LLENAR CAMPO
     ===================================================== */
 
     function llenarCampo(
@@ -2167,12 +2289,61 @@ export function inicializarDireccionNotificacionEditar(
         }
 
 
-        campo.value =
+        let valorFinal =
             valor == null
                 ? ''
                 : String(
                     valor
                 );
+
+
+        /* =================================================
+           CAMPOS DE TEXTO → MAYÚSCULAS
+        ================================================= */
+
+        if (
+            campo instanceof HTMLInputElement
+            || campo instanceof HTMLTextAreaElement
+        ) {
+
+            const tiposIgnorados =
+                [
+                    'hidden',
+                    'number',
+                    'date',
+                    'time',
+                    'datetime-local',
+                    'month',
+                    'week',
+                    'checkbox',
+                    'radio',
+                    'file',
+                ];
+
+
+            if (
+                !(
+                    campo instanceof HTMLInputElement
+                    && tiposIgnorados.includes(
+                        campo.type
+                    )
+                )
+            ) {
+
+                valorFinal =
+                    valorFinal
+                        .toLocaleUpperCase(
+                            'es-MX'
+                        );
+
+            }
+
+        }
+
+
+        campo.value =
+            valorFinal;
+
     }
 
 
@@ -2194,8 +2365,8 @@ export function inicializarDireccionNotificacionEditar(
             );
     }
 
-        /* =====================================================
-       GUARDAR INSTANCIA
+    /* =====================================================
+    GUARDAR INSTANCIA
     ===================================================== */
 
     instanciaDireccionNotificacionEditar = {
