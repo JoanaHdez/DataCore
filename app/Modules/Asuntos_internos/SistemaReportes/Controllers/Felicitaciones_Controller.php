@@ -7,6 +7,8 @@ use App\Modules\Asuntos_internos\SistemaReportes\Models\FelicitacionModel;
 use App\Modules\Asuntos_internos\SistemaReportes\Models\FelicitacionPersonalModel;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\FelicitacionService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\AuthService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\FelicitacionesExcelService;
+
 
 class Felicitaciones_Controller extends BaseController
 {
@@ -60,15 +62,15 @@ class Felicitaciones_Controller extends BaseController
 
             $felicitaciones =
                 $felicitacionModel
-                    ->where(
-                        'eliminado',
-                        0
-                    )
-                    ->orderBy(
-                        'id_felicitacion',
-                        'DESC'
-                    )
-                    ->findAll();
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->orderBy(
+                    'id_felicitacion',
+                    'DESC'
+                )
+                ->findAll();
 
 
             /* =====================================================
@@ -93,27 +95,27 @@ class Felicitaciones_Controller extends BaseController
 
                 $personal =
                     $db
-                        ->table(
-                            'ai_felicitacion_personal'
-                        )
-                        ->select([
-                            'plantilla_id',
-                            'perscod',
-                            'nombre_snapshot',
-                            'area_snapshot',
-                            'turno_snapshot',
-                            'alias_snapshot',
-                        ])
-                        ->where(
-                            'id_felicitacion',
-                            $idFelicitacion
-                        )
-                        ->orderBy(
-                            'id_felicitacion_personal',
-                            'ASC'
-                        )
-                        ->get()
-                        ->getResultArray();
+                    ->table(
+                        'ai_felicitacion_personal'
+                    )
+                    ->select([
+                        'plantilla_id',
+                        'perscod',
+                        'nombre_snapshot',
+                        'area_snapshot',
+                        'turno_snapshot',
+                        'alias_snapshot',
+                    ])
+                    ->where(
+                        'id_felicitacion',
+                        $idFelicitacion
+                    )
+                    ->orderBy(
+                        'id_felicitacion_personal',
+                        'ASC'
+                    )
+                    ->get()
+                    ->getResultArray();
 
 
                 $felicitacion['personal'] =
@@ -217,7 +219,7 @@ class Felicitaciones_Controller extends BaseController
                                     ?? ''
                                 )
                             )
-                            ?? ''
+                                ?? ''
                         );
 
 
@@ -249,7 +251,7 @@ class Felicitaciones_Controller extends BaseController
                                     ?? ''
                                 )
                             )
-                            ?? ''
+                                ?? ''
                         );
 
 
@@ -426,27 +428,27 @@ class Felicitaciones_Controller extends BaseController
 
             $registrosAreas =
                 $db
-                    ->table(
-                        'ai_felicitacion_personal'
-                    )
-                    ->select(
-                        'area_snapshot'
-                    )
-                    ->where(
-                        'area_snapshot IS NOT NULL',
-                        null,
-                        false
-                    )
-                    ->where(
-                        "TRIM(area_snapshot) != ''",
-                        null,
-                        false
-                    )
-                    ->groupBy(
-                        'area_snapshot'
-                    )
-                    ->get()
-                    ->getResultArray();
+                ->table(
+                    'ai_felicitacion_personal'
+                )
+                ->select(
+                    'area_snapshot'
+                )
+                ->where(
+                    'area_snapshot IS NOT NULL',
+                    null,
+                    false
+                )
+                ->where(
+                    "TRIM(area_snapshot) != ''",
+                    null,
+                    false
+                )
+                ->groupBy(
+                    'area_snapshot'
+                )
+                ->get()
+                ->getResultArray();
 
 
             $areasEncontradas =
@@ -468,7 +470,7 @@ class Felicitaciones_Controller extends BaseController
                                 ?? ''
                             )
                         )
-                        ?? ''
+                            ?? ''
                     );
 
 
@@ -501,27 +503,27 @@ class Felicitaciones_Controller extends BaseController
 
             $registrosTurnos =
                 $db
-                    ->table(
-                        'ai_felicitacion_personal'
-                    )
-                    ->select(
-                        'turno_snapshot'
-                    )
-                    ->where(
-                        'turno_snapshot IS NOT NULL',
-                        null,
-                        false
-                    )
-                    ->where(
-                        "TRIM(turno_snapshot) != ''",
-                        null,
-                        false
-                    )
-                    ->groupBy(
-                        'turno_snapshot'
-                    )
-                    ->get()
-                    ->getResultArray();
+                ->table(
+                    'ai_felicitacion_personal'
+                )
+                ->select(
+                    'turno_snapshot'
+                )
+                ->where(
+                    'turno_snapshot IS NOT NULL',
+                    null,
+                    false
+                )
+                ->where(
+                    "TRIM(turno_snapshot) != ''",
+                    null,
+                    false
+                )
+                ->groupBy(
+                    'turno_snapshot'
+                )
+                ->get()
+                ->getResultArray();
 
 
             $turnosEncontrados =
@@ -543,7 +545,7 @@ class Felicitaciones_Controller extends BaseController
                                 ?? ''
                             )
                         )
-                        ?? ''
+                            ?? ''
                     );
 
 
@@ -643,8 +645,6 @@ class Felicitaciones_Controller extends BaseController
                 array_values(
                     $sectoresEncontrados
                 );
-
-
         } catch (\Throwable $e) {
 
             log_message(
@@ -652,7 +652,7 @@ class Felicitaciones_Controller extends BaseController
                 'Error consultando listado de felicitaciones: {mensaje}',
                 [
                     'mensaje' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
                 ]
             );
 
@@ -682,16 +682,16 @@ class Felicitaciones_Controller extends BaseController
             'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\felicitaciones\index',
             [
                 'felicitaciones' =>
-                    $felicitaciones,
+                $felicitaciones,
 
                 'sectores' =>
-                    $sectores,
+                $sectores,
 
                 'areas' =>
-                    $areas,
+                $areas,
 
                 'turnos' =>
-                    $turnos,
+                $turnos,
             ]
         );
     }
@@ -715,10 +715,10 @@ class Felicitaciones_Controller extends BaseController
                 ->setStatusCode(401)
                 ->setJSON([
                     'success' =>
-                        false,
+                    false,
 
                     'message' =>
-                        'La sesión no es válida.',
+                    'La sesión no es válida.',
                 ]);
         }
 
@@ -735,10 +735,10 @@ class Felicitaciones_Controller extends BaseController
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' =>
-                        false,
+                    false,
 
                     'message' =>
-                        'La felicitación solicitada no es válida.',
+                    'La felicitación solicitada no es válida.',
                 ]);
         }
 
@@ -771,15 +771,15 @@ class Felicitaciones_Controller extends BaseController
 
             $felicitacion =
                 $felicitacionModel
-                    ->where(
-                        'id_felicitacion',
-                        $idFelicitacion
-                    )
-                    ->where(
-                        'eliminado',
-                        0
-                    )
-                    ->first();
+                ->where(
+                    'id_felicitacion',
+                    $idFelicitacion
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->first();
 
 
             if (
@@ -790,10 +790,10 @@ class Felicitaciones_Controller extends BaseController
                     ->setStatusCode(404)
                     ->setJSON([
                         'success' =>
-                            false,
+                        false,
 
                         'message' =>
-                            'La felicitación no existe.',
+                        'La felicitación no existe.',
                     ]);
             }
 
@@ -844,15 +844,15 @@ class Felicitaciones_Controller extends BaseController
 
             $personalDb =
                 $personalModel
-                    ->where(
-                        'id_felicitacion',
-                        $idFelicitacion
-                    )
-                    ->orderBy(
-                        'id_felicitacion_personal',
-                        'ASC'
-                    )
-                    ->findAll();
+                ->where(
+                    'id_felicitacion',
+                    $idFelicitacion
+                )
+                ->orderBy(
+                    'id_felicitacion_personal',
+                    'ASC'
+                )
+                ->findAll();
 
 
             /* =====================================================
@@ -904,27 +904,25 @@ class Felicitaciones_Controller extends BaseController
 
 
             if (
-                !empty(
-                    $idsPlantilla
-                )
+                !empty($idsPlantilla)
             ) {
 
                 $registrosPlantilla =
                     $dbPlantilla
-                        ->table(
-                            'plantilla'
-                        )
-                        ->select([
-                            'ID',
-                            'PERSCOD',
-                            'NO_NOMINA',
-                        ])
-                        ->whereIn(
-                            'ID',
-                            $idsPlantilla
-                        )
-                        ->get()
-                        ->getResultArray();
+                    ->table(
+                        'plantilla'
+                    )
+                    ->select([
+                        'ID',
+                        'PERSCOD',
+                        'NO_NOMINA',
+                    ])
+                    ->whereIn(
+                        'ID',
+                        $idsPlantilla
+                    )
+                    ->get()
+                    ->getResultArray();
 
 
                 foreach (
@@ -1035,54 +1033,54 @@ class Felicitaciones_Controller extends BaseController
                 $personal[] = [
 
                     'id_felicitacion_personal' =>
-                        (int) (
-                            $persona['id_felicitacion_personal']
-                            ?? 0
-                        ),
+                    (int) (
+                        $persona['id_felicitacion_personal']
+                        ?? 0
+                    ),
 
                     'plantilla_id' =>
-                        $plantillaId,
+                    $plantillaId,
 
                     'perscod' =>
-                        $perscod,
+                    $perscod,
 
                     'nomina' =>
-                        $nomina,
+                    $nomina,
 
                     'nombre_snapshot' =>
-                        $persona['nombre_snapshot']
+                    $persona['nombre_snapshot']
                         ?? '',
 
                     'nombre' =>
-                        $persona['nombre_snapshot']
+                    $persona['nombre_snapshot']
                         ?? '',
 
                     'area_snapshot' =>
-                        $persona['area_snapshot']
+                    $persona['area_snapshot']
                         ?? '',
 
                     'area' =>
-                        $persona['area_snapshot']
+                    $persona['area_snapshot']
                         ?? '',
 
                     'turno_snapshot' =>
-                        $persona['turno_snapshot']
+                    $persona['turno_snapshot']
                         ?? '',
 
                     'turno' =>
-                        $persona['turno_snapshot']
+                    $persona['turno_snapshot']
                         ?? '',
 
                     'alias_snapshot' =>
-                        $persona['alias_snapshot']
+                    $persona['alias_snapshot']
                         ?? '',
 
                     'alias' =>
-                        $persona['alias_snapshot']
+                    $persona['alias_snapshot']
                         ?? '',
 
                     'foto' =>
-                        $foto,
+                    $foto,
                 ];
             }
 
@@ -1093,32 +1091,32 @@ class Felicitaciones_Controller extends BaseController
 
             $unidadesDb =
                 $db
-                    ->table(
-                        'ai_felicitacion_unidades'
-                    )
-                    ->select([
-                        'id_felicitacion_unidad',
-                        'parque_vehicular_id',
-                        'no_economico_snapshot',
-                        'placas_snapshot',
-                        'marca_snapshot',
-                        'submarca_snapshot',
-                        'color_snapshot',
-                        'estatus_snapshot',
-                        'servicio_snapshot',
-                        'tipo_snapshot',
-                        'id_origen',
-                    ])
-                    ->where(
-                        'id_felicitacion',
-                        $idFelicitacion
-                    )
-                    ->orderBy(
-                        'id_felicitacion_unidad',
-                        'ASC'
-                    )
-                    ->get()
-                    ->getResultArray();
+                ->table(
+                    'ai_felicitacion_unidades'
+                )
+                ->select([
+                    'id_felicitacion_unidad',
+                    'parque_vehicular_id',
+                    'no_economico_snapshot',
+                    'placas_snapshot',
+                    'marca_snapshot',
+                    'submarca_snapshot',
+                    'color_snapshot',
+                    'estatus_snapshot',
+                    'servicio_snapshot',
+                    'tipo_snapshot',
+                    'id_origen',
+                ])
+                ->where(
+                    'id_felicitacion',
+                    $idFelicitacion
+                )
+                ->orderBy(
+                    'id_felicitacion_unidad',
+                    'ASC'
+                )
+                ->get()
+                ->getResultArray();
 
 
             /* =====================================================
@@ -1137,61 +1135,61 @@ class Felicitaciones_Controller extends BaseController
                 $unidades[] = [
 
                     'id_felicitacion_unidad' =>
-                        (int) (
-                            $unidad['id_felicitacion_unidad']
-                            ?? 0
-                        ),
+                    (int) (
+                        $unidad['id_felicitacion_unidad']
+                        ?? 0
+                    ),
 
                     'id' =>
-                        (int) (
-                            $unidad['parque_vehicular_id']
-                            ?? 0
-                        ),
+                    (int) (
+                        $unidad['parque_vehicular_id']
+                        ?? 0
+                    ),
 
                     'parque_vehicular_id' =>
-                        (int) (
-                            $unidad['parque_vehicular_id']
-                            ?? 0
-                        ),
+                    (int) (
+                        $unidad['parque_vehicular_id']
+                        ?? 0
+                    ),
 
                     'no_economico' =>
-                        $unidad['no_economico_snapshot']
+                    $unidad['no_economico_snapshot']
                         ?? '',
 
                     'placas' =>
-                        $unidad['placas_snapshot']
+                    $unidad['placas_snapshot']
                         ?? '',
 
                     'marca' =>
-                        $unidad['marca_snapshot']
+                    $unidad['marca_snapshot']
                         ?? '',
 
                     'submarca' =>
-                        $unidad['submarca_snapshot']
+                    $unidad['submarca_snapshot']
                         ?? '',
 
                     'color' =>
-                        $unidad['color_snapshot']
+                    $unidad['color_snapshot']
                         ?? '',
 
                     'estatus' =>
-                        $unidad['estatus_snapshot']
+                    $unidad['estatus_snapshot']
                         ?? '',
 
                     'servicio' =>
-                        $unidad['servicio_snapshot']
+                    $unidad['servicio_snapshot']
                         ?? '',
 
                     'tipo' =>
-                        $unidad['tipo_snapshot']
+                    $unidad['tipo_snapshot']
                         ?? '',
 
                     'id_origen' =>
-                        isset(
-                            $unidad['id_origen']
-                        )
-                            ? (int) $unidad['id_origen']
-                            : null,
+                    isset(
+                        $unidad['id_origen']
+                    )
+                        ? (int) $unidad['id_origen']
+                        : null,
                 ];
             }
 
@@ -1207,11 +1205,9 @@ class Felicitaciones_Controller extends BaseController
             ===================================================== */
 
             $felicitacion['modalidad_unidad'] =
-                !empty(
-                    $unidades
-                )
-                    ? 'CON_UNIDAD'
-                    : 'SIN_UNIDAD_OFICINA';
+                !empty($unidades)
+                ? 'CON_UNIDAD'
+                : 'SIN_UNIDAD_OFICINA';
 
 
             /* =====================================================
@@ -1221,19 +1217,17 @@ class Felicitaciones_Controller extends BaseController
             return $this->response
                 ->setJSON([
                     'success' =>
-                        true,
+                    true,
 
                     'felicitacion' =>
-                        $felicitacion,
+                    $felicitacion,
 
                     'personal' =>
-                        $personal,
+                    $personal,
 
                     'unidades' =>
-                        $unidades,
+                    $unidades,
                 ]);
-
-
         } catch (\Throwable $e) {
 
             log_message(
@@ -1241,10 +1235,10 @@ class Felicitaciones_Controller extends BaseController
                 'Error consultando detalle de felicitación {id}: {mensaje}',
                 [
                     'id' =>
-                        $idFelicitacion,
+                    $idFelicitacion,
 
                     'mensaje' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
                 ]
             );
 
@@ -1253,10 +1247,10 @@ class Felicitaciones_Controller extends BaseController
                 ->setStatusCode(500)
                 ->setJSON([
                     'success' =>
-                        false,
+                    false,
 
                     'message' =>
-                        'No fue posible consultar el detalle de la felicitación.',
+                    'No fue posible consultar el detalle de la felicitación.',
                 ]);
         }
     }
@@ -1282,10 +1276,10 @@ class Felicitaciones_Controller extends BaseController
                 ->setStatusCode(401)
                 ->setJSON([
                     'success' =>
-                        false,
+                    false,
 
                     'message' =>
-                        'La sesión no es válida.',
+                    'La sesión no es válida.',
                 ]);
         }
 
@@ -1302,10 +1296,10 @@ class Felicitaciones_Controller extends BaseController
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' =>
-                        false,
+                    false,
 
                     'message' =>
-                        'La felicitación que deseas actualizar no es válida.',
+                    'La felicitación que deseas actualizar no es válida.',
                 ]);
         }
 
@@ -1335,10 +1329,10 @@ class Felicitaciones_Controller extends BaseController
                 ->setStatusCode(401)
                 ->setJSON([
                     'success' =>
-                        false,
+                    false,
 
                     'message' =>
-                        'No fue posible identificar al usuario.',
+                    'No fue posible identificar al usuario.',
                 ]);
         }
 
@@ -1349,7 +1343,7 @@ class Felicitaciones_Controller extends BaseController
 
         $datos =
             $this->request
-                ->getPost();
+            ->getPost();
 
 
         /* =====================================================
@@ -1358,9 +1352,9 @@ class Felicitaciones_Controller extends BaseController
 
         $personal =
             $this->request
-                ->getPost(
-                    'personal'
-                );
+            ->getPost(
+                'personal'
+            );
 
 
         if (
@@ -1380,9 +1374,9 @@ class Felicitaciones_Controller extends BaseController
 
         $unidades =
             $this->request
-                ->getPost(
-                    'unidades'
-                );
+            ->getPost(
+                'unidades'
+            );
 
 
         if (
@@ -1419,34 +1413,30 @@ class Felicitaciones_Controller extends BaseController
             return $this->response
                 ->setJSON([
                     'success' =>
-                        true,
+                    true,
 
                     'message' =>
-                        'La felicitación fue actualizada correctamente.',
+                    'La felicitación fue actualizada correctamente.',
 
                     'id_felicitacion' =>
-                        $resultado['id_felicitacion']
+                    $resultado['id_felicitacion']
                         ?? $idFelicitacion,
 
                     'folio' =>
-                        $resultado['folio']
+                    $resultado['folio']
                         ?? null,
                 ]);
-
-
         } catch (\InvalidArgumentException $e) {
 
             return $this->response
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' =>
-                        false,
+                    false,
 
                     'message' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
                 ]);
-
-
         } catch (\Throwable $e) {
 
             log_message(
@@ -1454,10 +1444,10 @@ class Felicitaciones_Controller extends BaseController
                 'Error actualizando felicitación {id}: {mensaje}',
                 [
                     'id' =>
-                        $idFelicitacion,
+                    $idFelicitacion,
 
                     'mensaje' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
                 ]
             );
 
@@ -1466,10 +1456,541 @@ class Felicitaciones_Controller extends BaseController
                 ->setStatusCode(500)
                 ->setJSON([
                     'success' =>
-                        false,
+                    false,
 
                     'message' =>
-                        'No fue posible actualizar la felicitación.',
+                    'No fue posible actualizar la felicitación.',
+                ]);
+        }
+    }
+
+    /* =========================================================
+    EXPORTAR FELICITACIONES
+    ========================================================= */
+
+    public function exportar()
+    {
+        /* =====================================================
+        VALIDAR SESIÓN
+        ===================================================== */
+
+        if (
+            session()->get('reportes_autenticado') !== true
+            || !session()->has('usuario_reportes')
+        ) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' => false,
+                    'message' => 'La sesión no es válida.',
+                ]);
+        }
+
+
+        try {
+
+            /* =================================================
+            SECCIONES PERMITIDAS
+            ================================================= */
+
+            $seccionesPermitidas = [
+                'identificacion',
+                'datos_felicitacion',
+                'personal',
+                'unidades',
+            ];
+
+
+            /* =================================================
+            SECCIONES SOLICITADAS
+            ================================================= */
+
+            $seccionesSolicitadas =
+                $this->request
+                ->getPost(
+                    'secciones'
+                );
+
+
+            if (
+                !is_array(
+                    $seccionesSolicitadas
+                )
+            ) {
+
+                $seccionesSolicitadas =
+                    [];
+            }
+
+
+            $secciones =
+                [];
+
+
+            foreach (
+                $seccionesSolicitadas
+                as $seccion
+            ) {
+
+                $seccion =
+                    trim(
+                        (string) $seccion
+                    );
+
+
+                if (
+                    $seccion !== ''
+                    && in_array(
+                        $seccion,
+                        $seccionesPermitidas,
+                        true
+                    )
+                    && !in_array(
+                        $seccion,
+                        $secciones,
+                        true
+                    )
+                ) {
+
+                    $secciones[] =
+                        $seccion;
+                }
+            }
+
+
+            if (
+                empty($secciones)
+            ) {
+
+                return $this->response
+                    ->setStatusCode(422)
+                    ->setJSON([
+                        'success' => false,
+                        'message' =>
+                        'Selecciona al menos una sección para exportar.',
+                    ]);
+            }
+
+
+            /* =================================================
+            CANTIDAD
+            ================================================= */
+
+            $cantidadPost =
+                trim(
+                    (string) (
+                        $this->request
+                        ->getPost(
+                            'cantidad'
+                        )
+                        ?? ''
+                    )
+                );
+
+
+            $cantidad =
+                null;
+
+
+            if (
+                $cantidadPost !== ''
+            ) {
+
+                if (
+                    !ctype_digit(
+                        $cantidadPost
+                    )
+                ) {
+
+                    return $this->response
+                        ->setStatusCode(422)
+                        ->setJSON([
+                            'success' => false,
+                            'message' =>
+                            'La cantidad debe ser un número entero mayor a 0.',
+                        ]);
+                }
+
+
+                $cantidad =
+                    (int) $cantidadPost;
+
+
+                if (
+                    $cantidad <= 0
+                ) {
+
+                    return $this->response
+                        ->setStatusCode(422)
+                        ->setJSON([
+                            'success' => false,
+                            'message' =>
+                            'La cantidad debe ser mayor a 0.',
+                        ]);
+                }
+            }
+
+
+            /* =================================================
+            CONEXIÓN DATACORE
+            ================================================= */
+
+            $db =
+                \Config\Database::connect(
+                    'datacore'
+                );
+
+
+            /* =================================================
+            CONSULTAR FELICITACIONES
+            ================================================= */
+
+            $builder =
+                $db
+                ->table(
+                    'ai_felicitaciones'
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->orderBy(
+                    'id_felicitacion',
+                    'DESC'
+                );
+
+
+            if (
+                $cantidad !== null
+            ) {
+
+                $builder->limit(
+                    $cantidad
+                );
+            }
+
+
+            $felicitacionesDb =
+                $builder
+                ->get()
+                ->getResultArray();
+
+
+            /* =================================================
+            IDS
+            ================================================= */
+
+            $idsFelicitaciones =
+                array_map(
+                    static fn($felicitacion) =>
+                    (int) (
+                        $felicitacion['id_felicitacion']
+                        ?? 0
+                    ),
+                    $felicitacionesDb
+                );
+
+
+            $idsFelicitaciones =
+                array_values(
+                    array_filter(
+                        $idsFelicitaciones,
+                        static fn($id) =>
+                        $id > 0
+                    )
+                );
+
+
+            /* =================================================
+            RELACIONES
+            ================================================= */
+
+            $personalDb =
+                [];
+
+
+            $unidadesDb =
+                [];
+
+
+            if (
+                !empty($idsFelicitaciones)
+            ) {
+
+                /* =============================================
+                PERSONAL
+                ============================================== */
+
+                if (
+                    in_array(
+                        'personal',
+                        $secciones,
+                        true
+                    )
+                ) {
+
+                    $personalDb =
+                        $db
+                        ->table(
+                            'ai_felicitacion_personal'
+                        )
+                        ->select([
+                            'id_felicitacion_personal',
+                            'id_felicitacion',
+                            'nombre_snapshot',
+                            'area_snapshot',
+                            'turno_snapshot',
+                            'alias_snapshot',
+                        ])
+                        ->whereIn(
+                            'id_felicitacion',
+                            $idsFelicitaciones
+                        )
+                        ->orderBy(
+                            'id_felicitacion',
+                            'ASC'
+                        )
+                        ->orderBy(
+                            'id_felicitacion_personal',
+                            'ASC'
+                        )
+                        ->get()
+                        ->getResultArray();
+                }
+
+
+                /* =============================================
+                UNIDADES
+                ============================================== */
+
+                if (
+                    in_array(
+                        'unidades',
+                        $secciones,
+                        true
+                    )
+                ) {
+
+                    $unidadesDb =
+                        $db
+                        ->table(
+                            'ai_felicitacion_unidades'
+                        )
+                        ->select([
+                            'id_felicitacion_unidad',
+                            'id_felicitacion',
+                            'no_economico_snapshot',
+                            'placas_snapshot',
+                        ])
+                        ->whereIn(
+                            'id_felicitacion',
+                            $idsFelicitaciones
+                        )
+                        ->orderBy(
+                            'id_felicitacion',
+                            'ASC'
+                        )
+                        ->orderBy(
+                            'id_felicitacion_unidad',
+                            'ASC'
+                        )
+                        ->get()
+                        ->getResultArray();
+                }
+            }
+
+
+            /* =================================================
+            AGRUPAR PERSONAL
+            ================================================= */
+
+            $personalPorFelicitacion =
+                [];
+
+
+            foreach (
+                $personalDb
+                as $persona
+            ) {
+
+                $idFelicitacion =
+                    (int) (
+                        $persona['id_felicitacion']
+                        ?? 0
+                    );
+
+
+                if (
+                    $idFelicitacion <= 0
+                ) {
+                    continue;
+                }
+
+
+                $personalPorFelicitacion[$idFelicitacion][] =
+                    $persona;
+            }
+
+
+            /* =================================================
+           AGRUPAR UNIDADES
+        ================================================= */
+
+            $unidadesPorFelicitacion =
+                [];
+
+
+            foreach (
+                $unidadesDb
+                as $unidad
+            ) {
+
+                $idFelicitacion =
+                    (int) (
+                        $unidad['id_felicitacion']
+                        ?? 0
+                    );
+
+
+                if (
+                    $idFelicitacion <= 0
+                ) {
+                    continue;
+                }
+
+
+                $unidadesPorFelicitacion[$idFelicitacion][] =
+                    $unidad;
+            }
+
+
+            /* =================================================
+            PREPARAR DATOS
+            ================================================= */
+
+            $felicitaciones =
+                [];
+
+
+            foreach (
+                $felicitacionesDb
+                as $felicitacion
+            ) {
+
+                $idFelicitacion =
+                    (int) (
+                        $felicitacion['id_felicitacion']
+                        ?? 0
+                    );
+
+
+                $felicitaciones[] = [
+
+                    'id_felicitacion' =>
+                    $idFelicitacion,
+
+                    /* =========================================
+                    IDENTIFICACIÓN
+                    ========================================== */
+
+                    'numero_folio' =>
+                    $felicitacion['numero_folio']
+                        ?? '',
+
+                    'folio' =>
+                    $felicitacion['folio']
+                        ?? '',
+
+                    'nomenclatura' =>
+                    $felicitacion['nomenclatura']
+                        ?? '',
+
+                    'fecha_registro' =>
+                    $felicitacion['fecha_registro']
+                        ?? '',
+
+
+                    /* =========================================
+                    DATOS DE LA FELICITACIÓN
+                    ========================================== */
+
+                    'nombre_felicitante' =>
+                    $felicitacion['nombre_felicitante']
+                        ?? '',
+
+                    'razon_felicitacion' =>
+                    $felicitacion['razon_felicitacion']
+                        ?? '',
+
+
+                    /* =========================================
+                    PERSONAL
+                    ========================================== */
+
+                    'personal' =>
+                    $personalPorFelicitacion[$idFelicitacion]
+                        ?? [],
+
+
+                    /* =========================================
+                    UNIDADES
+                    ========================================== */
+
+                    'unidades' =>
+                    $unidadesPorFelicitacion[$idFelicitacion]
+                        ?? [],
+                ];
+            }
+
+
+            /* =================================================
+            GENERAR EXCEL
+            ================================================= */
+
+            $servicio =
+                new FelicitacionesExcelService();
+
+
+            $ruta =
+                $servicio->generar(
+                    $felicitaciones,
+                    $secciones
+                );
+
+
+            /* =================================================
+            DESCARGAR
+            ================================================= */
+
+            return $this->response
+                ->download(
+                    $ruta,
+                    null
+                )
+                ->setFileName(
+                    basename(
+                        $ruta
+                    )
+                );
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error exportando felicitaciones: {mensaje}',
+                [
+                    'mensaje' =>
+                    $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'No fue posible generar el archivo de Excel.',
                 ]);
         }
     }
@@ -1558,15 +2079,15 @@ class Felicitaciones_Controller extends BaseController
 
         $felicitacion =
             $db
-                ->table(
-                    'ai_felicitaciones'
-                )
-                ->where(
-                    'id_felicitacion',
-                    $idFelicitacion
-                )
-                ->get()
-                ->getRowArray();
+            ->table(
+                'ai_felicitaciones'
+            )
+            ->where(
+                'id_felicitacion',
+                $idFelicitacion
+            )
+            ->get()
+            ->getRowArray();
 
 
         if (
@@ -1625,7 +2146,6 @@ class Felicitaciones_Controller extends BaseController
 
             $idAdministradorAutorizador =
                 $idUsuario;
-
         } else {
 
             /*
@@ -1669,10 +2189,9 @@ class Felicitaciones_Controller extends BaseController
 
                 $administrador =
                     $authService
-                        ->validarAutorizacionAdministradores(
-                            $passwordAdmin
-                        );
-
+                    ->validarAutorizacionAdministradores(
+                        $passwordAdmin
+                    );
             } catch (\Throwable $e) {
 
                 log_message(
@@ -1680,7 +2199,7 @@ class Felicitaciones_Controller extends BaseController
                     'Error validando autorización administrativa para eliminar felicitación: {mensaje}',
                     [
                         'mensaje' =>
-                            $e->getMessage(),
+                        $e->getMessage(),
                     ]
                 );
 
@@ -1757,16 +2276,16 @@ class Felicitaciones_Controller extends BaseController
                 )
                 ->update([
                     'eliminado' =>
-                        1,
+                    1,
 
                     'eliminado_at' =>
-                        $ahora,
+                    $ahora,
 
                     'eliminado_por' =>
-                        $idUsuario,
+                    $idUsuario,
 
                     'updated_at' =>
-                        $ahora,
+                    $ahora,
                 ]);
 
 
@@ -1781,28 +2300,28 @@ class Felicitaciones_Controller extends BaseController
                 ->insert([
 
                     'id_felicitacion' =>
-                        $idFelicitacion,
+                    $idFelicitacion,
 
                     'solicitado_por' =>
-                        $idUsuario,
+                    $idUsuario,
 
                     'autorizado_por' =>
-                        $idAdministradorAutorizador,
+                    $idAdministradorAutorizador,
 
                     'requirio_autorizacion' =>
-                        $rol === 'admin'
-                            ? 0
-                            : 1,
+                    $rol === 'admin'
+                        ? 0
+                        : 1,
 
                     'motivo' =>
-                        'Eliminación solicitada desde el listado de felicitaciones.',
+                    'Eliminación solicitada desde el listado de felicitaciones.',
 
                     'ip' =>
-                        $this->request
-                            ->getIPAddress(),
+                    $this->request
+                        ->getIPAddress(),
 
                     'created_at' =>
-                        $ahora,
+                    $ahora,
                 ]);
 
 
@@ -1821,7 +2340,6 @@ class Felicitaciones_Controller extends BaseController
 
 
             $db->transCommit();
-
         } catch (\Throwable $e) {
 
             $db->transRollback();
@@ -1832,10 +2350,10 @@ class Felicitaciones_Controller extends BaseController
                 'Error eliminando lógicamente felicitación {id}: {mensaje}',
                 [
                     'id' =>
-                        $idFelicitacion,
+                    $idFelicitacion,
 
                     'mensaje' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
                 ]
             );
 
@@ -1858,10 +2376,10 @@ class Felicitaciones_Controller extends BaseController
                 'success' => true,
 
                 'message' =>
-                    'La felicitación fue eliminada correctamente.',
+                'La felicitación fue eliminada correctamente.',
 
                 'folio' =>
-                    $felicitacion['folio']
+                $felicitacion['folio']
                     ?? '',
             ]);
     }

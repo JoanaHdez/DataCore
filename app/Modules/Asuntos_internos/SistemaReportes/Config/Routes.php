@@ -50,28 +50,43 @@ $routes->group(
 
 
                 /* =================================================
-                FELICITACIONES
+                   FELICITACIONES
                 ================================================= */
 
+                // Listado
                 $routes->get(
                     'felicitaciones',
                     '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Felicitaciones_Controller::index'
                 );
 
+
+                // Detalle
                 $routes->get(
                     'felicitaciones/detalle/(:num)',
                     '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Felicitaciones_Controller::detalle/$1'
                 );
 
+
+                // Actualizar
                 $routes->post(
                     'felicitaciones/actualizar/(:num)',
                     '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Felicitaciones_Controller::actualizar/$1'
                 );
 
+
+                // Eliminar
                 $routes->post(
                     'felicitaciones/eliminar/(:num)',
                     '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Felicitaciones_Controller::eliminar/$1'
                 );
+
+
+                // Exportar Excel
+                $routes->post(
+                    'felicitaciones/exportar',
+                    '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Felicitaciones_Controller::exportar'
+                );
+
 
                 /* =================================================
                    DASHBOARD
@@ -121,13 +136,18 @@ $routes->group(
                 );
 
 
+                /* =================================================
+                   NUEVA FELICITACIÓN
+                ================================================= */
+
                 $routes->post(
                     'felicitaciones/guardar',
                     '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::guardarFelicitacion'
                 );
 
+
                 /* =================================================
-                FOLIOS
+                   FOLIOS
                 ================================================= */
 
                 $routes->get(
@@ -151,15 +171,16 @@ $routes->group(
                     '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::buscarPersonal'
                 );
 
-                
+
                 /* =================================================
-                PERSONAL DE ASUNTOS INTERNOS
+                   PERSONAL DE ASUNTOS INTERNOS
                 ================================================= */
 
                 $routes->get(
                     'personal/asuntos-internos/buscar',
                     '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::buscarPersonalAsuntosInternos'
                 );
+
 
                 /* =================================================
                    UNIDADES
@@ -249,7 +270,7 @@ $routes->group(
 
 
                 /* =================================================
-                   EXPORTAR LISTADO
+                   EXPORTAR LISTADO DE REPORTES
                 ================================================= */
 
                 $routes->post(
@@ -259,7 +280,7 @@ $routes->group(
 
 
                 /* =================================================
-                   ELIMINACIÓN
+                   ELIMINACIÓN DE REPORTES
                 ================================================= */
 
                 $routes->post(
