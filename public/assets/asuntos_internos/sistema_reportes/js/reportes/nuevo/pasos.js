@@ -33,6 +33,15 @@ function inicializarFormularioPorPasos() {
     }
 
 
+    /* =====================================================
+       MAYÚSCULAS AUTOMÁTICAS
+    ===================================================== */
+
+    inicializarMayusculasFormulario(
+        formulario
+    );
+
+
     const pasos =
         Array.from(
             formulario.querySelectorAll(
@@ -77,9 +86,13 @@ function inicializarFormularioPorPasos() {
     }
 
 
-    let pasoActual = 1;
+    let pasoActual =
+        1;
 
-    let guardando = false;
+
+    let guardando =
+        false;
+
 
     let direccionNotificacionInicializada =
         false;
@@ -97,15 +110,13 @@ function inicializarFormularioPorPasos() {
        MOSTRAR PASO
     ===================================================== */
 
-    function mostrarPaso(numeroPaso) {
+    function mostrarPaso(
+        numeroPaso
+    ) {
 
         pasoActual =
             numeroPaso;
 
-
-        /* =================================================
-           CONTENIDO
-        ================================================= */
 
         pasos.forEach(
             (paso) => {
@@ -127,12 +138,6 @@ function inicializarFormularioPorPasos() {
 
         /* =================================================
            DIRECCIÓN PARA NOTIFICACIÓN
-    
-           El mapa se inicializa únicamente cuando el
-           paso 4 ya está visible.
-    
-           Esto evita que Google Maps intente calcular
-           dimensiones mientras el contenedor está oculto.
         ================================================= */
 
         if (
@@ -152,6 +157,7 @@ function inicializarFormularioPorPasos() {
                 },
                 100
             );
+
         }
 
 
@@ -229,7 +235,9 @@ function inicializarFormularioPorPasos() {
             block:
                 'start',
         });
+
     }
+
 
     /* =====================================================
        SIGUIENTE
@@ -259,9 +267,6 @@ function inicializarFormularioPorPasos() {
             }
 
 
-            /*
-             * Validaciones normales del paso.
-             */
             if (
                 !validarPasoActual(
                     paso
@@ -271,10 +276,6 @@ function inicializarFormularioPorPasos() {
             }
 
 
-            /*
-             * Validaciones especiales de campos
-             * dinámicos.
-             */
             if (
                 !validarRelacionesDelPaso(
                     pasoActual,
@@ -284,9 +285,10 @@ function inicializarFormularioPorPasos() {
                 return;
             }
 
-            /* =====================================================
-            VALIDAR FOLIOS IP / IMP EN PASO 1
-            ===================================================== */
+
+            /* =================================================
+               VALIDAR FOLIOS IP / IMP EN PASO 1
+            ================================================= */
 
             if (
                 pasoActual === 1
@@ -303,7 +305,9 @@ function inicializarFormularioPorPasos() {
                 ) {
                     return;
                 }
+
             }
+
 
             pasosCompletados.add(
                 pasoActual
@@ -323,6 +327,7 @@ function inicializarFormularioPorPasos() {
 
                 siguientePaso =
                     4;
+
             }
 
 
@@ -363,6 +368,7 @@ function inicializarFormularioPorPasos() {
 
                 pasoAnterior =
                     2;
+
             }
 
 
@@ -385,20 +391,13 @@ function inicializarFormularioPorPasos() {
             evento.preventDefault();
 
 
-            if (guardando) {
+            if (
+                guardando
+            ) {
                 return;
             }
 
 
-            /*
-             * Antes del envío volvemos a validar
-             * TODOS los pasos.
-             *
-             * Esto es importante porque el usuario
-             * puede regresar a un paso anterior y
-             * modificar un campo después de haberlo
-             * validado.
-             */
             const validacion =
                 validarFormularioCompleto(
                     pasos,
@@ -406,11 +405,14 @@ function inicializarFormularioPorPasos() {
                 );
 
 
-            if (!validacion.valido) {
+            if (
+                !validacion.valido
+            ) {
 
                 mostrarPaso(
                     validacion.paso
                 );
+
 
                 return;
             }
@@ -437,6 +439,7 @@ function inicializarFormularioPorPasos() {
                         formulario
                     );
 
+
                 console.log(
                     'PRUEBA QUEJOSO:',
                     {
@@ -461,6 +464,8 @@ function inicializarFormularioPorPasos() {
                             ),
                     }
                 );
+
+
                 /* =============================================
                    ENDPOINT
                 ============================================= */
@@ -477,7 +482,8 @@ function inicializarFormularioPorPasos() {
                     await fetch(
                         url,
                         {
-                            method: 'POST',
+                            method:
+                                'POST',
 
                             body:
                                 datos,
@@ -497,7 +503,8 @@ function inicializarFormularioPorPasos() {
                    RESPUESTA
                 ============================================= */
 
-                let resultado = null;
+                let resultado =
+                    null;
 
 
                 try {
@@ -619,7 +626,7 @@ function inicializarFormularioPorPasos() {
 
 
     /* =====================================================
-    CATÁLOGO TIPO DE FOLIO
+       CATÁLOGO TIPO DE FOLIO
     ===================================================== */
 
     inicializarCatalogoTipoFolio(
@@ -628,7 +635,7 @@ function inicializarFormularioPorPasos() {
 
 
     /* =====================================================
-    PREVISUALIZAR FOLIO AUTOMÁTICO
+       PREVISUALIZAR FOLIO AUTOMÁTICO
     ===================================================== */
 
     cargarPrevisualizacionFolio(
@@ -2148,5 +2155,198 @@ function actualizarIndicadoresGuardados(
         }
     );
 
+
+}
+
+
+/* =========================================================
+   MAYÚSCULAS AUTOMÁTICAS
+   NUEVO REPORTE
+========================================================= */
+
+function inicializarMayusculasFormulario(
+    formulario
+) {
+
+    if (!formulario) {
+        return;
+    }
+
+
+    /* =====================================================
+       EVITAR LISTENER DUPLICADO
+    ===================================================== */
+
+    if (
+        formulario.dataset
+            .mayusculasInicializadas
+        === '1'
+    ) {
+        return;
+    }
+
+
+    formulario.dataset
+        .mayusculasInicializadas =
+        '1';
+
+
+    /* =====================================================
+       CONVERTIR MIENTRAS EL USUARIO ESCRIBE
+    ===================================================== */
+
+    formulario.addEventListener(
+        'input',
+        (evento) => {
+
+            const campo =
+                evento.target;
+
+
+            if (
+                !(
+                    campo
+                    instanceof HTMLInputElement
+                )
+                && !(
+                    campo
+                    instanceof HTMLTextAreaElement
+                )
+            ) {
+                return;
+            }
+
+
+            /* =================================================
+               INPUTS QUE NO DEBEN MODIFICARSE
+            ================================================= */
+
+            if (
+                campo
+                instanceof HTMLInputElement
+            ) {
+
+                const tiposIgnorados =
+                    [
+                        'checkbox',
+                        'radio',
+                        'file',
+                        'hidden',
+                        'number',
+                        'range',
+                        'date',
+                        'datetime-local',
+                        'time',
+                        'month',
+                        'week',
+                        'email',
+                        'password',
+                        'url',
+                    ];
+
+
+                if (
+                    tiposIgnorados.includes(
+                        campo.type
+                    )
+                ) {
+                    return;
+                }
+
+            }
+
+
+            /* =================================================
+               EXCLUSIÓN MANUAL
+
+               Si algún campo necesita conservar minúsculas:
+
+               data-sin-mayusculas="1"
+            ================================================= */
+
+            if (
+                campo.dataset
+                    .sinMayusculas
+                === '1'
+            ) {
+                return;
+            }
+
+
+            /* =================================================
+               VALOR ACTUAL
+            ================================================= */
+
+            const valorActual =
+                String(
+                    campo.value
+                    || ''
+                );
+
+
+            const valorMayusculas =
+                valorActual
+                    .toLocaleUpperCase(
+                        'es-MX'
+                    );
+
+
+            if (
+                valorActual
+                === valorMayusculas
+            ) {
+                return;
+            }
+
+
+            /* =================================================
+               POSICIÓN DEL CURSOR
+            ================================================= */
+
+            const inicioSeleccion =
+                campo.selectionStart;
+
+
+            const finSeleccion =
+                campo.selectionEnd;
+
+
+            /* =================================================
+               ASIGNAR MAYÚSCULAS
+            ================================================= */
+
+            campo.value =
+                valorMayusculas;
+
+
+            /* =================================================
+               RESTAURAR CURSOR
+            ================================================= */
+
+            if (
+                inicioSeleccion !== null
+                && finSeleccion !== null
+            ) {
+
+                try {
+
+                    campo.setSelectionRange(
+                        inicioSeleccion,
+                        finSeleccion
+                    );
+
+                } catch (error) {
+
+                    /*
+                     * Algunos tipos de input no permiten
+                     * controlar manualmente la selección.
+                     */
+
+                }
+
+            }
+
+        }
+    );
 
 }
