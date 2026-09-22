@@ -699,10 +699,56 @@ function eliminarFila(
     ) {
 
         fila.remove();
+
     }
 
 
+    /* =====================================================
+       OBTENER FILAS ACTUALES
+    ===================================================== */
+
+    const tbody =
+        document.getElementById(
+            'tabla-felicitaciones-body'
+        );
+
+
+    const filas =
+        tbody
+            ? Array.from(
+                tbody.querySelectorAll(
+                    'tr[data-id-felicitacion]'
+                )
+            )
+            : [];
+
+
+    /* =====================================================
+       ACTUALIZAR RESUMEN
+    ===================================================== */
+
+    document.dispatchEvent(
+        new CustomEvent(
+            'felicitacionesFiltradasActualizadas',
+            {
+                detail: {
+                    total:
+                        filas.length,
+
+                    filas:
+                        filas,
+                },
+            }
+        )
+    );
+
+
+    /* =====================================================
+       ACTUALIZAR ESTADO DE TABLA
+    ===================================================== */
+
     actualizarEstadoTabla();
+
 }
 
 
