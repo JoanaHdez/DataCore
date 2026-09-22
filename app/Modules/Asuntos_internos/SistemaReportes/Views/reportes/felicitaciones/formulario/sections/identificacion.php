@@ -76,23 +76,15 @@
 
             <div class="report-field report-field--full">
 
-                <label for="felicitacion-nomenclatura-parte">
+                <label for="felicitacion-nomenclatura-visual">
                     Nomenclatura
                 </label>
 
-                <div class="report-nomenclatura">
-
-                    <span class="report-nomenclatura__prefijo" id="felicitacion-nomenclatura-prefijo">
-                        CGSC/CAI/FEL/
-                    </span>
-
-                    <input type="text" id="felicitacion-nomenclatura-parte"
-                        class="report-input report-nomenclatura__input" placeholder="Ej. 1295/2026" autocomplete="off">
-
-                </div>
+                <input type="text" id="felicitacion-nomenclatura-visual" class="report-input report-input--readonly"
+                    value="CGSC/CAI/FEL/ — Automática" readonly>
 
                 <small class="report-field__help">
-                    Captura únicamente la parte final de la nomenclatura.
+                    Se genera automáticamente con el número de folio y el año de registro.
                 </small>
 
                 <input type="hidden" id="felicitacion-nomenclatura" name="nomenclatura" value="">

@@ -163,11 +163,21 @@ async function seleccionarTipoRegistro(
    PREVISUALIZAR FOLIO DE FELICITACIÓN
 ========================================================= */
 
+/* =========================================================
+   PREVISUALIZAR FOLIO DE FELICITACIÓN
+========================================================= */
+
 async function cargarPrevisualizacionFelicitacion() {
 
     const inputFolio =
         document.querySelector(
             '#felicitacion-folio-visual'
+        );
+
+
+    const inputNomenclaturaVisual =
+        document.querySelector(
+            '#felicitacion-nomenclatura-visual'
         );
 
 
@@ -179,11 +189,12 @@ async function cargarPrevisualizacionFelicitacion() {
 
     if (
         !inputFolio
+        || !inputNomenclaturaVisual
         || !inputNomenclatura
     ) {
 
         console.error(
-            'No se encontraron los campos de folio de felicitación.'
+            'No se encontraron los campos de identificación de la felicitación.'
         );
 
         return;
@@ -198,8 +209,12 @@ async function cargarPrevisualizacionFelicitacion() {
         'Consultando...';
 
 
-    inputNomenclatura.value =
+    inputNomenclaturaVisual.value =
         'Consultando...';
+
+
+    inputNomenclatura.value =
+        '';
 
 
     try {
@@ -244,7 +259,7 @@ async function cargarPrevisualizacionFelicitacion() {
 
 
         /* =================================================
-           RESPUESTA JSON
+           RESPUESTA
         ================================================= */
 
         let resultado =
@@ -261,13 +276,8 @@ async function cargarPrevisualizacionFelicitacion() {
             throw new Error(
                 'El servidor devolvió una respuesta no válida.'
             );
+
         }
-
-
-        console.log(
-            'Previsualización FEL:',
-            resultado
-        );
 
 
         if (
@@ -279,11 +289,12 @@ async function cargarPrevisualizacionFelicitacion() {
                 resultado?.message
                 || 'No fue posible consultar el siguiente folio.'
             );
+
         }
 
 
         /* =================================================
-           VALORES
+           FOLIO
         ================================================= */
 
         const folio =
@@ -293,22 +304,83 @@ async function cargarPrevisualizacionFelicitacion() {
             ).trim();
 
 
-        const nomenclatura =
+        if (
+            folio === ''
+        ) {
+
+            throw new Error(
+                'El servidor no devolvió el folio.'
+            );
+
+        }
+
+
+        /* =================================================
+           EXTRAER NÚMERO DEL FOLIO
+
+           FEL-15 → 15
+        ================================================= */
+
+        const numeroFolio =
+            folio
+                .replace(
+                    /^FEL-/i,
+                    ''
+                )
+                .trim();
+
+
+        /* =================================================
+           OBTENER AÑO DE LA FECHA DE REGISTRO
+        ================================================= */
+
+        const inputFecha =
+            document.querySelector(
+                '#felicitacion-fecha-registro'
+            );
+
+
+        const fechaRegistro =
             String(
-                resultado.nomenclatura
+                inputFecha?.value
                 || ''
             ).trim();
 
 
+        const partesFecha =
+            fechaRegistro.split(
+                '/'
+            );
+
+
+        const anio =
+            partesFecha.length === 3
+                ? partesFecha[2]
+                : '';
+
+
         if (
-            folio === ''
-            || nomenclatura === ''
+            numeroFolio === ''
+            || anio === ''
         ) {
 
             throw new Error(
-                'El servidor no devolvió los datos del folio.'
+                'No fue posible generar la nomenclatura de la felicitación.'
             );
+
         }
+
+
+        /* =================================================
+           NOMENCLATURA AUTOMÁTICA
+
+           FEL-15 + 22/09/2026
+           ↓
+           CGSC/CAI/FEL/15/2026
+        ================================================= */
+
+        const nomenclatura =
+            `CGSC/CAI/FEL/${numeroFolio}/${anio}`;
 
 
         /* =================================================
@@ -318,6 +390,14 @@ async function cargarPrevisualizacionFelicitacion() {
         inputFolio.value =
             folio;
 
+
+        inputNomenclaturaVisual.value =
+            nomenclatura;
+
+
+        /* =================================================
+           VALOR QUE SE ENVÍA AL BACKEND
+        ================================================= */
 
         inputNomenclatura.value =
             nomenclatura;
@@ -335,7 +415,13 @@ async function cargarPrevisualizacionFelicitacion() {
             'FEL- — No disponible';
 
 
-        inputNomenclatura.value =
+        inputNomenclaturaVisual.value =
             'CGSC/CAI/FEL/ — No disponible';
+
+
+        inputNomenclatura.value =
+            '';
+
     }
+
 }

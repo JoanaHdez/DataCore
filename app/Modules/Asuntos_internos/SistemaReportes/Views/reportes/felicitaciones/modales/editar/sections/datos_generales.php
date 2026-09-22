@@ -15,50 +15,52 @@
 
     <div class="modal-felicitacion__grid">
 
-        <!-- FOLIO -->
+        <!-- =================================================
+             FOLIO
+        ================================================== -->
+
         <div class="modal-felicitacion__campo">
 
             <label for="editar-felicitacion-folio">
                 Folio
             </label>
 
-            <input type="text" id="editar-felicitacion-folio" class="report-input" readonly>
+            <input type="text" id="editar-felicitacion-folio" class="report-input report-input--readonly" readonly>
 
         </div>
 
 
-        <!-- FECHA -->
+        <!-- =================================================
+             FECHA
+        ================================================== -->
+
         <div class="modal-felicitacion__campo">
 
             <label for="editar-felicitacion-fecha">
                 Fecha de registro
             </label>
 
-            <input type="text" id="editar-felicitacion-fecha" name="fecha_registro" class="report-input" readonly>
+            <input type="text" id="editar-felicitacion-fecha" name="fecha_registro"
+                class="report-input report-input--readonly" readonly>
 
         </div>
 
 
-        <!-- NOMENCLATURA -->
+        <!-- =================================================
+             NOMENCLATURA
+        ================================================== -->
+
         <div class="modal-felicitacion__campo modal-felicitacion__campo--full">
 
-            <label for="editar-felicitacion-nomenclatura-parte">
+            <label for="editar-felicitacion-nomenclatura-visual">
                 Nomenclatura
             </label>
 
-            <div class="editar-nomenclatura">
-
-                <span class="editar-nomenclatura__prefijo" id="editar-felicitacion-nomenclatura-prefijo">
-                    CGSC/CAI/FEL/
-                </span>
-
-                <input type="text" id="editar-felicitacion-nomenclatura-parte" class="editar-nomenclatura__input"
-                    placeholder="Ej. 1295/2026" autocomplete="off">
-
-            </div>
+            <input type="text" id="editar-felicitacion-nomenclatura-visual" class="report-input report-input--readonly"
+                value="" readonly>
 
             <small>
-                Captura únicamente la parte final de la nomenclatura.
+                Se genera automáticamente con el número de folio y el año de registro.
             </small>
 
             <input type="hidden" id="editar-felicitacion-nomenclatura" name="nomenclatura" value="">
