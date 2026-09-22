@@ -1135,10 +1135,10 @@ export function inicializarDireccionNotificacion() {
     }
 
 
-    /* =====================================================
-       GOOGLE MAPS
-       DOMICILIO POSTAL
-    ===================================================== */
+    /* =========================================================
+    GOOGLE MAPS
+    DOMICILIO POSTAL
+    ========================================================= */
 
     function completarGoogle(
         posicion,
@@ -1231,13 +1231,20 @@ export function inicializarDireccionNotificacion() {
 
                 try {
 
+                    /* =================================================
+                       DIRECCIÓN MOSTRADA EN EL BUSCADOR
+                    ================================================= */
+
                     if (
                         inputBusqueda
                         && resultado.formatted_address
                     ) {
 
                         inputBusqueda.value =
-                            resultado.formatted_address;
+                            normalizarMayusculas(
+                                resultado.formatted_address
+                            );
+
                     }
 
 
@@ -1254,14 +1261,19 @@ export function inicializarDireccionNotificacion() {
 
                         llenarCampo(
                             inputCalle,
-                            calle
+                            normalizarMayusculas(
+                                calle
+                            )
                         );
+
                     }
 
 
                     llenarCampo(
                         inputNumero,
-                        numero
+                        normalizarMayusculas(
+                            numero
+                        )
                     );
 
 
@@ -1272,29 +1284,40 @@ export function inicializarDireccionNotificacion() {
 
                         llenarCampo(
                             inputColonia,
-                            colonia
+                            normalizarMayusculas(
+                                colonia
+                            )
                         );
+
                     }
 
 
                     llenarCampo(
                         inputMunicipio,
-                        municipio
+                        normalizarMayusculas(
+                            municipio
+                        )
                     );
 
 
                     llenarCampo(
                         inputEstado,
-                        estado
+                        normalizarMayusculas(
+                            estado
+                        )
                     );
+
 
                 } finally {
 
                     actualizandoAutomaticamente =
                         false;
+
                 }
+
             }
         );
+
     }
 
 

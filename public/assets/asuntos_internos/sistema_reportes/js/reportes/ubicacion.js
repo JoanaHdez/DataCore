@@ -750,8 +750,8 @@ function inicializarUbicacionGoogleMaps() {
 
 
     /* =========================================================
-       GOOGLE MAPS
-       DOMICILIO POSTAL
+    GOOGLE MAPS
+    DOMICILIO POSTAL
     ========================================================= */
 
     function completarGoogle(
@@ -844,27 +844,26 @@ function inicializarUbicacionGoogleMaps() {
 
                 try {
 
+                    /* =================================================
+                       DIRECCIÓN MOSTRADA EN EL BUSCADOR
+                    ================================================= */
+
                     if (
                         inputBusqueda
                         && resultado.formatted_address
                     ) {
 
                         inputBusqueda.value =
-                            resultado.formatted_address;
+                            normalizarMayusculas(
+                                resultado.formatted_address
+                            );
 
                     }
 
 
-                    /*
-                     * Google llena principalmente:
-                     *
-                     * número
-                     * municipio
-                     * estado
-                     *
-                     * Calle y colonia podrán ser reemplazadas
-                     * posteriormente por la base territorial.
-                     */
+                    /* =================================================
+                       CALLE
+                    ================================================= */
 
                     if (
                         !inputCalle?.value
@@ -873,17 +872,27 @@ function inicializarUbicacionGoogleMaps() {
 
                         llenarCampo(
                             inputCalle,
-                            calle
+                            normalizarMayusculas(
+                                calle
+                            )
                         );
 
                     }
 
+
+                    /* =================================================
+                       NÚMERO
+                    ================================================= */
 
                     llenarCampo(
                         inputNumero,
                         numero
                     );
 
+
+                    /* =================================================
+                       COLONIA
+                    ================================================= */
 
                     if (
                         !inputColonia?.value
@@ -892,22 +901,37 @@ function inicializarUbicacionGoogleMaps() {
 
                         llenarCampo(
                             inputColonia,
-                            colonia
+                            normalizarMayusculas(
+                                colonia
+                            )
                         );
 
                     }
 
 
+                    /* =================================================
+                       MUNICIPIO
+                    ================================================= */
+
                     llenarCampo(
                         inputMunicipio,
-                        municipio
+                        normalizarMayusculas(
+                            municipio
+                        )
                     );
 
+
+                    /* =================================================
+                       ESTADO
+                    ================================================= */
 
                     llenarCampo(
                         inputEstado,
-                        estado
+                        normalizarMayusculas(
+                            estado
+                        )
                     );
+
 
                 } finally {
 
