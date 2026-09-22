@@ -2,15 +2,19 @@ import {
     mostrarResultadoYRedirigir
 } from '../../notificaciones/resultado.js';
 
+
 /* =========================================================
    FELICITACIONES
+
    GUARDAR FORMULARIO
 ========================================================= */
 
 document.addEventListener(
     'DOMContentLoaded',
     () => {
+
         inicializarFormularioFelicitacion();
+
     }
 );
 
@@ -37,8 +41,18 @@ function inicializarFormularioFelicitacion() {
         !formulario
         || !botonGuardar
     ) {
+
         return;
     }
+
+
+    /* =====================================================
+       MAYÚSCULAS AUTOMÁTICAS
+    ===================================================== */
+
+    inicializarMayusculasFelicitacion(
+        formulario
+    );
 
 
     let guardando =
@@ -46,13 +60,17 @@ function inicializarFormularioFelicitacion() {
 
 
     /* =====================================================
-    NOMENCLATURA
+       NOMENCLATURA
     ===================================================== */
 
     inicializarNomenclaturaFelicitacion(
         formulario
     );
 
+
+    /* =====================================================
+       SUBMIT
+    ===================================================== */
 
     formulario.addEventListener(
         'submit',
@@ -64,6 +82,7 @@ function inicializarFormularioFelicitacion() {
             if (
                 guardando
             ) {
+
                 return;
             }
 
@@ -103,8 +122,9 @@ function inicializarFormularioFelicitacion() {
                 return;
             }
 
+
             /* =====================================================
-            VALIDAR UNIDAD
+               VALIDAR UNIDAD
             ===================================================== */
 
             const modalidadConUnidad =
@@ -212,6 +232,7 @@ function inicializarFormularioFelicitacion() {
                     throw new Error(
                         'El servidor devolvió una respuesta no válida.'
                     );
+
                 }
 
 
@@ -224,6 +245,7 @@ function inicializarFormularioFelicitacion() {
                         resultado?.message
                         || 'No fue posible guardar la felicitación.'
                     );
+
                 }
 
 
@@ -250,6 +272,7 @@ function inicializarFormularioFelicitacion() {
 
                 });
 
+
             } catch (error) {
 
                 console.error(
@@ -274,9 +297,205 @@ function inicializarFormularioFelicitacion() {
                     botonGuardar,
                     false
                 );
+
             }
+
         }
     );
+
+}
+
+
+/* =========================================================
+   MAYÚSCULAS AUTOMÁTICAS
+   NUEVA FELICITACIÓN
+========================================================= */
+
+function inicializarMayusculasFelicitacion(
+    formulario
+) {
+
+    if (!formulario) {
+        return;
+    }
+
+
+    /* =====================================================
+       EVITAR LISTENER DUPLICADO
+    ===================================================== */
+
+    if (
+        formulario.dataset
+            .mayusculasInicializadas
+        === '1'
+    ) {
+
+        return;
+    }
+
+
+    formulario.dataset
+        .mayusculasInicializadas =
+        '1';
+
+
+    /* =====================================================
+       CONVERTIR MIENTRAS SE ESCRIBE
+    ===================================================== */
+
+    formulario.addEventListener(
+        'input',
+        (evento) => {
+
+            const campo =
+                evento.target;
+
+
+            if (
+                !(
+                    campo instanceof HTMLInputElement
+                )
+                && !(
+                    campo instanceof HTMLTextAreaElement
+                )
+            ) {
+
+                return;
+            }
+
+
+            /* =================================================
+               TIPOS QUE NO DEBEN MODIFICARSE
+            ================================================= */
+
+            if (
+                campo instanceof HTMLInputElement
+            ) {
+
+                const tiposIgnorados =
+                    [
+                        'checkbox',
+                        'radio',
+                        'file',
+                        'hidden',
+                        'number',
+                        'range',
+                        'date',
+                        'datetime-local',
+                        'time',
+                        'month',
+                        'week',
+                        'email',
+                        'password',
+                        'url',
+                    ];
+
+
+                if (
+                    tiposIgnorados.includes(
+                        campo.type
+                    )
+                ) {
+
+                    return;
+                }
+            }
+
+
+            /* =================================================
+               EXCLUSIÓN MANUAL
+
+               Si algún campo debe conservar minúsculas:
+               data-sin-mayusculas="1"
+            ================================================= */
+
+            if (
+                campo.dataset
+                    .sinMayusculas
+                === '1'
+            ) {
+
+                return;
+            }
+
+
+            /* =================================================
+               VALOR ACTUAL
+            ================================================= */
+
+            const valorActual =
+                String(
+                    campo.value
+                    || ''
+                );
+
+
+            const valorMayusculas =
+                valorActual
+                    .toLocaleUpperCase(
+                        'es-MX'
+                    );
+
+
+            if (
+                valorActual
+                === valorMayusculas
+            ) {
+
+                return;
+            }
+
+
+            /* =================================================
+               POSICIÓN DEL CURSOR
+            ================================================= */
+
+            const inicioSeleccion =
+                campo.selectionStart;
+
+
+            const finSeleccion =
+                campo.selectionEnd;
+
+
+            /* =================================================
+               ASIGNAR MAYÚSCULAS
+            ================================================= */
+
+            campo.value =
+                valorMayusculas;
+
+
+            /* =================================================
+               RESTAURAR CURSOR
+            ================================================= */
+
+            if (
+                inicioSeleccion !== null
+                && finSeleccion !== null
+            ) {
+
+                try {
+
+                    campo.setSelectionRange(
+                        inicioSeleccion,
+                        finSeleccion
+                    );
+
+                } catch (error) {
+
+                    /*
+                     * Algunos tipos de input no permiten
+                     * controlar manualmente la selección.
+                     */
+
+                }
+
+            }
+
+        }
+    );
+
 }
 
 
@@ -289,6 +508,7 @@ function inicializarNomenclaturaFelicitacion(
 ) {
 
     if (!formulario) {
+
         return;
     }
 
@@ -324,41 +544,48 @@ function inicializarNomenclaturaFelicitacion(
 
     function actualizarNomenclatura() {
 
-    let parte =
-        String(
-            inputParte.value
-            || ''
-        );
+        let parte =
+            String(
+                inputParte.value
+                || ''
+            );
 
 
-    /*
-     * Evitar doble diagonal si el usuario
-     * comienza escribiendo "/".
-     *
-     * No usamos trim() aquí porque impediría
-     * capturar espacios normalmente.
-     */
+        /*
+         * Evitar diagonal inicial duplicada.
+         */
 
-    parte =
-        parte.replace(
-            /^\/+/,
-            ''
-        );
+        parte =
+            parte.replace(
+                /^\/+/,
+                ''
+            );
 
 
-    inputParte.value =
-        parte;
+        /* =================================================
+           MAYÚSCULAS
+        ================================================= */
+
+        parte =
+            parte.toLocaleUpperCase(
+                'es-MX'
+            );
 
 
-    const parteConContenido =
-        parte.trim();
+        inputParte.value =
+            parte;
 
 
-    inputCompleto.value =
-        parteConContenido !== ''
-            ? `${PREFIJO}${parte}`
-            : '';
-}
+        const parteConContenido =
+            parte.trim();
+
+
+        inputCompleto.value =
+            parteConContenido !== ''
+                ? `${PREFIJO}${parte}`
+                : '';
+
+    }
 
 
     /* =====================================================
@@ -386,6 +613,7 @@ function inicializarNomenclaturaFelicitacion(
             'change',
             actualizarNomenclatura
         );
+
     }
 
 
@@ -394,6 +622,7 @@ function inicializarNomenclaturaFelicitacion(
     ===================================================== */
 
     actualizarNomenclatura();
+
 }
 
 
@@ -432,4 +661,5 @@ function establecerEstadoGuardando(
 
 
     delete boton.dataset.textoOriginal;
+
 }

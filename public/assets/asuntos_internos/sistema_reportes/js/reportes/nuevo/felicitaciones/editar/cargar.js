@@ -1,6 +1,8 @@
 /* =========================================================
    SISTEMA DE REPORTES - ASUNTOS INTERNOS
+
    FELICITACIONES - EDITAR
+
    CARGA DE DATOS
 ========================================================= */
 
@@ -38,7 +40,12 @@ export function cargarDatosGeneralesEditar(
             String(
                 felicitacion.folio
                 || ''
-            ).trim();
+            )
+                .trim()
+                .toLocaleUpperCase(
+                    'es-MX'
+                );
+
     }
 
 
@@ -59,6 +66,7 @@ export function cargarDatosGeneralesEditar(
                 felicitacion.fecha_registro
                 || ''
             ).trim();
+
     }
 
 
@@ -86,7 +94,11 @@ export function cargarDatosGeneralesEditar(
         String(
             felicitacion.nomenclatura
             || ''
-        ).trim();
+        )
+            .trim()
+            .toLocaleUpperCase(
+                'es-MX'
+            );
 
 
     let parteVariable =
@@ -104,6 +116,7 @@ export function cargarDatosGeneralesEditar(
                 .substring(
                     PREFIJO_NOMENCLATURA.length
                 );
+
     }
 
 
@@ -111,6 +124,7 @@ export function cargarDatosGeneralesEditar(
 
         inputNomenclaturaParte.value =
             parteVariable;
+
     }
 
 
@@ -118,6 +132,7 @@ export function cargarDatosGeneralesEditar(
 
         inputNomenclaturaCompleta.value =
             nomenclaturaGuardada;
+
     }
 
 
@@ -142,12 +157,9 @@ export function cargarDatosGeneralesEditar(
             );
 
 
-        /*
-         * Evitar doble diagonal al inicio.
-         *
-         * No usamos trim() aquí para permitir
-         * que el usuario capture espacios normalmente.
-         */
+        /* =================================================
+           EVITAR DIAGONAL INICIAL DUPLICADA
+        ================================================= */
 
         parte =
             parte.replace(
@@ -156,14 +168,29 @@ export function cargarDatosGeneralesEditar(
             );
 
 
+        /* =================================================
+           MAYÚSCULAS
+        ================================================= */
+
+        parte =
+            parte.toLocaleUpperCase(
+                'es-MX'
+            );
+
+
         inputNomenclaturaParte.value =
             parte;
 
 
+        const parteConContenido =
+            parte.trim();
+
+
         inputNomenclaturaCompleta.value =
-            parte.trim() !== ''
+            parteConContenido !== ''
                 ? `${PREFIJO_NOMENCLATURA}${parte}`
                 : '';
+
     }
 
 
@@ -193,6 +220,7 @@ export function cargarDatosGeneralesEditar(
             'change',
             actualizarNomenclatura
         );
+
     }
 
 
@@ -212,7 +240,12 @@ export function cargarDatosGeneralesEditar(
             String(
                 felicitacion.nombre_felicitante
                 || ''
-            ).trim();
+            )
+                .trim()
+                .toLocaleUpperCase(
+                    'es-MX'
+                );
+
     }
 
 
@@ -232,6 +265,12 @@ export function cargarDatosGeneralesEditar(
             String(
                 felicitacion.razon_felicitacion
                 || ''
-            ).trim();
+            )
+                .trim()
+                .toLocaleUpperCase(
+                    'es-MX'
+                );
+
     }
+
 }

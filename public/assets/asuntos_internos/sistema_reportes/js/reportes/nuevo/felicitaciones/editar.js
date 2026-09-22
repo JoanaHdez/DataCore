@@ -74,6 +74,15 @@ function inicializarEditarFelicitacion() {
 
 
     /* =====================================================
+       MAYÚSCULAS AUTOMÁTICAS
+    ===================================================== */
+
+    inicializarMayusculasEditarFelicitacion(
+        modal
+    );
+
+
+    /* =====================================================
        MODALIDAD DE UNIDAD
     ===================================================== */
 
@@ -228,6 +237,203 @@ function inicializarEditarFelicitacion() {
                 cerrarModalEditar(
                     modal
                 );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   MAYÚSCULAS AUTOMÁTICAS
+   EDITAR FELICITACIÓN
+========================================================= */
+
+function inicializarMayusculasEditarFelicitacion(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const formulario =
+        modal.querySelector(
+            'form'
+        );
+
+
+    if (!formulario) {
+        return;
+    }
+
+
+    /* =====================================================
+       EVITAR LISTENER DUPLICADO
+    ===================================================== */
+
+    if (
+        formulario.dataset
+            .mayusculasInicializadas
+        === '1'
+    ) {
+        return;
+    }
+
+
+    formulario.dataset
+        .mayusculasInicializadas =
+        '1';
+
+
+    /* =====================================================
+       CONVERTIR MIENTRAS SE ESCRIBE
+    ===================================================== */
+
+    formulario.addEventListener(
+        'input',
+        (evento) => {
+
+            const campo =
+                evento.target;
+
+
+            if (
+                !(
+                    campo instanceof HTMLInputElement
+                )
+                && !(
+                    campo instanceof HTMLTextAreaElement
+                )
+            ) {
+                return;
+            }
+
+
+            /* =================================================
+               TIPOS QUE NO DEBEN MODIFICARSE
+            ================================================= */
+
+            if (
+                campo instanceof HTMLInputElement
+            ) {
+
+                const tiposIgnorados =
+                    [
+                        'checkbox',
+                        'radio',
+                        'file',
+                        'hidden',
+                        'number',
+                        'range',
+                        'date',
+                        'datetime-local',
+                        'time',
+                        'month',
+                        'week',
+                        'email',
+                        'password',
+                        'url',
+                    ];
+
+
+                if (
+                    tiposIgnorados.includes(
+                        campo.type
+                    )
+                ) {
+                    return;
+                }
+
+            }
+
+
+            /* =================================================
+               EXCLUSIÓN MANUAL
+            ================================================= */
+
+            if (
+                campo.dataset
+                    .sinMayusculas
+                === '1'
+            ) {
+                return;
+            }
+
+
+            /* =================================================
+               VALOR ACTUAL
+            ================================================= */
+
+            const valorActual =
+                String(
+                    campo.value
+                    || ''
+                );
+
+
+            const valorMayusculas =
+                valorActual
+                    .toLocaleUpperCase(
+                        'es-MX'
+                    );
+
+
+            if (
+                valorActual
+                === valorMayusculas
+            ) {
+                return;
+            }
+
+
+            /* =================================================
+               POSICIÓN DEL CURSOR
+            ================================================= */
+
+            const inicioSeleccion =
+                campo.selectionStart;
+
+
+            const finSeleccion =
+                campo.selectionEnd;
+
+
+            /* =================================================
+               ASIGNAR MAYÚSCULAS
+            ================================================= */
+
+            campo.value =
+                valorMayusculas;
+
+
+            /* =================================================
+               RESTAURAR CURSOR
+            ================================================= */
+
+            if (
+                inicioSeleccion !== null
+                && finSeleccion !== null
+            ) {
+
+                try {
+
+                    campo.setSelectionRange(
+                        inicioSeleccion,
+                        finSeleccion
+                    );
+
+                } catch (error) {
+
+                    /*
+                     * Algunos tipos de input no permiten
+                     * controlar manualmente la selección.
+                     */
+
+                }
 
             }
 

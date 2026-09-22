@@ -294,7 +294,7 @@ class FelicitacionService
             $folioGenerado =
                 $this->folioService
                 ->generar(
-                    'FELICITACION'
+                    'FEL'
                 );
 
 

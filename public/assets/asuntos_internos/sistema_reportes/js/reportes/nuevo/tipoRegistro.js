@@ -216,8 +216,8 @@ async function cargarPrevisualizacionFelicitacion() {
 
 
         url.searchParams.set(
-            'tipo_registro',
-            'FELICITACION'
+            'clave_folio',
+            'FEL'
         );
 
 
