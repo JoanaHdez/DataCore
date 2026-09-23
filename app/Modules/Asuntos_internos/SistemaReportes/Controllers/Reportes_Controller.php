@@ -34,28 +34,28 @@ class Reportes_Controller extends BaseController
 
         $reportes =
             $db
-                ->table('ai_reportes r')
-                ->select([
-                    'r.id_reporte',
-                    'r.folio',
-                    'r.fecha_queja',
-                    'r.expediente',
-                    'r.clasificacion',
-                    'r.nombre_quejoso',
-                    'r.resolucion',
-                    'r.estado_actual',
-                    'r.created_at',
-                ])
-                ->where(
-                    'r.eliminado',
-                    0
-                )
-                ->orderBy(
-                    'r.id_reporte',
-                    'DESC'
-                )
-                ->get()
-                ->getResultArray();
+            ->table('ai_reportes r')
+            ->select([
+                'r.id_reporte',
+                'r.folio',
+                'r.fecha_queja',
+                'r.expediente',
+                'r.clasificacion',
+                'r.nombre_quejoso',
+                'r.resolucion',
+                'r.estado_actual',
+                'r.created_at',
+            ])
+            ->where(
+                'r.eliminado',
+                0
+            )
+            ->orderBy(
+                'r.id_reporte',
+                'DESC'
+            )
+            ->get()
+            ->getResultArray();
 
 
         /* =========================================================
@@ -66,22 +66,22 @@ class Reportes_Controller extends BaseController
 
             $personal =
                 $db
-                    ->table('ai_reporte_personal')
-                    ->select([
-                        'nombre_snapshot',
-                        'area_snapshot',
-                        'turno_snapshot',
-                    ])
-                    ->where(
-                        'id_reporte',
-                        $reporte['id_reporte']
-                    )
-                    ->orderBy(
-                        'id_reporte_personal',
-                        'ASC'
-                    )
-                    ->get()
-                    ->getResultArray();
+                ->table('ai_reporte_personal')
+                ->select([
+                    'nombre_snapshot',
+                    'area_snapshot',
+                    'turno_snapshot',
+                ])
+                ->where(
+                    'id_reporte',
+                    $reporte['id_reporte']
+                )
+                ->orderBy(
+                    'id_reporte_personal',
+                    'ASC'
+                )
+                ->get()
+                ->getResultArray();
 
 
             /*
@@ -148,14 +148,14 @@ class Reportes_Controller extends BaseController
 
             $reporte['area'] =
                 !empty($areas)
-                    ? implode(', ', $areas)
-                    : '—';
+                ? implode(', ', $areas)
+                : '—';
 
 
             $reporte['turno'] =
                 !empty($turnos)
-                    ? implode(', ', $turnos)
-                    : '—';
+                ? implode(', ', $turnos)
+                : '—';
 
 
             /* =====================================================
@@ -168,28 +168,28 @@ class Reportes_Controller extends BaseController
 
             $tieneArresto =
                 $db
-                    ->table('ai_reporte_sanciones rs')
-                    ->join(
-                        'ai_reporte_motivos rm',
-                        'rm.id_reporte_motivo = rs.id_reporte_motivo',
-                        'inner'
-                    )
-                    ->where(
-                        'rm.id_reporte',
-                        $reporte['id_reporte']
-                    )
-                    ->like(
-                        'rs.tipo',
-                        'ARRESTO',
-                        'after'
-                    )
-                    ->countAllResults() > 0;
+                ->table('ai_reporte_sanciones rs')
+                ->join(
+                    'ai_reporte_motivos rm',
+                    'rm.id_reporte_motivo = rs.id_reporte_motivo',
+                    'inner'
+                )
+                ->where(
+                    'rm.id_reporte',
+                    $reporte['id_reporte']
+                )
+                ->like(
+                    'rs.tipo',
+                    'ARRESTO',
+                    'after'
+                )
+                ->countAllResults() > 0;
 
 
             $reporte['tiene_arresto'] =
                 $tieneArresto
-                    ? 1
-                    : 0;
+                ? 1
+                : 0;
 
 
             /* =====================================================
@@ -228,8 +228,8 @@ class Reportes_Controller extends BaseController
 
             $reporte['resolucion'] =
                 $resolucion !== ''
-                    ? $resolucion
-                    : '—';
+                ? $resolucion
+                : '—';
 
 
             /* =====================================================
@@ -282,32 +282,32 @@ class Reportes_Controller extends BaseController
 
         $registrosSectores =
             $dbPlantilla
-                ->table('plantilla')
-                ->select('AREA')
-                ->where(
-                    'ESTADO',
-                    'ACTIVO'
-                )
-                ->where(
-                    'AREA IS NOT NULL',
-                    null,
-                    false
-                )
-                ->where(
-                    "TRIM(AREA) != ''",
-                    null,
-                    false
-                )
-                ->like(
-                    'AREA',
-                    'SECTOR',
-                    'after'
-                )
-                ->groupBy(
-                    'AREA'
-                )
-                ->get()
-                ->getResultArray();
+            ->table('plantilla')
+            ->select('AREA')
+            ->where(
+                'ESTADO',
+                'ACTIVO'
+            )
+            ->where(
+                'AREA IS NOT NULL',
+                null,
+                false
+            )
+            ->where(
+                "TRIM(AREA) != ''",
+                null,
+                false
+            )
+            ->like(
+                'AREA',
+                'SECTOR',
+                'after'
+            )
+            ->groupBy(
+                'AREA'
+            )
+            ->get()
+            ->getResultArray();
 
 
         $sectoresEncontrados =
@@ -332,7 +332,7 @@ class Reportes_Controller extends BaseController
                             'UTF-8'
                         )
                     )
-                    ?? ''
+                        ?? ''
                 );
 
 
@@ -403,27 +403,27 @@ class Reportes_Controller extends BaseController
 
         $canalizaciones =
             $db
-                ->table(
-                    'ai_cat_canalizacion_areas'
-                )
-                ->select([
-                    'id_area',
-                    'nombre',
-                ])
-                ->where(
-                    'activo',
-                    1
-                )
-                ->orderBy(
-                    'orden',
-                    'ASC'
-                )
-                ->orderBy(
-                    'nombre',
-                    'ASC'
-                )
-                ->get()
-                ->getResultArray();
+            ->table(
+                'ai_cat_canalizacion_areas'
+            )
+            ->select([
+                'id_area',
+                'nombre',
+            ])
+            ->where(
+                'activo',
+                1
+            )
+            ->orderBy(
+                'orden',
+                'ASC'
+            )
+            ->orderBy(
+                'nombre',
+                'ASC'
+            )
+            ->get()
+            ->getResultArray();
 
 
         /* =========================================================
@@ -432,27 +432,27 @@ class Reportes_Controller extends BaseController
 
         $clasificaciones =
             $db
-                ->table(
-                    'ai_cat_clasificaciones'
-                )
-                ->select([
-                    'id_clasificacion',
-                    'nombre',
-                ])
-                ->where(
-                    'activo',
-                    1
-                )
-                ->orderBy(
-                    'orden',
-                    'ASC'
-                )
-                ->orderBy(
-                    'nombre',
-                    'ASC'
-                )
-                ->get()
-                ->getResultArray();
+            ->table(
+                'ai_cat_clasificaciones'
+            )
+            ->select([
+                'id_clasificacion',
+                'nombre',
+            ])
+            ->where(
+                'activo',
+                1
+            )
+            ->orderBy(
+                'orden',
+                'ASC'
+            )
+            ->orderBy(
+                'nombre',
+                'ASC'
+            )
+            ->get()
+            ->getResultArray();
 
 
         /* =========================================================
@@ -461,24 +461,24 @@ class Reportes_Controller extends BaseController
 
         $motivos =
             $db
-                ->table(
-                    'ai_cat_motivos'
-                )
-                ->select([
-                    'id_motivo',
-                    'motivo',
-                    'sancion',
-                ])
-                ->where(
-                    'activo',
-                    1
-                )
-                ->orderBy(
-                    'id_motivo',
-                    'ASC'
-                )
-                ->get()
-                ->getResultArray();
+            ->table(
+                'ai_cat_motivos'
+            )
+            ->select([
+                'id_motivo',
+                'motivo',
+                'sancion',
+            ])
+            ->where(
+                'activo',
+                1
+            )
+            ->orderBy(
+                'id_motivo',
+                'ASC'
+            )
+            ->get()
+            ->getResultArray();
 
 
         /* =========================================================
@@ -489,19 +489,19 @@ class Reportes_Controller extends BaseController
             'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\index',
             [
                 'reportes' =>
-                    $reportes,
+                $reportes,
 
                 'sectores' =>
-                    $sectores,
+                $sectores,
 
                 'canalizaciones' =>
-                    $canalizaciones,
+                $canalizaciones,
 
                 'clasificaciones' =>
-                    $clasificaciones,
+                $clasificaciones,
 
                 'motivos' =>
-                    $motivos,
+                $motivos,
             ]
         );
     }
@@ -1882,8 +1882,8 @@ class Reportes_Controller extends BaseController
 
 
             /* =====================================================
-            MOTIVOS RELACIONADOS
-            ===================================================== */
+MOTIVOS RELACIONADOS
+===================================================== */
 
             $motivos =
                 $db
@@ -1891,6 +1891,7 @@ class Reportes_Controller extends BaseController
                 ->select([
                     'rm.id_reporte_motivo',
                     'rm.id_motivo',
+                    'rm.motivo_personalizado',
 
                     'm.motivo',
                     'm.sancion AS sancion',
@@ -1908,7 +1909,7 @@ class Reportes_Controller extends BaseController
                 ->join(
                     'ai_reporte_sanciones s',
                     's.id_reporte_motivo = rm.id_reporte_motivo
-                        AND s.eliminado = 0',
+            AND s.eliminado = 0',
                     'left'
                 )
                 ->where(
@@ -1925,6 +1926,42 @@ class Reportes_Controller extends BaseController
                 )
                 ->get()
                 ->getResultArray();
+
+
+            /* =====================================================
+            PREPARAR TEXTO DEL MOTIVO
+            ===================================================== */
+
+            foreach (
+                $motivos
+                as &$motivo
+            ) {
+
+                $motivoPersonalizado =
+                    trim(
+                        (string) (
+                            $motivo['motivo_personalizado']
+                            ?? ''
+                        )
+                    );
+
+
+                $motivoCatalogo =
+                    trim(
+                        (string) (
+                            $motivo['motivo']
+                            ?? ''
+                        )
+                    );
+
+
+                $motivo['motivo_mostrar'] =
+                    $motivoPersonalizado !== ''
+                    ? $motivoPersonalizado
+                    : $motivoCatalogo;
+            }
+
+            unset($motivo);
 
 
             /* =====================================================
@@ -3089,7 +3126,7 @@ class Reportes_Controller extends BaseController
         }
     }
 
-    
+
 
     public function eliminarReporte(int $idReporte)
     {
@@ -5839,7 +5876,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'No fue posible identificar al usuario.',
+                    'No fue posible identificar al usuario.',
                 ]);
         }
 
@@ -5851,7 +5888,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'El seguimiento proporcionado no es válido.',
+                    'El seguimiento proporcionado no es válido.',
                 ]);
         }
 
@@ -5924,7 +5961,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'El Folio IP no puede exceder 100 caracteres.',
+                    'El Folio IP no puede exceder 100 caracteres.',
                 ]);
         }
 
@@ -5980,7 +6017,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'La fecha del seguimiento es obligatoria.',
+                    'La fecha del seguimiento es obligatoria.',
                 ]);
         }
 
@@ -6002,7 +6039,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'La fecha del seguimiento no es válida.',
+                    'La fecha del seguimiento no es válida.',
                 ]);
         }
 
@@ -6029,7 +6066,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'El tipo de seguimiento seleccionado no es válido.',
+                    'El tipo de seguimiento seleccionado no es válido.',
                 ]);
         }
 
@@ -6054,7 +6091,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'El estado seleccionado no es válido.',
+                    'El estado seleccionado no es válido.',
                 ]);
         }
 
@@ -6066,7 +6103,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'Las observaciones del seguimiento son obligatorias.',
+                    'Las observaciones del seguimiento son obligatorias.',
                 ]);
         }
 
@@ -6092,7 +6129,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'La acción de sanción no es válida.',
+                    'La acción de sanción no es válida.',
                 ]);
         }
 
@@ -6128,7 +6165,7 @@ class Reportes_Controller extends BaseController
                     ->setJSON([
                         'success' => false,
                         'message' =>
-                            'La sanción disciplinaria seleccionada no es válida.',
+                        'La sanción disciplinaria seleccionada no es válida.',
                     ]);
             }
 
@@ -6142,7 +6179,7 @@ class Reportes_Controller extends BaseController
                         ->setJSON([
                             'success' => false,
                             'message' =>
-                                'Debes especificar la sanción disciplinaria.',
+                            'Debes especificar la sanción disciplinaria.',
                         ]);
                 }
 
@@ -6158,10 +6195,9 @@ class Reportes_Controller extends BaseController
                         ->setJSON([
                             'success' => false,
                             'message' =>
-                                'La descripción de la sanción no puede exceder 255 caracteres.',
+                            'La descripción de la sanción no puede exceder 255 caracteres.',
                         ]);
                 }
-
             } else {
 
                 $sancionOtro =
@@ -6186,17 +6222,17 @@ class Reportes_Controller extends BaseController
 
         $seguimiento =
             $db
-                ->table('ai_reporte_seguimientos')
-                ->where(
-                    'id_seguimiento',
-                    $idSeguimiento
-                )
-                ->where(
-                    'eliminado',
-                    0
-                )
-                ->get()
-                ->getRowArray();
+            ->table('ai_reporte_seguimientos')
+            ->where(
+                'id_seguimiento',
+                $idSeguimiento
+            )
+            ->where(
+                'eliminado',
+                0
+            )
+            ->get()
+            ->getRowArray();
 
 
         if (!$seguimiento) {
@@ -6206,7 +6242,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'El seguimiento solicitado no existe.',
+                    'El seguimiento solicitado no existe.',
                 ]);
         }
 
@@ -6225,7 +6261,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'El seguimiento no está relacionado con un reporte válido.',
+                    'El seguimiento no está relacionado con un reporte válido.',
                 ]);
         }
 
@@ -6236,23 +6272,23 @@ class Reportes_Controller extends BaseController
 
         $reporte =
             $db
-                ->table('ai_reportes')
-                ->select([
-                    'id_reporte',
-                    'folio',
-                    'folio_ip',
-                    'estado_actual',
-                ])
-                ->where(
-                    'id_reporte',
-                    $idReporte
-                )
-                ->where(
-                    'eliminado',
-                    0
-                )
-                ->get()
-                ->getRowArray();
+            ->table('ai_reportes')
+            ->select([
+                'id_reporte',
+                'folio',
+                'folio_ip',
+                'estado_actual',
+            ])
+            ->where(
+                'id_reporte',
+                $idReporte
+            )
+            ->where(
+                'eliminado',
+                0
+            )
+            ->get()
+            ->getRowArray();
 
 
         if (!$reporte) {
@@ -6262,7 +6298,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'El reporte relacionado no existe.',
+                    'El reporte relacionado no existe.',
                 ]);
         }
 
@@ -6275,26 +6311,26 @@ class Reportes_Controller extends BaseController
 
             $folioIpExistente =
                 $db
-                    ->table('ai_reportes')
-                    ->select([
-                        'id_reporte',
-                        'folio',
-                    ])
-                    ->where(
-                        'folio_ip',
-                        $folioIp
-                    )
-                    ->where(
-                        'eliminado',
-                        0
-                    )
-                    ->where(
-                        'id_reporte !=',
-                        $idReporte
-                    )
-                    ->limit(1)
-                    ->get()
-                    ->getRowArray();
+                ->table('ai_reportes')
+                ->select([
+                    'id_reporte',
+                    'folio',
+                ])
+                ->where(
+                    'folio_ip',
+                    $folioIp
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->where(
+                    'id_reporte !=',
+                    $idReporte
+                )
+                ->limit(1)
+                ->get()
+                ->getRowArray();
 
 
             if ($folioIpExistente) {
@@ -6304,7 +6340,7 @@ class Reportes_Controller extends BaseController
                     ->setJSON([
                         'success' => false,
                         'message' =>
-                            'El Folio IP ya se encuentra registrado en otro reporte. Debes ingresar uno diferente para continuar.',
+                        'El Folio IP ya se encuentra registrado en otro reporte. Debes ingresar uno diferente para continuar.',
                     ]);
             }
         }
@@ -6316,26 +6352,26 @@ class Reportes_Controller extends BaseController
 
         $sancionSeguimiento =
             $db
-                ->table('ai_reporte_sanciones')
-                ->where(
-                    'id_reporte',
-                    $idReporte
-                )
-                ->where(
-                    'id_seguimiento',
-                    $idSeguimiento
-                )
-                ->where(
-                    'eliminado',
-                    0
-                )
-                ->orderBy(
-                    'id_sancion',
-                    'DESC'
-                )
-                ->limit(1)
-                ->get()
-                ->getRowArray();
+            ->table('ai_reporte_sanciones')
+            ->where(
+                'id_reporte',
+                $idReporte
+            )
+            ->where(
+                'id_seguimiento',
+                $idSeguimiento
+            )
+            ->where(
+                'eliminado',
+                0
+            )
+            ->orderBy(
+                'id_sancion',
+                'DESC'
+            )
+            ->limit(1)
+            ->get()
+            ->getRowArray();
 
 
         /*
@@ -6368,36 +6404,36 @@ class Reportes_Controller extends BaseController
 
             $actualizado =
                 $db
-                    ->table('ai_reporte_seguimientos')
-                    ->where(
-                        'id_seguimiento',
-                        $idSeguimiento
-                    )
-                    ->where(
-                        'eliminado',
-                        0
-                    )
-                    ->update([
+                ->table('ai_reporte_seguimientos')
+                ->where(
+                    'id_seguimiento',
+                    $idSeguimiento
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->update([
 
-                        'fecha' =>
-                            $fecha,
+                    'fecha' =>
+                    $fecha,
 
-                        'tipo' =>
-                            $tipo,
+                    'tipo' =>
+                    $tipo,
 
-                        'estado_resultante' =>
-                            $estado,
+                    'estado_resultante' =>
+                    $estado,
 
-                        'observaciones' =>
-                            $observaciones,
+                    'observaciones' =>
+                    $observaciones,
 
-                        'updated_by' =>
-                            $idUsuario,
+                    'updated_by' =>
+                    $idUsuario,
 
-                        'updated_at' =>
-                            date('Y-m-d H:i:s'),
+                    'updated_at' =>
+                    date('Y-m-d H:i:s'),
 
-                    ]);
+                ]);
 
 
             if ($actualizado === false) {
@@ -6419,24 +6455,24 @@ class Reportes_Controller extends BaseController
 
                 $actualizarSancion =
                     $db
-                        ->table('ai_reporte_sanciones')
-                        ->where(
-                            'id_sancion',
-                            (int) $sancionSeguimiento['id_sancion']
-                        )
-                        ->where(
-                            'id_reporte',
-                            $idReporte
-                        )
-                        ->update([
+                    ->table('ai_reporte_sanciones')
+                    ->where(
+                        'id_sancion',
+                        (int) $sancionSeguimiento['id_sancion']
+                    )
+                    ->where(
+                        'id_reporte',
+                        $idReporte
+                    )
+                    ->update([
 
-                            'tipo' =>
-                                $sancionTipo,
+                        'tipo' =>
+                        $sancionTipo,
 
-                            'descripcion_otro' =>
-                                $sancionOtro,
+                        'descripcion_otro' =>
+                        $sancionOtro,
 
-                            /*
+                        /*
                             * NO modificamos:
                             *
                             * origen
@@ -6447,13 +6483,13 @@ class Reportes_Controller extends BaseController
                             * el mismo evento histórico.
                             */
 
-                            'updated_by' =>
-                                $idUsuario,
+                        'updated_by' =>
+                        $idUsuario,
 
-                            'updated_at' =>
-                                date('Y-m-d H:i:s'),
+                        'updated_at' =>
+                        date('Y-m-d H:i:s'),
 
-                        ]);
+                    ]);
 
 
                 if ($actualizarSancion === false) {
@@ -6476,32 +6512,32 @@ class Reportes_Controller extends BaseController
 
                 $eliminarSancion =
                     $db
-                        ->table('ai_reporte_sanciones')
-                        ->where(
-                            'id_sancion',
-                            (int) $sancionSeguimiento['id_sancion']
-                        )
-                        ->update([
+                    ->table('ai_reporte_sanciones')
+                    ->where(
+                        'id_sancion',
+                        (int) $sancionSeguimiento['id_sancion']
+                    )
+                    ->update([
 
-                            'es_actual' =>
-                                0,
+                        'es_actual' =>
+                        0,
 
-                            'eliminado' =>
-                                1,
+                        'eliminado' =>
+                        1,
 
-                            'updated_by' =>
-                                $idUsuario,
+                        'updated_by' =>
+                        $idUsuario,
 
-                            'updated_at' =>
-                                date('Y-m-d H:i:s'),
+                        'updated_at' =>
+                        date('Y-m-d H:i:s'),
 
-                            'eliminado_at' =>
-                                date('Y-m-d H:i:s'),
+                        'eliminado_at' =>
+                        date('Y-m-d H:i:s'),
 
-                            'eliminado_por' =>
-                                $idUsuario,
+                        'eliminado_por' =>
+                        $idUsuario,
 
-                        ]);
+                    ]);
 
 
                 if ($eliminarSancion === false) {
@@ -6521,26 +6557,26 @@ class Reportes_Controller extends BaseController
 
                     $anterior =
                         $db
-                            ->table('ai_reporte_sanciones')
-                            ->where(
-                                'id_reporte',
-                                $idReporte
-                            )
-                            ->where(
-                                'eliminado',
-                                0
-                            )
-                            ->where(
-                                'id_sancion <',
-                                (int) $sancionSeguimiento['id_sancion']
-                            )
-                            ->orderBy(
-                                'id_sancion',
-                                'DESC'
-                            )
-                            ->limit(1)
-                            ->get()
-                            ->getRowArray();
+                        ->table('ai_reporte_sanciones')
+                        ->where(
+                            'id_reporte',
+                            $idReporte
+                        )
+                        ->where(
+                            'eliminado',
+                            0
+                        )
+                        ->where(
+                            'id_sancion <',
+                            (int) $sancionSeguimiento['id_sancion']
+                        )
+                        ->orderBy(
+                            'id_sancion',
+                            'DESC'
+                        )
+                        ->limit(1)
+                        ->get()
+                        ->getRowArray();
 
 
                     if ($anterior) {
@@ -6554,13 +6590,13 @@ class Reportes_Controller extends BaseController
                             ->update([
 
                                 'es_actual' =>
-                                    1,
+                                1,
 
                                 'updated_by' =>
-                                    $idUsuario,
+                                $idUsuario,
 
                                 'updated_at' =>
-                                    date('Y-m-d H:i:s'),
+                                date('Y-m-d H:i:s'),
 
                             ]);
                     }
@@ -6579,30 +6615,30 @@ class Reportes_Controller extends BaseController
 
                 $seguimientoMasReciente =
                     $db
-                        ->table('ai_reporte_seguimientos')
-                        ->select([
-                            'id_seguimiento',
-                            'fecha',
-                        ])
-                        ->where(
-                            'id_reporte',
-                            $idReporte
-                        )
-                        ->where(
-                            'eliminado',
-                            0
-                        )
-                        ->orderBy(
-                            'fecha',
-                            'DESC'
-                        )
-                        ->orderBy(
-                            'id_seguimiento',
-                            'DESC'
-                        )
-                        ->limit(1)
-                        ->get()
-                        ->getRowArray();
+                    ->table('ai_reporte_seguimientos')
+                    ->select([
+                        'id_seguimiento',
+                        'fecha',
+                    ])
+                    ->where(
+                        'id_reporte',
+                        $idReporte
+                    )
+                    ->where(
+                        'eliminado',
+                        0
+                    )
+                    ->orderBy(
+                        'fecha',
+                        'DESC'
+                    )
+                    ->orderBy(
+                        'id_seguimiento',
+                        'DESC'
+                    )
+                    ->limit(1)
+                    ->get()
+                    ->getRowArray();
 
 
                 $esSeguimientoMasReciente =
@@ -6632,13 +6668,13 @@ class Reportes_Controller extends BaseController
                         ->update([
 
                             'es_actual' =>
-                                0,
+                            0,
 
                             'updated_by' =>
-                                $idUsuario,
+                            $idUsuario,
 
                             'updated_at' =>
-                                date('Y-m-d H:i:s'),
+                            date('Y-m-d H:i:s'),
 
                         ]);
                 }
@@ -6646,36 +6682,36 @@ class Reportes_Controller extends BaseController
 
                 $insertarSancion =
                     $db
-                        ->table('ai_reporte_sanciones')
-                        ->insert([
+                    ->table('ai_reporte_sanciones')
+                    ->insert([
 
-                            'id_reporte' =>
-                                $idReporte,
+                        'id_reporte' =>
+                        $idReporte,
 
-                            'tipo' =>
-                                $sancionTipo,
+                        'tipo' =>
+                        $sancionTipo,
 
-                            'descripcion_otro' =>
-                                $sancionOtro,
+                        'descripcion_otro' =>
+                        $sancionOtro,
 
-                            'origen' =>
-                                'seguimiento',
+                        'origen' =>
+                        'seguimiento',
 
-                            'id_seguimiento' =>
-                                $idSeguimiento,
+                        'id_seguimiento' =>
+                        $idSeguimiento,
 
-                            'es_actual' =>
-                                $esSeguimientoMasReciente
-                                    ? 1
-                                    : 0,
+                        'es_actual' =>
+                        $esSeguimientoMasReciente
+                            ? 1
+                            : 0,
 
-                            'created_by' =>
-                                $idUsuario,
+                        'created_by' =>
+                        $idUsuario,
 
-                            'eliminado' =>
-                                0,
+                        'eliminado' =>
+                        0,
 
-                        ]);
+                    ]);
 
 
                 if ($insertarSancion === false) {
@@ -6699,30 +6735,30 @@ class Reportes_Controller extends BaseController
 
             $ultimoSeguimiento =
                 $db
-                    ->table('ai_reporte_seguimientos')
-                    ->select([
-                        'id_seguimiento',
-                        'estado_resultante',
-                    ])
-                    ->where(
-                        'id_reporte',
-                        $idReporte
-                    )
-                    ->where(
-                        'eliminado',
-                        0
-                    )
-                    ->orderBy(
-                        'fecha',
-                        'DESC'
-                    )
-                    ->orderBy(
-                        'id_seguimiento',
-                        'DESC'
-                    )
-                    ->limit(1)
-                    ->get()
-                    ->getRowArray();
+                ->table('ai_reporte_seguimientos')
+                ->select([
+                    'id_seguimiento',
+                    'estado_resultante',
+                ])
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->orderBy(
+                    'fecha',
+                    'DESC'
+                )
+                ->orderBy(
+                    'id_seguimiento',
+                    'DESC'
+                )
+                ->limit(1)
+                ->get()
+                ->getRowArray();
 
 
             $estadoActualReporte =
@@ -6740,38 +6776,38 @@ class Reportes_Controller extends BaseController
 
             $actualizarReporte =
                 $db
-                    ->table('ai_reportes')
-                    ->where(
-                        'id_reporte',
-                        $idReporte
-                    )
-                    ->where(
-                        'eliminado',
-                        0
-                    )
-                    ->update([
+                ->table('ai_reportes')
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->update([
 
-                        'folio_ip' =>
-                            $folioIp !== ''
-                                ? $folioIp
-                                : (
-                                    $reporte['folio_ip']
-                                    ?? null
-                                ),
+                    'folio_ip' =>
+                    $folioIp !== ''
+                        ? $folioIp
+                        : (
+                            $reporte['folio_ip']
+                            ?? null
+                        ),
 
-                        'estado_actual' =>
-                            $estadoActualReporte,
+                    'estado_actual' =>
+                    $estadoActualReporte,
 
-                        'origen_estado' =>
-                            'seguimiento',
+                    'origen_estado' =>
+                    'seguimiento',
 
-                        'updated_by' =>
-                            $idUsuario,
+                    'updated_by' =>
+                    $idUsuario,
 
-                        'updated_at' =>
-                            date('Y-m-d H:i:s'),
+                    'updated_at' =>
+                    date('Y-m-d H:i:s'),
 
-                    ]);
+                ]);
 
 
             if ($actualizarReporte === false) {
@@ -6808,31 +6844,29 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
 
                     'success' =>
-                        true,
+                    true,
 
                     'message' =>
-                        'El seguimiento se actualizó correctamente.',
+                    'El seguimiento se actualizó correctamente.',
 
                     'id_reporte' =>
-                        $idReporte,
+                    $idReporte,
 
                     'id_seguimiento' =>
-                        $idSeguimiento,
+                    $idSeguimiento,
 
                     'folio_ip' =>
-                        $folioIp !== ''
-                            ? $folioIp
-                            : (
-                                $reporte['folio_ip']
-                                ?? null
-                            ),
+                    $folioIp !== ''
+                        ? $folioIp
+                        : (
+                            $reporte['folio_ip']
+                            ?? null
+                        ),
 
                     'estado_actual' =>
-                        $estadoActualReporte,
+                    $estadoActualReporte,
 
                 ]);
-
-
         } catch (\Throwable $e) {
 
             $db->transRollback();
@@ -6843,10 +6877,10 @@ class Reportes_Controller extends BaseController
                 'Error actualizando seguimiento {id}: {mensaje}',
                 [
                     'id' =>
-                        $idSeguimiento,
+                    $idSeguimiento,
 
                     'mensaje' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
                 ]
             );
 
@@ -6856,7 +6890,7 @@ class Reportes_Controller extends BaseController
                 ->setJSON([
                     'success' => false,
                     'message' =>
-                        'No fue posible actualizar el seguimiento.',
+                    'No fue posible actualizar el seguimiento.',
                 ]);
         }
     }

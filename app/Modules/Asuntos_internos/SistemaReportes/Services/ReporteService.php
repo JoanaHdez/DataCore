@@ -2123,6 +2123,14 @@ class ReporteService
 
 
         /* =====================================================
+        MOTIVO ESPECIAL - AMONESTACIÓN VERBAL
+        ===================================================== */
+
+        $idMotivoAmonestacionVerbal =
+            55;
+
+
+        /* =====================================================
         SIN SANCIONES
         ===================================================== */
 
@@ -2158,6 +2166,7 @@ class ReporteService
                 $motivos
             )
         ) {
+
             $motivos =
                 [];
         }
@@ -2166,9 +2175,11 @@ class ReporteService
         /*
         * El motivo es opcional.
         */
+
         if (
             empty($motivos)
         ) {
+
             return;
         }
 
@@ -2191,6 +2202,7 @@ class ReporteService
                     $motivoFormulario
                 )
             ) {
+
                 continue;
             }
 
@@ -2209,6 +2221,7 @@ class ReporteService
             if (
                 $idMotivo <= 0
             ) {
+
                 throw new \InvalidArgumentException(
                     'Existe un motivo seleccionado sin identificador válido.'
                 );
@@ -2226,6 +2239,7 @@ class ReporteService
                     true
                 )
             ) {
+
                 continue;
             }
 
@@ -2260,9 +2274,66 @@ class ReporteService
             if (
                 !$motivoCatalogo
             ) {
+
                 throw new \InvalidArgumentException(
                     'Uno de los motivos seleccionados ya no está disponible.'
                 );
+            }
+
+
+            /* =================================================
+            MOTIVO PERSONALIZADO
+
+            Solo aplica para:
+            id_motivo = 55
+            AMONESTACIÓN VERBAL
+            ================================================= */
+
+            $motivoPersonalizado =
+                null;
+
+
+            if (
+                $idMotivo ===
+                $idMotivoAmonestacionVerbal
+            ) {
+
+                $motivoPersonalizado =
+                    trim(
+                        (string) (
+                            $motivoFormulario['motivo_personalizado']
+                            ?? ''
+                        )
+                    );
+
+
+                if (
+                    $motivoPersonalizado === ''
+                ) {
+
+                    throw new \InvalidArgumentException(
+                        'Debes especificar el motivo de la amonestación verbal.'
+                    );
+                }
+
+
+                if (
+                    mb_strlen(
+                        $motivoPersonalizado
+                    ) > 255
+                ) {
+
+                    throw new \InvalidArgumentException(
+                        'El motivo de la amonestación verbal no puede exceder 255 caracteres.'
+                    );
+                }
+
+
+                $motivoPersonalizado =
+                    mb_strtoupper(
+                        $motivoPersonalizado,
+                        'UTF-8'
+                    );
             }
 
 
@@ -2283,6 +2354,9 @@ class ReporteService
                     'id_motivo' =>
                     $idMotivo,
 
+                    'motivo_personalizado' =>
+                    $motivoPersonalizado,
+
                     'created_by' =>
                     $idUsuario,
 
@@ -2294,6 +2368,7 @@ class ReporteService
             if (
                 $insertadoMotivo === false
             ) {
+
                 throw new \RuntimeException(
                     'No fue posible guardar uno de los motivos del reporte.'
                 );
@@ -2308,6 +2383,7 @@ class ReporteService
             if (
                 $idReporteMotivo <= 0
             ) {
+
                 throw new \RuntimeException(
                     'No fue posible identificar el motivo registrado.'
                 );
@@ -2326,6 +2402,7 @@ class ReporteService
                 $sinSanciones
                 || $bajaVoluntaria
             ) {
+
                 continue;
             }
 
@@ -2346,6 +2423,7 @@ class ReporteService
             if (
                 $tipoSancion === ''
             ) {
+
                 continue;
             }
 
@@ -2366,6 +2444,7 @@ class ReporteService
             if (
                 $folioSancion === ''
             ) {
+
                 $folioSancion =
                     null;
             }
@@ -2377,6 +2456,7 @@ class ReporteService
                     $folioSancion
                 ) > 150
             ) {
+
                 throw new \InvalidArgumentException(
                     'El folio de la sanción no puede exceder 150 caracteres.'
                 );
@@ -2429,6 +2509,7 @@ class ReporteService
             if (
                 $insertadoSancion === false
             ) {
+
                 throw new \RuntimeException(
                     'No fue posible guardar la sanción relacionada con el motivo.'
                 );
@@ -2456,6 +2537,14 @@ class ReporteService
                 'No fue posible identificar el reporte o usuario.'
             );
         }
+
+
+        /* =====================================================
+        MOTIVO ESPECIAL - AMONESTACIÓN VERBAL
+        ===================================================== */
+
+        $idMotivoAmonestacionVerbal =
+            55;
 
 
         /* =====================================================
@@ -2489,9 +2578,14 @@ class ReporteService
             ?? [];
 
 
-        if (!is_array($motivos)) {
+        if (
+            !is_array(
+                $motivos
+            )
+        ) {
 
-            $motivos = [];
+            $motivos =
+                [];
         }
 
 
@@ -2516,7 +2610,8 @@ class ReporteService
             ->getResultArray();
 
 
-        $actualesPorMotivo = [];
+        $actualesPorMotivo =
+            [];
 
 
         foreach (
@@ -2531,13 +2626,18 @@ class ReporteService
                 );
 
 
-            if ($idMotivoActual <= 0) {
+            if (
+                $idMotivoActual <= 0
+            ) {
 
                 continue;
             }
 
 
-            $actualesPorMotivo[$idMotivoActual] = $motivoActual;
+            $actualesPorMotivo[
+                $idMotivoActual
+            ] =
+                $motivoActual;
         }
 
 
@@ -2545,7 +2645,8 @@ class ReporteService
         IDS QUE DEBEN PERMANECER
         ===================================================== */
 
-        $idsRecibidos = [];
+        $idsRecibidos =
+            [];
 
 
         foreach (
@@ -2553,11 +2654,19 @@ class ReporteService
             as $motivoFormulario
         ) {
 
-            if (!is_array($motivoFormulario)) {
+            if (
+                !is_array(
+                    $motivoFormulario
+                )
+            ) {
 
                 continue;
             }
 
+
+            /* =================================================
+            ID MOTIVO
+            ================================================= */
 
             $idMotivo =
                 (int) (
@@ -2566,13 +2675,19 @@ class ReporteService
                 );
 
 
-            if ($idMotivo <= 0) {
+            if (
+                $idMotivo <= 0
+            ) {
 
                 throw new \InvalidArgumentException(
                     'Existe un motivo seleccionado sin identificador válido.'
                 );
             }
 
+
+            /* =================================================
+            EVITAR DUPLICADOS
+            ================================================= */
 
             if (
                 in_array(
@@ -2617,11 +2732,69 @@ class ReporteService
                 ->getRowArray();
 
 
-            if (!$motivoCatalogo) {
+            if (
+                !$motivoCatalogo
+            ) {
 
                 throw new \InvalidArgumentException(
                     'Uno de los motivos seleccionados ya no está disponible.'
                 );
+            }
+
+
+            /* =================================================
+            MOTIVO PERSONALIZADO
+
+            Solo aplica para:
+            id_motivo = 55
+            AMONESTACIÓN VERBAL
+            ================================================= */
+
+            $motivoPersonalizado =
+                null;
+
+
+            if (
+                $idMotivo ===
+                $idMotivoAmonestacionVerbal
+            ) {
+
+                $motivoPersonalizado =
+                    trim(
+                        (string) (
+                            $motivoFormulario['motivo_personalizado']
+                            ?? ''
+                        )
+                    );
+
+
+                if (
+                    $motivoPersonalizado === ''
+                ) {
+
+                    throw new \InvalidArgumentException(
+                        'Debes especificar el motivo de la amonestación verbal.'
+                    );
+                }
+
+
+                if (
+                    mb_strlen(
+                        $motivoPersonalizado
+                    ) > 255
+                ) {
+
+                    throw new \InvalidArgumentException(
+                        'El motivo de la amonestación verbal no puede exceder 255 caracteres.'
+                    );
+                }
+
+
+                $motivoPersonalizado =
+                    mb_strtoupper(
+                        $motivoPersonalizado,
+                        'UTF-8'
+                    );
             }
 
 
@@ -2631,15 +2804,59 @@ class ReporteService
 
             if (
                 isset(
-                    $actualesPorMotivo[$idMotivo]
+                    $actualesPorMotivo[
+                        $idMotivo
+                    ]
                 )
             ) {
 
                 $idReporteMotivo =
                     (int) (
-                        $actualesPorMotivo[$idMotivo]['id_reporte_motivo']
+                        $actualesPorMotivo[
+                            $idMotivo
+                        ]['id_reporte_motivo']
                         ?? 0
                     );
+
+
+                /* =============================================
+                ACTUALIZAR MOTIVO PERSONALIZADO
+                ============================================= */
+
+                if (
+                    $idReporteMotivo > 0
+                ) {
+
+                    $actualizadoMotivo =
+                        $this->db
+                        ->table(
+                            'ai_reporte_motivos'
+                        )
+                        ->where(
+                            'id_reporte_motivo',
+                            $idReporteMotivo
+                        )
+                        ->where(
+                            'id_reporte',
+                            $idReporte
+                        )
+                        ->update([
+
+                            'motivo_personalizado' =>
+                            $motivoPersonalizado,
+                        ]);
+
+
+                    if (
+                        $actualizadoMotivo === false
+                    ) {
+
+                        throw new \RuntimeException(
+                            'No fue posible actualizar el motivo del reporte.'
+                        );
+                    }
+                }
+
             } else {
 
                 /* =============================================
@@ -2659,6 +2876,9 @@ class ReporteService
                         'id_motivo' =>
                         $idMotivo,
 
+                        'motivo_personalizado' =>
+                        $motivoPersonalizado,
+
                         'created_by' =>
                         $idUsuario,
 
@@ -2667,7 +2887,9 @@ class ReporteService
                     ]);
 
 
-                if ($insertadoMotivo === false) {
+                if (
+                    $insertadoMotivo === false
+                ) {
 
                     throw new \RuntimeException(
                         'No fue posible guardar uno de los motivos del reporte.'
@@ -2682,7 +2904,9 @@ class ReporteService
             }
 
 
-            if ($idReporteMotivo <= 0) {
+            if (
+                $idReporteMotivo <= 0
+            ) {
 
                 throw new \RuntimeException(
                     'No fue posible identificar el motivo registrado.'
@@ -2728,7 +2952,9 @@ class ReporteService
                 || $bajaVoluntaria
             ) {
 
-                if ($sancionActual) {
+                if (
+                    $sancionActual
+                ) {
 
                     $actualizado =
                         $this->db
@@ -2766,7 +2992,9 @@ class ReporteService
                         ]);
 
 
-                    if ($actualizado === false) {
+                    if (
+                        $actualizado === false
+                    ) {
 
                         throw new \RuntimeException(
                             'No fue posible actualizar la sanción relacionada con el motivo.'
@@ -2792,7 +3020,9 @@ class ReporteService
                 );
 
 
-            if ($tipoSancion === '') {
+            if (
+                $tipoSancion === ''
+            ) {
 
                 continue;
             }
@@ -2811,9 +3041,12 @@ class ReporteService
                 );
 
 
-            if ($folioSancion === '') {
+            if (
+                $folioSancion === ''
+            ) {
 
-                $folioSancion = null;
+                $folioSancion =
+                    null;
             }
 
 
@@ -2834,7 +3067,9 @@ class ReporteService
             ACTUALIZAR SANCIÓN EXISTENTE
             ================================================= */
 
-            if ($sancionActual) {
+            if (
+                $sancionActual
+            ) {
 
                 $actualizado =
                     $this->db
@@ -2867,12 +3102,15 @@ class ReporteService
                     ]);
 
 
-                if ($actualizado === false) {
+                if (
+                    $actualizado === false
+                ) {
 
                     throw new \RuntimeException(
                         'No fue posible actualizar la sanción relacionada con el motivo.'
                     );
                 }
+
             } else {
 
                 /* =============================================
@@ -2918,7 +3156,9 @@ class ReporteService
                     ]);
 
 
-                if ($insertadoSancion === false) {
+                if (
+                    $insertadoSancion === false
+                ) {
 
                     throw new \RuntimeException(
                         'No fue posible guardar la sanción relacionada con el motivo.'
@@ -2957,7 +3197,9 @@ class ReporteService
                 );
 
 
-            if ($idReporteMotivo <= 0) {
+            if (
+                $idReporteMotivo <= 0
+            ) {
 
                 continue;
             }
@@ -3033,7 +3275,9 @@ class ReporteService
                 ]);
 
 
-            if ($eliminadoMotivo === false) {
+            if (
+                $eliminadoMotivo === false
+            ) {
 
                 throw new \RuntimeException(
                     'No fue posible eliminar uno de los motivos del reporte.'

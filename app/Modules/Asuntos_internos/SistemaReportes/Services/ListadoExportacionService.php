@@ -33,15 +33,13 @@ class ListadoExportacionService
 
 
         $tiposFiltro =
-            !empty(
-                $tipos
-            )
-                ? $tipos
-                : [
-                    'QJ',
-                    'QJF',
-                    'QJV',
-                ];
+            !empty($tipos)
+            ? $tipos
+            : [
+                'QJ',
+                'QJF',
+                'QJV',
+            ];
 
 
         $cantidad =
@@ -110,13 +108,13 @@ class ListadoExportacionService
 
         $builder =
             $db
-                ->table(
-                    'ai_reportes'
-                )
-                ->where(
-                    'eliminado',
-                    0
-                );
+            ->table(
+                'ai_reportes'
+            )
+            ->where(
+                'eliminado',
+                0
+            );
 
 
         /* =================================================
@@ -135,8 +133,8 @@ class ListadoExportacionService
 
             $metodo =
                 $indiceTipo === 0
-                    ? 'like'
-                    : 'orLike';
+                ? 'like'
+                : 'orLike';
 
             $builder
                 ->{$metodo}(
@@ -180,8 +178,8 @@ class ListadoExportacionService
 
         $reportesDb =
             $builder
-                ->get()
-                ->getResultArray();
+            ->get()
+            ->getResultArray();
 
 
         /* =====================================================
@@ -243,9 +241,7 @@ class ListadoExportacionService
 
 
         if (
-            !empty(
-                $idsReportes
-            )
+            !empty($idsReportes)
         ) {
 
             /* =================================================
@@ -258,31 +254,31 @@ class ListadoExportacionService
 
                 $personalDb =
                     $db
-                        ->table(
-                            'ai_reporte_personal'
-                        )
-                        ->select([
-                            'id_reporte_personal',
-                            'id_reporte',
-                            'nombre_snapshot',
-                            'area_snapshot',
-                            'turno_snapshot',
-                            'alias_snapshot',
-                        ])
-                        ->whereIn(
-                            'id_reporte',
-                            $idsReportes
-                        )
-                        ->orderBy(
-                            'id_reporte',
-                            'ASC'
-                        )
-                        ->orderBy(
-                            'id_reporte_personal',
-                            'ASC'
-                        )
-                        ->get()
-                        ->getResultArray();
+                    ->table(
+                        'ai_reporte_personal'
+                    )
+                    ->select([
+                        'id_reporte_personal',
+                        'id_reporte',
+                        'nombre_snapshot',
+                        'area_snapshot',
+                        'turno_snapshot',
+                        'alias_snapshot',
+                    ])
+                    ->whereIn(
+                        'id_reporte',
+                        $idsReportes
+                    )
+                    ->orderBy(
+                        'id_reporte',
+                        'ASC'
+                    )
+                    ->orderBy(
+                        'id_reporte_personal',
+                        'ASC'
+                    )
+                    ->get()
+                    ->getResultArray();
             }
 
 
@@ -296,54 +292,54 @@ class ListadoExportacionService
 
                 $unidadesDb =
                     $db
-                        ->table(
-                            'ai_reporte_unidades u'
-                        )
-                        ->select([
-                            'u.id_reporte_unidad',
-                            'u.id_reporte',
+                    ->table(
+                        'ai_reporte_unidades u'
+                    )
+                    ->select([
+                        'u.id_reporte_unidad',
+                        'u.id_reporte',
 
-                            'u.parque_vehicular_id',
+                        'u.parque_vehicular_id',
 
-                            'u.no_economico_snapshot',
+                        'u.no_economico_snapshot',
 
-                            'u.placas_snapshot',
+                        'u.placas_snapshot',
 
-                            'u.marca_snapshot',
+                        'u.marca_snapshot',
 
-                            'u.submarca_snapshot',
+                        'u.submarca_snapshot',
 
-                            'u.color_snapshot',
+                        'u.color_snapshot',
 
-                            'u.estatus_snapshot',
+                        'u.estatus_snapshot',
 
-                            'u.servicio_snapshot',
+                        'u.servicio_snapshot',
 
-                            'u.tipo_snapshot',
+                        'u.tipo_snapshot',
 
-                            'u.id_origen',
+                        'u.id_origen',
 
-                            'o.clave AS origen',
-                        ])
-                        ->join(
-                            'ai_cat_origen_unidad o',
-                            'o.id_origen = u.id_origen',
-                            'left'
-                        )
-                        ->whereIn(
-                            'u.id_reporte',
-                            $idsReportes
-                        )
-                        ->orderBy(
-                            'u.id_reporte',
-                            'ASC'
-                        )
-                        ->orderBy(
-                            'u.id_reporte_unidad',
-                            'ASC'
-                        )
-                        ->get()
-                        ->getResultArray();
+                        'o.clave AS origen',
+                    ])
+                    ->join(
+                        'ai_cat_origen_unidad o',
+                        'o.id_origen = u.id_origen',
+                        'left'
+                    )
+                    ->whereIn(
+                        'u.id_reporte',
+                        $idsReportes
+                    )
+                    ->orderBy(
+                        'u.id_reporte',
+                        'ASC'
+                    )
+                    ->orderBy(
+                        'u.id_reporte_unidad',
+                        'ASC'
+                    )
+                    ->get()
+                    ->getResultArray();
             }
 
 
@@ -357,56 +353,56 @@ class ListadoExportacionService
 
                 $direccionesDb =
                     $db
-                        ->table(
-                            'ai_reporte_direccion_notificacion'
-                        )
-                        ->select([
-                            'id_direccion_notificacion',
+                    ->table(
+                        'ai_reporte_direccion_notificacion'
+                    )
+                    ->select([
+                        'id_direccion_notificacion',
 
-                            'id_reporte',
+                        'id_reporte',
 
-                            'pertenece_neza',
+                        'pertenece_neza',
 
-                            'calle',
+                        'calle',
 
-                            'numero_exterior',
+                        'numero_exterior',
 
-                            'colonia',
+                        'colonia',
 
-                            'entre_calle',
+                        'entre_calle',
 
-                            'y_calle',
+                        'y_calle',
 
-                            'municipio',
+                        'municipio',
 
-                            'estado',
+                        'estado',
 
-                            'sector',
+                        'sector',
 
-                            'cuadrante',
+                        'cuadrante',
 
-                            'id_cuadra',
+                        'id_cuadra',
 
-                            'latitud',
+                        'latitud',
 
-                            'longitud',
+                        'longitud',
 
-                            'origen_ubicacion',
-                        ])
-                        ->whereIn(
-                            'id_reporte',
-                            $idsReportes
-                        )
-                        ->where(
-                            'eliminado',
-                            0
-                        )
-                        ->orderBy(
-                            'id_reporte',
-                            'ASC'
-                        )
-                        ->get()
-                        ->getResultArray();
+                        'origen_ubicacion',
+                    ])
+                    ->whereIn(
+                        'id_reporte',
+                        $idsReportes
+                    )
+                    ->where(
+                        'eliminado',
+                        0
+                    )
+                    ->orderBy(
+                        'id_reporte',
+                        'ASC'
+                    )
+                    ->get()
+                    ->getResultArray();
             }
 
 
@@ -420,57 +416,59 @@ class ListadoExportacionService
 
                 $motivosDb =
                     $db
-                        ->table(
-                            'ai_reporte_motivos rm'
-                        )
-                        ->select([
-                            'rm.id_reporte_motivo',
+                    ->table(
+                        'ai_reporte_motivos rm'
+                    )
+                    ->select([
+                        'rm.id_reporte_motivo',
 
-                            'rm.id_reporte',
+                        'rm.id_reporte',
 
-                            'rm.id_motivo',
+                        'rm.id_motivo',
 
-                            'm.motivo',
+                        'rm.motivo_personalizado',
 
-                            'm.sancion AS sancion',
+                        'm.motivo',
 
-                            's.id_sancion',
+                        'm.sancion AS sancion',
 
-                            's.tipo AS sancion_registrada',
+                        's.id_sancion',
 
-                            's.folio_sancion',
+                        's.tipo AS sancion_registrada',
 
-                            's.origen AS sancion_origen',
-                        ])
-                        ->join(
-                            'ai_cat_motivos m',
-                            'm.id_motivo = rm.id_motivo',
-                            'left'
-                        )
-                        ->join(
-                            'ai_reporte_sanciones s',
-                            's.id_reporte_motivo = rm.id_reporte_motivo
+                        's.folio_sancion',
+
+                        's.origen AS sancion_origen',
+                    ])
+                    ->join(
+                        'ai_cat_motivos m',
+                        'm.id_motivo = rm.id_motivo',
+                        'left'
+                    )
+                    ->join(
+                        'ai_reporte_sanciones s',
+                        's.id_reporte_motivo = rm.id_reporte_motivo
                              AND s.eliminado = 0',
-                            'left'
-                        )
-                        ->whereIn(
-                            'rm.id_reporte',
-                            $idsReportes
-                        )
-                        ->where(
-                            'rm.eliminado',
-                            0
-                        )
-                        ->orderBy(
-                            'rm.id_reporte',
-                            'ASC'
-                        )
-                        ->orderBy(
-                            'rm.id_reporte_motivo',
-                            'ASC'
-                        )
-                        ->get()
-                        ->getResultArray();
+                        'left'
+                    )
+                    ->whereIn(
+                        'rm.id_reporte',
+                        $idsReportes
+                    )
+                    ->where(
+                        'rm.eliminado',
+                        0
+                    )
+                    ->orderBy(
+                        'rm.id_reporte',
+                        'ASC'
+                    )
+                    ->orderBy(
+                        'rm.id_reporte_motivo',
+                        'ASC'
+                    )
+                    ->get()
+                    ->getResultArray();
             }
 
 
@@ -484,44 +482,44 @@ class ListadoExportacionService
 
                 $seguimientosDb =
                     $db
-                        ->table(
-                            'ai_reporte_seguimientos'
-                        )
-                        ->select([
-                            'id_seguimiento',
+                    ->table(
+                        'ai_reporte_seguimientos'
+                    )
+                    ->select([
+                        'id_seguimiento',
 
-                            'id_reporte',
+                        'id_reporte',
 
-                            'fecha',
+                        'fecha',
 
-                            'tipo',
+                        'tipo',
 
-                            'estado_resultante',
+                        'estado_resultante',
 
-                            'observaciones',
-                        ])
-                        ->whereIn(
-                            'id_reporte',
-                            $idsReportes
-                        )
-                        ->where(
-                            'eliminado',
-                            0
-                        )
-                        ->orderBy(
-                            'id_reporte',
-                            'ASC'
-                        )
-                        ->orderBy(
-                            'fecha',
-                            'DESC'
-                        )
-                        ->orderBy(
-                            'id_seguimiento',
-                            'DESC'
-                        )
-                        ->get()
-                        ->getResultArray();
+                        'observaciones',
+                    ])
+                    ->whereIn(
+                        'id_reporte',
+                        $idsReportes
+                    )
+                    ->where(
+                        'eliminado',
+                        0
+                    )
+                    ->orderBy(
+                        'id_reporte',
+                        'ASC'
+                    )
+                    ->orderBy(
+                        'fecha',
+                        'DESC'
+                    )
+                    ->orderBy(
+                        'id_seguimiento',
+                        'DESC'
+                    )
+                    ->get()
+                    ->getResultArray();
 
 
                 /* =============================================
@@ -559,51 +557,49 @@ class ListadoExportacionService
                 ============================================== */
 
                 if (
-                    !empty(
-                        $idsSeguimientos
-                    )
+                    !empty($idsSeguimientos)
                 ) {
 
                     $sancionesSeguimientoDb =
                         $db
-                            ->table(
-                                'ai_reporte_sanciones'
-                            )
-                            ->select([
-                                'id_sancion',
+                        ->table(
+                            'ai_reporte_sanciones'
+                        )
+                        ->select([
+                            'id_sancion',
 
-                                'id_reporte',
+                            'id_reporte',
 
-                                'tipo',
+                            'tipo',
 
-                                'descripcion_otro',
+                            'descripcion_otro',
 
-                                'origen',
+                            'origen',
 
-                                'id_seguimiento',
-                            ])
-                            ->whereIn(
-                                'id_reporte',
-                                $idsReportes
-                            )
-                            ->whereIn(
-                                'id_seguimiento',
-                                $idsSeguimientos
-                            )
-                            ->where(
-                                'origen',
-                                'seguimiento'
-                            )
-                            ->where(
-                                'eliminado',
-                                0
-                            )
-                            ->orderBy(
-                                'id_sancion',
-                                'ASC'
-                            )
-                            ->get()
-                            ->getResultArray();
+                            'id_seguimiento',
+                        ])
+                        ->whereIn(
+                            'id_reporte',
+                            $idsReportes
+                        )
+                        ->whereIn(
+                            'id_seguimiento',
+                            $idsSeguimientos
+                        )
+                        ->where(
+                            'origen',
+                            'seguimiento'
+                        )
+                        ->where(
+                            'eliminado',
+                            0
+                        )
+                        ->orderBy(
+                            'id_sancion',
+                            'ASC'
+                        )
+                        ->get()
+                        ->getResultArray();
                 }
             }
         }
@@ -636,9 +632,7 @@ class ListadoExportacionService
             }
 
 
-            $personalPorReporte[
-                $idReporte
-            ][] =
+            $personalPorReporte[$idReporte][] =
                 $persona;
         }
 
@@ -670,9 +664,7 @@ class ListadoExportacionService
             }
 
 
-            $unidadesPorReporte[
-                $idReporte
-            ][] =
+            $unidadesPorReporte[$idReporte][] =
                 $unidad;
         }
 
@@ -704,9 +696,7 @@ class ListadoExportacionService
             }
 
 
-            $direccionPorReporte[
-                $idReporte
-            ] =
+            $direccionPorReporte[$idReporte] =
                 $direccion;
         }
 
@@ -738,9 +728,39 @@ class ListadoExportacionService
             }
 
 
-            $motivosPorReporte[
-                $idReporte
-            ][] =
+            /* =====================================================
+            TEXTO DEL MOTIVO
+            ===================================================== */
+
+            $motivoPersonalizado =
+                trim(
+                    (string) (
+                        $motivo['motivo_personalizado']
+                        ?? ''
+                    )
+                );
+
+
+            $motivoCatalogo =
+                trim(
+                    (string) (
+                        $motivo['motivo']
+                        ?? ''
+                    )
+                );
+
+
+            $motivo['motivo_mostrar'] =
+                $motivoPersonalizado !== ''
+                ? $motivoPersonalizado
+                : $motivoCatalogo;
+
+
+            /* =====================================================
+            AGRUPAR POR REPORTE
+            ===================================================== */
+
+            $motivosPorReporte[$idReporte][] =
                 $motivo;
         }
 
@@ -772,9 +792,7 @@ class ListadoExportacionService
             }
 
 
-            $sancionPorSeguimiento[
-                $idSeguimiento
-            ] =
+            $sancionPorSeguimiento[$idSeguimiento] =
                 $sancion;
         }
 
@@ -815,29 +833,21 @@ class ListadoExportacionService
 
 
             $sancion =
-                $sancionPorSeguimiento[
-                    $idSeguimiento
-                ]
+                $sancionPorSeguimiento[$idSeguimiento]
                 ?? [];
 
 
-            $seguimiento[
-                'sancion_disciplinaria'
-            ] =
+            $seguimiento['sancion_disciplinaria'] =
                 $sancion['tipo']
                 ?? '';
 
 
-            $seguimiento[
-                'sancion_otro'
-            ] =
+            $seguimiento['sancion_otro'] =
                 $sancion['descripcion_otro']
                 ?? '';
 
 
-            $seguimientosPorReporte[
-                $idReporte
-            ][] =
+            $seguimientosPorReporte[$idReporte][] =
                 $seguimiento;
         }
 
@@ -867,9 +877,7 @@ class ListadoExportacionService
             ================================================= */
 
             $direccion =
-                $direccionPorReporte[
-                    $idReporte
-                ]
+                $direccionPorReporte[$idReporte]
                 ?? [];
 
 
@@ -880,14 +888,14 @@ class ListadoExportacionService
             $latitud =
                 $this->texto(
                     $reporte['latitud']
-                    ?? ''
+                        ?? ''
                 );
 
 
             $longitud =
                 $this->texto(
                     $reporte['longitud']
-                    ?? ''
+                        ?? ''
                 );
 
 
@@ -905,14 +913,14 @@ class ListadoExportacionService
             $notificacionLatitud =
                 $this->texto(
                     $direccion['latitud']
-                    ?? ''
+                        ?? ''
                 );
 
 
             $notificacionLongitud =
                 $this->texto(
                     $direccion['longitud']
-                    ?? ''
+                        ?? ''
                 );
 
 
@@ -934,7 +942,7 @@ class ListadoExportacionService
                 ============================================== */
 
                 'id_reporte' =>
-                    $idReporte,
+                $idReporte,
 
 
                 /* =============================================
@@ -942,21 +950,21 @@ class ListadoExportacionService
                 ============================================== */
 
                 'tipo_folio' =>
-                    $this->obtenerTipoFolioDesdeFolio(
-                        $reporte['folio']
+                $this->obtenerTipoFolioDesdeFolio(
+                    $reporte['folio']
                         ?? ''
-                    ),
+                ),
 
                 'numero_folio' =>
-                    $reporte['numero_folio']
+                $reporte['numero_folio']
                     ?? '',
 
                 'folio' =>
-                    $reporte['folio']
+                $reporte['folio']
                     ?? '',
 
                 'fecha_registro' =>
-                    $reporte['fecha_registro']
+                $reporte['fecha_registro']
                     ?? '',
 
 
@@ -965,31 +973,31 @@ class ListadoExportacionService
                 ============================================== */
 
                 'folio_ip' =>
-                    $reporte['folio_ip']
+                $reporte['folio_ip']
                     ?? '',
 
                 'folio_imp' =>
-                    $reporte['folio_imp']
+                $reporte['folio_imp']
                     ?? '',
 
                 'fecha_queja' =>
-                    $reporte['fecha_queja']
+                $reporte['fecha_queja']
                     ?? '',
 
                 'fecha_acuerdo' =>
-                    $reporte['fecha_acuerdo']
+                $reporte['fecha_acuerdo']
                     ?? '',
 
                 'expediente' =>
-                    $reporte['expediente']
+                $reporte['expediente']
                     ?? '',
 
                 'nomenclatura' =>
-                    $reporte['nomenclatura']
+                $reporte['nomenclatura']
                     ?? '',
 
                 'no_oficio' =>
-                    $reporte['numero_oficio']
+                $reporte['numero_oficio']
                     ?? '',
 
 
@@ -998,15 +1006,15 @@ class ListadoExportacionService
                 ============================================== */
 
                 'fecha_hechos' =>
-                    $reporte['fecha_hechos']
+                $reporte['fecha_hechos']
                     ?? '',
 
                 'hora_hechos' =>
-                    $reporte['hora_hechos']
+                $reporte['hora_hechos']
                     ?? '',
 
                 'descripcion' =>
-                    $reporte['descripcion_hechos']
+                $reporte['descripcion_hechos']
                     ?? '',
 
 
@@ -1015,56 +1023,56 @@ class ListadoExportacionService
                 ============================================== */
 
                 'calle' =>
-                    $reporte['calle']
+                $reporte['calle']
                     ?? '',
 
                 'numero' =>
-                    $reporte['numero_exterior']
+                $reporte['numero_exterior']
                     ?? '',
 
                 'colonia' =>
-                    $reporte['colonia']
+                $reporte['colonia']
                     ?? '',
 
                 'entre_calle' =>
-                    $reporte['entre_calle']
+                $reporte['entre_calle']
                     ?? '',
 
                 'y_calle' =>
-                    $reporte['y_calle']
+                $reporte['y_calle']
                     ?? '',
 
                 'municipio' =>
-                    $reporte['municipio']
+                $reporte['municipio']
                     ?? '',
 
                 'estado' =>
-                    $reporte['estado']
+                $reporte['estado']
                     ?? '',
 
                 'sector' =>
-                    $reporte['sector']
+                $reporte['sector']
                     ?? '',
 
                 'cuadrante' =>
-                    $reporte['cuadrante']
+                $reporte['cuadrante']
                     ?? '',
 
                 'id_cuadra' =>
-                    $reporte['id_cuadra']
+                $reporte['id_cuadra']
                     ?? '',
 
                 'longitud' =>
-                    $longitud,
+                $longitud,
 
                 'latitud' =>
-                    $latitud,
+                $latitud,
 
                 'coordenadas' =>
-                    $coordenadas,
+                $coordenadas,
 
                 'origen_ubicacion' =>
-                    $reporte['origen_ubicacion']
+                $reporte['origen_ubicacion']
                     ?? '',
 
 
@@ -1073,9 +1081,7 @@ class ListadoExportacionService
                 ============================================== */
 
                 'personal' =>
-                    $personalPorReporte[
-                        $idReporte
-                    ]
+                $personalPorReporte[$idReporte]
                     ?? [],
 
 
@@ -1084,13 +1090,11 @@ class ListadoExportacionService
                 ============================================== */
 
                 'modalidad_unidad' =>
-                    $reporte['modalidad_unidad']
+                $reporte['modalidad_unidad']
                     ?? '',
 
                 'unidades' =>
-                    $unidadesPorReporte[
-                        $idReporte
-                    ]
+                $unidadesPorReporte[$idReporte]
                     ?? [],
 
 
@@ -1099,43 +1103,43 @@ class ListadoExportacionService
                 ============================================== */
 
                 'es_anonimo' =>
-                    $reporte['es_anonimo']
+                $reporte['es_anonimo']
                     ?? 0,
 
                 'numero_anonimo' =>
-                    $reporte['numero_anonimo']
+                $reporte['numero_anonimo']
                     ?? '',
 
                 'quejoso' =>
-                    $reporte['nombre_quejoso']
+                $reporte['nombre_quejoso']
                     ?? '',
 
                 'edad' =>
-                    $reporte['edad_quejoso']
+                $reporte['edad_quejoso']
                     ?? '',
 
                 'genero' =>
-                    $reporte['genero_quejoso']
+                $reporte['genero_quejoso']
                     ?? '',
 
                 'telefono' =>
-                    $reporte['telefono_quejoso']
+                $reporte['telefono_quejoso']
                     ?? '',
 
                 'correo' =>
-                    $reporte['correo_quejoso']
+                $reporte['correo_quejoso']
                     ?? '',
 
                 'direccion_quejoso' =>
-                    $reporte['direccion_quejoso']
+                $reporte['direccion_quejoso']
                     ?? '',
 
                 'canalizacion' =>
-                    $reporte['canalizacion_area']
+                $reporte['canalizacion_area']
                     ?? '',
 
                 'canalizacion_otro' =>
-                    $reporte['canalizacion_otro']
+                $reporte['canalizacion_otro']
                     ?? '',
 
 
@@ -1144,60 +1148,60 @@ class ListadoExportacionService
                 ============================================== */
 
                 'notificacion_pertenece_neza' =>
-                    $direccion['pertenece_neza']
+                $direccion['pertenece_neza']
                     ?? '',
 
                 'notificacion_calle' =>
-                    $direccion['calle']
+                $direccion['calle']
                     ?? '',
 
                 'notificacion_numero_exterior' =>
-                    $direccion['numero_exterior']
+                $direccion['numero_exterior']
                     ?? '',
 
                 'notificacion_colonia' =>
-                    $direccion['colonia']
+                $direccion['colonia']
                     ?? '',
 
                 'notificacion_entre_calle' =>
-                    $direccion['entre_calle']
+                $direccion['entre_calle']
                     ?? '',
 
                 'notificacion_y_calle' =>
-                    $direccion['y_calle']
+                $direccion['y_calle']
                     ?? '',
 
                 'notificacion_municipio' =>
-                    $direccion['municipio']
+                $direccion['municipio']
                     ?? '',
 
                 'notificacion_estado' =>
-                    $direccion['estado']
+                $direccion['estado']
                     ?? '',
 
                 'notificacion_sector' =>
-                    $direccion['sector']
+                $direccion['sector']
                     ?? '',
 
                 'notificacion_cuadrante' =>
-                    $direccion['cuadrante']
+                $direccion['cuadrante']
                     ?? '',
 
                 'notificacion_id_cuadra' =>
-                    $direccion['id_cuadra']
+                $direccion['id_cuadra']
                     ?? '',
 
                 'notificacion_longitud' =>
-                    $notificacionLongitud,
+                $notificacionLongitud,
 
                 'notificacion_latitud' =>
-                    $notificacionLatitud,
+                $notificacionLatitud,
 
                 'notificacion_coordenadas' =>
-                    $notificacionCoordenadas,
+                $notificacionCoordenadas,
 
                 'notificacion_origen_ubicacion' =>
-                    $direccion['origen_ubicacion']
+                $direccion['origen_ubicacion']
                     ?? '',
 
 
@@ -1206,45 +1210,43 @@ class ListadoExportacionService
                 ============================================== */
 
                 'clasificacion' =>
-                    $reporte['clasificacion']
+                $reporte['clasificacion']
                     ?? '',
 
                 'inspector' =>
-                    $reporte['inspector']
+                $reporte['inspector']
                     ?? '',
 
                 'investigador' =>
-                    $reporte['investigador']
+                $reporte['investigador']
                     ?? '',
 
                 'estado_actual' =>
-                    $reporte['estado_actual']
+                $reporte['estado_actual']
                     ?? '',
 
                 'sin_sanciones' =>
-                    $reporte['sin_sanciones']
+                $reporte['sin_sanciones']
                     ?? 0,
 
                 'baja_voluntaria' =>
-                    $reporte['baja_voluntaria']
+                $reporte['baja_voluntaria']
                     ?? 0,
 
                 'desistimiento' =>
-                    $reporte['desistir']
+                $reporte['desistir']
                     ?? 0,
 
                 'quien_emite_resolucion' =>
-                    $reporte['quien_emite_resolucion']
+                $reporte['quien_emite_resolucion']
                     ?? '',
 
                 'resolucion' =>
-                    $reporte['resolucion']
+                $reporte['resolucion']
                     ?? '',
 
                 'motivos' =>
-                    $motivosPorReporte[
-                        $idReporte
-                    ]
+                $motivosPorReporte[$idReporte]
                     ?? [],
 
 
@@ -1253,7 +1255,7 @@ class ListadoExportacionService
                 ============================================== */
 
                 'observaciones' =>
-                    $reporte['observaciones']
+                $reporte['observaciones']
                     ?? '',
 
 
@@ -1262,9 +1264,7 @@ class ListadoExportacionService
                 ============================================== */
 
                 'seguimientos' =>
-                    $seguimientosPorReporte[
-                        $idReporte
-                    ]
+                $seguimientosPorReporte[$idReporte]
                     ?? [],
             ];
         }
@@ -1277,16 +1277,16 @@ class ListadoExportacionService
         return [
 
             'secciones' =>
-                $secciones,
+            $secciones,
 
             'tipos' =>
-                $tipos,
+            $tipos,
 
             'cantidad' =>
-                $cantidad,
+            $cantidad,
 
             'reportes' =>
-                $reportes,
+            $reportes,
         ];
     }
 
@@ -1328,9 +1328,9 @@ class ListadoExportacionService
 
         $solicitadas =
             $request
-                ->getPost(
-                    'secciones'
-                );
+            ->getPost(
+                'secciones'
+            );
 
 
         if (
@@ -1382,9 +1382,7 @@ class ListadoExportacionService
 
 
         if (
-            empty(
-                $resultado
-            )
+            empty($resultado)
         ) {
 
             throw new \InvalidArgumentException(
@@ -1414,9 +1412,9 @@ class ListadoExportacionService
 
         $solicitados =
             $request
-                ->getPost(
-                    'tipos'
-                );
+            ->getPost(
+                'tipos'
+            );
 
 
         if (
@@ -1484,9 +1482,9 @@ class ListadoExportacionService
             trim(
                 (string) (
                     $request
-                        ->getPost(
-                            'cantidad'
-                        )
+                    ->getPost(
+                        'cantidad'
+                    )
                     ?? ''
                 )
             );

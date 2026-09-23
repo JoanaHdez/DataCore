@@ -381,10 +381,6 @@ function inicializarMotivos() {
                 true;
 
 
-            /*
-            * Al no existir motivos,
-            * el total debe regresar a cero.
-            */
             actualizarTotalHorasArresto();
 
 
@@ -407,6 +403,12 @@ function inicializarMotivos() {
         motivosSeleccionados.forEach(
             (motivo) => {
 
+                const esAmonestacionVerbal =
+                    String(
+                        motivo.id
+                    ) === '55';
+
+
                 /* =============================================
                 FILA VISUAL
                 ============================================== */
@@ -421,6 +423,35 @@ function inicializarMotivos() {
                     motivo.id;
 
 
+                const contenidoMotivo =
+                    esAmonestacionVerbal
+                        ? `
+                            <input
+                                type="text"
+                                class="report-input motivos-tabla__motivo-personalizado"
+                                data-motivo-personalizado
+                                data-motivo-id="${escaparHtml(
+                                    motivo.id
+                                )}"
+                                value="${escaparHtml(
+                                    motivo.motivoPersonalizado
+                                    || ''
+                                )}"
+                                placeholder="Escribe el motivo de la amonestación"
+                                maxlength="255"
+                                autocomplete="off"
+                                required
+                            >
+                        `
+                        : `
+                            <strong class="motivos-tabla__motivo">
+                                ${escaparHtml(
+                                    motivo.texto
+                                )}
+                            </strong>
+                        `;
+
+
                 fila.innerHTML = `
 
                     <td>
@@ -428,8 +459,8 @@ function inicializarMotivos() {
                         <span class="motivos-tabla__numero">
 
                             ${escaparHtml(
-                    motivo.id
-                )}
+                                motivo.id
+                            )}
 
                         </span>
 
@@ -438,13 +469,7 @@ function inicializarMotivos() {
 
                     <td>
 
-                        <strong class="motivos-tabla__motivo">
-
-                            ${escaparHtml(
-                    motivo.texto
-                )}
-
-                        </strong>
+                        ${contenidoMotivo}
 
                     </td>
 
@@ -454,9 +479,9 @@ function inicializarMotivos() {
                         <span class="motivos-tabla__sancion">
 
                             ${escaparHtml(
-                    motivo.sancion
-                    || 'Sin sanción definida'
-                )}
+                                motivo.sancion
+                                || 'Sin sanción definida'
+                            )}
 
                         </span>
 
@@ -470,11 +495,11 @@ function inicializarMotivos() {
                             class="report-input motivos-tabla__folio"
                             data-motivo-folio
                             data-motivo-id="${escaparHtml(
-                    motivo.id
-                )}"
+                                motivo.id
+                            )}"
                             value="${escaparHtml(
-                    motivo.folio
-                )}"
+                                motivo.folio
+                            )}"
                             placeholder="Opcional"
                             maxlength="150"
                             autocomplete="off"
@@ -490,8 +515,8 @@ function inicializarMotivos() {
                             class="motivos-tabla__eliminar"
                             data-motivo-eliminar
                             data-motivo-id="${escaparHtml(
-                    motivo.id
-                )}"
+                                motivo.id
+                            )}"
                         >
                             Quitar
                         </button>
@@ -562,6 +587,43 @@ function inicializarMotivos() {
                 contenedorInputs.appendChild(
                     inputFolio
                 );
+
+
+                /* =============================================
+                MOTIVO PERSONALIZADO
+                ============================================== */
+
+                if (
+                    esAmonestacionVerbal
+                ) {
+
+                    const inputMotivoPersonalizado =
+                        document.createElement(
+                            'input'
+                        );
+
+
+                    inputMotivoPersonalizado.type =
+                        'hidden';
+
+
+                    inputMotivoPersonalizado.name =
+                        `motivos_seleccionados[${indice}][motivo_personalizado]`;
+
+
+                    inputMotivoPersonalizado.value =
+                        motivo.motivoPersonalizado
+                        || '';
+
+
+                    inputMotivoPersonalizado.dataset.inputMotivoPersonalizado =
+                        motivo.id;
+
+
+                    contenedorInputs.appendChild(
+                        inputMotivoPersonalizado
+                    );
+                }
 
 
                 indice++;
@@ -662,6 +724,10 @@ function inicializarMotivos() {
         }
 
 
+        const esAmonestacionVerbal =
+            id === '55';
+
+
         motivosSeleccionados.set(
             id,
             {
@@ -669,6 +735,10 @@ function inicializarMotivos() {
                 texto,
                 sancion,
                 folio: '',
+                motivoPersonalizado:
+                    esAmonestacionVerbal
+                        ? ''
+                        : null,
             }
         );
 
@@ -761,14 +831,57 @@ function inicializarMotivos() {
     }
 
 
+    /* =========================================================
+    ACTUALIZAR MOTIVO PERSONALIZADO
+    ========================================================= */
+
+    function actualizarMotivoPersonalizado(
+        id,
+        valor
+    ) {
+
+        const clave =
+            String(
+                id
+            );
+
+
+        const motivo =
+            motivosSeleccionados.get(
+                clave
+            );
+
+
+        if (
+            !motivo
+        ) {
+
+            return;
+        }
+
+
+        motivo.motivoPersonalizado =
+            String(
+                valor
+                || ''
+            ).trim();
+
+
+        motivosSeleccionados.set(
+            clave,
+            motivo
+        );
+    }
+
+
     /* =====================================================
-       EVENTOS DE TABLA
+    EVENTOS DE TABLA
     ===================================================== */
 
     function inicializarEventosTabla() {
 
         /* =================================================
-           QUITAR
+        QUITAR
         ================================================= */
 
         const botonesEliminar =
@@ -794,7 +907,7 @@ function inicializarMotivos() {
 
 
         /* =================================================
-           FOLIO
+        FOLIO
         ================================================= */
 
         const inputsFolio =
@@ -814,6 +927,60 @@ function inicializarMotivos() {
                             input.dataset.motivoId,
                             input.value
                         );
+                    }
+                );
+            }
+        );
+
+
+        /* =================================================
+        MOTIVO PERSONALIZADO
+        ================================================= */
+
+        const inputsMotivoPersonalizado =
+            tablaBody.querySelectorAll(
+                '[data-motivo-personalizado]'
+            );
+
+
+        inputsMotivoPersonalizado.forEach(
+            (input) => {
+
+                input.addEventListener(
+                    'input',
+                    () => {
+
+                        const id =
+                            input.dataset.motivoId;
+
+
+                        const valor =
+                            input.value;
+
+
+                        actualizarMotivoPersonalizado(
+                            id,
+                            valor
+                        );
+
+
+                        const inputOculto =
+                            contenedorInputs.querySelector(
+                                `[data-input-motivo-personalizado="${CSS.escape(
+                                    String(
+                                        id
+                                    )
+                                )}"]`
+                            );
+
+
+                        if (
+                            inputOculto
+                        ) {
+
+                            inputOculto.value =
+                                valor;
+                        }
                     }
                 );
             }

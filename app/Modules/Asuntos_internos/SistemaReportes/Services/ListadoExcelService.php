@@ -49,9 +49,7 @@ class ListadoExcelService
 
 
         $crearHojaQuejas =
-            !empty(
-                $seccionesQuejas
-            );
+            !empty($seccionesQuejas);
 
 
         $hoja =
@@ -86,7 +84,6 @@ class ListadoExcelService
                 $hojaSeguimientos =
                     $spreadsheet
                     ->createSheet();
-
             } else {
 
                 $hojaSeguimientos =
@@ -242,9 +239,7 @@ class ListadoExcelService
             );
 
         if (
-            empty(
-                $columnas
-            )
+            empty($columnas)
         ) {
 
             throw new \RuntimeException(
@@ -347,9 +342,7 @@ class ListadoExcelService
         }
 
         if (
-            empty(
-                $reportes
-            )
+            empty($reportes)
         ) {
 
             $hoja->setCellValue(
@@ -423,16 +416,16 @@ class ListadoExcelService
 
                 $grupos[] = [
                     'titulo' =>
-                        $titulo,
+                    $titulo,
 
                     'inicio' =>
-                        $inicio,
+                    $inicio,
 
                     'fin' =>
-                        $indice - 1,
+                    $indice - 1,
 
                     'tipo' =>
-                        'simple',
+                    'simple',
                 ];
             };
 
@@ -482,16 +475,16 @@ class ListadoExcelService
 
         $grupos[] = [
             'titulo' =>
-                'Datos del reporte',
+            'Datos del reporte',
 
             'inicio' =>
-                $inicioDatosReporte,
+            $inicioDatosReporte,
 
             'fin' =>
-                $indice - 1,
+            $indice - 1,
 
             'tipo' =>
-                'simple',
+            'simple',
         ];
 
         $agregarGrupo(
@@ -757,12 +750,12 @@ class ListadoExcelService
 
             $camposPorGrupo =
                 $grupo['tipo'] === 'unidades'
-                    ? 2
-                    : (
-                        $grupo['tipo'] === 'motivos'
-                            ? 4
-                            : 4
-                    );
+                ? 2
+                : (
+                    $grupo['tipo'] === 'motivos'
+                    ? 4
+                    : 4
+                );
 
             if (
                 $grupo['tipo']
@@ -990,16 +983,12 @@ class ListadoExcelService
     ): string {
 
         $elemento =
-            $elementos[
-                $columna['indice']
-            ]
+            $elementos[$columna['indice']]
             ?? [];
 
         return $this->normalizar(
-            $elemento[
-                $columna['campo']
-            ]
-            ?? ''
+            $elemento[$columna['campo']]
+                ?? ''
         );
     }
 
@@ -1013,15 +1002,11 @@ class ListadoExcelService
             ?? [];
 
         $unidad =
-            $unidades[
-                $columna['indice']
-            ]
+            $unidades[$columna['indice']]
             ?? [];
 
         if (
-            empty(
-                $unidad
-            )
+            empty($unidad)
             && (
                 $reporte['modalidad_unidad']
                 ?? ''
@@ -1032,10 +1017,8 @@ class ListadoExcelService
         }
 
         return $this->normalizar(
-            $unidad[
-                $columna['campo']
-            ]
-            ?? ''
+            $unidad[$columna['campo']]
+                ?? ''
         );
     }
 
@@ -1045,10 +1028,31 @@ class ListadoExcelService
     ): string {
 
         $motivo =
-            $motivos[
-                $columna['indice']
-            ]
+            $motivos[$columna['indice']]
             ?? [];
+
+
+        /* =====================================================
+        MOTIVO
+        ===================================================== */
+
+        if (
+            $columna['campo']
+            === 'motivo'
+        ) {
+
+            return $this->normalizar(
+                $motivo['motivo_mostrar']
+                    ?? $motivo['motivo_personalizado']
+                    ?? $motivo['motivo']
+                    ?? ''
+            );
+        }
+
+
+        /* =====================================================
+        SANCIÓN
+        ===================================================== */
 
         if (
             $columna['campo']
@@ -1062,11 +1066,14 @@ class ListadoExcelService
             );
         }
 
+
+        /* =====================================================
+        RESTO DE CAMPOS
+        ===================================================== */
+
         return $this->normalizar(
-            $motivo[
-                $columna['campo']
-            ]
-            ?? ''
+            $motivo[$columna['campo']]
+                ?? ''
         );
     }
 

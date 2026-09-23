@@ -40,7 +40,7 @@ export function cargarMotivosEditar(
 
 
     /* =====================================================
-       VALIDAR
+       VALIDAR MOTIVOS RECIBIDOS
     ===================================================== */
 
     if (
@@ -92,6 +92,13 @@ export function cargarMotivosEditar(
                         ).trim(),
 
 
+                    motivo_personalizado:
+                        String(
+                            motivo.motivo_personalizado
+                            ?? ''
+                        ).trim(),
+
+
                     sancion:
                         String(
                             motivo.sancion
@@ -139,6 +146,19 @@ export function cargarMotivosEditar(
 
         resultados.hidden =
             true;
+
+
+        resultados
+            .querySelectorAll(
+                '[data-editar-motivo-opcion]'
+            )
+            .forEach(
+                (opcion) => {
+
+                    opcion.hidden =
+                        true;
+                }
+            );
     }
 
 
@@ -485,6 +505,62 @@ export function inicializarMotivosEditar(
 
 
             motivo.folio_sancion =
+                String(
+                    input.value
+                    || ''
+                );
+
+
+            motivosSeleccionados.set(
+                idMotivo,
+                motivo
+            );
+
+
+            actualizarInputsMotivosEditar(
+                modal
+            );
+        }
+    );
+
+    /* =====================================================
+    MOTIVO PERSONALIZADO
+    ===================================================== */
+
+    tbody.addEventListener(
+        'input',
+        (evento) => {
+
+            const input =
+                evento.target.closest(
+                    '[data-editar-motivo-personalizado]'
+                );
+
+
+            if (!input) {
+                return;
+            }
+
+
+            const idMotivo =
+                String(
+                    input.dataset.motivoId
+                    || ''
+                ).trim();
+
+
+            const motivo =
+                motivosSeleccionados.get(
+                    idMotivo
+                );
+
+
+            if (!motivo) {
+                return;
+            }
+
+
+            motivo.motivo_personalizado =
                 String(
                     input.value
                     || ''
@@ -1477,7 +1553,7 @@ export function renderizarMotivosEditar(
 
 
             /* =================================================
-               MOTIVO
+            MOTIVO
             ================================================= */
 
             const celdaMotivo =
@@ -1486,24 +1562,84 @@ export function renderizarMotivosEditar(
                 );
 
 
-            const textoMotivo =
-                document.createElement(
-                    'span'
+            const esAmonestacionVerbal =
+                String(
+                    motivo.id_motivo
+                ) === '55';
+
+
+            if (
+                esAmonestacionVerbal
+            ) {
+
+                const inputMotivoPersonalizado =
+                    document.createElement(
+                        'input'
+                    );
+
+
+                inputMotivoPersonalizado.type =
+                    'text';
+
+
+                inputMotivoPersonalizado.className =
+                    'report-input motivos-tabla__motivo-personalizado';
+
+
+                inputMotivoPersonalizado.value =
+                    motivo.motivo_personalizado
+                    || '';
+
+
+                inputMotivoPersonalizado.placeholder =
+                    'Escribe el motivo de la amonestación';
+
+
+                inputMotivoPersonalizado.maxLength =
+                    255;
+
+
+                inputMotivoPersonalizado.autocomplete =
+                    'off';
+
+
+                inputMotivoPersonalizado.required =
+                    true;
+
+
+                inputMotivoPersonalizado.dataset.editarMotivoPersonalizado =
+                    '1';
+
+
+                inputMotivoPersonalizado.dataset.motivoId =
+                    motivo.id_motivo;
+
+
+                celdaMotivo.appendChild(
+                    inputMotivoPersonalizado
                 );
 
+            } else {
 
-            textoMotivo.className =
-                'motivos-tabla__motivo';
-
-
-            textoMotivo.textContent =
-                motivo.motivo
-                || '—';
+                const textoMotivo =
+                    document.createElement(
+                        'span'
+                    );
 
 
-            celdaMotivo.appendChild(
-                textoMotivo
-            );
+                textoMotivo.className =
+                    'motivos-tabla__motivo';
+
+
+                textoMotivo.textContent =
+                    motivo.motivo
+                    || '—';
+
+
+                celdaMotivo.appendChild(
+                    textoMotivo
+                );
+            }
 
 
             /* =================================================
@@ -1695,6 +1831,10 @@ function actualizarInputsMotivosEditar(
     motivosSeleccionados.forEach(
         (motivo) => {
 
+            /* =================================================
+               ID MOTIVO
+            ================================================= */
+
             const inputId =
                 document.createElement(
                     'input'
@@ -1712,6 +1852,10 @@ function actualizarInputsMotivosEditar(
             inputId.value =
                 motivo.id_motivo;
 
+
+            /* =================================================
+               FOLIO DE SANCIÓN
+            ================================================= */
 
             const inputFolio =
                 document.createElement(
@@ -1736,6 +1880,44 @@ function actualizarInputsMotivosEditar(
                 inputId,
                 inputFolio
             );
+
+
+            /* =================================================
+               MOTIVO PERSONALIZADO
+               SOLO PARA AMONESTACIÓN VERBAL
+            ================================================= */
+
+            if (
+                String(
+                    motivo.id_motivo
+                ) === '55'
+            ) {
+
+                const inputMotivoPersonalizado =
+                    document.createElement(
+                        'input'
+                    );
+
+
+                inputMotivoPersonalizado.type =
+                    'hidden';
+
+
+                inputMotivoPersonalizado.name =
+                    `motivos_seleccionados[${indice}][motivo_personalizado]`;
+
+
+                inputMotivoPersonalizado.value =
+                    String(
+                        motivo.motivo_personalizado
+                        || ''
+                    );
+
+
+                contenedor.appendChild(
+                    inputMotivoPersonalizado
+                );
+            }
 
 
             indice++;

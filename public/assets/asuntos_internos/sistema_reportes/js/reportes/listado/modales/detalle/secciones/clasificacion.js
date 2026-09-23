@@ -419,7 +419,9 @@ function renderizarMotivosDetalle(
 
             const textoMotivo =
                 String(
-                    motivo.motivo
+                    motivo.motivo_mostrar
+                    ?? motivo.motivo_personalizado
+                    ?? motivo.motivo
                     ?? ''
                 ).trim();
 
