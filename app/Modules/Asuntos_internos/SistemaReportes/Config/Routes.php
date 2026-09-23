@@ -275,7 +275,7 @@ $routes->group(
 
                 $routes->post(
                     'listado/exportar',
-                    '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::exportarListado'
+                    '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Exportaciones_Controller::exportarListado'
                 );
 
 

@@ -1080,6 +1080,154 @@ body.modal-abierto {
     margin: 0;
 }
 
+/* =========================================================
+   MODAL EXPORTAR REPORTES - SEPARACIÓN DE BLOQUES
+========================================================= */
+
+.reportes-exportar__bloque-separado {
+    margin-top: 20px;
+}
+
+
+
+/* =========================================================
+   MODAL EXPORTAR LISTADO
+   ESTRUCTURA Y SCROLL
+========================================================= */
+
+#modal-exportar-listado
+.modal-reporte__dialog--exportar {
+    width: min(900px, calc(100vw - 36px));
+
+    height: min(840px, 92vh);
+    max-height: 92vh;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   HEADER FIJO
+========================================================= */
+
+#modal-exportar-listado
+.modal-reporte__header {
+    flex: 0 0 auto;
+}
+
+
+/* =========================================================
+   FORMULARIO
+========================================================= */
+
+#modal-exportar-listado
+#form-exportar-listado {
+    min-height: 0;
+
+    flex: 1 1 auto;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   BODY CON SCROLL
+========================================================= */
+
+#modal-exportar-listado
+.modal-reporte__body {
+    min-height: 0;
+
+    flex: 1 1 auto;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    scrollbar-width: thin;
+    scrollbar-color: #c7d4df transparent;
+}
+
+
+/* =========================================================
+   SCROLL - CHROME / EDGE
+========================================================= */
+
+#modal-exportar-listado
+.modal-reporte__body::-webkit-scrollbar {
+    width: 7px;
+}
+
+
+#modal-exportar-listado
+.modal-reporte__body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+#modal-exportar-listado
+.modal-reporte__body::-webkit-scrollbar-thumb {
+    background: #c7d4df;
+
+    border-radius: 10px;
+}
+
+
+#modal-exportar-listado
+.modal-reporte__body::-webkit-scrollbar-thumb:hover {
+    background: #aebfcd;
+}
+
+
+/* =========================================================
+   FOOTER FIJO
+========================================================= */
+
+#modal-exportar-listado
+.modal-reporte__footer {
+    flex: 0 0 auto;
+
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    padding: 14px 18px;
+
+    background: #f8fafc;
+
+    border-top: 1px solid #dfe8ef;
+
+    z-index: 2;
+}
+
+
+/* =========================================================
+   SEPARACIÓN DE BLOQUES
+========================================================= */
+
+#modal-exportar-listado
+.reportes-exportar__bloque-separado {
+    margin-top: 20px;
+}
+
+
+/* =========================================================
+   BLOQUEAR SCROLL DE LA PÁGINA
+========================================================= */
+
+body.modal-abierto {
+    overflow: hidden;
+}
+
 
 /* =========================================================
    RESPONSIVE

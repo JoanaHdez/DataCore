@@ -2,181 +2,100 @@
 
 namespace App\Modules\Asuntos_internos\SistemaReportes\Services;
 
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ListadoExcelService
 {
-    /**
-     * Genera el Excel completo de reportes.
-     */
+    private const NO_APLICA = 'NO APLICA';
+
     public function generar(
-    array $reportes,
-    array $secciones = []
+        array $reportes,
+        array $secciones
     ): string {
-
-        /* =====================================================
-        SECCIONES PERMITIDAS
-        ===================================================== */
-
-        $seccionesPermitidas = [
-
-            'datos_reporte',
-            'identificacion',
-            'hechos',
-            'ubicacion',
-            'personal',
-            'unidades',
-            'quejoso',
-            'clasificacion',
-            'observaciones',
-            'seguimientos',
-            'evidencias',
-
-        ];
-
-
-        /* =====================================================
-        NORMALIZAR SECCIONES
-        ===================================================== */
 
         $secciones =
             array_values(
                 array_unique(
-                    array_filter(
-                        $secciones,
-                        static fn($seccion) =>
-                            in_array(
-                                $seccion,
-                                $seccionesPermitidas,
-                                true
-                            )
-                    )
+                    $secciones
                 )
             );
-
-
-        if (empty($secciones)) {
-
-            throw new \InvalidArgumentException(
-                'No se seleccionaron secciones para exportar.'
-            );
-        }
-
-
-        /* =====================================================
-        CREAR LIBRO
-        ===================================================== */
 
         $spreadsheet =
             new Spreadsheet();
 
-
-        /*
-        * PhpSpreadsheet crea automáticamente
-        * una primera hoja vacía.
-        */
-
-        $primeraHoja =
-            $spreadsheet
-            ->getActiveSheet();
-
-
-        $primeraHojaUtilizada =
-            false;
-
-
-        /* =====================================================
-        SECCIONES DE LA HOJA REPORTES
-        ===================================================== */
-
-        $seccionesReporte = [
-
-            'datos_reporte',
-            'identificacion',
-            'hechos',
-            'ubicacion',
-            'personal',
-            'unidades',
-            'quejoso',
-            'clasificacion',
-            'observaciones',
-
-        ];
-
-
-        $crearReportes =
-            count(
-                array_intersect(
-                    $secciones,
-                    $seccionesReporte
-                )
-            ) > 0;
-
-
-        /* =====================================================
-        HOJA REPORTES
-        ===================================================== */
-
-        if ($crearReportes) {
-
-            $hojaReportes =
-                $primeraHoja;
-
-
-            $hojaReportes->setTitle(
-                'Reportes'
-            );
-
-
-            $this->crearHojaReportes(
-                $hojaReportes,
-                $reportes,
-                $secciones
-            );
-
-
-            $primeraHojaUtilizada =
-                true;
-        }
-
-
-        /* =====================================================
-        HOJA SEGUIMIENTOS
-        ===================================================== */
-
-        if (
+        $incluirSeguimientos =
             in_array(
                 'seguimientos',
                 $secciones,
                 true
-            )
+            );
+
+
+        $seccionesQuejas =
+            array_values(
+                array_diff(
+                    $secciones,
+                    [
+                        'seguimientos',
+                    ]
+                )
+            );
+
+
+        $crearHojaQuejas =
+            !empty(
+                $seccionesQuejas
+            );
+
+
+        $hoja =
+            $spreadsheet
+            ->getActiveSheet();
+
+
+        if (
+            $crearHojaQuejas
         ) {
 
-            if (!$primeraHojaUtilizada) {
+            $hoja->setTitle(
+                'Quejas'
+            );
 
-                $hojaSeguimientos =
-                    $primeraHoja;
 
+            $this->crearHojaQuejas(
+                $hoja,
+                $reportes,
+                $secciones
+            );
+        }
 
-                $primeraHojaUtilizada =
-                    true;
+        if (
+            $incluirSeguimientos
+        ) {
 
-            } else {
+            if (
+                $crearHojaQuejas
+            ) {
 
                 $hojaSeguimientos =
                     $spreadsheet
                     ->createSheet();
-            }
 
+            } else {
+
+                $hojaSeguimientos =
+                    $hoja;
+            }
 
             $hojaSeguimientos->setTitle(
                 'Seguimientos'
             );
-
 
             $this->crearHojaSeguimientos(
                 $hojaSeguimientos,
@@ -184,67 +103,20 @@ class ListadoExcelService
             );
         }
 
-
-        /* =====================================================
-        HOJA EVIDENCIAS
-        ===================================================== */
-
-        if (
-            in_array(
-                'evidencias',
-                $secciones,
-                true
-            )
-        ) {
-
-            if (!$primeraHojaUtilizada) {
-
-                $hojaEvidencias =
-                    $primeraHoja;
-
-
-                $primeraHojaUtilizada =
-                    true;
-
-            } else {
-
-                $hojaEvidencias =
-                    $spreadsheet
-                    ->createSheet();
-            }
-
-
-            $hojaEvidencias->setTitle(
-                'Evidencias'
+        $spreadsheet
+            ->setActiveSheetIndex(
+                0
             );
-
-
-            $this->crearHojaEvidencias(
-                $hojaEvidencias,
-                $reportes
-            );
-        }
-
-
-        /* =====================================================
-        PRIMERA HOJA ACTIVA
-        ===================================================== */
-
-        $spreadsheet->setActiveSheetIndex(
-            0
-        );
-
-
-        /* =====================================================
-        DIRECTORIO TEMPORAL
-        ===================================================== */
 
         $directorio =
             WRITEPATH
             . 'exports/';
 
-
-        if (!is_dir($directorio)) {
+        if (
+            !is_dir(
+                $directorio
+            )
+        ) {
 
             $creado =
                 mkdir(
@@ -253,10 +125,11 @@ class ListadoExcelService
                     true
                 );
 
-
             if (
                 !$creado
-                && !is_dir($directorio)
+                && !is_dir(
+                    $directorio
+                )
             ) {
 
                 throw new \RuntimeException(
@@ -265,761 +138,1100 @@ class ListadoExcelService
             }
         }
 
-
-        /* =====================================================
-        NOMBRE
-        ===================================================== */
-
-        $nombreArchivo =
-            'reportes_asuntos_internos_'
-            . date('Ymd_His')
-            . '.xlsx';
-
-
         $ruta =
             $directorio
-            . $nombreArchivo;
-
-
-        /* =====================================================
-        GUARDAR
-        ===================================================== */
+            . 'quejas_asuntos_internos_'
+            . date(
+                'Ymd_His'
+            )
+            . '_'
+            . uniqid(
+                '',
+                false
+            )
+            . '.xlsx';
 
         $writer =
             new Xlsx(
                 $spreadsheet
             );
 
-
         $writer->save(
             $ruta
         );
 
-
-        /* =====================================================
-        LIBERAR
-        ===================================================== */
-
         $spreadsheet
             ->disconnectWorksheets();
-
 
         unset(
             $spreadsheet
         );
 
-
         return $ruta;
     }
 
-
-    /* =========================================================
-       HOJA DE REPORTES
-    ========================================================= */
-
-    private function crearHojaReportes(
-        $hoja,
+    private function crearHojaQuejas(
+        Worksheet $hoja,
         array $reportes,
         array $secciones
     ): void {
 
-        /* =====================================================
-        DEFINICIÓN DE COLUMNAS POR SECCIÓN
-        ===================================================== */
-
-        $definiciones = [
-
-            /* =================================================
-            DATOS DEL REPORTE
-            ================================================= */
-
-            'datos_reporte' => [
-
-                [
-                    'titulo' =>
-                        'Prefijo',
-
-                    'campo' =>
-                        '__prefijo',
-                ],
-
-                [
-                    'titulo' =>
-                        'Número de folio',
-
-                    'campo' =>
-                        '__numero_folio',
-                ],
-
-                [
-                    'titulo' =>
-                        'Fecha de registro',
-
-                    'campo' =>
-                        'fecha_registro',
-                ],
-
-            ],
-
-
-            /* =================================================
-            IDENTIFICACIÓN
-            ================================================= */
-
-            'identificacion' => [
-
-                [
-                    'titulo' =>
-                        'Folio IP',
-
-                    'campo' =>
-                        'folio_ip',
-                ],
-
-                [
-                    'titulo' =>
-                        'Fecha de queja',
-
-                    'campo' =>
-                        'fecha_queja',
-                ],
-
-                [
-                    'titulo' =>
-                        'Fecha de acuerdo',
-
-                    'campo' =>
-                        'fecha_acuerdo',
-                ],
-
-                [
-                    'titulo' =>
-                        'Expediente',
-
-                    'campo' =>
-                        'expediente',
-                ],
-
-                [
-                    'titulo' =>
-                        'Nomenclatura',
-
-                    'campo' =>
-                        'nomenclatura',
-                ],
-
-                [
-                    'titulo' =>
-                        'No. de oficio',
-
-                    'campo' =>
-                        'no_oficio',
-                ],
-
-            ],
-
-
-            /* =================================================
-            HECHOS
-            ================================================= */
-
-            'hechos' => [
-
-                [
-                    'titulo' =>
-                        'Fecha de los hechos',
-
-                    'campo' =>
-                        'fecha_hechos',
-                ],
-
-                [
-                    'titulo' =>
-                        'Hora de los hechos',
-
-                    'campo' =>
-                        'hora_hechos',
-                ],
-
-                [
-                    'titulo' =>
-                        'Descripción',
-
-                    'campo' =>
-                        'descripcion',
-                ],
-
-            ],
-
-
-            /* =================================================
-            UBICACIÓN
-            ================================================= */
-
-            'ubicacion' => [
-
-                [
-                    'titulo' =>
-                        'Calle',
-
-                    'campo' =>
-                        'calle',
-                ],
-
-                [
-                    'titulo' =>
-                        'Número',
-
-                    'campo' =>
-                        'numero',
-                ],
-
-                [
-                    'titulo' =>
-                        'Colonia',
-
-                    'campo' =>
-                        'colonia',
-                ],
-
-                [
-                    'titulo' =>
-                        'Entre calle',
-
-                    'campo' =>
-                        'entre_calle',
-                ],
-
-                [
-                    'titulo' =>
-                        'Y calle',
-
-                    'campo' =>
-                        'y_calle',
-                ],
-
-                [
-                    'titulo' =>
-                        'Municipio',
-
-                    'campo' =>
-                        'municipio',
-                ],
-
-                [
-                    'titulo' =>
-                        'Estado',
-
-                    'campo' =>
-                        'estado',
-                ],
-
-                [
-                    'titulo' =>
-                        'Sector',
-
-                    'campo' =>
-                        'sector',
-                ],
-
-                [
-                    'titulo' =>
-                        'Cuadrante',
-
-                    'campo' =>
-                        'cuadrante',
-                ],
-
-                [
-                    'titulo' =>
-                        'ID de cuadra / calle',
-
-                    'campo' =>
-                        'id_cuadra',
-                ],
-
-                [
-                    'titulo' =>
-                        'Latitud',
-
-                    'campo' =>
-                        'latitud',
-                ],
-
-                [
-                    'titulo' =>
-                        'Longitud',
-
-                    'campo' =>
-                        'longitud',
-                ],
-
-            ],
-
-
-            /* =================================================
-            PERSONAL
-            ================================================= */
-
-            'personal' => [
-
-                [
-                    'titulo' =>
-                        'Oficial',
-
-                    'campo' =>
-                        'oficial',
-                ],
-
-                [
-                    'titulo' =>
-                        'Área',
-
-                    'campo' =>
-                        'area',
-                ],
-
-                [
-                    'titulo' =>
-                        'Turno',
-
-                    'campo' =>
-                        'turno',
-                ],
-
-            ],
-
-
-            /* =================================================
-            UNIDADES
-            ================================================= */
-
-            'unidades' => [
-
-                [
-                    'titulo' =>
-                        'Unidad',
-
-                    'campo' =>
-                        'unidad',
-                ],
-
-                [
-                    'titulo' =>
-                        'Placas',
-
-                    'campo' =>
-                        'unidad_placas',
-                ],
-
-                [
-                    'titulo' =>
-                        'Marca',
-
-                    'campo' =>
-                        'unidad_marca',
-                ],
-
-                [
-                    'titulo' =>
-                        'Submarca',
-
-                    'campo' =>
-                        'unidad_submarca',
-                ],
-
-                [
-                    'titulo' =>
-                        'Color',
-
-                    'campo' =>
-                        'unidad_color',
-                ],
-
-                [
-                    'titulo' =>
-                        'Estatus de unidad',
-
-                    'campo' =>
-                        'unidad_estatus',
-                ],
-
-                [
-                    'titulo' =>
-                        'Servicio / Adscripción',
-
-                    'campo' =>
-                        'unidad_servicio_adscripcion',
-                ],
-
-                [
-                    'titulo' =>
-                        'Tipo de vehículo',
-
-                    'campo' =>
-                        'unidad_tipo_vehiculo',
-                ],
-
-                [
-                    'titulo' =>
-                        'Origen',
-
-                    'campo' =>
-                        'unidad_origen',
-                ],
-
-            ],
-
-
-            /* =================================================
-            QUEJOSO
-            ================================================= */
-
-            'quejoso' => [
-
-                [
-                    'titulo' =>
-                        'Quejoso',
-
-                    'campo' =>
-                        'quejoso',
-                ],
-
-                [
-                    'titulo' =>
-                        'Edad',
-
-                    'campo' =>
-                        'edad',
-                ],
-
-                [
-                    'titulo' =>
-                        'Género',
-
-                    'campo' =>
-                        'genero',
-                ],
-
-                [
-                    'titulo' =>
-                        'Teléfono',
-
-                    'campo' =>
-                        'telefono',
-                ],
-
-                [
-                    'titulo' =>
-                        'Correo electrónico',
-
-                    'campo' =>
-                        'correo',
-                ],
-
-            ],
-
-
-            /* =================================================
-            CLASIFICACIÓN
-            ================================================= */
-
-            'clasificacion' => [
-
-                [
-                    'titulo' =>
-                        'Clasificación',
-
-                    'campo' =>
-                        'clasificacion',
-                ],
-
-                [
-                    'titulo' =>
-                        'Inspector',
-
-                    'campo' =>
-                        'inspector',
-                ],
-
-                [
-                    'titulo' =>
-                        'Investigador',
-
-                    'campo' =>
-                        'investigador',
-                ],
-
-                [
-                    'titulo' =>
-                        'Quién emite resolución',
-
-                    'campo' =>
-                        'quien_emite_resolucion',
-                ],
-
-                [
-                    'titulo' =>
-                        'Resolución',
-
-                    'campo' =>
-                        'resolucion',
-                ],
-
-                [
-                    'titulo' =>
-                        'Motivos',
-
-                    'campo' =>
-                        'motivos',
-                ],
-
-            ],
-
-
-            /* =================================================
-            OBSERVACIONES
-            ================================================= */
-
-            'observaciones' => [
-
-                [
-                    'titulo' =>
-                        'Observaciones',
-
-                    'campo' =>
-                        'observaciones',
-                ],
-
-            ],
-
-        ];
-
-
-        /* =====================================================
-        COLUMNAS SELECCIONADAS
-
-        El folio completo siempre se incluye como primera
-        columna, independientemente de las secciones elegidas.
-        ===================================================== */
-
-        $columnas = [
-
-            [
-                'titulo' =>
-                    'Folio',
-
-                'campo' =>
-                    '__folio_completo',
-            ],
-
-        ];
-
-
-        foreach (
-            $secciones
-            as $seccion
+        $maxPersonal =
+            $this->maximoElementos(
+                $reportes,
+                'personal'
+            );
+
+        $maxUnidades =
+            $this->maximoElementos(
+                $reportes,
+                'unidades'
+            );
+
+        $maxMotivos =
+            $this->maximoElementos(
+                $reportes,
+                'motivos'
+            );
+
+        if (
+            in_array(
+                'personal',
+                $secciones,
+                true
+            )
+            && $maxPersonal === 0
         ) {
 
-            if (
-                !isset(
-                    $definiciones[$seccion]
-                )
-            ) {
-                continue;
-            }
-
-
-            foreach (
-                $definiciones[$seccion]
-                as $definicion
-            ) {
-
-                $columnas[] =
-                    $definicion;
-            }
+            $maxPersonal =
+                1;
         }
 
+        if (
+            in_array(
+                'unidades',
+                $secciones,
+                true
+            )
+            && $maxUnidades === 0
+        ) {
 
-        /* =====================================================
-        ENCABEZADOS
-        ===================================================== */
+            $maxUnidades =
+                1;
+        }
 
-        $encabezados =
-            array_map(
-                static fn($columna) =>
-                    $columna['titulo'],
+        if (
+            in_array(
+                'clasificacion',
+                $secciones,
+                true
+            )
+            && $maxMotivos === 0
+        ) {
+
+            $maxMotivos =
+                1;
+        }
+
+        [$columnas, $grupos] =
+            $this->construirColumnas(
+                $secciones,
+                $maxPersonal,
+                $maxUnidades,
+                $maxMotivos
+            );
+
+        if (
+            empty(
+                $columnas
+            )
+        ) {
+
+            throw new \RuntimeException(
+                'No existen columnas disponibles para exportar.'
+            );
+        }
+
+        $totalColumnas =
+            count(
                 $columnas
             );
 
+        $ultimaColumna =
+            Coordinate::stringFromColumnIndex(
+                $totalColumnas
+            );
 
-        $hoja->fromArray(
-            $encabezados,
-            null,
-            'A1'
+        $hoja
+            ->mergeCells(
+                'A1:'
+                    . $ultimaColumna
+                    . '1'
+            );
+
+        $hoja->setCellValue(
+            'A1',
+            'REPORTE DE QUEJAS'
         );
 
+        foreach (
+            $grupos
+            as $grupo
+        ) {
 
-        /* =====================================================
-        REGISTROS
-        ===================================================== */
+            $inicio =
+                Coordinate::stringFromColumnIndex(
+                    $grupo['inicio']
+                );
+
+            $fin =
+                Coordinate::stringFromColumnIndex(
+                    $grupo['fin']
+                );
+
+            if (
+                $grupo['inicio']
+                !== $grupo['fin']
+            ) {
+
+                $hoja->mergeCells(
+                    $inicio
+                        . '2:'
+                        . $fin
+                        . '2'
+                );
+            }
+
+            $hoja->setCellValue(
+                $inicio
+                    . '2',
+                mb_strtoupper(
+                    $grupo['titulo'],
+                    'UTF-8'
+                )
+            );
+        }
+
+        $this->escribirEncabezados(
+            $hoja,
+            $columnas,
+            $grupos
+        );
 
         $fila =
-            2;
-
+            5;
 
         foreach (
             $reportes
             as $reporte
         ) {
 
-            $datos =
-                [];
-
-
             foreach (
                 $columnas
-                as $columna
+                as $indice => $columna
             ) {
 
-                $campo =
-                    $columna['campo'];
-
-
-                /* =============================================
-                FOLIO COMPLETO
-                ============================================= */
-
-                if (
-                    $campo ===
-                    '__folio_completo'
-                ) {
-
-                    $datos[] =
-                        $this->obtenerFolioCompleto(
-                            $reporte
-                        );
-
-                    continue;
-                }
-
-
-                /* =============================================
-                PREFIJO
-                ============================================= */
-
-                if (
-                    $campo ===
-                    '__prefijo'
-                ) {
-
-                    $datos[] =
-                        $this->obtenerPrefijo(
-                            $reporte
-                        );
-
-                    continue;
-                }
-
-
-                /* =============================================
-                NÚMERO DE FOLIO
-                ============================================= */
-
-                if (
-                    $campo ===
-                    '__numero_folio'
-                ) {
-
-                    $datos[] =
-                        $this->obtenerNumeroFolio(
-                            $reporte
-                        );
-
-                    continue;
-                }
-
-
-                /* =============================================
-                VALOR NORMAL
-                ============================================= */
-
-                $datos[] =
-                    $this->valor(
+                $hoja->setCellValue(
+                    Coordinate::stringFromColumnIndex(
+                        $indice + 1
+                    )
+                        . $fila,
+                    $this->valorReporte(
                         $reporte,
-                        $campo
-                    );
+                        $columna
+                    )
+                );
             }
-
-
-            $hoja->fromArray(
-                $datos,
-                null,
-                'A' . $fila
-            );
-
 
             $fila++;
         }
 
+        if (
+            empty(
+                $reportes
+            )
+        ) {
 
-        /* =====================================================
-        DIMENSIONES
-        ===================================================== */
+            $hoja->setCellValue(
+                'A5',
+                'NO HAY REPORTES PARA EXPORTAR'
+            );
+        }
+
+        $this->aplicarEstilos(
+            $hoja,
+            $totalColumnas,
+            max(
+                5,
+                $fila - 1
+            )
+        );
+    }
+
+    private function construirColumnas(
+        array $secciones,
+        int $maxPersonal,
+        int $maxUnidades,
+        int $maxMotivos
+    ): array {
+
+        $columnas =
+            [];
+
+        $grupos =
+            [];
+
+        $indice =
+            1;
+
+        $agregarGrupo =
+            function (
+                string $seccion,
+                string $titulo,
+                array $nuevasColumnas
+            ) use (
+                &$columnas,
+                &$grupos,
+                &$indice,
+                $secciones
+            ): void {
+
+                if (
+                    !in_array(
+                        $seccion,
+                        $secciones,
+                        true
+                    )
+                ) {
+
+                    return;
+                }
+
+                $inicio =
+                    $indice;
+
+                foreach (
+                    $nuevasColumnas
+                    as $columna
+                ) {
+
+                    $columnas[] =
+                        $columna;
+
+                    $indice++;
+                }
+
+                $grupos[] = [
+                    'titulo' =>
+                        $titulo,
+
+                    'inicio' =>
+                        $inicio,
+
+                    'fin' =>
+                        $indice - 1,
+
+                    'tipo' =>
+                        'simple',
+                ];
+            };
+
+        $inicioDatosReporte =
+            $indice;
+
+
+        $columnas[] =
+            $this->columna(
+                'simple',
+                'tipo_folio',
+                'Tipo de queja'
+            );
+
+
+        $columnas[] =
+            $this->columna(
+                'simple',
+                'numero_folio',
+                'ID'
+            );
+
+
+        $indice +=
+            2;
+
+
+        if (
+            in_array(
+                'datos_reporte',
+                $secciones,
+                true
+            )
+        ) {
+
+            $columnas[] =
+                $this->columna(
+                    'simple',
+                    'fecha_registro',
+                    'Fecha de registro'
+                );
+
+
+            $indice++;
+        }
+
+
+        $grupos[] = [
+            'titulo' =>
+                'Datos del reporte',
+
+            'inicio' =>
+                $inicioDatosReporte,
+
+            'fin' =>
+                $indice - 1,
+
+            'tipo' =>
+                'simple',
+        ];
+
+        $agregarGrupo(
+            'identificacion',
+            'Identificación del registro',
+            [
+                $this->columna('simple', 'folio_ip', 'Folio IP'),
+                $this->columna('simple', 'folio_imp', 'Folio IMP'),
+                $this->columna('simple', 'fecha_queja', 'Fecha de queja'),
+                $this->columna('simple', 'fecha_acuerdo', 'Fecha de acuerdo'),
+                $this->columna('simple', 'expediente', 'Expediente'),
+                $this->columna('simple', 'nomenclatura', 'Nomenclatura'),
+                $this->columna('simple', 'no_oficio', 'No. de oficio'),
+            ]
+        );
+
+        $agregarGrupo(
+            'hechos',
+            'Datos de los hechos',
+            [
+                $this->columna('simple', 'fecha_hechos', 'Fecha de los hechos'),
+                $this->columna('simple', 'hora_hechos', 'Hora de los hechos'),
+                $this->columna('simple', 'descripcion', 'Descripción de los hechos'),
+            ]
+        );
+
+        $agregarGrupo(
+            'ubicacion',
+            'Ubicación de los hechos',
+            [
+                $this->columna('simple', 'calle', 'Calle'),
+                $this->columna('simple', 'numero', 'No. Ext.'),
+                $this->columna('simple', 'colonia', 'Colonia'),
+                $this->columna('simple', 'entre_calle', 'Entre calle'),
+                $this->columna('simple', 'y_calle', 'Y calle'),
+                $this->columna('simple', 'municipio', 'Ciudad / Municipio'),
+                $this->columna('simple', 'estado', 'Estado'),
+                $this->columna('simple', 'sector', 'Sector'),
+                $this->columna('simple', 'cuadrante', 'Cuadrante'),
+                $this->columna('simple', 'id_cuadra', 'ID de cuadra / calle'),
+                $this->columna('simple', 'longitud', 'Longitud'),
+                $this->columna('simple', 'latitud', 'Latitud'),
+                $this->columna('simple', 'coordenadas', 'Coordenadas'),
+            ]
+        );
+
+        if (
+            in_array(
+                'personal',
+                $secciones,
+                true
+            )
+        ) {
+
+            $inicio =
+                $indice;
+
+            for (
+                $i = 0;
+                $i < $maxPersonal;
+                $i++
+            ) {
+
+                $columnas[] = $this->columna('personal', 'nombre_snapshot', 'Nombre', $i);
+                $columnas[] = $this->columna('personal', 'area_snapshot', 'Área', $i);
+                $columnas[] = $this->columna('personal', 'turno_snapshot', 'Turno', $i);
+                $columnas[] = $this->columna('personal', 'alias_snapshot', 'Alias', $i);
+
+                $indice +=
+                    4;
+            }
+
+            $grupos[] = [
+                'titulo' => 'Personal involucrado',
+                'inicio' => $inicio,
+                'fin' => $indice - 1,
+                'tipo' => 'personal',
+                'cantidad' => $maxPersonal,
+            ];
+        }
+
+        if (
+            in_array(
+                'unidades',
+                $secciones,
+                true
+            )
+        ) {
+
+            $inicio =
+                $indice;
+
+            for (
+                $i = 0;
+                $i < $maxUnidades;
+                $i++
+            ) {
+
+                $columnas[] = $this->columna('unidad', 'no_economico_snapshot', 'Unidad', $i);
+                $columnas[] = $this->columna('unidad', 'placas_snapshot', 'Placas', $i);
+
+                $indice +=
+                    2;
+            }
+
+            $grupos[] = [
+                'titulo' => 'Unidades involucradas',
+                'inicio' => $inicio,
+                'fin' => $indice - 1,
+                'tipo' => 'unidades',
+                'cantidad' => $maxUnidades,
+            ];
+        }
+
+        $agregarGrupo(
+            'quejoso',
+            'Datos del quejoso',
+            [
+                $this->columna('simple', 'es_anonimo', 'Queja anónima'),
+                $this->columna('simple', 'numero_anonimo', 'No. numérico'),
+                $this->columna('simple', 'quejoso', 'Quejoso'),
+                $this->columna('simple', 'edad', 'Edad'),
+                $this->columna('simple', 'genero', 'Género'),
+                $this->columna('simple', 'telefono', 'Número de teléfono'),
+                $this->columna('simple', 'correo', 'Correo electrónico'),
+                $this->columna('simple', 'direccion_quejoso', 'Dirección del quejoso'),
+                $this->columna('simple', 'canalizacion', 'Canalización'),
+                $this->columna('simple', 'canalizacion_otro', 'Otra área de canalización'),
+            ]
+        );
+
+        $agregarGrupo(
+            'direccion_notificacion',
+            'Dirección para notificación',
+            [
+                $this->columna('simple', 'notificacion_pertenece_neza', 'Pertenece a Nezahualcóyotl'),
+                $this->columna('simple', 'notificacion_calle', 'Calle'),
+                $this->columna('simple', 'notificacion_numero_exterior', 'No. Ext.'),
+                $this->columna('simple', 'notificacion_colonia', 'Colonia'),
+                $this->columna('simple', 'notificacion_entre_calle', 'Entre calle'),
+                $this->columna('simple', 'notificacion_y_calle', 'Y calle'),
+                $this->columna('simple', 'notificacion_municipio', 'Ciudad / Municipio'),
+                $this->columna('simple', 'notificacion_estado', 'Estado'),
+                $this->columna('simple', 'notificacion_sector', 'Sector'),
+                $this->columna('simple', 'notificacion_cuadrante', 'Cuadrante'),
+                $this->columna('simple', 'notificacion_id_cuadra', 'ID de cuadra / calle'),
+                $this->columna('simple', 'notificacion_longitud', 'Longitud'),
+                $this->columna('simple', 'notificacion_latitud', 'Latitud'),
+                $this->columna('simple', 'notificacion_coordenadas', 'Coordenadas'),
+            ]
+        );
+
+        if (
+            in_array(
+                'clasificacion',
+                $secciones,
+                true
+            )
+        ) {
+
+            $inicio =
+                $indice;
+
+            $columnas[] = $this->columna('simple', 'clasificacion', 'Clasificación');
+            $columnas[] = $this->columna('simple', 'inspector', 'Inspector');
+            $columnas[] = $this->columna('simple', 'investigador', 'Investigador');
+            $columnas[] = $this->columna('simple', 'estado_actual', 'Estado actual');
+            $columnas[] = $this->columna('simple', 'sin_sanciones', 'Sin sanciones');
+            $columnas[] = $this->columna('simple', 'baja_voluntaria', 'Baja voluntaria');
+            $columnas[] = $this->columna('simple', 'desistimiento', 'Desistimiento');
+            $indice += 7;
+
+            for (
+                $i = 0;
+                $i < $maxMotivos;
+                $i++
+            ) {
+
+                $columnas[] = $this->columna('motivo', 'id_motivo', 'Núm.', $i);
+                $columnas[] = $this->columna('motivo', 'motivo', 'Motivo', $i);
+                $columnas[] = $this->columna('motivo', 'sancion', 'Sanción', $i);
+                $columnas[] = $this->columna('motivo', 'folio_sancion', 'Folio sanción', $i);
+                $indice += 4;
+            }
+
+            $columnas[] = $this->columna('calculado', 'total_horas_arresto', 'Total de horas de arresto');
+            $columnas[] = $this->columna('simple', 'quien_emite_resolucion', 'Quién emite la resolución');
+            $columnas[] = $this->columna('simple', 'resolucion', 'Resolución');
+            $indice += 3;
+
+            $grupos[] = [
+                'titulo' => 'Clasificación y resolución',
+                'inicio' => $inicio,
+                'fin' => $indice - 1,
+                'tipo' => 'motivos',
+                'cantidad' => $maxMotivos,
+            ];
+        }
+
+        $agregarGrupo(
+            'observaciones',
+            'Observaciones',
+            [
+                $this->columna('simple', 'observaciones', 'Observaciones'),
+            ]
+        );
+
+        return [
+            $columnas,
+            $grupos,
+        ];
+    }
+
+    private function escribirEncabezados(
+        Worksheet $hoja,
+        array $columnas,
+        array $grupos
+    ): void {
+
+        $columnaActual =
+            1;
+
+        foreach (
+            $grupos
+            as $grupo
+        ) {
+
+            if (
+                $grupo['tipo']
+                === 'simple'
+            ) {
+
+                for (
+                    $i = $grupo['inicio'];
+                    $i <= $grupo['fin'];
+                    $i++
+                ) {
+
+                    $columna =
+                        Coordinate::stringFromColumnIndex(
+                            $i
+                        );
+
+                    $hoja->mergeCells(
+                        $columna
+                            . '3:'
+                            . $columna
+                            . '4'
+                    );
+
+                    $hoja->setCellValue(
+                        $columna
+                            . '3',
+                        $columnas[$i - 1]['titulo']
+                    );
+                }
+
+                $columnaActual =
+                    $grupo['fin'] + 1;
+
+                continue;
+            }
+
+            $camposPorGrupo =
+                $grupo['tipo'] === 'unidades'
+                    ? 2
+                    : (
+                        $grupo['tipo'] === 'motivos'
+                            ? 4
+                            : 4
+                    );
+
+            if (
+                $grupo['tipo']
+                === 'motivos'
+            ) {
+
+                for (
+                    $i = $grupo['inicio'];
+                    $i <= $grupo['inicio'] + 6;
+                    $i++
+                ) {
+
+                    $columna =
+                        Coordinate::stringFromColumnIndex(
+                            $i
+                        );
+
+                    $hoja->mergeCells(
+                        $columna
+                            . '3:'
+                            . $columna
+                            . '4'
+                    );
+
+                    $hoja->setCellValue(
+                        $columna
+                            . '3',
+                        $columnas[$i - 1]['titulo']
+                    );
+                }
+
+                $columnaActual =
+                    $grupo['inicio'] + 7;
+            }
+
+            for (
+                $elemento = 1;
+                $elemento <= $grupo['cantidad'];
+                $elemento++
+            ) {
+
+                $inicioElemento =
+                    $columnaActual;
+
+                $finElemento =
+                    $columnaActual + $camposPorGrupo - 1;
+
+                $columnaInicio =
+                    Coordinate::stringFromColumnIndex(
+                        $inicioElemento
+                    );
+
+                $columnaFin =
+                    Coordinate::stringFromColumnIndex(
+                        $finElemento
+                    );
+
+                $prefijo =
+                    match ($grupo['tipo']) {
+                        'unidades' => 'Unidad ',
+                        'motivos' => 'Motivo ',
+                        default => 'Elemento ',
+                    };
+
+                if (
+                    $inicioElemento
+                    !== $finElemento
+                ) {
+
+                    $hoja->mergeCells(
+                        $columnaInicio
+                            . '3:'
+                            . $columnaFin
+                            . '3'
+                    );
+                }
+
+                $hoja->setCellValue(
+                    $columnaInicio
+                        . '3',
+                    $prefijo
+                        . $elemento
+                );
+
+                for (
+                    $i = $inicioElemento;
+                    $i <= $finElemento;
+                    $i++
+                ) {
+
+                    $hoja->setCellValue(
+                        Coordinate::stringFromColumnIndex(
+                            $i
+                        )
+                            . '4',
+                        $columnas[$i - 1]['titulo']
+                    );
+                }
+
+                $columnaActual =
+                    $finElemento + 1;
+            }
+
+            if (
+                $grupo['tipo']
+                === 'motivos'
+            ) {
+
+                for (
+                    $i = $columnaActual;
+                    $i <= $grupo['fin'];
+                    $i++
+                ) {
+
+                    $columna =
+                        Coordinate::stringFromColumnIndex(
+                            $i
+                        );
+
+                    $hoja->mergeCells(
+                        $columna
+                            . '3:'
+                            . $columna
+                            . '4'
+                    );
+
+                    $hoja->setCellValue(
+                        $columna
+                            . '3',
+                        $columnas[$i - 1]['titulo']
+                    );
+                }
+
+                $columnaActual =
+                    $grupo['fin'] + 1;
+            }
+        }
+    }
+
+    private function valorReporte(
+        array $reporte,
+        array $columna
+    ): string {
+
+        $tipo =
+            $columna['tipo'];
+
+        if (
+            $tipo === 'personal'
+        ) {
+
+            return $this->valorRepetible(
+                $reporte['personal']
+                    ?? [],
+                $columna
+            );
+        }
+
+        if (
+            $tipo === 'unidad'
+        ) {
+
+            return $this->valorUnidad(
+                $reporte,
+                $columna
+            );
+        }
+
+        if (
+            $tipo === 'motivo'
+        ) {
+
+            return $this->valorMotivo(
+                $reporte['motivos']
+                    ?? [],
+                $columna
+            );
+        }
+
+        if (
+            $tipo === 'calculado'
+            && $columna['campo'] === 'total_horas_arresto'
+        ) {
+
+            return $this->totalHorasArresto(
+                $reporte['motivos']
+                    ?? []
+            );
+        }
+
+        $campo =
+            $columna['campo'];
+
+        $valor =
+            $reporte[$campo]
+            ?? '';
+
+        if (
+            in_array(
+                $campo,
+                [
+                    'es_anonimo',
+                    'notificacion_pertenece_neza',
+                    'sin_sanciones',
+                    'baja_voluntaria',
+                    'desistimiento',
+                ],
+                true
+            )
+        ) {
+
+            return $this->siNo(
+                $valor
+            );
+        }
+
+        return $this->normalizar(
+            $valor
+        );
+    }
+
+    private function valorRepetible(
+        array $elementos,
+        array $columna
+    ): string {
+
+        $elemento =
+            $elementos[
+                $columna['indice']
+            ]
+            ?? [];
+
+        return $this->normalizar(
+            $elemento[
+                $columna['campo']
+            ]
+            ?? ''
+        );
+    }
+
+    private function valorUnidad(
+        array $reporte,
+        array $columna
+    ): string {
+
+        $unidades =
+            $reporte['unidades']
+            ?? [];
+
+        $unidad =
+            $unidades[
+                $columna['indice']
+            ]
+            ?? [];
+
+        if (
+            empty(
+                $unidad
+            )
+            && (
+                $reporte['modalidad_unidad']
+                ?? ''
+            ) === 'SIN_UNIDAD_OFICINA'
+        ) {
+
+            return 'SIN UNIDAD / OFICINA';
+        }
+
+        return $this->normalizar(
+            $unidad[
+                $columna['campo']
+            ]
+            ?? ''
+        );
+    }
+
+    private function valorMotivo(
+        array $motivos,
+        array $columna
+    ): string {
+
+        $motivo =
+            $motivos[
+                $columna['indice']
+            ]
+            ?? [];
+
+        if (
+            $columna['campo']
+            === 'sancion'
+        ) {
+
+            return $this->normalizar(
+                $motivo['sancion_registrada']
+                    ?? $motivo['sancion']
+                    ?? ''
+            );
+        }
+
+        return $this->normalizar(
+            $motivo[
+                $columna['campo']
+            ]
+            ?? ''
+        );
+    }
+
+    private function crearHojaSeguimientos(
+        Worksheet $hoja,
+        array $reportes
+    ): void {
+
+        $encabezados = [
+            'Folio',
+            'Nomenclatura',
+            'Fecha',
+            'Tipo de seguimiento',
+            'Estado resultante',
+            'Sanción disciplinaria',
+            'Especifique la sanción',
+            'Observaciones',
+        ];
 
         $ultimaColumna =
-            $hoja
-            ->getHighestColumn();
+            Coordinate::stringFromColumnIndex(
+                count(
+                    $encabezados
+                )
+            );
 
+        $hoja->mergeCells(
+            'A1:'
+                . $ultimaColumna
+                . '1'
+        );
 
-        $ultimaFila =
+        $hoja->setCellValue(
+            'A1',
+            'SEGUIMIENTOS DE QUEJAS'
+        );
+
+        foreach (
+            $encabezados
+            as $indice => $encabezado
+        ) {
+
+            $hoja->setCellValue(
+                Coordinate::stringFromColumnIndex(
+                    $indice + 1
+                )
+                    . '2',
+                $encabezado
+            );
+        }
+
+        $fila =
+            3;
+
+        foreach (
+            $reportes
+            as $reporte
+        ) {
+
+            $seguimientos =
+                $reporte['seguimientos']
+                ?? [];
+
+            foreach (
+                $seguimientos
+                as $seguimiento
+            ) {
+
+                $valores = [
+                    $this->normalizar($reporte['folio'] ?? ''),
+                    $this->normalizar($reporte['nomenclatura'] ?? ''),
+                    $this->normalizar($seguimiento['fecha'] ?? ''),
+                    $this->normalizar($seguimiento['tipo'] ?? ''),
+                    $this->normalizar($seguimiento['estado_resultante'] ?? ''),
+                    $this->normalizar($seguimiento['sancion_disciplinaria'] ?? ''),
+                    $this->normalizar($seguimiento['sancion_otro'] ?? ''),
+                    $this->normalizar($seguimiento['observaciones'] ?? ''),
+                ];
+
+                foreach (
+                    $valores
+                    as $indice => $valor
+                ) {
+
+                    $hoja->setCellValue(
+                        Coordinate::stringFromColumnIndex(
+                            $indice + 1
+                        )
+                            . $fila,
+                        $valor
+                    );
+                }
+
+                $fila++;
+            }
+        }
+
+        if (
+            $fila === 3
+        ) {
+
+            $hoja->setCellValue(
+                'A3',
+                'NO HAY SEGUIMIENTOS PARA EXPORTAR'
+            );
+        }
+
+        $this->aplicarEstilosSeguimientos(
+            $hoja,
+            count(
+                $encabezados
+            ),
             max(
-                1,
-                $hoja
-                ->getHighestRow()
+                3,
+                $fila - 1
+            )
+        );
+    }
+
+    private function aplicarEstilos(
+        Worksheet $hoja,
+        int $totalColumnas,
+        int $ultimaFila
+    ): void {
+
+        $ultimaColumna =
+            Coordinate::stringFromColumnIndex(
+                $totalColumnas
             );
-
-
-        /* =====================================================
-        ENCABEZADOS
-        ===================================================== */
 
         $hoja
             ->getStyle(
                 'A1:'
-                . $ultimaColumna
-                . '1'
+                    . $ultimaColumna
+                    . '1'
             )
-            ->getFont()
-            ->setBold(
-                true
+            ->applyFromArray(
+                $this->estiloTitulo()
             );
 
+        $hoja
+            ->getStyle(
+                'A2:'
+                    . $ultimaColumna
+                    . '2'
+            )
+            ->applyFromArray(
+                $this->estiloGrupo()
+            );
+
+        $hoja
+            ->getStyle(
+                'A3:'
+                    . $ultimaColumna
+                    . '4'
+            )
+            ->applyFromArray(
+                $this->estiloEncabezado()
+            );
 
         $hoja
             ->getStyle(
                 'A1:'
-                . $ultimaColumna
-                . '1'
-            )
-            ->getAlignment()
-            ->setHorizontal(
-                Alignment::HORIZONTAL_CENTER
-            )
-            ->setVertical(
-                Alignment::VERTICAL_CENTER
-            );
-
-
-        /* =====================================================
-        BORDES
-        ===================================================== */
-
-        $hoja
-            ->getStyle(
-                'A1:'
-                . $ultimaColumna
-                . $ultimaFila
+                    . $ultimaColumna
+                    . $ultimaFila
             )
             ->getBorders()
             ->getAllBorders()
@@ -1027,16 +1239,11 @@ class ListadoExcelService
                 Border::BORDER_THIN
             );
 
-
-        /* =====================================================
-        ALINEACIÓN
-        ===================================================== */
-
         $hoja
             ->getStyle(
-                'A1:'
-                . $ultimaColumna
-                . $ultimaFila
+                'A5:'
+                    . $ultimaColumna
+                    . $ultimaFila
             )
             ->getAlignment()
             ->setVertical(
@@ -1046,61 +1253,26 @@ class ListadoExcelService
                 true
             );
 
-
-        /* =====================================================
-        FILTRO
-        ===================================================== */
+        $hoja->freezePane(
+            'A5'
+        );
 
         $hoja->setAutoFilter(
-            'A1:'
-            . $ultimaColumna
-            . $ultimaFila
+            'A4:'
+                . $ultimaColumna
+                . $ultimaFila
         );
-
-
-        /* =====================================================
-        CONGELAR ENCABEZADO
-        ===================================================== */
-
-        $hoja->freezePane(
-            'A2'
-        );
-
-
-        /* =====================================================
-        ALTURA ENCABEZADO
-        ===================================================== */
-
-        $hoja
-            ->getRowDimension(
-                1
-            )
-            ->setRowHeight(
-                30
-            );
-
-
-        /* =====================================================
-        AJUSTAR COLUMNAS
-        ===================================================== */
-
-        $indiceUltimaColumna =
-            Coordinate::columnIndexFromString(
-                $ultimaColumna
-            );
-
 
         for (
-            $indice = 1;
-            $indice <= $indiceUltimaColumna;
-            $indice++
+            $i = 1;
+            $i <= $totalColumnas;
+            $i++
         ) {
 
             $columna =
                 Coordinate::stringFromColumnIndex(
-                    $indice
+                    $i
                 );
-
 
             $hoja
                 ->getColumnDimension(
@@ -1112,190 +1284,42 @@ class ListadoExcelService
         }
     }
 
-    /* =========================================================
-       HOJA DE SEGUIMIENTOS
-    ========================================================= */
-
-    private function crearHojaSeguimientos(
-        $hoja,
-        array $reportes
+    private function aplicarEstilosSeguimientos(
+        Worksheet $hoja,
+        int $totalColumnas,
+        int $ultimaFila
     ): void {
 
-        /* =====================================================
-        ENCABEZADOS
-        ===================================================== */
-
-        $encabezados = [
-
-            'Folio',
-
-            'Fecha',
-
-            'Tipo de seguimiento',
-
-            'Estado resultante',
-
-            'Observaciones',
-
-        ];
-
-
-        $hoja->fromArray(
-            $encabezados,
-            null,
-            'A1'
-        );
-
-
-        /* =====================================================
-        REGISTROS
-
-        Solo se exporta el último seguimiento
-        disponible de cada reporte.
-        ===================================================== */
-
-        $fila =
-            2;
-
-
-        foreach (
-            $reportes
-            as $reporte
-        ) {
-
-            $seguimientos =
-                $reporte['seguimientos']
-                ?? [];
-
-
-            if (
-                !is_array(
-                    $seguimientos
-                )
-                || empty(
-                    $seguimientos
-                )
-            ) {
-                continue;
-            }
-
-
-            /*
-            * Los seguimientos llegan ordenados:
-            *
-            * fecha DESC
-            * id_seguimiento DESC
-            *
-            * Por lo tanto, la posición 0 corresponde
-            * al seguimiento más reciente.
-            */
-
-            $seguimiento =
-                $seguimientos[0]
-                ?? null;
-
-
-            if (
-                !is_array(
-                    $seguimiento
-                )
-            ) {
-                continue;
-            }
-
-
-            $hoja->fromArray(
-                [
-
-                    $this->obtenerFolioCompleto(
-                        $reporte
-                    ),
-
-                    trim(
-                        (string) (
-                            $seguimiento['fecha']
-                            ?? ''
-                        )
-                    ),
-
-                    trim(
-                        (string) (
-                            $seguimiento['tipo']
-                            ?? ''
-                        )
-                    ),
-
-                    trim(
-                        (string) (
-                            $seguimiento['estado_resultante']
-                            ?? ''
-                        )
-                    ),
-
-                    trim(
-                        (string) (
-                            $seguimiento['observaciones']
-                            ?? ''
-                        )
-                    ),
-
-                ],
-                null,
-                'A' . $fila
+        $ultimaColumna =
+            Coordinate::stringFromColumnIndex(
+                $totalColumnas
             );
-
-
-            $fila++;
-        }
-
-
-        /* =====================================================
-        DIMENSIONES
-        ===================================================== */
-
-        $ultimaFila =
-            max(
-                1,
-                $hoja
-                ->getHighestRow()
-            );
-
-
-        /* =====================================================
-        ENCABEZADOS
-        ===================================================== */
 
         $hoja
             ->getStyle(
-                'A1:E1'
+                'A1:'
+                    . $ultimaColumna
+                    . '1'
             )
-            ->getFont()
-            ->setBold(
-                true
+            ->applyFromArray(
+                $this->estiloTitulo()
             );
-
 
         $hoja
             ->getStyle(
-                'A1:E1'
+                'A2:'
+                    . $ultimaColumna
+                    . '2'
             )
-            ->getAlignment()
-            ->setHorizontal(
-                Alignment::HORIZONTAL_CENTER
-            )
-            ->setVertical(
-                Alignment::VERTICAL_CENTER
+            ->applyFromArray(
+                $this->estiloEncabezado()
             );
-
-
-        /* =====================================================
-        BORDES
-        ===================================================== */
 
         $hoja
             ->getStyle(
-                'A1:E'
-                . $ultimaFila
+                'A1:'
+                    . $ultimaColumna
+                    . $ultimaFila
             )
             ->getBorders()
             ->getAllBorders()
@@ -1303,349 +1327,88 @@ class ListadoExcelService
                 Border::BORDER_THIN
             );
 
-
-        /* =====================================================
-        ALINEACIÓN
-        ===================================================== */
-
-        $hoja
-            ->getStyle(
-                'A1:E'
-                . $ultimaFila
-            )
-            ->getAlignment()
-            ->setVertical(
-                Alignment::VERTICAL_TOP
-            )
-            ->setWrapText(
-                true
-            );
-
-
-        /* =====================================================
-        FILTROS
-        ===================================================== */
+        $hoja->freezePane(
+            'A3'
+        );
 
         $hoja->setAutoFilter(
-            'A1:E'
-            . $ultimaFila
+            'A2:'
+                . $ultimaColumna
+                . $ultimaFila
         );
 
-
-        /* =====================================================
-        CONGELAR ENCABEZADO
-        ===================================================== */
-
-        $hoja->freezePane(
-            'A2'
-        );
-
-
-        /* =====================================================
-        ALTURA
-        ===================================================== */
-
-        $hoja
-            ->getRowDimension(
-                1
-            )
-            ->setRowHeight(
-                30
-            );
-
-
-        /* =====================================================
-        COLUMNAS
-        ===================================================== */
-
-        $hoja
-            ->getColumnDimension(
-                'A'
-            )
-            ->setAutoSize(
-                true
-            );
-
-
-        $hoja
-            ->getColumnDimension(
-                'B'
-            )
-            ->setAutoSize(
-                true
-            );
-
-
-        $hoja
-            ->getColumnDimension(
-                'C'
-            )
-            ->setAutoSize(
-                true
-            );
-
-
-        $hoja
-            ->getColumnDimension(
-                'D'
-            )
-            ->setAutoSize(
-                true
-            );
-
-
-        $hoja
-            ->getColumnDimension(
-                'E'
-            )
-            ->setWidth(
-                60
-            );
-    }
-
-
-    /* =========================================================
-       HOJA DE EVIDENCIAS
-    ========================================================= */
-
-    private function crearHojaEvidencias(
-        $hoja,
-        array $reportes
-    ): void {
-
-        $encabezados = [
-
-            'Folio',
-
-            'Archivo',
-
-            'Ruta / URL',
-
-        ];
-
-
-        $hoja->fromArray(
-            $encabezados,
-            null,
-            'A1'
-        );
-
-
-        $fila =
-            2;
-
-
-        foreach (
-            $reportes
-            as $reporte
+        for (
+            $i = 1;
+            $i <= $totalColumnas;
+            $i++
         ) {
 
-            $evidencias =
-                $reporte['evidencias']
-                ?? [];
-
-
-            if (
-                !is_array(
-                    $evidencias
-                )
-            ) {
-                continue;
-            }
-
-
-            foreach (
-                $evidencias
-                as $evidencia
-            ) {
-
-                if (
-                    is_array(
-                        $evidencia
+            $hoja
+                ->getColumnDimension(
+                    Coordinate::stringFromColumnIndex(
+                        $i
                     )
-                ) {
-
-                    $archivo =
-                        $evidencia['archivo']
-                        ?? $evidencia['nombre']
-                        ?? '';
-
-
-                    $ruta =
-                        $evidencia['ruta']
-                        ?? $evidencia['url']
-                        ?? '';
-                } else {
-
-                    $archivo =
-                        (string)
-                        $evidencia;
-
-
-                    $ruta =
-                        '';
-                }
-
-
-                $hoja->fromArray(
-                    [
-
-                        $this->obtenerFolioCompleto(
-                            $reporte
-                        ),
-
-                        $archivo,
-
-                        $ruta,
-
-                    ],
-                    null,
-                    'A' . $fila
+                )
+                ->setAutoSize(
+                    true
                 );
+        }
+    }
 
+    private function columna(
+        string $tipo,
+        string $campo,
+        string $titulo,
+        ?int $indice = null
+    ): array {
 
-                $fila++;
+        return [
+            'tipo' => $tipo,
+            'campo' => $campo,
+            'titulo' => $titulo,
+            'indice' => $indice,
+        ];
+    }
+
+    private function maximoElementos(
+        array $reportes,
+        string $campo
+    ): int {
+
+        $maximo =
+            0;
+
+        foreach (
+            $reportes
+            as $reporte
+        ) {
+
+            $elementos =
+                $reporte[$campo]
+                ?? [];
+
+            if (
+                is_array(
+                    $elementos
+                )
+            ) {
+
+                $maximo =
+                    max(
+                        $maximo,
+                        count(
+                            $elementos
+                        )
+                    );
             }
         }
 
-
-        /* =====================================================
-           DIMENSIONES
-        ===================================================== */
-
-        $ultimaFila =
-            max(
-                1,
-                $hoja
-                    ->getHighestRow()
-            );
-
-
-        /* =====================================================
-           ENCABEZADOS
-        ===================================================== */
-
-        $hoja
-            ->getStyle(
-                'A1:C1'
-            )
-            ->getFont()
-            ->setBold(
-                true
-            );
-
-
-        $hoja
-            ->getStyle(
-                'A1:C1'
-            )
-            ->getAlignment()
-            ->setHorizontal(
-                Alignment::HORIZONTAL_CENTER
-            )
-            ->setVertical(
-                Alignment::VERTICAL_CENTER
-            );
-
-
-        /* =====================================================
-           BORDES
-        ===================================================== */
-
-        $hoja
-            ->getStyle(
-                'A1:C'
-                    . $ultimaFila
-            )
-            ->getBorders()
-            ->getAllBorders()
-            ->setBorderStyle(
-                Border::BORDER_THIN
-            );
-
-
-        /* =====================================================
-           ALINEACIÓN
-        ===================================================== */
-
-        $hoja
-            ->getStyle(
-                'A1:C'
-                    . $ultimaFila
-            )
-            ->getAlignment()
-            ->setVertical(
-                Alignment::VERTICAL_TOP
-            )
-            ->setWrapText(
-                true
-            );
-
-
-        /* =====================================================
-           FILTROS
-        ===================================================== */
-
-        $hoja->setAutoFilter(
-            'A1:C'
-                . $ultimaFila
-        );
-
-
-        /* =====================================================
-           CONGELAR ENCABEZADO
-        ===================================================== */
-
-        $hoja->freezePane(
-            'A2'
-        );
-
-
-        /* =====================================================
-           TAMAÑO COLUMNAS
-        ===================================================== */
-
-        $hoja
-            ->getColumnDimension(
-                'A'
-            )
-            ->setAutoSize(
-                true
-            );
-
-
-        $hoja
-            ->getColumnDimension(
-                'B'
-            )
-            ->setAutoSize(
-                true
-            );
-
-
-        $hoja
-            ->getColumnDimension(
-                'C'
-            )
-            ->setWidth(
-                60
-            );
+        return $maximo;
     }
 
-
-    /* =========================================================
-       OBTENER VALOR SEGURO
-    ========================================================= */
-
-    private function valor(
-        array $reporte,
-        string $campo
+    private function normalizar(
+        mixed $valor
     ): string {
-
-        $valor =
-            $reporte[$campo]
-            ?? '';
-
 
         if (
             is_array(
@@ -1656,192 +1419,142 @@ class ListadoExcelService
             )
         ) {
 
-            return '';
+            return self::NO_APLICA;
         }
 
+        $texto =
+            trim(
+                (string) (
+                    $valor
+                    ?? ''
+                )
+            );
 
-        return trim(
-            (string)
-            $valor
-        );
+        return $texto !== ''
+            ? $texto
+            : self::NO_APLICA;
     }
 
-
-    /* =========================================================
-       OBTENER PREFIJO
-    ========================================================= */
-
-    private function obtenerPrefijo(
-        array $reporte
-    ): string {
-
-        /*
-         * Cuando tengamos los registros reales,
-         * QJ será el prefijo definido.
-         */
-
-        if (
-            !empty($reporte['prefijo'])
-        ) {
-
-            return trim(
-                (string)
-                $reporte['prefijo']
-            );
-        }
-
-
-        /*
-         * Compatibilidad temporal con
-         * AI-2026-001.
-         */
-
-        $folio =
-            $this->valor(
-                $reporte,
-                'folio'
-            );
-
-
-        if (!$folio) {
-
-            return 'QJ';
-        }
-
-
-        $partes =
-            explode(
-                '-',
-                $folio
-            );
-
-
-        if (
-            count(
-                $partes
-            ) > 1
-        ) {
-
-            return $partes[0];
-        }
-
-
-        return 'QJ';
-    }
-
-
-    /* =========================================================
-       OBTENER NÚMERO DE FOLIO
-    ========================================================= */
-
-    private function obtenerNumeroFolio(
-        array $reporte
+    private function siNo(
+        mixed $valor
     ): string {
 
         if (
-            !empty($reporte['numero_folio'])
+            $valor === ''
+            || $valor === null
         ) {
 
-            return trim(
-                (string)
-                $reporte['numero_folio']
-            );
+            return self::NO_APLICA;
         }
 
-
-        /*
-         * Compatibilidad temporal con
-         * AI-2026-001.
-         */
-
-        $folio =
-            $this->valor(
-                $reporte,
-                'folio'
-            );
-
-
-        if (!$folio) {
-
-            return '';
-        }
-
-
-        $partes =
-            explode(
-                '-',
-                $folio
-            );
-
-
-        if (
-            count(
-                $partes
-            ) <= 1
-        ) {
-
-            return $folio;
-        }
-
-
-        array_shift(
-            $partes
-        );
-
-
-        return implode(
-            '-',
-            $partes
-        );
+        return (int) $valor === 1
+            ? 'SI'
+            : 'NO';
     }
 
-
-    /* =========================================================
-       OBTENER FOLIO COMPLETO
-    ========================================================= */
-
-    private function obtenerFolioCompleto(
-        array $reporte
+    private function totalHorasArresto(
+        array $motivos
     ): string {
 
-        /*
-         * Compatibilidad temporal.
-         */
+        $total =
+            0;
 
-        if (
-            !empty($reporte['folio'])
+        foreach (
+            $motivos
+            as $motivo
         ) {
 
-            return trim(
-                (string)
-                $reporte['folio']
-            );
+            $sancion =
+                (string) (
+                    $motivo['sancion_registrada']
+                    ?? $motivo['sancion']
+                    ?? ''
+                );
+
+            if (
+                preg_match(
+                    '/(\d+)\s*horas?/i',
+                    $sancion,
+                    $coincidencias
+                )
+            ) {
+
+                $total +=
+                    (int) $coincidencias[1];
+            }
         }
 
+        return $total > 0
+            ? (string) $total
+            : self::NO_APLICA;
+    }
 
-        $prefijo =
-            $this->obtenerPrefijo(
-                $reporte
-            );
+    private function estiloTitulo(): array
+    {
+        return [
+            'font' => [
+                'bold' => true,
+                'size' => 14,
+                'color' => [
+                    'rgb' => 'FFFFFF',
+                ],
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => [
+                    'rgb' => '173554',
+                ],
+            ],
+        ];
+    }
 
+    private function estiloGrupo(): array
+    {
+        return [
+            'font' => [
+                'bold' => true,
+                'color' => [
+                    'rgb' => 'FFFFFF',
+                ],
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'wrapText' => true,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => [
+                    'rgb' => '0E669F',
+                ],
+            ],
+        ];
+    }
 
-        $numero =
-            $this->obtenerNumeroFolio(
-                $reporte
-            );
-
-
-        if (
-            $prefijo
-            && $numero
-        ) {
-
-            return $prefijo
-                . '-'
-                . $numero;
-        }
-
-
-        return $numero;
+    private function estiloEncabezado(): array
+    {
+        return [
+            'font' => [
+                'bold' => true,
+                'color' => [
+                    'rgb' => '173554',
+                ],
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'wrapText' => true,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => [
+                    'rgb' => 'EAF4FB',
+                ],
+            ],
+        ];
     }
 }

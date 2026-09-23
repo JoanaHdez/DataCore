@@ -39,6 +39,11 @@ function inicializarExportacionListado() {
             '#exportar-listado-seleccionar-todo'
         );
 
+    const cantidad =
+        document.querySelector(
+            '#exportar-listado-cantidad'
+        );
+
     const mensaje =
         document.querySelector(
             '#exportar-listado-mensaje'
@@ -203,6 +208,26 @@ function inicializarExportacionListado() {
 
 
     /* =====================================================
+       CANTIDAD
+    ===================================================== */
+
+    if (cantidad) {
+
+        cantidad.addEventListener(
+            'input',
+            () => {
+
+                ocultarMensajeExportacion(
+                    mensaje
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
        GENERAR EXCEL
     ===================================================== */
 
@@ -224,7 +249,39 @@ function inicializarExportacionListado() {
             ) {
 
                 mostrarMensajeExportacion(
-                    mensaje
+                    mensaje,
+                    'Selecciona al menos una sección para continuar.'
+                );
+
+                return;
+            }
+
+
+            const tipos =
+                obtenerTiposSeleccionados(
+                    formulario
+                );
+
+
+            const cantidadRegistros =
+                obtenerCantidadExportacion(
+                    formulario
+                );
+
+
+            if (
+                cantidadRegistros !== null
+                && (
+                    !Number.isInteger(
+                        cantidadRegistros
+                    )
+                    || cantidadRegistros < 1
+                )
+            ) {
+
+                mostrarMensajeExportacion(
+                    mensaje,
+                    'La cantidad de registros debe ser un número entero mayor o igual a 1.'
                 );
 
                 return;
@@ -238,6 +295,8 @@ function inicializarExportacionListado() {
 
             await enviarExportacionListado(
                 secciones,
+                tipos,
+                cantidadRegistros,
                 modal,
                 mensaje
             );
@@ -402,6 +461,64 @@ function obtenerSeccionesSeleccionadas(
 
 
 /* =========================================================
+   OBTENER TIPOS SELECCIONADOS
+========================================================= */
+
+function obtenerTiposSeleccionados(
+    formulario
+) {
+
+    return Array.from(
+        formulario.querySelectorAll(
+            'input[name="tipos[]"]:checked:not(:disabled)'
+        )
+    ).map(
+        (opcion) =>
+            opcion.value
+    );
+
+}
+
+
+/* =========================================================
+   OBTENER CANTIDAD
+========================================================= */
+
+function obtenerCantidadExportacion(
+    formulario
+) {
+
+    const campo =
+        formulario.querySelector(
+            '#exportar-listado-cantidad'
+        );
+
+
+    if (!campo) {
+        return null;
+    }
+
+
+    const valor =
+        String(
+            campo.value
+            || ''
+        ).trim();
+
+
+    if (valor === '') {
+        return null;
+    }
+
+
+    return Number(
+        valor
+    );
+
+}
+
+
+/* =========================================================
    ACTUALIZAR "SELECCIONAR TODO"
 ========================================================= */
 
@@ -487,7 +604,8 @@ function actualizarEstadoSeleccionarTodo(
 ========================================================= */
 
 function mostrarMensajeExportacion(
-    mensaje
+    mensaje,
+    texto = 'Selecciona al menos una sección para continuar.'
 ) {
 
     if (!mensaje) {
@@ -496,7 +614,7 @@ function mostrarMensajeExportacion(
 
 
     mensaje.textContent =
-        'Selecciona al menos una sección para continuar.';
+        texto;
 
 
     mensaje.hidden =
@@ -530,6 +648,8 @@ function ocultarMensajeExportacion(
 
 async function enviarExportacionListado(
     secciones,
+    tipos,
+    cantidad,
     modal,
     mensaje
 ) {
@@ -537,6 +657,12 @@ async function enviarExportacionListado(
     const botonGenerar =
         document.querySelector(
             '#btn-generar-excel-listado'
+        );
+
+
+    const campoCantidad =
+        document.querySelector(
+            '#exportar-listado-cantidad'
         );
 
 
@@ -572,6 +698,10 @@ async function enviarExportacionListado(
             new FormData();
 
 
+        /* =================================================
+           SECCIONES
+        ================================================= */
+
         secciones.forEach(
             (seccion) => {
 
@@ -582,6 +712,44 @@ async function enviarExportacionListado(
 
             }
         );
+
+
+        /* =================================================
+           TIPOS DE QUEJA
+
+           Si no se selecciona ninguno, no se envía tipos[].
+           El backend lo interpreta como TODOS.
+        ================================================= */
+
+        tipos.forEach(
+            (tipo) => {
+
+                datos.append(
+                    'tipos[]',
+                    tipo
+                );
+
+            }
+        );
+
+
+        /* =================================================
+           CANTIDAD
+
+           Si está vacío, cantidad llega como null y
+           no se envía al backend.
+        ================================================= */
+
+        if (
+            cantidad !== null
+        ) {
+
+            datos.append(
+                'cantidad',
+                String(cantidad)
+            );
+
+        }
 
 
         /* =================================================
@@ -613,7 +781,9 @@ async function enviarExportacionListado(
            ERROR DEL BACKEND
         ================================================= */
 
-        if (!respuesta.ok) {
+        if (
+            !respuesta.ok
+        ) {
 
             let texto =
                 'No fue posible generar el archivo de Excel.';
@@ -650,6 +820,7 @@ async function enviarExportacionListado(
 
 
             return;
+
         }
 
 
@@ -700,6 +871,23 @@ async function enviarExportacionListado(
 
 
         /* =================================================
+           LIMPIAR CANTIDAD
+
+           Solo se limpia después de que la exportación
+           terminó correctamente.
+        ================================================= */
+
+        if (
+            campoCantidad
+        ) {
+
+            campoCantidad.value =
+                '';
+
+        }
+
+
+        /* =================================================
            CERRAR MODAL
         ================================================= */
 
@@ -730,7 +918,9 @@ async function enviarExportacionListado(
            RESTAURAR BOTÓN
         ================================================= */
 
-        if (botonGenerar) {
+        if (
+            botonGenerar
+        ) {
 
             botonGenerar.disabled =
                 false;
@@ -750,7 +940,8 @@ async function enviarExportacionListado(
    URL DE EXPORTACIÓN
 ========================================================= */
 
-/* function construirUrlExportacion() {
+/*
+function construirUrlExportacion() {
 
     const base =
         document
@@ -775,7 +966,8 @@ async function enviarExportacionListado(
         + '/asuntos-internos/reportes/listado/exportar'
     );
 
-} */
+}
+*/
 
 function construirUrlExportacion() {
 
@@ -785,6 +977,7 @@ function construirUrlExportacion() {
     ).toString();
 
 }
+
 
 /* =========================================================
    DESCARGAR ARCHIVO

@@ -1,17 +1,10 @@
 <div class="modal-reporte" id="modal-seguimiento-reporte" aria-hidden="true">
 
-    <div
-        class="modal-reporte__overlay"
-        data-cerrar-modal-seguimiento
-    ></div>
+    <div class="modal-reporte__overlay" data-cerrar-modal-seguimiento></div>
 
 
-    <div
-        class="modal-reporte__dialog modal-reporte__dialog--seguimiento"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-seguimiento-titulo"
-    >
+    <div class="modal-reporte__dialog modal-reporte__dialog--seguimiento" role="dialog" aria-modal="true"
+        aria-labelledby="modal-seguimiento-titulo">
 
         <!-- =====================================================
              HEADER
@@ -25,22 +18,14 @@
                     Seguimiento del caso
                 </span>
 
-                <h2
-                    class="modal-reporte__title"
-                    id="modal-seguimiento-titulo"
-                >
+                <h2 class="modal-reporte__title" id="modal-seguimiento-titulo">
                     Seguimiento
                 </h2>
 
             </div>
 
 
-            <button
-                type="button"
-                class="modal-reporte__close"
-                data-cerrar-modal-seguimiento
-                aria-label="Cerrar"
-            >
+            <button type="button" class="modal-reporte__close" data-cerrar-modal-seguimiento aria-label="Cerrar">
                 ×
             </button>
 
@@ -51,10 +36,7 @@
              FORMULARIO PRINCIPAL DEL MODAL
         ====================================================== -->
 
-        <form
-            class="modal-reporte__form modal-reporte__form--seguimiento"
-            id="form-seguimiento-reporte"
-        >
+        <form class="modal-reporte__form modal-reporte__form--seguimiento" id="form-seguimiento-reporte">
 
             <?= csrf_field() ?>
 

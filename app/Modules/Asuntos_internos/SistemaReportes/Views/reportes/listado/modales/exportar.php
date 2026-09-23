@@ -37,8 +37,9 @@
         ====================================================== -->
 
         <form id="form-exportar-listado">
-            
+
             <?= csrf_field() ?>
+
 
             <div class="modal-reporte__body">
 
@@ -68,13 +69,14 @@
                     ================================================== -->
 
                     <label class="
-                            dashboard-exportar__opcion
-                            dashboard-exportar__opcion--principal
-                        ">
+                        dashboard-exportar__opcion
+                        dashboard-exportar__opcion--principal
+                    ">
 
                         <input type="checkbox" id="exportar-listado-seleccionar-todo" checked>
 
                         <span class="dashboard-exportar__check"></span>
+
 
                         <span class="dashboard-exportar__contenido">
 
@@ -83,7 +85,7 @@
                             </strong>
 
                             <small>
-                                Incluir toda la información disponible.
+                                Incluir todas las secciones disponibles.
                             </small>
 
                         </span>
@@ -98,13 +100,16 @@
                     <div class="dashboard-exportar__opciones">
 
 
-                        <!-- DATOS DEL REPORTE -->
+                        <!-- =============================================
+                             DATOS DEL REPORTE
+                        ============================================== -->
 
                         <label class="dashboard-exportar__opcion">
 
                             <input type="checkbox" name="secciones[]" value="datos_reporte" checked>
 
                             <span class="dashboard-exportar__check"></span>
+
 
                             <span class="dashboard-exportar__contenido">
 
@@ -113,7 +118,7 @@
                                 </strong>
 
                                 <small>
-                                    Folio y fecha de registro.
+                                    Tipo de folio, número de folio y fecha de registro.
                                 </small>
 
                             </span>
@@ -121,7 +126,9 @@
                         </label>
 
 
-                        <!-- IDENTIFICACIÓN -->
+                        <!-- =============================================
+                             IDENTIFICACIÓN
+                        ============================================== -->
 
                         <label class="dashboard-exportar__opcion">
 
@@ -129,15 +136,16 @@
 
                             <span class="dashboard-exportar__check"></span>
 
+
                             <span class="dashboard-exportar__contenido">
 
                                 <strong>
-                                    Datos de identificación
+                                    Identificación del registro
                                 </strong>
 
                                 <small>
-                                    Folio IP, fechas, expediente, nomenclatura
-                                    y número de oficio.
+                                    Folio IP, Folio IMP, fechas, expediente,
+                                    nomenclatura y número de oficio.
                                 </small>
 
                             </span>
@@ -145,13 +153,16 @@
                         </label>
 
 
-                        <!-- HECHOS -->
+                        <!-- =============================================
+                             HECHOS
+                        ============================================== -->
 
                         <label class="dashboard-exportar__opcion">
 
                             <input type="checkbox" name="secciones[]" value="hechos" checked>
 
                             <span class="dashboard-exportar__check"></span>
+
 
                             <span class="dashboard-exportar__contenido">
 
@@ -168,7 +179,9 @@
                         </label>
 
 
-                        <!-- UBICACIÓN -->
+                        <!-- =============================================
+                             UBICACIÓN
+                        ============================================== -->
 
                         <label class="dashboard-exportar__opcion">
 
@@ -176,15 +189,16 @@
 
                             <span class="dashboard-exportar__check"></span>
 
+
                             <span class="dashboard-exportar__contenido">
 
                                 <strong>
-                                    Ubicación
+                                    Ubicación de los hechos
                                 </strong>
 
                                 <small>
                                     Domicilio, sector, cuadrante,
-                                    ID de cuadra y coordenadas.
+                                    coordenadas y origen de ubicación.
                                 </small>
 
                             </span>
@@ -192,13 +206,16 @@
                         </label>
 
 
-                        <!-- PERSONAL -->
+                        <!-- =============================================
+                             PERSONAL
+                        ============================================== -->
 
                         <label class="dashboard-exportar__opcion">
 
                             <input type="checkbox" name="secciones[]" value="personal" checked>
 
                             <span class="dashboard-exportar__check"></span>
+
 
                             <span class="dashboard-exportar__contenido">
 
@@ -207,7 +224,7 @@
                                 </strong>
 
                                 <small>
-                                    Oficiales, áreas y turnos relacionados.
+                                    Nombre, área, turno y alias del personal relacionado.
                                 </small>
 
                             </span>
@@ -215,7 +232,9 @@
                         </label>
 
 
-                        <!-- UNIDADES -->
+                        <!-- =============================================
+                             UNIDADES
+                        ============================================== -->
 
                         <label class="dashboard-exportar__opcion">
 
@@ -223,15 +242,15 @@
 
                             <span class="dashboard-exportar__check"></span>
 
+
                             <span class="dashboard-exportar__contenido">
 
                                 <strong>
-                                    Unidades
+                                    Unidades involucradas
                                 </strong>
 
                                 <small>
-                                    Número económico, placas y características
-                                    de las unidades relacionadas.
+                                    Unidad, placas y características de los vehículos relacionados.
                                 </small>
 
                             </span>
@@ -239,13 +258,16 @@
                         </label>
 
 
-                        <!-- QUEJOSO -->
+                        <!-- =============================================
+                             QUEJOSO
+                        ============================================== -->
 
                         <label class="dashboard-exportar__opcion">
 
                             <input type="checkbox" name="secciones[]" value="quejoso" checked>
 
                             <span class="dashboard-exportar__check"></span>
+
 
                             <span class="dashboard-exportar__contenido">
 
@@ -254,7 +276,8 @@
                                 </strong>
 
                                 <small>
-                                    Nombre, edad, género y datos de contacto.
+                                    Anonimato, datos personales, contacto,
+                                    dirección y canalización.
                                 </small>
 
                             </span>
@@ -262,13 +285,43 @@
                         </label>
 
 
-                        <!-- CLASIFICACIÓN -->
+                        <!-- =============================================
+                             DIRECCIÓN PARA NOTIFICACIÓN
+                        ============================================== -->
+
+                        <label class="dashboard-exportar__opcion">
+
+                            <input type="checkbox" name="secciones[]" value="direccion_notificacion" checked>
+
+                            <span class="dashboard-exportar__check"></span>
+
+
+                            <span class="dashboard-exportar__contenido">
+
+                                <strong>
+                                    Dirección para notificación
+                                </strong>
+
+                                <small>
+                                    Domicilio, sector, cuadrante,
+                                    coordenadas y pertenencia a Nezahualcóyotl.
+                                </small>
+
+                            </span>
+
+                        </label>
+
+
+                        <!-- =============================================
+                             CLASIFICACIÓN
+                        ============================================== -->
 
                         <label class="dashboard-exportar__opcion">
 
                             <input type="checkbox" name="secciones[]" value="clasificacion" checked>
 
                             <span class="dashboard-exportar__check"></span>
+
 
                             <span class="dashboard-exportar__contenido">
 
@@ -277,8 +330,8 @@
                                 </strong>
 
                                 <small>
-                                    Clasificación, responsables, resolución
-                                    y motivos.
+                                    Clasificación, responsables, estado,
+                                    motivos, sanciones y resolución.
                                 </small>
 
                             </span>
@@ -286,13 +339,16 @@
                         </label>
 
 
-                        <!-- OBSERVACIONES -->
+                        <!-- =============================================
+                             OBSERVACIONES
+                        ============================================== -->
 
                         <label class="dashboard-exportar__opcion">
 
                             <input type="checkbox" name="secciones[]" value="observaciones" checked>
 
                             <span class="dashboard-exportar__check"></span>
+
 
                             <span class="dashboard-exportar__contenido">
 
@@ -309,13 +365,16 @@
                         </label>
 
 
-                        <!-- SEGUIMIENTOS -->
+                        <!-- =============================================
+                             SEGUIMIENTOS
+                        ============================================== -->
 
                         <label class="dashboard-exportar__opcion">
 
                             <input type="checkbox" name="secciones[]" value="seguimientos" checked>
 
                             <span class="dashboard-exportar__check"></span>
+
 
                             <span class="dashboard-exportar__contenido">
 
@@ -324,37 +383,147 @@
                                 </strong>
 
                                 <small>
-                                    Generar una hoja adicional con todos
-                                    los seguimientos registrados.
+                                    Generar una segunda hoja con todos
+                                    los seguimientos de los reportes exportados.
                                 </small>
 
                             </span>
 
                         </label>
 
+                    </div>
 
-                        <!-- EVIDENCIAS -->
+
+                    <!-- =================================================
+                         TIPO DE QUEJA
+                    ================================================== -->
+
+                    <div class="
+                        dashboard-exportar__introduccion
+                        reportes-exportar__bloque-separado
+                    ">
+
+                        <h3>
+                            Tipo de queja
+                        </h3>
+
+                        <p>
+                            Selecciona uno o más tipos.
+                            Si no seleccionas ninguno, se exportarán todos.
+                        </p>
+
+                    </div>
+
+
+                    <div class="dashboard-exportar__opciones">
+
+                        <!-- QJ -->
 
                         <label class="dashboard-exportar__opcion">
 
-                            <input type="checkbox" name="secciones[]" value="evidencias" checked>
+                            <input type="checkbox" name="tipos[]" value="QJ">
 
                             <span class="dashboard-exportar__check"></span>
+
 
                             <span class="dashboard-exportar__contenido">
 
                                 <strong>
-                                    Evidencias
+                                    QJ
                                 </strong>
 
                                 <small>
-                                    Generar una hoja adicional con los archivos
-                                    de evidencia relacionados.
+                                    Queja general.
                                 </small>
 
                             </span>
 
                         </label>
+
+
+                        <!-- QJF -->
+
+                        <label class="dashboard-exportar__opcion">
+
+                            <input type="checkbox" name="tipos[]" value="QJF">
+
+                            <span class="dashboard-exportar__check"></span>
+
+
+                            <span class="dashboard-exportar__contenido">
+
+                                <strong>
+                                    QJF
+                                </strong>
+
+                                <small>
+                                    Queja foránea.
+                                </small>
+
+                            </span>
+
+                        </label>
+
+
+                        <!-- QJV -->
+
+                        <label class="dashboard-exportar__opcion">
+
+                            <input type="checkbox" name="tipos[]" value="QJV">
+
+                            <span class="dashboard-exportar__check"></span>
+
+
+                            <span class="dashboard-exportar__contenido">
+
+                                <strong>
+                                    QJV
+                                </strong>
+
+                                <small>
+                                    Queja verbal.
+                                </small>
+
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         CANTIDAD DE REGISTROS
+                    ================================================== -->
+
+                    <div class="
+                        dashboard-exportar__introduccion
+                        reportes-exportar__bloque-separado
+                    ">
+
+                        <h3>
+                            Cantidad de registros
+                        </h3>
+
+                        <p>
+                            Indica cuántos registros deseas exportar.
+                            Si dejas el campo vacío, se exportarán todos.
+                        </p>
+
+                    </div>
+
+
+                    <div class="report-field">
+
+                        <label for="exportar-listado-cantidad">
+                            ¿Cuántos registros quieres exportar?
+                        </label>
+
+                        <input type="number" id="exportar-listado-cantidad" name="cantidad" class="report-input" min="1"
+                            step="1" placeholder="Ej. 50" autocomplete="off">
+
+                        <small class="report-field__help">
+                            El límite se aplica después de filtrar por tipo de queja.
+                        </small>
 
                     </div>
 
