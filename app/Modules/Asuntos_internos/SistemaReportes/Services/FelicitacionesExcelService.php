@@ -325,16 +325,16 @@ class FelicitacionesExcelService
 
 
             $columnas[] = [
-                'tipo' => 'simple',
-                'campo' => 'numero_folio',
-                'titulo' => 'Número de folio',
+                'tipo' => 'tipo_felicitacion',
+                'campo' => 'folio',
+                'titulo' => 'Tipo de felicitación',
             ];
 
 
             $columnas[] = [
                 'tipo' => 'simple',
-                'campo' => 'folio',
-                'titulo' => 'Folio',
+                'campo' => 'numero_folio',
+                'titulo' => 'ID',
             ];
 
 
@@ -951,6 +951,24 @@ class FelicitacionesExcelService
 
 
                 /* =============================================
+                TIPO DE FELICITACIÓN
+                ============================================== */
+
+                if (
+                    $definicion['tipo']
+                    === 'tipo_felicitacion'
+                ) {
+
+                    $datosFila[] =
+                        $this->obtenerTipoFelicitacion(
+                            $felicitacion
+                        );
+
+
+                    continue;
+                }
+
+                /* =============================================
                    PERSONAL
                 ============================================== */
 
@@ -1390,6 +1408,73 @@ class FelicitacionesExcelService
                     true
                 );
         }
+    }
+
+
+    /* =========================================================
+    OBTENER TIPO DE FELICITACIÓN
+    ========================================================= */
+
+    private function obtenerTipoFelicitacion(
+        array $felicitacion
+    ): string {
+
+        $folio =
+            strtoupper(
+                trim(
+                    (string) (
+                        $felicitacion['folio']
+                        ?? ''
+                    )
+                )
+            );
+
+
+        if (
+            $folio === ''
+        ) {
+
+            return 'NO APLICA';
+        }
+
+
+        /*
+        * Ejemplos:
+        *
+        * FEL-16  -> FEL
+        * FEL-8   -> FEL
+        *
+        * Si en el futuro existe otro tipo:
+        *
+        * OTRO-20 -> OTRO
+        */
+
+        $partes =
+            explode(
+                '-',
+                $folio,
+                2
+            );
+
+
+        $tipo =
+            trim(
+                (string) (
+                    $partes[0]
+                    ?? ''
+                )
+            );
+
+
+        if (
+            $tipo === ''
+        ) {
+
+            return 'NO APLICA';
+        }
+
+
+        return $tipo;
     }
 
 
