@@ -8,11 +8,229 @@ document.addEventListener(
     'DOMContentLoaded',
     () => {
 
+        inicializarGeneroQuejoso();
+
         inicializarCanalizacionQuejoso();
 
         inicializarQuejosoAnonimo();
     }
 );
+
+/* =========================================================
+   GÉNERO
+========================================================= */
+
+function inicializarGeneroQuejoso() {
+
+    const selector =
+        document.querySelector(
+            '#genero-select'
+        );
+
+
+    const textoSelector =
+        document.querySelector(
+            '#genero-select-texto'
+        );
+
+
+    const inputGenero =
+        document.querySelector(
+            '#genero'
+        );
+
+
+    const resultados =
+        document.querySelector(
+            '#genero-resultados'
+        );
+
+
+    const opciones =
+        document.querySelectorAll(
+            '[data-genero-opcion]'
+        );
+
+
+    if (
+        !selector
+        || !textoSelector
+        || !inputGenero
+        || !resultados
+    ) {
+        return;
+    }
+
+
+    /* =====================================================
+       ABRIR / CERRAR
+    ===================================================== */
+
+    function abrirCatalogo() {
+
+        if (
+            selector.disabled
+        ) {
+            return;
+        }
+
+
+        resultados.hidden =
+            false;
+
+
+        selector.setAttribute(
+            'aria-expanded',
+            'true'
+        );
+
+
+        selector.classList.add(
+            'genero-select--activo'
+        );
+    }
+
+
+    function cerrarCatalogo() {
+
+        resultados.hidden =
+            true;
+
+
+        selector.setAttribute(
+            'aria-expanded',
+            'false'
+        );
+
+
+        selector.classList.remove(
+            'genero-select--activo'
+        );
+    }
+
+
+    /* =====================================================
+       SELECCIONAR GÉNERO
+    ===================================================== */
+
+    function seleccionarGenero(
+        valor
+    ) {
+
+        const genero =
+            String(
+                valor
+                || ''
+            ).trim();
+
+
+        inputGenero.value =
+            genero;
+
+
+        textoSelector.textContent =
+            genero !== ''
+                ? genero
+                : 'Selecciona una opción';
+
+
+        cerrarCatalogo();
+    }
+
+
+    /* =====================================================
+       CLICK SELECTOR
+    ===================================================== */
+
+    selector.addEventListener(
+        'click',
+        () => {
+
+            if (
+                resultados.hidden
+            ) {
+
+                abrirCatalogo();
+
+            } else {
+
+                cerrarCatalogo();
+            }
+        }
+    );
+
+
+    /* =====================================================
+       OPCIONES
+    ===================================================== */
+
+    opciones.forEach(
+        (opcion) => {
+
+            opcion.addEventListener(
+                'click',
+                () => {
+
+                    seleccionarGenero(
+                        opcion.dataset.genero
+                    );
+                }
+            );
+        }
+    );
+
+
+    /* =====================================================
+       CLICK FUERA
+    ===================================================== */
+
+    document.addEventListener(
+        'click',
+        (evento) => {
+
+            if (
+                selector.contains(
+                    evento.target
+                )
+                || resultados.contains(
+                    evento.target
+                )
+            ) {
+                return;
+            }
+
+
+            cerrarCatalogo();
+        }
+    );
+
+
+    /* =====================================================
+       ESC
+    ===================================================== */
+
+    document.addEventListener(
+        'keydown',
+        (evento) => {
+
+            if (
+                evento.key === 'Escape'
+            ) {
+
+                cerrarCatalogo();
+            }
+        }
+    );
+
+
+    /* =====================================================
+       ESTADO INICIAL
+    ===================================================== */
+
+    seleccionarGenero(
+        inputGenero.value
+    );
+}
 
 
 /* =========================================================

@@ -210,7 +210,7 @@ span {
 
 /* =========================================================
    CLASIFICACIÓN
-   CONTENEDOR DEL CATÁLOGO
+   CAMPO
 ========================================================= */
 
 #modal-editar-reporte
@@ -254,6 +254,22 @@ span {
 ) {
 
     z-index: 300;
+}
+
+
+/* =========================================================
+   CLASIFICACIÓN
+   CONTENEDOR DEL CATÁLOGO
+========================================================= */
+
+#modal-editar-reporte
+.editar-clasificacion-catalogo {
+
+    position: relative;
+
+    width: 100%;
+
+    overflow: visible;
 }
 
 
@@ -377,7 +393,7 @@ span {
 
     position: absolute;
 
-    top: 100%;
+    top: calc(100% + 6px);
 
     left: 0;
 
@@ -388,8 +404,6 @@ span {
     width: 100%;
 
     max-height: 320px;
-
-    margin-top: 8px;
 
     overflow-y: auto;
 
@@ -537,7 +551,7 @@ span {
 
 /* =========================================================
    ESTADO
-   CONTENEDOR
+   CAMPO
 ========================================================= */
 
 #modal-editar-reporte
@@ -554,7 +568,7 @@ span {
 
 
 /* =========================================================
-   PERMITIR QUE ESTADO SALGA DE LA SECCIÓN
+   PERMITIR QUE ESTADO SALGA DEL BLOQUE
 ========================================================= */
 
 #modal-editar-reporte
@@ -581,6 +595,22 @@ span {
 ) {
 
     z-index: 300;
+}
+
+
+/* =========================================================
+   ESTADO
+   CONTENEDOR DEL CATÁLOGO
+========================================================= */
+
+#modal-editar-reporte
+.editar-estado-catalogo {
+
+    position: relative;
+
+    width: 100%;
+
+    overflow: visible;
 }
 
 
@@ -708,6 +738,17 @@ span {
     color: #647d92;
 
     font-size: 12px;
+
+    transition:
+        transform 0.2s ease;
+}
+
+
+#modal-editar-reporte
+.estado-select--activo
+.estado-select__flecha {
+
+    transform: rotate(180deg);
 }
 
 
@@ -720,7 +761,7 @@ span {
 
     position: absolute;
 
-    top: 100%;
+    top: calc(100% + 6px);
 
     left: 0;
 
@@ -730,7 +771,11 @@ span {
 
     width: 100%;
 
-    margin-top: 8px;
+    max-height: 320px;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
 
     background: #ffffff;
 
@@ -740,8 +785,6 @@ span {
 
     box-shadow:
         0 10px 28px rgba(31, 58, 88, 0.14);
-
-    overflow: hidden;
 
     box-sizing: border-box;
 }
@@ -811,7 +854,7 @@ span {
 
     height: 36px;
 
-    flex-shrink: 0;
+    flex: 0 0 36px;
 
     display: flex;
 
@@ -913,6 +956,7 @@ span {
 
     overflow: visible !important;
 }
+
 
 /* =========================================================
    EDITAR REPORTE
@@ -1120,6 +1164,7 @@ span {
 
     background: #fff8f7;
 }
+
 
 /* =========================================================
    INVESTIGADOR
@@ -1752,7 +1797,10 @@ span {
 
 
     #modal-editar-reporte
-    .clasificacion-resultados {
+    .clasificacion-resultados,
+
+    #modal-editar-reporte
+    .estado-resultados {
 
         max-height: 280px;
     }

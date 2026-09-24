@@ -153,12 +153,12 @@
 
 
             <!-- =====================================================
-                 GÉNERO
+                GÉNERO
             ====================================================== -->
 
             <div class="report-field">
 
-                <label for="genero">
+                <label>
 
                     Género
 
@@ -169,29 +169,141 @@
                 </label>
 
 
-                <select id="genero" name="genero" class="report-select" required>
+                <!-- =================================================
+                    VALOR REAL PARA BACKEND
+                ================================================== -->
 
-                    <option value="" selected disabled>
-                        Selecciona una opción
-                    </option>
+                <input type="hidden" id="genero" name="genero" value="" required>
 
-                    <option value="Mujer">
-                        Mujer
-                    </option>
 
-                    <option value="Hombre">
-                        Hombre
-                    </option>
+                <!-- =================================================
+                    CONTENEDOR DEL CATÁLOGO
+                ================================================== -->
 
-                    <option value="Otro">
-                        Otro
-                    </option>
+                <div class="genero-catalogo">
 
-                    <option value="No especificado">
-                        No especificado
-                    </option>
 
-                </select>
+                    <!-- =============================================
+                        SELECTOR VISUAL
+                    ============================================== -->
+
+                    <button type="button" class="genero-select" id="genero-select" aria-expanded="false"
+                        aria-controls="genero-resultados">
+
+                        <span class="genero-select__texto" id="genero-select-texto">
+                            Selecciona una opción
+                        </span>
+
+
+                        <span class="genero-select__flecha" aria-hidden="true">
+                            ▾
+                        </span>
+
+                    </button>
+
+
+                    <!-- =============================================
+                        CATÁLOGO
+                    ============================================== -->
+
+                    <div class="genero-resultados" id="genero-resultados" hidden>
+
+
+                        <!-- MUJER -->
+
+                        <button type="button" class="genero-resultados__item" data-genero-opcion data-genero="Mujer">
+
+                            <span class="genero-resultados__avatar">
+                                M
+                            </span>
+
+                            <span class="genero-resultados__datos">
+
+                                <strong>
+                                    Mujer
+                                </strong>
+
+                                <small>
+                                    Género femenino
+                                </small>
+
+                            </span>
+
+                        </button>
+
+
+                        <!-- HOMBRE -->
+
+                        <button type="button" class="genero-resultados__item" data-genero-opcion data-genero="Hombre">
+
+                            <span class="genero-resultados__avatar">
+                                H
+                            </span>
+
+                            <span class="genero-resultados__datos">
+
+                                <strong>
+                                    Hombre
+                                </strong>
+
+                                <small>
+                                    Género masculino
+                                </small>
+
+                            </span>
+
+                        </button>
+
+
+                        <!-- OTRO -->
+
+                        <button type="button" class="genero-resultados__item" data-genero-opcion data-genero="Otro">
+
+                            <span class="genero-resultados__avatar">
+                                O
+                            </span>
+
+                            <span class="genero-resultados__datos">
+
+                                <strong>
+                                    Otro
+                                </strong>
+
+                                <small>
+                                    Otra identidad de género
+                                </small>
+
+                            </span>
+
+                        </button>
+
+
+                        <!-- NO ESPECIFICADO -->
+
+                        <button type="button" class="genero-resultados__item" data-genero-opcion
+                            data-genero="No especificado">
+
+                            <span class="genero-resultados__avatar">
+                                —
+                            </span>
+
+                            <span class="genero-resultados__datos">
+
+                                <strong>
+                                    No especificado
+                                </strong>
+
+                                <small>
+                                    No se especifica el género
+                                </small>
+
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </div>
 
             </div>
 
@@ -248,7 +360,7 @@
 
             </div>
 
-            
+
             <!-- =====================================================
                  CANALIZACIÓN
             ====================================================== -->

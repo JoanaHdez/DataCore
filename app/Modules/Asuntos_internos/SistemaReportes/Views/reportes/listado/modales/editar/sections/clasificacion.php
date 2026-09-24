@@ -17,7 +17,7 @@
 
 
         <!-- =====================================================
-             CLASIFICACIÓN
+            CLASIFICACIÓN
         ====================================================== -->
 
         <div class="editar-reporte-campo">
@@ -28,93 +28,111 @@
             </label>
 
 
-            <!-- VALOR REAL -->
+            <!-- =================================================
+                VALOR REAL
+            ================================================== -->
+
             <input type="hidden" id="editar-clasificacion" name="clasificacion" value="" required>
 
 
-            <!-- SELECTOR VISUAL -->
-            <button type="button" class="clasificacion-select" id="editar-clasificacion-select" aria-expanded="false">
+            <!-- =================================================
+                CONTENEDOR DEL CATÁLOGO
+            ================================================== -->
 
-                <span class="clasificacion-select__texto" id="editar-clasificacion-select-texto">
-                    Selecciona una clasificación
-                </span>
+            <div class="editar-clasificacion-catalogo">
 
 
-                <span class="clasificacion-select__flecha" aria-hidden="true">
-                    ▾
-                </span>
+                <!-- =============================================
+                SELECTOR VISUAL
+                ============================================== -->
 
-            </button>
+                <button type="button" class="clasificacion-select" id="editar-clasificacion-select"
+                    aria-expanded="false" aria-controls="editar-clasificacion-resultados">
+
+                    <span class="clasificacion-select__texto" id="editar-clasificacion-select-texto">
+                        Selecciona una clasificación
+                    </span>
+
+
+                    <span class="clasificacion-select__flecha" aria-hidden="true">
+                        ▾
+                    </span>
+
+                </button>
+
+
+                <!-- =============================================
+                    OPCIONES
+                ============================================== -->
+
+                <div class="clasificacion-resultados" id="editar-clasificacion-resultados" hidden>
+
+                    <?php if (!empty($clasificaciones)): ?>
+
+                    <?php foreach ($clasificaciones as $clasificacion): ?>
+
+                    <?php
+
+                    $nombreClasificacion =
+                        trim(
+                            (string) (
+                                $clasificacion['nombre']
+                                ?? ''
+                            )
+                        );
+
+
+                    $letraClasificacion =
+                        mb_strtoupper(
+                            mb_substr(
+                                $nombreClasificacion,
+                                0,
+                                1,
+                                'UTF-8'
+                            ),
+                            'UTF-8'
+                        );
+
+                    ?>
+
+                    <?php if ($nombreClasificacion !== ''): ?>
+
+                    <button type="button" class="clasificacion-resultados__item" data-editar-clasificacion-opcion
+                        data-clasificacion-nombre="<?= esc($nombreClasificacion) ?>">
+
+                        <span class="clasificacion-resultados__avatar">
+                            <?= esc($letraClasificacion) ?>
+                        </span>
+
+
+                        <span class="clasificacion-resultados__datos">
+
+                            <strong>
+                                <?= esc($nombreClasificacion) ?>
+                            </strong>
+
+                            <small>
+                                Tipo de clasificación
+                            </small>
+
+                        </span>
+
+                    </button>
+
+                    <?php endif; ?>
+
+                    <?php endforeach; ?>
+
+                    <?php endif; ?>
+
+                </div>
+
+            </div>
 
 
             <small class="editar-reporte-campo__help">
                 Selecciona el tipo de clasificación correspondiente a la queja.
             </small>
-
-
-            <!-- OPCIONES -->
-            <div class="clasificacion-resultados" id="editar-clasificacion-resultados" hidden>
-
-                <?php if (!empty($clasificaciones)): ?>
-
-                <?php foreach ($clasificaciones as $clasificacion): ?>
-
-                <?php
-
-                        $nombreClasificacion =
-                            trim(
-                                (string) (
-                                    $clasificacion['nombre']
-                                    ?? ''
-                                )
-                            );
-
-
-                        $letraClasificacion =
-                            mb_strtoupper(
-                                mb_substr(
-                                    $nombreClasificacion,
-                                    0,
-                                    1,
-                                    'UTF-8'
-                                ),
-                                'UTF-8'
-                            );
-
-                        ?>
-
-
-                <?php if ($nombreClasificacion !== ''): ?>
-
-                <button type="button" class="clasificacion-resultados__item" data-editar-clasificacion-opcion
-                    data-clasificacion-nombre="<?= esc($nombreClasificacion) ?>">
-
-                    <span class="clasificacion-resultados__avatar">
-                        <?= esc($letraClasificacion) ?>
-                    </span>
-
-
-                    <span class="clasificacion-resultados__datos">
-
-                        <strong>
-                            <?= esc($nombreClasificacion) ?>
-                        </strong>
-
-                        <small>
-                            Tipo de clasificación
-                        </small>
-
-                    </span>
-
-                </button>
-
-                <?php endif; ?>
-
-                <?php endforeach; ?>
-
-                <?php endif; ?>
-
-            </div>
 
         </div>
 
@@ -210,8 +228,8 @@
 
 
         <!-- =====================================================
-     INVESTIGADOR
-====================================================== -->
+            INVESTIGADOR
+        ====================================================== -->
 
         <div class="editar-reporte-campo editar-reporte-campo--investigador">
 
@@ -221,8 +239,8 @@
 
 
             <!-- =================================================
-         BUSCADOR
-    ================================================== -->
+                BUSCADOR
+            ================================================== -->
 
             <input type="text" id="editar-investigador-busqueda" class="report-input" autocomplete="off"
                 placeholder="Busca por nombre o nómina">
@@ -234,8 +252,8 @@
 
 
             <!-- =================================================
-         RESULTADOS
-    ================================================== -->
+                RESULTADOS
+            ================================================== -->
 
             <div class="editar-investigador-resultados investigador-resultados" id="editar-investigador-resultados"
                 hidden>
@@ -243,8 +261,8 @@
 
 
             <!-- =================================================
-         PERSONA SELECCIONADA
-    ================================================== -->
+                PERSONA SELECCIONADA
+            ================================================== -->
 
             <div class="editar-investigador-seleccionado investigador-seleccionado"
                 id="editar-investigador-seleccionado" hidden>
@@ -293,8 +311,8 @@
 
 
             <!-- =================================================
-         OPCIÓN OTRO
-    ================================================== -->
+                OPCIÓN OTRO
+            ================================================== -->
 
             <div class="editar-investigador-otro investigador-otro" id="editar-investigador-otro-contenedor" hidden>
 
@@ -316,8 +334,8 @@
 
 
             <!-- =================================================
-         VALORES PARA BACKEND
-    ================================================== -->
+                VALORES PARA BACKEND
+            ================================================== -->
 
             <input type="hidden" id="editar-investigador" name="investigador" value="">
 
@@ -349,110 +367,117 @@
 
 
             <!-- =================================================
-                SELECTOR VISUAL
+                CONTENEDOR DEL CATÁLOGO
             ================================================== -->
 
-            <button type="button" class="estado-select" id="editar-estado-select" aria-expanded="false"
-                aria-controls="editar-estado-resultados">
-
-                <span class="estado-select__texto" id="editar-estado-select-texto">
-                    Pendiente
-                </span>
+            <div class="editar-estado-catalogo">
 
 
-                <span class="estado-select__flecha" aria-hidden="true">
-                    ▾
-                </span>
+                <!-- =============================================
+                    SELECTOR VISUAL
+                ============================================== -->
 
-            </button>
+                <button type="button" class="estado-select" id="editar-estado-select" aria-expanded="false"
+                    aria-controls="editar-estado-resultados">
+
+                    <span class="estado-select__texto" id="editar-estado-select-texto">
+                        Pendiente
+                    </span>
+
+
+                    <span class="estado-select__flecha" aria-hidden="true">
+                        ▾
+                    </span>
+
+                </button>
+
+
+                <!-- =============================================
+                    CATÁLOGO
+                ============================================== -->
+
+                <div class="estado-resultados" id="editar-estado-resultados" hidden>
+
+
+                    <!-- PENDIENTE -->
+
+                    <button type="button" class="estado-resultados__item" data-editar-estado-opcion
+                        data-estado="Pendiente">
+
+                        <span class="estado-resultados__avatar">
+                            P
+                        </span>
+
+                        <span class="estado-resultados__datos">
+
+                            <strong>
+                                Pendiente
+                            </strong>
+
+                            <small>
+                                Atención pendiente de seguimiento
+                            </small>
+
+                        </span>
+
+                    </button>
+
+
+                    <!-- EN PROCESO -->
+
+                    <button type="button" class="estado-resultados__item" data-editar-estado-opcion
+                        data-estado="En proceso">
+
+                        <span class="estado-resultados__avatar">
+                            EP
+                        </span>
+
+                        <span class="estado-resultados__datos">
+
+                            <strong>
+                                En proceso
+                            </strong>
+
+                            <small>
+                                Reporte actualmente en atención
+                            </small>
+
+                        </span>
+
+                    </button>
+
+
+                    <!-- FINALIZADO -->
+
+                    <button type="button" class="estado-resultados__item" data-editar-estado-opcion
+                        data-estado="Finalizado">
+
+                        <span class="estado-resultados__avatar">
+                            F
+                        </span>
+
+                        <span class="estado-resultados__datos">
+
+                            <strong>
+                                Finalizado
+                            </strong>
+
+                            <small>
+                                Atención del reporte concluida
+                            </small>
+
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </div>
 
 
             <small class="editar-reporte-campo__help">
                 Indica el estado actual de atención de la queja.
             </small>
-
-
-            <!-- =================================================
-                CATÁLOGO
-            ================================================== -->
-
-            <div class="estado-resultados" id="editar-estado-resultados" hidden>
-
-
-                <!-- PENDIENTE -->
-
-                <button type="button" class="estado-resultados__item" data-editar-estado-opcion data-estado="Pendiente">
-
-                    <span class="estado-resultados__avatar">
-                        P
-                    </span>
-
-
-                    <span class="estado-resultados__datos">
-
-                        <strong>
-                            Pendiente
-                        </strong>
-
-                        <small>
-                            Atención pendiente de seguimiento
-                        </small>
-
-                    </span>
-
-                </button>
-
-
-                <!-- EN PROCESO -->
-
-                <button type="button" class="estado-resultados__item" data-editar-estado-opcion
-                    data-estado="En proceso">
-
-                    <span class="estado-resultados__avatar">
-                        EP
-                    </span>
-
-
-                    <span class="estado-resultados__datos">
-
-                        <strong>
-                            En proceso
-                        </strong>
-
-                        <small>
-                            Reporte actualmente en atención
-                        </small>
-
-                    </span>
-
-                </button>
-
-
-                <!-- FINALIZADO -->
-
-                <button type="button" class="estado-resultados__item" data-editar-estado-opcion
-                    data-estado="Finalizado">
-
-                    <span class="estado-resultados__avatar">
-                        F
-                    </span>
-
-
-                    <span class="estado-resultados__datos">
-
-                        <strong>
-                            Finalizado
-                        </strong>
-
-                        <small>
-                            Atención del reporte concluida
-                        </small>
-
-                    </span>
-
-                </button>
-
-            </div>
 
         </div>
 

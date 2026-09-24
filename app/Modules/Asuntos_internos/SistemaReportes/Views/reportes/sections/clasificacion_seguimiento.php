@@ -27,7 +27,7 @@
 
 
             <!-- =====================================================
-                 CLASIFICACIÓN
+                CLASIFICACIÓN
             ====================================================== -->
 
             <div class="report-field">
@@ -43,92 +43,102 @@
                 <input type="hidden" id="clasificacion" name="clasificacion" value="" required>
 
 
-                <!-- SELECTOR VISUAL -->
+                <!-- =================================================
+                    CONTENEDOR DEL CATÁLOGO
+                ================================================== -->
 
-                <button type="button" class="clasificacion-select" id="clasificacion-select" aria-expanded="false">
-
-                    <span class="clasificacion-select__texto" id="clasificacion-select-texto">
-                        Selecciona una clasificación
-                    </span>
+                <div class="clasificacion-catalogo">
 
 
-                    <span class="clasificacion-select__flecha" aria-hidden="true">
-                        ▾
-                    </span>
+                    <!-- SELECTOR VISUAL -->
 
-                </button>
+                    <button type="button" class="clasificacion-select" id="clasificacion-select" aria-expanded="false"
+                        aria-controls="clasificacion-resultados">
+
+                        <span class="clasificacion-select__texto" id="clasificacion-select-texto">
+                            Selecciona una clasificación
+                        </span>
+
+
+                        <span class="clasificacion-select__flecha" aria-hidden="true">
+                            ▾
+                        </span>
+
+                    </button>
+
+
+                    <!-- =================================================
+                        OPCIONES
+                    ================================================== -->
+
+                    <div class="clasificacion-resultados" id="clasificacion-resultados" hidden>
+
+                        <?php if (!empty($clasificaciones)): ?>
+
+                        <?php foreach ($clasificaciones as $clasificacion): ?>
+
+                        <?php
+
+                        $nombreClasificacion =
+                            trim(
+                                (string) (
+                                    $clasificacion['nombre']
+                                    ?? ''
+                                )
+                            );
+
+
+                        $letraClasificacion =
+                            mb_strtoupper(
+                                mb_substr(
+                                    $nombreClasificacion,
+                                    0,
+                                    1,
+                                    'UTF-8'
+                                ),
+                                'UTF-8'
+                            );
+
+                        ?>
+
+                        <?php if ($nombreClasificacion !== ''): ?>
+
+                        <button type="button" class="clasificacion-resultados__item" data-clasificacion-opcion
+                            data-clasificacion-nombre="<?= esc($nombreClasificacion) ?>">
+
+                            <span class="clasificacion-resultados__avatar">
+                                <?= esc($letraClasificacion) ?>
+                            </span>
+
+
+                            <span class="clasificacion-resultados__datos">
+
+                                <strong>
+                                    <?= esc($nombreClasificacion) ?>
+                                </strong>
+
+                                <small>
+                                    Tipo de clasificación
+                                </small>
+
+                            </span>
+
+                        </button>
+
+                        <?php endif; ?>
+
+                        <?php endforeach; ?>
+
+                        <?php endif; ?>
+
+                    </div>
+
+                </div>
 
 
                 <small class="report-field__help">
                     Selecciona el tipo de clasificación correspondiente a la queja.
                 </small>
-
-
-                <!-- =================================================
-                     OPCIONES
-                ================================================== -->
-
-                <div class="clasificacion-resultados" id="clasificacion-resultados" hidden>
-
-                    <?php if (!empty($clasificaciones)): ?>
-
-                    <?php foreach ($clasificaciones as $clasificacion): ?>
-
-                    <?php
-
-                    $nombreClasificacion =
-                        trim(
-                            (string) (
-                                $clasificacion['nombre']
-                                ?? ''
-                            )
-                        );
-
-
-                    $letraClasificacion =
-                        mb_strtoupper(
-                            mb_substr(
-                                $nombreClasificacion,
-                                0,
-                                1,
-                                'UTF-8'
-                            ),
-                            'UTF-8'
-                        );
-
-                    ?>
-
-                    <?php if ($nombreClasificacion !== ''): ?>
-
-                    <button type="button" class="clasificacion-resultados__item" data-clasificacion-opcion
-                        data-clasificacion-nombre="<?= esc($nombreClasificacion) ?>">
-
-                        <span class="clasificacion-resultados__avatar">
-                            <?= esc($letraClasificacion) ?>
-                        </span>
-
-
-                        <span class="clasificacion-resultados__datos">
-
-                            <strong>
-                                <?= esc($nombreClasificacion) ?>
-                            </strong>
-
-                            <small>
-                                Tipo de clasificación
-                            </small>
-
-                        </span>
-
-                    </button>
-
-                    <?php endif; ?>
-
-                    <?php endforeach; ?>
-
-                    <?php endif; ?>
-
-                </div>
 
             </div>
 

@@ -1882,8 +1882,8 @@ class Reportes_Controller extends BaseController
 
 
             /* =====================================================
-MOTIVOS RELACIONADOS
-===================================================== */
+            MOTIVOS RELACIONADOS
+            ===================================================== */
 
             $motivos =
                 $db
@@ -3125,8 +3125,6 @@ MOTIVOS RELACIONADOS
                 ]);
         }
     }
-
-
 
     public function eliminarReporte(int $idReporte)
     {
