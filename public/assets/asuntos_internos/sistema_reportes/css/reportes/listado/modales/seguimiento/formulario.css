@@ -128,3 +128,336 @@
 
     gap: 10px;
 }
+
+/* =========================================================
+   CATÁLOGOS PERSONALIZADOS
+   TIPO / ESTADO / SANCIÓN
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-catalogo {
+
+    position: relative;
+
+    width: 100%;
+
+    overflow: visible;
+}
+
+
+/* =========================================================
+   SELECTOR
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-select {
+
+    width: 100%;
+
+    min-height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 0 14px;
+
+    color: #405d78;
+
+    background: #ffffff;
+
+    border: 1px solid #cfdce7;
+
+    border-radius: 8px;
+
+    font-family: inherit;
+
+    font-size: 11px;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-select:hover,
+
+#modal-seguimiento-reporte
+.seguimiento-select--activo {
+
+    border-color: #1681c4;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-select--activo {
+
+    box-shadow:
+        0 0 0 3px rgba(22, 129, 196, 0.10);
+}
+
+
+/* =========================================================
+   TEXTO
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-select__texto {
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    color: #173554;
+
+    font-weight: 700;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   FLECHA
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-select__flecha {
+
+    flex-shrink: 0;
+
+    color: #647d92;
+
+    font-size: 12px;
+
+    transition:
+        transform 0.2s ease;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-select--activo
+.seguimiento-select__flecha {
+
+    transform: rotate(180deg);
+}
+
+
+/* =========================================================
+   RESULTADOS
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-resultados {
+
+    position: absolute;
+
+    top: calc(100% + 6px);
+
+    left: 0;
+
+    right: 0;
+
+    z-index: 500;
+
+    width: 100%;
+
+    max-height: 280px;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #d9e3eb;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 10px 28px rgba(31, 58, 88, 0.14);
+
+    box-sizing: border-box;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-resultados[hidden] {
+
+    display: none !important;
+}
+
+
+/* =========================================================
+   ITEM
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-resultados__item {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 12px 14px;
+
+    color: #405d78;
+
+    background: #ffffff;
+
+    border: 0;
+
+    border-bottom: 1px solid #edf2f6;
+
+    font-family: inherit;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+
+    transition:
+        background 0.2s ease;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-resultados__item:last-child {
+
+    border-bottom: 0;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-resultados__item:hover {
+
+    background: #f5faff;
+}
+
+
+/* =========================================================
+   AVATAR
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-resultados__avatar {
+
+    width: 36px;
+
+    height: 36px;
+
+    flex: 0 0 36px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #ffffff;
+
+    background: #1681c4;
+
+    border-radius: 50%;
+
+    font-size: 10px;
+
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   DATOS
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-resultados__datos {
+
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-resultados__datos strong {
+
+    color: #173554;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    line-height: 1.35;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-resultados__datos small {
+
+    display: block;
+
+    color: #728596;
+
+    font-size: 9px;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   EVITAR QUE EL CATÁLOGO DESPLACE CONTENIDO
+========================================================= */
+
+#modal-seguimiento-reporte
+.editar-reporte-campo:has(
+    .seguimiento-resultados:not([hidden])
+) {
+
+    position: relative;
+
+    z-index: 300;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-reporte-grid {
+
+    overflow: visible;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    #modal-seguimiento-reporte
+    .seguimiento-resultados {
+
+        max-height: 240px;
+    }
+}

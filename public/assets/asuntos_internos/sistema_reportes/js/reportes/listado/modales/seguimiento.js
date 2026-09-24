@@ -45,6 +45,7 @@ import {
     inicializarCancelarEdicion,
     cancelarEdicionSeguimiento,
     inicializarMayusculasSeguimiento,
+    inicializarCatalogosSeguimiento,
 } from './seguimiento/formulario.js';
 
 import {
@@ -137,15 +138,39 @@ function inicializarSeguimientoReporte() {
         return;
     }
 
+
+    /* =====================================================
+       MAYÚSCULAS
+    ===================================================== */
+
     inicializarMayusculasSeguimiento(
         formulario
     );
 
 
+    /* =====================================================
+       CATÁLOGOS PERSONALIZADOS
+       TIPO / ESTADO / SANCIÓN
+    ===================================================== */
+
+    inicializarCatalogosSeguimiento(
+        modal
+    );
+
+
+    /* =====================================================
+       SANCIÓN
+       CAMPO "OTRO"
+    ===================================================== */
+
     inicializarSancionSeguimiento(
         modal
     );
 
+
+    /* =====================================================
+       CANCELAR EDICIÓN
+    ===================================================== */
 
     inicializarCancelarEdicion(
         modal,
@@ -193,13 +218,16 @@ function inicializarSeguimientoReporte() {
 
 
             if (
-                !Number.isInteger(idReporte)
+                !Number.isInteger(
+                    idReporte
+                )
                 || idReporte <= 0
             ) {
 
                 console.error(
                     'No fue posible identificar el reporte.'
                 );
+
 
                 return;
             }
@@ -230,9 +258,9 @@ function inicializarSeguimientoReporte() {
                 }
 
 
-                /* =================================================
+                /* =========================================
                    ESTADO
-                ================================================= */
+                ========================================= */
 
                 estadoSeguimiento.idReporte =
                     idReporte;
@@ -258,16 +286,16 @@ function inicializarSeguimientoReporte() {
                     );
 
 
-                /* =================================================
+                /* =========================================
                    REINICIAR MODO EDICIÓN
-                ================================================= */
+                ========================================= */
 
                 limpiarModoEdicion();
 
 
-                /* =================================================
+                /* =========================================
                    CARGAR
-                ================================================= */
+                ========================================= */
 
                 cargarDatosSeguimiento(
                     modal,
@@ -311,7 +339,6 @@ function inicializarSeguimientoReporte() {
 
                 boton.disabled =
                     false;
-
             }
 
         }
@@ -319,7 +346,7 @@ function inicializarSeguimientoReporte() {
 
 
     /* =====================================================
-    DETALLES DESDE HISTORIAL
+       DETALLES DESDE HISTORIAL
     ===================================================== */
 
     modal.addEventListener(
@@ -346,7 +373,9 @@ function inicializarSeguimientoReporte() {
 
 
             if (
-                !Number.isInteger(idSeguimiento)
+                !Number.isInteger(
+                    idSeguimiento
+                )
                 || idSeguimiento <= 0
             ) {
                 return;
@@ -367,6 +396,7 @@ function inicializarSeguimientoReporte() {
                 window.alert(
                     'No fue posible localizar el seguimiento.'
                 );
+
 
                 return;
             }
@@ -411,7 +441,9 @@ function inicializarSeguimientoReporte() {
 
 
             if (
-                !Number.isInteger(idSeguimiento)
+                !Number.isInteger(
+                    idSeguimiento
+                )
                 || idSeguimiento <= 0
             ) {
                 return;
@@ -432,6 +464,7 @@ function inicializarSeguimientoReporte() {
                 window.alert(
                     'No fue posible localizar el seguimiento.'
                 );
+
 
                 return;
             }
@@ -499,7 +532,6 @@ function inicializarSeguimientoReporte() {
 
 
                 limpiarEstadoSeguimiento();
-
             }
 
         }
@@ -517,9 +549,9 @@ function inicializarSeguimientoReporte() {
             evento.preventDefault();
 
 
-            /* =================================================
+            /* =============================================
                DETECTAR SI REALMENTE ESTAMOS EDITANDO
-            ================================================= */
+            ============================================= */
 
             const inputIdEdicion =
                 formulario.querySelector(
@@ -530,7 +562,8 @@ function inicializarSeguimientoReporte() {
             const idSeguimientoEdicion =
                 Number(
                     inputIdEdicion?.value
-                    || estadoSeguimiento.idSeguimientoEdicion
+                    || estadoSeguimiento
+                        .idSeguimientoEdicion
                     || 0
                 );
 
@@ -542,9 +575,9 @@ function inicializarSeguimientoReporte() {
                 && idSeguimientoEdicion > 0;
 
 
-            /* =================================================
+            /* =============================================
                EDICIÓN
-            ================================================= */
+            ============================================= */
 
             if (estaEditando) {
 
@@ -557,7 +590,8 @@ function inicializarSeguimientoReporte() {
 
 
                 if (
-                    !estadoSeguimiento.seguimientoEdicion
+                    !estadoSeguimiento
+                        .seguimientoEdicion
                     || estadoSeguimiento
                         .seguimientoEdicion
                         .id_seguimiento
@@ -565,11 +599,12 @@ function inicializarSeguimientoReporte() {
                 ) {
 
                     estadoSeguimiento.seguimientoEdicion =
-                        estadoSeguimiento.seguimientos.find(
-                            (seguimiento) =>
-                                seguimiento.id_seguimiento
-                                === idSeguimientoEdicion
-                        )
+                        estadoSeguimiento.seguimientos
+                            .find(
+                                (seguimiento) =>
+                                    seguimiento.id_seguimiento
+                                    === idSeguimientoEdicion
+                            )
                         || null;
                 }
 
@@ -584,9 +619,9 @@ function inicializarSeguimientoReporte() {
             }
 
 
-            /* =================================================
+            /* =============================================
                NUEVO
-            ================================================= */
+            ============================================= */
 
             estadoSeguimiento.modoEdicion =
                 false;
@@ -609,7 +644,6 @@ function inicializarSeguimientoReporte() {
     );
 
 }
-
 
 /* =========================================================
    NUEVO SEGUIMIENTO

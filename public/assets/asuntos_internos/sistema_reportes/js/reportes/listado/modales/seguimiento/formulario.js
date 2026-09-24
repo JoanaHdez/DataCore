@@ -133,6 +133,493 @@ export function inicializarMayusculasSeguimiento(
 
 
 /* =========================================================
+   CATÁLOGOS PERSONALIZADOS DE SEGUIMIENTO
+========================================================= */
+
+export function inicializarCatalogosSeguimiento(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    inicializarCatalogoSeguimiento(
+        modal,
+        {
+            inputSelector:
+                '#seguimiento-tipo',
+
+            botonSelector:
+                '#seguimiento-tipo-select',
+
+            textoSelector:
+                '#seguimiento-tipo-select-texto',
+
+            resultadosSelector:
+                '#seguimiento-tipo-resultados',
+
+            opcionSelector:
+                '[data-seguimiento-tipo-opcion]',
+
+            textoVacio:
+                'Selecciona',
+        }
+    );
+
+
+    inicializarCatalogoSeguimiento(
+        modal,
+        {
+            inputSelector:
+                '#seguimiento-estado',
+
+            botonSelector:
+                '#seguimiento-estado-select',
+
+            textoSelector:
+                '#seguimiento-estado-select-texto',
+
+            resultadosSelector:
+                '#seguimiento-estado-resultados',
+
+            opcionSelector:
+                '[data-seguimiento-estado-opcion]',
+
+            textoVacio:
+                'Selecciona',
+        }
+    );
+
+
+    inicializarCatalogoSeguimiento(
+        modal,
+        {
+            inputSelector:
+                '#seguimiento-sancion',
+
+            botonSelector:
+                '#seguimiento-sancion-select',
+
+            textoSelector:
+                '#seguimiento-sancion-select-texto',
+
+            resultadosSelector:
+                '#seguimiento-sancion-resultados',
+
+            opcionSelector:
+                '[data-seguimiento-sancion-opcion]',
+
+            textoVacio:
+                'Sin cambio',
+        }
+    );
+
+}
+
+
+/* =========================================================
+   INICIALIZAR UN CATÁLOGO
+========================================================= */
+
+function inicializarCatalogoSeguimiento(
+    modal,
+    configuracion
+) {
+
+    const input =
+        modal.querySelector(
+            configuracion.inputSelector
+        );
+
+
+    const boton =
+        modal.querySelector(
+            configuracion.botonSelector
+        );
+
+
+    const texto =
+        modal.querySelector(
+            configuracion.textoSelector
+        );
+
+
+    const resultados =
+        modal.querySelector(
+            configuracion.resultadosSelector
+        );
+
+
+    const opciones =
+        modal.querySelectorAll(
+            configuracion.opcionSelector
+        );
+
+
+    if (
+        !input
+        || !boton
+        || !texto
+        || !resultados
+    ) {
+        return;
+    }
+
+
+    if (
+        boton.dataset
+            .catalogoInicializado === '1'
+    ) {
+        return;
+    }
+
+
+    boton.dataset
+        .catalogoInicializado = '1';
+
+
+    /* =====================================================
+       ABRIR
+    ===================================================== */
+
+    function abrir() {
+
+        if (boton.disabled) {
+            return;
+        }
+
+
+        cerrarCatalogosSeguimiento(
+            modal,
+            resultados
+        );
+
+
+        resultados.hidden =
+            false;
+
+
+        boton.setAttribute(
+            'aria-expanded',
+            'true'
+        );
+
+
+        boton.classList.add(
+            'seguimiento-select--activo'
+        );
+    }
+
+
+    /* =====================================================
+       CERRAR
+    ===================================================== */
+
+    function cerrar() {
+
+        resultados.hidden =
+            true;
+
+
+        boton.setAttribute(
+            'aria-expanded',
+            'false'
+        );
+
+
+        boton.classList.remove(
+            'seguimiento-select--activo'
+        );
+    }
+
+
+    /* =====================================================
+       BOTÓN
+    ===================================================== */
+
+    boton.addEventListener(
+        'click',
+        () => {
+
+            if (resultados.hidden) {
+
+                abrir();
+
+            } else {
+
+                cerrar();
+            }
+        }
+    );
+
+
+    /* =====================================================
+       OPCIONES
+    ===================================================== */
+
+    opciones.forEach(
+        (opcion) => {
+
+            opcion.addEventListener(
+                'click',
+                () => {
+
+                    const valor =
+                        String(
+                            opcion.dataset.valor
+                            ?? ''
+                        ).trim();
+
+
+                    actualizarCatalogoSeguimiento(
+                        modal,
+                        configuracion.inputSelector,
+                        configuracion.botonSelector,
+                        configuracion.textoSelector,
+                        configuracion.opcionSelector,
+                        valor,
+                        configuracion.textoVacio,
+                        true
+                    );
+
+
+                    cerrar();
+                }
+            );
+        }
+    );
+
+
+    /* =====================================================
+       CLICK FUERA
+    ===================================================== */
+
+    document.addEventListener(
+        'click',
+        (evento) => {
+
+            if (
+                boton.contains(
+                    evento.target
+                )
+                || resultados.contains(
+                    evento.target
+                )
+            ) {
+                return;
+            }
+
+
+            cerrar();
+        }
+    );
+
+
+    /* =====================================================
+       ESC
+    ===================================================== */
+
+    document.addEventListener(
+        'keydown',
+        (evento) => {
+
+            if (
+                evento.key === 'Escape'
+            ) {
+
+                cerrar();
+            }
+        }
+    );
+
+}
+
+
+/* =========================================================
+   ACTUALIZAR VALOR Y TEXTO DEL CATÁLOGO
+========================================================= */
+
+function actualizarCatalogoSeguimiento(
+    modal,
+    inputSelector,
+    botonSelector,
+    textoSelector,
+    opcionSelector,
+    valor,
+    textoVacio,
+    dispararCambio = false
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const input =
+        modal.querySelector(
+            inputSelector
+        );
+
+
+    const boton =
+        modal.querySelector(
+            botonSelector
+        );
+
+
+    const texto =
+        modal.querySelector(
+            textoSelector
+        );
+
+
+    const opciones =
+        Array.from(
+            modal.querySelectorAll(
+                opcionSelector
+            )
+        );
+
+
+    if (
+        !input
+        || !texto
+    ) {
+        return;
+    }
+
+
+    const valorNormalizado =
+        String(
+            valor
+            ?? ''
+        ).trim();
+
+
+    input.value =
+        valorNormalizado;
+
+
+    const opcionEncontrada =
+        opciones.find(
+            (opcion) => {
+
+                return String(
+                    opcion.dataset.valor
+                    ?? ''
+                ).trim() === valorNormalizado;
+            }
+        );
+
+
+    const tituloOpcion =
+        opcionEncontrada
+            ?.querySelector(
+                'strong'
+            )
+            ?.textContent
+            ?.trim()
+        || '';
+
+
+    texto.textContent =
+        tituloOpcion
+        || textoVacio;
+
+
+    if (boton) {
+
+        boton.setAttribute(
+            'aria-expanded',
+            'false'
+        );
+
+
+        boton.classList.remove(
+            'seguimiento-select--activo'
+        );
+    }
+
+
+    if (dispararCambio) {
+
+        input.dispatchEvent(
+            new Event(
+                'change',
+                {
+                    bubbles: true,
+                }
+            )
+        );
+    }
+
+}
+
+
+/* =========================================================
+   CERRAR LOS DEMÁS CATÁLOGOS
+========================================================= */
+
+function cerrarCatalogosSeguimiento(
+    modal,
+    excepcion = null
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const catalogos =
+        modal.querySelectorAll(
+            '.seguimiento-resultados'
+        );
+
+
+    catalogos.forEach(
+        (catalogo) => {
+
+            if (
+                excepcion
+                && catalogo === excepcion
+            ) {
+                return;
+            }
+
+
+            catalogo.hidden =
+                true;
+        }
+    );
+
+
+    const botones =
+        modal.querySelectorAll(
+            '.seguimiento-select'
+        );
+
+
+    botones.forEach(
+        (boton) => {
+
+            boton.setAttribute(
+                'aria-expanded',
+                'false'
+            );
+
+
+            boton.classList.remove(
+                'seguimiento-select--activo'
+            );
+        }
+    );
+
+}
+
+
+/* =========================================================
    PREPARAR FORMULARIO
 ========================================================= */
 
@@ -141,18 +628,23 @@ export function prepararFormularioSeguimiento(
     estadoActual
 ) {
 
+    if (!formulario) {
+        return;
+    }
+
+
     formulario.reset();
+
+
+    const modal =
+        formulario.closest(
+            '#modal-seguimiento-reporte'
+        );
 
 
     const fecha =
         formulario.querySelector(
             '#seguimiento-fecha'
-        );
-
-
-    const estado =
-        formulario.querySelector(
-            '#seguimiento-estado'
         );
 
 
@@ -176,28 +668,83 @@ export function prepararFormularioSeguimiento(
     }
 
 
-    if (estado) {
-
-        const existe =
-            Array.from(
-                estado.options
-            ).some(
-                (opcion) =>
-                    opcion.value
-                    === estadoActual
-            );
-
-
-        estado.value =
-            existe
-                ? estadoActual
-                : '';
+    if (!modal) {
+        return;
     }
+
+
+    /* =====================================================
+       TIPO
+    ===================================================== */
+
+    actualizarCatalogoSeguimiento(
+        modal,
+        '#seguimiento-tipo',
+        '#seguimiento-tipo-select',
+        '#seguimiento-tipo-select-texto',
+        '[data-seguimiento-tipo-opcion]',
+        '',
+        'Selecciona'
+    );
+
+
+    /* =====================================================
+       ESTADO
+    ===================================================== */
+
+    const estadosPermitidos = [
+        'Pendiente',
+        'En proceso',
+        'Finalizado',
+    ];
+
+
+    const estadoNormalizado =
+        String(
+            estadoActual
+            || ''
+        ).trim();
+
+
+    actualizarCatalogoSeguimiento(
+        modal,
+        '#seguimiento-estado',
+        '#seguimiento-estado-select',
+        '#seguimiento-estado-select-texto',
+        '[data-seguimiento-estado-opcion]',
+        estadosPermitidos.includes(
+            estadoNormalizado
+        )
+            ? estadoNormalizado
+            : '',
+        'Selecciona'
+    );
+
+
+    /* =====================================================
+       SANCIÓN
+    ===================================================== */
+
+    actualizarCatalogoSeguimiento(
+        modal,
+        '#seguimiento-sancion',
+        '#seguimiento-sancion-select',
+        '#seguimiento-sancion-select-texto',
+        '[data-seguimiento-sancion-opcion]',
+        '',
+        'Sin cambio'
+    );
+
+
+    cerrarCatalogosSeguimiento(
+        modal
+    );
+
 }
 
 
 /* =========================================================
-   INTERFAZ NUEVO / EDITAR
+   INTERFAZ NUEVO / EDITAR / DETALLE
 ========================================================= */
 
 export function actualizarInterfazModoFormulario(
@@ -205,6 +752,11 @@ export function actualizarInterfazModoFormulario(
     editando,
     detalle = false
 ) {
+
+    if (!modal) {
+        return;
+    }
+
 
     const eyebrow =
         modal.querySelector(
@@ -334,13 +886,12 @@ export function actualizarInterfazModoFormulario(
 
 
     /* =====================================================
-       CAMPOS DEL FORMULARIO
+       INPUTS / TEXTAREA
     ===================================================== */
 
     const campos =
         modal.querySelectorAll(
             '#form-seguimiento-reporte input, '
-            + '#form-seguimiento-reporte select, '
             + '#form-seguimiento-reporte textarea'
         );
 
@@ -359,6 +910,33 @@ export function actualizarInterfazModoFormulario(
                 detalle;
         }
     );
+
+
+    /* =====================================================
+       SELECTORES PERSONALIZADOS
+    ===================================================== */
+
+    const selectores =
+        modal.querySelectorAll(
+            '.seguimiento-select'
+        );
+
+
+    selectores.forEach(
+        (selector) => {
+
+            selector.disabled =
+                detalle;
+        }
+    );
+
+
+    if (detalle) {
+
+        cerrarCatalogosSeguimiento(
+            modal
+        );
+    }
 
 }
 
@@ -552,7 +1130,7 @@ export function iniciarEdicionSeguimiento(
 
 
     /* =====================================================
-       ID EN EL FORMULARIO
+       ID
     ===================================================== */
 
     const inputId =
@@ -567,7 +1145,6 @@ export function iniciarEdicionSeguimiento(
             String(
                 idSeguimiento
             );
-
     }
 
 
@@ -586,10 +1163,14 @@ export function iniciarEdicionSeguimiento(
        TIPO
     ===================================================== */
 
-    asignarValor(
-        formulario,
+    actualizarCatalogoSeguimiento(
+        modal,
         '#seguimiento-tipo',
-        seguimiento.tipo
+        '#seguimiento-tipo-select',
+        '#seguimiento-tipo-select-texto',
+        '[data-seguimiento-tipo-opcion]',
+        seguimiento.tipo,
+        'Selecciona'
     );
 
 
@@ -597,10 +1178,14 @@ export function iniciarEdicionSeguimiento(
        ESTADO
     ===================================================== */
 
-    asignarValor(
-        formulario,
+    actualizarCatalogoSeguimiento(
+        modal,
         '#seguimiento-estado',
-        seguimiento.estado
+        '#seguimiento-estado-select',
+        '#seguimiento-estado-select-texto',
+        '[data-seguimiento-estado-opcion]',
+        seguimiento.estado,
+        'Selecciona'
     );
 
 
@@ -623,7 +1208,7 @@ export function iniciarEdicionSeguimiento(
 
 
     /* =====================================================
-       FOLIO IP ACTUAL DEL REPORTE
+       FOLIO IP
     ===================================================== */
 
     asignarValor(
@@ -643,17 +1228,11 @@ export function iniciarEdicionSeguimiento(
 
 
     /* =====================================================
-       SANCIÓN DEL SEGUIMIENTO
+       SANCIÓN
     ===================================================== */
 
     const sancion =
         seguimiento.sancion;
-
-
-    const selectSancion =
-        modal.querySelector(
-            '#seguimiento-sancion'
-        );
 
 
     const inputOtro =
@@ -662,13 +1241,16 @@ export function iniciarEdicionSeguimiento(
         );
 
 
-    if (selectSancion) {
-
-        selectSancion.value =
-            sancion?.tipo
-            || '';
-
-    }
+    actualizarCatalogoSeguimiento(
+        modal,
+        '#seguimiento-sancion',
+        '#seguimiento-sancion-select',
+        '#seguimiento-sancion-select-texto',
+        '[data-seguimiento-sancion-opcion]',
+        sancion?.tipo
+        || '',
+        'Sin cambio'
+    );
 
 
     /* =====================================================
@@ -692,26 +1274,13 @@ export function iniciarEdicionSeguimiento(
 
         inputOtro.value =
             descripcionOtro;
-
     }
 
-
-    /* =====================================================
-       ACTUALIZAR CAMPO OTRO
-    ===================================================== */
 
     actualizarCampoOtroSancion(
         modal
     );
 
-
-    /*
-     * actualizarCampoOtroSancion() puede limpiar
-     * #seguimiento-sancion-otro dependiendo de la opción.
-     *
-     * Si la sanción es Otro, restauramos el valor ya
-     * normalizado a mayúsculas.
-     */
 
     if (
         sancion?.tipo === 'Otro'
@@ -720,17 +1289,22 @@ export function iniciarEdicionSeguimiento(
 
         inputOtro.value =
             descripcionOtro;
-
     }
 
 
     /* =====================================================
-       INTERFAZ MODO EDICIÓN
+       INTERFAZ
     ===================================================== */
 
     actualizarInterfazModoFormulario(
         modal,
-        estadoSeguimiento.modoEdicion
+        true,
+        false
+    );
+
+
+    cerrarCatalogosSeguimiento(
+        modal
     );
 
 
@@ -753,9 +1327,7 @@ export function iniciarEdicionSeguimiento(
 
             block:
                 'start',
-
         });
-
     }
 
 }
@@ -875,13 +1447,16 @@ export function iniciarDetalleSeguimiento(
 
 
     if (
-        !Number.isInteger(idSeguimiento)
+        !Number.isInteger(
+            idSeguimiento
+        )
         || idSeguimiento <= 0
     ) {
 
         window.alert(
             'No fue posible identificar el seguimiento que deseas consultar.'
         );
+
 
         return;
     }
@@ -908,7 +1483,7 @@ export function iniciarDetalleSeguimiento(
 
 
     /* =====================================================
-       DATOS
+       FECHA
     ===================================================== */
 
     asignarValor(
@@ -918,19 +1493,39 @@ export function iniciarDetalleSeguimiento(
     );
 
 
-    asignarValor(
-        formulario,
+    /* =====================================================
+       TIPO
+    ===================================================== */
+
+    actualizarCatalogoSeguimiento(
+        modal,
         '#seguimiento-tipo',
-        seguimiento.tipo
+        '#seguimiento-tipo-select',
+        '#seguimiento-tipo-select-texto',
+        '[data-seguimiento-tipo-opcion]',
+        seguimiento.tipo,
+        'Selecciona'
     );
 
 
-    asignarValor(
-        formulario,
+    /* =====================================================
+       ESTADO
+    ===================================================== */
+
+    actualizarCatalogoSeguimiento(
+        modal,
         '#seguimiento-estado',
-        seguimiento.estado
+        '#seguimiento-estado-select',
+        '#seguimiento-estado-select-texto',
+        '[data-seguimiento-estado-opcion]',
+        seguimiento.estado,
+        'Selecciona'
     );
 
+
+    /* =====================================================
+       OBSERVACIONES
+    ===================================================== */
 
     asignarValor(
         formulario,
@@ -940,7 +1535,7 @@ export function iniciarDetalleSeguimiento(
 
 
     /* =====================================================
-       FOLIO IP ACTUAL DEL REPORTE
+       FOLIO IP
     ===================================================== */
 
     asignarValor(
@@ -954,17 +1549,11 @@ export function iniciarDetalleSeguimiento(
 
 
     /* =====================================================
-       SANCIÓN DEL SEGUIMIENTO
+       SANCIÓN
     ===================================================== */
 
     const sancion =
         seguimiento.sancion;
-
-
-    const selectSancion =
-        modal.querySelector(
-            '#seguimiento-sancion'
-        );
 
 
     const inputOtro =
@@ -973,12 +1562,16 @@ export function iniciarDetalleSeguimiento(
         );
 
 
-    if (selectSancion) {
-
-        selectSancion.value =
-            sancion?.tipo
-            || '';
-    }
+    actualizarCatalogoSeguimiento(
+        modal,
+        '#seguimiento-sancion',
+        '#seguimiento-sancion-select',
+        '#seguimiento-sancion-select-texto',
+        '[data-seguimiento-sancion-opcion]',
+        sancion?.tipo
+        || '',
+        'Sin cambio'
+    );
 
 
     if (inputOtro) {
@@ -986,6 +1579,7 @@ export function iniciarDetalleSeguimiento(
         inputOtro.value =
             sancion?.tipo === 'Otro'
                 ? sancion.descripcion_otro
+                    || ''
                 : '';
     }
 
@@ -1007,13 +1601,18 @@ export function iniciarDetalleSeguimiento(
 
 
     /* =====================================================
-       INTERFAZ MODO DETALLE
+       INTERFAZ
     ===================================================== */
 
     actualizarInterfazModoFormulario(
         modal,
         false,
         true
+    );
+
+
+    cerrarCatalogosSeguimiento(
+        modal
     );
 
 
@@ -1030,6 +1629,7 @@ export function iniciarDetalleSeguimiento(
     if (seccion) {
 
         seccion.scrollIntoView({
+
             behavior:
                 'smooth',
 
