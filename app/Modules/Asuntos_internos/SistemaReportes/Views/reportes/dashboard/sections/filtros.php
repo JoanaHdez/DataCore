@@ -12,10 +12,18 @@ $opcionesFiltros =
     ?? [];
 
 
+/* =========================================================
+   ÁREAS
+========================================================= */
+
 $areasFiltro =
     $opcionesFiltros['areas']
     ?? [];
 
+
+/* =========================================================
+   UNIDADES
+========================================================= */
 
 $unidadesFiltro =
     $opcionesFiltros['unidades']
@@ -23,7 +31,26 @@ $unidadesFiltro =
 
 
 /* =========================================================
+   CLASIFICACIONES
+
+   Por ahora se prepara la vista para recibirlas.
+   Después DashboardFiltrosService las obtendrá
+   dinámicamente desde los datos existentes.
+========================================================= */
+
+$clasificacionesFiltro =
+    $opcionesFiltros['clasificaciones']
+    ?? [];
+
+
+/* =========================================================
    TURNOS ANALÍTICOS
+
+   TEMPORAL:
+   actualmente se conservan los nombres existentes.
+
+   En V1 deberán obtenerse dinámicamente de los datos
+   y este arreglo desaparecerá.
 ========================================================= */
 
 $turnosFiltro = [
@@ -59,6 +86,46 @@ for (
         );
 }
 
+
+/* =========================================================
+   ZONAS
+
+   La zona no se almacena directamente.
+   Se obtiene a partir del sector:
+
+   Norte     → 1 - 3
+   Poniente  → 4 - 7
+   Centro    → 8 - 10
+   Oriente   → 11 - 15
+
+   Los valores coinciden con
+   DashboardFiltrosService::obtenerCondicionSqlZona().
+========================================================= */
+
+$zonasFiltro = [
+
+    [
+        'valor' => 'Zona Norte',
+        'texto' => 'Norte',
+    ],
+
+    [
+        'valor' => 'Zona Poniente',
+        'texto' => 'Poniente',
+    ],
+
+    [
+        'valor' => 'Zona Centro',
+        'texto' => 'Centro',
+    ],
+
+    [
+        'valor' => 'Zona Oriente',
+        'texto' => 'Oriente',
+    ],
+
+];
+
 ?>
 
 
@@ -72,10 +139,7 @@ for (
 
         <div class="dashboard-filtros__encabezado-principal">
 
-            <div
-                class="dashboard-filtros__encabezado-icono"
-                aria-hidden="true"
-            >
+            <div class="dashboard-filtros__encabezado-icono" aria-hidden="true">
 
                 <svg viewBox="0 0 24 24">
 
@@ -108,19 +172,10 @@ for (
         </div>
 
 
-        <button
-            type="button"
-            class="dashboard-filtros__mas"
-            id="dashboard-mas-filtros"
-            aria-expanded="false"
-            aria-controls="dashboard-filtros-avanzados"
-        >
+        <button type="button" class="dashboard-filtros__mas" id="dashboard-mas-filtros" aria-expanded="false"
+            aria-controls="dashboard-filtros-avanzados">
 
-            <svg
-                class="dashboard-filtros__mas-icono"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-            >
+            <svg class="dashboard-filtros__mas-icono" viewBox="0 0 24 24" aria-hidden="true">
 
                 <path d="M4 6h16" />
                 <path d="M7 12h10" />
@@ -132,11 +187,7 @@ for (
                 Más filtros
             </span>
 
-            <svg
-                class="dashboard-filtros__mas-flecha"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-            >
+            <svg class="dashboard-filtros__mas-flecha" viewBox="0 0 24 24" aria-hidden="true">
 
                 <path d="m8 10 4 4 4-4" />
 
@@ -154,77 +205,60 @@ for (
     <div class="dashboard-filtros__principales">
 
         <!-- =================================================
-             FECHA DE REGISTRO - DESDE
+             FECHA INICIAL
         ================================================== -->
 
         <div class="dashboard-filtros__campo">
 
             <label for="dashboard-fecha-registro-inicio">
-                Registro desde
+                Fecha inicial
             </label>
 
-            <input
-                type="date"
-                id="dashboard-fecha-registro-inicio"
-                name="fecha_registro_inicio"
-            >
+            <input type="date" id="dashboard-fecha-registro-inicio" name="fecha_registro_inicio">
 
         </div>
 
 
         <!-- =================================================
-             FECHA DE REGISTRO - HASTA
+             FECHA FINAL
         ================================================== -->
 
         <div class="dashboard-filtros__campo">
 
             <label for="dashboard-fecha-registro-fin">
-                Registro hasta
+                Fecha final
             </label>
 
-            <input
-                type="date"
-                id="dashboard-fecha-registro-fin"
-                name="fecha_registro_fin"
-            >
+            <input type="date" id="dashboard-fecha-registro-fin" name="fecha_registro_fin">
 
         </div>
 
 
         <!-- =================================================
-             FECHA DE QUEJA - DESDE
+             TIPO DE REGISTRO
         ================================================== -->
 
         <div class="dashboard-filtros__campo">
 
-            <label for="dashboard-fecha-queja-inicio">
-                Queja desde
+            <label for="dashboard-tipo">
+                Tipo
             </label>
 
-            <input
-                type="date"
-                id="dashboard-fecha-queja-inicio"
-                name="fecha_queja_inicio"
-            >
+            <select id="dashboard-tipo" name="tipo">
 
-        </div>
+                <option value="">
+                    Todos
+                </option>
 
+                <option value="QUEJA">
+                    Quejas
+                </option>
 
-        <!-- =================================================
-             FECHA DE QUEJA - HASTA
-        ================================================== -->
+                <option value="FELICITACION">
+                    Felicitaciones
+                </option>
 
-        <div class="dashboard-filtros__campo">
-
-            <label for="dashboard-fecha-queja-fin">
-                Queja hasta
-            </label>
-
-            <input
-                type="date"
-                id="dashboard-fecha-queja-fin"
-                name="fecha_queja_fin"
-            >
+            </select>
 
         </div>
 
@@ -235,11 +269,7 @@ for (
          FILTROS AVANZADOS
     ====================================================== -->
 
-    <div
-        class="dashboard-filtros__avanzados"
-        id="dashboard-filtros-avanzados"
-        hidden
-    >
+    <div class="dashboard-filtros__avanzados" id="dashboard-filtros-avanzados" hidden>
 
 
         <!-- =================================================
@@ -279,13 +309,10 @@ for (
                 <div class="dashboard-filtros__campo">
 
                     <label for="dashboard-estado">
-                        Estado del reporte
+                        Estado
                     </label>
 
-                    <select
-                        id="dashboard-estado"
-                        name="estado_actual"
-                    >
+                    <select id="dashboard-estado" name="estado">
 
                         <option value="">
                             Todos
@@ -309,6 +336,84 @@ for (
 
 
                 <!-- =========================================
+                     CLASIFICACIÓN
+                ========================================== -->
+
+                <div class="dashboard-filtros__campo">
+
+                    <label for="dashboard-clasificacion">
+                        Clasificación
+                    </label>
+
+                    <select id="dashboard-clasificacion" name="clasificacion">
+
+                        <option value="">
+                            Todas
+                        </option>
+
+
+                        <?php foreach (
+                            $clasificacionesFiltro
+                            as $clasificacion
+                        ): ?>
+
+                        <?php
+
+                            if (is_array($clasificacion)) {
+
+                                $valorClasificacion =
+                                    trim(
+                                        (string) (
+                                            $clasificacion['valor']
+                                            ?? $clasificacion['clasificacion']
+                                            ?? ''
+                                        )
+                                    );
+
+
+                                $textoClasificacion =
+                                    trim(
+                                        (string) (
+                                            $clasificacion['texto']
+                                            ?? $clasificacion['clasificacion']
+                                            ?? $valorClasificacion
+                                        )
+                                    );
+
+                            } else {
+
+                                $valorClasificacion =
+                                    trim(
+                                        (string) $clasificacion
+                                    );
+
+
+                                $textoClasificacion =
+                                    $valorClasificacion;
+                            }
+
+                            ?>
+
+
+                        <?php if (
+                                $valorClasificacion !== ''
+                            ): ?>
+
+                        <option value="<?= esc($valorClasificacion) ?>">
+                            <?= esc($textoClasificacion) ?>
+                        </option>
+
+                        <?php endif; ?>
+
+
+                        <?php endforeach; ?>
+
+                    </select>
+
+                </div>
+
+
+                <!-- =========================================
                      SEGUIMIENTO
                 ========================================== -->
 
@@ -318,10 +423,7 @@ for (
                         Seguimiento
                     </label>
 
-                    <select
-                        id="dashboard-seguimiento"
-                        name="seguimiento"
-                    >
+                    <select id="dashboard-seguimiento" name="seguimiento">
 
                         <option value="">
                             Todos
@@ -341,25 +443,159 @@ for (
 
 
                 <!-- =========================================
-                     CLASIFICACIÓN - PENDIENTE
+                     QUEJA ANÓNIMA
                 ========================================== -->
 
                 <div class="dashboard-filtros__campo">
 
-                    <label for="dashboard-clasificacion">
-                        Clasificación
+                    <label for="dashboard-anonima">
+                        Queja anónima
                     </label>
 
-                    <select
-                        id="dashboard-clasificacion"
-                        name="clasificacion"
-                        disabled
-                        title="Pendiente de definir el catálogo institucional de clasificación"
-                    >
+                    <select id="dashboard-anonima" name="es_anonimo">
 
                         <option value="">
-                            Pendiente de catálogo
+                            Todas
                         </option>
+
+                        <option value="1">
+                            Sí
+                        </option>
+
+                        <option value="0">
+                            No
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             UBICACIÓN OPERATIVA
+        ================================================== -->
+
+        <div class="dashboard-filtros__grupo">
+
+            <div class="dashboard-filtros__grupo-encabezado">
+
+                <span class="dashboard-filtros__grupo-icono">
+
+                    <svg viewBox="0 0 24 24">
+
+                        <path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Z" />
+                        <circle cx="12" cy="10" r="2" />
+
+                    </svg>
+
+                </span>
+
+                <span>
+                    Ubicación operativa
+                </span>
+
+            </div>
+
+
+            <div class="dashboard-filtros__grupo-grid">
+
+                <!-- =========================================
+                     ZONA
+                ========================================== -->
+
+                <div class="dashboard-filtros__campo">
+
+                    <label for="dashboard-zona">
+                        Zona
+                    </label>
+
+                    <select id="dashboard-zona" name="zona">
+
+                        <option value="">
+                            Todas
+                        </option>
+
+
+                        <?php foreach (
+                            $zonasFiltro
+                            as $zona
+                        ): ?>
+
+                        <option value="<?= esc($zona['valor']) ?>">
+                            <?= esc($zona['texto']) ?>
+                        </option>
+
+                        <?php endforeach; ?>
+
+                    </select>
+
+                </div>
+
+
+                <!-- =========================================
+                     SECTOR
+                ========================================== -->
+
+                <div class="dashboard-filtros__campo">
+
+                    <label for="dashboard-sector">
+                        Sector
+                    </label>
+
+                    <select id="dashboard-sector" name="sector">
+
+                        <option value="">
+                            Todos
+                        </option>
+
+
+                        <?php foreach (
+                            $sectoresFiltro
+                            as $sector
+                        ): ?>
+
+                        <option value="<?= esc($sector) ?>">
+                            <?= esc($sector) ?>
+                        </option>
+
+                        <?php endforeach; ?>
+
+                    </select>
+
+                </div>
+
+
+                <!-- =========================================
+                     TURNO
+                ========================================== -->
+
+                <div class="dashboard-filtros__campo">
+
+                    <label for="dashboard-turno">
+                        Turno
+                    </label>
+
+                    <select id="dashboard-turno" name="turno">
+
+                        <option value="">
+                            Todos
+                        </option>
+
+
+                        <?php foreach (
+                            $turnosFiltro
+                            as $turno
+                        ): ?>
+
+                        <option value="<?= esc($turno) ?>">
+                            <?= esc($turno) ?>
+                        </option>
+
+                        <?php endforeach; ?>
 
                     </select>
 
@@ -400,19 +636,16 @@ for (
             <div class="dashboard-filtros__grupo-grid">
 
                 <!-- =========================================
-                     ÁREA INVOLUCRADA
+                     ÁREA
                 ========================================== -->
 
                 <div class="dashboard-filtros__campo">
 
                     <label for="dashboard-area-personal">
-                        Área involucrada
+                        Área
                     </label>
 
-                    <select
-                        id="dashboard-area-personal"
-                        name="area_personal"
-                    >
+                    <select id="dashboard-area-personal" name="area_personal">
 
                         <option value="">
                             Todas
@@ -424,9 +657,9 @@ for (
                             as $area
                         ): ?>
 
-                            <option value="<?= esc($area) ?>">
-                                <?= esc($area) ?>
-                            </option>
+                        <option value="<?= esc($area) ?>">
+                            <?= esc($area) ?>
+                        </option>
 
                         <?php endforeach; ?>
 
@@ -436,73 +669,43 @@ for (
 
 
                 <!-- =========================================
-                     TURNO
+                     PERSONAL
+
+                     La búsqueda institucional se conectará
+                     posteriormente desde JavaScript.
                 ========================================== -->
 
-                <div class="dashboard-filtros__campo">
+                <div class="
+                        dashboard-filtros__campo
+                        dashboard-filtros__campo--personal
+                    ">
 
-                    <label for="dashboard-turno">
-                        Turno
+                    <label for="dashboard-personal-busqueda">
+                        Personal
                     </label>
 
-                    <select
-                        id="dashboard-turno"
-                        name="turno"
-                    >
+                    <div class="dashboard-filtros__personal">
 
-                        <option value="">
-                            Todos
-                        </option>
+                        <input type="search" id="dashboard-personal-busqueda"
+                            placeholder="Buscar por nombre o nómina..." autocomplete="off">
 
+                        <input type="hidden" id="dashboard-personal" name="personal" value="">
 
-                        <?php foreach (
-                            $turnosFiltro
-                            as $turno
-                        ): ?>
+                        <div class="dashboard-filtros__personal-resultados" id="dashboard-personal-resultados" hidden>
+                        </div>
 
-                            <option value="<?= esc($turno) ?>">
-                                <?= esc($turno) ?>
-                            </option>
+                        <div class="dashboard-filtros__personal-seleccion" id="dashboard-personal-seleccion" hidden>
 
-                        <?php endforeach; ?>
+                            <span id="dashboard-personal-seleccion-texto"></span>
 
-                    </select>
+                            <button type="button" id="dashboard-personal-quitar"
+                                aria-label="Quitar personal seleccionado">
+                                ×
+                            </button>
 
-                </div>
+                        </div>
 
-
-                <!-- =========================================
-                     SECTOR
-                ========================================== -->
-
-                <div class="dashboard-filtros__campo">
-
-                    <label for="dashboard-sector">
-                        Sector
-                    </label>
-
-                    <select
-                        id="dashboard-sector"
-                        name="sector"
-                    >
-
-                        <option value="">
-                            Todos
-                        </option>
-
-
-                        <?php foreach (
-                            $sectoresFiltro
-                            as $sector
-                        ): ?>
-
-                            <option value="<?= esc($sector) ?>">
-                                <?= esc($sector) ?>
-                            </option>
-
-                        <?php endforeach; ?>
-
-                    </select>
+                    </div>
 
                 </div>
 
@@ -554,10 +757,7 @@ for (
                         Unidad involucrada
                     </label>
 
-                    <select
-                        id="dashboard-unidad"
-                        name="unidad"
-                    >
+                    <select id="dashboard-unidad" name="unidad">
 
                         <option value="">
                             Todas
@@ -570,7 +770,7 @@ for (
                         ): ?>
 
 
-                            <?php
+                        <?php
 
                             if (is_array($unidad)) {
 
@@ -605,21 +805,20 @@ for (
 
                                 $textoUnidad =
                                     $valorUnidad;
-
                             }
 
                             ?>
 
 
-                            <?php if (
+                        <?php if (
                                 $valorUnidad !== ''
                             ): ?>
 
-                                <option value="<?= esc($valorUnidad) ?>">
-                                    <?= esc($textoUnidad) ?>
-                                </option>
+                        <option value="<?= esc($valorUnidad) ?>">
+                            <?= esc($textoUnidad) ?>
+                        </option>
 
-                            <?php endif; ?>
+                        <?php endif; ?>
 
 
                         <?php endforeach; ?>
@@ -654,31 +853,22 @@ for (
 
         <div class="dashboard-filtros__acciones">
 
-            <button
-                type="button"
-                class="
+            <button type="button" class="
                     dashboard-filtros__boton
                     dashboard-filtros__boton--secondary
-                "
-                id="dashboard-limpiar-filtros"
-            >
+                " id="dashboard-limpiar-filtros">
+
                 Limpiar
+
             </button>
 
 
-            <button
-                type="button"
-                class="
+            <button type="button" class="
                     dashboard-filtros__boton
                     dashboard-filtros__boton--primary
-                "
-                id="dashboard-aplicar-filtros"
-            >
+                " id="dashboard-aplicar-filtros">
 
-                <svg
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
 
                     <path d="M4 6h16" />
 

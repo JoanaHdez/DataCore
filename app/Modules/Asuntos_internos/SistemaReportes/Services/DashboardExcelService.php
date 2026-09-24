@@ -1051,7 +1051,7 @@ class DashboardExcelService
        REPORTES RECIENTES
     ========================================================= */
 
-    private function crearRecientes(
+    /* private function crearRecientes(
         Spreadsheet $spreadsheet
     ): void {
 
@@ -1129,7 +1129,7 @@ class DashboardExcelService
                     $datos
                 )
         );
-    }
+    } */
 
 
     /* =========================================================

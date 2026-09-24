@@ -2443,20 +2443,6 @@ class Reportes_Controller extends BaseController
 
 
             /* =====================================================
-            RESOLUCIONES
-
-            IMPORTANTE:
-            Se conserva la gráfica.
-
-            Resolución solamente dejó de ser un filtro.
-            ===================================================== */
-
-            $resoluciones =
-                $dashboardService
-                ->obtenerResoluciones();
-
-
-            /* =====================================================
             CLASIFICACIONES
 
             La gráfica continúa funcionando.
@@ -2467,17 +2453,6 @@ class Reportes_Controller extends BaseController
             $clasificaciones =
                 $dashboardService
                 ->obtenerClasificaciones();
-
-
-            /* =====================================================
-            REPORTES RECIENTES
-            ===================================================== */
-
-            $reportesRecientes =
-                $dashboardService
-                ->obtenerReportesRecientes(
-                    6
-                );
         } catch (\Throwable $e) {
 
             log_message(
@@ -2632,25 +2607,6 @@ class Reportes_Controller extends BaseController
 
             ];
 
-
-            /* =====================================================
-            VALORES POR DEFECTO - RESOLUCIONES
-            ===================================================== */
-
-            $resoluciones = [
-
-                'resoluciones' =>
-                [],
-
-                'totales' =>
-                [],
-
-                'total' =>
-                0,
-
-            ];
-
-
             /* =====================================================
             VALORES POR DEFECTO - CLASIFICACIONES
             ===================================================== */
@@ -2667,14 +2623,6 @@ class Reportes_Controller extends BaseController
                 0,
 
             ];
-
-
-            /* =====================================================
-            REPORTES RECIENTES
-            ===================================================== */
-
-            $reportesRecientes =
-                [];
         }
 
 
@@ -2720,15 +2668,8 @@ class Reportes_Controller extends BaseController
                 'sanciones' =>
                 $sanciones,
 
-                'resoluciones' =>
-                $resoluciones,
-
                 'clasificaciones' =>
                 $clasificaciones,
-
-                'reportesRecientes' =>
-                $reportesRecientes,
-
             ]
         );
     }

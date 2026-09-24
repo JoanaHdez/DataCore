@@ -8,7 +8,6 @@ import './reportes/ubicacion.js';
 import './reportes/dashboard/graficas/sanciones.js';
 import './reportes/dashboard/graficas/areas.js';
 import './reportes/dashboard/graficas/zonas.js';
-import './reportes/dashboard/graficas/resoluciones.js';
 import './reportes/dashboard/graficas/catalogo.js';
 import './reportes/dashboard/graficas/turnos.js';
 import './reportes/dashboard/graficas/areas_involucradas.js';

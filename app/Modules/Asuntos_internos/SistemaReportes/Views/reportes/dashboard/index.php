@@ -11,161 +11,179 @@ Dashboard | Asuntos Internos
 
 <div class="dashboard-page">
 
-    <!-- HEADER GENERAL DEL SISTEMA -->
+    <!-- =====================================================
+         HEADER GENERAL DEL SISTEMA
+    ====================================================== -->
+
     <?= $this->include(
         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\sections\encabezado'
     ) ?>
+
 
     <main class="dashboard-page__main"
         data-dashboard-requiere-autorizacion="<?= !empty($requiereAutorizacionAdmin) ? '1' : '0' ?>">
 
         <div class="dashboard-page__container">
 
-            <!-- ENCABEZADO DEL DASHBOARD -->
+            <!-- =================================================
+                 ENCABEZADO DEL DASHBOARD
+            ================================================== -->
+
             <?= $this->include(
                 'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\encabezado'
             ) ?>
 
 
-            <!-- FILTROS -->
-            <?= $this->include(
-                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\filtros'
-            ) ?>
+            <!-- =================================================
+                 LAYOUT GENERAL DEL DASHBOARD
 
+                 IZQUIERDA:
+                 filtros
 
-            <!-- INDICADORES -->
-            <?= $this->include(
-                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\indicadores'
-            ) ?>
+                 DERECHA:
+                 indicadores + gráficas
+            ================================================== -->
 
-
-            <!-- =====================================================
-                DASHBOARD - COMPOSICIÓN DE GRÁFICAS
-            ===================================================== -->
-
-            <div class="dashboard-layout">
+            <div class="dashboard-shell">
 
 
                 <!-- =================================================
-                    PRINCIPAL
+                     SIDEBAR DE FILTROS
                 ================================================== -->
 
-                <div class="dashboard-layout__principal">
+                <aside class="dashboard-shell__sidebar">
 
                     <?= $this->include(
-                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\areas'
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\filtros'
                     ) ?>
 
-                </div>
+                </aside>
 
-                <div class="dashboard-layout__areas">
+
+                <!-- =================================================
+                     CONTENIDO PRINCIPAL
+                ================================================== -->
+
+                <div class="dashboard-shell__contenido">
+
+
+                    <!-- =============================================
+                         INDICADORES
+                    ============================================== -->
 
                     <?= $this->include(
-                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\areas_involucradas'
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\indicadores'
                     ) ?>
 
-                </div>
 
-                <!-- =================================================
-                    FILA 1
-                    ZONAS + SANCIONES
-                ================================================== -->
+                    <!-- =============================================
+                         COMPOSICIÓN DE GRÁFICAS
+                    ============================================== -->
 
-                <div class="dashboard-layout__fila dashboard-layout__fila--zonas">
-
-                     <?php
-    /*
-    <div class="dashboard-layout__zona">
-
-        <?= $this->include(
-            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\zonas'
-        ) ?>
-
-    </div>
-    */
-    ?>
+                    <div class="dashboard-layout">
 
 
-                    <div class="dashboard-layout__sanciones">
+                        <!-- =========================================
+                             PRINCIPAL
+                        ========================================== -->
 
-                        <?= $this->include(
-                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\sanciones'
-                        ) ?>
+                        <div class="dashboard-layout__principal">
 
-                    </div>
+                            <?= $this->include(
+                                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\areas'
+                            ) ?>
 
-                </div>
-
-
-                <!-- =================================================
-                    FILA 2
-                    RESOLUCIONES + CATÁLOGO
-                ================================================== -->
-
-                <div class="dashboard-layout__fila dashboard-layout__fila--analisis">
-
-                    <div class="dashboard-layout__resoluciones">
-
-                        <?= $this->include(
-                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\resoluciones'
-                        ) ?>
-
-                    </div>
+                        </div>
 
 
-                    <?php
-    /*
-    <div class="dashboard-layout__catalogo">
+                        <!-- =========================================
+                             ÁREAS INVOLUCRADAS
+                        ========================================== -->
 
-        <?= $this->include(
-            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\catalogo'
-        ) ?>
+                        <div class="dashboard-layout__areas">
 
-    </div>
-    */
-    ?>
+                            <?= $this->include(
+                                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\areas_involucradas'
+                            ) ?>
 
-                </div>
+                        </div>
 
 
-                <!-- =================================================
-                    FILA 3
-                    TURNOS + RECIENTES
-                ================================================== -->
+                        <!-- =========================================
+                             FILA
+                             ZONAS + SANCIONES
+                        ========================================== -->
 
-                <div class="dashboard-layout__fila dashboard-layout__fila--operativa">
+                        <div class="
+                                dashboard-layout__fila
+                                dashboard-layout__fila--zonas
+                            ">
 
-                    <div class="dashboard-layout__turnos">
+                            <?php
+                            /*
+                            <div class="dashboard-layout__zona">
 
-                        <?= $this->include(
-                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\turnos'
-                        ) ?>
+                                <?= $this->include(
+                                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\zonas'
+                                ) ?>
+
+                        </div>
+                        */
+                        ?>
+
+
+                        <div class="dashboard-layout__sanciones">
+
+                            <?= $this->include(
+                                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\sanciones'
+                                ) ?>
+
+                        </div>
 
                     </div>
 
 
-                    <div class="dashboard-layout__recientes">
+                    <!-- =========================================
+                             FILA
+                             TURNOS
+                        ========================================== -->
 
-                        <?= $this->include(
-                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\recientes'
-                        ) ?>
+                    <div class="
+                                dashboard-layout__fila
+                                dashboard-layout__fila--operativa
+                            ">
+
+                        <div class="dashboard-layout__turnos">
+
+                            <?= $this->include(
+                                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\turnos'
+                                ) ?>
+
+                        </div>
 
                     </div>
 
-                </div>
 
+                </div>
 
             </div>
 
         </div>
 
-    </main>
+</div>
 
-    <?= $this->include(
+</main>
+
+
+<!-- =====================================================
+         MODALES
+    ====================================================== -->
+
+<?= $this->include(
         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\modales\exportar'
     ) ?>
 
-    <?= $this->include(
+<?= $this->include(
         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\modales\autorizacion'
     ) ?>
 
