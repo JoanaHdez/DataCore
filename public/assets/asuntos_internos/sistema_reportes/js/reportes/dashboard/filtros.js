@@ -1,7 +1,9 @@
 document.addEventListener(
     'DOMContentLoaded',
     () => {
+
         inicializarFiltrosDashboard();
+
     }
 );
 
@@ -21,15 +23,18 @@ function inicializarFiltrosDashboard() {
             '#dashboard-mas-filtros'
         );
 
+
     const panelAvanzado =
         document.querySelector(
             '#dashboard-filtros-avanzados'
         );
 
+
     const botonAplicar =
         document.querySelector(
             '#dashboard-aplicar-filtros'
         );
+
 
     const botonLimpiar =
         document.querySelector(
@@ -38,13 +43,14 @@ function inicializarFiltrosDashboard() {
 
 
     /* =====================================================
-       FECHA DE REGISTRO
+       PERIODO
     ===================================================== */
 
     const fechaRegistroInicio =
         document.querySelector(
             '#dashboard-fecha-registro-inicio'
         );
+
 
     const fechaRegistroFin =
         document.querySelector(
@@ -53,17 +59,12 @@ function inicializarFiltrosDashboard() {
 
 
     /* =====================================================
-       FECHA DE LA QUEJA
+       TIPO
     ===================================================== */
 
-    const fechaQuejaInicio =
+    const tipo =
         document.querySelector(
-            '#dashboard-fecha-queja-inicio'
-        );
-
-    const fechaQuejaFin =
-        document.querySelector(
-            '#dashboard-fecha-queja-fin'
+            '#dashboard-tipo'
         );
 
 
@@ -76,9 +77,44 @@ function inicializarFiltrosDashboard() {
             '#dashboard-estado'
         );
 
+
+    const clasificacion =
+        document.querySelector(
+            '#dashboard-clasificacion'
+        );
+
+
     const seguimiento =
         document.querySelector(
             '#dashboard-seguimiento'
+        );
+
+
+    const esAnonimo =
+        document.querySelector(
+            '#dashboard-anonima'
+        );
+
+
+    /* =====================================================
+       UBICACIÓN OPERATIVA
+    ===================================================== */
+
+    const zona =
+        document.querySelector(
+            '#dashboard-zona'
+        );
+
+
+    const sector =
+        document.querySelector(
+            '#dashboard-sector'
+        );
+
+
+    const turno =
+        document.querySelector(
+            '#dashboard-turno'
         );
 
 
@@ -91,14 +127,10 @@ function inicializarFiltrosDashboard() {
             '#dashboard-area-personal'
         );
 
-    const turno =
-        document.querySelector(
-            '#dashboard-turno'
-        );
 
-    const sector =
+    const personal =
         document.querySelector(
-            '#dashboard-sector'
+            '#dashboard-personal'
         );
 
 
@@ -121,31 +153,42 @@ function inicializarFiltrosDashboard() {
         fechaRegistroInicio,
         fechaRegistroFin,
 
-        fechaQuejaInicio,
-        fechaQuejaFin,
+        tipo,
 
         estado,
+        clasificacion,
         seguimiento,
+        esAnonimo,
+
+        zona,
+        sector,
+        turno,
 
         areaPersonal,
-        turno,
-        sector,
+        personal,
 
         unidad,
 
     };
 
+
     /* =====================================================
-       RESTAURAR DESDE URL
+       RESTAURAR FILTROS DESDE URL
     ===================================================== */
 
     restaurarFiltrosDesdeUrl(
         filtros
     );
 
+    inicializarCatalogosDashboard();
 
     /* =====================================================
        PANEL AVANZADO
+
+       En escritorio permanece visible por CSS.
+
+       Este comportamiento se conserva porque en tablet /
+       móvil seguimos utilizando "Más filtros".
     ===================================================== */
 
     if (
@@ -186,22 +229,27 @@ function inicializarFiltrosDashboard() {
 
 
     /* =====================================================
-       APLICAR
+       APLICAR FILTROS
     ===================================================== */
 
-    botonAplicar.addEventListener(
-    'click',
-    () => {
+    if (botonAplicar) {
 
-        aplicarFiltrosDashboard(
-            filtros
+        botonAplicar.addEventListener(
+            'click',
+            () => {
+
+                aplicarFiltrosDashboard(
+                    filtros
+                );
+
+            }
         );
 
     }
-);
+
 
     /* =====================================================
-       LIMPIAR
+       LIMPIAR FILTROS
     ===================================================== */
 
     if (botonLimpiar) {
@@ -219,7 +267,8 @@ function inicializarFiltrosDashboard() {
 
 
     /* =====================================================
-       ABRIR PANEL SI HAY FILTROS AVANZADOS ACTIVOS
+       ABRIR PANEL EN MÓVIL SI EXISTEN FILTROS AVANZADOS
+       ACTIVOS EN LA URL
     ===================================================== */
 
     if (
@@ -253,7 +302,7 @@ function aplicarFiltrosDashboard(
 
 
     /* =====================================================
-       FECHA DE REGISTRO
+       PERIODO
     ===================================================== */
 
     actualizarParametro(
@@ -261,6 +310,7 @@ function aplicarFiltrosDashboard(
         'fecha_registro_inicio',
         filtros.fechaRegistroInicio?.value
     );
+
 
     actualizarParametro(
         url,
@@ -270,19 +320,13 @@ function aplicarFiltrosDashboard(
 
 
     /* =====================================================
-       FECHA DE LA QUEJA
+       TIPO
     ===================================================== */
 
     actualizarParametro(
         url,
-        'fecha_queja_inicio',
-        filtros.fechaQuejaInicio?.value
-    );
-
-    actualizarParametro(
-        url,
-        'fecha_queja_fin',
-        filtros.fechaQuejaFin?.value
+        'tipo',
+        filtros.tipo?.value
     );
 
 
@@ -292,14 +336,54 @@ function aplicarFiltrosDashboard(
 
     actualizarParametro(
         url,
-        'estado_actual',
+        'estado',
         filtros.estado?.value
     );
+
+
+    actualizarParametro(
+        url,
+        'clasificacion',
+        filtros.clasificacion?.value
+    );
+
 
     actualizarParametro(
         url,
         'seguimiento',
         filtros.seguimiento?.value
+    );
+
+
+    actualizarParametro(
+        url,
+        'es_anonimo',
+        filtros.esAnonimo?.value
+    );
+
+
+    /* =====================================================
+       UBICACIÓN OPERATIVA
+    ===================================================== */
+
+    actualizarParametro(
+        url,
+        'zona',
+        filtros.zona?.value
+    );
+
+
+    actualizarParametro(
+        url,
+        'sector',
+        filtros.sector?.value
+    );
+
+
+    actualizarParametro(
+        url,
+        'turno',
+        filtros.turno?.value
     );
 
 
@@ -313,16 +397,11 @@ function aplicarFiltrosDashboard(
         filtros.areaPersonal?.value
     );
 
-    actualizarParametro(
-        url,
-        'turno',
-        filtros.turno?.value
-    );
 
     actualizarParametro(
         url,
-        'sector',
-        filtros.sector?.value
+        'personal',
+        filtros.personal?.value
     );
 
 
@@ -338,46 +417,14 @@ function aplicarFiltrosDashboard(
 
 
     /* =====================================================
-       ELIMINAR PARÁMETROS RETIRADOS / ANTIGUOS
+       ELIMINAR PARÁMETROS ANTIGUOS
 
-       Esto evita que una URL anterior conserve filtros
-       que ya no existen en la interfaz.
+       Evita que URLs guardadas de versiones anteriores
+       sigan afectando el Dashboard.
     ===================================================== */
 
-    const parametrosRetirados = [
-
-        /* Filtros retirados */
-        'fecha_inicio',
-        'fecha_fin',
-        'periodo',
-        'tipo_fecha',
-        'evidencia',
-        'genero',
-        'zona',
-
-        /* Pendiente */
-        'clasificacion',
-
-        /* Filtros retirados anteriormente */
-        'resolucion',
-        'cuadrante',
-        'colonia',
-        'antiguedad',
-        'inspector',
-        'investigador',
-        'emite_resolucion',
-
-    ];
-
-
-    parametrosRetirados.forEach(
-        parametro => {
-
-            url.searchParams.delete(
-                parametro
-            );
-
-        }
+    eliminarParametrosAntiguos(
+        url
     );
 
 
@@ -426,6 +473,67 @@ function actualizarParametro(
 
 
 /* =========================================================
+   ELIMINAR PARÁMETROS ANTIGUOS
+========================================================= */
+
+function eliminarParametrosAntiguos(
+    url
+) {
+
+    const parametrosAntiguos = [
+
+        /* =============================================
+           FECHAS RETIRADAS
+        ============================================== */
+
+        'fecha_queja_inicio',
+        'fecha_queja_fin',
+
+        'fecha_inicio',
+        'fecha_fin',
+
+        'periodo',
+        'tipo_fecha',
+
+
+        /* =============================================
+           NOMBRE ANTERIOR DE ESTADO
+        ============================================== */
+
+        'estado_actual',
+
+
+        /* =============================================
+           FILTROS RETIRADOS
+        ============================================== */
+
+        'evidencia',
+        'genero',
+        'resolucion',
+        'cuadrante',
+        'colonia',
+        'antiguedad',
+        'inspector',
+        'investigador',
+        'emite_resolucion',
+
+    ];
+
+
+    parametrosAntiguos.forEach(
+        parametro => {
+
+            url.searchParams.delete(
+                parametro
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
    LIMPIAR FILTROS
 ========================================================= */
 
@@ -437,46 +545,55 @@ function limpiarFiltrosDashboard() {
         );
 
 
-    /*
-     * Se eliminan tanto los filtros actuales como
-     * cualquier parámetro perteneciente a versiones
-     * anteriores del Dashboard.
-     */
+    /* =====================================================
+       FILTROS V1 ACTUALES
+    ===================================================== */
 
     const parametrosDashboard = [
 
-        /* Actuales */
         'fecha_registro_inicio',
         'fecha_registro_fin',
-        'fecha_queja_inicio',
-        'fecha_queja_fin',
 
-        'estado_actual',
+        'tipo',
+
+        'estado',
+        'clasificacion',
         'seguimiento',
+        'es_anonimo',
+
+        'zona',
+        'sector',
+        'turno',
 
         'area_personal',
-        'turno',
-        'sector',
+        'personal',
 
         'unidad',
 
-        /* Retirados */
+
+        /* =============================================
+           VERSIONES ANTERIORES
+        ============================================== */
+
+        'fecha_queja_inicio',
+        'fecha_queja_fin',
+
         'fecha_inicio',
         'fecha_fin',
+
         'periodo',
         'tipo_fecha',
+
+        'estado_actual',
+
         'evidencia',
         'genero',
-        'zona',
 
-        /* Pendiente */
-        'clasificacion',
-
-        /* Versiones anteriores */
         'resolucion',
         'cuadrante',
         'colonia',
         'antiguedad',
+
         'inspector',
         'investigador',
         'emite_resolucion',
@@ -516,7 +633,7 @@ function restaurarFiltrosDesdeUrl(
 
 
     /* =====================================================
-       FECHA DE REGISTRO
+       PERIODO
     ===================================================== */
 
     restaurarValor(
@@ -525,6 +642,7 @@ function restaurarFiltrosDesdeUrl(
             'fecha_registro_inicio'
         )
     );
+
 
     restaurarValor(
         filtros.fechaRegistroFin,
@@ -535,20 +653,13 @@ function restaurarFiltrosDesdeUrl(
 
 
     /* =====================================================
-       FECHA DE LA QUEJA
+       TIPO
     ===================================================== */
 
     restaurarValor(
-        filtros.fechaQuejaInicio,
+        filtros.tipo,
         parametros.get(
-            'fecha_queja_inicio'
-        )
-    );
-
-    restaurarValor(
-        filtros.fechaQuejaFin,
-        parametros.get(
-            'fecha_queja_fin'
+            'tipo'
         )
     );
 
@@ -560,14 +671,59 @@ function restaurarFiltrosDesdeUrl(
     restaurarValor(
         filtros.estado,
         parametros.get(
-            'estado_actual'
+            'estado'
         )
     );
+
+
+    restaurarValor(
+        filtros.clasificacion,
+        parametros.get(
+            'clasificacion'
+        )
+    );
+
 
     restaurarValor(
         filtros.seguimiento,
         parametros.get(
             'seguimiento'
+        )
+    );
+
+
+    restaurarValor(
+        filtros.esAnonimo,
+        parametros.get(
+            'es_anonimo'
+        )
+    );
+
+
+    /* =====================================================
+       UBICACIÓN OPERATIVA
+    ===================================================== */
+
+    restaurarValor(
+        filtros.zona,
+        parametros.get(
+            'zona'
+        )
+    );
+
+
+    restaurarValor(
+        filtros.sector,
+        parametros.get(
+            'sector'
+        )
+    );
+
+
+    restaurarValor(
+        filtros.turno,
+        parametros.get(
+            'turno'
         )
     );
 
@@ -583,17 +739,11 @@ function restaurarFiltrosDesdeUrl(
         )
     );
 
-    restaurarValor(
-        filtros.turno,
-        parametros.get(
-            'turno'
-        )
-    );
 
     restaurarValor(
-        filtros.sector,
+        filtros.personal,
         parametros.get(
-            'sector'
+            'personal'
         )
     );
 
@@ -626,14 +776,16 @@ function restaurarValor(
         || valor === null
         || valor === ''
     ) {
+
         return;
     }
 
 
-    /*
-     * Para SELECT solamente restauramos el valor
-     * cuando exista realmente una opción con ese valor.
-     */
+    /* =====================================================
+       SELECT
+
+       Solo restaurar cuando realmente exista la opción.
+    ===================================================== */
 
     if (
         elemento.tagName === 'SELECT'
@@ -649,6 +801,7 @@ function restaurarValor(
 
 
         if (!existeOpcion) {
+
             return;
         }
 
@@ -675,11 +828,18 @@ function existenFiltrosAvanzadosActivos() {
 
     const filtrosAvanzados = [
 
-        'estado_actual',
+        'estado',
+        'clasificacion',
         'seguimiento',
-        'area_personal',
-        'turno',
+        'es_anonimo',
+
+        'zona',
         'sector',
+        'turno',
+
+        'area_personal',
+        'personal',
+
         'unidad',
 
     ];
@@ -713,6 +873,15 @@ function abrirFiltrosAvanzados(
     boton,
     panel
 ) {
+
+    if (
+        !boton
+        || !panel
+    ) {
+
+        return;
+    }
+
 
     panel.hidden =
         false;
@@ -749,6 +918,15 @@ function cerrarFiltrosAvanzados(
     panel
 ) {
 
+    if (
+        !boton
+        || !panel
+    ) {
+
+        return;
+    }
+
+
     panel.hidden =
         true;
 
@@ -771,5 +949,550 @@ function cerrarFiltrosAvanzados(
             'Más filtros';
 
     }
+
+}
+
+/* =========================================================
+   CATÁLOGOS VISUALES DEL DASHBOARD
+========================================================= */
+
+function inicializarCatalogosDashboard() {
+
+    const catalogos =
+        document.querySelectorAll(
+            '[data-dashboard-catalogo]'
+        );
+
+
+    catalogos.forEach(
+        catalogo => {
+
+            inicializarCatalogoDashboard(
+                catalogo
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       CERRAR AL HACER CLIC FUERA
+    ===================================================== */
+
+    document.addEventListener(
+        'click',
+        evento => {
+
+            if (
+                evento.target.closest(
+                    '[data-dashboard-catalogo]'
+                )
+            ) {
+
+                return;
+            }
+
+
+            cerrarTodosCatalogosDashboard();
+
+        }
+    );
+
+
+    /* =====================================================
+       CERRAR CON ESCAPE
+    ===================================================== */
+
+    document.addEventListener(
+        'keydown',
+        evento => {
+
+            if (
+                evento.key !== 'Escape'
+            ) {
+
+                return;
+            }
+
+
+            cerrarTodosCatalogosDashboard();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   INICIALIZAR UN CATÁLOGO
+========================================================= */
+
+function inicializarCatalogoDashboard(
+    catalogo
+) {
+
+    if (!catalogo) {
+
+        return;
+    }
+
+
+    const selector =
+        catalogo.querySelector(
+            '[data-dashboard-catalogo-selector]'
+        );
+
+
+    const resultados =
+        catalogo.querySelector(
+            '[data-dashboard-catalogo-resultados]'
+        );
+
+
+    const input =
+        catalogo.querySelector(
+            '[data-dashboard-catalogo-valor]'
+        );
+
+
+    const opciones =
+        catalogo.querySelectorAll(
+            '[data-dashboard-catalogo-opcion]'
+        );
+
+
+    if (
+        !selector
+        || !resultados
+        || !input
+    ) {
+
+        return;
+    }
+
+
+    /* =====================================================
+       SINCRONIZAR VALOR RESTAURADO DESDE URL
+    ===================================================== */
+
+    sincronizarCatalogoDashboard(
+        catalogo
+    );
+
+
+    /* =====================================================
+       ABRIR / CERRAR
+    ===================================================== */
+
+    selector.addEventListener(
+        'click',
+        evento => {
+
+            evento.stopPropagation();
+
+
+            const estaAbierto =
+                selector.getAttribute(
+                    'aria-expanded'
+                ) === 'true';
+
+
+            cerrarTodosCatalogosDashboard(
+                catalogo
+            );
+
+
+            if (estaAbierto) {
+
+                cerrarCatalogoDashboard(
+                    catalogo
+                );
+
+                return;
+            }
+
+
+            abrirCatalogoDashboard(
+                catalogo
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       SELECCIONAR OPCIÓN
+    ===================================================== */
+
+    opciones.forEach(
+        opcion => {
+
+            opcion.addEventListener(
+                'click',
+                evento => {
+
+                    evento.stopPropagation();
+
+
+                    seleccionarOpcionCatalogoDashboard(
+                        catalogo,
+                        opcion
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   ABRIR CATÁLOGO
+========================================================= */
+
+function abrirCatalogoDashboard(
+    catalogo
+) {
+
+    const selector =
+        catalogo.querySelector(
+            '[data-dashboard-catalogo-selector]'
+        );
+
+
+    const resultados =
+        catalogo.querySelector(
+            '[data-dashboard-catalogo-resultados]'
+        );
+
+
+    if (
+        !selector
+        || !resultados
+    ) {
+
+        return;
+    }
+
+
+    resultados.hidden =
+        false;
+
+
+    selector.setAttribute(
+        'aria-expanded',
+        'true'
+    );
+
+}
+
+
+/* =========================================================
+   CERRAR CATÁLOGO
+========================================================= */
+
+function cerrarCatalogoDashboard(
+    catalogo
+) {
+
+    const selector =
+        catalogo.querySelector(
+            '[data-dashboard-catalogo-selector]'
+        );
+
+
+    const resultados =
+        catalogo.querySelector(
+            '[data-dashboard-catalogo-resultados]'
+        );
+
+
+    if (
+        !selector
+        || !resultados
+    ) {
+
+        return;
+    }
+
+
+    resultados.hidden =
+        true;
+
+
+    selector.setAttribute(
+        'aria-expanded',
+        'false'
+    );
+
+}
+
+
+/* =========================================================
+   CERRAR TODOS LOS CATÁLOGOS
+========================================================= */
+
+function cerrarTodosCatalogosDashboard(
+    excepcion = null
+) {
+
+    const catalogos =
+        document.querySelectorAll(
+            '[data-dashboard-catalogo]'
+        );
+
+
+    catalogos.forEach(
+        catalogo => {
+
+            if (
+                excepcion
+                && catalogo === excepcion
+            ) {
+
+                return;
+            }
+
+
+            cerrarCatalogoDashboard(
+                catalogo
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SELECCIONAR OPCIÓN
+========================================================= */
+
+function seleccionarOpcionCatalogoDashboard(
+    catalogo,
+    opcion
+) {
+
+    const input =
+        catalogo.querySelector(
+            '[data-dashboard-catalogo-valor]'
+        );
+
+
+    if (
+        !input
+        || !opcion
+    ) {
+
+        return;
+    }
+
+
+    input.value =
+        opcion.dataset.value
+        ?? '';
+
+
+    actualizarPresentacionCatalogoDashboard(
+        catalogo,
+        opcion
+    );
+
+
+    marcarOpcionActivaCatalogoDashboard(
+        catalogo,
+        opcion
+    );
+
+
+    cerrarCatalogoDashboard(
+        catalogo
+    );
+
+
+    /* =====================================================
+       EVENTO CHANGE
+
+       Esto permitirá que otros filtros dependientes puedan
+       reaccionar en el futuro sin acoplarse al catálogo.
+    ===================================================== */
+
+    input.dispatchEvent(
+        new Event(
+            'change',
+            {
+                bubbles: true,
+            }
+        )
+    );
+
+}
+
+
+/* =========================================================
+   SINCRONIZAR CATÁLOGO CON EL INPUT
+========================================================= */
+
+function sincronizarCatalogoDashboard(
+    catalogo
+) {
+
+    const input =
+        catalogo.querySelector(
+            '[data-dashboard-catalogo-valor]'
+        );
+
+
+    const opciones =
+        Array.from(
+            catalogo.querySelectorAll(
+                '[data-dashboard-catalogo-opcion]'
+            )
+        );
+
+
+    if (!input) {
+
+        return;
+    }
+
+
+    let opcionSeleccionada =
+        opciones.find(
+            opcion =>
+                String(
+                    opcion.dataset.value
+                    ?? ''
+                ) === String(
+                    input.value
+                    ?? ''
+                )
+        );
+
+
+    if (!opcionSeleccionada) {
+
+        opcionSeleccionada =
+            opciones[0]
+            ?? null;
+
+    }
+
+
+    if (!opcionSeleccionada) {
+
+        return;
+    }
+
+
+    actualizarPresentacionCatalogoDashboard(
+        catalogo,
+        opcionSeleccionada
+    );
+
+
+    marcarOpcionActivaCatalogoDashboard(
+        catalogo,
+        opcionSeleccionada
+    );
+
+}
+
+
+/* =========================================================
+   ACTUALIZAR PRESENTACIÓN
+========================================================= */
+
+function actualizarPresentacionCatalogoDashboard(
+    catalogo,
+    opcion
+) {
+
+    const texto =
+        catalogo.querySelector(
+            '[data-dashboard-catalogo-texto]'
+        );
+
+
+    const descripcion =
+        catalogo.querySelector(
+            '[data-dashboard-catalogo-descripcion]'
+        );
+
+
+    const avatar =
+        catalogo.querySelector(
+            '[data-dashboard-catalogo-avatar]'
+        );
+
+
+    if (texto) {
+
+        texto.textContent =
+            opcion.dataset.texto
+            ?? '';
+
+    }
+
+
+    if (descripcion) {
+
+        descripcion.textContent =
+            opcion.dataset.descripcion
+            ?? '';
+
+    }
+
+
+    if (avatar) {
+
+        avatar.textContent =
+            opcion.dataset.avatar
+            ?? '';
+
+    }
+
+}
+
+
+/* =========================================================
+   MARCAR OPCIÓN ACTIVA
+========================================================= */
+
+function marcarOpcionActivaCatalogoDashboard(
+    catalogo,
+    opcionSeleccionada
+) {
+
+    const opciones =
+        catalogo.querySelectorAll(
+            '[data-dashboard-catalogo-opcion]'
+        );
+
+
+    opciones.forEach(
+        opcion => {
+
+            const estaActiva =
+                opcion === opcionSeleccionada;
+
+
+            opcion.classList.toggle(
+                'dashboard-catalogo__item--activo',
+                estaActiva
+            );
+
+
+            opcion.setAttribute(
+                'aria-selected',
+                estaActiva
+                    ? 'true'
+                    : 'false'
+            );
+
+        }
+    );
 
 }

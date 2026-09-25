@@ -2260,7 +2260,7 @@ class Reportes_Controller extends BaseController
             $filtrosDashboard = [
 
                 /* =================================================
-                FECHA DE REGISTRO
+                PERIODO
                 ================================================= */
 
                 'fecha_registro_inicio' =>
@@ -2279,42 +2279,32 @@ class Reportes_Controller extends BaseController
 
 
                 /* =================================================
-                FECHA DE LA QUEJA
+                TIPO
                 ================================================= */
 
-                'fecha_queja_inicio' =>
+                'tipo' =>
                 trim(
                     (string) $this->request->getGet(
-                        'fecha_queja_inicio'
-                    )
-                ),
-
-                'fecha_queja_fin' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'fecha_queja_fin'
+                        'tipo'
                     )
                 ),
 
 
                 /* =================================================
-                REPORTE
+                FILTROS DE QUEJA
                 ================================================= */
-
-                /*
-                * El frontend utiliza:
-                *
-                * estado_actual
-                *
-                * DashboardService utiliza internamente:
-                *
-                * estado
-                */
 
                 'estado' =>
                 trim(
                     (string) $this->request->getGet(
-                        'estado_actual'
+                        'estado'
+                    )
+                ),
+
+                'clasificacion' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'clasificacion'
                     )
                 ),
 
@@ -2322,6 +2312,39 @@ class Reportes_Controller extends BaseController
                 trim(
                     (string) $this->request->getGet(
                         'seguimiento'
+                    )
+                ),
+
+                'es_anonimo' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'es_anonimo'
+                    )
+                ),
+
+
+                /* =================================================
+                UBICACIÓN OPERATIVA
+                ================================================= */
+
+                'zona' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'zona'
+                    )
+                ),
+
+                'sector' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'sector'
+                    )
+                ),
+
+                'turno' =>
+                trim(
+                    (string) $this->request->getGet(
+                        'turno'
                     )
                 ),
 
@@ -2337,17 +2360,10 @@ class Reportes_Controller extends BaseController
                     )
                 ),
 
-                'turno' =>
+                'personal' =>
                 trim(
                     (string) $this->request->getGet(
-                        'turno'
-                    )
-                ),
-
-                'sector' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'sector'
+                        'personal'
                     )
                 ),
 

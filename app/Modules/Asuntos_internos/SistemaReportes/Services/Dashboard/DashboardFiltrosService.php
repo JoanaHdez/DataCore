@@ -44,7 +44,7 @@ class DashboardFiltrosService
         $this->filtros = [
 
             /* =================================================
-               FECHA DE REGISTRO
+            PERIODO
             ================================================= */
 
             'fecha_registro_inicio' =>
@@ -61,29 +61,29 @@ class DashboardFiltrosService
 
 
             /* =================================================
-               FECHA DE LA QUEJA
+            TIPO DE REGISTRO
             ================================================= */
 
-            'fecha_queja_inicio' =>
+            'tipo' =>
                 $this->limpiarFiltro(
-                    $filtros['fecha_queja_inicio']
-                    ?? null
-                ),
-
-            'fecha_queja_fin' =>
-                $this->limpiarFiltro(
-                    $filtros['fecha_queja_fin']
+                    $filtros['tipo']
                     ?? null
                 ),
 
 
             /* =================================================
-               REPORTE
+            FILTROS DE QUEJA
             ================================================= */
 
             'estado' =>
                 $this->limpiarFiltro(
                     $filtros['estado']
+                    ?? null
+                ),
+
+            'clasificacion' =>
+                $this->limpiarFiltro(
+                    $filtros['clasificacion']
                     ?? null
                 ),
 
@@ -93,20 +93,20 @@ class DashboardFiltrosService
                     ?? null
                 ),
 
-
-            /* =================================================
-               PERSONAL INVOLUCRADO
-            ================================================= */
-
-            'area_personal' =>
+            'es_anonimo' =>
                 $this->limpiarFiltro(
-                    $filtros['area_personal']
+                    $filtros['es_anonimo']
                     ?? null
                 ),
 
-            'turno' =>
+
+            /* =================================================
+            UBICACIÓN OPERATIVA
+            ================================================= */
+
+            'zona' =>
                 $this->limpiarFiltro(
-                    $filtros['turno']
+                    $filtros['zona']
                     ?? null
                 ),
 
@@ -116,9 +116,32 @@ class DashboardFiltrosService
                     ?? null
                 ),
 
+            'turno' =>
+                $this->limpiarFiltro(
+                    $filtros['turno']
+                    ?? null
+                ),
+
 
             /* =================================================
-               UNIDAD
+            PERSONAL INVOLUCRADO
+            ================================================= */
+
+            'area_personal' =>
+                $this->limpiarFiltro(
+                    $filtros['area_personal']
+                    ?? null
+                ),
+
+            'personal' =>
+                $this->limpiarFiltro(
+                    $filtros['personal']
+                    ?? null
+                ),
+
+
+            /* =================================================
+            UNIDAD
             ================================================= */
 
             'unidad' =>
@@ -185,7 +208,7 @@ class DashboardFiltrosService
     {
 
         /* =====================================================
-           ÁREAS INSTITUCIONALES DESDE PLANTILLA
+        ÁREAS INSTITUCIONALES DESDE PLANTILLA
         ===================================================== */
 
         $dbPlantilla =
@@ -280,67 +303,104 @@ class DashboardFiltrosService
 
 
         /* =====================================================
-           GÉNEROS REGISTRADOS
+        CLASIFICACIONES REALES REGISTRADAS
         ===================================================== */
 
-        $registrosGeneros =
+        $registrosClasificaciones =
             $this->db
-            ->table('ai_reportes')
+            ->table(
+                'ai_reportes'
+            )
             ->select(
-                'genero_quejoso'
+                'clasificacion'
             )
             ->where(
                 'eliminado',
                 0
             )
             ->where(
-                'genero_quejoso IS NOT NULL',
+                'tipo_registro',
+                'QUEJA'
+            )
+            ->where(
+                'clasificacion IS NOT NULL',
                 null,
                 false
             )
             ->where(
-                "TRIM(genero_quejoso) != ''",
+                "TRIM(clasificacion) != ''",
                 null,
                 false
             )
             ->groupBy(
-                'genero_quejoso'
+                'clasificacion'
             )
             ->orderBy(
-                'genero_quejoso',
+                'clasificacion',
                 'ASC'
             )
             ->get()
             ->getResultArray();
 
 
-        $generos = [];
+        $clasificaciones = [];
+
+        $clasificacionesRegistradas = [];
 
 
         foreach (
-            $registrosGeneros
+            $registrosClasificaciones
             as $registro
         ) {
 
             $valor =
                 trim(
-                    (string) (
-                        $registro['genero_quejoso']
-                        ?? ''
+                    preg_replace(
+                        '/\s+/u',
+                        ' ',
+                        (string) (
+                            $registro['clasificacion']
+                            ?? ''
+                        )
                     )
+                    ?? ''
                 );
 
 
-            if ($valor !== '') {
+            if ($valor === '') {
 
-                $generos[] =
-                    $valor;
+                continue;
             }
+
+
+            $clave =
+                mb_strtoupper(
+                    $valor,
+                    'UTF-8'
+                );
+
+
+            if (
+                isset(
+                    $clasificacionesRegistradas[$clave]
+                )
+            ) {
+
+                continue;
+            }
+
+
+            $clasificacionesRegistradas[$clave] =
+                true;
+
+
+            $clasificaciones[] =
+                $valor;
         }
 
 
         /* =====================================================
-           UNIDADES INSTITUCIONALES
+        UNIDADES INSTITUCIONALES
         ===================================================== */
 
         $dbUnidades =
@@ -433,11 +493,11 @@ class DashboardFiltrosService
 
 
             /*
-             * El valor enviado por el filtro será:
-             *
-             * 1. Número económico.
-             * 2. Placas cuando no exista número económico.
-             */
+            * El valor enviado será:
+            *
+            * 1. Número económico.
+            * 2. Placas cuando no exista número económico.
+            */
 
             $valor =
                 $noEconomico !== ''
@@ -507,13 +567,17 @@ class DashboardFiltrosService
         }
 
 
+        /* =====================================================
+        RESPUESTA
+        ===================================================== */
+
         return [
 
             'areas' =>
                 $areas,
 
-            'generos' =>
-                $generos,
+            'clasificaciones' =>
+                $clasificaciones,
 
             'unidades' =>
                 $unidades,
@@ -541,7 +605,7 @@ class DashboardFiltrosService
 
 
         /* =====================================================
-           SIEMPRE EXCLUIR ELIMINADOS
+        SIEMPRE EXCLUIR ELIMINADOS
         ===================================================== */
 
         $builder->where(
@@ -551,7 +615,7 @@ class DashboardFiltrosService
 
 
         /* =====================================================
-           FECHA DE REGISTRO
+        PERIODO
         ===================================================== */
 
         if (
@@ -581,41 +645,56 @@ class DashboardFiltrosService
 
 
         /* =====================================================
-           FECHA DE LA QUEJA
+        TIPO DE REGISTRO
         ===================================================== */
 
+        $tipo =
+            strtoupper(
+                trim(
+                    (string) (
+                        $this->filtros['tipo']
+                        ?? ''
+                    )
+                )
+            );
+
+
         if (
-            !empty(
-                $this->filtros['fecha_queja_inicio']
+            in_array(
+                $tipo,
+                [
+                    'QUEJA',
+                    'FELICITACION',
+                ],
+                true
             )
         ) {
 
             $builder->where(
-                $prefijo . 'fecha_queja >=',
-                $this->filtros['fecha_queja_inicio']
+                $prefijo . 'tipo_registro',
+                $tipo
             );
         }
 
 
-        if (
-            !empty(
-                $this->filtros['fecha_queja_fin']
-            )
-        ) {
+        /*
+        * Los filtros específicos de Queja no deben aplicarse
+        * cuando el usuario esté consultando Felicitaciones.
+        */
 
-            $builder->where(
-                $prefijo . 'fecha_queja <=',
-                $this->filtros['fecha_queja_fin']
-            );
-        }
+        $esFelicitacion =
+            $tipo === 'FELICITACION';
 
 
         /* =====================================================
-           ESTADO ACTUAL
+        ESTADO
+
+        Exclusivo de Quejas.
         ===================================================== */
 
         if (
-            !empty(
+            !$esFelicitacion
+            && !empty(
                 $this->filtros['estado']
             )
         ) {
@@ -628,11 +707,34 @@ class DashboardFiltrosService
 
 
         /* =====================================================
-           SEGUIMIENTO
+        CLASIFICACIÓN
+
+        Exclusivo de Quejas.
         ===================================================== */
 
         if (
-            !empty(
+            !$esFelicitacion
+            && !empty(
+                $this->filtros['clasificacion']
+            )
+        ) {
+
+            $builder->where(
+                $prefijo . 'clasificacion',
+                $this->filtros['clasificacion']
+            );
+        }
+
+
+        /* =====================================================
+        SEGUIMIENTO
+
+        Exclusivo de Quejas.
+        ===================================================== */
+
+        if (
+            !$esFelicitacion
+            && !empty(
                 $this->filtros['seguimiento']
             )
         ) {
@@ -675,61 +777,80 @@ class DashboardFiltrosService
 
 
         /* =====================================================
-           ÁREA DEL PERSONAL INVOLUCRADO
+        QUEJA ANÓNIMA
+
+        Exclusivo de Quejas.
+
+        IMPORTANTE:
+        No utilizamos empty() porque el valor "0"
+        es válido y PHP lo considera vacío.
         ===================================================== */
 
         if (
-            !empty(
-                $this->filtros['area_personal']
+            !$esFelicitacion
+            && array_key_exists(
+                'es_anonimo',
+                $this->filtros
             )
+            && $this->filtros['es_anonimo'] !== null
         ) {
 
-            $areaPersonal =
-                $this->db->escape(
-                    $this->filtros['area_personal']
+            $esAnonimo =
+                (string)
+                $this->filtros['es_anonimo'];
+
+
+            if (
+                in_array(
+                    $esAnonimo,
+                    [
+                        '0',
+                        '1',
+                    ],
+                    true
+                )
+            ) {
+
+                $builder->where(
+                    $prefijo . 'es_anonimo',
+                    (int) $esAnonimo
                 );
-
-
-            $builder->where(
-                "EXISTS (
-                    SELECT 1
-                    FROM ai_reporte_personal p_area
-                    WHERE p_area.id_reporte = {$prefijo}id_reporte
-                    AND p_area.area_snapshot = {$areaPersonal}
-                )",
-                null,
-                false
-            );
+            }
         }
 
 
         /* =====================================================
-           TURNO DEL PERSONAL
+        ZONA
+
+        La zona no existe como columna independiente.
+
+        Se calcula usando el sector almacenado en
+        area_snapshot del personal involucrado.
         ===================================================== */
 
         if (
             !empty(
-                $this->filtros['turno']
+                $this->filtros['zona']
             )
         ) {
 
-            $condicionTurno =
-                $this->obtenerCondicionSqlTurno(
-                    $this->filtros['turno'],
-                    'p_turno.turno_snapshot'
+            $condicionZona =
+                $this->obtenerCondicionSqlZona(
+                    $this->filtros['zona'],
+                    'p_zona.area_snapshot'
                 );
 
 
             if (
-                $condicionTurno !== null
+                $condicionZona !== null
             ) {
 
                 $builder->where(
                     "EXISTS (
                         SELECT 1
-                        FROM ai_reporte_personal p_turno
-                        WHERE p_turno.id_reporte = {$prefijo}id_reporte
-                        AND ({$condicionTurno})
+                        FROM ai_reporte_personal p_zona
+                        WHERE p_zona.id_reporte = {$prefijo}id_reporte
+                        AND ({$condicionZona})
                     )",
                     null,
                     false
@@ -739,7 +860,7 @@ class DashboardFiltrosService
 
 
         /* =====================================================
-           SECTOR DEL PERSONAL INVOLUCRADO
+        SECTOR DEL PERSONAL INVOLUCRADO
         ===================================================== */
 
         if (
@@ -798,7 +919,120 @@ class DashboardFiltrosService
 
 
         /* =====================================================
-           UNIDAD
+        TURNO DEL PERSONAL
+        ===================================================== */
+
+        if (
+            !empty(
+                $this->filtros['turno']
+            )
+        ) {
+
+            $condicionTurno =
+                $this->obtenerCondicionSqlTurno(
+                    $this->filtros['turno'],
+                    'p_turno.turno_snapshot'
+                );
+
+
+            if (
+                $condicionTurno !== null
+            ) {
+
+                $builder->where(
+                    "EXISTS (
+                        SELECT 1
+                        FROM ai_reporte_personal p_turno
+                        WHERE p_turno.id_reporte = {$prefijo}id_reporte
+                        AND ({$condicionTurno})
+                    )",
+                    null,
+                    false
+                );
+            }
+        }
+
+
+        /* =====================================================
+        ÁREA DEL PERSONAL INVOLUCRADO
+        ===================================================== */
+
+        if (
+            !empty(
+                $this->filtros['area_personal']
+            )
+        ) {
+
+            $areaPersonal =
+                $this->db->escape(
+                    $this->filtros['area_personal']
+                );
+
+
+            $builder->where(
+                "EXISTS (
+                    SELECT 1
+                    FROM ai_reporte_personal p_area
+                    WHERE p_area.id_reporte = {$prefijo}id_reporte
+                    AND p_area.area_snapshot = {$areaPersonal}
+                )",
+                null,
+                false
+            );
+        }
+
+
+        /* =====================================================
+        PERSONAL ESPECÍFICO
+
+        ai_reporte_personal conserva:
+        - plantilla_id
+        - perscod
+
+        Por eso aceptamos cualquiera de los dos como
+        identificador estable del personal seleccionado.
+        ===================================================== */
+
+        if (
+            !empty(
+                $this->filtros['personal']
+            )
+        ) {
+
+            $personal =
+                trim(
+                    (string)
+                    $this->filtros['personal']
+                );
+
+
+            $personalEscapado =
+                $this->db->escape(
+                    $personal
+                );
+
+
+            $builder->where(
+                "EXISTS (
+                    SELECT 1
+                    FROM ai_reporte_personal p_personal
+                    WHERE p_personal.id_reporte = {$prefijo}id_reporte
+                    AND (
+                        p_personal.perscod = {$personalEscapado}
+                        OR CAST(
+                            p_personal.plantilla_id
+                            AS CHAR
+                        ) = {$personalEscapado}
+                    )
+                )",
+                null,
+                false
+            );
+        }
+
+
+        /* =====================================================
+        UNIDAD
         ===================================================== */
 
         if (
@@ -845,33 +1079,33 @@ class DashboardFiltrosService
         return match ($turno) {
 
             'Primer turno' =>
-                "(
+            "(
                     UPPER(COALESCE({$campo}, '')) LIKE '%PRIMERO%'
                     OR UPPER(COALESCE({$campo}, '')) LIKE '%PRIMER %'
                     OR UPPER(TRIM(COALESCE({$campo}, ''))) = 'PRIMER'
                 )",
 
             'Segundo turno' =>
-                "UPPER(COALESCE({$campo}, '')) LIKE '%SEGUNDO%'",
+            "UPPER(COALESCE({$campo}, '')) LIKE '%SEGUNDO%'",
 
             'Tercer turno' =>
-                "(
+            "(
                     UPPER(COALESCE({$campo}, '')) LIKE '%TERCERO%'
                     OR UPPER(COALESCE({$campo}, '')) LIKE '%TERCER %'
                     OR UPPER(TRIM(COALESCE({$campo}, ''))) = 'TERCER'
                 )",
 
             'Alfa' =>
-                "UPPER(COALESCE({$campo}, '')) LIKE '%ALFA%'",
+            "UPPER(COALESCE({$campo}, '')) LIKE '%ALFA%'",
 
             'Beta' =>
-                "UPPER(COALESCE({$campo}, '')) LIKE '%BETA%'",
+            "UPPER(COALESCE({$campo}, '')) LIKE '%BETA%'",
 
             'Diario' =>
-                "UPPER(COALESCE({$campo}, '')) LIKE '%DIARIO%'",
+            "UPPER(COALESCE({$campo}, '')) LIKE '%DIARIO%'",
 
             'No refiere ni fecha ni horario' =>
-                "(
+            "(
                     {$campo} IS NULL
                     OR TRIM(COALESCE({$campo}, '')) = ''
                     OR UPPER(COALESCE({$campo}, '')) LIKE '%NO REFIERE%'
@@ -879,7 +1113,7 @@ class DashboardFiltrosService
                 )",
 
             default =>
-                null,
+            null,
         };
     }
 
@@ -905,7 +1139,7 @@ class DashboardFiltrosService
             ================================================= */
 
             'Zona Norte' =>
-                "UPPER(TRIM(COALESCE({$campo}, '')))
+            "UPPER(TRIM(COALESCE({$campo}, '')))
                  REGEXP '^SECTOR[[:space:]]+0*(1|2|3)([^0-9]|$)'",
 
 
@@ -915,7 +1149,7 @@ class DashboardFiltrosService
             ================================================= */
 
             'Zona Poniente' =>
-                "UPPER(TRIM(COALESCE({$campo}, '')))
+            "UPPER(TRIM(COALESCE({$campo}, '')))
                  REGEXP '^SECTOR[[:space:]]+0*(4|5|6|7)([^0-9]|$)'",
 
 
@@ -925,7 +1159,7 @@ class DashboardFiltrosService
             ================================================= */
 
             'Zona Centro' =>
-                "UPPER(TRIM(COALESCE({$campo}, '')))
+            "UPPER(TRIM(COALESCE({$campo}, '')))
                  REGEXP '^SECTOR[[:space:]]+0*(8|9|10)([^0-9]|$)'",
 
 
@@ -935,13 +1169,12 @@ class DashboardFiltrosService
             ================================================= */
 
             'Zona Oriente' =>
-                "UPPER(TRIM(COALESCE({$campo}, '')))
+            "UPPER(TRIM(COALESCE({$campo}, '')))
                  REGEXP '^SECTOR[[:space:]]+0*(11|12|13|14|15)([^0-9]|$)'",
 
 
             default =>
-                null,
+            null,
         };
     }
-
 }
