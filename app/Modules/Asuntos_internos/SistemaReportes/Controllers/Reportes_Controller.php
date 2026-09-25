@@ -2570,6 +2570,15 @@ class Reportes_Controller extends BaseController
 
 
             /* =====================================================
+            COMPARATIVAS
+            ===================================================== */
+
+            $comparativa =
+                $dashboardService
+                ->obtenerComparativa();
+
+
+            /* =====================================================
             SANCIONES DISCIPLINARIAS
             ===================================================== */
 
@@ -2937,6 +2946,44 @@ class Reportes_Controller extends BaseController
 
 
             /* =====================================================
+            COMPARATIVAS
+            ===================================================== */
+
+            $comparativa = [
+
+                'disponible' =>
+                    false,
+
+                'dias_periodo' =>
+                    0,
+
+                'periodo_actual' => [
+
+                    'inicio' =>
+                        null,
+
+                    'fin' =>
+                        null,
+
+                ],
+
+                'periodo_anterior' => [
+
+                    'inicio' =>
+                        null,
+
+                    'fin' =>
+                        null,
+
+                ],
+
+                'metricas' =>
+                    [],
+
+            ];
+
+
+            /* =====================================================
             SANCIONES
             ===================================================== */
 
@@ -3040,6 +3087,9 @@ class Reportes_Controller extends BaseController
 
                 'cruceDashboard' =>
                     $cruceDashboard,
+
+                'comparativa' =>
+                    $comparativa,
 
                 'sanciones' =>
                     $sanciones,

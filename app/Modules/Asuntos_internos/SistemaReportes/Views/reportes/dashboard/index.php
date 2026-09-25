@@ -25,10 +25,8 @@ Dashboard | Asuntos Internos
     ) ?>
 
 
-    <main
-        class="dashboard-page__main"
-        data-dashboard-requiere-autorizacion="<?= !empty($requiereAutorizacionAdmin) ? '1' : '0' ?>"
-    >
+    <main class="dashboard-page__main"
+        data-dashboard-requiere-autorizacion="<?= !empty($requiereAutorizacionAdmin) ? '1' : '0' ?>">
 
         <div class="dashboard-page__container">
 
@@ -49,7 +47,7 @@ Dashboard | Asuntos Internos
                  filtros
 
                  DERECHA:
-                 indicadores + gráficas
+                 indicadores + análisis
             ================================================== -->
 
             <div class="dashboard-shell">
@@ -112,53 +110,48 @@ Dashboard | Asuntos Internos
 
 
                     <!-- =============================================
-                         COMPOSICIÓN DE GRÁFICAS
+                         ÁREA / UNIDAD
+                    ============================================== -->
+
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\dimension'
+                    ) ?>
+
+
+                    <!-- =============================================
+                         ANÁLISIS CRUZADO
+                    ============================================== -->
+
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\cruce'
+                    ) ?>
+
+
+                    <!-- =============================================
+                         COMPARATIVAS
+                    ============================================== -->
+
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\comparativa'
+                    ) ?>
+
+
+                    <!-- =============================================
+                         COMPOSICIÓN DE BLOQUES OPERATIVOS
                     ============================================== -->
 
                     <div class="dashboard-layout">
 
 
                         <!-- =========================================
-                             PRINCIPAL
-                        ========================================== -->
-
-                        <div class="dashboard-layout__principal">
-
-                            <?= $this->include(
-                                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\areas'
-                            ) ?>
-
-                        </div>
-
-
-                        <!-- =============================================
-                            ÁREA / UNIDAD
-                        ============================================== -->
-
-                        <?= $this->include(
-                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\dimension'
-                        ) ?>
-
-
-                        <!-- =============================================
-                            ANÁLISIS CRUZADO
-                        ============================================== -->
-
-                        <?= $this->include(
-                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\cruce'
-                        ) ?>
-
-                        <!-- =========================================
                              FILA
-                             ZONAS + SANCIONES
+                             ZONA + SANCIONES
                         ========================================== -->
 
-                        <div
-                            class="
+                        <div class="
                                 dashboard-layout__fila
                                 dashboard-layout__fila--zonas
-                            "
-                        >
+                            ">
 
 
                             <!-- =====================================
@@ -176,6 +169,7 @@ Dashboard | Asuntos Internos
 
                             <!-- =====================================
                                  SANCIONES
+                                 PENDIENTE DE DEFINICIÓN V1
                             ====================================== -->
 
                             <div class="dashboard-layout__sanciones">
@@ -195,12 +189,10 @@ Dashboard | Asuntos Internos
                              TURNOS
                         ========================================== -->
 
-                        <div
-                            class="
+                        <div class="
                                 dashboard-layout__fila
                                 dashboard-layout__fila--operativa
-                            "
-                        >
+                            ">
 
                             <div class="dashboard-layout__turnos">
 

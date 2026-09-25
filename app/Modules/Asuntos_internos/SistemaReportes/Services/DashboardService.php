@@ -11,7 +11,7 @@ use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardEvo
 use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardEstadoService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardDimensionService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardCruceService;
-
+use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardComparativaService;
 
 class DashboardService
 {
@@ -26,6 +26,7 @@ class DashboardService
     private DashboardEstadoService $estadoService;
     private DashboardDimensionService $dimensionService;
     private DashboardCruceService $cruceService;
+    private DashboardComparativaService $comparativaService;
 
     /* =========================================================
        CONSTRUCTOR
@@ -122,6 +123,11 @@ class DashboardService
                 $this->filtrosService
             );
 
+        $this->comparativaService =
+            new DashboardComparativaService(
+                $this->filtrosService,
+                $this->indicadoresService
+            );
     }
 
     /* =========================================================
@@ -222,6 +228,17 @@ class DashboardService
     {
         return $this->ubicacionService
             ->obtenerSectoresTurnos();
+    }
+
+
+    /* =========================================================
+    COMPARATIVAS
+    ========================================================= */
+
+    public function obtenerComparativa(): array
+    {
+        return $this->comparativaService
+            ->obtenerComparativa();
     }
 
     /* =========================================================
