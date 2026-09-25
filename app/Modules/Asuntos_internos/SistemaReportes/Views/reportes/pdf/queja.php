@@ -1354,7 +1354,12 @@ if (
 
     <?php if ($tieneEvidenciasFotograficas): ?>
 
-    <table class="evidencias-grid">
+    <table class="
+                evidencias-grid
+                <?= count($evidenciasFotograficas) === 1
+                    ? 'evidencias-grid--una'
+                    : '' ?>
+            ">
 
         <?php
 
@@ -1388,6 +1393,7 @@ if (
 
                         ?>
 
+
             <td class="evidencia-item">
 
                 <div class="evidencia-imagen">
@@ -1405,28 +1411,6 @@ if (
                                     (string) $numeroEvidencia
                                 ) ?>
 
-
-                    <?php if (
-                                    trim(
-                                        (string) (
-                                            $evidencia['nombre']
-                                            ?? ''
-                                        )
-                                    ) !== ''
-                                ): ?>
-
-                    <br>
-
-                    <span>
-
-                        <?= esc(
-                                            $evidencia['nombre']
-                                        ) ?>
-
-                    </span>
-
-                    <?php endif; ?>
-
                 </div>
 
             </td>
@@ -1435,12 +1419,14 @@ if (
 
 
             <?php if (
-                        count(
-                            $fila
-                        ) === 1
+                        count($fila) === 1
+                        && count($evidenciasFotograficas) > 1
                     ): ?>
 
-            <td class="evidencia-item evidencia-item--vacio"></td>
+            <td class="
+                                evidencia-item
+                                evidencia-item--vacio
+                            "></td>
 
             <?php endif; ?>
 

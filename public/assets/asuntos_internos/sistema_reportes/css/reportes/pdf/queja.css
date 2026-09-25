@@ -418,3 +418,21 @@ table {
 
     text-align: center;
 }
+
+/* =========================================================
+   UNA SOLA EVIDENCIA
+========================================================= */
+
+.evidencias-grid--una {
+    width: 58%;
+
+    margin:
+        14px
+        auto
+        0;
+}
+
+
+.evidencias-grid--una .evidencia-item {
+    width: 100%;
+}
