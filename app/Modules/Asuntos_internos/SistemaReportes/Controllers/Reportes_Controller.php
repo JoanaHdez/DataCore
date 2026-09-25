@@ -2174,6 +2174,351 @@ class Reportes_Controller extends BaseController
         }
     }
 
+
+    /* =========================================================
+    CONSTRUIR HALLAZGOS DEL DASHBOARD
+    ========================================================= */
+
+    private function construirHallazgosDashboard(
+        array $estadosQuejas,
+        array $quejasPorSector,
+        array $quejasPorZona,
+        array $quejasPorTurno,
+        array $dimensionDashboard,
+        bool $esFelicitacion
+    ): array {
+
+        $hallazgos = [];
+
+
+        /* =====================================================
+        HELPER
+        OBTENER MAYOR VALOR DE DOS ARREGLOS PARALELOS
+        ===================================================== */
+
+        $obtenerMayor =
+            static function (
+                array $etiquetas,
+                array $totales
+            ): ?array {
+
+                if (
+                    empty($etiquetas)
+                    || empty($totales)
+                ) {
+
+                    return null;
+                }
+
+
+                $mayorIndice =
+                    null;
+
+                $mayorTotal =
+                    0;
+
+
+                foreach (
+                    $totales
+                    as $indice => $total
+                ) {
+
+                    $total =
+                        (int) $total;
+
+
+                    if (
+                        $total > $mayorTotal
+                    ) {
+
+                        $mayorTotal =
+                            $total;
+
+                        $mayorIndice =
+                            $indice;
+                    }
+                }
+
+
+                if (
+                    $mayorIndice === null
+                    || $mayorTotal <= 0
+                ) {
+
+                    return null;
+                }
+
+
+                $etiqueta =
+                    trim(
+                        (string) (
+                            $etiquetas[$mayorIndice]
+                            ?? ''
+                        )
+                    );
+
+
+                if (
+                    $etiqueta === ''
+                ) {
+
+                    return null;
+                }
+
+
+                return [
+
+                    'etiqueta' =>
+                    $etiqueta,
+
+                    'total' =>
+                    $mayorTotal,
+
+                ];
+            };
+
+
+        /* =====================================================
+        1. SECTOR CON MAYOR CONCENTRACIÓN
+        ===================================================== */
+
+        $sectorMayor =
+            $obtenerMayor(
+                $quejasPorSector['sectores']
+                    ?? [],
+                $quejasPorSector['totales']
+                    ?? []
+            );
+
+
+        if (
+            $sectorMayor !== null
+        ) {
+
+            $hallazgos[] = [
+
+                'tipo' =>
+                'sector',
+
+                'titulo' =>
+                $esFelicitacion
+                    ? 'Sector con más felicitaciones'
+                    : 'Mayor concentración por sector',
+
+                'valor' =>
+                $sectorMayor['etiqueta'],
+
+                'descripcion' =>
+                $esFelicitacion
+                    ? $sectorMayor['etiqueta']
+                    . ' registra '
+                    . $sectorMayor['total']
+                    . ' felicitaciones en el periodo seleccionado.'
+                    : $sectorMayor['etiqueta']
+                    . ' concentra '
+                    . $sectorMayor['total']
+                    . ' registros en el periodo seleccionado.',
+
+            ];
+        }
+
+
+        /* =====================================================
+        2. ZONA CON MAYOR CONCENTRACIÓN
+        ===================================================== */
+
+        $zonaMayor =
+            $obtenerMayor(
+                $quejasPorZona['zonas']
+                    ?? [],
+                $quejasPorZona['totales']
+                    ?? []
+            );
+
+
+        if (
+            $zonaMayor !== null
+        ) {
+
+            $hallazgos[] = [
+
+                'tipo' =>
+                'zona',
+
+                'titulo' =>
+                $esFelicitacion
+                    ? 'Zona con más felicitaciones'
+                    : 'Zona con mayor concentración',
+
+                'valor' =>
+                $zonaMayor['etiqueta'],
+
+                'descripcion' =>
+                $zonaMayor['etiqueta']
+                    . ' presenta '
+                    . $zonaMayor['total']
+                    . (
+                        $esFelicitacion
+                        ? ' felicitaciones.'
+                        : ' registros.'
+                    ),
+
+            ];
+        }
+
+
+        /* =====================================================
+        3. TURNO CON MAYOR CONCENTRACIÓN
+        ===================================================== */
+
+        $turnoMayor =
+            $obtenerMayor(
+                $quejasPorTurno['turnos']
+                    ?? [],
+                $quejasPorTurno['totales']
+                    ?? []
+            );
+
+
+        if (
+            $turnoMayor !== null
+        ) {
+
+            $hallazgos[] = [
+
+                'tipo' =>
+                'turno',
+
+                'titulo' =>
+                $esFelicitacion
+                    ? 'Turno con más felicitaciones'
+                    : 'Turno con mayor concentración',
+
+                'valor' =>
+                $turnoMayor['etiqueta'],
+
+                'descripcion' =>
+                $turnoMayor['etiqueta']
+                    . ' reúne '
+                    . $turnoMayor['total']
+                    . (
+                        $esFelicitacion
+                        ? ' felicitaciones.'
+                        : ' registros.'
+                    ),
+
+            ];
+        }
+
+
+        /* =====================================================
+        4. ESTADO PREDOMINANTE
+        SOLO REPORTES / QUEJAS
+        ===================================================== */
+
+        if (
+            !$esFelicitacion
+        ) {
+
+            $estadoMayor =
+                $obtenerMayor(
+                    $estadosQuejas['estados']
+                        ?? [],
+                    $estadosQuejas['totales']
+                        ?? []
+                );
+
+
+            if (
+                $estadoMayor !== null
+            ) {
+
+                $hallazgos[] = [
+
+                    'tipo' =>
+                    'estado',
+
+                    'titulo' =>
+                    'Estado predominante',
+
+                    'valor' =>
+                    $estadoMayor['etiqueta'],
+
+                    'descripcion' =>
+                    $estadoMayor['total']
+                        . ' registros se encuentran actualmente en estado '
+                        . $estadoMayor['etiqueta']
+                        . '.',
+
+                ];
+            }
+        }
+
+
+        /* =====================================================
+        5. DIMENSIÓN ACTUAL
+        ÁREA / UNIDAD
+        ===================================================== */
+
+        $dimensionMayor =
+            $obtenerMayor(
+                $dimensionDashboard['etiquetas']
+                    ?? [],
+                $dimensionDashboard['totales']
+                    ?? []
+            );
+
+
+        if (
+            $dimensionMayor !== null
+        ) {
+
+            $tituloDimension =
+                trim(
+                    (string) (
+                        $dimensionDashboard['titulo']
+                        ?? 'Dimensión'
+                    )
+                );
+
+
+            $hallazgos[] = [
+
+                'tipo' =>
+                'dimension',
+
+                'titulo' =>
+                $tituloDimension
+                    . ' con mayor concentración',
+
+                'valor' =>
+                $dimensionMayor['etiqueta'],
+
+                'descripcion' =>
+                $dimensionMayor['etiqueta']
+                    . ' registra '
+                    . $dimensionMayor['total']
+                    . (
+                        $esFelicitacion
+                        ? ' asociaciones con felicitaciones.'
+                        : ' asociaciones con reportes.'
+                    ),
+
+            ];
+        }
+
+
+        /*
+        * Evitamos llenar demasiado el Dashboard.
+        */
+
+        return array_slice(
+            $hallazgos,
+            0,
+            5
+        );
+    }
+
     public function dashboard()
     {
         /* =========================================================
@@ -2354,20 +2699,20 @@ class Reportes_Controller extends BaseController
                 ================================================= */
 
                 'fecha_registro_inicio' =>
-                    trim(
-                        (string)
-                        $this->request->getGet(
-                            'fecha_registro_inicio'
-                        )
-                    ),
+                trim(
+                    (string)
+                    $this->request->getGet(
+                        'fecha_registro_inicio'
+                    )
+                ),
 
                 'fecha_registro_fin' =>
-                    trim(
-                        (string)
-                        $this->request->getGet(
-                            'fecha_registro_fin'
-                        )
-                    ),
+                trim(
+                    (string)
+                    $this->request->getGet(
+                        'fecha_registro_fin'
+                    )
+                ),
 
 
                 /* =================================================
@@ -2375,12 +2720,12 @@ class Reportes_Controller extends BaseController
                 ================================================= */
 
                 'tipo' =>
-                    trim(
-                        (string)
-                        $this->request->getGet(
-                            'tipo'
-                        )
-                    ),
+                trim(
+                    (string)
+                    $this->request->getGet(
+                        'tipo'
+                    )
+                ),
 
 
                 /* =================================================
@@ -2388,36 +2733,36 @@ class Reportes_Controller extends BaseController
                 ================================================= */
 
                 'estado' =>
-                    trim(
-                        (string)
-                        $this->request->getGet(
-                            'estado'
-                        )
-                    ),
+                trim(
+                    (string)
+                    $this->request->getGet(
+                        'estado'
+                    )
+                ),
 
                 'clasificacion' =>
-                    trim(
-                        (string)
-                        $this->request->getGet(
-                            'clasificacion'
-                        )
-                    ),
+                trim(
+                    (string)
+                    $this->request->getGet(
+                        'clasificacion'
+                    )
+                ),
 
                 'seguimiento' =>
-                    trim(
-                        (string)
-                        $this->request->getGet(
-                            'seguimiento'
-                        )
-                    ),
+                trim(
+                    (string)
+                    $this->request->getGet(
+                        'seguimiento'
+                    )
+                ),
 
                 'es_anonimo' =>
-                    trim(
-                        (string)
-                        $this->request->getGet(
-                            'es_anonimo'
-                        )
-                    ),
+                trim(
+                    (string)
+                    $this->request->getGet(
+                        'es_anonimo'
+                    )
+                ),
 
 
                 /* =================================================
@@ -2425,28 +2770,28 @@ class Reportes_Controller extends BaseController
                 ================================================= */
 
                 'zona' =>
-                    trim(
-                        (string)
-                        $this->request->getGet(
-                            'zona'
-                        )
-                    ),
+                trim(
+                    (string)
+                    $this->request->getGet(
+                        'zona'
+                    )
+                ),
 
                 'sector' =>
-                    trim(
-                        (string)
-                        $this->request->getGet(
-                            'sector'
-                        )
-                    ),
+                trim(
+                    (string)
+                    $this->request->getGet(
+                        'sector'
+                    )
+                ),
 
                 'turno' =>
-                    trim(
-                        (string)
-                        $this->request->getGet(
-                            'turno'
-                        )
-                    ),
+                trim(
+                    (string)
+                    $this->request->getGet(
+                        'turno'
+                    )
+                ),
 
 
                 /* =================================================
@@ -2454,20 +2799,20 @@ class Reportes_Controller extends BaseController
                 ================================================= */
 
                 'area_personal' =>
-                    trim(
-                        (string)
-                        $this->request->getGet(
-                            'area_personal'
-                        )
-                    ),
+                trim(
+                    (string)
+                    $this->request->getGet(
+                        'area_personal'
+                    )
+                ),
 
                 'personal' =>
-                    trim(
-                        (string)
-                        $this->request->getGet(
-                            'personal'
-                        )
-                    ),
+                trim(
+                    (string)
+                    $this->request->getGet(
+                        'personal'
+                    )
+                ),
 
 
                 /* =================================================
@@ -2475,12 +2820,12 @@ class Reportes_Controller extends BaseController
                 ================================================= */
 
                 'unidad' =>
-                    trim(
-                        (string)
-                        $this->request->getGet(
-                            'unidad'
-                        )
-                    ),
+                trim(
+                    (string)
+                    $this->request->getGet(
+                        'unidad'
+                    )
+                ),
 
             ];
 
@@ -2639,6 +2984,34 @@ class Reportes_Controller extends BaseController
                 $dashboardService
                 ->obtenerClasificaciones();
 
+            /* =====================================================
+                HALLAZGOS AUTOMÁTICOS
+                ===================================================== */
+
+            $tipoActivo =
+                strtoupper(
+                    trim(
+                        (string) (
+                            $filtrosDashboard['tipo']
+                            ?? ''
+                        )
+                    )
+                );
+
+
+            $esFelicitacionDashboard =
+                $tipoActivo === 'FELICITACION';
+
+
+            $hallazgosDashboard =
+                $this->construirHallazgosDashboard(
+                    $estadosQuejas,
+                    $quejasPorSector,
+                    $quejasPorZona,
+                    $quejasPorTurno,
+                    $dimensionDashboard,
+                    $esFelicitacionDashboard
+                );
         } catch (\Throwable $e) {
 
             log_message(
@@ -2646,7 +3019,7 @@ class Reportes_Controller extends BaseController
                 'Error consultando datos del Dashboard: {mensaje}',
                 [
                     'mensaje' =>
-                        $e->getMessage(),
+                    $e->getMessage(),
                 ]
             );
 
@@ -2658,13 +3031,13 @@ class Reportes_Controller extends BaseController
             $opcionesFiltros = [
 
                 'areas' =>
-                    [],
+                [],
 
                 'clasificaciones' =>
-                    [],
+                [],
 
                 'unidades' =>
-                    [],
+                [],
 
             ];
 
@@ -2676,28 +3049,28 @@ class Reportes_Controller extends BaseController
             $indicadores = [
 
                 'total' =>
-                    0,
+                0,
 
                 'quejas' =>
-                    0,
+                0,
 
                 'felicitaciones' =>
-                    0,
+                0,
 
                 'pendientes' =>
-                    0,
+                0,
 
                 'en_proceso' =>
-                    0,
+                0,
 
                 'finalizados' =>
-                    0,
+                0,
 
                 'anonimas' =>
-                    0,
+                0,
 
                 'personal_involucrado' =>
-                    0,
+                0,
 
             ];
 
@@ -2709,13 +3082,13 @@ class Reportes_Controller extends BaseController
             $evolucion = [
 
                 'agrupacion' =>
-                    'dia',
+                'dia',
 
                 'datos' =>
-                    [],
+                [],
 
                 'total' =>
-                    0,
+                0,
 
             ];
 
@@ -2745,7 +3118,7 @@ class Reportes_Controller extends BaseController
                 ],
 
                 'total' =>
-                    0,
+                0,
 
             ];
 
@@ -2775,13 +3148,25 @@ class Reportes_Controller extends BaseController
                 ],
 
                 'totales' => [
-                    0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
                 ],
 
                 'total' =>
-                    0,
+                0,
 
             ];
 
@@ -2793,10 +3178,10 @@ class Reportes_Controller extends BaseController
             $sectoresTurnos = [
 
                 'sectores' =>
-                    [],
+                [],
 
                 'turnos' =>
-                    [],
+                [],
 
             ];
 
@@ -2808,10 +3193,10 @@ class Reportes_Controller extends BaseController
             $quejasPorArea = [
 
                 'areas' =>
-                    [],
+                [],
 
                 'totales' =>
-                    [],
+                [],
 
             ];
 
@@ -2837,7 +3222,7 @@ class Reportes_Controller extends BaseController
                 ],
 
                 'total' =>
-                    0,
+                0,
 
             ];
 
@@ -2849,13 +3234,13 @@ class Reportes_Controller extends BaseController
             $quejasPorTurno = [
 
                 'turnos' =>
-                    [],
+                [],
 
                 'totales' =>
-                    [],
+                [],
 
                 'total' =>
-                    0,
+                0,
 
             ];
 
@@ -2867,41 +3252,41 @@ class Reportes_Controller extends BaseController
             $dimensionDashboard = [
 
                 'dimension' =>
-                    $dimension,
+                $dimension,
 
                 'titulo' =>
-                    $dimension === 'unidad'
-                        ? 'Unidad'
-                        : 'Área',
+                $dimension === 'unidad'
+                    ? 'Unidad'
+                    : 'Área',
 
                 'etiquetas' =>
-                    [],
+                [],
 
                 'totales' =>
-                    [],
+                [],
 
                 'porcentajes' =>
-                    [],
+                [],
 
                 'total' =>
-                    0,
+                0,
 
                 'opciones' => [
 
                     [
                         'valor' =>
-                            'area',
+                        'area',
 
                         'texto' =>
-                            'Área',
+                        'Área',
                     ],
 
                     [
                         'valor' =>
-                            'unidad',
+                        'unidad',
 
                         'texto' =>
-                            'Unidad',
+                        'Unidad',
                     ],
 
                 ],
@@ -2916,52 +3301,52 @@ class Reportes_Controller extends BaseController
             $cruceDashboard = [
 
                 'principal' =>
-                    'sector',
+                'sector',
 
                 'secundaria' =>
-                    'turno',
+                'turno',
 
                 'categorias' =>
-                    [],
+                [],
 
                 'series' =>
-                    [],
+                [],
 
                 'total' =>
-                    0,
+                0,
 
                 'opciones_principal' => [
 
                     [
                         'valor' =>
-                            'sector',
+                        'sector',
 
                         'texto' =>
-                            'Sector',
+                        'Sector',
                     ],
 
                     [
                         'valor' =>
-                            'zona',
+                        'zona',
 
                         'texto' =>
-                            'Zona',
+                        'Zona',
                     ],
 
                     [
                         'valor' =>
-                            'area',
+                        'area',
 
                         'texto' =>
-                            'Área',
+                        'Área',
                     ],
 
                     [
                         'valor' =>
-                            'turno',
+                        'turno',
 
                         'texto' =>
-                            'Turno',
+                        'Turno',
                     ],
 
                 ],
@@ -2970,18 +3355,18 @@ class Reportes_Controller extends BaseController
 
                     [
                         'valor' =>
-                            'turno',
+                        'turno',
 
                         'texto' =>
-                            'Turno',
+                        'Turno',
                     ],
 
                     [
                         'valor' =>
-                            'estado',
+                        'estado',
 
                         'texto' =>
-                            'Estado',
+                        'Estado',
                     ],
 
                 ],
@@ -2996,33 +3381,33 @@ class Reportes_Controller extends BaseController
             $comparativa = [
 
                 'disponible' =>
-                    false,
+                false,
 
                 'dias_periodo' =>
-                    0,
+                0,
 
                 'periodo_actual' => [
 
                     'inicio' =>
-                        null,
+                    null,
 
                     'fin' =>
-                        null,
+                    null,
 
                 ],
 
                 'periodo_anterior' => [
 
                     'inicio' =>
-                        null,
+                    null,
 
                     'fin' =>
-                        null,
+                    null,
 
                 ],
 
                 'metricas' =>
-                    [],
+                [],
 
             ];
 
@@ -3034,68 +3419,68 @@ class Reportes_Controller extends BaseController
             $rankingDashboard = [
 
                 'tipo' =>
-                    $rankingTipo,
+                $rankingTipo,
 
                 'titulo' =>
-                    match ($rankingTipo) {
+                match ($rankingTipo) {
 
-                        'area' =>
-                            'Áreas',
+                    'area' =>
+                    'Áreas',
 
-                        'unidad' =>
-                            'Unidades',
+                    'unidad' =>
+                    'Unidades',
 
-                        'personal' =>
-                            'Personal con mayor número de registros asociados',
+                    'personal' =>
+                    'Personal con mayor número de registros asociados',
 
-                        default =>
-                            'Sectores',
-                    },
+                    default =>
+                    'Sectores',
+                },
 
                 'etiquetas' =>
-                    [],
+                [],
 
                 'totales' =>
-                    [],
+                [],
 
                 'porcentajes' =>
-                    [],
+                [],
 
                 'total_top' =>
-                    0,
+                0,
 
                 'opciones' => [
 
                     [
                         'valor' =>
-                            'sector',
+                        'sector',
 
                         'texto' =>
-                            'Sectores',
+                        'Sectores',
                     ],
 
                     [
                         'valor' =>
-                            'area',
+                        'area',
 
                         'texto' =>
-                            'Áreas',
+                        'Áreas',
                     ],
 
                     [
                         'valor' =>
-                            'unidad',
+                        'unidad',
 
                         'texto' =>
-                            'Unidades',
+                        'Unidades',
                     ],
 
                     [
                         'valor' =>
-                            'personal',
+                        'personal',
 
                         'texto' =>
-                            'Personal',
+                        'Personal',
                     ],
 
                 ],
@@ -3122,7 +3507,7 @@ class Reportes_Controller extends BaseController
                 ],
 
                 'total' =>
-                    0,
+                0,
 
             ];
 
@@ -3134,13 +3519,13 @@ class Reportes_Controller extends BaseController
             $clasificaciones = [
 
                 'clasificaciones' =>
-                    [],
+                [],
 
                 'totales' =>
-                    [],
+                [],
 
                 'total' =>
-                    0,
+                0,
 
             ];
         }
@@ -3155,7 +3540,7 @@ class Reportes_Controller extends BaseController
             [
 
                 'requiereAutorizacionAdmin' =>
-                    $requiereAutorizacion,
+                $requiereAutorizacion,
 
 
                 /* =================================================
@@ -3163,7 +3548,7 @@ class Reportes_Controller extends BaseController
                 ================================================= */
 
                 'opcionesFiltros' =>
-                    $opcionesFiltros,
+                $opcionesFiltros,
 
 
                 /* =================================================
@@ -3171,7 +3556,7 @@ class Reportes_Controller extends BaseController
                 ================================================= */
 
                 'dimensionSeleccionada' =>
-                    $dimension,
+                $dimension,
 
 
                 /* =================================================
@@ -3179,7 +3564,7 @@ class Reportes_Controller extends BaseController
                 ================================================= */
 
                 'rankingSeleccionado' =>
-                    $rankingTipo,
+                $rankingTipo,
 
 
                 /* =================================================
@@ -3187,46 +3572,49 @@ class Reportes_Controller extends BaseController
                 ================================================= */
 
                 'indicadores' =>
-                    $indicadores,
+                $indicadores,
 
                 'evolucion' =>
-                    $evolucion,
+                $evolucion,
 
                 'estadosQuejas' =>
-                    $estadosQuejas,
+                $estadosQuejas,
 
                 'quejasPorSector' =>
-                    $quejasPorSector,
+                $quejasPorSector,
 
                 'sectoresTurnos' =>
-                    $sectoresTurnos,
+                $sectoresTurnos,
 
                 'quejasPorArea' =>
-                    $quejasPorArea,
+                $quejasPorArea,
 
                 'quejasPorZona' =>
-                    $quejasPorZona,
+                $quejasPorZona,
 
                 'quejasPorTurno' =>
-                    $quejasPorTurno,
+                $quejasPorTurno,
 
                 'dimensionDashboard' =>
-                    $dimensionDashboard,
+                $dimensionDashboard,
 
                 'cruceDashboard' =>
-                    $cruceDashboard,
+                $cruceDashboard,
 
                 'comparativa' =>
-                    $comparativa,
+                $comparativa,
 
                 'rankingDashboard' =>
-                    $rankingDashboard,
+                $rankingDashboard,
+
+                'hallazgosDashboard' =>
+                $hallazgosDashboard,
 
                 'sanciones' =>
-                    $sanciones,
+                $sanciones,
 
                 'clasificaciones' =>
-                    $clasificaciones,
+                $clasificaciones,
 
             ]
         );

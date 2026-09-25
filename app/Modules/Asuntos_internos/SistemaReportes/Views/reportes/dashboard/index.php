@@ -167,6 +167,15 @@ $esFelicitacion =
 
 
                     <!-- =============================================
+                        HALLAZGOS AUTOMÁTICOS
+                    ============================================== -->
+
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\hallazgos'
+                    ) ?>
+
+
+                    <!-- =============================================
                          BLOQUES OPERATIVOS
                     ============================================== -->
 
@@ -234,6 +243,7 @@ $esFelicitacion =
 
                     </div>
 
+                    
                 </div>
 
             </div>
