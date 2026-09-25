@@ -182,6 +182,8 @@ function inicializarFiltrosDashboard() {
 
     inicializarCatalogosDashboard();
 
+    inicializarBuscadorPersonalDashboard();
+
     /* =====================================================
        PANEL AVANZADO
 
@@ -1495,4 +1497,678 @@ function marcarOpcionActivaCatalogoDashboard(
         }
     );
 
+}
+
+/* =========================================================
+   BUSCADOR DE PERSONAL DEL DASHBOARD
+========================================================= */
+
+function inicializarBuscadorPersonalDashboard() {
+
+    const inputBusqueda =
+        document.querySelector(
+            '#dashboard-personal-busqueda'
+        );
+
+
+    const inputPersonal =
+        document.querySelector(
+            '#dashboard-personal'
+        );
+
+
+    const contenedorResultados =
+        document.querySelector(
+            '#dashboard-personal-resultados'
+        );
+
+
+    const contenedorSeleccion =
+        document.querySelector(
+            '#dashboard-personal-seleccion'
+        );
+
+
+    const textoSeleccion =
+        document.querySelector(
+            '#dashboard-personal-seleccion-texto'
+        );
+
+
+    const botonQuitar =
+        document.querySelector(
+            '#dashboard-personal-quitar'
+        );
+
+
+    if (
+        !inputBusqueda
+        || !inputPersonal
+        || !contenedorResultados
+        || !contenedorSeleccion
+        || !textoSeleccion
+        || !botonQuitar
+    ) {
+
+        return;
+    }
+
+
+    let temporizadorBusqueda =
+        null;
+
+
+    let controladorBusqueda =
+        null;
+
+
+    /* =====================================================
+       RESTAURAR PERSONAL DESDE URL
+
+       El valor real permanece en #dashboard-personal.
+       La representación visual se completará cuando el
+       usuario vuelva a seleccionar una persona.
+    ===================================================== */
+
+    const valorRestaurado =
+        String(
+            inputPersonal.value
+            ?? ''
+        ).trim();
+
+
+    if (
+        valorRestaurado !== ''
+    ) {
+
+        contenedorSeleccion.hidden =
+            false;
+
+
+        textoSeleccion.textContent =
+            valorRestaurado;
+    }
+
+
+    /* =====================================================
+       BUSCAR AL ESCRIBIR
+    ===================================================== */
+
+    inputBusqueda.addEventListener(
+        'input',
+        () => {
+
+            const termino =
+                inputBusqueda.value
+                .trim();
+
+
+            /*
+             * Si comienza una nueva búsqueda quitamos
+             * temporalmente la selección anterior.
+             */
+
+            inputPersonal.value =
+                '';
+
+
+            contenedorSeleccion.hidden =
+                true;
+
+
+            textoSeleccion.textContent =
+                '';
+
+
+            if (
+                temporizadorBusqueda
+            ) {
+
+                clearTimeout(
+                    temporizadorBusqueda
+                );
+            }
+
+
+            if (
+                termino.length === 0
+            ) {
+
+                ocultarResultadosPersonalDashboard();
+
+                return;
+            }
+
+
+            temporizadorBusqueda =
+                window.setTimeout(
+                    () => {
+
+                        buscarPersonalDashboard(
+                            termino
+                        );
+
+                    },
+                    300
+                );
+
+        }
+    );
+
+
+    /* =====================================================
+       CONSULTAR BACKEND
+    ===================================================== */
+
+    async function buscarPersonalDashboard(
+        termino
+    ) {
+
+        if (
+            controladorBusqueda
+        ) {
+
+            controladorBusqueda.abort();
+        }
+
+
+        controladorBusqueda =
+            new AbortController();
+
+
+        try {
+
+            const url =
+                new URL(
+                    'DataCore/public/asuntos-internos/reportes/personal/buscar',
+                    `${window.location.origin}/`
+                );
+
+
+            url.searchParams.set(
+                'q',
+                termino
+            );
+
+
+            const respuesta =
+                await fetch(
+                    url.toString(),
+                    {
+                        method: 'GET',
+
+                        headers: {
+                            Accept:
+                                'application/json',
+                        },
+
+                        signal:
+                            controladorBusqueda.signal,
+                    }
+                );
+
+
+            if (
+                !respuesta.ok
+            ) {
+
+                throw new Error(
+                    'No fue posible consultar el personal.'
+                );
+            }
+
+
+            const datos =
+                await respuesta.json();
+
+
+            renderizarResultadosPersonalDashboard(
+                Array.isArray(
+                    datos.personal
+                )
+                    ? datos.personal
+                    : []
+            );
+
+        } catch (error) {
+
+            if (
+                error.name === 'AbortError'
+            ) {
+
+                return;
+            }
+
+
+            console.error(
+                'Error buscando personal en Dashboard:',
+                error
+            );
+
+
+            mostrarMensajePersonalDashboard(
+                'No fue posible consultar el personal.'
+            );
+        }
+
+    }
+
+
+    /* =====================================================
+       RENDERIZAR RESULTADOS
+    ===================================================== */
+
+    function renderizarResultadosPersonalDashboard(
+        personal
+    ) {
+
+        contenedorResultados.innerHTML =
+            '';
+
+
+        if (
+            !personal.length
+        ) {
+
+            mostrarMensajePersonalDashboard(
+                'No se encontraron coincidencias.'
+            );
+
+            return;
+        }
+
+
+        personal.forEach(
+            persona => {
+
+                const boton =
+                    document.createElement(
+                        'button'
+                    );
+
+
+                boton.type =
+                    'button';
+
+
+                boton.className =
+                    'dashboard-personal-resultados__item';
+
+
+                const nombre =
+                    String(
+                        persona.nombre
+                        || 'Sin nombre'
+                    )
+                    .trim();
+
+
+                const nomina =
+                    String(
+                        persona.nomina
+                        || ''
+                    )
+                    .trim();
+
+
+                const area =
+                    String(
+                        persona.area
+                        || ''
+                    )
+                    .trim();
+
+
+                const perscod =
+                    String(
+                        persona.perscod
+                        || ''
+                    )
+                    .trim();
+
+
+                const plantillaId =
+                    Number(
+                        persona.id
+                    )
+                    || 0;
+
+
+                const inicial =
+                    obtenerInicialPersonalDashboard(
+                        nombre
+                    );
+
+
+                boton.innerHTML = `
+                    <span class="dashboard-personal-resultados__avatar">
+                        ${escaparHtmlDashboard(inicial)}
+                    </span>
+
+                    <span class="dashboard-personal-resultados__datos">
+
+                        <strong>
+                            ${escaparHtmlDashboard(nombre)}
+                        </strong>
+
+                        <small>
+                            Nómina:
+                            ${escaparHtmlDashboard(
+                                nomina || '—'
+                            )}
+                        </small>
+
+                        <small>
+                            ${escaparHtmlDashboard(
+                                area || 'Sin área'
+                            )}
+                        </small>
+
+                    </span>
+                `;
+
+
+                boton.addEventListener(
+                    'click',
+                    () => {
+
+                        seleccionarPersonalDashboard(
+                            {
+                                plantillaId,
+                                perscod,
+                                nombre,
+                                nomina,
+                                area,
+                            }
+                        );
+
+                    }
+                );
+
+
+                contenedorResultados.appendChild(
+                    boton
+                );
+
+            }
+        );
+
+
+        contenedorResultados.hidden =
+            false;
+    }
+
+
+    /* =====================================================
+       SELECCIONAR PERSONA
+    ===================================================== */
+
+    function seleccionarPersonalDashboard(
+        persona
+    ) {
+
+        /*
+         * Preferimos perscod porque ya es el identificador
+         * utilizado por ai_reporte_personal.
+         *
+         * Si no estuviera disponible, usamos plantilla_id.
+         */
+
+        const valor =
+            persona.perscod !== ''
+            ? persona.perscod
+            : String(
+                persona.plantillaId
+                || ''
+            );
+
+
+        if (
+            valor === ''
+        ) {
+
+            return;
+        }
+
+
+        inputPersonal.value =
+            valor;
+
+
+        inputBusqueda.value =
+            persona.nombre;
+
+
+        textoSeleccion.textContent =
+            construirTextoPersonalDashboard(
+                persona
+            );
+
+
+        contenedorSeleccion.hidden =
+            false;
+
+
+        ocultarResultadosPersonalDashboard();
+
+
+        /*
+         * Permitimos que cualquier dependencia futura
+         * escuche el cambio del filtro Personal.
+         */
+
+        inputPersonal.dispatchEvent(
+            new Event(
+                'change',
+                {
+                    bubbles: true,
+                }
+            )
+        );
+    }
+
+
+    /* =====================================================
+       QUITAR PERSONA SELECCIONADA
+    ===================================================== */
+
+    botonQuitar.addEventListener(
+        'click',
+        () => {
+
+            inputPersonal.value =
+                '';
+
+
+            inputBusqueda.value =
+                '';
+
+
+            textoSeleccion.textContent =
+                '';
+
+
+            contenedorSeleccion.hidden =
+                true;
+
+
+            ocultarResultadosPersonalDashboard();
+
+
+            inputPersonal.dispatchEvent(
+                new Event(
+                    'change',
+                    {
+                        bubbles: true,
+                    }
+                )
+            );
+
+
+            inputBusqueda.focus();
+
+        }
+    );
+
+
+    /* =====================================================
+       MENSAJE
+    ===================================================== */
+
+    function mostrarMensajePersonalDashboard(
+        mensaje
+    ) {
+
+        contenedorResultados.innerHTML = `
+            <div class="dashboard-personal-resultados__vacio">
+                ${escaparHtmlDashboard(mensaje)}
+            </div>
+        `;
+
+
+        contenedorResultados.hidden =
+            false;
+    }
+
+
+    /* =====================================================
+       OCULTAR RESULTADOS
+    ===================================================== */
+
+    function ocultarResultadosPersonalDashboard() {
+
+        contenedorResultados.hidden =
+            true;
+
+
+        contenedorResultados.innerHTML =
+            '';
+    }
+
+
+    /* =====================================================
+       CERRAR AL HACER CLIC FUERA
+    ===================================================== */
+
+    document.addEventListener(
+        'click',
+        evento => {
+
+            if (
+                evento.target === inputBusqueda
+                || contenedorResultados.contains(
+                    evento.target
+                )
+            ) {
+
+                return;
+            }
+
+
+            ocultarResultadosPersonalDashboard();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   TEXTO DE PERSONA SELECCIONADA
+========================================================= */
+
+function construirTextoPersonalDashboard(
+    persona
+) {
+
+    const partes = [];
+
+
+    if (
+        persona.nombre
+    ) {
+
+        partes.push(
+            persona.nombre
+        );
+    }
+
+
+    if (
+        persona.nomina
+    ) {
+
+        partes.push(
+            `Nómina ${persona.nomina}`
+        );
+    }
+
+
+    return partes.join(
+        ' · '
+    );
+}
+
+
+/* =========================================================
+   INICIAL
+========================================================= */
+
+function obtenerInicialPersonalDashboard(
+    nombre
+) {
+
+    const texto =
+        String(
+            nombre
+            || ''
+        ).trim();
+
+
+    if (
+        texto === ''
+    ) {
+
+        return '?';
+    }
+
+
+    return texto
+        .charAt(0)
+        .toUpperCase();
+}
+
+
+/* =========================================================
+   ESCAPAR HTML
+========================================================= */
+
+function escaparHtmlDashboard(
+    valor
+) {
+
+    return String(
+        valor
+        ?? ''
+    )
+        .replaceAll(
+            '&',
+            '&amp;'
+        )
+        .replaceAll(
+            '<',
+            '&lt;'
+        )
+        .replaceAll(
+            '>',
+            '&gt;'
+        )
+        .replaceAll(
+            '"',
+            '&quot;'
+        )
+        .replaceAll(
+            "'",
+            '&#039;'
+        );
 }
