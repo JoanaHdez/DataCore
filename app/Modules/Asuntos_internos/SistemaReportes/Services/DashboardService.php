@@ -12,6 +12,8 @@ use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardEst
 use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardDimensionService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardCruceService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardComparativaService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardRankingService;
+
 
 class DashboardService
 {
@@ -27,6 +29,7 @@ class DashboardService
     private DashboardDimensionService $dimensionService;
     private DashboardCruceService $cruceService;
     private DashboardComparativaService $comparativaService;
+    private DashboardRankingService $rankingService;
 
     /* =========================================================
        CONSTRUCTOR
@@ -127,6 +130,11 @@ class DashboardService
             new DashboardComparativaService(
                 $this->filtrosService,
                 $this->indicadoresService
+            );
+
+        $this->rankingService =
+            new DashboardRankingService(
+                $this->filtrosService
             );
     }
 
@@ -257,6 +265,7 @@ class DashboardService
             );
     }
 
+
     /* =========================================================
     ÁREA / GRUPO / UNIDAD
     ========================================================= */
@@ -268,6 +277,20 @@ class DashboardService
         return $this->dimensionService
             ->obtenerDimension(
                 $dimension
+            );
+    }
+
+    /* =========================================================
+    RANKINGS DINÁMICOS TOP 5
+    ========================================================= */
+
+    public function obtenerRanking(
+        string $tipo = 'sector'
+    ): array {
+
+        return $this->rankingService
+            ->obtenerRanking(
+                $tipo
             );
     }
 

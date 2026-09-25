@@ -2301,6 +2301,39 @@ class Reportes_Controller extends BaseController
 
 
         /* =========================================================
+        RANKING TOP 5
+        ========================================================= */
+
+        $rankingTipo =
+            strtolower(
+                trim(
+                    (string)
+                    $this->request->getGet(
+                        'ranking'
+                    )
+                )
+            );
+
+
+        if (
+            !in_array(
+                $rankingTipo,
+                [
+                    'sector',
+                    'area',
+                    'unidad',
+                    'personal',
+                ],
+                true
+            )
+        ) {
+
+            $rankingTipo =
+                'sector';
+        }
+
+
+        /* =========================================================
         DATOS DEL DASHBOARD
         ========================================================= */
 
@@ -2576,6 +2609,17 @@ class Reportes_Controller extends BaseController
             $comparativa =
                 $dashboardService
                 ->obtenerComparativa();
+
+
+            /* =====================================================
+            RANKING TOP 5
+            ===================================================== */
+
+            $rankingDashboard =
+                $dashboardService
+                ->obtenerRanking(
+                    $rankingTipo
+                );
 
 
             /* =====================================================
@@ -2984,6 +3028,82 @@ class Reportes_Controller extends BaseController
 
 
             /* =====================================================
+            RANKING TOP 5
+            ===================================================== */
+
+            $rankingDashboard = [
+
+                'tipo' =>
+                    $rankingTipo,
+
+                'titulo' =>
+                    match ($rankingTipo) {
+
+                        'area' =>
+                            'Áreas',
+
+                        'unidad' =>
+                            'Unidades',
+
+                        'personal' =>
+                            'Personal con mayor número de registros asociados',
+
+                        default =>
+                            'Sectores',
+                    },
+
+                'etiquetas' =>
+                    [],
+
+                'totales' =>
+                    [],
+
+                'porcentajes' =>
+                    [],
+
+                'total_top' =>
+                    0,
+
+                'opciones' => [
+
+                    [
+                        'valor' =>
+                            'sector',
+
+                        'texto' =>
+                            'Sectores',
+                    ],
+
+                    [
+                        'valor' =>
+                            'area',
+
+                        'texto' =>
+                            'Áreas',
+                    ],
+
+                    [
+                        'valor' =>
+                            'unidad',
+
+                        'texto' =>
+                            'Unidades',
+                    ],
+
+                    [
+                        'valor' =>
+                            'personal',
+
+                        'texto' =>
+                            'Personal',
+                    ],
+
+                ],
+
+            ];
+
+
+            /* =====================================================
             SANCIONES
             ===================================================== */
 
@@ -3055,6 +3175,14 @@ class Reportes_Controller extends BaseController
 
 
                 /* =================================================
+                RANKING
+                ================================================= */
+
+                'rankingSeleccionado' =>
+                    $rankingTipo,
+
+
+                /* =================================================
                 DASHBOARD
                 ================================================= */
 
@@ -3090,6 +3218,9 @@ class Reportes_Controller extends BaseController
 
                 'comparativa' =>
                     $comparativa,
+
+                'rankingDashboard' =>
+                    $rankingDashboard,
 
                 'sanciones' =>
                     $sanciones,

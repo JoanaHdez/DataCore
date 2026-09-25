@@ -137,6 +137,14 @@ Dashboard | Asuntos Internos
 
 
                     <!-- =============================================
+                        RANKING TOP 5
+                    ============================================== -->
+
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\ranking'
+                    ) ?>
+
+                    <!-- =============================================
                          COMPOSICIÓN DE BLOQUES OPERATIVOS
                     ============================================== -->
 
