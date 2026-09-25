@@ -8,7 +8,7 @@ use App\Modules\Asuntos_internos\SistemaReportes\Models\FelicitacionPersonalMode
 use App\Modules\Asuntos_internos\SistemaReportes\Services\FelicitacionService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\AuthService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\FelicitacionesExcelService;
-
+use App\Modules\Asuntos_internos\SistemaReportes\Services\HistorialService;
 
 class Felicitaciones_Controller extends BaseController
 {
@@ -1363,8 +1363,7 @@ class Felicitaciones_Controller extends BaseController
             )
         ) {
 
-            $personal =
-                [];
+            $personal = [];
         }
 
 
@@ -1385,8 +1384,7 @@ class Felicitaciones_Controller extends BaseController
             )
         ) {
 
-            $unidades =
-                [];
+            $unidades = [];
         }
 
 
@@ -1409,6 +1407,48 @@ class Felicitaciones_Controller extends BaseController
                     $idUsuario
                 );
 
+
+            /* =================================================
+            HISTORIAL
+            ================================================= */
+
+            try {
+
+                $historialService =
+                    new HistorialService();
+
+
+                $historialService
+                    ->registrarEdicionFelicitacion(
+                        $idFelicitacion,
+                        $idUsuario
+                    );
+            } catch (\Throwable $e) {
+
+                /*
+                * La felicitación ya fue actualizada.
+                *
+                * Si únicamente falla el historial,
+                * no hacemos fallar la edición.
+                */
+
+                log_message(
+                    'error',
+                    'No fue posible registrar el historial de edición de la felicitación {id}: {mensaje}',
+                    [
+                        'id' =>
+                        $idFelicitacion,
+
+                        'mensaje' =>
+                        $e->getMessage(),
+                    ]
+                );
+            }
+
+
+            /* =================================================
+            RESPUESTA
+            ================================================= */
 
             return $this->response
                 ->setJSON([
@@ -2010,7 +2050,8 @@ class Felicitaciones_Controller extends BaseController
                 ->setStatusCode(401)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'La sesión no es válida.',
+                    'message' =>
+                        'La sesión no es válida.',
                 ]);
         }
 
@@ -2045,7 +2086,8 @@ class Felicitaciones_Controller extends BaseController
                 ->setStatusCode(401)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'No fue posible identificar al usuario.',
+                    'message' =>
+                        'No fue posible identificar al usuario.',
                 ]);
         }
 
@@ -2058,7 +2100,8 @@ class Felicitaciones_Controller extends BaseController
                 ->setStatusCode(400)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'La felicitación no es válida.',
+                    'message' =>
+                        'La felicitación no es válida.',
                 ]);
         }
 
@@ -2098,7 +2141,8 @@ class Felicitaciones_Controller extends BaseController
                 ->setStatusCode(404)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'La felicitación no existe.',
+                    'message' =>
+                        'La felicitación no existe.',
                 ]);
         }
 
@@ -2118,7 +2162,8 @@ class Felicitaciones_Controller extends BaseController
                 ->setStatusCode(409)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'La felicitación ya fue eliminada.',
+                    'message' =>
+                        'La felicitación ya fue eliminada.',
                 ]);
         }
 
@@ -2131,14 +2176,9 @@ class Felicitaciones_Controller extends BaseController
             null;
 
 
-        /*
-        * =====================================================
-        * ADMINISTRADOR
-        *
-        * Si la sesión ya pertenece a un administrador,
-        * no solicitamos contraseña adicional.
-        * =====================================================
-        */
+        /* =====================================================
+        ADMINISTRADOR
+        ===================================================== */
 
         if (
             $rol === 'admin'
@@ -2146,24 +2186,21 @@ class Felicitaciones_Controller extends BaseController
 
             $idAdministradorAutorizador =
                 $idUsuario;
+
         } else {
 
-            /*
-            * =================================================
-            * USUARIO NORMAL
-            *
-            * El backend vuelve a validar la contraseña.
-            * No confiamos únicamente en JavaScript.
-            * =================================================
-            */
+            /* =================================================
+            USUARIO NORMAL
+            ================================================= */
 
             $passwordAdmin =
                 strtoupper(
                     trim(
-                        (string) $this->request
-                            ->getPost(
-                                'password_admin'
-                            )
+                        (string)
+                        $this->request
+                        ->getPost(
+                            'password_admin'
+                        )
                     )
                 );
 
@@ -2176,7 +2213,8 @@ class Felicitaciones_Controller extends BaseController
                     ->setStatusCode(403)
                     ->setJSON([
                         'success' => false,
-                        'message' => 'Se requiere autorización administrativa.',
+                        'message' =>
+                            'Se requiere autorización administrativa.',
                     ]);
             }
 
@@ -2192,6 +2230,7 @@ class Felicitaciones_Controller extends BaseController
                     ->validarAutorizacionAdministradores(
                         $passwordAdmin
                     );
+
             } catch (\Throwable $e) {
 
                 log_message(
@@ -2199,7 +2238,7 @@ class Felicitaciones_Controller extends BaseController
                     'Error validando autorización administrativa para eliminar felicitación: {mensaje}',
                     [
                         'mensaje' =>
-                        $e->getMessage(),
+                            $e->getMessage(),
                     ]
                 );
 
@@ -2208,7 +2247,8 @@ class Felicitaciones_Controller extends BaseController
                     ->setStatusCode(500)
                     ->setJSON([
                         'success' => false,
-                        'message' => 'No fue posible validar la autorización.',
+                        'message' =>
+                            'No fue posible validar la autorización.',
                     ]);
             }
 
@@ -2221,7 +2261,8 @@ class Felicitaciones_Controller extends BaseController
                     ->setStatusCode(403)
                     ->setJSON([
                         'success' => false,
-                        'message' => 'Contraseña de administrador incorrecta.',
+                        'message' =>
+                            'Contraseña de administrador incorrecta.',
                     ]);
             }
 
@@ -2241,7 +2282,8 @@ class Felicitaciones_Controller extends BaseController
                     ->setStatusCode(500)
                     ->setJSON([
                         'success' => false,
-                        'message' => 'No fue posible identificar al administrador autorizador.',
+                        'message' =>
+                            'No fue posible identificar al administrador autorizador.',
                     ]);
             }
         }
@@ -2276,16 +2318,16 @@ class Felicitaciones_Controller extends BaseController
                 )
                 ->update([
                     'eliminado' =>
-                    1,
+                        1,
 
                     'eliminado_at' =>
-                    $ahora,
+                        $ahora,
 
                     'eliminado_por' =>
-                    $idUsuario,
+                        $idUsuario,
 
                     'updated_at' =>
-                    $ahora,
+                        $ahora,
                 ]);
 
 
@@ -2298,31 +2340,45 @@ class Felicitaciones_Controller extends BaseController
                     'ai_felicitacion_eliminaciones'
                 )
                 ->insert([
-
                     'id_felicitacion' =>
-                    $idFelicitacion,
+                        $idFelicitacion,
 
                     'solicitado_por' =>
-                    $idUsuario,
+                        $idUsuario,
 
                     'autorizado_por' =>
-                    $idAdministradorAutorizador,
+                        $idAdministradorAutorizador,
 
                     'requirio_autorizacion' =>
-                    $rol === 'admin'
-                        ? 0
-                        : 1,
+                        $rol === 'admin'
+                            ? 0
+                            : 1,
 
                     'motivo' =>
-                    'Eliminación solicitada desde el listado de felicitaciones.',
+                        'Eliminación solicitada desde el listado de felicitaciones.',
 
                     'ip' =>
-                    $this->request
+                        $this->request
                         ->getIPAddress(),
 
                     'created_at' =>
-                    $ahora,
+                        $ahora,
                 ]);
+
+
+            /* =====================================================
+            HISTORIAL GENERAL
+            ===================================================== */
+
+            $historialService =
+                new HistorialService();
+
+
+            $historialService
+                ->registrarEliminacionFelicitacion(
+                    $idFelicitacion,
+                    $idUsuario
+                );
 
 
             /* =====================================================
@@ -2340,6 +2396,7 @@ class Felicitaciones_Controller extends BaseController
 
 
             $db->transCommit();
+
         } catch (\Throwable $e) {
 
             $db->transRollback();
@@ -2350,10 +2407,10 @@ class Felicitaciones_Controller extends BaseController
                 'Error eliminando lógicamente felicitación {id}: {mensaje}',
                 [
                     'id' =>
-                    $idFelicitacion,
+                        $idFelicitacion,
 
                     'mensaje' =>
-                    $e->getMessage(),
+                        $e->getMessage(),
                 ]
             );
 
@@ -2362,7 +2419,8 @@ class Felicitaciones_Controller extends BaseController
                 ->setStatusCode(500)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'No fue posible eliminar la felicitación.',
+                    'message' =>
+                        'No fue posible eliminar la felicitación.',
                 ]);
         }
 
@@ -2376,11 +2434,11 @@ class Felicitaciones_Controller extends BaseController
                 'success' => true,
 
                 'message' =>
-                'La felicitación fue eliminada correctamente.',
+                    'La felicitación fue eliminada correctamente.',
 
                 'folio' =>
-                $felicitacion['folio']
-                    ?? '',
+                    $felicitacion['folio']
+                        ?? '',
             ]);
     }
 }

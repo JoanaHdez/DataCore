@@ -9,6 +9,7 @@ use App\Modules\Asuntos_internos\SistemaReportes\Services\ReporteService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\FolioService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\FelicitacionService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\HistorialService;
 use App\Controllers\BaseController;
 
 class Reportes_Controller extends BaseController
@@ -848,7 +849,8 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(401)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'La sesión no es válida.',
+                    'message' =>
+                    'La sesión no es válida.',
                 ]);
         }
 
@@ -866,7 +868,9 @@ class Reportes_Controller extends BaseController
             );
 
 
-        if ($idUsuario <= 0) {
+        if (
+            $idUsuario <= 0
+        ) {
 
             return $this->response
                 ->setStatusCode(401)
@@ -888,31 +892,45 @@ class Reportes_Controller extends BaseController
 
 
         /*
-     * Las relaciones múltiples llegan mediante:
-     *
-     * personal[0][...]
-     * personal[1][...]
-     *
-     * unidades[0][...]
-     * unidades[1][...]
-     */
+        * Las relaciones múltiples llegan mediante:
+        *
+        * personal[0][...]
+        * personal[1][...]
+        *
+        * unidades[0][...]
+        * unidades[1][...]
+        */
 
         $personal =
             $this->request
-            ->getPost('personal');
+            ->getPost(
+                'personal'
+            );
 
 
         $unidades =
             $this->request
-            ->getPost('unidades');
+            ->getPost(
+                'unidades'
+            );
 
 
-        if (!is_array($personal)) {
+        if (
+            !is_array(
+                $personal
+            )
+        ) {
+
             $personal = [];
         }
 
 
-        if (!is_array($unidades)) {
+        if (
+            !is_array(
+                $unidades
+            )
+        ) {
+
             $unidades = [];
         }
 
@@ -940,10 +958,15 @@ class Reportes_Controller extends BaseController
 
 
             /*
-         * CodeIgniter puede entregar un solo UploadedFile
-         * o un arreglo dependiendo del request.
-         */
-            if (!is_array($archivos)) {
+            * CodeIgniter puede entregar un solo UploadedFile
+            * o un arreglo dependiendo del request.
+            */
+
+            if (
+                !is_array(
+                    $archivos
+                )
+            ) {
 
                 $archivos = [
                     $archivos,
@@ -953,7 +976,7 @@ class Reportes_Controller extends BaseController
 
 
         /* =========================================================
-        GUARDAR
+        GUARDAR REPORTE
         ========================================================= */
 
         try {
@@ -972,42 +995,117 @@ class Reportes_Controller extends BaseController
                 );
 
 
+            /* =====================================================
+            IDENTIFICADOR DEL REPORTE CREADO
+            ===================================================== */
+
+            $idReporte =
+                (int) (
+                    $resultado['id_reporte']
+                    ?? 0
+                );
+
+
+            $folio =
+                trim(
+                    (string) (
+                        $resultado['folio']
+                        ?? ''
+                    )
+                );
+
+
+            /* =====================================================
+            REGISTRAR HISTORIAL
+            ===================================================== */
+
+            if (
+                $idReporte > 0
+            ) {
+
+                try {
+
+                    $historialService =
+                        new HistorialService();
+
+
+                    $historialService
+                        ->registrarCreacionReporte(
+                            $idReporte,
+                            $idUsuario
+                        );
+                } catch (\Throwable $e) {
+
+                    /*
+                    * El reporte YA fue creado correctamente.
+                    *
+                    * Si por alguna razón falla únicamente el registro
+                    * de trazabilidad, no hacemos fallar toda la operación.
+                    *
+                    * Dejamos evidencia técnica en el log.
+                    */
+
+                    log_message(
+                        'error',
+                        'No fue posible registrar el historial de creación del reporte {idReporte}: {mensaje}',
+                        [
+                            'idReporte' =>
+                            $idReporte,
+
+                            'mensaje' =>
+                            $e->getMessage(),
+                        ]
+                    );
+                }
+            }
+
+
+            /* =====================================================
+            RESPUESTA
+            ===================================================== */
+
             return $this->response
                 ->setStatusCode(201)
                 ->setJSON([
-                    'success' => true,
+                    'success' =>
+                    true,
 
                     'message' =>
                     'El reporte fue guardado correctamente.',
 
                     'id_reporte' =>
-                    $resultado['id_reporte']
-                        ?? null,
+                    $idReporte > 0
+                        ? $idReporte
+                        : null,
 
                     'folio' =>
-                    $resultado['folio']
-                        ?? null,
+                    $folio !== ''
+                        ? $folio
+                        : null,
                 ]);
         } catch (\InvalidArgumentException $e) {
 
             /*
-         * Error provocado por datos inválidos
-         * enviados desde el formulario.
-         */
+            * Error provocado por datos inválidos
+            * enviados desde el formulario.
+            */
+
             return $this->response
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' => false,
+
                     'message' =>
                     $e->getMessage(),
                 ]);
         } catch (\Throwable $e) {
 
             /*
-         * El detalle técnico únicamente va al log.
-         * No exponemos rutas, SQL ni stack trace
-         * al navegador.
-         */
+            * El detalle técnico únicamente va al log.
+            * No exponemos rutas, SQL ni stack trace
+            * al navegador.
+            */
+
             log_message(
                 'error',
                 'Error guardando reporte de Asuntos Internos: {mensaje}',
@@ -1022,6 +1120,7 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(500)
                 ->setJSON([
                     'success' => false,
+
                     'message' =>
                     'No fue posible guardar el reporte.',
                 ]);
@@ -1043,7 +1142,8 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(401)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'La sesión no es válida.',
+                    'message' =>
+                    'La sesión no es válida.',
                 ]);
         }
 
@@ -1069,7 +1169,8 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(401)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'No fue posible identificar al usuario.',
+                    'message' =>
+                    'No fue posible identificar al usuario.',
                 ]);
         }
 
@@ -1100,8 +1201,7 @@ class Reportes_Controller extends BaseController
             )
         ) {
 
-            $personal =
-                [];
+            $personal = [];
         }
 
 
@@ -1122,8 +1222,7 @@ class Reportes_Controller extends BaseController
             )
         ) {
 
-            $unidades =
-                [];
+            $unidades = [];
         }
 
 
@@ -1146,6 +1245,64 @@ class Reportes_Controller extends BaseController
                 );
 
 
+            /* =====================================================
+            IDENTIFICADOR DE LA FELICITACIÓN
+            ===================================================== */
+
+            $idFelicitacion =
+                (int) (
+                    $resultado['id_felicitacion']
+                    ?? 0
+                );
+
+
+            /* =====================================================
+            HISTORIAL
+            ===================================================== */
+
+            if (
+                $idFelicitacion > 0
+            ) {
+
+                try {
+
+                    $historialService =
+                        new HistorialService();
+
+
+                    $historialService
+                        ->registrarCreacionFelicitacion(
+                            $idFelicitacion,
+                            $idUsuario
+                        );
+                } catch (\Throwable $e) {
+
+                    /*
+                 * La felicitación ya fue guardada.
+                 *
+                 * Si únicamente falla el historial,
+                 * no hacemos fallar el alta.
+                 */
+
+                    log_message(
+                        'error',
+                        'No fue posible registrar el historial de creación de la felicitación {idFelicitacion}: {mensaje}',
+                        [
+                            'idFelicitacion' =>
+                            $idFelicitacion,
+
+                            'mensaje' =>
+                            $e->getMessage(),
+                        ]
+                    );
+                }
+            }
+
+
+            /* =====================================================
+            RESPUESTA
+            ===================================================== */
+
             return $this->response
                 ->setStatusCode(201)
                 ->setJSON([
@@ -1156,8 +1313,9 @@ class Reportes_Controller extends BaseController
                     'La felicitación fue guardada correctamente.',
 
                     'id_felicitacion' =>
-                    $resultado['id_felicitacion']
-                        ?? null,
+                    $idFelicitacion > 0
+                        ? $idFelicitacion
+                        : null,
 
                     'numero_folio' =>
                     $resultado['numero_folio']
@@ -1221,7 +1379,8 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(401)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'La sesión no es válida.',
+                    'message' =>
+                    'La sesión no es válida.',
                 ]);
         }
 
@@ -1239,7 +1398,9 @@ class Reportes_Controller extends BaseController
             );
 
 
-        if ($idUsuario <= 0) {
+        if (
+            $idUsuario <= 0
+        ) {
 
             return $this->response
                 ->setStatusCode(401)
@@ -1251,7 +1412,9 @@ class Reportes_Controller extends BaseController
         }
 
 
-        if ($idReporte <= 0) {
+        if (
+            $idReporte <= 0
+        ) {
 
             return $this->response
                 ->setStatusCode(422)
@@ -1261,6 +1424,64 @@ class Reportes_Controller extends BaseController
                     'El reporte proporcionado no es válido.',
                 ]);
         }
+
+
+        /* =========================================================
+        CONEXIÓN BD
+        ========================================================= */
+
+        $db =
+            \Config\Database::connect(
+                'datacore'
+            );
+
+
+        /* =========================================================
+        OBTENER ESTADO ANTERIOR
+        ========================================================= */
+
+        $reporteAnterior =
+            $db
+            ->table(
+                'ai_reportes'
+            )
+            ->select([
+                'id_reporte',
+                'estado_actual',
+            ])
+            ->where(
+                'id_reporte',
+                $idReporte
+            )
+            ->where(
+                'eliminado',
+                0
+            )
+            ->get()
+            ->getRowArray();
+
+
+        if (
+            !$reporteAnterior
+        ) {
+
+            return $this->response
+                ->setStatusCode(404)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'No fue posible localizar el reporte.',
+                ]);
+        }
+
+
+        $estadoAnterior =
+            trim(
+                (string) (
+                    $reporteAnterior['estado_actual']
+                    ?? ''
+                )
+            );
 
 
         /* =========================================================
@@ -1283,7 +1504,11 @@ class Reportes_Controller extends BaseController
             );
 
 
-        if (!is_array($personal)) {
+        if (
+            !is_array(
+                $personal
+            )
+        ) {
 
             $personal = [];
         }
@@ -1300,7 +1525,11 @@ class Reportes_Controller extends BaseController
             );
 
 
-        if (!is_array($unidades)) {
+        if (
+            !is_array(
+                $unidades
+            )
+        ) {
 
             $unidades = [];
         }
@@ -1317,7 +1546,11 @@ class Reportes_Controller extends BaseController
             );
 
 
-        if (!is_array($evidenciasEliminadas)) {
+        if (
+            !is_array(
+                $evidenciasEliminadas
+            )
+        ) {
 
             $evidenciasEliminadas = [];
         }
@@ -1327,8 +1560,7 @@ class Reportes_Controller extends BaseController
         EVIDENCIAS NUEVAS
         ========================================================= */
 
-        $archivos =
-            [];
+        $archivos = [];
 
 
         $files =
@@ -1346,7 +1578,11 @@ class Reportes_Controller extends BaseController
                 $files['evidencia_fotografica'];
 
 
-            if (!is_array($archivos)) {
+            if (
+                !is_array(
+                    $archivos
+                )
+            ) {
 
                 $archivos = [
                     $archivos,
@@ -1376,6 +1612,106 @@ class Reportes_Controller extends BaseController
                     $idUsuario
                 );
 
+
+            /* =====================================================
+            OBTENER ESTADO RESULTANTE
+            ===================================================== */
+
+            $reporteActualizado =
+                $db
+                ->table(
+                    'ai_reportes'
+                )
+                ->select([
+                    'id_reporte',
+                    'estado_actual',
+                ])
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
+                ->where(
+                    'eliminado',
+                    0
+                )
+                ->get()
+                ->getRowArray();
+
+
+            $estadoNuevo =
+                trim(
+                    (string) (
+                        $reporteActualizado['estado_actual']
+                        ?? ''
+                    )
+                );
+
+
+            /* =====================================================
+            REGISTRAR HISTORIAL
+            ===================================================== */
+
+            try {
+
+                $historialService =
+                    new HistorialService();
+
+
+                /* =============================================
+                EDICIÓN GENERAL
+                ============================================== */
+
+                $historialService
+                    ->registrarEdicionReporte(
+                        $idReporte,
+                        $idUsuario
+                    );
+
+
+                /* =============================================
+                CAMBIO DE ESTADO
+                ============================================== */
+
+                if (
+                    $estadoAnterior !== ''
+                    && $estadoNuevo !== ''
+                    && $estadoAnterior !== $estadoNuevo
+                ) {
+
+                    $historialService
+                        ->registrarCambioEstadoReporte(
+                            $idReporte,
+                            $idUsuario,
+                            $estadoAnterior,
+                            $estadoNuevo
+                        );
+                }
+            } catch (\Throwable $e) {
+
+                /*
+                * El reporte ya fue actualizado.
+                *
+                * Si únicamente falla la trazabilidad,
+                * no hacemos fallar la edición.
+                */
+
+                log_message(
+                    'error',
+                    'No fue posible registrar el historial de edición del reporte {idReporte}: {mensaje}',
+                    [
+                        'idReporte' =>
+                        $idReporte,
+
+                        'mensaje' =>
+                        $e->getMessage(),
+                    ]
+                );
+            }
+
+
+            /* =====================================================
+            RESPUESTA
+            ===================================================== */
 
             return $this->response
                 ->setJSON([
@@ -2286,9 +2622,7 @@ class Reportes_Controller extends BaseController
 
 
                 if (
-                    empty(
-                        $mayores
-                    )
+                    empty($mayores)
                 ) {
 
                     return null;
@@ -2298,15 +2632,15 @@ class Reportes_Controller extends BaseController
                 return [
 
                     'etiquetas' =>
-                        $mayores,
+                    $mayores,
 
                     'total' =>
-                        $mayorTotal,
+                    $mayorTotal,
 
                     'empate' =>
-                        count(
-                            $mayores
-                        ) > 1,
+                    count(
+                        $mayores
+                    ) > 1,
 
                 ];
             };
@@ -2407,71 +2741,70 @@ class Reportes_Controller extends BaseController
 
                 $descripcion =
                     $sectorMayor['empate']
-                        ? $textoSector
-                            . ' comparten la mayor cantidad, con '
-                            . $total
-                            . (
-                                $total === 1
-                                    ? ' felicitación cada uno.'
-                                    : ' felicitaciones cada uno.'
-                            )
-                        : $textoSector
-                            . ' registra '
-                            . $total
-                            . (
-                                $total === 1
-                                    ? ' felicitación'
-                                    : ' felicitaciones'
-                            )
-                            . ' en el periodo seleccionado.';
-
+                    ? $textoSector
+                    . ' comparten la mayor cantidad, con '
+                    . $total
+                    . (
+                        $total === 1
+                        ? ' felicitación cada uno.'
+                        : ' felicitaciones cada uno.'
+                    )
+                    : $textoSector
+                    . ' registra '
+                    . $total
+                    . (
+                        $total === 1
+                        ? ' felicitación'
+                        : ' felicitaciones'
+                    )
+                    . ' en el periodo seleccionado.';
             } else {
 
                 $descripcion =
                     $sectorMayor['empate']
-                        ? $textoSector
-                            . ' comparten la mayor concentración, con '
-                            . $total
-                            . (
-                                $total === 1
-                                    ? ' registro cada uno.'
-                                    : ' registros cada uno.'
-                            )
-                        : $textoSector
-                            . ' concentra '
-                            . $total
-                            . (
-                                $total === 1
-                                    ? ' registro'
-                                    : ' registros'
-                            )
-                            . ' en el periodo seleccionado.';
+                    ? $textoSector
+                    . ' comparten la mayor concentración, con '
+                    . $total
+                    . (
+                        $total === 1
+                        ? ' registro cada uno.'
+                        : ' registros cada uno.'
+                    )
+                    : $textoSector
+                    . ' concentra '
+                    . $total
+                    . (
+                        $total === 1
+                        ? ' registro'
+                        : ' registros'
+                    )
+                    . ' en el periodo seleccionado.';
             }
 
 
             $hallazgos[] = [
 
                 'tipo' =>
-                    'sector',
+                'sector',
 
                 'titulo' =>
-                    $sectorMayor['empate']
-                        ? (
-                            $esFelicitacion
-                                ? 'Sectores con más felicitaciones'
-                                : 'Sectores con mayor concentración'
-                        )
-                        : (
-                            $esFelicitacion
-                                ? 'Sector con más felicitaciones'
-                                : 'Mayor concentración por sector'
-                        ),
+                $sectorMayor['empate']
+                    ? (
+                        $esFelicitacion
+                        ? 'Sectores con más felicitaciones'
+                        : 'Sectores con mayor concentración'
+                    )
+                    : (
+                        $esFelicitacion
+                        ? 'Sector con más felicitaciones'
+                        : 'Mayor concentración por sector'
+                    ),
 
                 'valor' =>
-                    $textoSector,
+                $textoSector,
 
                 'descripcion' =>
-                    $descripcion,
+                $descripcion,
 
             ];
         }
@@ -2508,58 +2841,58 @@ class Reportes_Controller extends BaseController
             $hallazgos[] = [
 
                 'tipo' =>
-                    'zona',
+                'zona',
 
                 'titulo' =>
-                    $zonaMayor['empate']
-                        ? (
-                            $esFelicitacion
-                                ? 'Zonas con más felicitaciones'
-                                : 'Zonas con mayor concentración'
-                        )
-                        : (
-                            $esFelicitacion
-                                ? 'Zona con más felicitaciones'
-                                : 'Zona con mayor concentración'
-                        ),
+                $zonaMayor['empate']
+                    ? (
+                        $esFelicitacion
+                        ? 'Zonas con más felicitaciones'
+                        : 'Zonas con mayor concentración'
+                    )
+                    : (
+                        $esFelicitacion
+                        ? 'Zona con más felicitaciones'
+                        : 'Zona con mayor concentración'
+                    ),
 
                 'valor' =>
-                    $textoZona,
+                $textoZona,
 
                 'descripcion' =>
-                    $zonaMayor['empate']
-                        ? $textoZona
-                            . ' comparten el valor máximo con '
-                            . $total
-                            . (
-                                $esFelicitacion
-                                    ? (
-                                        $total === 1
-                                            ? ' felicitación cada una.'
-                                            : ' felicitaciones cada una.'
-                                    )
-                                    : (
-                                        $total === 1
-                                            ? ' registro cada una.'
-                                            : ' registros cada una.'
-                                    )
-                            )
-                        : $textoZona
-                            . ' presenta '
-                            . $total
-                            . (
-                                $esFelicitacion
-                                    ? (
-                                        $total === 1
-                                            ? ' felicitación.'
-                                            : ' felicitaciones.'
-                                    )
-                                    : (
-                                        $total === 1
-                                            ? ' registro.'
-                                            : ' registros.'
-                                    )
-                            ),
+                $zonaMayor['empate']
+                    ? $textoZona
+                    . ' comparten el valor máximo con '
+                    . $total
+                    . (
+                        $esFelicitacion
+                        ? (
+                            $total === 1
+                            ? ' felicitación cada una.'
+                            : ' felicitaciones cada una.'
+                        )
+                        : (
+                            $total === 1
+                            ? ' registro cada una.'
+                            : ' registros cada una.'
+                        )
+                    )
+                    : $textoZona
+                    . ' presenta '
+                    . $total
+                    . (
+                        $esFelicitacion
+                        ? (
+                            $total === 1
+                            ? ' felicitación.'
+                            : ' felicitaciones.'
+                        )
+                        : (
+                            $total === 1
+                            ? ' registro.'
+                            : ' registros.'
+                        )
+                    ),
 
             ];
         }
@@ -2596,58 +2929,58 @@ class Reportes_Controller extends BaseController
             $hallazgos[] = [
 
                 'tipo' =>
-                    'turno',
+                'turno',
 
                 'titulo' =>
-                    $turnoMayor['empate']
-                        ? (
-                            $esFelicitacion
-                                ? 'Turnos con más felicitaciones'
-                                : 'Turnos con mayor concentración'
-                        )
-                        : (
-                            $esFelicitacion
-                                ? 'Turno con más felicitaciones'
-                                : 'Turno con mayor concentración'
-                        ),
+                $turnoMayor['empate']
+                    ? (
+                        $esFelicitacion
+                        ? 'Turnos con más felicitaciones'
+                        : 'Turnos con mayor concentración'
+                    )
+                    : (
+                        $esFelicitacion
+                        ? 'Turno con más felicitaciones'
+                        : 'Turno con mayor concentración'
+                    ),
 
                 'valor' =>
-                    $textoTurno,
+                $textoTurno,
 
                 'descripcion' =>
-                    $turnoMayor['empate']
-                        ? $textoTurno
-                            . ' comparten el valor máximo con '
-                            . $total
-                            . (
-                                $esFelicitacion
-                                    ? (
-                                        $total === 1
-                                            ? ' felicitación cada uno.'
-                                            : ' felicitaciones cada uno.'
-                                    )
-                                    : (
-                                        $total === 1
-                                            ? ' registro cada uno.'
-                                            : ' registros cada uno.'
-                                    )
-                            )
-                        : $textoTurno
-                            . ' reúne '
-                            . $total
-                            . (
-                                $esFelicitacion
-                                    ? (
-                                        $total === 1
-                                            ? ' felicitación.'
-                                            : ' felicitaciones.'
-                                    )
-                                    : (
-                                        $total === 1
-                                            ? ' registro.'
-                                            : ' registros.'
-                                    )
-                            ),
+                $turnoMayor['empate']
+                    ? $textoTurno
+                    . ' comparten el valor máximo con '
+                    . $total
+                    . (
+                        $esFelicitacion
+                        ? (
+                            $total === 1
+                            ? ' felicitación cada uno.'
+                            : ' felicitaciones cada uno.'
+                        )
+                        : (
+                            $total === 1
+                            ? ' registro cada uno.'
+                            : ' registros cada uno.'
+                        )
+                    )
+                    : $textoTurno
+                    . ' reúne '
+                    . $total
+                    . (
+                        $esFelicitacion
+                        ? (
+                            $total === 1
+                            ? ' felicitación.'
+                            : ' felicitaciones.'
+                        )
+                        : (
+                            $total === 1
+                            ? ' registro.'
+                            : ' registros.'
+                        )
+                    ),
 
             ];
         }
@@ -2689,30 +3022,30 @@ class Reportes_Controller extends BaseController
                 $hallazgos[] = [
 
                     'tipo' =>
-                        'estado',
+                    'estado',
 
                     'titulo' =>
-                        $estadoMayor['empate']
-                            ? 'Estados predominantes'
-                            : 'Estado predominante',
+                    $estadoMayor['empate']
+                        ? 'Estados predominantes'
+                        : 'Estado predominante',
 
                     'valor' =>
-                        $textoEstado,
+                    $textoEstado,
 
                     'descripcion' =>
-                        $estadoMayor['empate']
-                            ? $textoEstado
-                                . ' comparten el mayor número de registros, con '
-                                . $total
-                                . ' cada uno.'
-                            : $total
-                                . (
-                                    $total === 1
-                                        ? ' registro se encuentra actualmente en estado '
-                                        : ' registros se encuentran actualmente en estado '
-                                )
-                                . $textoEstado
-                                . '.',
+                    $estadoMayor['empate']
+                        ? $textoEstado
+                        . ' comparten el mayor número de registros, con '
+                        . $total
+                        . ' cada uno.'
+                        : $total
+                        . (
+                            $total === 1
+                            ? ' registro se encuentra actualmente en estado '
+                            : ' registros se encuentran actualmente en estado '
+                        )
+                        . $textoEstado
+                        . '.',
 
                 ];
             }
@@ -2760,52 +3093,52 @@ class Reportes_Controller extends BaseController
             $hallazgos[] = [
 
                 'tipo' =>
-                    'dimension',
+                'dimension',
 
                 'titulo' =>
-                    $dimensionMayor['empate']
-                        ? $tituloDimension
-                            . ' — mayor concentración compartida'
-                        : $tituloDimension
-                            . ' con mayor concentración',
+                $dimensionMayor['empate']
+                    ? $tituloDimension
+                    . ' — mayor concentración compartida'
+                    : $tituloDimension
+                    . ' con mayor concentración',
 
                 'valor' =>
-                    $textoDimension,
+                $textoDimension,
 
                 'descripcion' =>
-                    $dimensionMayor['empate']
-                        ? $textoDimension
-                            . ' comparten el valor máximo con '
-                            . $total
-                            . (
-                                $esFelicitacion
-                                    ? (
-                                        $total === 1
-                                            ? ' asociación con felicitaciones cada uno.'
-                                            : ' asociaciones con felicitaciones cada uno.'
-                                    )
-                                    : (
-                                        $total === 1
-                                            ? ' asociación con reportes cada uno.'
-                                            : ' asociaciones con reportes cada uno.'
-                                    )
-                            )
-                        : $textoDimension
-                            . ' registra '
-                            . $total
-                            . (
-                                $esFelicitacion
-                                    ? (
-                                        $total === 1
-                                            ? ' asociación con felicitaciones.'
-                                            : ' asociaciones con felicitaciones.'
-                                    )
-                                    : (
-                                        $total === 1
-                                            ? ' asociación con reportes.'
-                                            : ' asociaciones con reportes.'
-                                    )
-                            ),
+                $dimensionMayor['empate']
+                    ? $textoDimension
+                    . ' comparten el valor máximo con '
+                    . $total
+                    . (
+                        $esFelicitacion
+                        ? (
+                            $total === 1
+                            ? ' asociación con felicitaciones cada uno.'
+                            : ' asociaciones con felicitaciones cada uno.'
+                        )
+                        : (
+                            $total === 1
+                            ? ' asociación con reportes cada uno.'
+                            : ' asociaciones con reportes cada uno.'
+                        )
+                    )
+                    : $textoDimension
+                    . ' registra '
+                    . $total
+                    . (
+                        $esFelicitacion
+                        ? (
+                            $total === 1
+                            ? ' asociación con felicitaciones.'
+                            : ' asociaciones con felicitaciones.'
+                        )
+                        : (
+                            $total === 1
+                            ? ' asociación con reportes.'
+                            : ' asociaciones con reportes.'
+                        )
+                    ),
 
             ];
         }
@@ -4322,27 +4655,59 @@ class Reportes_Controller extends BaseController
             session()->get('reportes_autenticado') !== true
             || !session()->has('usuario_reportes')
         ) {
+
             return $this->response
                 ->setStatusCode(401)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'La sesión no es válida.',
+                    'message' =>
+                    'La sesión no es válida.',
                 ]);
         }
 
 
-        $usuario = session()->get('usuario_reportes');
+        $usuario =
+            session()->get(
+                'usuario_reportes'
+            );
 
-        $idUsuario = (int) ($usuario['id_usuario'] ?? 0);
-        $rol       = $usuario['rol'] ?? 'usuario';
+
+        $idUsuario =
+            (int) (
+                $usuario['id_usuario']
+                ?? 0
+            );
 
 
-        if ($idUsuario <= 0) {
+        $rol =
+            $usuario['rol']
+            ?? 'usuario';
+
+
+        if (
+            $idUsuario <= 0
+        ) {
+
             return $this->response
                 ->setStatusCode(401)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'No fue posible identificar al usuario.',
+                    'message' =>
+                    'No fue posible identificar al usuario.',
+                ]);
+        }
+
+
+        if (
+            $idReporte <= 0
+        ) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'success' => false,
+                    'message' =>
+                    'El reporte proporcionado no es válido.',
                 ]);
         }
 
@@ -4351,42 +4716,61 @@ class Reportes_Controller extends BaseController
         CONEXIÓN DATACORE
         ========================================================= */
 
-        $db = \Config\Database::connect('datacore');
+        $db =
+            \Config\Database::connect(
+                'datacore'
+            );
 
 
         /* =========================================================
         BUSCAR REPORTE
         ========================================================= */
 
-        $reporte = $db
-            ->table('ai_reportes')
-            ->where('id_reporte', $idReporte)
+        $reporte =
+            $db
+            ->table(
+                'ai_reportes'
+            )
+            ->where(
+                'id_reporte',
+                $idReporte
+            )
             ->get()
             ->getRowArray();
 
 
-        if (!$reporte) {
+        if (
+            !$reporte
+        ) {
+
             return $this->response
                 ->setStatusCode(404)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'El reporte no existe.',
+                    'message' =>
+                    'El reporte no existe.',
                 ]);
         }
 
 
         /*
-     * Si ya estaba eliminado, no volvemos a procesarlo.
-     */
+        * Si ya estaba eliminado,
+        * no volvemos a procesarlo.
+        */
+
         if (
-            (int) ($reporte['eliminado'] ?? 0)
-            === 1
+            (int) (
+                $reporte['eliminado']
+                ?? 0
+            ) === 1
         ) {
+
             return $this->response
                 ->setStatusCode(409)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'El reporte ya fue eliminado.',
+                    'message' =>
+                    'El reporte ya fue eliminado.',
                 ]);
         }
 
@@ -4395,53 +4779,68 @@ class Reportes_Controller extends BaseController
         AUTORIZACIÓN
         ========================================================= */
 
-        $idAdministradorAutorizador = null;
+        $idAdministradorAutorizador =
+            null;
 
 
         /*
-     * ADMIN
-     *
-     * Puede eliminar directamente.
-     */
-        if ($rol === 'admin') {
+        * ADMIN
+        *
+        * Puede eliminar directamente.
+        */
 
-            $idAdministradorAutorizador = $idUsuario;
+        if (
+            $rol === 'admin'
+        ) {
+
+            $idAdministradorAutorizador =
+                $idUsuario;
         } else {
 
             /*
-         * USUARIO NORMAL
-         *
-         * IMPORTANTE:
-         * No confiamos en la autorización que ocurrió antes
-         * solamente en JavaScript.
-         *
-         * El backend vuelve a exigir la contraseña administrativa
-         * para ejecutar la operación real.
-         */
+            * USUARIO NORMAL
+            *
+            * El backend vuelve a exigir la contraseña administrativa
+            * para ejecutar la operación real.
+            */
 
-            $passwordAdmin = strtoupper(
-                trim(
-                    (string) $this->request->getPost('password_admin')
-                )
-            );
+            $passwordAdmin =
+                strtoupper(
+                    trim(
+                        (string)
+                        $this->request
+                            ->getPost(
+                                'password_admin'
+                            )
+                    )
+                );
 
 
-            if ($passwordAdmin === '') {
+            if (
+                $passwordAdmin === ''
+            ) {
+
                 return $this->response
                     ->setStatusCode(403)
                     ->setJSON([
                         'success' => false,
-                        'message' => 'Se requiere autorización administrativa.',
+                        'message' =>
+                        'Se requiere autorización administrativa.',
                     ]);
             }
 
 
             try {
 
-                $authService = new AuthService();
+                $authService =
+                    new AuthService();
 
-                $autorizado = $authService
-                    ->validarAutorizacionAdmin($passwordAdmin);
+
+                $autorizado =
+                    $authService
+                    ->validarAutorizacionAdmin(
+                        $passwordAdmin
+                    );
             } catch (\Throwable $e) {
 
                 log_message(
@@ -4449,49 +4848,71 @@ class Reportes_Controller extends BaseController
                     'Error validando autorización administrativa para eliminar reporte.'
                 );
 
+
                 return $this->response
                     ->setStatusCode(500)
                     ->setJSON([
                         'success' => false,
-                        'message' => 'No fue posible validar la autorización.',
+                        'message' =>
+                        'No fue posible validar la autorización.',
                     ]);
             }
 
 
-            if (!$autorizado) {
+            if (
+                !$autorizado
+            ) {
+
                 return $this->response
                     ->setStatusCode(403)
                     ->setJSON([
                         'success' => false,
-                        'message' => 'Contraseña de administrador incorrecta.',
+                        'message' =>
+                        'Contraseña de administrador incorrecta.',
                     ]);
             }
 
 
             /*
-         * Buscamos el usuario local correspondiente al
-         * administrador de plantilla ID 758.
-         */
-            $adminLocal = $db
-                ->table('dc_usuarios')
-                ->select('id_usuario')
-                ->where('plantilla_id', 758)
+            * Buscamos el usuario local correspondiente
+            * al administrador de plantilla ID 758.
+            */
+
+            $adminLocal =
+                $db
+                ->table(
+                    'dc_usuarios'
+                )
+                ->select(
+                    'id_usuario'
+                )
+                ->where(
+                    'plantilla_id',
+                    758
+                )
                 ->get()
                 ->getRowArray();
 
 
-            if (!$adminLocal) {
+            if (
+                !$adminLocal
+            ) {
+
                 return $this->response
                     ->setStatusCode(500)
                     ->setJSON([
                         'success' => false,
-                        'message' => 'No fue posible identificar al administrador autorizador.',
+                        'message' =>
+                        'No fue posible identificar al administrador autorizador.',
                     ]);
             }
 
 
             $idAdministradorAutorizador =
-                (int) $adminLocal['id_usuario'];
+                (int) (
+                    $adminLocal['id_usuario']
+                    ?? 0
+                );
         }
 
 
@@ -4504,7 +4925,10 @@ class Reportes_Controller extends BaseController
 
         try {
 
-            $ahora = date('Y-m-d H:i:s');
+            $ahora =
+                date(
+                    'Y-m-d H:i:s'
+                );
 
 
             /* =====================================================
@@ -4512,13 +4936,25 @@ class Reportes_Controller extends BaseController
             ===================================================== */
 
             $db
-                ->table('ai_reportes')
-                ->where('id_reporte', $idReporte)
+                ->table(
+                    'ai_reportes'
+                )
+                ->where(
+                    'id_reporte',
+                    $idReporte
+                )
                 ->update([
-                    'eliminado'     => 1,
-                    'eliminado_at'  => $ahora,
-                    'eliminado_por' => $idUsuario,
-                    'updated_at'    => $ahora,
+                    'eliminado' =>
+                    1,
+
+                    'eliminado_at' =>
+                    $ahora,
+
+                    'eliminado_por' =>
+                    $idUsuario,
+
+                    'updated_at' =>
+                    $ahora,
                 ]);
 
 
@@ -4527,7 +4963,9 @@ class Reportes_Controller extends BaseController
             ===================================================== */
 
             $db
-                ->table('ai_reporte_eliminaciones')
+                ->table(
+                    'ai_reporte_eliminaciones'
+                )
                 ->insert([
                     'id_reporte' =>
                     $idReporte,
@@ -4555,7 +4993,29 @@ class Reportes_Controller extends BaseController
                 ]);
 
 
-            if ($db->transStatus() === false) {
+            /* =====================================================
+            HISTORIAL GENERAL
+            ===================================================== */
+
+            $historialService =
+                new HistorialService();
+
+
+            $historialService
+                ->registrarEliminacionReporte(
+                    $idReporte,
+                    $idUsuario
+                );
+
+
+            /* =====================================================
+            VALIDAR TRANSACCIÓN
+            ===================================================== */
+
+            if (
+                $db->transStatus() === false
+            ) {
+
                 throw new \RuntimeException(
                     'La transacción de eliminación no pudo completarse.'
                 );
@@ -4572,8 +5032,11 @@ class Reportes_Controller extends BaseController
                 'error',
                 'Error eliminando lógicamente reporte {id}: {mensaje}',
                 [
-                    'id'      => $idReporte,
-                    'mensaje' => $e->getMessage(),
+                    'id' =>
+                    $idReporte,
+
+                    'mensaje' =>
+                    $e->getMessage(),
                 ]
             );
 
@@ -4582,7 +5045,8 @@ class Reportes_Controller extends BaseController
                 ->setStatusCode(500)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'No fue posible eliminar el reporte.',
+                    'message' =>
+                    'No fue posible eliminar el reporte.',
                 ]);
         }
 
@@ -4593,8 +5057,11 @@ class Reportes_Controller extends BaseController
 
         return $this->response
             ->setJSON([
-                'success' => true,
-                'message' => 'El reporte fue eliminado correctamente.',
+                'success' =>
+                true,
+
+                'message' =>
+                'El reporte fue eliminado correctamente.',
             ]);
     }
 
@@ -6912,6 +7379,54 @@ class Reportes_Controller extends BaseController
 
 
             /* =================================================
+            HISTORIAL GENERAL
+            ================================================= */
+
+            $historialService =
+                new HistorialService();
+
+
+            /* =================================================
+            SEGUIMIENTO CREADO
+            ================================================= */
+
+            $historialService
+                ->registrarCreacionSeguimiento(
+                    $idSeguimiento,
+                    $idReporte,
+                    $idUsuario
+                );
+
+
+            /* =================================================
+            CAMBIO DE ESTADO
+            ================================================= */
+
+            $estadoAnterior =
+                trim(
+                    (string) (
+                        $reporte['estado_actual']
+                        ?? ''
+                    )
+                );
+
+
+            if (
+                $estadoAnterior !== ''
+                && $estadoAnterior !== $estado
+            ) {
+
+                $historialService
+                    ->registrarCambioEstadoReporte(
+                        $idReporte,
+                        $idUsuario,
+                        $estadoAnterior,
+                        $estado
+                    );
+            }
+
+
+            /* =================================================
             VALIDAR TRANSACCIÓN
             ================================================= */
 
@@ -7999,6 +8514,55 @@ class Reportes_Controller extends BaseController
                 throw new \RuntimeException(
                     'No fue posible actualizar el reporte.'
                 );
+            }
+
+
+            /* =================================================
+            HISTORIAL GENERAL
+            ================================================= */
+
+            $historialService =
+                new HistorialService();
+
+
+            /* =================================================
+            SEGUIMIENTO EDITADO
+            ================================================= */
+
+            $historialService
+                ->registrarEdicionSeguimiento(
+                    $idSeguimiento,
+                    $idReporte,
+                    $idUsuario
+                );
+
+
+            /* =================================================
+            CAMBIO REAL DEL ESTADO DEL REPORTE
+            ================================================= */
+
+            $estadoAnteriorReporte =
+                trim(
+                    (string) (
+                        $reporte['estado_actual']
+                        ?? ''
+                    )
+                );
+
+
+            if (
+                $estadoAnteriorReporte !== ''
+                && $estadoActualReporte !== ''
+                && $estadoAnteriorReporte !== $estadoActualReporte
+            ) {
+
+                $historialService
+                    ->registrarCambioEstadoReporte(
+                        $idReporte,
+                        $idUsuario,
+                        $estadoAnteriorReporte,
+                        $estadoActualReporte
+                    );
             }
 
 

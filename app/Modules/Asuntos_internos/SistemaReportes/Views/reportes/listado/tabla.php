@@ -289,12 +289,12 @@
                         </button>
 
 
-                        <!-- TARJETA -->
+                        <!-- PDF DE QUEJA -->
 
-                        <button type="button" class="reportes-tabla__accion" data-accion="tarjeta"
-                            data-id-reporte="<?= $idReporte ?>" data-folio="<?= esc($folio) ?>">
-                            Tarjeta
-                        </button>
+                        <a class="reportes-tabla__accion"
+                            href="<?= site_url('asuntos-internos/reportes/pdf-queja/' . $idReporte) ?>">
+                            Descargar PDF
+                        </a>
 
 
                         <!-- ELIMINAR -->

@@ -225,6 +225,16 @@ $routes->group(
 
 
                 /* =================================================
+                   PDF DE QUEJA
+                ================================================= */
+
+                $routes->get(
+                    'pdf-queja/(:num)',
+                    '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\PdfQueja_Controller::descargar/$1'
+                );
+
+
+                /* =================================================
                    EVIDENCIAS
                 ================================================= */
 
