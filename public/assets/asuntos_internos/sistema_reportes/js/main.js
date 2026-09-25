@@ -16,6 +16,7 @@ import './reportes/dashboard/filtros.js';
 
 import './reportes/dashboard/exportar.js';
 import './reportes/dashboard/autorizacion.js';
+import './reportes/dashboard/historial.js';
 
 /* =========================================================
    REPORTES - NUEVO

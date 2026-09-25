@@ -1,0 +1,818 @@
+/* =========================================================
+   HISTORIAL DEL DASHBOARD
+========================================================= */
+
+.dashboard-historial {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transition:
+        opacity 0.2s ease,
+        visibility 0.2s ease;
+}
+
+
+.dashboard-historial--activo {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+
+/* =========================================================
+   OVERLAY
+========================================================= */
+
+.dashboard-historial__overlay {
+    position: absolute;
+    inset: 0;
+
+    background: rgba(15, 23, 42, 0.48);
+    backdrop-filter: blur(3px);
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.dashboard-historial__modal {
+    position: relative;
+    z-index: 1;
+
+    width: min(720px, 100%);
+    max-height: calc(100vh - 48px);
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 24px;
+
+    box-shadow:
+        0 24px 60px rgba(15, 23, 42, 0.18);
+
+    transform: translateY(12px) scale(0.98);
+
+    transition:
+        transform 0.2s ease;
+}
+
+
+.dashboard-historial--activo
+.dashboard-historial__modal {
+    transform: translateY(0) scale(1);
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.dashboard-historial__encabezado {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+
+    padding: 26px 28px 20px;
+
+    background: #ffffff;
+    border-bottom: 1px solid #edf0f4;
+}
+
+
+.dashboard-historial__eyebrow {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+
+    color: #64748b;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-historial__titulo {
+    margin: 0;
+
+    font-size: 1.45rem;
+    line-height: 1.2;
+    font-weight: 800;
+
+    color: #172033;
+}
+
+
+.dashboard-historial__descripcion {
+    max-width: 520px;
+
+    margin:
+        8px
+        0
+        0;
+
+    font-size: 0.88rem;
+    line-height: 1.5;
+
+    color: #64748b;
+}
+
+
+/* =========================================================
+   CERRAR
+========================================================= */
+
+.dashboard-historial__cerrar {
+    width: 38px;
+    height: 38px;
+
+    flex: 0 0 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+
+    background: #ffffff;
+    color: #64748b;
+
+    font-size: 1.5rem;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.dashboard-historial__cerrar:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #172033;
+}
+
+
+/* =========================================================
+   PESTAÑAS
+========================================================= */
+
+.dashboard-historial__tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+
+    padding:
+        16px
+        28px
+        0;
+
+    background: #ffffff;
+}
+
+
+.dashboard-historial__tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    min-height: 42px;
+
+    padding: 8px 16px;
+
+    border: 1px solid transparent;
+    border-radius: 12px;
+
+    background: transparent;
+
+    color: #64748b;
+
+    font-size: 0.86rem;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.dashboard-historial__tab strong {
+    min-width: 24px;
+
+    padding: 3px 7px;
+
+    border-radius: 999px;
+
+    background: #eef2f7;
+
+    font-size: 0.72rem;
+    line-height: 1.2;
+}
+
+
+.dashboard-historial__tab:hover {
+    background: #f8fafc;
+    color: #334155;
+}
+
+
+.dashboard-historial__tab--activo {
+    background: #eef6ff;
+    border-color: #dbeafe;
+    color: #2563eb;
+}
+
+
+.dashboard-historial__tab--activo strong {
+    background: #ffffff;
+    color: #2563eb;
+}
+
+
+/* =========================================================
+   BUSCADOR
+========================================================= */
+
+.dashboard-historial__busqueda {
+    padding: 16px 28px 20px;
+
+    background: #ffffff;
+}
+
+
+.dashboard-historial__busqueda-control {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+}
+
+
+.dashboard-historial__busqueda-control svg {
+    position: absolute;
+    left: 15px;
+
+    width: 18px;
+    height: 18px;
+
+    fill: none;
+    stroke: #94a3b8;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    pointer-events: none;
+}
+
+
+.dashboard-historial__busqueda-control input {
+    width: 100%;
+    height: 46px;
+
+    padding:
+        0
+        16px
+        0
+        44px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+
+    outline: none;
+
+    background: #f8fafc;
+
+    color: #1e293b;
+
+    font-size: 0.88rem;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.dashboard-historial__busqueda-control input::placeholder {
+    color: #94a3b8;
+}
+
+
+.dashboard-historial__busqueda-control input:focus {
+    background: #ffffff;
+    border-color: #93c5fd;
+
+    box-shadow:
+        0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+
+/* =========================================================
+   CUERPO
+========================================================= */
+
+.dashboard-historial__cuerpo {
+    min-height: 240px;
+
+    padding: 22px 28px 28px;
+
+    overflow-y: auto;
+
+    background: #f6f8fb;
+}
+
+
+/* =========================================================
+   PANELES
+========================================================= */
+
+.dashboard-historial__panel {
+    display: none;
+}
+
+
+.dashboard-historial__panel--activo {
+    display: block;
+}
+
+
+.dashboard-historial__lista {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+
+/* =========================================================
+   TARJETA
+========================================================= */
+
+.dashboard-historial__item {
+    position: relative;
+
+    padding: 19px 20px 18px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border:
+        1px
+        solid
+        #e8edf3;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 4px 14px rgba(15, 23, 42, 0.045);
+}
+
+
+.dashboard-historial__item-encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+
+    margin-bottom: 16px;
+}
+
+
+.dashboard-historial__folio-contenedor {
+    min-width: 0;
+}
+
+
+.dashboard-historial__folio-label {
+    display: block;
+
+    margin-bottom: 3px;
+
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+
+    color: #94a3b8;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-historial__folio {
+    display: block;
+
+    overflow: hidden;
+
+    color: #1e293b;
+
+    font-size: 0.96rem;
+    font-weight: 800;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   BADGES
+========================================================= */
+
+.dashboard-historial__badge {
+    flex: 0 0 auto;
+
+    padding: 6px 10px;
+
+    border-radius: 999px;
+
+    background: #eef2f7;
+    color: #64748b;
+
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.035em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-historial__badge--crear {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+
+.dashboard-historial__badge--editar {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+
+.dashboard-historial__badge--eliminar {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+
+.dashboard-historial__badge--estado {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+
+.dashboard-historial__badge--seguimiento {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+
+/* =========================================================
+   TIMELINE
+========================================================= */
+
+.dashboard-historial__timeline {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    padding-left: 28px;
+}
+
+
+.dashboard-historial__timeline::before {
+    content: "";
+
+    position: absolute;
+    top: 8px;
+    bottom: 8px;
+    left: 7px;
+
+    width: 2px;
+
+    background: #e2e8f0;
+}
+
+
+.dashboard-historial__dato {
+    position: relative;
+
+    min-height: 20px;
+}
+
+
+.dashboard-historial__dato::before {
+    content: "";
+
+    position: absolute;
+    top: 7px;
+    left: -25px;
+
+    width: 9px;
+    height: 9px;
+
+    border: 3px solid #dbeafe;
+    border-radius: 50%;
+
+    background: #3b82f6;
+
+    box-sizing: content-box;
+}
+
+
+.dashboard-historial__dato-label {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #94a3b8;
+
+    font-size: 0.63rem;
+    font-weight: 800;
+    letter-spacing: 0.055em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-historial__accion {
+    margin: 0;
+
+    color: #334155;
+
+    font-size: 0.86rem;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   USUARIO
+========================================================= */
+
+.dashboard-historial__usuario {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.dashboard-historial__usuario-foto {
+    position: relative;
+
+    width: 34px;
+    height: 34px;
+
+    flex: 0 0 34px;
+
+    overflow: hidden;
+
+    border-radius: 50%;
+
+    background: #e2e8f0;
+}
+
+
+.dashboard-historial__usuario-foto img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+
+.dashboard-historial__usuario-inicial {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #475569;
+
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+
+.dashboard-historial__usuario-nombre {
+    color: #334155;
+
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+
+/* =========================================================
+   FECHA
+========================================================= */
+
+.dashboard-historial__fecha {
+    color: #475569;
+
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   ESTADOS
+========================================================= */
+
+.dashboard-historial__estado {
+    min-height: 220px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 30px;
+
+    text-align: center;
+
+    color: #64748b;
+}
+
+
+.dashboard-historial__estado[hidden] {
+    display: none;
+}
+
+
+.dashboard-historial__estado strong {
+    color: #334155;
+
+    font-size: 0.92rem;
+}
+
+
+.dashboard-historial__estado span {
+    font-size: 0.82rem;
+}
+
+
+/* =========================================================
+   SPINNER
+========================================================= */
+
+.dashboard-historial__spinner {
+    width: 30px;
+    height: 30px;
+
+    margin-bottom: 8px;
+
+    border: 3px solid #dbeafe;
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+
+    animation:
+        dashboard-historial-girar
+        0.75s
+        linear
+        infinite;
+}
+
+
+@keyframes dashboard-historial-girar {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* =========================================================
+   SCROLL
+========================================================= */
+
+.dashboard-historial__cuerpo {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+
+.dashboard-historial__cuerpo::-webkit-scrollbar {
+    width: 7px;
+}
+
+
+.dashboard-historial__cuerpo::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+.dashboard-historial__cuerpo::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 999px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 640px) {
+
+    .dashboard-historial {
+        padding: 12px;
+    }
+
+
+    .dashboard-historial__modal {
+        max-height: calc(100vh - 24px);
+
+        border-radius: 20px;
+    }
+
+
+    .dashboard-historial__encabezado {
+        padding:
+            21px
+            20px
+            17px;
+    }
+
+
+    .dashboard-historial__titulo {
+        font-size: 1.25rem;
+    }
+
+
+    .dashboard-historial__descripcion {
+        font-size: 0.8rem;
+    }
+
+
+    .dashboard-historial__tabs {
+        padding:
+            14px
+            20px
+            0;
+    }
+
+
+    .dashboard-historial__busqueda {
+        padding:
+            14px
+            20px
+            18px;
+    }
+
+
+    .dashboard-historial__cuerpo {
+        padding:
+            18px
+            16px
+            22px;
+    }
+
+
+    .dashboard-historial__item {
+        padding:
+            17px
+            16px;
+    }
+
+
+    .dashboard-historial__item-encabezado {
+        align-items: flex-start;
+    }
+
+}

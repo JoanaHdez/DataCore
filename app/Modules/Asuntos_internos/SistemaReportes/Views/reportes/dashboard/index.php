@@ -243,7 +243,7 @@ $esFelicitacion =
 
                     </div>
 
-                    
+
                 </div>
 
             </div>
@@ -254,11 +254,16 @@ $esFelicitacion =
 
 
     <!-- =====================================================
-         MODALES
+        MODALES
     ====================================================== -->
 
     <?= $this->include(
         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\modales\exportar'
+    ) ?>
+
+
+    <?= $this->include(
+        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\modales\historial'
     ) ?>
 
 

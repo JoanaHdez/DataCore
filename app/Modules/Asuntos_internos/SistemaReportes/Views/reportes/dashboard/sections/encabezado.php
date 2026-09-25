@@ -21,11 +21,12 @@
 
         <div class="dashboard-encabezado__acciones">
 
-            <button
-                type="button"
-                class="dashboard-encabezado__exportar"
-                id="btn-exportar-dashboard"
-            >
+            <button type="button" class="dashboard-encabezado__historial" id="btn-historial-dashboard">
+                Historial
+            </button>
+
+
+            <button type="button" class="dashboard-encabezado__exportar" id="btn-exportar-dashboard">
                 Exportar Excel
             </button>
 

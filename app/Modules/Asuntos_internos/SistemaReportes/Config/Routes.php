@@ -109,6 +109,11 @@ $routes->group(
                     '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::exportarDashboard'
                 );
 
+                $routes->get(
+                    'dashboard/historial',
+                    '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::historialDashboard'
+                );
+
 
                 /* =================================================
                    SESIÓN

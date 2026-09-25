@@ -10,6 +10,7 @@ use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\FolioService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\FelicitacionService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\HistorialService;
+
 use App\Controllers\BaseController;
 
 class Reportes_Controller extends BaseController
@@ -8923,4 +8924,84 @@ class Reportes_Controller extends BaseController
                 ]);
         }
     }
+
+    /* =========================================================
+    HISTORIAL GENERAL DEL DASHBOARD
+    ========================================================= */
+
+    public function historialDashboard()
+    {
+        /* =====================================================
+        VALIDAR SESIÓN
+        ===================================================== */
+
+        if (
+            session()->get('reportes_autenticado') !== true
+            || !session()->has('usuario_reportes')
+        ) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'success' =>
+                        false,
+
+                    'message' =>
+                        'La sesión no es válida.',
+                ]);
+        }
+
+
+        /* =====================================================
+        CONSULTAR HISTORIAL
+        ===================================================== */
+
+        try {
+
+            $historialService =
+                new HistorialService();
+
+
+            $historial =
+                $historialService
+                ->obtenerHistorial();
+
+
+            /* =================================================
+            RESPUESTA
+            ================================================= */
+
+            return $this->response
+                ->setJSON([
+                    'success' =>
+                        true,
+
+                    'historial' =>
+                        $historial,
+                ]);
+
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error consultando historial general del dashboard: {mensaje}',
+                [
+                    'mensaje' =>
+                        $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' =>
+                        false,
+
+                    'message' =>
+                        'No fue posible consultar el historial.',
+                ]);
+        }
+    }
+    
 }
