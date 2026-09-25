@@ -2,14 +2,19 @@
     'App\Modules\Asuntos_internos\SistemaReportes\Views\layouts\head'
 ) ?>
 
+
 <?= $this->section('title') ?>
+
 Dashboard | Asuntos Internos
+
 <?= $this->endSection() ?>
 
 
 <?= $this->section('content') ?>
 
+
 <div class="dashboard-page">
+
 
     <!-- =====================================================
          HEADER GENERAL DEL SISTEMA
@@ -20,10 +25,13 @@ Dashboard | Asuntos Internos
     ) ?>
 
 
-    <main class="dashboard-page__main"
-        data-dashboard-requiere-autorizacion="<?= !empty($requiereAutorizacionAdmin) ? '1' : '0' ?>">
+    <main
+        class="dashboard-page__main"
+        data-dashboard-requiere-autorizacion="<?= !empty($requiereAutorizacionAdmin) ? '1' : '0' ?>"
+    >
 
         <div class="dashboard-page__container">
+
 
             <!-- =================================================
                  ENCABEZADO DEL DASHBOARD
@@ -77,6 +85,33 @@ Dashboard | Asuntos Internos
 
 
                     <!-- =============================================
+                         EVOLUCIÓN TEMPORAL
+                    ============================================== -->
+
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\evolucion'
+                    ) ?>
+
+
+                    <!-- =============================================
+                         ESTADO DE LAS QUEJAS
+                    ============================================== -->
+
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\estado'
+                    ) ?>
+
+
+                    <!-- =============================================
+                         QUEJAS POR SECTOR
+                    ============================================== -->
+
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\sectores'
+                    ) ?>
+
+
+                    <!-- =============================================
                          COMPOSICIÓN DE GRÁFICAS
                     ============================================== -->
 
@@ -96,73 +131,89 @@ Dashboard | Asuntos Internos
                         </div>
 
 
-                        <!-- =========================================
-                             ÁREAS INVOLUCRADAS
-                        ========================================== -->
+                        <!-- =============================================
+                            ÁREA / UNIDAD
+                        ============================================== -->
 
-                        <div class="dashboard-layout__areas">
+                        <?= $this->include(
+                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\dimension'
+                        ) ?>
 
-                            <?= $this->include(
-                                'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\areas_involucradas'
-                            ) ?>
 
-                        </div>
+                        <!-- =============================================
+                            ANÁLISIS CRUZADO
+                        ============================================== -->
 
+                        <?= $this->include(
+                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\cruce'
+                        ) ?>
 
                         <!-- =========================================
                              FILA
                              ZONAS + SANCIONES
                         ========================================== -->
 
-                        <div class="
+                        <div
+                            class="
                                 dashboard-layout__fila
                                 dashboard-layout__fila--zonas
-                            ">
+                            "
+                        >
 
-                            <?php
-                            /*
+
+                            <!-- =====================================
+                                 QUEJAS POR ZONA
+                            ====================================== -->
+
                             <div class="dashboard-layout__zona">
 
                                 <?= $this->include(
                                     'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\zonas'
                                 ) ?>
 
-                        </div>
-                        */
-                        ?>
+                            </div>
 
 
-                        <div class="dashboard-layout__sanciones">
+                            <!-- =====================================
+                                 SANCIONES
+                            ====================================== -->
 
-                            <?= $this->include(
+                            <div class="dashboard-layout__sanciones">
+
+                                <?= $this->include(
                                     'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\sanciones'
                                 ) ?>
 
+                            </div>
+
+
                         </div>
 
-                    </div>
 
-
-                    <!-- =========================================
+                        <!-- =========================================
                              FILA
                              TURNOS
                         ========================================== -->
 
-                    <div class="
+                        <div
+                            class="
                                 dashboard-layout__fila
                                 dashboard-layout__fila--operativa
-                            ">
+                            "
+                        >
 
-                        <div class="dashboard-layout__turnos">
+                            <div class="dashboard-layout__turnos">
 
-                            <?= $this->include(
+                                <?= $this->include(
                                     'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\turnos'
                                 ) ?>
 
+                            </div>
+
                         </div>
 
-                    </div>
 
+                    </div>
 
                 </div>
 
@@ -170,23 +221,24 @@ Dashboard | Asuntos Internos
 
         </div>
 
-</div>
-
-</main>
+    </main>
 
 
-<!-- =====================================================
+    <!-- =====================================================
          MODALES
     ====================================================== -->
 
-<?= $this->include(
+    <?= $this->include(
         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\modales\exportar'
     ) ?>
 
-<?= $this->include(
+
+    <?= $this->include(
         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\modales\autorizacion'
     ) ?>
 
+
 </div>
+
 
 <?= $this->endSection() ?>

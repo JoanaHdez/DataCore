@@ -9,7 +9,6 @@ use App\Modules\Asuntos_internos\SistemaReportes\Services\ReporteService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\FolioService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\FelicitacionService;
-
 use App\Controllers\BaseController;
 
 class Reportes_Controller extends BaseController
@@ -2220,18 +2219,85 @@ class Reportes_Controller extends BaseController
             ) === true;
 
 
-        /*
-     * Admin:
-     * acceso directo.
-     *
-     * Usuario:
-     * requiere autorización administrativa,
-     * salvo que ya haya sido autorizada.
-     */
-
         $requiereAutorizacion =
             !$esAdmin
             && !$autorizacionTemporal;
+
+
+        /* =========================================================
+        DIMENSIÓN DEL DASHBOARD
+        ÁREA / UNIDAD
+        ========================================================= */
+
+        $dimension =
+            strtolower(
+                trim(
+                    (string)
+                    $this->request->getGet(
+                        'dimension'
+                    )
+                )
+            );
+
+
+        if (
+            !in_array(
+                $dimension,
+                [
+                    'area',
+                    'unidad',
+                ],
+                true
+            )
+        ) {
+
+            $dimension =
+                'area';
+        }
+
+
+        /* =========================================================
+        ANÁLISIS CRUZADO
+        ========================================================= */
+
+        $crucePrincipal =
+            strtolower(
+                trim(
+                    (string)
+                    $this->request->getGet(
+                        'cruce_principal'
+                    )
+                )
+            );
+
+
+        $cruceSecundaria =
+            strtolower(
+                trim(
+                    (string)
+                    $this->request->getGet(
+                        'cruce_secundaria'
+                    )
+                )
+            );
+
+
+        if (
+            $crucePrincipal === ''
+        ) {
+
+            $crucePrincipal =
+                'sector';
+        }
+
+
+        if (
+            $cruceSecundaria === ''
+        ) {
+
+            $cruceSecundaria =
+                'turno';
+        }
 
 
         /* =========================================================
@@ -2246,15 +2312,6 @@ class Reportes_Controller extends BaseController
 
             /* =====================================================
             FILTROS DEL DASHBOARD
-
-            Zona ya se encuentra habilitada y se deriva del
-            sector institucional del personal involucrado.
-
-            Clasificación permanece visible pero deshabilitada
-            hasta contar con un catálogo institucional.
-
-            Resolución ya no forma parte de los filtros porque
-            es un dato abierto.
             ===================================================== */
 
             $filtrosDashboard = [
@@ -2264,18 +2321,20 @@ class Reportes_Controller extends BaseController
                 ================================================= */
 
                 'fecha_registro_inicio' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'fecha_registro_inicio'
-                    )
-                ),
+                    trim(
+                        (string)
+                        $this->request->getGet(
+                            'fecha_registro_inicio'
+                        )
+                    ),
 
                 'fecha_registro_fin' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'fecha_registro_fin'
-                    )
-                ),
+                    trim(
+                        (string)
+                        $this->request->getGet(
+                            'fecha_registro_fin'
+                        )
+                    ),
 
 
                 /* =================================================
@@ -2283,11 +2342,12 @@ class Reportes_Controller extends BaseController
                 ================================================= */
 
                 'tipo' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'tipo'
-                    )
-                ),
+                    trim(
+                        (string)
+                        $this->request->getGet(
+                            'tipo'
+                        )
+                    ),
 
 
                 /* =================================================
@@ -2295,32 +2355,36 @@ class Reportes_Controller extends BaseController
                 ================================================= */
 
                 'estado' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'estado'
-                    )
-                ),
+                    trim(
+                        (string)
+                        $this->request->getGet(
+                            'estado'
+                        )
+                    ),
 
                 'clasificacion' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'clasificacion'
-                    )
-                ),
+                    trim(
+                        (string)
+                        $this->request->getGet(
+                            'clasificacion'
+                        )
+                    ),
 
                 'seguimiento' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'seguimiento'
-                    )
-                ),
+                    trim(
+                        (string)
+                        $this->request->getGet(
+                            'seguimiento'
+                        )
+                    ),
 
                 'es_anonimo' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'es_anonimo'
-                    )
-                ),
+                    trim(
+                        (string)
+                        $this->request->getGet(
+                            'es_anonimo'
+                        )
+                    ),
 
 
                 /* =================================================
@@ -2328,25 +2392,28 @@ class Reportes_Controller extends BaseController
                 ================================================= */
 
                 'zona' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'zona'
-                    )
-                ),
+                    trim(
+                        (string)
+                        $this->request->getGet(
+                            'zona'
+                        )
+                    ),
 
                 'sector' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'sector'
-                    )
-                ),
+                    trim(
+                        (string)
+                        $this->request->getGet(
+                            'sector'
+                        )
+                    ),
 
                 'turno' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'turno'
-                    )
-                ),
+                    trim(
+                        (string)
+                        $this->request->getGet(
+                            'turno'
+                        )
+                    ),
 
 
                 /* =================================================
@@ -2354,18 +2421,20 @@ class Reportes_Controller extends BaseController
                 ================================================= */
 
                 'area_personal' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'area_personal'
-                    )
-                ),
+                    trim(
+                        (string)
+                        $this->request->getGet(
+                            'area_personal'
+                        )
+                    ),
 
                 'personal' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'personal'
-                    )
-                ),
+                    trim(
+                        (string)
+                        $this->request->getGet(
+                            'personal'
+                        )
+                    ),
 
 
                 /* =================================================
@@ -2373,11 +2442,12 @@ class Reportes_Controller extends BaseController
                 ================================================= */
 
                 'unidad' =>
-                trim(
-                    (string) $this->request->getGet(
-                        'unidad'
-                    )
-                ),
+                    trim(
+                        (string)
+                        $this->request->getGet(
+                            'unidad'
+                        )
+                    ),
 
             ];
 
@@ -2411,7 +2481,35 @@ class Reportes_Controller extends BaseController
 
 
             /* =====================================================
+            EVOLUCIÓN TEMPORAL
+            ===================================================== */
+
+            $evolucion =
+                $dashboardService
+                ->obtenerEvolucionTemporal();
+
+
+            /* =====================================================
+            ESTADO DE LAS QUEJAS
+            ===================================================== */
+
+            $estadosQuejas =
+                $dashboardService
+                ->obtenerEstadosQuejas();
+
+
+            /* =====================================================
+            QUEJAS POR SECTOR
+            ===================================================== */
+
+            $quejasPorSector =
+                $dashboardService
+                ->obtenerQuejasPorSector();
+
+
+            /* =====================================================
             QUEJAS POR SECTORES Y TURNOS
+            BLOQUE ANTERIOR
             ===================================================== */
 
             $sectoresTurnos =
@@ -2421,6 +2519,7 @@ class Reportes_Controller extends BaseController
 
             /* =====================================================
             QUEJAS POR ÁREA
+            BLOQUE ANTERIOR
             ===================================================== */
 
             $quejasPorArea =
@@ -2447,10 +2546,31 @@ class Reportes_Controller extends BaseController
 
 
             /* =====================================================
-            SANCIONES DISCIPLINARIAS
+            DIMENSIÓN DINÁMICA
+            ÁREA / UNIDAD
+            ===================================================== */
 
-            Se utiliza únicamente la sanción actual
-            de cada reporte.
+            $dimensionDashboard =
+                $dashboardService
+                ->obtenerDimension(
+                    $dimension
+                );
+
+
+            /* =====================================================
+            ANÁLISIS CRUZADO
+            ===================================================== */
+
+            $cruceDashboard =
+                $dashboardService
+                ->obtenerCruce(
+                    $crucePrincipal,
+                    $cruceSecundaria
+                );
+
+
+            /* =====================================================
+            SANCIONES DISCIPLINARIAS
             ===================================================== */
 
             $sanciones =
@@ -2460,15 +2580,12 @@ class Reportes_Controller extends BaseController
 
             /* =====================================================
             CLASIFICACIONES
-
-            La gráfica continúa funcionando.
-
-            Clasificación permanece pendiente como filtro.
             ===================================================== */
 
             $clasificaciones =
                 $dashboardService
                 ->obtenerClasificaciones();
+
         } catch (\Throwable $e) {
 
             log_message(
@@ -2476,88 +2593,178 @@ class Reportes_Controller extends BaseController
                 'Error consultando datos del Dashboard: {mensaje}',
                 [
                     'mensaje' =>
-                    $e->getMessage(),
+                        $e->getMessage(),
                 ]
             );
 
 
-            /*
-         * No impedimos cargar el Dashboard si ocurre
-         * un problema con las estadísticas.
-         */
-
-
             /* =====================================================
-            VALORES POR DEFECTO - OPCIONES DE FILTROS
+            OPCIONES DE FILTROS
             ===================================================== */
 
             $opcionesFiltros = [
 
                 'areas' =>
-                [],
+                    [],
 
-                'generos' =>
-                [],
+                'clasificaciones' =>
+                    [],
 
                 'unidades' =>
-                [],
+                    [],
 
             ];
 
 
             /* =====================================================
-            VALORES POR DEFECTO - INDICADORES
+            INDICADORES
             ===================================================== */
 
             $indicadores = [
 
                 'total' =>
-                0,
+                    0,
+
+                'quejas' =>
+                    0,
+
+                'felicitaciones' =>
+                    0,
 
                 'pendientes' =>
-                0,
+                    0,
 
                 'en_proceso' =>
-                0,
+                    0,
 
                 'finalizados' =>
-                0,
+                    0,
+
+                'anonimas' =>
+                    0,
+
+                'personal_involucrado' =>
+                    0,
 
             ];
 
 
             /* =====================================================
-            VALORES POR DEFECTO - SECTORES Y TURNOS
+            EVOLUCIÓN TEMPORAL
+            ===================================================== */
+
+            $evolucion = [
+
+                'agrupacion' =>
+                    'dia',
+
+                'datos' =>
+                    [],
+
+                'total' =>
+                    0,
+
+            ];
+
+
+            /* =====================================================
+            ESTADO DE LAS QUEJAS
+            ===================================================== */
+
+            $estadosQuejas = [
+
+                'estados' => [
+                    'Pendiente',
+                    'En proceso',
+                    'Finalizado',
+                ],
+
+                'totales' => [
+                    0,
+                    0,
+                    0,
+                ],
+
+                'porcentajes' => [
+                    0,
+                    0,
+                    0,
+                ],
+
+                'total' =>
+                    0,
+
+            ];
+
+
+            /* =====================================================
+            QUEJAS POR SECTOR
+            ===================================================== */
+
+            $quejasPorSector = [
+
+                'sectores' => [
+                    'SECTOR 1',
+                    'SECTOR 2',
+                    'SECTOR 3',
+                    'SECTOR 4',
+                    'SECTOR 5',
+                    'SECTOR 6',
+                    'SECTOR 7',
+                    'SECTOR 8',
+                    'SECTOR 9',
+                    'SECTOR 10',
+                    'SECTOR 11',
+                    'SECTOR 12',
+                    'SECTOR 13',
+                    'SECTOR 14',
+                    'SECTOR 15',
+                ],
+
+                'totales' => [
+                    0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0,
+                ],
+
+                'total' =>
+                    0,
+
+            ];
+
+
+            /* =====================================================
+            SECTORES Y TURNOS
             ===================================================== */
 
             $sectoresTurnos = [
 
                 'sectores' =>
-                [],
+                    [],
 
                 'turnos' =>
-                [],
+                    [],
 
             ];
 
 
             /* =====================================================
-            VALORES POR DEFECTO - ÁREAS
+            ÁREAS
             ===================================================== */
 
             $quejasPorArea = [
 
                 'areas' =>
-                [],
+                    [],
 
                 'totales' =>
-                [],
+                    [],
 
             ];
 
 
             /* =====================================================
-            VALORES POR DEFECTO - ZONAS
+            ZONAS
             ===================================================== */
 
             $quejasPorZona = [
@@ -2577,31 +2784,160 @@ class Reportes_Controller extends BaseController
                 ],
 
                 'total' =>
-                0,
+                    0,
 
             ];
 
 
             /* =====================================================
-            VALORES POR DEFECTO - TURNOS
+            TURNOS
             ===================================================== */
 
             $quejasPorTurno = [
 
                 'turnos' =>
-                [],
+                    [],
 
                 'totales' =>
-                [],
+                    [],
 
                 'total' =>
-                0,
+                    0,
 
             ];
 
 
             /* =====================================================
-            VALORES POR DEFECTO - SANCIONES
+            DIMENSIÓN DINÁMICA
+            ===================================================== */
+
+            $dimensionDashboard = [
+
+                'dimension' =>
+                    $dimension,
+
+                'titulo' =>
+                    $dimension === 'unidad'
+                        ? 'Unidad'
+                        : 'Área',
+
+                'etiquetas' =>
+                    [],
+
+                'totales' =>
+                    [],
+
+                'porcentajes' =>
+                    [],
+
+                'total' =>
+                    0,
+
+                'opciones' => [
+
+                    [
+                        'valor' =>
+                            'area',
+
+                        'texto' =>
+                            'Área',
+                    ],
+
+                    [
+                        'valor' =>
+                            'unidad',
+
+                        'texto' =>
+                            'Unidad',
+                    ],
+
+                ],
+
+            ];
+
+
+            /* =====================================================
+            ANÁLISIS CRUZADO
+            ===================================================== */
+
+            $cruceDashboard = [
+
+                'principal' =>
+                    'sector',
+
+                'secundaria' =>
+                    'turno',
+
+                'categorias' =>
+                    [],
+
+                'series' =>
+                    [],
+
+                'total' =>
+                    0,
+
+                'opciones_principal' => [
+
+                    [
+                        'valor' =>
+                            'sector',
+
+                        'texto' =>
+                            'Sector',
+                    ],
+
+                    [
+                        'valor' =>
+                            'zona',
+
+                        'texto' =>
+                            'Zona',
+                    ],
+
+                    [
+                        'valor' =>
+                            'area',
+
+                        'texto' =>
+                            'Área',
+                    ],
+
+                    [
+                        'valor' =>
+                            'turno',
+
+                        'texto' =>
+                            'Turno',
+                    ],
+
+                ],
+
+                'opciones_secundaria' => [
+
+                    [
+                        'valor' =>
+                            'turno',
+
+                        'texto' =>
+                            'Turno',
+                    ],
+
+                    [
+                        'valor' =>
+                            'estado',
+
+                        'texto' =>
+                            'Estado',
+                    ],
+
+                ],
+
+            ];
+
+
+            /* =====================================================
+            SANCIONES
             ===================================================== */
 
             $sanciones = [
@@ -2619,24 +2955,25 @@ class Reportes_Controller extends BaseController
                 ],
 
                 'total' =>
-                0,
+                    0,
 
             ];
 
+
             /* =====================================================
-            VALORES POR DEFECTO - CLASIFICACIONES
+            CLASIFICACIONES
             ===================================================== */
 
             $clasificaciones = [
 
                 'clasificaciones' =>
-                [],
+                    [],
 
                 'totales' =>
-                [],
+                    [],
 
                 'total' =>
-                0,
+                    0,
 
             ];
         }
@@ -2651,7 +2988,7 @@ class Reportes_Controller extends BaseController
             [
 
                 'requiereAutorizacionAdmin' =>
-                $requiereAutorizacion,
+                    $requiereAutorizacion,
 
 
                 /* =================================================
@@ -2659,33 +2996,57 @@ class Reportes_Controller extends BaseController
                 ================================================= */
 
                 'opcionesFiltros' =>
-                $opcionesFiltros,
+                    $opcionesFiltros,
 
 
                 /* =================================================
-               DASHBOARD
-            ================================================= */
+                DIMENSIÓN
+                ================================================= */
+
+                'dimensionSeleccionada' =>
+                    $dimension,
+
+
+                /* =================================================
+                DASHBOARD
+                ================================================= */
 
                 'indicadores' =>
-                $indicadores,
+                    $indicadores,
+
+                'evolucion' =>
+                    $evolucion,
+
+                'estadosQuejas' =>
+                    $estadosQuejas,
+
+                'quejasPorSector' =>
+                    $quejasPorSector,
 
                 'sectoresTurnos' =>
-                $sectoresTurnos,
+                    $sectoresTurnos,
 
                 'quejasPorArea' =>
-                $quejasPorArea,
+                    $quejasPorArea,
 
                 'quejasPorZona' =>
-                $quejasPorZona,
+                    $quejasPorZona,
 
                 'quejasPorTurno' =>
-                $quejasPorTurno,
+                    $quejasPorTurno,
+
+                'dimensionDashboard' =>
+                    $dimensionDashboard,
+
+                'cruceDashboard' =>
+                    $cruceDashboard,
 
                 'sanciones' =>
-                $sanciones,
+                    $sanciones,
 
                 'clasificaciones' =>
-                $clasificaciones,
+                    $clasificaciones,
+
             ]
         );
     }

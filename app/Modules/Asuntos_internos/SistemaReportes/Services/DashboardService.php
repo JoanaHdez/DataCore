@@ -7,6 +7,11 @@ use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardInd
 use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardUbicacionService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardAreaService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardClasificacionService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardEvolucionService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardEstadoService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardDimensionService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardCruceService;
+
 
 class DashboardService
 {
@@ -17,6 +22,10 @@ class DashboardService
     private DashboardUbicacionService $ubicacionService;
     private DashboardAreaService $areaService;
     private DashboardClasificacionService $clasificacionService;
+    private DashboardEvolucionService $evolucionService;
+    private DashboardEstadoService $estadoService;
+    private DashboardDimensionService $dimensionService;
+    private DashboardCruceService $cruceService;
 
     /* =========================================================
        CONSTRUCTOR
@@ -29,28 +38,90 @@ class DashboardService
                 'datacore'
             );
 
+
+        /* =====================================================
+        FILTROS
+        ===================================================== */
+
         $this->filtrosService =
             new DashboardFiltrosService();
+
+
+        /* =====================================================
+        INDICADORES
+        ===================================================== */
 
         $this->indicadoresService =
             new DashboardIndicadoresService(
                 $this->filtrosService
             );
 
+
+        /* =====================================================
+        UBICACIÓN
+        ===================================================== */
+
         $this->ubicacionService =
             new DashboardUbicacionService(
                 $this->filtrosService
             );
+
+
+        /* =====================================================
+        ÁREA
+        ===================================================== */
 
         $this->areaService =
             new DashboardAreaService(
                 $this->filtrosService
             );
 
+
+        /* =====================================================
+        CLASIFICACIÓN
+        ===================================================== */
+
         $this->clasificacionService =
             new DashboardClasificacionService(
                 $this->filtrosService
             );
+
+
+        /* =====================================================
+        EVOLUCIÓN TEMPORAL
+        ===================================================== */
+
+        $this->evolucionService =
+            new DashboardEvolucionService(
+                $this->filtrosService
+            );
+
+
+        /* =====================================================
+        ESTADO DE LAS QUEJAS
+        ===================================================== */
+
+        $this->estadoService =
+            new DashboardEstadoService(
+                $this->filtrosService
+            );
+
+
+        /* =====================================================
+        DIMENSIÓN
+        ÁREA / UNIDAD
+        ===================================================== */
+
+        $this->dimensionService =
+            new DashboardDimensionService(
+                $this->filtrosService
+            );
+
+        $this->cruceService =
+            new DashboardCruceService(
+                $this->filtrosService
+            );
+
     }
 
     /* =========================================================
@@ -109,6 +180,39 @@ class DashboardService
             ->obtenerIndicadores();
     }
 
+    /* =========================================================
+    EVOLUCIÓN TEMPORAL
+    ========================================================= */
+
+    public function obtenerEvolucionTemporal(): array
+    {
+
+        return $this->evolucionService
+            ->obtenerEvolucionTemporal();
+    }
+
+
+    /* =========================================================
+    ESTADO DE LAS QUEJAS
+    ========================================================= */
+
+    public function obtenerEstadosQuejas(): array
+    {
+        return $this->estadoService
+            ->obtenerEstadosQuejas();
+    }
+
+
+    /* =========================================================
+    QUEJAS POR SECTOR
+    ========================================================= */
+
+    public function obtenerQuejasPorSector(): array
+    {
+        return $this->ubicacionService
+            ->obtenerQuejasPorSector();
+    }
+
 
     /* =========================================================
        QUEJAS POR SECTORES Y TURNOS
@@ -119,6 +223,37 @@ class DashboardService
         return $this->ubicacionService
             ->obtenerSectoresTurnos();
     }
+
+    /* =========================================================
+    ANÁLISIS CRUZADO
+    ========================================================= */
+
+    public function obtenerCruce(
+        string $principal = 'sector',
+        string $secundaria = 'turno'
+    ): array {
+
+        return $this->cruceService
+            ->obtenerCruce(
+                $principal,
+                $secundaria
+            );
+    }
+
+    /* =========================================================
+    ÁREA / GRUPO / UNIDAD
+    ========================================================= */
+
+    public function obtenerDimension(
+        string $dimension = 'area'
+    ): array {
+
+        return $this->dimensionService
+            ->obtenerDimension(
+                $dimension
+            );
+    }
+
 
     /* =========================================================
     QUEJAS POR ZONA
@@ -410,5 +545,4 @@ class DashboardService
         return $this->clasificacionService
             ->obtenerClasificaciones();
     }
-
 }

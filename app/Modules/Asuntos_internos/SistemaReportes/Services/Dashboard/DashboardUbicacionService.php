@@ -335,6 +335,190 @@ class DashboardUbicacionService
         );
     }
 
+    /* =========================================================
+    QUEJAS POR SECTOR
+    ========================================================= */
+
+    public function obtenerQuejasPorSector(): array
+    {
+        /* =====================================================
+        SECTORES INSTITUCIONALES
+        ===================================================== */
+
+        $conteos = [];
+
+
+        for (
+            $numero = 1;
+            $numero <= 15;
+            $numero++
+        ) {
+
+            $conteos[
+                'SECTOR ' . $numero
+            ] = 0;
+        }
+
+
+        /* =====================================================
+        CONSULTAR REPORTES + PERSONAL
+        ===================================================== */
+
+        $builder =
+            $this->db
+            ->table('ai_reportes r')
+            ->select([
+                'r.id_reporte',
+                'p.area_snapshot AS area',
+            ])
+            ->join(
+                'ai_reporte_personal p',
+                'p.id_reporte = r.id_reporte',
+                'inner'
+            );
+
+
+        /* =====================================================
+        FILTROS GLOBALES
+        ===================================================== */
+
+        $this->filtrosService
+            ->aplicarFiltrosReportes(
+                $builder,
+                'r'
+            );
+
+
+        /* =====================================================
+        OBTENER REGISTROS
+        ===================================================== */
+
+        $registros =
+            $builder
+            ->groupBy([
+                'r.id_reporte',
+                'p.area_snapshot',
+            ])
+            ->get()
+            ->getResultArray();
+
+
+        /* =====================================================
+        EVITAR DUPLICADOS
+
+        Una misma queja solamente debe contabilizarse una vez
+        dentro del mismo sector.
+        ===================================================== */
+
+        $reportesContados = [];
+
+
+        /* =====================================================
+        CONTABILIZAR
+        ===================================================== */
+
+        foreach (
+            $registros
+            as $registro
+        ) {
+
+            $idReporte =
+                (int) (
+                    $registro['id_reporte']
+                    ?? 0
+                );
+
+
+            if (
+                $idReporte <= 0
+            ) {
+
+                continue;
+            }
+
+
+            /* =================================================
+            OBTENER SECTOR DESDE AREA_SNAPSHOT
+            ================================================= */
+
+            $sector =
+                $this->obtenerSectorDesdeArea(
+                    (string) (
+                        $registro['area']
+                        ?? ''
+                    )
+                );
+
+
+            if (
+                $sector === null
+                || !array_key_exists(
+                    $sector,
+                    $conteos
+                )
+            ) {
+
+                continue;
+            }
+
+
+            /* =================================================
+            EVITAR CONTAR LA MISMA QUEJA DOS VECES
+            EN EL MISMO SECTOR
+            ================================================= */
+
+            $clave =
+                $idReporte
+                . '|'
+                . $sector;
+
+
+            if (
+                isset(
+                    $reportesContados[$clave]
+                )
+            ) {
+
+                continue;
+            }
+
+
+            $reportesContados[$clave] =
+                true;
+
+
+            /* =================================================
+            SUMAR
+            ================================================= */
+
+            $conteos[$sector]++;
+        }
+
+
+        /* =====================================================
+        RESPUESTA
+        ===================================================== */
+
+        return [
+
+            'sectores' =>
+                array_keys(
+                    $conteos
+                ),
+
+            'totales' =>
+                array_values(
+                    $conteos
+                ),
+
+            'total' =>
+                array_sum(
+                    $conteos
+                ),
+
+        ];
+    }
+
 
     /* =========================================================
        QUEJAS POR ZONA
