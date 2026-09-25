@@ -2193,10 +2193,14 @@ class Reportes_Controller extends BaseController
 
         /* =====================================================
         HELPER
-        OBTENER MAYOR VALOR DE DOS ARREGLOS PARALELOS
+        OBTENER MÁXIMOS
+
+        Devuelve todas las categorías que comparten
+        el valor máximo para evitar interpretar un empate
+        como si existiera un único primer lugar.
         ===================================================== */
 
-        $obtenerMayor =
+        $obtenerMayores =
             static function (
                 array $etiquetas,
                 array $totales
@@ -2211,16 +2215,13 @@ class Reportes_Controller extends BaseController
                 }
 
 
-                $mayorIndice =
-                    null;
-
                 $mayorTotal =
                     0;
 
 
                 foreach (
                     $totales
-                    as $indice => $total
+                    as $total
                 ) {
 
                     $total =
@@ -2233,33 +2234,61 @@ class Reportes_Controller extends BaseController
 
                         $mayorTotal =
                             $total;
-
-                        $mayorIndice =
-                            $indice;
                     }
                 }
 
 
                 if (
-                    $mayorIndice === null
-                    || $mayorTotal <= 0
+                    $mayorTotal <= 0
                 ) {
 
                     return null;
                 }
 
 
-                $etiqueta =
-                    trim(
-                        (string) (
-                            $etiquetas[$mayorIndice]
-                            ?? ''
-                        )
-                    );
+                $mayores = [];
+
+
+                foreach (
+                    $totales
+                    as $indice => $total
+                ) {
+
+                    if (
+                        (int) $total
+                        !== $mayorTotal
+                    ) {
+
+                        continue;
+                    }
+
+
+                    $etiqueta =
+                        trim(
+                            (string) (
+                                $etiquetas[$indice]
+                                ?? ''
+                            )
+                        );
+
+
+                    if (
+                        $etiqueta === ''
+                    ) {
+
+                        continue;
+                    }
+
+
+                    $mayores[] =
+                        $etiqueta;
+                }
 
 
                 if (
-                    $etiqueta === ''
+                    empty(
+                        $mayores
+                    )
                 ) {
 
                     return null;
@@ -2268,22 +2297,88 @@ class Reportes_Controller extends BaseController
 
                 return [
 
-                    'etiqueta' =>
-                    $etiqueta,
+                    'etiquetas' =>
+                        $mayores,
 
                     'total' =>
-                    $mayorTotal,
+                        $mayorTotal,
+
+                    'empate' =>
+                        count(
+                            $mayores
+                        ) > 1,
 
                 ];
             };
 
 
         /* =====================================================
-        1. SECTOR CON MAYOR CONCENTRACIÓN
+        HELPER
+        MOSTRAR ETIQUETAS
+        ===================================================== */
+
+        $formatearEtiquetas =
+            static function (
+                array $etiquetas
+            ): string {
+
+                $cantidad =
+                    count(
+                        $etiquetas
+                    );
+
+
+                if (
+                    $cantidad === 0
+                ) {
+
+                    return '';
+                }
+
+
+                if (
+                    $cantidad === 1
+                ) {
+
+                    return
+                        (string)
+                        $etiquetas[0];
+                }
+
+
+                if (
+                    $cantidad === 2
+                ) {
+
+                    return
+                        $etiquetas[0]
+                        . ' y '
+                        . $etiquetas[1];
+                }
+
+
+                $ultima =
+                    array_pop(
+                        $etiquetas
+                    );
+
+
+                return
+                    implode(
+                        ', ',
+                        $etiquetas
+                    )
+                    . ' y '
+                    . $ultima;
+            };
+
+
+        /* =====================================================
+        1. SECTOR
         ===================================================== */
 
         $sectorMayor =
-            $obtenerMayor(
+            $obtenerMayores(
                 $quejasPorSector['sectores']
                     ?? [],
                 $quejasPorSector['totales']
@@ -2295,40 +2390,99 @@ class Reportes_Controller extends BaseController
             $sectorMayor !== null
         ) {
 
+            $textoSector =
+                $formatearEtiquetas(
+                    $sectorMayor['etiquetas']
+                );
+
+
+            $total =
+                (int)
+                $sectorMayor['total'];
+
+
+            if (
+                $esFelicitacion
+            ) {
+
+                $descripcion =
+                    $sectorMayor['empate']
+                        ? $textoSector
+                            . ' comparten la mayor cantidad, con '
+                            . $total
+                            . (
+                                $total === 1
+                                    ? ' felicitación cada uno.'
+                                    : ' felicitaciones cada uno.'
+                            )
+                        : $textoSector
+                            . ' registra '
+                            . $total
+                            . (
+                                $total === 1
+                                    ? ' felicitación'
+                                    : ' felicitaciones'
+                            )
+                            . ' en el periodo seleccionado.';
+
+            } else {
+
+                $descripcion =
+                    $sectorMayor['empate']
+                        ? $textoSector
+                            . ' comparten la mayor concentración, con '
+                            . $total
+                            . (
+                                $total === 1
+                                    ? ' registro cada uno.'
+                                    : ' registros cada uno.'
+                            )
+                        : $textoSector
+                            . ' concentra '
+                            . $total
+                            . (
+                                $total === 1
+                                    ? ' registro'
+                                    : ' registros'
+                            )
+                            . ' en el periodo seleccionado.';
+            }
+
+
             $hallazgos[] = [
 
                 'tipo' =>
-                'sector',
+                    'sector',
 
                 'titulo' =>
-                $esFelicitacion
-                    ? 'Sector con más felicitaciones'
-                    : 'Mayor concentración por sector',
+                    $sectorMayor['empate']
+                        ? (
+                            $esFelicitacion
+                                ? 'Sectores con más felicitaciones'
+                                : 'Sectores con mayor concentración'
+                        )
+                        : (
+                            $esFelicitacion
+                                ? 'Sector con más felicitaciones'
+                                : 'Mayor concentración por sector'
+                        ),
 
                 'valor' =>
-                $sectorMayor['etiqueta'],
+                    $textoSector,
 
                 'descripcion' =>
-                $esFelicitacion
-                    ? $sectorMayor['etiqueta']
-                    . ' registra '
-                    . $sectorMayor['total']
-                    . ' felicitaciones en el periodo seleccionado.'
-                    : $sectorMayor['etiqueta']
-                    . ' concentra '
-                    . $sectorMayor['total']
-                    . ' registros en el periodo seleccionado.',
+                    $descripcion,
 
             ];
         }
 
 
         /* =====================================================
-        2. ZONA CON MAYOR CONCENTRACIÓN
+        2. ZONA
         ===================================================== */
 
         $zonaMayor =
-            $obtenerMayor(
+            $obtenerMayores(
                 $quejasPorZona['zonas']
                     ?? [],
                 $quejasPorZona['totales']
@@ -2340,39 +2494,83 @@ class Reportes_Controller extends BaseController
             $zonaMayor !== null
         ) {
 
+            $textoZona =
+                $formatearEtiquetas(
+                    $zonaMayor['etiquetas']
+                );
+
+
+            $total =
+                (int)
+                $zonaMayor['total'];
+
+
             $hallazgos[] = [
 
                 'tipo' =>
-                'zona',
+                    'zona',
 
                 'titulo' =>
-                $esFelicitacion
-                    ? 'Zona con más felicitaciones'
-                    : 'Zona con mayor concentración',
+                    $zonaMayor['empate']
+                        ? (
+                            $esFelicitacion
+                                ? 'Zonas con más felicitaciones'
+                                : 'Zonas con mayor concentración'
+                        )
+                        : (
+                            $esFelicitacion
+                                ? 'Zona con más felicitaciones'
+                                : 'Zona con mayor concentración'
+                        ),
 
                 'valor' =>
-                $zonaMayor['etiqueta'],
+                    $textoZona,
 
                 'descripcion' =>
-                $zonaMayor['etiqueta']
-                    . ' presenta '
-                    . $zonaMayor['total']
-                    . (
-                        $esFelicitacion
-                        ? ' felicitaciones.'
-                        : ' registros.'
-                    ),
+                    $zonaMayor['empate']
+                        ? $textoZona
+                            . ' comparten el valor máximo con '
+                            . $total
+                            . (
+                                $esFelicitacion
+                                    ? (
+                                        $total === 1
+                                            ? ' felicitación cada una.'
+                                            : ' felicitaciones cada una.'
+                                    )
+                                    : (
+                                        $total === 1
+                                            ? ' registro cada una.'
+                                            : ' registros cada una.'
+                                    )
+                            )
+                        : $textoZona
+                            . ' presenta '
+                            . $total
+                            . (
+                                $esFelicitacion
+                                    ? (
+                                        $total === 1
+                                            ? ' felicitación.'
+                                            : ' felicitaciones.'
+                                    )
+                                    : (
+                                        $total === 1
+                                            ? ' registro.'
+                                            : ' registros.'
+                                    )
+                            ),
 
             ];
         }
 
 
         /* =====================================================
-        3. TURNO CON MAYOR CONCENTRACIÓN
+        3. TURNO
         ===================================================== */
 
         $turnoMayor =
-            $obtenerMayor(
+            $obtenerMayores(
                 $quejasPorTurno['turnos']
                     ?? [],
                 $quejasPorTurno['totales']
@@ -2384,36 +2582,80 @@ class Reportes_Controller extends BaseController
             $turnoMayor !== null
         ) {
 
+            $textoTurno =
+                $formatearEtiquetas(
+                    $turnoMayor['etiquetas']
+                );
+
+
+            $total =
+                (int)
+                $turnoMayor['total'];
+
+
             $hallazgos[] = [
 
                 'tipo' =>
-                'turno',
+                    'turno',
 
                 'titulo' =>
-                $esFelicitacion
-                    ? 'Turno con más felicitaciones'
-                    : 'Turno con mayor concentración',
+                    $turnoMayor['empate']
+                        ? (
+                            $esFelicitacion
+                                ? 'Turnos con más felicitaciones'
+                                : 'Turnos con mayor concentración'
+                        )
+                        : (
+                            $esFelicitacion
+                                ? 'Turno con más felicitaciones'
+                                : 'Turno con mayor concentración'
+                        ),
 
                 'valor' =>
-                $turnoMayor['etiqueta'],
+                    $textoTurno,
 
                 'descripcion' =>
-                $turnoMayor['etiqueta']
-                    . ' reúne '
-                    . $turnoMayor['total']
-                    . (
-                        $esFelicitacion
-                        ? ' felicitaciones.'
-                        : ' registros.'
-                    ),
+                    $turnoMayor['empate']
+                        ? $textoTurno
+                            . ' comparten el valor máximo con '
+                            . $total
+                            . (
+                                $esFelicitacion
+                                    ? (
+                                        $total === 1
+                                            ? ' felicitación cada uno.'
+                                            : ' felicitaciones cada uno.'
+                                    )
+                                    : (
+                                        $total === 1
+                                            ? ' registro cada uno.'
+                                            : ' registros cada uno.'
+                                    )
+                            )
+                        : $textoTurno
+                            . ' reúne '
+                            . $total
+                            . (
+                                $esFelicitacion
+                                    ? (
+                                        $total === 1
+                                            ? ' felicitación.'
+                                            : ' felicitaciones.'
+                                    )
+                                    : (
+                                        $total === 1
+                                            ? ' registro.'
+                                            : ' registros.'
+                                    )
+                            ),
 
             ];
         }
 
 
         /* =====================================================
-        4. ESTADO PREDOMINANTE
-        SOLO REPORTES / QUEJAS
+        4. ESTADO
+        SOLO REPORTES
         ===================================================== */
 
         if (
@@ -2421,7 +2663,7 @@ class Reportes_Controller extends BaseController
         ) {
 
             $estadoMayor =
-                $obtenerMayor(
+                $obtenerMayores(
                     $estadosQuejas['estados']
                         ?? [],
                     $estadosQuejas['totales']
@@ -2433,22 +2675,44 @@ class Reportes_Controller extends BaseController
                 $estadoMayor !== null
             ) {
 
+                $textoEstado =
+                    $formatearEtiquetas(
+                        $estadoMayor['etiquetas']
+                    );
+
+
+                $total =
+                    (int)
+                    $estadoMayor['total'];
+
+
                 $hallazgos[] = [
 
                     'tipo' =>
-                    'estado',
+                        'estado',
 
                     'titulo' =>
-                    'Estado predominante',
+                        $estadoMayor['empate']
+                            ? 'Estados predominantes'
+                            : 'Estado predominante',
 
                     'valor' =>
-                    $estadoMayor['etiqueta'],
+                        $textoEstado,
 
                     'descripcion' =>
-                    $estadoMayor['total']
-                        . ' registros se encuentran actualmente en estado '
-                        . $estadoMayor['etiqueta']
-                        . '.',
+                        $estadoMayor['empate']
+                            ? $textoEstado
+                                . ' comparten el mayor número de registros, con '
+                                . $total
+                                . ' cada uno.'
+                            : $total
+                                . (
+                                    $total === 1
+                                        ? ' registro se encuentra actualmente en estado '
+                                        : ' registros se encuentran actualmente en estado '
+                                )
+                                . $textoEstado
+                                . '.',
 
                 ];
             }
@@ -2456,12 +2720,12 @@ class Reportes_Controller extends BaseController
 
 
         /* =====================================================
-        5. DIMENSIÓN ACTUAL
+        5. DIMENSIÓN
         ÁREA / UNIDAD
         ===================================================== */
 
         $dimensionMayor =
-            $obtenerMayor(
+            $obtenerMayores(
                 $dimensionDashboard['etiquetas']
                     ?? [],
                 $dimensionDashboard['totales']
@@ -2472,6 +2736,17 @@ class Reportes_Controller extends BaseController
         if (
             $dimensionMayor !== null
         ) {
+
+            $textoDimension =
+                $formatearEtiquetas(
+                    $dimensionMayor['etiquetas']
+                );
+
+
+            $total =
+                (int)
+                $dimensionMayor['total'];
+
 
             $tituloDimension =
                 trim(
@@ -2485,32 +2760,56 @@ class Reportes_Controller extends BaseController
             $hallazgos[] = [
 
                 'tipo' =>
-                'dimension',
+                    'dimension',
 
                 'titulo' =>
-                $tituloDimension
-                    . ' con mayor concentración',
+                    $dimensionMayor['empate']
+                        ? $tituloDimension
+                            . ' — mayor concentración compartida'
+                        : $tituloDimension
+                            . ' con mayor concentración',
 
                 'valor' =>
-                $dimensionMayor['etiqueta'],
+                    $textoDimension,
 
                 'descripcion' =>
-                $dimensionMayor['etiqueta']
-                    . ' registra '
-                    . $dimensionMayor['total']
-                    . (
-                        $esFelicitacion
-                        ? ' asociaciones con felicitaciones.'
-                        : ' asociaciones con reportes.'
-                    ),
+                    $dimensionMayor['empate']
+                        ? $textoDimension
+                            . ' comparten el valor máximo con '
+                            . $total
+                            . (
+                                $esFelicitacion
+                                    ? (
+                                        $total === 1
+                                            ? ' asociación con felicitaciones cada uno.'
+                                            : ' asociaciones con felicitaciones cada uno.'
+                                    )
+                                    : (
+                                        $total === 1
+                                            ? ' asociación con reportes cada uno.'
+                                            : ' asociaciones con reportes cada uno.'
+                                    )
+                            )
+                        : $textoDimension
+                            . ' registra '
+                            . $total
+                            . (
+                                $esFelicitacion
+                                    ? (
+                                        $total === 1
+                                            ? ' asociación con felicitaciones.'
+                                            : ' asociaciones con felicitaciones.'
+                                    )
+                                    : (
+                                        $total === 1
+                                            ? ' asociación con reportes.'
+                                            : ' asociaciones con reportes.'
+                                    )
+                            ),
 
             ];
         }
 
-
-        /*
-        * Evitamos llenar demasiado el Dashboard.
-        */
 
         return array_slice(
             $hallazgos,
