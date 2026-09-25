@@ -54,9 +54,63 @@
 .dashboard-encabezado__acciones {
     display: flex;
     align-items: center;
+    gap: 10px;
 
     flex-shrink: 0;
 }
+
+
+/* =========================================================
+   BOTÓN HISTORIAL
+========================================================= */
+
+.dashboard-encabezado__historial {
+    min-width: 110px;
+    height: 40px;
+
+    padding: 0 17px;
+
+    color: #1681c4;
+    background: #ffffff;
+
+    border: 1px solid #1681c4;
+    border-radius: 7px;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.dashboard-encabezado__historial:hover {
+    color: #ffffff;
+    background: #1681c4;
+    border-color: #1681c4;
+
+    box-shadow:
+        0 5px 12px rgba(22, 129, 196, 0.16);
+
+    transform: translateY(-1px);
+}
+
+
+.dashboard-encabezado__historial:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   BOTÓN EXPORTAR EXCEL
+========================================================= */
 
 .dashboard-encabezado__exportar {
     min-width: 135px;
@@ -83,6 +137,7 @@
         box-shadow 0.2s ease;
 }
 
+
 .dashboard-encabezado__exportar:hover {
     background: #10663f;
     border-color: #10663f;
@@ -93,8 +148,48 @@
     transform: translateY(-1px);
 }
 
+
 .dashboard-encabezado__exportar:active {
     transform: translateY(0);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .dashboard-encabezado__contenido {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+
+    .dashboard-encabezado__acciones {
+        width: 100%;
+
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+
+    .dashboard-encabezado__historial,
+    .dashboard-encabezado__exportar {
+        width: 100%;
+        min-width: 0;
+    }
+
+}
+
+
+@media (max-width: 420px) {
+
+    .dashboard-encabezado__acciones {
+        grid-template-columns: 1fr;
+    }
+
 }
 
 
