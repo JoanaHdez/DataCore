@@ -7,6 +7,10 @@ use Dompdf\Options;
 
 class FormatoQuejaPdfService
 {
+    /* =========================================================
+       GENERAR PDF
+    ========================================================= */
+
     public function generar(
         int $idReporte
     ): array {
@@ -16,10 +20,14 @@ class FormatoQuejaPdfService
         ) {
 
             throw new \InvalidArgumentException(
-                'El reporte solicitado no es valido.'
+                'El reporte solicitado no es válido.'
             );
         }
 
+
+        /* =====================================================
+           CONSULTAR DATOS
+        ===================================================== */
 
         $datos =
             $this->consultarDatos(
@@ -34,6 +42,10 @@ class FormatoQuejaPdfService
             );
 
 
+        /* =====================================================
+           GENERAR HTML
+        ===================================================== */
+
         $html =
             view(
                 'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\pdf\queja',
@@ -46,6 +58,10 @@ class FormatoQuejaPdfService
                 ]
             );
 
+
+        /* =====================================================
+           DIRECTORIO DE EXPORTACIÓN
+        ===================================================== */
 
         $directorio =
             WRITEPATH
@@ -80,6 +96,10 @@ class FormatoQuejaPdfService
         }
 
 
+        /* =====================================================
+           NOMBRE DEL ARCHIVO
+        ===================================================== */
+
         $nombreArchivo =
             'QUEJA_'
             . preg_replace(
@@ -105,6 +125,10 @@ class FormatoQuejaPdfService
             . '_'
             . $nombreArchivo;
 
+
+        /* =====================================================
+           CONFIGURAR DOMPDF
+        ===================================================== */
 
         $options =
             new Options();
@@ -150,11 +174,30 @@ class FormatoQuejaPdfService
         $dompdf->render();
 
 
-        file_put_contents(
-            $ruta,
-            $dompdf->output()
-        );
+        /* =====================================================
+           GUARDAR PDF
+        ===================================================== */
 
+        $resultadoGuardado =
+            file_put_contents(
+                $ruta,
+                $dompdf->output()
+            );
+
+
+        if (
+            $resultadoGuardado === false
+        ) {
+
+            throw new \RuntimeException(
+                'No fue posible guardar el archivo PDF.'
+            );
+        }
+
+
+        /* =====================================================
+           RESPUESTA
+        ===================================================== */
 
         return [
             'ruta' =>
@@ -169,6 +212,10 @@ class FormatoQuejaPdfService
     }
 
 
+    /* =========================================================
+       CONSULTAR DATOS DEL REPORTE
+    ========================================================= */
+
     private function consultarDatos(
         int $idReporte
     ): array {
@@ -178,6 +225,10 @@ class FormatoQuejaPdfService
                 'datacore'
             );
 
+
+        /* =====================================================
+           REPORTE
+        ===================================================== */
 
         $reporte =
             $db
@@ -206,6 +257,10 @@ class FormatoQuejaPdfService
         }
 
 
+        /* =====================================================
+           TIPO DE FOLIO
+        ===================================================== */
+
         $tipoFolio =
             $this->obtenerTipoFolio(
                 $reporte['folio']
@@ -226,10 +281,14 @@ class FormatoQuejaPdfService
         ) {
 
             throw new \RuntimeException(
-                'El PDF de queja solo esta disponible para QJ, QJF y QJV.'
+                'El PDF de queja solo está disponible para QJ, QJF y QJV.'
             );
         }
 
+
+        /* =====================================================
+           DIRECCIÓN PARA NOTIFICACIÓN
+        ===================================================== */
 
         $direccionNotificacion =
             $db
@@ -248,6 +307,10 @@ class FormatoQuejaPdfService
             ->getRowArray()
             ?? [];
 
+
+        /* =====================================================
+           PERSONAL
+        ===================================================== */
 
         $personal =
             $db
@@ -273,6 +336,10 @@ class FormatoQuejaPdfService
             ->get()
             ->getResultArray();
 
+
+        /* =====================================================
+           UNIDADES
+        ===================================================== */
 
         $unidades =
             $db
@@ -302,6 +369,10 @@ class FormatoQuejaPdfService
             ->getResultArray();
 
 
+        /* =====================================================
+           EVIDENCIAS
+        ===================================================== */
+
         $evidencias =
             $db
             ->table(
@@ -309,11 +380,15 @@ class FormatoQuejaPdfService
             )
             ->select([
                 'id_evidencia',
+                'tipo_evidencia',
                 'nombre_original',
                 'nombre_archivo',
+                'ruta_archivo',
                 'extension',
                 'mime_type',
                 'tamano_bytes',
+                'contenido',
+                'almacenamiento',
                 'orden',
                 'created_at',
             ])
@@ -337,6 +412,20 @@ class FormatoQuejaPdfService
             ->getResultArray();
 
 
+        /* =====================================================
+           PREPARAR EVIDENCIAS PARA DOMPDF
+        ===================================================== */
+
+        $evidencias =
+            $this->prepararEvidenciasPdf(
+                $evidencias
+            );
+
+
+        /* =====================================================
+           RESPUESTA
+        ===================================================== */
+
         return [
             'reporte' =>
                 $reporte,
@@ -359,6 +448,410 @@ class FormatoQuejaPdfService
     }
 
 
+    /* =========================================================
+    PREPARAR EVIDENCIAS PARA PDF
+    ========================================================= */
+
+    private function prepararEvidenciasPdf(
+        array $evidencias
+    ): array {
+
+        $resultado = [];
+
+
+        foreach (
+            $evidencias
+            as $evidencia
+        ) {
+
+            $tipoEvidencia =
+                strtoupper(
+                    $this->texto(
+                        $evidencia['tipo_evidencia']
+                        ?? ''
+                    )
+                );
+
+
+            $almacenamiento =
+                strtoupper(
+                    $this->texto(
+                        $evidencia['almacenamiento']
+                        ?? ''
+                    )
+                );
+
+
+            $mimeType =
+                strtolower(
+                    $this->texto(
+                        $evidencia['mime_type']
+                        ?? ''
+                    )
+                );
+
+
+            $extension =
+                strtolower(
+                    ltrim(
+                        $this->texto(
+                            $evidencia['extension']
+                            ?? ''
+                        ),
+                        '.'
+                    )
+                );
+
+
+            /* =====================================================
+            IDENTIFICAR SI ES IMAGEN
+
+            Registros nuevos:
+            tipo_evidencia = IMAGEN
+
+            Registros anteriores:
+            mime_type = image/...
+            o extensión de imagen
+            ===================================================== */
+
+            $esImagen =
+                $tipoEvidencia === 'IMAGEN'
+                || str_starts_with(
+                    $mimeType,
+                    'image/'
+                )
+                || in_array(
+                    $extension,
+                    [
+                        'jpg',
+                        'jpeg',
+                        'png',
+                        'gif',
+                        'webp',
+                    ],
+                    true
+                );
+
+
+            /*
+            * Normalizamos el tipo únicamente para los datos
+            * que recibe el PDF.
+            *
+            * No modifica la base de datos.
+            */
+            if (
+                $tipoEvidencia === ''
+                && $esImagen
+            ) {
+
+                $tipoEvidencia =
+                    'IMAGEN';
+
+                $evidencia['tipo_evidencia'] =
+                    'IMAGEN';
+            }
+
+
+            $dataUri =
+                '';
+
+
+            /* =====================================================
+            PREPARAR IMAGEN
+            ===================================================== */
+
+            if (
+                $esImagen
+            ) {
+
+                /* =================================================
+                ALMACENAMIENTO EN BD
+                ================================================= */
+
+                if (
+                    $almacenamiento === 'BD'
+                ) {
+
+                    $contenido =
+                        $evidencia['contenido']
+                        ?? null;
+
+
+                    if (
+                        $contenido !== null
+                        && $contenido !== ''
+                    ) {
+
+                        $dataUri =
+                            $this->crearDataUriEvidencia(
+                                $contenido,
+                                $mimeType
+                            );
+                    }
+                }
+
+
+                /* =================================================
+                ALMACENAMIENTO COMO ARCHIVO
+                ================================================= */
+
+                if (
+                    $almacenamiento === 'ARCHIVO'
+                ) {
+
+                    $rutaArchivo =
+                        $this->resolverRutaEvidencia(
+                            $evidencia
+                        );
+
+
+                    if (
+                        $rutaArchivo !== ''
+                        && is_file(
+                            $rutaArchivo
+                        )
+                    ) {
+
+                        $contenido =
+                            file_get_contents(
+                                $rutaArchivo
+                            );
+
+
+                        if (
+                            $contenido !== false
+                        ) {
+
+                            $dataUri =
+                                $this->crearDataUriEvidencia(
+                                    $contenido,
+                                    $mimeType
+                                );
+                        }
+                    }
+                }
+            }
+
+
+            /* =====================================================
+            NO ENVIAR BLOB COMPLETO A LA VISTA
+            ===================================================== */
+
+            unset(
+                $evidencia['contenido']
+            );
+
+
+            $evidencia['data_uri'] =
+                $dataUri;
+
+
+            $evidencia['es_imagen'] =
+                $esImagen;
+
+
+            $resultado[] =
+                $evidencia;
+        }
+
+
+        return $resultado;
+    }
+
+
+    /* =========================================================
+    RESOLVER RUTA FÍSICA DE EVIDENCIA
+    ========================================================= */
+
+    private function resolverRutaEvidencia(
+        array $evidencia
+    ): string {
+
+        $ruta =
+            $this->texto(
+                $evidencia['ruta_archivo']
+                ?? ''
+            );
+
+
+        if (
+            $ruta === ''
+        ) {
+
+            return '';
+        }
+
+
+        /* =====================================================
+        NORMALIZAR DIAGONALES
+        ===================================================== */
+
+        $rutaNormalizada =
+            str_replace(
+                '\\',
+                '/',
+                $ruta
+            );
+
+
+        /* =====================================================
+        1. LA RUTA YA ES ABSOLUTA Y EXISTE
+        ===================================================== */
+
+        if (
+            is_file(
+                $rutaNormalizada
+            )
+        ) {
+
+            return $rutaNormalizada;
+        }
+
+
+        /* =====================================================
+        2. RUTA GUARDADA DESDE LA RAÍZ DEL PROYECTO
+
+        Ejemplo real de tu BD:
+
+        writable/uploads/asuntos_internos/reportes/3/archivo.jpg
+
+        ROOTPATH ya apunta a la raíz de DataCore.
+        ===================================================== */
+
+        $rutaProyecto =
+            ROOTPATH
+            . ltrim(
+                $rutaNormalizada,
+                '/'
+            );
+
+
+        if (
+            is_file(
+                $rutaProyecto
+            )
+        ) {
+
+            return $rutaProyecto;
+        }
+
+
+        /* =====================================================
+        3. RUTA RELATIVA A WRITABLE
+
+        Este caso sirve si en algún registro se guarda:
+
+        uploads/asuntos_internos/reportes/3/archivo.jpg
+        ===================================================== */
+
+        $rutaSinWritable =
+            preg_replace(
+                '#^writable/#i',
+                '',
+                ltrim(
+                    $rutaNormalizada,
+                    '/'
+                )
+            );
+
+
+        $rutaWritable =
+            WRITEPATH
+            . $rutaSinWritable;
+
+
+        if (
+            is_file(
+                $rutaWritable
+            )
+        ) {
+
+            return $rutaWritable;
+        }
+
+
+        /* =====================================================
+        4. RUTA RELATIVA A PUBLIC
+        ===================================================== */
+
+        $rutaPublica =
+            FCPATH
+            . ltrim(
+                $rutaNormalizada,
+                '/'
+            );
+
+
+        if (
+            is_file(
+                $rutaPublica
+            )
+        ) {
+
+            return $rutaPublica;
+        }
+
+
+        return '';
+    }
+
+    /* =========================================================
+       CREAR DATA URI PARA EVIDENCIA
+    ========================================================= */
+
+    private function crearDataUriEvidencia(
+        mixed $contenido,
+        string $mimeType
+    ): string {
+
+        if (
+            $contenido === null
+            || $contenido === ''
+        ) {
+
+            return '';
+        }
+
+
+        $mimeType =
+            trim(
+                $mimeType
+            );
+
+
+        /* =====================================================
+           VALIDAR MIME
+        ===================================================== */
+
+        if (
+            $mimeType === ''
+            || !str_starts_with(
+                strtolower(
+                    $mimeType
+                ),
+                'image/'
+            )
+        ) {
+
+            $mimeType =
+                'image/jpeg';
+        }
+
+
+        return
+            'data:'
+            . $mimeType
+            . ';base64,'
+            . base64_encode(
+                $contenido
+            );
+    }
+
+
+    /* =========================================================
+       ASSETS INSTITUCIONALES
+    ========================================================= */
+
     private function obtenerAssets(): array
     {
         $base =
@@ -369,21 +862,28 @@ class FormatoQuejaPdfService
         return [
             'header' =>
                 $this->dataUri(
-                    $base . 'header.png'
+                    $base
+                    . 'header.png'
                 ),
 
             'watermark' =>
                 $this->dataUri(
-                    $base . 'watermark.png'
+                    $base
+                    . 'watermark.png'
                 ),
 
             'footer' =>
                 $this->dataUri(
-                    $base . 'footer.png'
+                    $base
+                    . 'footer.png'
                 ),
         ];
     }
 
+
+    /* =========================================================
+       CONVERTIR ASSET A DATA URI
+    ========================================================= */
 
     private function dataUri(
         string $ruta
@@ -399,14 +899,31 @@ class FormatoQuejaPdfService
         }
 
 
-        return 'data:image/png;base64,'
+        $contenido =
+            file_get_contents(
+                $ruta
+            );
+
+
+        if (
+            $contenido === false
+        ) {
+
+            return '';
+        }
+
+
+        return
+            'data:image/png;base64,'
             . base64_encode(
-                file_get_contents(
-                    $ruta
-                )
+                $contenido
             );
     }
 
+
+    /* =========================================================
+       OBTENER TIPO DE FOLIO
+    ========================================================= */
 
     private function obtenerTipoFolio(
         mixed $folio
@@ -432,7 +949,8 @@ class FormatoQuejaPdfService
             if (
                 str_starts_with(
                     $folio,
-                    $tipo . '-'
+                    $tipo
+                    . '-'
                 )
             ) {
 
@@ -444,6 +962,10 @@ class FormatoQuejaPdfService
         return '';
     }
 
+
+    /* =========================================================
+       NORMALIZAR TEXTO
+    ========================================================= */
 
     private function texto(
         mixed $valor
