@@ -42,6 +42,43 @@ $totalEvolucion =
 
 
 /* =========================================================
+   TIPO ACTIVO
+========================================================= */
+
+$tipoDashboard =
+    strtoupper(
+        trim(
+            (string) (
+                $_GET['tipo']
+                ?? ''
+            )
+        )
+    );
+
+
+$esFelicitacion =
+    $tipoDashboard === 'FELICITACION';
+
+
+$descripcionEvolucion =
+    $esFelicitacion
+        ? 'Comportamiento de las felicitaciones registradas durante el periodo consultado.'
+        : 'Comportamiento de los reportes registrados durante el periodo consultado.';
+
+
+$ariaEvolucion =
+    $esFelicitacion
+        ? 'Gráfica de evolución temporal de felicitaciones'
+        : 'Gráfica de evolución temporal de reportes';
+
+
+$textoSinDatos =
+    $esFelicitacion
+        ? 'No existen felicitaciones para los filtros seleccionados.'
+        : 'No existen registros para los filtros seleccionados.';
+
+
+/* =========================================================
    NORMALIZAR DATOS PARA FRONTEND
 ========================================================= */
 
@@ -130,13 +167,14 @@ $textoAgrupacion =
                 Tendencia de registros
             </span>
 
+
             <h2 class="dashboard-evolucion__titulo">
                 Evolución temporal
             </h2>
 
+
             <p class="dashboard-evolucion__descripcion">
-                Comportamiento de los reportes registrados
-                durante el periodo consultado.
+                <?= esc($descripcionEvolucion) ?>
             </p>
 
         </div>
@@ -147,6 +185,7 @@ $textoAgrupacion =
             <span class="dashboard-evolucion__resumen-etiqueta">
                 Total del periodo
             </span>
+
 
             <strong class="dashboard-evolucion__resumen-valor" id="dashboard-evolucion-total">
                 <?= esc($totalEvolucion) ?>
@@ -183,7 +222,7 @@ $textoAgrupacion =
         ): ?>
 
         <canvas id="dashboard-evolucion-chart" class="dashboard-evolucion__canvas"
-            aria-label="Gráfica de evolución temporal de reportes" role="img"></canvas>
+            aria-label="<?= esc($ariaEvolucion) ?>" role="img"></canvas>
 
         <?php else: ?>
 
@@ -206,8 +245,9 @@ $textoAgrupacion =
                 Sin información para mostrar
             </strong>
 
+
             <span>
-                No existen registros para los filtros seleccionados.
+                <?= esc($textoSinDatos) ?>
             </span>
 
         </div>
@@ -219,14 +259,25 @@ $textoAgrupacion =
 
     <!-- =====================================================
          DATOS PARA JAVASCRIPT
-
-         No se muestran visualmente.
-         El JS de evolución los utilizará para generar Chart.js.
     ====================================================== -->
 
     <script type="application/json" id="dashboard-evolucion-datos">
     <?= json_encode(
-        $datosFrontend,
+        [
+            'tipo' =>
+                $esFelicitacion
+                    ? 'felicitacion'
+                    : 'reporte',
+
+            'agrupacion' =>
+                $agrupacion,
+
+            'datos' =>
+                $datosFrontend,
+
+            'total' =>
+                $totalEvolucion,
+        ],
         JSON_UNESCAPED_UNICODE
         | JSON_UNESCAPED_SLASHES
         | JSON_HEX_TAG

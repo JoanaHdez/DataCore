@@ -50,6 +50,41 @@ $opciones =
     ?? [];
 
 
+/* =========================================================
+   TIPO ACTIVO
+========================================================= */
+
+$tipoDashboard =
+    strtoupper(
+        trim(
+            (string) (
+                $_GET['tipo']
+                ?? ''
+            )
+        )
+    );
+
+
+$esFelicitacion =
+    $tipoDashboard === 'FELICITACION';
+
+
+$descripcionDimension =
+    $esFelicitacion
+        ? 'Distribución de las felicitaciones según la dimensión seleccionada.'
+        : 'Distribución de las quejas según la dimensión seleccionada.';
+
+
+$ariaDimension =
+    $esFelicitacion
+        ? 'Distribución de felicitaciones por dimensión'
+        : 'Distribución de quejas por dimensión';
+
+
+/* =========================================================
+   NORMALIZAR ARREGLOS
+========================================================= */
+
 if (
     !is_array(
         $etiquetas
@@ -92,10 +127,7 @@ if (
 ?>
 
 
-<section
-    class="dashboard-dimension"
-    id="dashboard-dimension"
->
+<section class="dashboard-dimension" id="dashboard-dimension">
 
     <!-- =====================================================
          ENCABEZADO
@@ -109,12 +141,14 @@ if (
                 Distribución institucional
             </span>
 
+
             <h2 class="dashboard-dimension__titulo">
                 Análisis por <?= esc($tituloDimension) ?>
             </h2>
 
+
             <p class="dashboard-dimension__descripcion">
-                Distribución de las quejas según la dimensión seleccionada.
+                <?= esc($descripcionDimension) ?>
             </p>
 
         </div>
@@ -126,10 +160,8 @@ if (
                 Total asociado
             </span>
 
-            <strong
-                class="dashboard-dimension__resumen-valor"
-                id="dashboard-dimension-total"
-            >
+
+            <strong class="dashboard-dimension__resumen-valor" id="dashboard-dimension-total">
                 <?= esc($totalDimension) ?>
             </strong>
 
@@ -144,22 +176,16 @@ if (
 
     <div class="dashboard-dimension__selector">
 
-        <label
-            for="dashboard-dimension-select"
-            class="dashboard-dimension__selector-label"
-        >
+        <label for="dashboard-dimension-select" class="dashboard-dimension__selector-label">
             Analizar por
         </label>
 
 
-        <select
-            id="dashboard-dimension-select"
-            class="dashboard-dimension__selector-control"
-        >
+        <select id="dashboard-dimension-select" class="dashboard-dimension__selector-control">
 
             <?php foreach ($opciones as $opcion): ?>
 
-                <?php
+            <?php
 
                 $valor =
                     trim(
@@ -189,14 +215,11 @@ if (
 
                 ?>
 
-                <option
-                    value="<?= esc($valor) ?>"
-                    <?= $valor === $dimensionSeleccionada
+            <option value="<?= esc($valor) ?>" <?= $valor === $dimensionSeleccionada
                         ? 'selected'
-                        : '' ?>
-                >
-                    <?= esc($texto) ?>
-                </option>
+                        : '' ?>>
+                <?= esc($texto) ?>
+            </option>
 
             <?php endforeach; ?>
 
@@ -217,11 +240,7 @@ if (
 
         <div class="dashboard-dimension__grafica">
 
-            <canvas
-                id="dashboard-dimension-chart"
-                aria-label="Distribución de quejas por dimensión"
-                role="img"
-            ></canvas>
+            <canvas id="dashboard-dimension-chart" aria-label="<?= esc($ariaDimension) ?>" role="img"></canvas>
 
         </div>
 
@@ -234,9 +253,9 @@ if (
 
             <?php if (!empty($etiquetas)): ?>
 
-                <?php foreach ($etiquetas as $indice => $etiqueta): ?>
+            <?php foreach ($etiquetas as $indice => $etiqueta): ?>
 
-                    <?php
+            <?php
 
                     $cantidad =
                         (int) (
@@ -253,42 +272,46 @@ if (
 
                     ?>
 
-                    <div class="dashboard-dimension__item">
 
-                        <div class="dashboard-dimension__item-info">
+            <div class="dashboard-dimension__item">
 
-                            <span class="dashboard-dimension__item-etiqueta">
-                                <?= esc($etiqueta) ?>
-                            </span>
+                <div class="dashboard-dimension__item-info">
 
-                            <span class="dashboard-dimension__item-porcentaje">
-                                <?= esc($porcentaje) ?>%
-                            </span>
-
-                        </div>
+                    <span class="dashboard-dimension__item-etiqueta">
+                        <?= esc($etiqueta) ?>
+                    </span>
 
 
-                        <strong class="dashboard-dimension__item-total">
-                            <?= esc($cantidad) ?>
-                        </strong>
-
-                    </div>
-
-                <?php endforeach; ?>
-
-            <?php else: ?>
-
-                <div class="dashboard-dimension__vacio">
-
-                    <strong>
-                        Sin información para mostrar
-                    </strong>
-
-                    <span>
-                        No existen registros para la dimensión seleccionada.
+                    <span class="dashboard-dimension__item-porcentaje">
+                        <?= esc($porcentaje) ?>%
                     </span>
 
                 </div>
+
+
+                <strong class="dashboard-dimension__item-total">
+                    <?= esc($cantidad) ?>
+                </strong>
+
+            </div>
+
+            <?php endforeach; ?>
+
+
+            <?php else: ?>
+
+            <div class="dashboard-dimension__vacio">
+
+                <strong>
+                    Sin información para mostrar
+                </strong>
+
+
+                <span>
+                    No existen registros para la dimensión seleccionada.
+                </span>
+
+            </div>
 
             <?php endif; ?>
 
@@ -301,11 +324,14 @@ if (
          DATOS PARA JAVASCRIPT
     ====================================================== -->
 
-    <script
-        type="application/json"
-        id="dashboard-dimension-datos"
-    ><?= json_encode(
+    <script type="application/json" id="dashboard-dimension-datos">
+    <?= json_encode(
         [
+            'tipo' =>
+                $esFelicitacion
+                    ? 'felicitacion'
+                    : 'queja',
+
             'dimension' =>
                 $dimensionSeleccionada,
 
@@ -330,7 +356,8 @@ if (
         | JSON_HEX_AMP
         | JSON_HEX_APOS
         | JSON_HEX_QUOT
-    ) ?></script>
+    ) ?>
+    </script>
 
 </section>
 

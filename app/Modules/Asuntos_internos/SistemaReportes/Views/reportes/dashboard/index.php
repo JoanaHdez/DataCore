@@ -13,6 +13,25 @@ Dashboard | Asuntos Internos
 <?= $this->section('content') ?>
 
 
+<?php
+
+$tipoDashboard =
+    strtoupper(
+        trim(
+            (string) (
+                $_GET['tipo']
+                ?? ''
+            )
+        )
+    );
+
+
+$esFelicitacion =
+    $tipoDashboard === 'FELICITACION';
+
+?>
+
+
 <div class="dashboard-page">
 
 
@@ -42,12 +61,6 @@ Dashboard | Asuntos Internos
 
             <!-- =================================================
                  LAYOUT GENERAL DEL DASHBOARD
-
-                 IZQUIERDA:
-                 filtros
-
-                 DERECHA:
-                 indicadores + análisis
             ================================================== -->
 
             <div class="dashboard-shell">
@@ -91,17 +104,21 @@ Dashboard | Asuntos Internos
                     ) ?>
 
 
-                    <!-- =============================================
-                         ESTADO DE LAS QUEJAS
-                    ============================================== -->
+                    <?php if (!$esFelicitacion): ?>
+
+                    <!-- =========================================
+                             ESTADO DE LAS QUEJAS
+                        ========================================== -->
 
                     <?= $this->include(
-                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\estado'
-                    ) ?>
+                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\estado'
+                        ) ?>
+
+                    <?php endif; ?>
 
 
                     <!-- =============================================
-                         QUEJAS POR SECTOR
+                         SECTOR
                     ============================================== -->
 
                     <?= $this->include(
@@ -118,42 +135,46 @@ Dashboard | Asuntos Internos
                     ) ?>
 
 
-                    <!-- =============================================
-                         ANÁLISIS CRUZADO
-                    ============================================== -->
+                    <?php if (!$esFelicitacion): ?>
+
+                    <!-- =========================================
+                             ANÁLISIS CRUZADO
+                        ========================================== -->
 
                     <?= $this->include(
-                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\cruce'
-                    ) ?>
+                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\cruce'
+                        ) ?>
 
 
-                    <!-- =============================================
-                         COMPARATIVAS
-                    ============================================== -->
+                    <!-- =========================================
+                             COMPARATIVAS
+                        ========================================== -->
 
                     <?= $this->include(
-                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\comparativa'
-                    ) ?>
+                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\comparativa'
+                        ) ?>
+
+                    <?php endif; ?>
 
 
                     <!-- =============================================
-                        RANKING TOP 5
+                         RANKING TOP 5
                     ============================================== -->
 
                     <?= $this->include(
                         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\ranking'
                     ) ?>
 
+
                     <!-- =============================================
-                         COMPOSICIÓN DE BLOQUES OPERATIVOS
+                         BLOQUES OPERATIVOS
                     ============================================== -->
 
                     <div class="dashboard-layout">
 
 
                         <!-- =========================================
-                             FILA
-                             ZONA + SANCIONES
+                             ZONA
                         ========================================== -->
 
                         <div class="
@@ -161,10 +182,6 @@ Dashboard | Asuntos Internos
                                 dashboard-layout__fila--zonas
                             ">
 
-
-                            <!-- =====================================
-                                 QUEJAS POR ZONA
-                            ====================================== -->
 
                             <div class="dashboard-layout__zona">
 
@@ -175,25 +192,27 @@ Dashboard | Asuntos Internos
                             </div>
 
 
-                            <!-- =====================================
-                                 SANCIONES
-                                 PENDIENTE DE DEFINICIÓN V1
-                            ====================================== -->
+                            <?php if (!$esFelicitacion): ?>
+
+                            <!-- =================================
+                                     SANCIONES
+                                ================================== -->
 
                             <div class="dashboard-layout__sanciones">
 
                                 <?= $this->include(
-                                    'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\sanciones'
-                                ) ?>
+                                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\sanciones'
+                                    ) ?>
 
                             </div>
+
+                            <?php endif; ?>
 
 
                         </div>
 
 
                         <!-- =========================================
-                             FILA
                              TURNOS
                         ========================================== -->
 

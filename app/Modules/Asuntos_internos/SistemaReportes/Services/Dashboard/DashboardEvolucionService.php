@@ -37,14 +37,54 @@ class DashboardEvolucionService
     public function obtenerEvolucionTemporal(): array
     {
 
+        $filtros =
+            $this->filtrosService
+            ->obtenerFiltros();
+
+
+        $tipo =
+            strtoupper(
+                trim(
+                    (string) (
+                        $filtros['tipo']
+                        ?? ''
+                    )
+                )
+            );
+
+
+        /* =====================================================
+           FELICITACIONES
+        ===================================================== */
+
+        if (
+            $tipo === 'FELICITACION'
+        ) {
+
+            return $this->obtenerEvolucionFelicitaciones();
+        }
+
+
+        /* =====================================================
+           REPORTES
+           TODOS / QUEJAS
+        ===================================================== */
+
+        return $this->obtenerEvolucionReportes();
+    }
+
+
+    /* =========================================================
+       EVOLUCIÓN DE REPORTES
+    ========================================================= */
+
+    private function obtenerEvolucionReportes(): array
+    {
+
         /*
          * Para esta primera versión utilizamos fecha_registro.
          *
          * La unidad base es un día.
-         *
-         * Esto nos permite conservar el dato real y decidir
-         * posteriormente en frontend si conviene representar
-         * días, semanas o meses según el periodo consultado.
          */
 
         $builder =
@@ -109,9 +149,94 @@ class DashboardEvolucionService
             ->getResultArray();
 
 
+        return $this->construirRespuesta(
+            $registros
+        );
+    }
+
+
+    /* =========================================================
+       EVOLUCIÓN DE FELICITACIONES
+    ========================================================= */
+
+    private function obtenerEvolucionFelicitaciones(): array
+    {
+
+        $builder =
+            $this->db
+            ->table(
+                'ai_felicitaciones f'
+            )
+            ->select(
+                "
+                DATE(f.fecha_registro) AS fecha,
+                COUNT(DISTINCT f.id_felicitacion) AS total
+                ",
+                false
+            );
+
+
         /* =====================================================
-           NORMALIZAR RESPUESTA
+           FILTROS GLOBALES DE FELICITACIONES
         ===================================================== */
+
+        $this->filtrosService
+            ->aplicarFiltrosFelicitaciones(
+                $builder,
+                'f'
+            );
+
+
+        /* =====================================================
+           SOLO REGISTROS CON FECHA
+        ===================================================== */
+
+        $builder
+            ->where(
+                'f.fecha_registro IS NOT NULL',
+                null,
+                false
+            );
+
+
+        /* =====================================================
+           AGRUPAR POR DÍA
+        ===================================================== */
+
+        $builder
+            ->groupBy(
+                'DATE(f.fecha_registro)',
+                false
+            )
+            ->orderBy(
+                'fecha',
+                'ASC'
+            );
+
+
+        /* =====================================================
+           CONSULTAR
+        ===================================================== */
+
+        $registros =
+            $builder
+            ->get()
+            ->getResultArray();
+
+
+        return $this->construirRespuesta(
+            $registros
+        );
+    }
+
+
+    /* =========================================================
+       CONSTRUIR RESPUESTA
+    ========================================================= */
+
+    private function construirRespuesta(
+        array $registros
+    ): array {
 
         $datos = [];
 
@@ -152,10 +277,6 @@ class DashboardEvolucionService
             ];
         }
 
-
-        /* =====================================================
-           RESPUESTA
-        ===================================================== */
 
         return [
 

@@ -13,7 +13,7 @@ use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardDim
 use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardCruceService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardComparativaService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardRankingService;
-
+use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardFelicitacionesService;
 
 class DashboardService
 {
@@ -30,6 +30,7 @@ class DashboardService
     private DashboardCruceService $cruceService;
     private DashboardComparativaService $comparativaService;
     private DashboardRankingService $rankingService;
+    private DashboardFelicitacionesService $felicitacionesService;
 
     /* =========================================================
        CONSTRUCTOR
@@ -136,6 +137,11 @@ class DashboardService
             new DashboardRankingService(
                 $this->filtrosService
             );
+
+        $this->felicitacionesService =
+            new DashboardFelicitacionesService(
+                $this->filtrosService
+            );
     }
 
     /* =========================================================
@@ -185,11 +191,35 @@ class DashboardService
 
 
     /* =========================================================
-       INDICADORES GENERALES
+    INDICADORES GENERALES
     ========================================================= */
 
     public function obtenerIndicadores(): array
     {
+        $tipo =
+            $this->obtenerTipoActivo();
+
+
+        /* =====================================================
+        SOLO FELICITACIONES
+        ===================================================== */
+
+        if (
+            $tipo === 'FELICITACION'
+        ) {
+
+            return $this->felicitacionesService
+                ->obtenerIndicadores();
+        }
+
+
+        /* =====================================================
+        TODOS / QUEJAS
+
+        "Todos" utiliza únicamente ai_reportes.
+        Felicitaciones se maneja por separado.
+        ===================================================== */
+
         return $this->indicadoresService
             ->obtenerIndicadores();
     }
@@ -212,17 +242,53 @@ class DashboardService
 
     public function obtenerEstadosQuejas(): array
     {
+        if (
+            $this->obtenerTipoActivo()
+            === 'FELICITACION'
+        ) {
+
+            return [
+
+                'estados' =>
+                [],
+
+                'totales' =>
+                [],
+
+                'porcentajes' =>
+                [],
+
+                'total' =>
+                0,
+
+            ];
+        }
+
+
         return $this->estadoService
             ->obtenerEstadosQuejas();
     }
 
 
     /* =========================================================
-    QUEJAS POR SECTOR
+    DISTRIBUCIÓN POR SECTOR
     ========================================================= */
 
     public function obtenerQuejasPorSector(): array
     {
+        $tipo =
+            $this->obtenerTipoActivo();
+
+
+        if (
+            $tipo === 'FELICITACION'
+        ) {
+
+            return $this->felicitacionesService
+                ->obtenerPorSector();
+        }
+
+
         return $this->ubicacionService
             ->obtenerQuejasPorSector();
     }
@@ -234,6 +300,23 @@ class DashboardService
 
     public function obtenerSectoresTurnos(): array
     {
+        if (
+            $this->obtenerTipoActivo()
+            === 'FELICITACION'
+        ) {
+
+            return [
+
+                'sectores' =>
+                    [],
+
+                'turnos' =>
+                    [],
+
+            ];
+        }
+
+
         return $this->ubicacionService
             ->obtenerSectoresTurnos();
     }
@@ -245,6 +328,44 @@ class DashboardService
 
     public function obtenerComparativa(): array
     {
+        if (
+            $this->obtenerTipoActivo()
+            === 'FELICITACION'
+        ) {
+
+            return [
+
+                'disponible' =>
+                    false,
+
+                'dias_periodo' =>
+                    0,
+
+                'periodo_actual' => [
+
+                    'inicio' =>
+                        null,
+
+                    'fin' =>
+                        null,
+                ],
+
+                'periodo_anterior' => [
+
+                    'inicio' =>
+                        null,
+
+                    'fin' =>
+                        null,
+                ],
+
+                'metricas' =>
+                    [],
+
+            ];
+        }
+
+
         return $this->comparativaService
             ->obtenerComparativa();
     }
@@ -257,6 +378,38 @@ class DashboardService
         string $principal = 'sector',
         string $secundaria = 'turno'
     ): array {
+
+        if (
+            $this->obtenerTipoActivo()
+            === 'FELICITACION'
+        ) {
+
+            return [
+
+                'principal' =>
+                $principal,
+
+                'secundaria' =>
+                $secundaria,
+
+                'categorias' =>
+                [],
+
+                'series' =>
+                [],
+
+                'total' =>
+                0,
+
+                'opciones_principal' =>
+                [],
+
+                'opciones_secundaria' =>
+                [],
+
+            ];
+        }
+
 
         return $this->cruceService
             ->obtenerCruce(
@@ -273,6 +426,21 @@ class DashboardService
     public function obtenerDimension(
         string $dimension = 'area'
     ): array {
+
+        $tipo =
+            $this->obtenerTipoActivo();
+
+
+        if (
+            $tipo === 'FELICITACION'
+        ) {
+
+            return $this->felicitacionesService
+                ->obtenerDimension(
+                    $dimension
+                );
+        }
+
 
         return $this->dimensionService
             ->obtenerDimension(
@@ -294,30 +462,83 @@ class DashboardService
             );
     }
 
+    /* =========================================================
+    FELICITACIONES - INDICADORES
+    ========================================================= */
+
+    public function obtenerIndicadoresFelicitaciones(): array
+    {
+        return $this->felicitacionesService
+            ->obtenerIndicadores();
+    }
+
 
     /* =========================================================
-    QUEJAS POR ZONA
+    FELICITACIONES - SECTOR
+    ========================================================= */
 
-    La zona NO se almacena en ai_reportes.
+    public function obtenerFelicitacionesPorSector(): array
+    {
+        return $this->felicitacionesService
+            ->obtenerPorSector();
+    }
 
-    Se obtiene a partir del sector institucional registrado
-    históricamente en:
 
-    ai_reporte_personal.area_snapshot
+    /* =========================================================
+    FELICITACIONES - ZONA
+    ========================================================= */
 
-    Mapeo institucional:
+    public function obtenerFelicitacionesPorZona(): array
+    {
+        return $this->felicitacionesService
+            ->obtenerPorZona();
+    }
 
-    SECTOR 01 - 03 → Zona Norte
-    SECTOR 04 - 07 → Zona Poniente
-    SECTOR 08 - 10 → Zona Centro
-    SECTOR 11 - 15 → Zona Oriente
 
-    IMPORTANTE:
-    Se cuentan REPORTES / QUEJAS, no personas.
+    /* =========================================================
+    FELICITACIONES - TURNO
+    ========================================================= */
+
+    public function obtenerFelicitacionesPorTurno(): array
+    {
+        return $this->felicitacionesService
+            ->obtenerPorTurno();
+    }
+
+
+    /* =========================================================
+    FELICITACIONES - ÁREA / UNIDAD
+    ========================================================= */
+
+    public function obtenerDimensionFelicitaciones(
+        string $dimension = 'area'
+    ): array {
+
+        return $this->felicitacionesService
+            ->obtenerDimension(
+                $dimension
+            );
+    }
+
+    /* =========================================================
+    DISTRIBUCIÓN POR ZONA
     ========================================================= */
 
     public function obtenerQuejasPorZona(): array
     {
+        $tipo =
+            $this->obtenerTipoActivo();
+
+
+        if (
+            $tipo === 'FELICITACION'
+        ) {
+
+            return $this->felicitacionesService
+                ->obtenerPorZona();
+        }
+
+
         return $this->ubicacionService
             ->obtenerQuejasPorZona();
     }
@@ -342,6 +563,25 @@ class DashboardService
 
     public function obtenerSanciones(): array
     {
+        if (
+            $this->obtenerTipoActivo()
+            === 'FELICITACION'
+        ) {
+
+            return [
+
+                'tipos' =>
+                [],
+
+                'totales' =>
+                [],
+
+                'total' =>
+                0,
+
+            ];
+        }
+
         /* =====================================================
         CATEGORÍAS
         ===================================================== */
@@ -565,11 +805,24 @@ class DashboardService
     }
 
     /* =========================================================
-    QUEJAS POR TURNO
+    DISTRIBUCIÓN POR TURNO
     ========================================================= */
 
     public function obtenerQuejasPorTurno(): array
     {
+        $tipo =
+            $this->obtenerTipoActivo();
+
+
+        if (
+            $tipo === 'FELICITACION'
+        ) {
+
+            return $this->felicitacionesService
+                ->obtenerPorTurno();
+        }
+
+
         return $this->ubicacionService
             ->obtenerQuejasPorTurno();
     }
@@ -582,7 +835,62 @@ class DashboardService
 
     public function obtenerClasificaciones(): array
     {
+        if (
+            $this->obtenerTipoActivo()
+            === 'FELICITACION'
+        ) {
+
+            return [
+
+                'clasificaciones' =>
+                    [],
+
+                'totales' =>
+                    [],
+
+                'total' =>
+                    0,
+
+            ];
+        }
+
+
         return $this->clasificacionService
             ->obtenerClasificaciones();
+    }
+
+    /* =========================================================
+    OBTENER TIPO ACTIVO
+    ========================================================= */
+
+    private function obtenerTipoActivo(): string
+    {
+        $filtros =
+            $this->filtrosService
+            ->obtenerFiltros();
+
+
+        $tipo =
+            strtoupper(
+                trim(
+                    (string) (
+                        $filtros['tipo']
+                        ?? ''
+                    )
+                )
+            );
+
+
+        return match ($tipo) {
+
+            'QUEJA' =>
+            'QUEJA',
+
+            'FELICITACION' =>
+            'FELICITACION',
+
+            default =>
+            'TODOS',
+        };
     }
 }

@@ -1,3 +1,82 @@
+<?php
+
+$quejasPorZona =
+    $quejasPorZona
+    ?? [];
+
+
+/* =========================================================
+   TIPO ACTIVO
+========================================================= */
+
+$tipoDashboard =
+    strtoupper(
+        trim(
+            (string) (
+                $_GET['tipo']
+                ?? ''
+            )
+        )
+    );
+
+
+$esFelicitacion =
+    $tipoDashboard === 'FELICITACION';
+
+
+$tituloZona =
+    $esFelicitacion
+        ? 'Felicitaciones por zona'
+        : 'Quejas por zona';
+
+
+$descripcionZona =
+    $esFelicitacion
+        ? 'Distribución de las felicitaciones registradas de acuerdo con la zona territorial.'
+        : 'Distribución de las quejas registradas de acuerdo con la zona territorial.';
+
+
+$textoTotal =
+    $esFelicitacion
+        ? 'Felicitaciones'
+        : 'Quejas';
+
+
+$ariaZona =
+    $esFelicitacion
+        ? 'Gráfica de felicitaciones por zona'
+        : 'Gráfica de quejas por zona';
+
+
+$zonas =
+    $quejasPorZona['zonas']
+    ?? [
+        'Zona Norte',
+        'Zona Poniente',
+        'Zona Centro',
+        'Zona Oriente',
+    ];
+
+
+$totales =
+    $quejasPorZona['totales']
+    ?? [
+        0,
+        0,
+        0,
+        0,
+    ];
+
+
+$total =
+    (int) (
+        $quejasPorZona['total']
+        ?? 0
+    );
+
+?>
+
+
 <section class="dashboard-grafica dashboard-grafica--zona">
 
     <div class="dashboard-grafica-zona__encabezado">
@@ -5,9 +84,11 @@
         <div class="dashboard-grafica-zona__icono" aria-hidden="true">
 
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+
                 <path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Z" />
 
                 <circle cx="12" cy="10" r="2.3" />
+
             </svg>
 
         </div>
@@ -19,13 +100,14 @@
                 Distribución territorial
             </span>
 
+
             <h2 class="dashboard-grafica__titulo">
-                Quejas por zona
+                <?= esc($tituloZona) ?>
             </h2>
 
+
             <p class="dashboard-grafica__descripcion">
-                Distribución de las quejas registradas
-                de acuerdo con la zona territorial.
+                <?= esc($descripcionZona) ?>
             </p>
 
         </div>
@@ -41,17 +123,14 @@
                 Total registrado
             </span>
 
+
             <strong id="grafica-zonas-total">
-                <?= esc(
-                    (string) (
-                        $quejasPorZona['total']
-                        ?? 0
-                    )
-                ) ?>
+                <?= esc($total) ?>
             </strong>
 
+
             <small>
-                Quejas
+                <?= esc($textoTotal) ?>
             </small>
 
         </div>
@@ -62,7 +141,7 @@
                 dashboard-grafica__canvas--zonas
             ">
 
-            <canvas id="grafica-zonas" aria-label="Gráfica de quejas por zona"></canvas>
+            <canvas id="grafica-zonas" aria-label="<?= esc($ariaZona) ?>"></canvas>
 
         </div>
 
@@ -75,32 +154,31 @@
 
     <script type="application/json" id="dashboard-datos-zonas">
     <?= json_encode(
-            [
-                'zonas' =>
-                    $quejasPorZona['zonas']
-                    ?? [
-                        'Zona Norte',
-                        'Zona Poniente',
-                        'Zona Centro',
-                        'Zona Oriente',
-                    ],
+        [
+            'tipo' =>
+                $esFelicitacion
+                    ? 'felicitacion'
+                    : 'queja',
 
-                'totales' =>
-                    $quejasPorZona['totales']
-                    ?? [
-                        0,
-                        0,
-                        0,
-                        0,
-                    ],
+            'titulo' =>
+                $tituloZona,
 
-                'total' =>
-                    $quejasPorZona['total']
-                    ?? 0,
-            ],
-            JSON_UNESCAPED_UNICODE
-            | JSON_UNESCAPED_SLASHES
-        ) ?>
+            'zonas' =>
+                $zonas,
+
+            'totales' =>
+                $totales,
+
+            'total' =>
+                $total,
+        ],
+        JSON_UNESCAPED_UNICODE
+        | JSON_UNESCAPED_SLASHES
+        | JSON_HEX_TAG
+        | JSON_HEX_AMP
+        | JSON_HEX_APOS
+        | JSON_HEX_QUOT
+    ) ?>
     </script>
 
 </section>

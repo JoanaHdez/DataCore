@@ -23,6 +23,43 @@ $totalSector =
 
 
 /* =========================================================
+   TIPO ACTIVO
+========================================================= */
+
+$tipoDashboard =
+    strtoupper(
+        trim(
+            (string) (
+                $_GET['tipo']
+                ?? ''
+            )
+        )
+    );
+
+
+$esFelicitacion =
+    $tipoDashboard === 'FELICITACION';
+
+
+$tituloSector =
+    $esFelicitacion
+        ? 'Felicitaciones por sector'
+        : 'Quejas por sector';
+
+
+$descripcionSector =
+    $esFelicitacion
+        ? 'Distribución de las felicitaciones según el sector relacionado con el personal reconocido.'
+        : 'Distribución de las quejas según el sector relacionado con el personal involucrado.';
+
+
+$ariaSector =
+    $esFelicitacion
+        ? 'Felicitaciones por sector'
+        : 'Quejas por sector';
+
+
+/* =========================================================
    PREPARAR FILAS
 ========================================================= */
 
@@ -88,13 +125,14 @@ usort(
                 Distribución operativa
             </span>
 
+
             <h2 class="dashboard-sectores__titulo">
-                Quejas por sector
+                <?= esc($tituloSector) ?>
             </h2>
 
+
             <p class="dashboard-sectores__descripcion">
-                Distribución de las quejas según el sector
-                relacionado con el personal involucrado.
+                <?= esc($descripcionSector) ?>
             </p>
 
         </div>
@@ -105,6 +143,7 @@ usort(
             <span class="dashboard-sectores__resumen-etiqueta">
                 Registros sectorizados
             </span>
+
 
             <strong class="dashboard-sectores__resumen-valor" id="dashboard-sectores-total">
                 <?= esc($totalSector) ?>
@@ -128,7 +167,7 @@ usort(
 
         <div class="dashboard-sectores__grafica">
 
-            <canvas id="dashboard-sectores-chart" aria-label="Quejas por sector" role="img"></canvas>
+            <canvas id="dashboard-sectores-chart" aria-label="<?= esc($ariaSector) ?>" role="img"></canvas>
 
         </div>
 
@@ -152,11 +191,15 @@ usort(
 
                 $porcentaje =
                     $totalSector > 0
-                    ? round(
-                        ($cantidad / $totalSector) * 100,
-                        1
-                    )
-                    : 0;
+                        ? round(
+                            (
+                                $cantidad
+                                / $totalSector
+                            )
+                            * 100,
+                            1
+                        )
+                        : 0;
 
                 ?>
 
@@ -200,6 +243,14 @@ usort(
     <script type="application/json" id="dashboard-sectores-datos">
     <?= json_encode(
         [
+            'tipo' =>
+                $esFelicitacion
+                    ? 'felicitacion'
+                    : 'queja',
+
+            'titulo' =>
+                $tituloSector,
+
             'sectores' =>
                 $sectores,
 

@@ -979,6 +979,314 @@ class DashboardFiltrosService
 
 
     /* =========================================================
+    APLICAR FILTROS A FELICITACIONES
+    ========================================================= */
+
+    public function aplicarFiltrosFelicitaciones(
+        $builder,
+        string $alias = 'f'
+    ) {
+
+        $prefijo =
+            $alias !== ''
+                ? rtrim(
+                    $alias,
+                    '.'
+                ) . '.'
+                : '';
+
+
+        /* =====================================================
+        SIEMPRE EXCLUIR ELIMINADOS
+        ===================================================== */
+
+        $builder->where(
+            $prefijo . 'eliminado',
+            0
+        );
+
+
+        /* =====================================================
+        PERIODO
+        ===================================================== */
+
+        if (
+            !empty(
+                $this->filtros['fecha_registro_inicio']
+            )
+        ) {
+
+            $builder->where(
+                $prefijo . 'fecha_registro >=',
+                $this->filtros['fecha_registro_inicio']
+            );
+        }
+
+
+        if (
+            !empty(
+                $this->filtros['fecha_registro_fin']
+            )
+        ) {
+
+            $builder->where(
+                $prefijo . 'fecha_registro <=',
+                $this->filtros['fecha_registro_fin']
+            );
+        }
+
+
+        /*
+        * IMPORTANTE:
+        *
+        * Felicitaciones NO tiene:
+        *
+        * - estado_actual
+        * - clasificacion
+        * - seguimiento
+        * - es_anonimo
+        *
+        * Por lo tanto esos filtros no se aplican aquí.
+        */
+
+
+        /* =====================================================
+        ZONA
+        ===================================================== */
+
+        if (
+            !empty(
+                $this->filtros['zona']
+            )
+        ) {
+
+            $condicionZona =
+                $this->obtenerCondicionSqlZona(
+                    $this->filtros['zona'],
+                    'fp_zona.area_snapshot'
+                );
+
+
+            if (
+                $condicionZona !== null
+            ) {
+
+                $builder->where(
+                    "EXISTS (
+                        SELECT 1
+                        FROM ai_felicitacion_personal fp_zona
+                        WHERE fp_zona.id_felicitacion = {$prefijo}id_felicitacion
+                        AND ({$condicionZona})
+                    )",
+                    null,
+                    false
+                );
+            }
+        }
+
+
+        /* =====================================================
+        SECTOR
+        ===================================================== */
+
+        if (
+            !empty(
+                $this->filtros['sector']
+            )
+        ) {
+
+            $sector =
+                trim(
+                    (string)
+                    $this->filtros['sector']
+                );
+
+
+            if (
+                preg_match(
+                    '/^SECTOR\s+0*([0-9]+)$/i',
+                    $sector,
+                    $coincidencias
+                )
+            ) {
+
+                $numeroSector =
+                    (int) (
+                        $coincidencias[1]
+                        ?? 0
+                    );
+
+
+                if (
+                    $numeroSector >= 1
+                    && $numeroSector <= 15
+                ) {
+
+                    $builder->where(
+                        "EXISTS (
+                            SELECT 1
+                            FROM ai_felicitacion_personal fp_sector
+                            WHERE fp_sector.id_felicitacion = {$prefijo}id_felicitacion
+                            AND UPPER(
+                                TRIM(
+                                    COALESCE(
+                                        fp_sector.area_snapshot,
+                                        ''
+                                    )
+                                )
+                            ) REGEXP '^SECTOR[[:space:]]+0*{$numeroSector}([^0-9]|$)'
+                        )",
+                        null,
+                        false
+                    );
+                }
+            }
+        }
+
+
+        /* =====================================================
+        TURNO
+        ===================================================== */
+
+        if (
+            !empty(
+                $this->filtros['turno']
+            )
+        ) {
+
+            $condicionTurno =
+                $this->obtenerCondicionSqlTurno(
+                    $this->filtros['turno'],
+                    'fp_turno.turno_snapshot'
+                );
+
+
+            if (
+                $condicionTurno !== null
+            ) {
+
+                $builder->where(
+                    "EXISTS (
+                        SELECT 1
+                        FROM ai_felicitacion_personal fp_turno
+                        WHERE fp_turno.id_felicitacion = {$prefijo}id_felicitacion
+                        AND ({$condicionTurno})
+                    )",
+                    null,
+                    false
+                );
+            }
+        }
+
+
+        /* =====================================================
+        ÁREA DEL PERSONAL
+        ===================================================== */
+
+        if (
+            !empty(
+                $this->filtros['area_personal']
+            )
+        ) {
+
+            $areaPersonal =
+                $this->db->escape(
+                    $this->filtros['area_personal']
+                );
+
+
+            $builder->where(
+                "EXISTS (
+                    SELECT 1
+                    FROM ai_felicitacion_personal fp_area
+                    WHERE fp_area.id_felicitacion = {$prefijo}id_felicitacion
+                    AND fp_area.area_snapshot = {$areaPersonal}
+                )",
+                null,
+                false
+            );
+        }
+
+
+        /* =====================================================
+        PERSONAL ESPECÍFICO
+        ===================================================== */
+
+        if (
+            !empty(
+                $this->filtros['personal']
+            )
+        ) {
+
+            $personal =
+                trim(
+                    (string)
+                    $this->filtros['personal']
+                );
+
+
+            $personalEscapado =
+                $this->db->escape(
+                    $personal
+                );
+
+
+            $builder->where(
+                "EXISTS (
+                    SELECT 1
+                    FROM ai_felicitacion_personal fp_personal
+                    WHERE fp_personal.id_felicitacion = {$prefijo}id_felicitacion
+                    AND (
+                        fp_personal.perscod = {$personalEscapado}
+                        OR CAST(
+                            fp_personal.plantilla_id
+                            AS CHAR
+                        ) = {$personalEscapado}
+                    )
+                )",
+                null,
+                false
+            );
+        }
+
+
+        /* =====================================================
+        UNIDAD
+        ===================================================== */
+
+        if (
+            !empty(
+                $this->filtros['unidad']
+            )
+        ) {
+
+            $unidad =
+                $this->db->escape(
+                    $this->filtros['unidad']
+                );
+
+
+            $builder->where(
+                "EXISTS (
+                    SELECT 1
+                    FROM ai_felicitacion_unidades fu_filtro
+                    WHERE fu_filtro.id_felicitacion = {$prefijo}id_felicitacion
+                    AND (
+                        fu_filtro.no_economico_snapshot = {$unidad}
+                        OR fu_filtro.placas_snapshot = {$unidad}
+                    )
+                )",
+                null,
+                false
+            );
+        }
+
+
+        return $builder;
+    }
+
+
+    /* =========================================================
        CONDICIÓN SQL PARA TURNO ANALÍTICO
     ========================================================= */
 

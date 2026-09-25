@@ -31,7 +31,7 @@ class DashboardRankingService
 
 
     /* =========================================================
-       OBTENER RANKING
+    OBTENER RANKING
     ========================================================= */
 
     public function obtenerRanking(
@@ -45,6 +45,45 @@ class DashboardRankingService
                 )
             );
 
+
+        /* =====================================================
+        TIPO DE INFORMACIÓN DEL DASHBOARD
+        ===================================================== */
+
+        $filtros =
+            $this->filtrosService
+            ->obtenerFiltros();
+
+
+        $tipoRegistro =
+            strtoupper(
+                trim(
+                    (string) (
+                        $filtros['tipo']
+                        ?? ''
+                    )
+                )
+            );
+
+
+        /* =====================================================
+        FELICITACIONES
+        ===================================================== */
+
+        if (
+            $tipoRegistro === 'FELICITACION'
+        ) {
+
+            return $this->obtenerRankingFelicitaciones(
+                $tipo
+            );
+        }
+
+
+        /* =====================================================
+        REPORTES
+        TODOS / QUEJAS
+        ===================================================== */
 
         return match ($tipo) {
 
@@ -60,6 +99,671 @@ class DashboardRankingService
             default =>
                 $this->obtenerRankingSector(),
         };
+    }
+
+    /* =========================================================
+    OBTENER RANKING DE FELICITACIONES
+    ========================================================= */
+
+    private function obtenerRankingFelicitaciones(
+        string $tipo
+    ): array {
+
+        return match ($tipo) {
+
+            'area' =>
+                $this->obtenerRankingFelicitacionesArea(),
+
+            'unidad' =>
+                $this->obtenerRankingFelicitacionesUnidad(),
+
+            'personal' =>
+                $this->obtenerRankingFelicitacionesPersonal(),
+
+            default =>
+                $this->obtenerRankingFelicitacionesSector(),
+        };
+    }
+
+    /* =========================================================
+    TOP 5 FELICITACIONES - SECTOR
+    ========================================================= */
+
+    private function obtenerRankingFelicitacionesSector(): array
+    {
+
+        $builder =
+            $this->db
+            ->table(
+                'ai_felicitaciones f'
+            )
+            ->select([
+                'f.id_felicitacion',
+                'p.area_snapshot',
+            ])
+            ->join(
+                'ai_felicitacion_personal p',
+                'p.id_felicitacion = f.id_felicitacion',
+                'inner'
+            );
+
+
+        $this->filtrosService
+            ->aplicarFiltrosFelicitaciones(
+                $builder,
+                'f'
+            );
+
+
+        $registros =
+            $builder
+            ->get()
+            ->getResultArray();
+
+
+        $conteos = [];
+
+        $felicitacionesContadas = [];
+
+
+        foreach (
+            $registros
+            as $registro
+        ) {
+
+            $idFelicitacion =
+                (int) (
+                    $registro['id_felicitacion']
+                    ?? 0
+                );
+
+
+            if (
+                $idFelicitacion <= 0
+            ) {
+
+                continue;
+            }
+
+
+            $sector =
+                $this->obtenerSectorDesdeArea(
+                    (string) (
+                        $registro['area_snapshot']
+                        ?? ''
+                    )
+                );
+
+
+            if (
+                $sector === null
+            ) {
+
+                continue;
+            }
+
+
+            /*
+            * Una felicitación solamente cuenta una vez
+            * dentro del mismo sector.
+            */
+
+            $clave =
+                $idFelicitacion
+                . '|'
+                . $sector;
+
+
+            if (
+                isset(
+                    $felicitacionesContadas[$clave]
+                )
+            ) {
+
+                continue;
+            }
+
+
+            $felicitacionesContadas[$clave] =
+                true;
+
+
+            if (
+                !isset(
+                    $conteos[$sector]
+                )
+            ) {
+
+                $conteos[$sector] =
+                    0;
+            }
+
+
+            $conteos[$sector]++;
+        }
+
+
+        arsort(
+            $conteos,
+            SORT_NUMERIC
+        );
+
+
+        $conteos =
+            array_slice(
+                $conteos,
+                0,
+                5,
+                true
+            );
+
+
+        return $this->construirRespuesta(
+            'sector',
+            'Sectores',
+            $conteos
+        );
+    }
+
+    /* =========================================================
+    TOP 5 FELICITACIONES - ÁREA
+    ========================================================= */
+
+    private function obtenerRankingFelicitacionesArea(): array
+    {
+        $builder =
+            $this->db
+            ->table(
+                'ai_felicitaciones f'
+            )
+            ->select([
+                'f.id_felicitacion',
+                'p.area_snapshot',
+            ])
+            ->join(
+                'ai_felicitacion_personal p',
+                'p.id_felicitacion = f.id_felicitacion',
+                'inner'
+            );
+
+
+        $this->filtrosService
+            ->aplicarFiltrosFelicitaciones(
+                $builder,
+                'f'
+            );
+
+
+        $registros =
+            $builder
+            ->get()
+            ->getResultArray();
+
+
+        $conteos = [];
+
+        $felicitacionesContadas = [];
+
+
+        foreach ($registros as $registro) {
+
+            $idFelicitacion =
+                (int) (
+                    $registro['id_felicitacion']
+                    ?? 0
+                );
+
+
+            if ($idFelicitacion <= 0) {
+                continue;
+            }
+
+
+            $area =
+                $this->normalizarTexto(
+                    (string) (
+                        $registro['area_snapshot']
+                        ?? ''
+                    )
+                );
+
+
+            if ($area === '') {
+                continue;
+            }
+
+
+            $clave =
+                $idFelicitacion
+                . '|'
+                . mb_strtoupper(
+                    $area,
+                    'UTF-8'
+                );
+
+
+            if (
+                isset(
+                    $felicitacionesContadas[$clave]
+                )
+            ) {
+
+                continue;
+            }
+
+
+            $felicitacionesContadas[$clave] =
+                true;
+
+
+            if (
+                !isset(
+                    $conteos[$area]
+                )
+            ) {
+
+                $conteos[$area] =
+                    0;
+            }
+
+
+            $conteos[$area]++;
+        }
+
+
+        arsort(
+            $conteos,
+            SORT_NUMERIC
+        );
+
+
+        $conteos =
+            array_slice(
+                $conteos,
+                0,
+                5,
+                true
+            );
+
+
+        return $this->construirRespuesta(
+            'area',
+            'Áreas',
+            $conteos
+        );
+    }
+
+    /* =========================================================
+    TOP 5 FELICITACIONES - UNIDAD
+    ========================================================= */
+
+    private function obtenerRankingFelicitacionesUnidad(): array
+    {
+        $builder =
+            $this->db
+            ->table(
+                'ai_felicitaciones f'
+            )
+            ->select([
+                'f.id_felicitacion',
+                'u.no_economico_snapshot',
+                'u.placas_snapshot',
+            ])
+            ->join(
+                'ai_felicitacion_unidades u',
+                'u.id_felicitacion = f.id_felicitacion',
+                'inner'
+            );
+
+
+        $this->filtrosService
+            ->aplicarFiltrosFelicitaciones(
+                $builder,
+                'f'
+            );
+
+
+        $registros =
+            $builder
+            ->get()
+            ->getResultArray();
+
+
+        $conteos = [];
+
+        $felicitacionesContadas = [];
+
+
+        foreach ($registros as $registro) {
+
+            $idFelicitacion =
+                (int) (
+                    $registro['id_felicitacion']
+                    ?? 0
+                );
+
+
+            if ($idFelicitacion <= 0) {
+                continue;
+            }
+
+
+            $noEconomico =
+                $this->normalizarTexto(
+                    (string) (
+                        $registro['no_economico_snapshot']
+                        ?? ''
+                    )
+                );
+
+
+            $placas =
+                $this->normalizarTexto(
+                    (string) (
+                        $registro['placas_snapshot']
+                        ?? ''
+                    )
+                );
+
+
+            $unidad =
+                $noEconomico !== ''
+                    ? $noEconomico
+                    : $placas;
+
+
+            if ($unidad === '') {
+                continue;
+            }
+
+
+            $clave =
+                $idFelicitacion
+                . '|'
+                . mb_strtoupper(
+                    $unidad,
+                    'UTF-8'
+                );
+
+
+            if (
+                isset(
+                    $felicitacionesContadas[$clave]
+                )
+            ) {
+
+                continue;
+            }
+
+
+            $felicitacionesContadas[$clave] =
+                true;
+
+
+            if (
+                !isset(
+                    $conteos[$unidad]
+                )
+            ) {
+
+                $conteos[$unidad] =
+                    0;
+            }
+
+
+            $conteos[$unidad]++;
+        }
+
+
+        arsort(
+            $conteos,
+            SORT_NUMERIC
+        );
+
+
+        $conteos =
+            array_slice(
+                $conteos,
+                0,
+                5,
+                true
+            );
+
+
+        return $this->construirRespuesta(
+            'unidad',
+            'Unidades',
+            $conteos
+        );
+    }
+
+    /* =========================================================
+    TOP 5 FELICITACIONES - PERSONAL
+    ========================================================= */
+
+    private function obtenerRankingFelicitacionesPersonal(): array
+    {
+        $builder =
+            $this->db
+            ->table(
+                'ai_felicitaciones f'
+            )
+            ->select([
+                'f.id_felicitacion',
+                'p.perscod',
+                'p.plantilla_id',
+                'p.nombre_snapshot',
+            ])
+            ->join(
+                'ai_felicitacion_personal p',
+                'p.id_felicitacion = f.id_felicitacion',
+                'inner'
+            );
+
+
+        $this->filtrosService
+            ->aplicarFiltrosFelicitaciones(
+                $builder,
+                'f'
+            );
+
+
+        $registros =
+            $builder
+            ->get()
+            ->getResultArray();
+
+
+        $personas = [];
+
+        $felicitacionesContadas = [];
+
+
+        foreach ($registros as $registro) {
+
+            $idFelicitacion =
+                (int) (
+                    $registro['id_felicitacion']
+                    ?? 0
+                );
+
+
+            if ($idFelicitacion <= 0) {
+                continue;
+            }
+
+
+            $perscod =
+                $this->normalizarTexto(
+                    (string) (
+                        $registro['perscod']
+                        ?? ''
+                    )
+                );
+
+
+            $plantillaId =
+                (int) (
+                    $registro['plantilla_id']
+                    ?? 0
+                );
+
+
+            $nombre =
+                $this->normalizarTexto(
+                    (string) (
+                        $registro['nombre_snapshot']
+                        ?? ''
+                    )
+                );
+
+
+            /* =============================================
+            IDENTIDAD ÚNICA
+            ============================================== */
+
+            if ($perscod !== '') {
+
+                $identidad =
+                    'P:'
+                    . mb_strtoupper(
+                        $perscod,
+                        'UTF-8'
+                    );
+
+            } elseif ($plantillaId > 0) {
+
+                $identidad =
+                    'I:'
+                    . $plantillaId;
+
+            } else {
+
+                continue;
+            }
+
+
+            if ($nombre === '') {
+
+                $nombre =
+                    $perscod !== ''
+                        ? $perscod
+                        : 'Personal ' . $plantillaId;
+            }
+
+
+            /* =============================================
+            UNA PERSONA UNA VEZ POR FELICITACIÓN
+            ============================================== */
+
+            $clave =
+                $idFelicitacion
+                . '|'
+                . $identidad;
+
+
+            if (
+                isset(
+                    $felicitacionesContadas[$clave]
+                )
+            ) {
+
+                continue;
+            }
+
+
+            $felicitacionesContadas[$clave] =
+                true;
+
+
+            if (
+                !isset(
+                    $personas[$identidad]
+                )
+            ) {
+
+                $personas[$identidad] = [
+
+                    'nombre' =>
+                        $nombre,
+
+                    'total' =>
+                        0,
+                ];
+            }
+
+
+            $personas[$identidad]['total']++;
+        }
+
+
+        uasort(
+            $personas,
+            static function (
+                array $a,
+                array $b
+            ): int {
+
+                $comparacion =
+                    ((int) ($b['total'] ?? 0))
+                    <=>
+                    ((int) ($a['total'] ?? 0));
+
+
+                if ($comparacion !== 0) {
+                    return $comparacion;
+                }
+
+
+                return strcasecmp(
+                    (string) ($a['nombre'] ?? ''),
+                    (string) ($b['nombre'] ?? '')
+                );
+            }
+        );
+
+
+        $personas =
+            array_slice(
+                $personas,
+                0,
+                5,
+                true
+            );
+
+
+        $conteos = [];
+
+
+        foreach ($personas as $persona) {
+
+            $nombre =
+                trim(
+                    (string) (
+                        $persona['nombre']
+                        ?? ''
+                    )
+                );
+
+
+            if ($nombre === '') {
+                continue;
+            }
+
+
+            $conteos[$nombre] =
+                (int) (
+                    $persona['total']
+                    ?? 0
+                );
+        }
+
+
+        return $this->construirRespuesta(
+            'personal',
+            'Personal con mayor número de felicitaciones asociadas',
+            $conteos
+        );
     }
 
 
