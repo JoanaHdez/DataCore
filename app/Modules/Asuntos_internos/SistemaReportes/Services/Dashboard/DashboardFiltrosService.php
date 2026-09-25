@@ -504,21 +504,21 @@ class DashboardFiltrosService
 
 
     /* =========================================================
-       APLICAR FILTROS COMUNES A AI_REPORTES
+    APLICAR FILTROS COMUNES A AI_REPORTES
     ========================================================= */
 
     public function aplicarFiltrosReportes(
-    $builder,
-    string $alias = ''
+        $builder,
+        string $alias = ''
     ) {
 
         $prefijo =
             $alias !== ''
-            ? rtrim(
-                $alias,
-                '.'
-            ) . '.'
-            : '';
+                ? rtrim(
+                    $alias,
+                    '.'
+                ) . '.'
+                : '';
 
 
         /* =====================================================
@@ -529,6 +529,145 @@ class DashboardFiltrosService
             $prefijo . 'eliminado',
             0
         );
+
+
+        /* =====================================================
+        TIPO DE REPORTE
+
+        TODOS
+        → todos los registros de ai_reportes tipo QUEJA
+            QJ + QJV + QJF
+
+        QUEJA
+        → QJ-
+
+        QUEJA_VERBAL
+        → QJV-
+
+        QUEJA_FORANEA
+        → QJF-
+
+        FELICITACION
+        → no pertenece a ai_reportes.
+            Las felicitaciones utilizan su propio service.
+        ===================================================== */
+
+        $tipo =
+            strtoupper(
+                trim(
+                    (string) (
+                        $this->filtros['tipo']
+                        ?? ''
+                    )
+                )
+            );
+
+
+        /*
+        * El universo de este método siempre son REPORTES.
+        *
+        * Aunque tipo_registro permite FELICITACION por estructura
+        * histórica de la tabla, las felicitaciones actuales viven
+        * en ai_felicitaciones y no deben formar parte de "Todos".
+        */
+
+        $builder->where(
+            $prefijo . 'tipo_registro',
+            'QUEJA'
+        );
+
+
+        switch ($tipo) {
+
+            /* ==============================================
+            QUEJA
+            QJ-
+            =============================================== */
+
+            case 'QUEJA':
+
+                $builder->like(
+                    $prefijo . 'folio',
+                    'QJ-',
+                    'after'
+                );
+
+                break;
+
+
+            /* ==============================================
+            QUEJA VERBAL
+            QJV-
+            =============================================== */
+
+            case 'QUEJA_VERBAL':
+
+                $builder->like(
+                    $prefijo . 'folio',
+                    'QJV-',
+                    'after'
+                );
+
+                break;
+
+
+            /* ==============================================
+            QUEJA FORÁNEA
+            QJF-
+            =============================================== */
+
+            case 'QUEJA_FORANEA':
+
+                $builder->like(
+                    $prefijo . 'folio',
+                    'QJF-',
+                    'after'
+                );
+
+                break;
+
+
+            /* ==============================================
+            FELICITACIÓN
+
+            No pertenece a ai_reportes.
+
+            Esto evita que algún bloque antiguo que todavía
+            invoque este método muestre datos de Quejas cuando
+            el usuario seleccionó Felicitaciones.
+            =============================================== */
+
+            case 'FELICITACION':
+
+                $builder->where(
+                    '1 = 0',
+                    null,
+                    false
+                );
+
+                break;
+
+
+            /* ==============================================
+            TODOS
+
+            No filtramos por prefijo.
+
+            Ya existe:
+            tipo_registro = QUEJA
+
+            Por lo tanto aquí entran:
+            QJ + QJV + QJF
+            =============================================== */
+
+            default:
+
+                break;
+        }
+
+
+        $esFelicitacion =
+            $tipo === 'FELICITACION';
 
 
         /* =====================================================
@@ -562,45 +701,8 @@ class DashboardFiltrosService
 
 
         /* =====================================================
-        TIPO DE REGISTRO
-        ===================================================== */
-
-        $tipo =
-            strtoupper(
-                trim(
-                    (string) (
-                        $this->filtros['tipo']
-                        ?? ''
-                    )
-                )
-            );
-
-
-        if (
-            in_array(
-                $tipo,
-                [
-                    'QUEJA',
-                    'FELICITACION',
-                ],
-                true
-            )
-        ) {
-
-            $builder->where(
-                $prefijo . 'tipo_registro',
-                $tipo
-            );
-        }
-
-
-        $esFelicitacion =
-            $tipo === 'FELICITACION';
-
-
-        /* =====================================================
         ESTADO
-        EXCLUSIVO DE QUEJAS
+        EXCLUSIVO DE REPORTES
         ===================================================== */
 
         if (
@@ -619,7 +721,7 @@ class DashboardFiltrosService
 
         /* =====================================================
         CLASIFICACIÓN
-        EXCLUSIVO DE QUEJAS
+        EXCLUSIVO DE REPORTES
         ===================================================== */
 
         if (
@@ -631,20 +733,15 @@ class DashboardFiltrosService
 
             $clasificacion =
                 trim(
-                    (string)
-                    $this->filtros['clasificacion']
+                    (string) (
+                        $this->filtros['clasificacion']
+                        ?? ''
+                    )
                 );
 
 
             if (
-                in_array(
-                    $clasificacion,
-                    [
-                        'Interna',
-                        'Externa',
-                    ],
-                    true
-                )
+                $clasificacion !== ''
             ) {
 
                 $builder->where(
@@ -657,7 +754,7 @@ class DashboardFiltrosService
 
         /* =====================================================
         SEGUIMIENTO
-        EXCLUSIVO DE QUEJAS
+        EXCLUSIVO DE REPORTES
         ===================================================== */
 
         if (
@@ -706,7 +803,7 @@ class DashboardFiltrosService
 
         /* =====================================================
         QUEJA ANÓNIMA
-        EXCLUSIVO DE QUEJAS
+        EXCLUSIVO DE REPORTES
         ===================================================== */
 
         if (
@@ -719,8 +816,10 @@ class DashboardFiltrosService
         ) {
 
             $esAnonimo =
-                (string)
-                $this->filtros['es_anonimo'];
+                (string) (
+                    $this->filtros['es_anonimo']
+                    ?? ''
+                );
 
 
             if (
@@ -789,8 +888,10 @@ class DashboardFiltrosService
 
             $sector =
                 trim(
-                    (string)
-                    $this->filtros['sector']
+                    (string) (
+                        $this->filtros['sector']
+                        ?? ''
+                    )
                 );
 
 
@@ -912,8 +1013,10 @@ class DashboardFiltrosService
 
             $personal =
                 trim(
-                    (string)
-                    $this->filtros['personal']
+                    (string) (
+                        $this->filtros['personal']
+                        ?? ''
+                    )
                 );
 
 

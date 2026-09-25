@@ -884,13 +884,19 @@ class DashboardService
         return match ($tipo) {
 
             'QUEJA' =>
-            'QUEJA',
+                'QUEJA',
+
+            'QUEJA_VERBAL' =>
+                'QUEJA_VERBAL',
+
+            'QUEJA_FORANEA' =>
+                'QUEJA_FORANEA',
 
             'FELICITACION' =>
-            'FELICITACION',
+                'FELICITACION',
 
             default =>
-            'TODOS',
+                'TODOS',
         };
     }
 }

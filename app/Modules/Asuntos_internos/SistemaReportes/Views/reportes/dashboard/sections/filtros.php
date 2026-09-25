@@ -211,10 +211,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
 
         <div class="dashboard-filtros__encabezado-principal">
 
-            <div
-                class="dashboard-filtros__encabezado-icono"
-                aria-hidden="true"
-            >
+            <div class="dashboard-filtros__encabezado-icono" aria-hidden="true">
 
                 <svg viewBox="0 0 24 24">
 
@@ -247,19 +244,10 @@ if (!function_exists('dashboardFiltroIniciales')) {
         </div>
 
 
-        <button
-            type="button"
-            class="dashboard-filtros__mas"
-            id="dashboard-mas-filtros"
-            aria-expanded="false"
-            aria-controls="dashboard-filtros-avanzados"
-        >
+        <button type="button" class="dashboard-filtros__mas" id="dashboard-mas-filtros" aria-expanded="false"
+            aria-controls="dashboard-filtros-avanzados">
 
-            <svg
-                class="dashboard-filtros__mas-icono"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-            >
+            <svg class="dashboard-filtros__mas-icono" viewBox="0 0 24 24" aria-hidden="true">
 
                 <path d="M4 6h16" />
                 <path d="M7 12h10" />
@@ -271,11 +259,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                 Más filtros
             </span>
 
-            <svg
-                class="dashboard-filtros__mas-flecha"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-            >
+            <svg class="dashboard-filtros__mas-flecha" viewBox="0 0 24 24" aria-hidden="true">
 
                 <path d="m8 10 4 4 4-4" />
 
@@ -302,11 +286,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                 Fecha inicial
             </label>
 
-            <input
-                type="date"
-                id="dashboard-fecha-registro-inicio"
-                name="fecha_registro_inicio"
-            >
+            <input type="date" id="dashboard-fecha-registro-inicio" name="fecha_registro_inicio">
 
         </div>
 
@@ -321,17 +301,13 @@ if (!function_exists('dashboardFiltroIniciales')) {
                 Fecha final
             </label>
 
-            <input
-                type="date"
-                id="dashboard-fecha-registro-fin"
-                name="fecha_registro_fin"
-            >
+            <input type="date" id="dashboard-fecha-registro-fin" name="fecha_registro_fin">
 
         </div>
 
 
         <!-- =================================================
-             TIPO
+            TIPO
         ================================================== -->
 
         <div class="dashboard-filtros__campo">
@@ -340,93 +316,59 @@ if (!function_exists('dashboardFiltroIniciales')) {
                 Tipo
             </label>
 
-            <div
-                class="dashboard-catalogo"
-                data-dashboard-catalogo
-            >
+            <div class="dashboard-catalogo" data-dashboard-catalogo>
 
-                <input
-                    type="hidden"
-                    id="dashboard-tipo"
-                    name="tipo"
-                    value=""
-                    data-dashboard-catalogo-valor
-                >
+                <input type="hidden" id="dashboard-tipo" name="tipo" value="" data-dashboard-catalogo-valor>
 
 
-                <button
-                    type="button"
-                    class="dashboard-catalogo__selector"
-                    data-dashboard-catalogo-selector
-                    aria-expanded="false"
-                    aria-haspopup="listbox"
-                    aria-labelledby="
-                        dashboard-tipo-label
-                        dashboard-tipo-texto
-                    "
-                >
+                <button type="button" class="dashboard-catalogo__selector" data-dashboard-catalogo-selector
+                    aria-expanded="false" aria-haspopup="listbox" aria-labelledby="
+                dashboard-tipo-label
+                dashboard-tipo-texto
+            ">
 
                     <span class="dashboard-catalogo__selector-contenido">
 
-                        <span
-                            class="
-                                dashboard-catalogo__avatar
-                                dashboard-catalogo__avatar--selector
-                            "
-                            data-dashboard-catalogo-avatar
-                        >
+                        <span class="
+                        dashboard-catalogo__avatar
+                        dashboard-catalogo__avatar--selector
+                    " data-dashboard-catalogo-avatar>
                             T
                         </span>
 
                         <span class="dashboard-catalogo__selector-datos">
 
-                            <strong
-                                id="dashboard-tipo-texto"
-                                data-dashboard-catalogo-texto
-                            >
+                            <strong id="dashboard-tipo-texto" data-dashboard-catalogo-texto>
                                 Todos
                             </strong>
 
                             <small data-dashboard-catalogo-descripcion>
-                                Quejas y felicitaciones
+                                Todos los tipos de reporte
                             </small>
 
                         </span>
 
                     </span>
 
-                    <svg
-                        class="dashboard-catalogo__flecha"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                    >
+                    <svg class="dashboard-catalogo__flecha" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="m8 10 4 4 4-4" />
                     </svg>
 
                 </button>
 
 
-                <div
-                    class="dashboard-catalogo__resultados"
-                    data-dashboard-catalogo-resultados
-                    role="listbox"
-                    hidden
-                >
+                <div class="dashboard-catalogo__resultados" data-dashboard-catalogo-resultados role="listbox" hidden>
 
-                    <button
-                        type="button"
-                        class="
-                            dashboard-catalogo__item
-                            dashboard-catalogo__item--activo
-                        "
-                        data-dashboard-catalogo-opcion
-                        data-value=""
-                        data-texto="Todos"
-                        data-descripcion="Quejas y felicitaciones"
-                        data-avatar="T"
-                        role="option"
-                        aria-selected="true"
-                    >
+                    <!-- =========================================
+                        TODOS
+                    ========================================== -->
+
+                    <button type="button" class="
+                    dashboard-catalogo__item
+                    dashboard-catalogo__item--activo
+                " data-dashboard-catalogo-opcion data-value="" data-texto="Todos"
+                        data-descripcion="Todos los tipos de reporte" data-avatar="T" role="option"
+                        aria-selected="true">
 
                         <span class="dashboard-catalogo__avatar">
                             T
@@ -439,7 +381,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                             </strong>
 
                             <small>
-                                Quejas y felicitaciones
+                                Todos los tipos de reporte
                             </small>
 
                         </span>
@@ -447,17 +389,14 @@ if (!function_exists('dashboardFiltroIniciales')) {
                     </button>
 
 
-                    <button
-                        type="button"
-                        class="dashboard-catalogo__item"
-                        data-dashboard-catalogo-opcion
-                        data-value="QUEJA"
-                        data-texto="Quejas"
-                        data-descripcion="Mostrar únicamente quejas"
-                        data-avatar="Q"
-                        role="option"
-                        aria-selected="false"
-                    >
+                    <!-- =========================================
+                        QUEJA
+                        QJ-
+                    ========================================== -->
+
+                    <button type="button" class="dashboard-catalogo__item" data-dashboard-catalogo-opcion
+                        data-value="QUEJA" data-texto="Queja" data-descripcion="Reportes con folio QJ" data-avatar="Q"
+                        role="option" aria-selected="false">
 
                         <span class="dashboard-catalogo__avatar">
                             Q
@@ -466,11 +405,11 @@ if (!function_exists('dashboardFiltroIniciales')) {
                         <span class="dashboard-catalogo__datos">
 
                             <strong>
-                                Quejas
+                                Queja
                             </strong>
 
                             <small>
-                                Mostrar únicamente quejas
+                                Reportes con folio QJ
                             </small>
 
                         </span>
@@ -478,17 +417,70 @@ if (!function_exists('dashboardFiltroIniciales')) {
                     </button>
 
 
-                    <button
-                        type="button"
-                        class="dashboard-catalogo__item"
-                        data-dashboard-catalogo-opcion
-                        data-value="FELICITACION"
-                        data-texto="Felicitaciones"
-                        data-descripcion="Mostrar únicamente felicitaciones"
-                        data-avatar="F"
-                        role="option"
-                        aria-selected="false"
-                    >
+                    <!-- =========================================
+                        QUEJA VERBAL
+                        QJV-
+                    ========================================== -->
+
+                    <button type="button" class="dashboard-catalogo__item" data-dashboard-catalogo-opcion
+                        data-value="QUEJA_VERBAL" data-texto="Queja verbal" data-descripcion="Reportes con folio QJV"
+                        data-avatar="QV" role="option" aria-selected="false">
+
+                        <span class="dashboard-catalogo__avatar">
+                            QV
+                        </span>
+
+                        <span class="dashboard-catalogo__datos">
+
+                            <strong>
+                                Queja verbal
+                            </strong>
+
+                            <small>
+                                Reportes con folio QJV
+                            </small>
+
+                        </span>
+
+                    </button>
+
+
+                    <!-- =========================================
+                        QUEJA FORÁNEA
+                        QJF-
+                    ========================================== -->
+
+                    <button type="button" class="dashboard-catalogo__item" data-dashboard-catalogo-opcion
+                        data-value="QUEJA_FORANEA" data-texto="Queja foránea" data-descripcion="Reportes con folio QJF"
+                        data-avatar="QF" role="option" aria-selected="false">
+
+                        <span class="dashboard-catalogo__avatar">
+                            QF
+                        </span>
+
+                        <span class="dashboard-catalogo__datos">
+
+                            <strong>
+                                Queja foránea
+                            </strong>
+
+                            <small>
+                                Reportes con folio QJF
+                            </small>
+
+                        </span>
+
+                    </button>
+
+
+                    <!-- =========================================
+                        FELICITACIONES
+                    ========================================== -->
+
+                    <button type="button" class="dashboard-catalogo__item" data-dashboard-catalogo-opcion
+                        data-value="FELICITACION" data-texto="Felicitaciones"
+                        data-descripcion="Mostrar únicamente felicitaciones" data-avatar="F" role="option"
+                        aria-selected="false">
 
                         <span class="dashboard-catalogo__avatar">
                             F
@@ -521,11 +513,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
          FILTROS AVANZADOS
     ====================================================== -->
 
-    <div
-        class="dashboard-filtros__avanzados"
-        id="dashboard-filtros-avanzados"
-        hidden
-    >
+    <div class="dashboard-filtros__avanzados" id="dashboard-filtros-avanzados" hidden>
 
 
         <!-- =================================================
@@ -568,50 +556,29 @@ if (!function_exists('dashboardFiltroIniciales')) {
                         Estado
                     </label>
 
-                    <div
-                        class="dashboard-catalogo"
-                        data-dashboard-catalogo
-                    >
+                    <div class="dashboard-catalogo" data-dashboard-catalogo>
 
-                        <input
-                            type="hidden"
-                            id="dashboard-estado"
-                            name="estado"
-                            value=""
-                            data-dashboard-catalogo-valor
-                        >
+                        <input type="hidden" id="dashboard-estado" name="estado" value="" data-dashboard-catalogo-valor>
 
 
-                        <button
-                            type="button"
-                            class="dashboard-catalogo__selector"
-                            data-dashboard-catalogo-selector
-                            aria-expanded="false"
-                            aria-haspopup="listbox"
-                            aria-labelledby="
+                        <button type="button" class="dashboard-catalogo__selector" data-dashboard-catalogo-selector
+                            aria-expanded="false" aria-haspopup="listbox" aria-labelledby="
                                 dashboard-estado-label
                                 dashboard-estado-texto
-                            "
-                        >
+                            ">
 
                             <span class="dashboard-catalogo__selector-contenido">
 
-                                <span
-                                    class="
+                                <span class="
                                         dashboard-catalogo__avatar
                                         dashboard-catalogo__avatar--selector
-                                    "
-                                    data-dashboard-catalogo-avatar
-                                >
+                                    " data-dashboard-catalogo-avatar>
                                     T
                                 </span>
 
                                 <span class="dashboard-catalogo__selector-datos">
 
-                                    <strong
-                                        id="dashboard-estado-texto"
-                                        data-dashboard-catalogo-texto
-                                    >
+                                    <strong id="dashboard-estado-texto" data-dashboard-catalogo-texto>
                                         Todos
                                     </strong>
 
@@ -623,23 +590,15 @@ if (!function_exists('dashboardFiltroIniciales')) {
 
                             </span>
 
-                            <svg
-                                class="dashboard-catalogo__flecha"
-                                viewBox="0 0 24 24"
-                                aria-hidden="true"
-                            >
+                            <svg class="dashboard-catalogo__flecha" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="m8 10 4 4 4-4" />
                             </svg>
 
                         </button>
 
 
-                        <div
-                            class="dashboard-catalogo__resultados"
-                            data-dashboard-catalogo-resultados
-                            role="listbox"
-                            hidden
-                        >
+                        <div class="dashboard-catalogo__resultados" data-dashboard-catalogo-resultados role="listbox"
+                            hidden>
 
                             <?php
                             $estadosFiltro = [
@@ -676,40 +635,34 @@ if (!function_exists('dashboardFiltroIniciales')) {
                                 as $indice => $estadoFiltro
                             ): ?>
 
-                                <button
-                                    type="button"
-                                    class="
+                            <button type="button" class="
                                         dashboard-catalogo__item
                                         <?= $indice === 0
                                             ? 'dashboard-catalogo__item--activo'
                                             : '' ?>
-                                    "
-                                    data-dashboard-catalogo-opcion
-                                    data-value="<?= esc($estadoFiltro['valor']) ?>"
-                                    data-texto="<?= esc($estadoFiltro['texto']) ?>"
-                                    data-descripcion="<?= esc($estadoFiltro['descripcion']) ?>"
-                                    data-avatar="<?= esc($estadoFiltro['avatar']) ?>"
-                                    role="option"
-                                    aria-selected="<?= $indice === 0 ? 'true' : 'false' ?>"
-                                >
+                                    " data-dashboard-catalogo-opcion data-value="<?= esc($estadoFiltro['valor']) ?>"
+                                data-texto="<?= esc($estadoFiltro['texto']) ?>"
+                                data-descripcion="<?= esc($estadoFiltro['descripcion']) ?>"
+                                data-avatar="<?= esc($estadoFiltro['avatar']) ?>" role="option"
+                                aria-selected="<?= $indice === 0 ? 'true' : 'false' ?>">
 
-                                    <span class="dashboard-catalogo__avatar">
-                                        <?= esc($estadoFiltro['avatar']) ?>
-                                    </span>
+                                <span class="dashboard-catalogo__avatar">
+                                    <?= esc($estadoFiltro['avatar']) ?>
+                                </span>
 
-                                    <span class="dashboard-catalogo__datos">
+                                <span class="dashboard-catalogo__datos">
 
-                                        <strong>
-                                            <?= esc($estadoFiltro['texto']) ?>
-                                        </strong>
+                                    <strong>
+                                        <?= esc($estadoFiltro['texto']) ?>
+                                    </strong>
 
-                                        <small>
-                                            <?= esc($estadoFiltro['descripcion']) ?>
-                                        </small>
+                                    <small>
+                                        <?= esc($estadoFiltro['descripcion']) ?>
+                                    </small>
 
-                                    </span>
+                                </span>
 
-                                </button>
+                            </button>
 
                             <?php endforeach; ?>
 
@@ -730,50 +683,30 @@ if (!function_exists('dashboardFiltroIniciales')) {
                         Clasificación
                     </label>
 
-                    <div
-                        class="dashboard-catalogo"
-                        data-dashboard-catalogo
-                    >
+                    <div class="dashboard-catalogo" data-dashboard-catalogo>
 
-                        <input
-                            type="hidden"
-                            id="dashboard-clasificacion"
-                            name="clasificacion"
-                            value=""
-                            data-dashboard-catalogo-valor
-                        >
+                        <input type="hidden" id="dashboard-clasificacion" name="clasificacion" value=""
+                            data-dashboard-catalogo-valor>
 
 
-                        <button
-                            type="button"
-                            class="dashboard-catalogo__selector"
-                            data-dashboard-catalogo-selector
-                            aria-expanded="false"
-                            aria-haspopup="listbox"
-                            aria-labelledby="
+                        <button type="button" class="dashboard-catalogo__selector" data-dashboard-catalogo-selector
+                            aria-expanded="false" aria-haspopup="listbox" aria-labelledby="
                                 dashboard-clasificacion-label
                                 dashboard-clasificacion-texto
-                            "
-                        >
+                            ">
 
                             <span class="dashboard-catalogo__selector-contenido">
 
-                                <span
-                                    class="
+                                <span class="
                                         dashboard-catalogo__avatar
                                         dashboard-catalogo__avatar--selector
-                                    "
-                                    data-dashboard-catalogo-avatar
-                                >
+                                    " data-dashboard-catalogo-avatar>
                                     T
                                 </span>
 
                                 <span class="dashboard-catalogo__selector-datos">
 
-                                    <strong
-                                        id="dashboard-clasificacion-texto"
-                                        data-dashboard-catalogo-texto
-                                    >
+                                    <strong id="dashboard-clasificacion-texto" data-dashboard-catalogo-texto>
                                         Todas
                                     </strong>
 
@@ -785,38 +718,22 @@ if (!function_exists('dashboardFiltroIniciales')) {
 
                             </span>
 
-                            <svg
-                                class="dashboard-catalogo__flecha"
-                                viewBox="0 0 24 24"
-                                aria-hidden="true"
-                            >
+                            <svg class="dashboard-catalogo__flecha" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="m8 10 4 4 4-4" />
                             </svg>
 
                         </button>
 
 
-                        <div
-                            class="dashboard-catalogo__resultados"
-                            data-dashboard-catalogo-resultados
-                            role="listbox"
-                            hidden
-                        >
+                        <div class="dashboard-catalogo__resultados" data-dashboard-catalogo-resultados role="listbox"
+                            hidden>
 
-                            <button
-                                type="button"
-                                class="
+                            <button type="button" class="
                                     dashboard-catalogo__item
                                     dashboard-catalogo__item--activo
-                                "
-                                data-dashboard-catalogo-opcion
-                                data-value=""
-                                data-texto="Todas"
-                                data-descripcion="Todas las clasificaciones"
-                                data-avatar="T"
-                                role="option"
-                                aria-selected="true"
-                            >
+                                " data-dashboard-catalogo-opcion data-value="" data-texto="Todas"
+                                data-descripcion="Todas las clasificaciones" data-avatar="T" role="option"
+                                aria-selected="true">
 
                                 <span class="dashboard-catalogo__avatar">
                                     T
@@ -842,7 +759,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                                 as $clasificacion
                             ): ?>
 
-                                <?php
+                            <?php
 
                                 if (is_array($clasificacion)) {
 
@@ -886,41 +803,35 @@ if (!function_exists('dashboardFiltroIniciales')) {
                                 ?>
 
 
-                                <?php if (
+                            <?php if (
                                     $valorClasificacion !== ''
                                 ): ?>
 
-                                    <button
-                                        type="button"
-                                        class="dashboard-catalogo__item"
-                                        data-dashboard-catalogo-opcion
-                                        data-value="<?= esc($valorClasificacion) ?>"
-                                        data-texto="<?= esc($textoClasificacion) ?>"
-                                        data-descripcion="Clasificación del reporte"
-                                        data-avatar="<?= esc($avatarClasificacion) ?>"
-                                        role="option"
-                                        aria-selected="false"
-                                    >
+                            <button type="button" class="dashboard-catalogo__item" data-dashboard-catalogo-opcion
+                                data-value="<?= esc($valorClasificacion) ?>"
+                                data-texto="<?= esc($textoClasificacion) ?>"
+                                data-descripcion="Clasificación del reporte"
+                                data-avatar="<?= esc($avatarClasificacion) ?>" role="option" aria-selected="false">
 
-                                        <span class="dashboard-catalogo__avatar">
-                                            <?= esc($avatarClasificacion) ?>
-                                        </span>
+                                <span class="dashboard-catalogo__avatar">
+                                    <?= esc($avatarClasificacion) ?>
+                                </span>
 
-                                        <span class="dashboard-catalogo__datos">
+                                <span class="dashboard-catalogo__datos">
 
-                                            <strong>
-                                                <?= esc($textoClasificacion) ?>
-                                            </strong>
+                                    <strong>
+                                        <?= esc($textoClasificacion) ?>
+                                    </strong>
 
-                                            <small>
-                                                Clasificación del reporte
-                                            </small>
+                                    <small>
+                                        Clasificación del reporte
+                                    </small>
 
-                                        </span>
+                                </span>
 
-                                    </button>
+                            </button>
 
-                                <?php endif; ?>
+                            <?php endif; ?>
 
 
                             <?php endforeach; ?>
@@ -942,36 +853,21 @@ if (!function_exists('dashboardFiltroIniciales')) {
                         Seguimiento
                     </label>
 
-                    <div
-                        class="dashboard-catalogo"
-                        data-dashboard-catalogo
-                    >
+                    <div class="dashboard-catalogo" data-dashboard-catalogo>
 
-                        <input
-                            type="hidden"
-                            id="dashboard-seguimiento"
-                            name="seguimiento"
-                            value=""
-                            data-dashboard-catalogo-valor
-                        >
+                        <input type="hidden" id="dashboard-seguimiento" name="seguimiento" value=""
+                            data-dashboard-catalogo-valor>
 
 
-                        <button
-                            type="button"
-                            class="dashboard-catalogo__selector"
-                            data-dashboard-catalogo-selector
-                            aria-expanded="false"
-                        >
+                        <button type="button" class="dashboard-catalogo__selector" data-dashboard-catalogo-selector
+                            aria-expanded="false">
 
                             <span class="dashboard-catalogo__selector-contenido">
 
-                                <span
-                                    class="
+                                <span class="
                                         dashboard-catalogo__avatar
                                         dashboard-catalogo__avatar--selector
-                                    "
-                                    data-dashboard-catalogo-avatar
-                                >
+                                    " data-dashboard-catalogo-avatar>
                                     T
                                 </span>
 
@@ -989,21 +885,14 @@ if (!function_exists('dashboardFiltroIniciales')) {
 
                             </span>
 
-                            <svg
-                                class="dashboard-catalogo__flecha"
-                                viewBox="0 0 24 24"
-                            >
+                            <svg class="dashboard-catalogo__flecha" viewBox="0 0 24 24">
                                 <path d="m8 10 4 4 4-4" />
                             </svg>
 
                         </button>
 
 
-                        <div
-                            class="dashboard-catalogo__resultados"
-                            data-dashboard-catalogo-resultados
-                            hidden
-                        >
+                        <div class="dashboard-catalogo__resultados" data-dashboard-catalogo-resultados hidden>
 
                             <?php
                             $seguimientosFiltro = [
@@ -1034,39 +923,34 @@ if (!function_exists('dashboardFiltroIniciales')) {
                                 as $indice => $opcion
                             ): ?>
 
-                                <button
-                                    type="button"
-                                    class="
+                            <button type="button" class="
                                         dashboard-catalogo__item
                                         <?= $indice === 0
                                             ? 'dashboard-catalogo__item--activo'
                                             : '' ?>
-                                    "
-                                    data-dashboard-catalogo-opcion
-                                    data-value="<?= esc($opcion['valor']) ?>"
-                                    data-texto="<?= esc($opcion['texto']) ?>"
-                                    data-descripcion="<?= esc($opcion['descripcion']) ?>"
-                                    data-avatar="<?= esc($opcion['avatar']) ?>"
-                                    aria-selected="<?= $indice === 0 ? 'true' : 'false' ?>"
-                                >
+                                    " data-dashboard-catalogo-opcion data-value="<?= esc($opcion['valor']) ?>"
+                                data-texto="<?= esc($opcion['texto']) ?>"
+                                data-descripcion="<?= esc($opcion['descripcion']) ?>"
+                                data-avatar="<?= esc($opcion['avatar']) ?>"
+                                aria-selected="<?= $indice === 0 ? 'true' : 'false' ?>">
 
-                                    <span class="dashboard-catalogo__avatar">
-                                        <?= esc($opcion['avatar']) ?>
-                                    </span>
+                                <span class="dashboard-catalogo__avatar">
+                                    <?= esc($opcion['avatar']) ?>
+                                </span>
 
-                                    <span class="dashboard-catalogo__datos">
+                                <span class="dashboard-catalogo__datos">
 
-                                        <strong>
-                                            <?= esc($opcion['texto']) ?>
-                                        </strong>
+                                    <strong>
+                                        <?= esc($opcion['texto']) ?>
+                                    </strong>
 
-                                        <small>
-                                            <?= esc($opcion['descripcion']) ?>
-                                        </small>
+                                    <small>
+                                        <?= esc($opcion['descripcion']) ?>
+                                    </small>
 
-                                    </span>
+                                </span>
 
-                                </button>
+                            </button>
 
                             <?php endforeach; ?>
 
@@ -1087,36 +971,21 @@ if (!function_exists('dashboardFiltroIniciales')) {
                         Queja anónima
                     </label>
 
-                    <div
-                        class="dashboard-catalogo"
-                        data-dashboard-catalogo
-                    >
+                    <div class="dashboard-catalogo" data-dashboard-catalogo>
 
-                        <input
-                            type="hidden"
-                            id="dashboard-anonima"
-                            name="es_anonimo"
-                            value=""
-                            data-dashboard-catalogo-valor
-                        >
+                        <input type="hidden" id="dashboard-anonima" name="es_anonimo" value=""
+                            data-dashboard-catalogo-valor>
 
 
-                        <button
-                            type="button"
-                            class="dashboard-catalogo__selector"
-                            data-dashboard-catalogo-selector
-                            aria-expanded="false"
-                        >
+                        <button type="button" class="dashboard-catalogo__selector" data-dashboard-catalogo-selector
+                            aria-expanded="false">
 
                             <span class="dashboard-catalogo__selector-contenido">
 
-                                <span
-                                    class="
+                                <span class="
                                         dashboard-catalogo__avatar
                                         dashboard-catalogo__avatar--selector
-                                    "
-                                    data-dashboard-catalogo-avatar
-                                >
+                                    " data-dashboard-catalogo-avatar>
                                     T
                                 </span>
 
@@ -1134,21 +1003,14 @@ if (!function_exists('dashboardFiltroIniciales')) {
 
                             </span>
 
-                            <svg
-                                class="dashboard-catalogo__flecha"
-                                viewBox="0 0 24 24"
-                            >
+                            <svg class="dashboard-catalogo__flecha" viewBox="0 0 24 24">
                                 <path d="m8 10 4 4 4-4" />
                             </svg>
 
                         </button>
 
 
-                        <div
-                            class="dashboard-catalogo__resultados"
-                            data-dashboard-catalogo-resultados
-                            hidden
-                        >
+                        <div class="dashboard-catalogo__resultados" data-dashboard-catalogo-resultados hidden>
 
                             <?php
                             $anonimasFiltro = [
@@ -1179,39 +1041,34 @@ if (!function_exists('dashboardFiltroIniciales')) {
                                 as $indice => $opcion
                             ): ?>
 
-                                <button
-                                    type="button"
-                                    class="
+                            <button type="button" class="
                                         dashboard-catalogo__item
                                         <?= $indice === 0
                                             ? 'dashboard-catalogo__item--activo'
                                             : '' ?>
-                                    "
-                                    data-dashboard-catalogo-opcion
-                                    data-value="<?= esc($opcion['valor']) ?>"
-                                    data-texto="<?= esc($opcion['texto']) ?>"
-                                    data-descripcion="<?= esc($opcion['descripcion']) ?>"
-                                    data-avatar="<?= esc($opcion['avatar']) ?>"
-                                    aria-selected="<?= $indice === 0 ? 'true' : 'false' ?>"
-                                >
+                                    " data-dashboard-catalogo-opcion data-value="<?= esc($opcion['valor']) ?>"
+                                data-texto="<?= esc($opcion['texto']) ?>"
+                                data-descripcion="<?= esc($opcion['descripcion']) ?>"
+                                data-avatar="<?= esc($opcion['avatar']) ?>"
+                                aria-selected="<?= $indice === 0 ? 'true' : 'false' ?>">
 
-                                    <span class="dashboard-catalogo__avatar">
-                                        <?= esc($opcion['avatar']) ?>
-                                    </span>
+                                <span class="dashboard-catalogo__avatar">
+                                    <?= esc($opcion['avatar']) ?>
+                                </span>
 
-                                    <span class="dashboard-catalogo__datos">
+                                <span class="dashboard-catalogo__datos">
 
-                                        <strong>
-                                            <?= esc($opcion['texto']) ?>
-                                        </strong>
+                                    <strong>
+                                        <?= esc($opcion['texto']) ?>
+                                    </strong>
 
-                                        <small>
-                                            <?= esc($opcion['descripcion']) ?>
-                                        </small>
+                                    <small>
+                                        <?= esc($opcion['descripcion']) ?>
+                                    </small>
 
-                                    </span>
+                                </span>
 
-                                </button>
+                            </button>
 
                             <?php endforeach; ?>
 
@@ -1264,36 +1121,20 @@ if (!function_exists('dashboardFiltroIniciales')) {
                         Zona
                     </label>
 
-                    <div
-                        class="dashboard-catalogo"
-                        data-dashboard-catalogo
-                    >
+                    <div class="dashboard-catalogo" data-dashboard-catalogo>
 
-                        <input
-                            type="hidden"
-                            id="dashboard-zona"
-                            name="zona"
-                            value=""
-                            data-dashboard-catalogo-valor
-                        >
+                        <input type="hidden" id="dashboard-zona" name="zona" value="" data-dashboard-catalogo-valor>
 
 
-                        <button
-                            type="button"
-                            class="dashboard-catalogo__selector"
-                            data-dashboard-catalogo-selector
-                            aria-expanded="false"
-                        >
+                        <button type="button" class="dashboard-catalogo__selector" data-dashboard-catalogo-selector
+                            aria-expanded="false">
 
                             <span class="dashboard-catalogo__selector-contenido">
 
-                                <span
-                                    class="
+                                <span class="
                                         dashboard-catalogo__avatar
                                         dashboard-catalogo__avatar--selector
-                                    "
-                                    data-dashboard-catalogo-avatar
-                                >
+                                    " data-dashboard-catalogo-avatar>
                                     T
                                 </span>
 
@@ -1311,35 +1152,20 @@ if (!function_exists('dashboardFiltroIniciales')) {
 
                             </span>
 
-                            <svg
-                                class="dashboard-catalogo__flecha"
-                                viewBox="0 0 24 24"
-                            >
+                            <svg class="dashboard-catalogo__flecha" viewBox="0 0 24 24">
                                 <path d="m8 10 4 4 4-4" />
                             </svg>
 
                         </button>
 
 
-                        <div
-                            class="dashboard-catalogo__resultados"
-                            data-dashboard-catalogo-resultados
-                            hidden
-                        >
+                        <div class="dashboard-catalogo__resultados" data-dashboard-catalogo-resultados hidden>
 
-                            <button
-                                type="button"
-                                class="
+                            <button type="button" class="
                                     dashboard-catalogo__item
                                     dashboard-catalogo__item--activo
-                                "
-                                data-dashboard-catalogo-opcion
-                                data-value=""
-                                data-texto="Todas"
-                                data-descripcion="Todas las zonas"
-                                data-avatar="T"
-                                aria-selected="true"
-                            >
+                                " data-dashboard-catalogo-opcion data-value="" data-texto="Todas"
+                                data-descripcion="Todas las zonas" data-avatar="T" aria-selected="true">
 
                                 <span class="dashboard-catalogo__avatar">
                                     T
@@ -1365,34 +1191,28 @@ if (!function_exists('dashboardFiltroIniciales')) {
                                 as $zona
                             ): ?>
 
-                                <button
-                                    type="button"
-                                    class="dashboard-catalogo__item"
-                                    data-dashboard-catalogo-opcion
-                                    data-value="<?= esc($zona['valor']) ?>"
-                                    data-texto="<?= esc($zona['texto']) ?>"
-                                    data-descripcion="<?= esc($zona['descripcion']) ?>"
-                                    data-avatar="<?= esc($zona['avatar']) ?>"
-                                    aria-selected="false"
-                                >
+                            <button type="button" class="dashboard-catalogo__item" data-dashboard-catalogo-opcion
+                                data-value="<?= esc($zona['valor']) ?>" data-texto="<?= esc($zona['texto']) ?>"
+                                data-descripcion="<?= esc($zona['descripcion']) ?>"
+                                data-avatar="<?= esc($zona['avatar']) ?>" aria-selected="false">
 
-                                    <span class="dashboard-catalogo__avatar">
-                                        <?= esc($zona['avatar']) ?>
-                                    </span>
+                                <span class="dashboard-catalogo__avatar">
+                                    <?= esc($zona['avatar']) ?>
+                                </span>
 
-                                    <span class="dashboard-catalogo__datos">
+                                <span class="dashboard-catalogo__datos">
 
-                                        <strong>
-                                            <?= esc($zona['texto']) ?>
-                                        </strong>
+                                    <strong>
+                                        <?= esc($zona['texto']) ?>
+                                    </strong>
 
-                                        <small>
-                                            <?= esc($zona['descripcion']) ?>
-                                        </small>
+                                    <small>
+                                        <?= esc($zona['descripcion']) ?>
+                                    </small>
 
-                                    </span>
+                                </span>
 
-                                </button>
+                            </button>
 
                             <?php endforeach; ?>
 
@@ -1413,36 +1233,20 @@ if (!function_exists('dashboardFiltroIniciales')) {
                         Sector
                     </label>
 
-                    <div
-                        class="dashboard-catalogo"
-                        data-dashboard-catalogo
-                    >
+                    <div class="dashboard-catalogo" data-dashboard-catalogo>
 
-                        <input
-                            type="hidden"
-                            id="dashboard-sector"
-                            name="sector"
-                            value=""
-                            data-dashboard-catalogo-valor
-                        >
+                        <input type="hidden" id="dashboard-sector" name="sector" value="" data-dashboard-catalogo-valor>
 
 
-                        <button
-                            type="button"
-                            class="dashboard-catalogo__selector"
-                            data-dashboard-catalogo-selector
-                            aria-expanded="false"
-                        >
+                        <button type="button" class="dashboard-catalogo__selector" data-dashboard-catalogo-selector
+                            aria-expanded="false">
 
                             <span class="dashboard-catalogo__selector-contenido">
 
-                                <span
-                                    class="
+                                <span class="
                                         dashboard-catalogo__avatar
                                         dashboard-catalogo__avatar--selector
-                                    "
-                                    data-dashboard-catalogo-avatar
-                                >
+                                    " data-dashboard-catalogo-avatar>
                                     T
                                 </span>
 
@@ -1460,35 +1264,20 @@ if (!function_exists('dashboardFiltroIniciales')) {
 
                             </span>
 
-                            <svg
-                                class="dashboard-catalogo__flecha"
-                                viewBox="0 0 24 24"
-                            >
+                            <svg class="dashboard-catalogo__flecha" viewBox="0 0 24 24">
                                 <path d="m8 10 4 4 4-4" />
                             </svg>
 
                         </button>
 
 
-                        <div
-                            class="dashboard-catalogo__resultados"
-                            data-dashboard-catalogo-resultados
-                            hidden
-                        >
+                        <div class="dashboard-catalogo__resultados" data-dashboard-catalogo-resultados hidden>
 
-                            <button
-                                type="button"
-                                class="
+                            <button type="button" class="
                                     dashboard-catalogo__item
                                     dashboard-catalogo__item--activo
-                                "
-                                data-dashboard-catalogo-opcion
-                                data-value=""
-                                data-texto="Todos"
-                                data-descripcion="Todos los sectores"
-                                data-avatar="T"
-                                aria-selected="true"
-                            >
+                                " data-dashboard-catalogo-opcion data-value="" data-texto="Todos"
+                                data-descripcion="Todos los sectores" data-avatar="T" aria-selected="true">
 
                                 <span class="dashboard-catalogo__avatar">
                                     T
@@ -1514,7 +1303,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                                 as $sector
                             ): ?>
 
-                                <?php
+                            <?php
 
                                 preg_match(
                                     '/([0-9]+)/',
@@ -1536,34 +1325,28 @@ if (!function_exists('dashboardFiltroIniciales')) {
                                 ?>
 
 
-                                <button
-                                    type="button"
-                                    class="dashboard-catalogo__item"
-                                    data-dashboard-catalogo-opcion
-                                    data-value="<?= esc($sector) ?>"
-                                    data-texto="<?= esc($sector) ?>"
-                                    data-descripcion="Sector institucional"
-                                    data-avatar="<?= esc($avatarSector) ?>"
-                                    aria-selected="false"
-                                >
+                            <button type="button" class="dashboard-catalogo__item" data-dashboard-catalogo-opcion
+                                data-value="<?= esc($sector) ?>" data-texto="<?= esc($sector) ?>"
+                                data-descripcion="Sector institucional" data-avatar="<?= esc($avatarSector) ?>"
+                                aria-selected="false">
 
-                                    <span class="dashboard-catalogo__avatar">
-                                        <?= esc($avatarSector) ?>
-                                    </span>
+                                <span class="dashboard-catalogo__avatar">
+                                    <?= esc($avatarSector) ?>
+                                </span>
 
-                                    <span class="dashboard-catalogo__datos">
+                                <span class="dashboard-catalogo__datos">
 
-                                        <strong>
-                                            <?= esc($sector) ?>
-                                        </strong>
+                                    <strong>
+                                        <?= esc($sector) ?>
+                                    </strong>
 
-                                        <small>
-                                            Sector institucional
-                                        </small>
+                                    <small>
+                                        Sector institucional
+                                    </small>
 
-                                    </span>
+                                </span>
 
-                                </button>
+                            </button>
 
                             <?php endforeach; ?>
 
@@ -1584,36 +1367,20 @@ if (!function_exists('dashboardFiltroIniciales')) {
                         Turno
                     </label>
 
-                    <div
-                        class="dashboard-catalogo"
-                        data-dashboard-catalogo
-                    >
+                    <div class="dashboard-catalogo" data-dashboard-catalogo>
 
-                        <input
-                            type="hidden"
-                            id="dashboard-turno"
-                            name="turno"
-                            value=""
-                            data-dashboard-catalogo-valor
-                        >
+                        <input type="hidden" id="dashboard-turno" name="turno" value="" data-dashboard-catalogo-valor>
 
 
-                        <button
-                            type="button"
-                            class="dashboard-catalogo__selector"
-                            data-dashboard-catalogo-selector
-                            aria-expanded="false"
-                        >
+                        <button type="button" class="dashboard-catalogo__selector" data-dashboard-catalogo-selector
+                            aria-expanded="false">
 
                             <span class="dashboard-catalogo__selector-contenido">
 
-                                <span
-                                    class="
+                                <span class="
                                         dashboard-catalogo__avatar
                                         dashboard-catalogo__avatar--selector
-                                    "
-                                    data-dashboard-catalogo-avatar
-                                >
+                                    " data-dashboard-catalogo-avatar>
                                     T
                                 </span>
 
@@ -1631,35 +1398,20 @@ if (!function_exists('dashboardFiltroIniciales')) {
 
                             </span>
 
-                            <svg
-                                class="dashboard-catalogo__flecha"
-                                viewBox="0 0 24 24"
-                            >
+                            <svg class="dashboard-catalogo__flecha" viewBox="0 0 24 24">
                                 <path d="m8 10 4 4 4-4" />
                             </svg>
 
                         </button>
 
 
-                        <div
-                            class="dashboard-catalogo__resultados"
-                            data-dashboard-catalogo-resultados
-                            hidden
-                        >
+                        <div class="dashboard-catalogo__resultados" data-dashboard-catalogo-resultados hidden>
 
-                            <button
-                                type="button"
-                                class="
+                            <button type="button" class="
                                     dashboard-catalogo__item
                                     dashboard-catalogo__item--activo
-                                "
-                                data-dashboard-catalogo-opcion
-                                data-value=""
-                                data-texto="Todos"
-                                data-descripcion="Todos los turnos"
-                                data-avatar="T"
-                                aria-selected="true"
-                            >
+                                " data-dashboard-catalogo-opcion data-value="" data-texto="Todos"
+                                data-descripcion="Todos los turnos" data-avatar="T" aria-selected="true">
 
                                 <span class="dashboard-catalogo__avatar">
                                     T
@@ -1685,7 +1437,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                                 as $turno
                             ): ?>
 
-                                <?php
+                            <?php
 
                                 $avatarTurno =
                                     dashboardFiltroIniciales(
@@ -1695,34 +1447,28 @@ if (!function_exists('dashboardFiltroIniciales')) {
                                 ?>
 
 
-                                <button
-                                    type="button"
-                                    class="dashboard-catalogo__item"
-                                    data-dashboard-catalogo-opcion
-                                    data-value="<?= esc($turno) ?>"
-                                    data-texto="<?= esc($turno) ?>"
-                                    data-descripcion="Turno del personal involucrado"
-                                    data-avatar="<?= esc($avatarTurno) ?>"
-                                    aria-selected="false"
-                                >
+                            <button type="button" class="dashboard-catalogo__item" data-dashboard-catalogo-opcion
+                                data-value="<?= esc($turno) ?>" data-texto="<?= esc($turno) ?>"
+                                data-descripcion="Turno del personal involucrado" data-avatar="<?= esc($avatarTurno) ?>"
+                                aria-selected="false">
 
-                                    <span class="dashboard-catalogo__avatar">
-                                        <?= esc($avatarTurno) ?>
-                                    </span>
+                                <span class="dashboard-catalogo__avatar">
+                                    <?= esc($avatarTurno) ?>
+                                </span>
 
-                                    <span class="dashboard-catalogo__datos">
+                                <span class="dashboard-catalogo__datos">
 
-                                        <strong>
-                                            <?= esc($turno) ?>
-                                        </strong>
+                                    <strong>
+                                        <?= esc($turno) ?>
+                                    </strong>
 
-                                        <small>
-                                            Turno del personal involucrado
-                                        </small>
+                                    <small>
+                                        Turno del personal involucrado
+                                    </small>
 
-                                    </span>
+                                </span>
 
-                                </button>
+                            </button>
 
                             <?php endforeach; ?>
 
@@ -1776,36 +1522,21 @@ if (!function_exists('dashboardFiltroIniciales')) {
                         Área
                     </label>
 
-                    <div
-                        class="dashboard-catalogo"
-                        data-dashboard-catalogo
-                    >
+                    <div class="dashboard-catalogo" data-dashboard-catalogo>
 
-                        <input
-                            type="hidden"
-                            id="dashboard-area-personal"
-                            name="area_personal"
-                            value=""
-                            data-dashboard-catalogo-valor
-                        >
+                        <input type="hidden" id="dashboard-area-personal" name="area_personal" value=""
+                            data-dashboard-catalogo-valor>
 
 
-                        <button
-                            type="button"
-                            class="dashboard-catalogo__selector"
-                            data-dashboard-catalogo-selector
-                            aria-expanded="false"
-                        >
+                        <button type="button" class="dashboard-catalogo__selector" data-dashboard-catalogo-selector
+                            aria-expanded="false">
 
                             <span class="dashboard-catalogo__selector-contenido">
 
-                                <span
-                                    class="
+                                <span class="
                                         dashboard-catalogo__avatar
                                         dashboard-catalogo__avatar--selector
-                                    "
-                                    data-dashboard-catalogo-avatar
-                                >
+                                    " data-dashboard-catalogo-avatar>
                                     T
                                 </span>
 
@@ -1823,35 +1554,20 @@ if (!function_exists('dashboardFiltroIniciales')) {
 
                             </span>
 
-                            <svg
-                                class="dashboard-catalogo__flecha"
-                                viewBox="0 0 24 24"
-                            >
+                            <svg class="dashboard-catalogo__flecha" viewBox="0 0 24 24">
                                 <path d="m8 10 4 4 4-4" />
                             </svg>
 
                         </button>
 
 
-                        <div
-                            class="dashboard-catalogo__resultados"
-                            data-dashboard-catalogo-resultados
-                            hidden
-                        >
+                        <div class="dashboard-catalogo__resultados" data-dashboard-catalogo-resultados hidden>
 
-                            <button
-                                type="button"
-                                class="
+                            <button type="button" class="
                                     dashboard-catalogo__item
                                     dashboard-catalogo__item--activo
-                                "
-                                data-dashboard-catalogo-opcion
-                                data-value=""
-                                data-texto="Todas"
-                                data-descripcion="Todas las áreas"
-                                data-avatar="T"
-                                aria-selected="true"
-                            >
+                                " data-dashboard-catalogo-opcion data-value="" data-texto="Todas"
+                                data-descripcion="Todas las áreas" data-avatar="T" aria-selected="true">
 
                                 <span class="dashboard-catalogo__avatar">
                                     T
@@ -1877,7 +1593,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                                 as $area
                             ): ?>
 
-                                <?php
+                            <?php
 
                                 $area =
                                     trim(
@@ -1899,34 +1615,28 @@ if (!function_exists('dashboardFiltroIniciales')) {
                                 ?>
 
 
-                                <button
-                                    type="button"
-                                    class="dashboard-catalogo__item"
-                                    data-dashboard-catalogo-opcion
-                                    data-value="<?= esc($area) ?>"
-                                    data-texto="<?= esc($area) ?>"
-                                    data-descripcion="Área del personal involucrado"
-                                    data-avatar="<?= esc($avatarArea) ?>"
-                                    aria-selected="false"
-                                >
+                            <button type="button" class="dashboard-catalogo__item" data-dashboard-catalogo-opcion
+                                data-value="<?= esc($area) ?>" data-texto="<?= esc($area) ?>"
+                                data-descripcion="Área del personal involucrado" data-avatar="<?= esc($avatarArea) ?>"
+                                aria-selected="false">
 
-                                    <span class="dashboard-catalogo__avatar">
-                                        <?= esc($avatarArea) ?>
-                                    </span>
+                                <span class="dashboard-catalogo__avatar">
+                                    <?= esc($avatarArea) ?>
+                                </span>
 
-                                    <span class="dashboard-catalogo__datos">
+                                <span class="dashboard-catalogo__datos">
 
-                                        <strong>
-                                            <?= esc($area) ?>
-                                        </strong>
+                                    <strong>
+                                        <?= esc($area) ?>
+                                    </strong>
 
-                                        <small>
-                                            Área del personal involucrado
-                                        </small>
+                                    <small>
+                                        Área del personal involucrado
+                                    </small>
 
-                                    </span>
+                                </span>
 
-                                </button>
+                            </button>
 
                             <?php endforeach; ?>
 
@@ -1943,12 +1653,10 @@ if (!function_exists('dashboardFiltroIniciales')) {
                      Sigue siendo buscador.
                 ========================================== -->
 
-                <div
-                    class="
+                <div class="
                         dashboard-filtros__campo
                         dashboard-filtros__campo--personal
-                    "
-                >
+                    ">
 
                     <label for="dashboard-personal-busqueda">
                         Personal
@@ -1956,41 +1664,20 @@ if (!function_exists('dashboardFiltroIniciales')) {
 
                     <div class="dashboard-filtros__personal">
 
-                        <input
-                            type="search"
-                            id="dashboard-personal-busqueda"
-                            placeholder="Buscar por nombre o nómina..."
-                            autocomplete="off"
-                        >
+                        <input type="search" id="dashboard-personal-busqueda"
+                            placeholder="Buscar por nombre o nómina..." autocomplete="off">
 
-                        <input
-                            type="hidden"
-                            id="dashboard-personal"
-                            name="personal"
-                            value=""
-                        >
+                        <input type="hidden" id="dashboard-personal" name="personal" value="">
 
-                        <div
-                            class="dashboard-filtros__personal-resultados"
-                            id="dashboard-personal-resultados"
-                            hidden
-                        ></div>
+                        <div class="dashboard-filtros__personal-resultados" id="dashboard-personal-resultados" hidden>
+                        </div>
 
-                        <div
-                            class="dashboard-filtros__personal-seleccion"
-                            id="dashboard-personal-seleccion"
-                            hidden
-                        >
+                        <div class="dashboard-filtros__personal-seleccion" id="dashboard-personal-seleccion" hidden>
 
-                            <span
-                                id="dashboard-personal-seleccion-texto"
-                            ></span>
+                            <span id="dashboard-personal-seleccion-texto"></span>
 
-                            <button
-                                type="button"
-                                id="dashboard-personal-quitar"
-                                aria-label="Quitar personal seleccionado"
-                            >
+                            <button type="button" id="dashboard-personal-quitar"
+                                aria-label="Quitar personal seleccionado">
                                 ×
                             </button>
 
@@ -2048,36 +1735,20 @@ if (!function_exists('dashboardFiltroIniciales')) {
                         Unidad involucrada
                     </label>
 
-                    <div
-                        class="dashboard-catalogo"
-                        data-dashboard-catalogo
-                    >
+                    <div class="dashboard-catalogo" data-dashboard-catalogo>
 
-                        <input
-                            type="hidden"
-                            id="dashboard-unidad"
-                            name="unidad"
-                            value=""
-                            data-dashboard-catalogo-valor
-                        >
+                        <input type="hidden" id="dashboard-unidad" name="unidad" value="" data-dashboard-catalogo-valor>
 
 
-                        <button
-                            type="button"
-                            class="dashboard-catalogo__selector"
-                            data-dashboard-catalogo-selector
-                            aria-expanded="false"
-                        >
+                        <button type="button" class="dashboard-catalogo__selector" data-dashboard-catalogo-selector
+                            aria-expanded="false">
 
                             <span class="dashboard-catalogo__selector-contenido">
 
-                                <span
-                                    class="
+                                <span class="
                                         dashboard-catalogo__avatar
                                         dashboard-catalogo__avatar--selector
-                                    "
-                                    data-dashboard-catalogo-avatar
-                                >
+                                    " data-dashboard-catalogo-avatar>
                                     T
                                 </span>
 
@@ -2095,35 +1766,20 @@ if (!function_exists('dashboardFiltroIniciales')) {
 
                             </span>
 
-                            <svg
-                                class="dashboard-catalogo__flecha"
-                                viewBox="0 0 24 24"
-                            >
+                            <svg class="dashboard-catalogo__flecha" viewBox="0 0 24 24">
                                 <path d="m8 10 4 4 4-4" />
                             </svg>
 
                         </button>
 
 
-                        <div
-                            class="dashboard-catalogo__resultados"
-                            data-dashboard-catalogo-resultados
-                            hidden
-                        >
+                        <div class="dashboard-catalogo__resultados" data-dashboard-catalogo-resultados hidden>
 
-                            <button
-                                type="button"
-                                class="
+                            <button type="button" class="
                                     dashboard-catalogo__item
                                     dashboard-catalogo__item--activo
-                                "
-                                data-dashboard-catalogo-opcion
-                                data-value=""
-                                data-texto="Todas"
-                                data-descripcion="Todas las unidades"
-                                data-avatar="T"
-                                aria-selected="true"
-                            >
+                                " data-dashboard-catalogo-opcion data-value="" data-texto="Todas"
+                                data-descripcion="Todas las unidades" data-avatar="T" aria-selected="true">
 
                                 <span class="dashboard-catalogo__avatar">
                                     T
@@ -2149,7 +1805,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                                 as $unidad
                             ): ?>
 
-                                <?php
+                            <?php
 
                                 if (is_array($unidad)) {
 
@@ -2195,40 +1851,34 @@ if (!function_exists('dashboardFiltroIniciales')) {
                                 ?>
 
 
-                                <?php if (
+                            <?php if (
                                     $valorUnidad !== ''
                                 ): ?>
 
-                                    <button
-                                        type="button"
-                                        class="dashboard-catalogo__item"
-                                        data-dashboard-catalogo-opcion
-                                        data-value="<?= esc($valorUnidad) ?>"
-                                        data-texto="<?= esc($textoUnidad) ?>"
-                                        data-descripcion="Unidad relacionada con el reporte"
-                                        data-avatar="<?= esc($avatarUnidad) ?>"
-                                        aria-selected="false"
-                                    >
+                            <button type="button" class="dashboard-catalogo__item" data-dashboard-catalogo-opcion
+                                data-value="<?= esc($valorUnidad) ?>" data-texto="<?= esc($textoUnidad) ?>"
+                                data-descripcion="Unidad relacionada con el reporte"
+                                data-avatar="<?= esc($avatarUnidad) ?>" aria-selected="false">
 
-                                        <span class="dashboard-catalogo__avatar">
-                                            <?= esc($avatarUnidad) ?>
-                                        </span>
+                                <span class="dashboard-catalogo__avatar">
+                                    <?= esc($avatarUnidad) ?>
+                                </span>
 
-                                        <span class="dashboard-catalogo__datos">
+                                <span class="dashboard-catalogo__datos">
 
-                                            <strong>
-                                                <?= esc($textoUnidad) ?>
-                                            </strong>
+                                    <strong>
+                                        <?= esc($textoUnidad) ?>
+                                    </strong>
 
-                                            <small>
-                                                Unidad relacionada con el reporte
-                                            </small>
+                                    <small>
+                                        Unidad relacionada con el reporte
+                                    </small>
 
-                                        </span>
+                                </span>
 
-                                    </button>
+                            </button>
 
-                                <?php endif; ?>
+                            <?php endif; ?>
 
 
                             <?php endforeach; ?>
@@ -2265,31 +1915,20 @@ if (!function_exists('dashboardFiltroIniciales')) {
 
         <div class="dashboard-filtros__acciones">
 
-            <button
-                type="button"
-                class="
+            <button type="button" class="
                     dashboard-filtros__boton
                     dashboard-filtros__boton--secondary
-                "
-                id="dashboard-limpiar-filtros"
-            >
+                " id="dashboard-limpiar-filtros">
                 Limpiar
             </button>
 
 
-            <button
-                type="button"
-                class="
+            <button type="button" class="
                     dashboard-filtros__boton
                     dashboard-filtros__boton--primary
-                "
-                id="dashboard-aplicar-filtros"
-            >
+                " id="dashboard-aplicar-filtros">
 
-                <svg
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
 
                     <path d="M4 6h16" />
                     <path d="M7 12h10" />
