@@ -48,16 +48,16 @@ class DashboardFiltrosService
             ================================================= */
 
             'fecha_registro_inicio' =>
-                $this->limpiarFiltro(
-                    $filtros['fecha_registro_inicio']
+            $this->limpiarFiltro(
+                $filtros['fecha_registro_inicio']
                     ?? null
-                ),
+            ),
 
             'fecha_registro_fin' =>
-                $this->limpiarFiltro(
-                    $filtros['fecha_registro_fin']
+            $this->limpiarFiltro(
+                $filtros['fecha_registro_fin']
                     ?? null
-                ),
+            ),
 
 
             /* =================================================
@@ -65,10 +65,10 @@ class DashboardFiltrosService
             ================================================= */
 
             'tipo' =>
-                $this->limpiarFiltro(
-                    $filtros['tipo']
+            $this->limpiarFiltro(
+                $filtros['tipo']
                     ?? null
-                ),
+            ),
 
 
             /* =================================================
@@ -76,28 +76,28 @@ class DashboardFiltrosService
             ================================================= */
 
             'estado' =>
-                $this->limpiarFiltro(
-                    $filtros['estado']
+            $this->limpiarFiltro(
+                $filtros['estado']
                     ?? null
-                ),
+            ),
 
             'clasificacion' =>
-                $this->limpiarFiltro(
-                    $filtros['clasificacion']
+            $this->limpiarFiltro(
+                $filtros['clasificacion']
                     ?? null
-                ),
+            ),
 
             'seguimiento' =>
-                $this->limpiarFiltro(
-                    $filtros['seguimiento']
+            $this->limpiarFiltro(
+                $filtros['seguimiento']
                     ?? null
-                ),
+            ),
 
             'es_anonimo' =>
-                $this->limpiarFiltro(
-                    $filtros['es_anonimo']
+            $this->limpiarFiltro(
+                $filtros['es_anonimo']
                     ?? null
-                ),
+            ),
 
 
             /* =================================================
@@ -105,22 +105,22 @@ class DashboardFiltrosService
             ================================================= */
 
             'zona' =>
-                $this->limpiarFiltro(
-                    $filtros['zona']
+            $this->limpiarFiltro(
+                $filtros['zona']
                     ?? null
-                ),
+            ),
 
             'sector' =>
-                $this->limpiarFiltro(
-                    $filtros['sector']
+            $this->limpiarFiltro(
+                $filtros['sector']
                     ?? null
-                ),
+            ),
 
             'turno' =>
-                $this->limpiarFiltro(
-                    $filtros['turno']
+            $this->limpiarFiltro(
+                $filtros['turno']
                     ?? null
-                ),
+            ),
 
 
             /* =================================================
@@ -128,16 +128,16 @@ class DashboardFiltrosService
             ================================================= */
 
             'area_personal' =>
-                $this->limpiarFiltro(
-                    $filtros['area_personal']
+            $this->limpiarFiltro(
+                $filtros['area_personal']
                     ?? null
-                ),
+            ),
 
             'personal' =>
-                $this->limpiarFiltro(
-                    $filtros['personal']
+            $this->limpiarFiltro(
+                $filtros['personal']
                     ?? null
-                ),
+            ),
 
 
             /* =================================================
@@ -145,10 +145,10 @@ class DashboardFiltrosService
             ================================================= */
 
             'unidad' =>
-                $this->limpiarFiltro(
-                    $filtros['unidad']
+            $this->limpiarFiltro(
+                $filtros['unidad']
                     ?? null
-                ),
+            ),
 
         ];
     }
@@ -303,100 +303,17 @@ class DashboardFiltrosService
 
 
         /* =====================================================
-        CLASIFICACIONES REALES REGISTRADAS
+        CLASIFICACIONES DEL DASHBOARD
+
+        Confirmadas en ai_reportes.clasificacion:
+        - Interna
+        - Externa
         ===================================================== */
 
-        $registrosClasificaciones =
-            $this->db
-            ->table(
-                'ai_reportes'
-            )
-            ->select(
-                'clasificacion'
-            )
-            ->where(
-                'eliminado',
-                0
-            )
-            ->where(
-                'tipo_registro',
-                'QUEJA'
-            )
-            ->where(
-                'clasificacion IS NOT NULL',
-                null,
-                false
-            )
-            ->where(
-                "TRIM(clasificacion) != ''",
-                null,
-                false
-            )
-            ->groupBy(
-                'clasificacion'
-            )
-            ->orderBy(
-                'clasificacion',
-                'ASC'
-            )
-            ->get()
-            ->getResultArray();
-
-
-        $clasificaciones = [];
-
-        $clasificacionesRegistradas = [];
-
-
-        foreach (
-            $registrosClasificaciones
-            as $registro
-        ) {
-
-            $valor =
-                trim(
-                    preg_replace(
-                        '/\s+/u',
-                        ' ',
-                        (string) (
-                            $registro['clasificacion']
-                            ?? ''
-                        )
-                    )
-                    ?? ''
-                );
-
-
-            if ($valor === '') {
-
-                continue;
-            }
-
-
-            $clave =
-                mb_strtoupper(
-                    $valor,
-                    'UTF-8'
-                );
-
-
-            if (
-                isset(
-                    $clasificacionesRegistradas[$clave]
-                )
-            ) {
-
-                continue;
-            }
-
-
-            $clasificacionesRegistradas[$clave] =
-                true;
-
-
-            $clasificaciones[] =
-                $valor;
-        }
+        $clasificaciones = [
+            'Interna',
+            'Externa',
+        ];
 
 
         /* =====================================================
@@ -493,7 +410,7 @@ class DashboardFiltrosService
 
 
             /*
-            * El valor enviado será:
+            * El valor enviado por el filtro será:
             *
             * 1. Número económico.
             * 2. Placas cuando no exista número económico.
@@ -591,8 +508,8 @@ class DashboardFiltrosService
     ========================================================= */
 
     public function aplicarFiltrosReportes(
-        $builder,
-        string $alias = ''
+    $builder,
+    string $alias = ''
     ) {
 
         $prefijo =
@@ -677,19 +594,13 @@ class DashboardFiltrosService
         }
 
 
-        /*
-        * Los filtros específicos de Queja no deben aplicarse
-        * cuando el usuario esté consultando Felicitaciones.
-        */
-
         $esFelicitacion =
             $tipo === 'FELICITACION';
 
 
         /* =====================================================
         ESTADO
-
-        Exclusivo de Quejas.
+        EXCLUSIVO DE QUEJAS
         ===================================================== */
 
         if (
@@ -708,8 +619,7 @@ class DashboardFiltrosService
 
         /* =====================================================
         CLASIFICACIÓN
-
-        Exclusivo de Quejas.
+        EXCLUSIVO DE QUEJAS
         ===================================================== */
 
         if (
@@ -719,17 +629,35 @@ class DashboardFiltrosService
             )
         ) {
 
-            $builder->where(
-                $prefijo . 'clasificacion',
-                $this->filtros['clasificacion']
-            );
+            $clasificacion =
+                trim(
+                    (string)
+                    $this->filtros['clasificacion']
+                );
+
+
+            if (
+                in_array(
+                    $clasificacion,
+                    [
+                        'Interna',
+                        'Externa',
+                    ],
+                    true
+                )
+            ) {
+
+                $builder->where(
+                    $prefijo . 'clasificacion',
+                    $clasificacion
+                );
+            }
         }
 
 
         /* =====================================================
         SEGUIMIENTO
-
-        Exclusivo de Quejas.
+        EXCLUSIVO DE QUEJAS
         ===================================================== */
 
         if (
@@ -778,12 +706,7 @@ class DashboardFiltrosService
 
         /* =====================================================
         QUEJA ANÓNIMA
-
-        Exclusivo de Quejas.
-
-        IMPORTANTE:
-        No utilizamos empty() porque el valor "0"
-        es válido y PHP lo considera vacío.
+        EXCLUSIVO DE QUEJAS
         ===================================================== */
 
         if (
@@ -821,11 +744,6 @@ class DashboardFiltrosService
 
         /* =====================================================
         ZONA
-
-        La zona no existe como columna independiente.
-
-        Se calcula usando el sector almacenado en
-        area_snapshot del personal involucrado.
         ===================================================== */
 
         if (
@@ -860,7 +778,7 @@ class DashboardFiltrosService
 
 
         /* =====================================================
-        SECTOR DEL PERSONAL INVOLUCRADO
+        SECTOR
         ===================================================== */
 
         if (
@@ -919,7 +837,7 @@ class DashboardFiltrosService
 
 
         /* =====================================================
-        TURNO DEL PERSONAL
+        TURNO
         ===================================================== */
 
         if (
@@ -954,7 +872,7 @@ class DashboardFiltrosService
 
 
         /* =====================================================
-        ÁREA DEL PERSONAL INVOLUCRADO
+        ÁREA DEL PERSONAL
         ===================================================== */
 
         if (
@@ -984,13 +902,6 @@ class DashboardFiltrosService
 
         /* =====================================================
         PERSONAL ESPECÍFICO
-
-        ai_reporte_personal conserva:
-        - plantilla_id
-        - perscod
-
-        Por eso aceptamos cualquiera de los dos como
-        identificador estable del personal seleccionado.
         ===================================================== */
 
         if (
