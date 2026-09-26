@@ -160,10 +160,10 @@
 
 
         <!-- =================================================
-             NÚMERO DE FOLIO
+            NÚMERO DE FOLIO
         ================================================== -->
 
-        <div class="editar-reporte-campo">
+        <div class="editar-reporte-campo editar-reporte-campo--folio">
 
             <label for="editar-folio">
                 Número de folio
@@ -174,6 +174,11 @@
             <small class="editar-reporte-campo__help">
                 El número de folio se asigna automáticamente.
             </small>
+
+            <div class="editar-reporte-campo__alerta-foranea" id="editar-aviso-queja-foranea" hidden>
+                Este tipo de queja es para dependencias externas a la
+                Comisaría General de Seguridad Ciudadana de Nezahualcóyotl.
+            </div>
 
         </div>
 

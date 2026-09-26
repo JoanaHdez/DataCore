@@ -1,5 +1,4 @@
-<div class="editar-reporte-seccion__bloque">
-
+<div class="editar-reporte-seccion__bloque" id="editar-seccion-clasificacion-seguimiento">
     <div class="detalle-reporte-seccion__header">
 
         <span>

@@ -682,6 +682,77 @@
     line-height: 1.4;
 }
 
+/* =========================================================
+   QJF - AVISO EN EDITAR
+========================================================= */
+
+.editar-reporte-campo--folio {
+    position: relative;
+}
+
+
+.editar-reporte-campo__alerta-foranea {
+    position: absolute;
+
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+
+    padding:
+        9px
+        11px;
+
+    border: 1px solid #d95454;
+    border-radius: 6px;
+
+    background: #fff3f3;
+    color: #b42323;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    line-height: 1.45;
+
+    z-index: 2;
+}
+
+
+.editar-reporte-campo__alerta-foranea[hidden] {
+    display: none;
+}
+
+
+/* =========================================================
+   QJF - CLASIFICACIÓN DESHABILITADA
+========================================================= */
+
+.editar-reporte-seccion__bloque--disabled {
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+
+.editar-reporte-seccion__bloque--disabled
+input,
+.editar-reporte-seccion__bloque--disabled
+select,
+.editar-reporte-seccion__bloque--disabled
+textarea,
+.editar-reporte-seccion__bloque--disabled
+button {
+    cursor: not-allowed;
+}
+
+
+@media (max-width: 700px) {
+
+    .editar-reporte-campo__alerta-foranea {
+        position: static;
+
+        margin-top: 8px;
+    }
+
+}
 
 /* =========================================================
    RESPONSIVE

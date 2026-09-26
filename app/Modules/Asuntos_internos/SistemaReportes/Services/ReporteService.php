@@ -254,17 +254,14 @@ class ReporteService
 
                 $datosReporte['origen_estado'] =
                     'sin_sancion';
-
             } elseif ($bajaVoluntaria) {
 
                 $datosReporte['origen_estado'] =
                     'baja_voluntaria';
-
             } elseif ($desistir) {
 
                 $datosReporte['origen_estado'] =
                     'desistimiento';
-
             } elseif ($estadoInicial === 'Finalizado') {
 
                 /*
@@ -274,7 +271,6 @@ class ReporteService
 
                 $datosReporte['origen_estado'] =
                     'manual';
-
             } else {
 
                 /*
@@ -378,11 +374,20 @@ class ReporteService
                 );
 
 
+            $numeroNomenclatura =
+                str_pad(
+                    (string) $datosReporte['numero_folio'],
+                    3,
+                    '0',
+                    STR_PAD_LEFT
+                );
+
+
             $datosReporte['nomenclatura'] =
                 'CGSC/CAI/'
                 . $claveFolio
                 . '/'
-                . $datosReporte['numero_folio']
+                . $numeroNomenclatura
                 . '/'
                 . $anioRegistro;
 
@@ -537,7 +542,6 @@ class ReporteService
                 $datosReporte['nomenclatura'],
 
             ];
-
         } catch (\Throwable $e) {
 
             /* =====================================================
@@ -658,6 +662,109 @@ class ReporteService
         try {
 
             /* =====================================================
+            TIPO DE FOLIO SELECCIONADO
+            ===================================================== */
+
+            $claveFolioNueva =
+                strtoupper(
+                    trim(
+                        (string) (
+                            $datos['tipo_folio']
+                            ?? 'QJ'
+                        )
+                    )
+                );
+
+
+            $clavesPermitidas = [
+                'QJ',
+                'QJV',
+                'QJF',
+            ];
+
+
+            if (
+                !in_array(
+                    $claveFolioNueva,
+                    $clavesPermitidas,
+                    true
+                )
+            ) {
+
+                throw new \InvalidArgumentException(
+                    'El tipo de folio seleccionado no es válido.'
+                );
+            }
+
+
+            /* =====================================================
+            QJF - DATOS INTERNOS
+
+            En Editar, Clasificación y seguimiento se encuentran
+            deshabilitados cuando el tipo seleccionado es QJF.
+
+            Por lo tanto esos controles no necesariamente llegan
+            en el FormData.
+
+            Aquí completamos los valores que requiere ai_reportes.
+            ===================================================== */
+
+            if ($claveFolioNueva === 'QJF') {
+
+                $datos['clasificacion'] =
+                    'NO APLICA';
+
+
+                $datos['inspector'] =
+                    'NO APLICA';
+
+
+                $datos['investigador'] =
+                    '';
+
+
+                $datos['estado_actual'] =
+                    'Pendiente';
+
+
+                $datos['sin_sanciones'] =
+                    0;
+
+
+                $datos['baja_voluntaria'] =
+                    0;
+
+
+                $datos['desistir'] =
+                    0;
+
+
+                $datos['quien_emite_resolucion'] =
+                    '';
+
+
+                $datos['resolucion'] =
+                    '';
+
+
+                $datos['observaciones'] =
+                    '';
+
+
+                $datos['motivos'] =
+                    '';
+
+
+                $datos['motivos_seleccionados'] =
+                    [];
+
+
+                $datos['modalidad_unidad'] =
+                    'NO_APLICA';
+            }
+
+
+            /* =====================================================
             PREPARAR DATOS PRINCIPALES
             ===================================================== */
 
@@ -669,9 +776,9 @@ class ReporteService
 
 
             /*
-         * Estos campos no deben tomarse directamente
-         * del formulario durante una edición.
-         */
+            * Estos campos no deben tomarse directamente
+            * del formulario durante una edición.
+            */
 
             unset(
                 $datosReporte['created_by'],
@@ -771,47 +878,40 @@ class ReporteService
             ASIGNAR ORIGEN
             ----------------------------------------------------- */
 
-            if ($sinSancionesNuevo) {
+            if ($claveFolioNueva === 'QJF') {
+
+                /*
+                * Una queja foránea no utiliza el flujo interno
+                * de clasificación/seguimiento.
+                */
+
+                $datosReporte['origen_estado'] =
+                    null;
+
+            } elseif ($sinSancionesNuevo) {
 
                 $datosReporte['origen_estado'] =
                     'sin_sancion';
+
             } elseif ($bajaVoluntariaNuevo) {
 
                 $datosReporte['origen_estado'] =
                     'baja_voluntaria';
+
             } elseif ($desistirNuevo) {
 
                 $datosReporte['origen_estado'] =
                     'desistimiento';
+
             } elseif (
                 $estadoNuevo !== $estadoAnterior
                 || $teniaSituacionEspecial
             ) {
 
-                /*
-             * El estado fue modificado directamente desde
-             * Editar Queja.
-             *
-             * También entra aquí si se retiró una condición
-             * especial que anteriormente definía el origen.
-             */
-
                 $datosReporte['origen_estado'] =
                     'manual';
-            } else {
 
-                /*
-             * Si no cambió el estado ni hubo una modificación
-             * de su situación especial, conservamos el origen
-             * anterior.
-             *
-             * Ejemplo:
-             *
-             * origen_estado = seguimiento
-             * y solamente se corrige una dirección.
-             *
-             * Debe continuar siendo seguimiento.
-             */
+            } else {
 
                 $datosReporte['origen_estado'] =
                     $origenEstadoAnterior !== ''
@@ -828,42 +928,6 @@ class ReporteService
                 $datosReporte,
                 $idReporte
             );
-
-
-            /* =====================================================
-            TIPO DE FOLIO SELECCIONADO
-            ===================================================== */
-
-            $claveFolioNueva =
-                strtoupper(
-                    trim(
-                        (string) (
-                            $datos['tipo_folio']
-                            ?? ''
-                        )
-                    )
-                );
-
-
-            $clavesPermitidas = [
-                'QJ',
-                'QJV',
-                'QJF',
-            ];
-
-
-            if (
-                !in_array(
-                    $claveFolioNueva,
-                    $clavesPermitidas,
-                    true
-                )
-            ) {
-
-                throw new \InvalidArgumentException(
-                    'El tipo de folio seleccionado no es válido.'
-                );
-            }
 
 
             /* =====================================================
@@ -894,6 +958,7 @@ class ReporteService
 
                 $claveFolioActual =
                     'QJV';
+
             } elseif (
                 str_starts_with(
                     $folioActual,
@@ -903,6 +968,7 @@ class ReporteService
 
                 $claveFolioActual =
                     'QJF';
+
             } elseif (
                 str_starts_with(
                     $folioActual,
@@ -931,15 +997,15 @@ class ReporteService
             if ($cambioTipoFolio) {
 
                 /*
-             * Cambió, por ejemplo:
-             *
-             * QJ -> QJV
-             * QJ -> QJF
-             * QJF -> QJ
-             *
-             * Consumimos el siguiente consecutivo
-             * de la nueva familia.
-             */
+                * Ejemplos:
+                *
+                * QJ  -> QJV
+                * QJ  -> QJF
+                * QJF -> QJ
+                *
+                * Se toma el siguiente consecutivo de
+                * la nueva familia.
+                */
 
                 $folioGenerado =
                     $this->folioService
@@ -973,12 +1039,13 @@ class ReporteService
                         'No fue posible generar el nuevo folio.'
                     );
                 }
+
             } else {
 
                 /*
-             * Si conserva la misma familia,
-             * conserva exactamente su número y folio.
-             */
+                * Si conserva el mismo tipo de folio,
+                * conserva también número y folio.
+                */
 
                 $datosReporte['numero_folio'] =
                     (int) (
@@ -1051,19 +1118,26 @@ class ReporteService
                 );
 
 
+            $numeroNomenclatura =
+                str_pad(
+                    (string) $datosReporte['numero_folio'],
+                    3,
+                    '0',
+                    STR_PAD_LEFT
+                );
+
+
             $datosReporte['nomenclatura'] =
                 'CGSC/CAI/'
                 . $claveFolioNueva
                 . '/'
-                . $datosReporte['numero_folio']
+                . $numeroNomenclatura
                 . '/'
                 . $anioRegistro;
 
 
             /* =====================================================
             MODALIDAD DE UNIDAD
-
-            QJF no utiliza Personal ni Unidades.
             ===================================================== */
 
             if ($claveFolioNueva === 'QJF') {
@@ -1103,10 +1177,6 @@ class ReporteService
 
             /* =====================================================
             LIMPIAR PERSONAL ACTUAL
-
-            Siempre limpiamos primero para que:
-            - QJ/QJV puedan reconstruirse con los datos editados;
-            - QJF no conserve personal anterior.
             ===================================================== */
 
             $this->db
@@ -1122,9 +1192,6 @@ class ReporteService
 
             /* =====================================================
             LIMPIAR UNIDADES ACTUALES
-
-            QJF tampoco debe conservar unidades de una
-            clasificación anterior.
             ===================================================== */
 
             $this->db
@@ -1144,19 +1211,11 @@ class ReporteService
 
             if ($claveFolioNueva !== 'QJF') {
 
-                /* =================================================
-                PERSONAL
-                ================================================= */
-
                 $this->guardarPersonal(
                     $idReporte,
                     $personal
                 );
 
-
-                /* =================================================
-                UNIDADES
-                ================================================= */
 
                 $this->guardarUnidades(
                     $idReporte,
@@ -1178,25 +1237,101 @@ class ReporteService
 
 
             /* =====================================================
-            MOTIVOS Y SANCIONES POR MOTIVO
+            MOTIVOS Y SANCIONES
             ===================================================== */
 
-            $this->actualizarMotivosYSancionesDesdeEdicion(
-                $idReporte,
-                $datos,
-                $idUsuario
-            );
+            if ($claveFolioNueva === 'QJF') {
+
+                /*
+                * Si el reporte antes era QJ/QJV y ahora pasa a QJF,
+                * no debe conservar motivos ni sanciones activas.
+                */
+
+                $ahora =
+                    date(
+                        'Y-m-d H:i:s'
+                    );
 
 
-            /* =====================================================
-            SANCIÓN DISCIPLINARIA
-            ===================================================== */
+                /* =================================================
+                SANCIONES
+                ================================================= */
 
-            $this->corregirSancionDesdeEdicion(
-                $idReporte,
-                $datos,
-                $idUsuario
-            );
+                $this->db
+                    ->table(
+                        'ai_reporte_sanciones'
+                    )
+                    ->where(
+                        'id_reporte',
+                        $idReporte
+                    )
+                    ->where(
+                        'eliminado',
+                        0
+                    )
+                    ->update([
+
+                        'es_actual' =>
+                        0,
+
+                        'eliminado' =>
+                        1,
+
+                        'updated_by' =>
+                        $idUsuario,
+
+                        'updated_at' =>
+                        $ahora,
+
+                        'eliminado_at' =>
+                        $ahora,
+
+                        'eliminado_por' =>
+                        $idUsuario,
+
+                    ]);
+
+
+                /* =================================================
+                MOTIVOS
+                ================================================= */
+
+                $this->db
+                    ->table(
+                        'ai_reporte_motivos'
+                    )
+                    ->where(
+                        'id_reporte',
+                        $idReporte
+                    )
+                    ->where(
+                        'eliminado',
+                        0
+                    )
+                    ->update([
+                        'eliminado' =>
+                        1,
+                    ]);
+
+            } else {
+
+                /*
+                * QJ / QJV conservan el comportamiento normal.
+                */
+
+                $this->actualizarMotivosYSancionesDesdeEdicion(
+                    $idReporte,
+                    $datos,
+                    $idUsuario
+                );
+
+
+                $this->corregirSancionDesdeEdicion(
+                    $idReporte,
+                    $datos,
+                    $idUsuario
+                );
+            }
 
 
             /* =====================================================
@@ -1281,6 +1416,7 @@ class ReporteService
                 ),
 
             ];
+
         } catch (\Throwable $e) {
 
             /* =====================================================

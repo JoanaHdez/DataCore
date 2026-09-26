@@ -1915,8 +1915,17 @@ async function cargarPrevisualizacionFolio(
                     obtenerAnioRegistro();
 
 
+                const numeroNomenclatura =
+                    String(
+                        numeroFolio
+                    ).padStart(
+                        3,
+                        '0'
+                    );
+
+
                 inputNomenclatura.value =
-                    `CGSC/CAI/${claveFolio}/${numeroFolio}/${anioRegistro}`;
+                    `CGSC/CAI/${claveFolio}/${numeroNomenclatura}/${anioRegistro}`;
             }
 
 

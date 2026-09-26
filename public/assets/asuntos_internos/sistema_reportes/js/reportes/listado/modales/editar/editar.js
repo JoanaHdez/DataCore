@@ -1348,7 +1348,7 @@ function inicializarBloqueoEnterEditar(
 
 
 /* =========================================================
-   QJF - PERSONAL Y UNIDADES EN EDITAR
+   QJF - ESTADO GENERAL EN EDITAR
 ========================================================= */
 
 function actualizarEstadoQjfEditar(
@@ -1378,6 +1378,112 @@ function actualizarEstadoQjfEditar(
             .trim()
             .toUpperCase()
         === 'QJF';
+
+
+    /* =====================================================
+       AVISO
+    ===================================================== */
+
+    const aviso =
+        modal.querySelector(
+            '#editar-aviso-queja-foranea'
+        );
+
+
+    if (aviso) {
+
+        aviso.hidden =
+            !esQjf;
+    }
+
+
+    /* =====================================================
+       CLASIFICACIÓN Y SEGUIMIENTO
+    ===================================================== */
+
+    const seccionClasificacion =
+        modal.querySelector(
+            '#editar-seccion-clasificacion-seguimiento'
+        );
+
+
+    if (seccionClasificacion) {
+
+        seccionClasificacion.classList.toggle(
+            'editar-reporte-seccion__bloque--disabled',
+            esQjf
+        );
+
+
+        seccionClasificacion.setAttribute(
+            'aria-disabled',
+            esQjf
+                ? 'true'
+                : 'false'
+        );
+
+
+        const controlesClasificacion =
+            seccionClasificacion.querySelectorAll(
+                'input, select, textarea, button'
+            );
+
+
+        controlesClasificacion.forEach(
+            (control) => {
+
+                if (esQjf) {
+
+                    if (
+                        control.dataset
+                            .qjfEditarClasificacionEstadoGuardado
+                        !== '1'
+                    ) {
+
+                        control.dataset
+                            .qjfEditarClasificacionEstadoGuardado =
+                            '1';
+
+
+                        control.dataset
+                            .qjfEditarClasificacionDisabledOriginal =
+                            control.disabled
+                                ? '1'
+                                : '0';
+                    }
+
+
+                    control.disabled =
+                        true;
+
+
+                    return;
+                }
+
+
+                if (
+                    control.dataset
+                        .qjfEditarClasificacionEstadoGuardado
+                    === '1'
+                ) {
+
+                    control.disabled =
+                        control.dataset
+                            .qjfEditarClasificacionDisabledOriginal
+                        === '1';
+
+
+                    delete control.dataset
+                        .qjfEditarClasificacionEstadoGuardado;
+
+
+                    delete control.dataset
+                        .qjfEditarClasificacionDisabledOriginal;
+                }
+
+            }
+        );
+    }
 
 
     /* =====================================================
