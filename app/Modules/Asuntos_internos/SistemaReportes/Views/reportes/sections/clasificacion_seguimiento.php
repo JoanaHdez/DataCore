@@ -1,5 +1,4 @@
-<section class="report-section">
-
+<section class="report-section" id="seccion-clasificacion-seguimiento">
     <div class="report-section__header">
 
         <div>

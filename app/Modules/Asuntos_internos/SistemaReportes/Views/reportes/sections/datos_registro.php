@@ -170,10 +170,10 @@
 
 
             <!-- =================================================
-                 NÚMERO DE FOLIO
+                NÚMERO DE FOLIO
             ================================================== -->
 
-            <div class="report-field">
+            <div class="report-field report-field--folio">
 
                 <label for="folio_visual">
                     Número de folio
@@ -188,11 +188,17 @@
                     El consecutivo se asignará automáticamente al guardar.
                 </small>
 
+
+                <div class="report-field__alerta-foranea" id="aviso-queja-foranea" hidden>
+                    Este tipo de queja es para dependencias externas a la
+                    Comisaría General de Seguridad Ciudadana de Nezahualcóyotl.
+                </div>
+
             </div>
 
 
             <!-- =================================================
-                 FECHA DE REGISTRO
+                FECHA DE REGISTRO
             ================================================== -->
 
             <div class="report-field">
@@ -209,6 +215,7 @@
                 <small class="report-field__help">
                     Se asigna automáticamente con la fecha actual.
                 </small>
+
 
             </div>
 

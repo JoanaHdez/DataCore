@@ -1118,6 +1118,68 @@
 
 
 /* =========================================================
+   QJF - SECCIÓN DESHABILITADA
+========================================================= */
+
+.report-section--disabled {
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+
+.report-section--disabled
+input,
+.report-section--disabled
+select,
+.report-section--disabled
+textarea,
+.report-section--disabled
+button {
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   QJF - AVISO DE QUEJA FORÁNEA
+========================================================= */
+
+.report-field--folio {
+    position: relative;
+}
+
+
+.report-field__alerta-foranea {
+    position: absolute;
+
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+
+    padding:
+        9px
+        11px;
+
+    border: 1px solid #d95454;
+    border-radius: 6px;
+
+    background: #fff3f3;
+    color: #b42323;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    line-height: 1.45;
+
+    z-index: 2;
+}
+
+
+.report-field__alerta-foranea[hidden] {
+    display: none;
+}
+
+
+/* =========================================================
    RESPONSIVE
 ========================================================= */
 

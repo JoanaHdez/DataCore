@@ -94,6 +94,114 @@ class ReporteService
         try {
 
             /* =====================================================
+            TIPO DE FOLIO
+            ===================================================== */
+
+            $claveFolio =
+                strtoupper(
+                    trim(
+                        (string) (
+                            $datos['tipo_folio']
+                            ?? 'QJ'
+                        )
+                    )
+                );
+
+
+            $clavesPermitidas = [
+                'QJ',
+                'QJV',
+                'QJF',
+            ];
+
+
+            if (
+                !in_array(
+                    $claveFolio,
+                    $clavesPermitidas,
+                    true
+                )
+            ) {
+
+                throw new \InvalidArgumentException(
+                    'El tipo de folio seleccionado no es válido.'
+                );
+            }
+
+
+            /* =====================================================
+            DATOS ESPECIALES PARA QJF
+
+            La queja foránea no utiliza:
+
+            - Personal
+            - Unidades
+            - Clasificación
+            - Inspector
+            - Investigador
+            - Resolución
+            - Motivos / sanciones
+
+            Sin embargo, ai_reportes todavía tiene algunos campos
+            NOT NULL, por lo que se guardan valores internos neutros.
+            ===================================================== */
+
+            if ($claveFolio === 'QJF') {
+
+                $datos['clasificacion'] =
+                    'NO APLICA';
+
+
+                $datos['inspector'] =
+                    'NO APLICA';
+
+
+                $datos['investigador'] =
+                    '';
+
+
+                $datos['quien_emite_resolucion'] =
+                    '';
+
+
+                $datos['resolucion'] =
+                    '';
+
+
+                $datos['motivos'] =
+                    '';
+
+
+                $datos['estado_actual'] =
+                    'Pendiente';
+
+
+                $datos['sin_sanciones'] =
+                    0;
+
+
+                $datos['baja_voluntaria'] =
+                    0;
+
+
+                $datos['desistir'] =
+                    0;
+
+
+                $datos['observaciones'] =
+                    '';
+
+
+                $datos['motivos_seleccionados'] =
+                    [];
+
+
+                $datos['modalidad_unidad'] =
+                    'NO_APLICA';
+            }
+
+
+            /* =====================================================
             PREPARAR DATOS DEL REPORTE
             ===================================================== */
 
@@ -146,14 +254,17 @@ class ReporteService
 
                 $datosReporte['origen_estado'] =
                     'sin_sancion';
+
             } elseif ($bajaVoluntaria) {
 
                 $datosReporte['origen_estado'] =
                     'baja_voluntaria';
+
             } elseif ($desistir) {
 
                 $datosReporte['origen_estado'] =
                     'desistimiento';
+
             } elseif ($estadoInicial === 'Finalizado') {
 
                 /*
@@ -163,6 +274,7 @@ class ReporteService
 
                 $datosReporte['origen_estado'] =
                     'manual';
+
             } else {
 
                 /*
@@ -186,42 +298,6 @@ class ReporteService
 
 
             /* =====================================================
-            CLAVE DEL FOLIO
-            ===================================================== */
-
-            $claveFolio =
-                strtoupper(
-                    trim(
-                        (string) (
-                            $datos['tipo_folio']
-                            ?? 'QJ'
-                        )
-                    )
-                );
-
-
-            $clavesPermitidas = [
-                'QJ',
-                'QJV',
-                'QJF',
-            ];
-
-
-            if (
-                !in_array(
-                    $claveFolio,
-                    $clavesPermitidas,
-                    true
-                )
-            ) {
-
-                throw new \InvalidArgumentException(
-                    'El tipo de folio seleccionado no es válido.'
-                );
-            }
-
-
-            /* =====================================================
             GENERAR FOLIO AUTOMÁTICO
             ===================================================== */
 
@@ -233,9 +309,9 @@ class ReporteService
 
 
             /*
-         * Aunque QJ, QJV y QJF tengan consecutivos separados,
-         * todos siguen perteneciendo al tipo general QUEJA.
-         */
+            * Aunque QJ, QJV y QJF tengan consecutivos separados,
+            * todos siguen perteneciendo al tipo general QUEJA.
+            */
 
             $datosReporte['tipo_registro'] =
                 $folioGenerado['tipo_registro'];
@@ -384,13 +460,18 @@ class ReporteService
 
             /* =====================================================
             MOTIVOS Y SANCIONES
+
+            QJF no utiliza esta sección.
             ===================================================== */
 
-            $this->guardarMotivosYSanciones(
-                $idReporte,
-                $datos,
-                $idUsuario
-            );
+            if ($claveFolio !== 'QJF') {
+
+                $this->guardarMotivosYSanciones(
+                    $idReporte,
+                    $datos,
+                    $idUsuario
+                );
+            }
 
 
             /* =====================================================
@@ -456,6 +537,7 @@ class ReporteService
                 $datosReporte['nomenclatura'],
 
             ];
+
         } catch (\Throwable $e) {
 
             /* =====================================================
@@ -2634,9 +2716,7 @@ class ReporteService
             }
 
 
-            $actualesPorMotivo[
-                $idMotivoActual
-            ] =
+            $actualesPorMotivo[$idMotivoActual] =
                 $motivoActual;
         }
 
@@ -2804,17 +2884,13 @@ class ReporteService
 
             if (
                 isset(
-                    $actualesPorMotivo[
-                        $idMotivo
-                    ]
+                    $actualesPorMotivo[$idMotivo]
                 )
             ) {
 
                 $idReporteMotivo =
                     (int) (
-                        $actualesPorMotivo[
-                            $idMotivo
-                        ]['id_reporte_motivo']
+                        $actualesPorMotivo[$idMotivo]['id_reporte_motivo']
                         ?? 0
                     );
 
@@ -2856,7 +2932,6 @@ class ReporteService
                         );
                     }
                 }
-
             } else {
 
                 /* =============================================
@@ -3110,7 +3185,6 @@ class ReporteService
                         'No fue posible actualizar la sanción relacionada con el motivo.'
                     );
                 }
-
             } else {
 
                 /* =============================================
@@ -5261,6 +5335,7 @@ class ReporteService
         $permitidas = [
             'CON_UNIDAD',
             'SIN_UNIDAD_OFICINA',
+            'NO_APLICA',
         ];
 
 

@@ -815,6 +815,136 @@ function actualizarEstadoPasoTresQjf(
     );
 }
 
+/* =========================================================
+   QJF - ACTUALIZAR CLASIFICACIÓN Y SEGUIMIENTO
+========================================================= */
+
+function actualizarEstadoClasificacionQjf(
+    formulario
+) {
+
+    if (!formulario) {
+        return;
+    }
+
+
+    const seccion =
+        formulario.querySelector(
+            '#seccion-clasificacion-seguimiento'
+        );
+
+
+    const aviso =
+        formulario.querySelector(
+            '#aviso-queja-foranea'
+        );
+
+
+    const esQjf =
+        esQuejaForanea(
+            formulario
+        );
+
+
+    /* =====================================================
+       AVISO
+    ===================================================== */
+
+    if (aviso) {
+
+        aviso.hidden =
+            !esQjf;
+    }
+
+
+    /* =====================================================
+       SECCIÓN
+    ===================================================== */
+
+    if (!seccion) {
+        return;
+    }
+
+
+    seccion.classList.toggle(
+        'report-section--disabled',
+        esQjf
+    );
+
+
+    seccion.setAttribute(
+        'aria-disabled',
+        esQjf
+            ? 'true'
+            : 'false'
+    );
+
+
+    /* =====================================================
+       CONTROLES
+    ===================================================== */
+
+    const controles =
+        seccion.querySelectorAll(
+            'input, select, textarea, button'
+        );
+
+
+    controles.forEach(
+        (control) => {
+
+            if (esQjf) {
+
+                if (
+                    control.dataset
+                        .qjfClasificacionEstadoGuardado
+                    !== '1'
+                ) {
+
+                    control.dataset
+                        .qjfClasificacionEstadoGuardado =
+                        '1';
+
+
+                    control.dataset
+                        .qjfClasificacionDisabledOriginal =
+                        control.disabled
+                            ? '1'
+                            : '0';
+                }
+
+
+                control.disabled =
+                    true;
+
+
+                return;
+            }
+
+
+            if (
+                control.dataset
+                    .qjfClasificacionEstadoGuardado
+                === '1'
+            ) {
+
+                control.disabled =
+                    control.dataset
+                        .qjfClasificacionDisabledOriginal
+                    === '1';
+
+
+                delete control.dataset
+                    .qjfClasificacionEstadoGuardado;
+
+
+                delete control.dataset
+                    .qjfClasificacionDisabledOriginal;
+            }
+
+        }
+    );
+}
 
 /* =========================================================
    OBTENER PASO
@@ -1361,12 +1491,12 @@ function inicializarCatalogoTipoFolio(
     ) {
 
         switch (
-            String(
-                clave
-                || ''
-            )
-                .trim()
-                .toUpperCase()
+        String(
+            clave
+            || ''
+        )
+            .trim()
+            .toUpperCase()
         ) {
 
             case 'QJV':
@@ -1837,6 +1967,12 @@ async function cargarPrevisualizacionFolio(
                 actualizarEstadoPasoTresQjf(
                     formulario
                 );
+
+                actualizarEstadoClasificacionQjf(
+                    formulario
+                );
+
+
             }
         );
     }
@@ -1848,7 +1984,13 @@ async function cargarPrevisualizacionFolio(
 
     await actualizarPrevisualizacion();
 
+
     actualizarEstadoPasoTresQjf(
+        formulario
+    );
+
+
+    actualizarEstadoClasificacionQjf(
         formulario
     );
 }
