@@ -545,6 +545,18 @@ function inicializarQuejosoAnonimo() {
         ),
     ];
 
+
+    const selectorGenero =
+        document.querySelector(
+            '#genero-select'
+        );
+
+
+    const resultadosGenero =
+        document.querySelector(
+            '#genero-resultados'
+        );
+
     /* =====================================================
     DIRECCIÓN PARA NOTIFICACIÓN
     ===================================================== */
@@ -661,6 +673,45 @@ function inicializarQuejosoAnonimo() {
                 }
             }
         );
+
+
+        if (selectorGenero) {
+
+            selectorGenero.disabled =
+                esAnonimo;
+
+
+            selectorGenero.setAttribute(
+                'aria-disabled',
+                esAnonimo
+                    ? 'true'
+                    : 'false'
+            );
+        }
+
+
+        if (
+            resultadosGenero
+            && esAnonimo
+        ) {
+
+            resultadosGenero.hidden =
+                true;
+
+
+            if (selectorGenero) {
+
+                selectorGenero.setAttribute(
+                    'aria-expanded',
+                    'false'
+                );
+
+
+                selectorGenero.classList.remove(
+                    'genero-select--activo'
+                );
+            }
+        }
 
 
         /* =================================================

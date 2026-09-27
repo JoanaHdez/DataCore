@@ -120,6 +120,36 @@
 
 
 /* =========================================================
+   CAMPOS DESHABILITADOS POR ANONIMATO
+========================================================= */
+
+#editar-quejoso:disabled,
+#editar-edad:disabled,
+#editar-telefono:disabled,
+#editar-correo:disabled,
+#editar-direccion-quejoso:disabled {
+    color: #8799a8;
+
+    background: #f3f6f8;
+
+    border-color: #dbe3e9;
+
+    cursor: not-allowed;
+
+    box-shadow: none;
+}
+
+
+#editar-quejoso:disabled::placeholder,
+#editar-edad:disabled::placeholder,
+#editar-telefono:disabled::placeholder,
+#editar-correo:disabled::placeholder,
+#editar-direccion-quejoso:disabled::placeholder {
+    color: #9aa9b5;
+}
+
+
+/* =========================================================
    OPCIÓN SELECCIONADA
 ========================================================= */
 
@@ -672,4 +702,45 @@
 
         padding: 16px;
     }
+}
+
+
+/* =========================================================
+   DIRECCION PARA NOTIFICACION DESHABILITADA POR ANONIMATO
+========================================================= */
+
+#editar-seccion-direccion-notificacion.editar-reporte-seccion--disabled {
+    background:
+        linear-gradient(
+            180deg,
+            #f7fbfe 0%,
+            #f2f8fc 100%
+        );
+
+    border-color: #b9d8ea;
+    border-left: 4px solid #1681c4;
+
+    box-shadow:
+        0 3px 10px rgba(24, 56, 88, 0.04);
+}
+
+
+#editar-seccion-direccion-notificacion.editar-reporte-seccion--disabled
+.detalle-reporte-seccion__header {
+    background:
+        linear-gradient(
+            90deg,
+            #f7fbfe 0%,
+            #eef7fc 100%
+        );
+}
+
+
+#editar-seccion-direccion-notificacion.editar-reporte-seccion--disabled
+input:disabled,
+#editar-seccion-direccion-notificacion.editar-reporte-seccion--disabled
+textarea:disabled,
+#editar-seccion-direccion-notificacion.editar-reporte-seccion--disabled
+button:disabled {
+    cursor: not-allowed;
 }

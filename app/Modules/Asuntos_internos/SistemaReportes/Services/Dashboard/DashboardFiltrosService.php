@@ -311,8 +311,8 @@ class DashboardFiltrosService
         ===================================================== */
 
         $clasificaciones = [
-            'Interna',
-            'Externa',
+            'INTERNA',
+            'EXTERNA',
         ];
 
 

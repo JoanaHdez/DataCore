@@ -499,6 +499,19 @@
 }
 
 
+.genero-select:disabled {
+    color: #8999a8;
+
+    background: #eef2f5;
+
+    border-color: #dde5eb;
+
+    cursor: not-allowed;
+
+    opacity: 0.75;
+}
+
+
 /* =========================================================
    RESULTADOS
 ========================================================= */
