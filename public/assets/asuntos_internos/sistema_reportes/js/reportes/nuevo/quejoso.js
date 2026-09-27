@@ -512,37 +512,47 @@ function inicializarQuejosoAnonimo() {
         );
 
 
-    /*
-     * Solo se deshabilitan los datos personales.
-     *
-     * La canalización debe permanecer disponible
-     * aunque la queja sea anónima.
-     */
     const camposQuejoso = [
 
-        document.querySelector(
-            '#quejoso'
-        ),
+    document.querySelector(
+        '#quejoso'
+    ),
 
-        document.querySelector(
-            '#edad'
-        ),
+    document.querySelector(
+        '#edad'
+    ),
 
-        document.querySelector(
-            '#genero'
-        ),
+    document.querySelector(
+        '#genero'
+    ),
 
-        document.querySelector(
-            '#telefono'
-        ),
+    document.querySelector(
+        '#telefono'
+    ),
 
-        document.querySelector(
-            '#correo'
-        ),
+    document.querySelector(
+        '#correo'
+    ),
 
-        document.querySelector(
-            '#direccion_quejoso'
-        ),
+    document.querySelector(
+        '#calle_quejoso'
+    ),
+
+    document.querySelector(
+        '#numero_quejoso'
+    ),
+
+    document.querySelector(
+        '#colonia_quejoso'
+    ),
+
+    document.querySelector(
+        '#municipio_quejoso'
+    ),
+
+    document.querySelector(
+        '#estado_quejoso'
+    ),
     ];
 
 

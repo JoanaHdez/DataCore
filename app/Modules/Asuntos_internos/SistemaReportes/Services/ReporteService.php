@@ -883,22 +883,18 @@ class ReporteService
 
                 $datosReporte['origen_estado'] =
                     'manual';
-
             } elseif ($sinSancionesNuevo) {
 
                 $datosReporte['origen_estado'] =
                     'sin_sancion';
-
             } elseif ($bajaVoluntariaNuevo) {
 
                 $datosReporte['origen_estado'] =
                     'baja_voluntaria';
-
             } elseif ($desistirNuevo) {
 
                 $datosReporte['origen_estado'] =
                     'desistimiento';
-
             } elseif (
                 $estadoNuevo !== $estadoAnterior
                 || $teniaSituacionEspecial
@@ -906,7 +902,6 @@ class ReporteService
 
                 $datosReporte['origen_estado'] =
                     'manual';
-
             } else {
 
                 $datosReporte['origen_estado'] =
@@ -954,7 +949,6 @@ class ReporteService
 
                 $claveFolioActual =
                     'QJV';
-
             } elseif (
                 str_starts_with(
                     $folioActual,
@@ -964,7 +958,6 @@ class ReporteService
 
                 $claveFolioActual =
                     'QJF';
-
             } elseif (
                 str_starts_with(
                     $folioActual,
@@ -1035,7 +1028,6 @@ class ReporteService
                         'No fue posible generar el nuevo folio.'
                     );
                 }
-
             } else {
 
                 /*
@@ -1308,7 +1300,6 @@ class ReporteService
                         'eliminado' =>
                         1,
                     ]);
-
             } else {
 
                 /*
@@ -1412,7 +1403,6 @@ class ReporteService
                 ),
 
             ];
-
         } catch (\Throwable $e) {
 
             /* =====================================================
@@ -1851,11 +1841,119 @@ class ReporteService
                 ),
 
 
-            'direccion_quejoso' =>
+            /* =================================================
+            QUEJOSO
+            ================================================= */
+
+            'es_anonimo' =>
+            $esAnonimo
+                ? 1
+                : 0,
+
+
+            'numero_anonimo' =>
+            $esAnonimo
+                ? $numeroAnonimo
+                : null,
+
+
+            'nombre_quejoso' =>
+            $esAnonimo
+                ? null
+                : $this->valorRequeridoAlternativo(
+                    $datos,
+                    [
+                        'nombre_quejoso',
+                        'quejoso',
+                    ],
+                    'El nombre del quejoso es obligatorio.'
+                ),
+
+
+            'edad_quejoso' =>
+            $esAnonimo
+                ? null
+                : $this->edadValida(
+                    $datos['edad_quejoso']
+                        ?? $datos['edad']
+                        ?? null
+                ),
+
+
+            'genero_quejoso' =>
+            $esAnonimo
+                ? null
+                : $this->valorRequeridoAlternativo(
+                    $datos,
+                    [
+                        'genero_quejoso',
+                        'genero',
+                    ],
+                    'El género del quejoso es obligatorio.'
+                ),
+
+
+            'telefono_quejoso' =>
             $esAnonimo
                 ? null
                 : $this->valorNullable(
-                    $datos['direccion_quejoso']
+                    $datos['telefono_quejoso']
+                        ?? $datos['telefono']
+                        ?? null
+                ),
+
+
+            'correo_quejoso' =>
+            $esAnonimo
+                ? null
+                : $this->valorNullable(
+                    $datos['correo_quejoso']
+                        ?? $datos['correo']
+                        ?? null
+                ),
+
+
+            'calle_quejoso' =>
+            $esAnonimo
+                ? null
+                : $this->valorNullable(
+                    $datos['calle_quejoso']
+                        ?? null
+                ),
+
+
+            'numero_quejoso' =>
+            $esAnonimo
+                ? null
+                : $this->valorNullable(
+                    $datos['numero_quejoso']
+                        ?? null
+                ),
+
+
+            'colonia_quejoso' =>
+            $esAnonimo
+                ? null
+                : $this->valorNullable(
+                    $datos['colonia_quejoso']
+                        ?? null
+                ),
+
+
+            'municipio_quejoso' =>
+            $esAnonimo
+                ? null
+                : $this->valorNullable(
+                    $datos['municipio_quejoso']
+                        ?? null
+                ),
+
+
+            'estado_quejoso' =>
+            $esAnonimo
+                ? null
+                : $this->valorNullable(
+                    $datos['estado_quejoso']
                         ?? null
                 ),
 

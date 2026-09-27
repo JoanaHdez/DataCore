@@ -347,16 +347,97 @@
 
             <div class="report-field report-field--full">
 
-                <label for="direccion_quejoso">
-                    Dirección del quejoso
+                <div class="report-field__group-header">
+
+                    <strong>
+                        Dirección del quejoso
+                    </strong>
+
+                    <small class="report-field__help">
+                        Ingresa la dirección proporcionada por el quejoso.
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                CALLE
+            ====================================================== -->
+
+            <div class="report-field">
+
+                <label for="calle_quejoso">
+                    Calle
                 </label>
 
-                <textarea id="direccion_quejoso" name="direccion_quejoso" class="report-textarea" rows="3"
-                    placeholder="Ingresa la dirección del quejoso" autocomplete="street-address"></textarea>
+                <input type="text" id="calle_quejoso" name="calle_quejoso" class="report-input"
+                    placeholder="Ingresa la calle" autocomplete="address-line1">
 
-                <small class="report-field__help">
-                    Ingresa la dirección proporcionada por el quejoso.
-                </small>
+            </div>
+
+
+            <!-- =====================================================
+                NÚMERO
+            ====================================================== -->
+
+            <div class="report-field">
+
+                <label for="numero_quejoso">
+                    Número
+                </label>
+
+                <input type="text" id="numero_quejoso" name="numero_quejoso" class="report-input"
+                    placeholder="Ingresa el número" autocomplete="address-line2">
+
+            </div>
+
+
+            <!-- =====================================================
+                COLONIA
+            ====================================================== -->
+
+            <div class="report-field">
+
+                <label for="colonia_quejoso">
+                    Colonia
+                </label>
+
+                <input type="text" id="colonia_quejoso" name="colonia_quejoso" class="report-input"
+                    placeholder="Ingresa la colonia" autocomplete="off">
+
+            </div>
+
+
+            <!-- =====================================================
+                MUNICIPIO
+            ====================================================== -->
+
+            <div class="report-field">
+
+                <label for="municipio_quejoso">
+                    Municipio
+                </label>
+
+                <input type="text" id="municipio_quejoso" name="municipio_quejoso" class="report-input"
+                    placeholder="Ingresa el municipio" autocomplete="address-level2">
+
+            </div>
+
+
+            <!-- =====================================================
+                ESTADO
+            ====================================================== -->
+
+            <div class="report-field report-field--full">
+
+                <label for="estado_quejoso">
+                    Estado
+                </label>
+
+                <input type="text" id="estado_quejoso" name="estado_quejoso" class="report-input"
+                    placeholder="Ingresa el estado" autocomplete="address-level1">
 
             </div>
 
