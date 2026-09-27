@@ -36,6 +36,12 @@ export function cargarIdentificacionEditar(
         );
 
 
+    const textoTipoFolio =
+        modal.querySelector(
+            '#editar-tipo-folio-select-texto'
+        );
+
+
     const folioActual =
         String(
             reporte.folio
@@ -82,6 +88,15 @@ export function cargarIdentificacionEditar(
 
         selectTipoFolio.value =
             claveFolio;
+    }
+
+
+    if (textoTipoFolio) {
+
+        textoTipoFolio.textContent =
+            obtenerTextoTipoFolioEditar(
+                claveFolio
+            );
     }
 
 
@@ -161,4 +176,30 @@ export function cargarIdentificacionEditar(
         reporte.no_oficio
         ?? reporte.numero_oficio
     );
+}
+
+
+function obtenerTextoTipoFolioEditar(
+    claveFolio
+) {
+
+    switch (
+        String(
+            claveFolio
+            || ''
+        )
+            .trim()
+            .toUpperCase()
+    ) {
+
+        case 'QJV':
+            return 'QJV - Queja verbal';
+
+        case 'QJF':
+            return 'QJF - Queja foránea';
+
+        case 'QJ':
+        default:
+            return 'QJ - Queja';
+    }
 }

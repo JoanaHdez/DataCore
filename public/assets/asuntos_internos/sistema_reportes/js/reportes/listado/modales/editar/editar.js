@@ -1765,13 +1765,13 @@ function limpiarVisualQjfClasificacionEditar(
 
     const valores = {
         '#editar-clasificacion':
-            '',
+            'NO APLICA',
 
         '#editar-inspector':
-            '',
+            'NO APLICA',
 
         '#editar-inspector-busqueda':
-            '',
+            'NO APLICA',
 
         '#editar-inspector-plantilla-id':
             '',
@@ -1780,10 +1780,10 @@ function limpiarVisualQjfClasificacionEditar(
             '',
 
         '#editar-investigador':
-            '',
+            'NO APLICA',
 
         '#editar-investigador-busqueda':
-            '',
+            'NO APLICA',
 
         '#editar-investigador-plantilla-id':
             '',
@@ -1795,7 +1795,7 @@ function limpiarVisualQjfClasificacionEditar(
             '',
 
         '#editar-estado-actual':
-            '',
+            'Finalizado',
 
         '#editar-quien-emite-resolucion':
             '',
@@ -1859,10 +1859,10 @@ function limpiarVisualQjfClasificacionEditar(
 
     const textos = {
         '#editar-clasificacion-select-texto':
-            'Selecciona una clasificación',
+            'NO APLICA',
 
         '#editar-estado-select-texto':
-            'Selecciona un estado',
+            'Finalizado',
 
         '#editar-inspector-nombre':
             '—',

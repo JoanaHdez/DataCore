@@ -173,7 +173,7 @@ class ReporteService
 
 
                 $datos['estado_actual'] =
-                    'Pendiente';
+                    'Finalizado';
 
 
                 $datos['sin_sanciones'] =
@@ -724,7 +724,7 @@ class ReporteService
 
 
                 $datos['estado_actual'] =
-                    'Pendiente';
+                    'Finalizado';
 
 
                 $datos['sin_sanciones'] =
@@ -882,7 +882,7 @@ class ReporteService
                 */
 
                 $datosReporte['origen_estado'] =
-                    null;
+                    'manual';
 
             } elseif ($sinSancionesNuevo) {
 

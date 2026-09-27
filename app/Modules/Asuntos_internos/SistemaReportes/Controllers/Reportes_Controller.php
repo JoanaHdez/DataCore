@@ -1997,6 +1997,268 @@ class Reportes_Controller extends BaseController
                 );
 
 
+            $limpiarTextoDetalle =
+                static function ($valor): string {
+
+                    $texto =
+                        trim(
+                            (string) (
+                                $valor
+                                ?? ''
+                            )
+                        );
+
+
+                    if ($texto === '') {
+                        return '';
+                    }
+
+
+                    if (
+                        mb_check_encoding(
+                            $texto,
+                            'UTF-8'
+                        )
+                    ) {
+
+                        return $texto;
+                    }
+
+
+                    $textoConvertido =
+                        mb_convert_encoding(
+                            $texto,
+                            'UTF-8',
+                            'ISO-8859-1'
+                        );
+
+
+                    return mb_check_encoding(
+                        $textoConvertido,
+                        'UTF-8'
+                    )
+                        ? $textoConvertido
+                        : '';
+                };
+
+
+            $folioReporte =
+                strtoupper(
+                    trim(
+                        (string) (
+                            $reporte['folio']
+                            ?? ''
+                        )
+                    )
+                );
+
+
+            $nomenclaturaReporte =
+                strtoupper(
+                    trim(
+                        (string) (
+                            $reporte['nomenclatura']
+                            ?? ''
+                        )
+                    )
+                );
+
+
+            $esQjf =
+                substr(
+                    $folioReporte,
+                    0,
+                    4
+                ) === 'QJF-'
+                || strpos(
+                    $nomenclaturaReporte,
+                    '/QJF/'
+                ) !== false;
+
+
+            $resolverResponsableDetalle =
+                static function (
+                    string $nombre,
+                    bool $esQjf
+                ) use (
+                    $dbPlantilla,
+                    $limpiarTextoDetalle
+                ): ?array {
+
+                    $nombreLimpio =
+                        $limpiarTextoDetalle(
+                            $nombre
+                        );
+
+
+                    if (
+                        $esQjf
+                        || strtoupper(
+                            $nombreLimpio
+                        ) === 'NO APLICA'
+                    ) {
+
+                        return [
+                            'no_aplica' =>
+                                true,
+                        ];
+                    }
+
+
+                    if ($nombreLimpio === '') {
+                        return null;
+                    }
+
+
+                    $persona =
+                        $dbPlantilla
+                        ->table(
+                            'plantilla'
+                        )
+                        ->select([
+                            'ID',
+                            'PERSCOD',
+                            'NOMBRE_COMPLETO',
+                            'NO_NOMINA',
+                            'AREA',
+                            'TURNO',
+                        ])
+                        ->where(
+                            'ESTADO',
+                            'ACTIVO'
+                        )
+                        ->where(
+                            'TIPO_NOMINA',
+                            'RAMO 33'
+                        )
+                        ->where(
+                            'AREA',
+                            'COORDINACION DE ASUNTOS INTERNOS'
+                        )
+                        ->where(
+                            'NOMBRE_COMPLETO',
+                            $nombreLimpio
+                        )
+                        ->limit(1)
+                        ->get()
+                        ->getRowArray();
+
+
+                    if (!$persona) {
+
+                        return [
+                            'no_aplica' =>
+                                false,
+
+                            'id' =>
+                                0,
+
+                            'perscod' =>
+                                '',
+
+                            'nombre' =>
+                                $nombreLimpio,
+
+                            'nomina' =>
+                                '',
+
+                            'area' =>
+                                '',
+
+                            'turno' =>
+                                '',
+
+                            'foto' =>
+                                null,
+                        ];
+                    }
+
+
+                    $perscod =
+                        $limpiarTextoDetalle(
+                            $persona['PERSCOD']
+                            ?? ''
+                        );
+
+
+                    $foto =
+                        null;
+
+
+                    if ($perscod !== '') {
+
+                        $foto =
+                            'http://10.8.6.2:8083/dgsc/images/fotos/'
+                            . rawurlencode(
+                                $perscod
+                            )
+                            . '/F.F.R.E.jpg';
+                    }
+
+
+                    return [
+                        'no_aplica' =>
+                            false,
+
+                        'id' =>
+                            (int) (
+                                $persona['ID']
+                                ?? 0
+                            ),
+
+                        'perscod' =>
+                            $perscod,
+
+                        'nombre' =>
+                            $limpiarTextoDetalle(
+                                $persona['NOMBRE_COMPLETO']
+                                ?? $nombreLimpio
+                            ),
+
+                        'nomina' =>
+                            $limpiarTextoDetalle(
+                                $persona['NO_NOMINA']
+                                ?? ''
+                            ),
+
+                        'area' =>
+                            $limpiarTextoDetalle(
+                                $persona['AREA']
+                                ?? ''
+                            ),
+
+                        'turno' =>
+                            $limpiarTextoDetalle(
+                                $persona['TURNO']
+                                ?? ''
+                            ),
+
+                        'foto' =>
+                            $foto,
+                    ];
+                };
+
+
+            $reporte['inspector_detalle'] =
+                $resolverResponsableDetalle(
+                    (string) (
+                        $reporte['inspector']
+                        ?? ''
+                    ),
+                    $esQjf
+                );
+
+
+            $reporte['investigador_detalle'] =
+                $resolverResponsableDetalle(
+                    (string) (
+                        $reporte['investigador']
+                        ?? ''
+                    ),
+                    $esQjf
+                );
+
+
             foreach ($personalBD as $persona) {
 
                 $plantillaId =

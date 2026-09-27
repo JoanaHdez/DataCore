@@ -32,31 +32,45 @@ export function cargarClasificacionDetalle(
        DATOS GENERALES
     ===================================================== */
 
+    const esQjf =
+        esReporteQjfDetalle(
+            reporte
+        );
+
+
     asignarTextoDetalle(
         modal,
         '#detalle-clasificacion',
-        reporte.clasificacion
+        esQjf
+            ? 'NO APLICA'
+            : reporte.clasificacion
     );
 
 
-    asignarTextoDetalle(
+    renderizarResponsableDetalle(
         modal,
         '#detalle-inspector',
-        reporte.inspector
+        reporte.inspector_detalle,
+        reporte.inspector,
+        esQjf
     );
 
 
-    asignarTextoDetalle(
+    renderizarResponsableDetalle(
         modal,
         '#detalle-investigador',
-        reporte.investigador
+        reporte.investigador_detalle,
+        reporte.investigador,
+        esQjf
     );
 
 
     asignarTextoDetalle(
         modal,
         '#detalle-estado-actual',
-        reporte.estado_actual
+        esQjf
+            ? 'Finalizado'
+            : reporte.estado_actual
     );
 
 
@@ -98,6 +112,233 @@ export function cargarClasificacionDetalle(
         modal,
         motivos
     );
+}
+
+
+/* =========================================================
+   QJF
+========================================================= */
+
+function esReporteQjfDetalle(
+    reporte
+) {
+
+    const folio =
+        String(
+            reporte?.folio
+            ?? ''
+        )
+            .trim()
+            .toUpperCase();
+
+
+    const nomenclatura =
+        String(
+            reporte?.nomenclatura
+            ?? ''
+        )
+            .trim()
+            .toUpperCase();
+
+
+    return folio.startsWith(
+        'QJF-'
+    )
+        || nomenclatura.includes(
+            '/QJF/'
+        );
+}
+
+
+/* =========================================================
+   RESPONSABLES
+========================================================= */
+
+function obtenerInicialResponsableDetalle(
+    valor
+) {
+
+    const partes =
+        String(
+            valor
+            || ''
+        )
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean);
+
+
+    if (partes.length === 0) {
+        return '—';
+    }
+
+
+    return partes[0]
+        .charAt(0)
+        .toUpperCase();
+}
+
+
+function renderizarResponsableDetalle(
+    modal,
+    selector,
+    responsable,
+    nombreRespaldo,
+    esQjf
+) {
+
+    const contenedor =
+        modal.querySelector(
+            selector
+        );
+
+
+    if (!contenedor) {
+        return;
+    }
+
+
+    const noAplica =
+        esQjf
+        || responsable?.no_aplica === true
+        || String(
+            nombreRespaldo
+            || ''
+        )
+            .trim()
+            .toUpperCase() === 'NO APLICA';
+
+
+    if (noAplica) {
+
+        contenedor.innerHTML =
+            `
+            <div class="detalle-responsable-card detalle-responsable-card--no-aplica">
+                <div class="detalle-responsable-card__avatar">
+                    <span>NA</span>
+                </div>
+
+                <div class="detalle-responsable-card__datos">
+                    <strong>NO APLICA</strong>
+                    <span>Sin responsable asignado para QJF</span>
+                </div>
+            </div>
+            `;
+
+        return;
+    }
+
+
+    const nombre =
+        String(
+            responsable?.nombre
+            ?? nombreRespaldo
+            ?? ''
+        ).trim();
+
+
+    if (nombre === '') {
+
+        contenedor.innerHTML =
+            '<span class="detalle-responsable-card__vacio">—</span>';
+
+        return;
+    }
+
+
+    const nomina =
+        String(
+            responsable?.nomina
+            ?? ''
+        ).trim();
+
+
+    const area =
+        String(
+            responsable?.area
+            ?? ''
+        ).trim();
+
+
+    const turno =
+        String(
+            responsable?.turno
+            ?? ''
+        ).trim();
+
+
+    const foto =
+        String(
+            responsable?.foto
+            ?? ''
+        ).trim();
+
+
+    const inicial =
+        obtenerInicialResponsableDetalle(
+            nombre
+        );
+
+
+    const avatar =
+        foto !== ''
+            ? `
+                <img
+                    src="${escaparHtmlDetalle(foto)}"
+                    alt="${escaparHtmlDetalle(nombre)}"
+                    onerror="this.hidden=true;this.nextElementSibling.hidden=false;"
+                >
+                <span hidden>${escaparHtmlDetalle(inicial)}</span>
+            `
+            : `
+                <span>${escaparHtmlDetalle(inicial)}</span>
+            `;
+
+
+    const secundarios = [];
+
+
+    if (nomina !== '') {
+
+        secundarios.push(
+            `<span>Nómina: ${escaparHtmlDetalle(nomina)}</span>`
+        );
+    }
+
+
+    if (area !== '') {
+
+        secundarios.push(
+            `<span>${escaparHtmlDetalle(area)}</span>`
+        );
+    }
+
+
+    if (turno !== '') {
+
+        secundarios.push(
+            `<span>Turno: ${escaparHtmlDetalle(turno)}</span>`
+        );
+    }
+
+
+    contenedor.innerHTML =
+        `
+        <div class="detalle-responsable-card">
+            <div class="detalle-responsable-card__avatar">
+                ${avatar}
+            </div>
+
+            <div class="detalle-responsable-card__datos">
+                <strong>${escaparHtmlDetalle(nombre)}</strong>
+                ${
+                    secundarios.length > 0
+                        ? secundarios.join('')
+                        : '<span>Sin datos adicionales</span>'
+                }
+            </div>
+        </div>
+        `;
 }
 
 

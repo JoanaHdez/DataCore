@@ -19,7 +19,7 @@
              CLASIFICACIÓN
         ====================================================== -->
 
-        <div class="detalle-reporte-campo">
+        <div class="detalle-reporte-campo detalle-clasificacion__campo-compacto">
 
             <span>
                 Clasificación
@@ -36,15 +36,15 @@
              INSPECTOR
         ====================================================== -->
 
-        <div class="detalle-reporte-campo">
+        <div class="detalle-reporte-campo detalle-clasificacion__responsable-campo">
 
             <span>
                 Inspector
             </span>
 
-            <strong id="detalle-inspector">
+            <div class="detalle-clasificacion__responsable" id="detalle-inspector">
                 —
-            </strong>
+            </div>
 
         </div>
 
@@ -53,15 +53,15 @@
              INVESTIGADOR
         ====================================================== -->
 
-        <div class="detalle-reporte-campo">
+        <div class="detalle-reporte-campo detalle-clasificacion__responsable-campo">
 
             <span>
                 Investigador
             </span>
 
-            <strong id="detalle-investigador">
+            <div class="detalle-clasificacion__responsable" id="detalle-investigador">
                 —
-            </strong>
+            </div>
 
         </div>
 
@@ -70,7 +70,7 @@
              ESTADO
         ====================================================== -->
 
-        <div class="detalle-reporte-campo">
+        <div class="detalle-reporte-campo detalle-clasificacion__campo-compacto">
 
             <span>
                 Estado
