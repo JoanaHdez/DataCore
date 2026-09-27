@@ -610,7 +610,11 @@ class ListadoExcelService
                 $this->columna('simple', 'genero', 'Género'),
                 $this->columna('simple', 'telefono', 'Número de teléfono'),
                 $this->columna('simple', 'correo', 'Correo electrónico'),
-                $this->columna('simple', 'direccion_quejoso', 'Dirección del quejoso'),
+                $this->columna('simple', 'calle_quejoso', 'Calle del quejoso'),
+                $this->columna('simple', 'numero_quejoso', 'Número del quejoso'),
+                $this->columna('simple', 'colonia_quejoso', 'Colonia del quejoso'),
+                $this->columna('simple', 'municipio_quejoso', 'Municipio del quejoso'),
+                $this->columna('simple', 'estado_quejoso', 'Estado del quejoso'),
                 $this->columna('simple', 'canalizacion', 'Canalización'),
                 $this->columna('simple', 'canalizacion_otro', 'Otra área de canalización'),
             ]

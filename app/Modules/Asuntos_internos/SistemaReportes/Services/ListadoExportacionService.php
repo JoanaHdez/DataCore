@@ -1130,8 +1130,24 @@ class ListadoExportacionService
                 $reporte['correo_quejoso']
                     ?? '',
 
-                'direccion_quejoso' =>
-                $reporte['direccion_quejoso']
+                'calle_quejoso' =>
+                $reporte['calle_quejoso']
+                    ?? '',
+
+                'numero_quejoso' =>
+                $reporte['numero_quejoso']
+                    ?? '',
+
+                'colonia_quejoso' =>
+                $reporte['colonia_quejoso']
+                    ?? '',
+
+                'municipio_quejoso' =>
+                $reporte['municipio_quejoso']
+                    ?? '',
+
+                'estado_quejoso' =>
+                $reporte['estado_quejoso']
                     ?? '',
 
                 'canalizacion' =>

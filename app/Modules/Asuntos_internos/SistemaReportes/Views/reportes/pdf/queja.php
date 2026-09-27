@@ -922,7 +922,7 @@ if (
                 <?= $linea(
                         $valor(
                             $reporte,
-                            'direccion_quejoso'
+                            'calle_quejoso'
                         )
                     ) ?>
 
@@ -940,6 +940,15 @@ if (
                 <?php if ($esAnonima): ?>
 
                 ANÓNIMO
+
+                <?php else: ?>
+
+                <?= $linea(
+                        $valor(
+                            $reporte,
+                            'numero_quejoso'
+                        )
+                    ) ?>
 
                 <?php endif; ?>
 
