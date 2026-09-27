@@ -118,11 +118,45 @@ export function cargarQuejosoDetalle(
         reporte.correo_quejoso
     );
 
+
+    /* =====================================================
+       DIRECCIÓN DEL QUEJOSO
+    ===================================================== */
+
     asignarTextoDetalle(
         modal,
-        '#detalle-direccion-quejoso',
-        reporte.direccion_quejoso
+        '#detalle-calle-quejoso',
+        reporte.calle_quejoso
     );
+
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-numero-quejoso',
+        reporte.numero_quejoso
+    );
+
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-colonia-quejoso',
+        reporte.colonia_quejoso
+    );
+
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-municipio-quejoso',
+        reporte.municipio_quejoso
+    );
+
+
+    asignarTextoDetalle(
+        modal,
+        '#detalle-estado-quejoso',
+        reporte.estado_quejoso
+    );
+
 
     /* =====================================================
        CANALIZACIÓN
@@ -179,7 +213,6 @@ export function cargarQuejosoDetalle(
         canalizacionOtro
     );
 }
-
 
 /* =========================================================
    CONVERTIR VALOR A BOOLEANO

@@ -2083,6 +2083,10 @@ function actualizarEstadoQjfEditar(
             false;
 
 
+        /* =================================================
+           QJF
+        ================================================= */
+
         if (esQjf) {
 
             guardarSnapshotQjfClasificacionEditar(
@@ -2103,10 +2107,19 @@ function actualizarEstadoQjfEditar(
         }
 
 
-        seccionClasificacion.classList.toggle(
-            'editar-reporte-seccion__bloque--disabled',
-            esQjf
-        );
+        /*
+         * IMPORTANTE:
+         *
+         * Ya NO agregamos la clase:
+         *
+         * editar-reporte-seccion__bloque--disabled
+         *
+         * porque esa clase cambia la apariencia
+         * de toda la sección.
+         *
+         * La sección conserva su diseño normal.
+         * Solamente se deshabilitan sus controles.
+         */
 
 
         seccionClasificacion.setAttribute(
@@ -2117,6 +2130,10 @@ function actualizarEstadoQjfEditar(
         );
 
 
+        /* =================================================
+           CONTROLES DE CLASIFICACIÓN
+        ================================================= */
+
         const controlesClasificacion =
             seccionClasificacion.querySelectorAll(
                 'input, select, textarea, button'
@@ -2125,6 +2142,10 @@ function actualizarEstadoQjfEditar(
 
         controlesClasificacion.forEach(
             (control) => {
+
+                /* =========================================
+                   QJF
+                ========================================= */
 
                 if (esQjf) {
 
@@ -2155,6 +2176,10 @@ function actualizarEstadoQjfEditar(
                 }
 
 
+                /* =========================================
+                   RESTAURAR ESTADO ORIGINAL
+                ========================================= */
+
                 if (
                     control.dataset
                         .qjfEditarClasificacionEstadoGuardado
@@ -2179,6 +2204,10 @@ function actualizarEstadoQjfEditar(
         );
 
 
+        /* =================================================
+           RESTAURAR MOTIVOS
+        ================================================= */
+
         if (
             !esQjf
             && snapshotRestaurado
@@ -2200,6 +2229,7 @@ function actualizarEstadoQjfEditar(
                         '#editar-desistir'
                     )?.checked
                 );
+
 
             establecerMotivosHabilitadosEditar(
                 modal,

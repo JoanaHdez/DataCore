@@ -853,6 +853,21 @@ export function establecerAnonimoEditar(
         );
 
 
+    /*
+     * IMPORTANTE:
+     *
+     * Ya NO agregamos ninguna clase visual al contenedor
+     * completo de Dirección para notificación.
+     *
+     * La sección conserva:
+     * - fondo blanco
+     * - header normal
+     * - borde normal
+     * - sombra normal
+     *
+     * Solamente se deshabilitan sus controles.
+     */
+
     const controlesNotificacion =
         seccionNotificacion
             ? Array.from(
@@ -863,23 +878,33 @@ export function establecerAnonimoEditar(
             : [];
 
 
-    if (seccionNotificacion) {
-
-        seccionNotificacion.classList.toggle(
-            'editar-reporte-seccion--disabled',
-            esAnonimo
-        );
-    }
-
-
     /* =====================================================
-       CONTROLES DE DIRECCIÓN
+       CONTROLES DE DIRECCIÓN PARA NOTIFICACIÓN
     ===================================================== */
 
     controlesNotificacion.forEach(
         (control) => {
 
             if (!control) {
+                return;
+            }
+
+
+            /*
+             * Los controles internos de Google Maps
+             * no se modifican individualmente.
+             *
+             * El mapa se bloquea después mediante
+             * pointer-events.
+             */
+
+            if (
+                mapaNotificacion
+                && mapaNotificacion.contains(
+                    control
+                )
+            ) {
+
                 return;
             }
 
@@ -1023,7 +1048,6 @@ export function establecerAnonimoEditar(
         modal
     );
 }
-
 /* =========================================================
    SELECCIONAR CANALIZACIÓN
 ========================================================= */

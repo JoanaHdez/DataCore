@@ -139,13 +139,98 @@
             DIRECCIÓN DEL QUEJOSO
         ====================================================== -->
 
-        <div class="detalle-reporte-campo detalle-reporte-campo--full" id="detalle-direccion-quejoso-contenedor">
+        <div class="detalle-reporte-campo detalle-reporte-campo--full">
 
             <span>
                 Dirección del quejoso
             </span>
 
-            <strong id="detalle-direccion-quejoso">
+            <strong>
+                Datos de ubicación proporcionados por el quejoso
+            </strong>
+
+        </div>
+
+
+        <!-- =====================================================
+            CALLE
+        ====================================================== -->
+
+        <div class="detalle-reporte-campo">
+
+            <span>
+                Calle
+            </span>
+
+            <strong id="detalle-calle-quejoso">
+                —
+            </strong>
+
+        </div>
+
+
+        <!-- =====================================================
+            NÚMERO
+        ====================================================== -->
+
+        <div class="detalle-reporte-campo">
+
+            <span>
+                Número
+            </span>
+
+            <strong id="detalle-numero-quejoso">
+                —
+            </strong>
+
+        </div>
+
+
+        <!-- =====================================================
+            COLONIA
+        ====================================================== -->
+
+        <div class="detalle-reporte-campo">
+
+            <span>
+                Colonia
+            </span>
+
+            <strong id="detalle-colonia-quejoso">
+                —
+            </strong>
+
+        </div>
+
+
+        <!-- =====================================================
+            MUNICIPIO
+        ====================================================== -->
+
+        <div class="detalle-reporte-campo">
+
+            <span>
+                Municipio
+            </span>
+
+            <strong id="detalle-municipio-quejoso">
+                —
+            </strong>
+
+        </div>
+
+
+        <!-- =====================================================
+            ESTADO
+        ====================================================== -->
+
+        <div class="detalle-reporte-campo detalle-reporte-campo--full">
+
+            <span>
+                Estado
+            </span>
+
+            <strong id="detalle-estado-quejoso">
                 —
             </strong>
 

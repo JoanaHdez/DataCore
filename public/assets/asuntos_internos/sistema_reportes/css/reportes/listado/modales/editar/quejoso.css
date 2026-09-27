@@ -744,3 +744,83 @@ textarea:disabled,
 button:disabled {
     cursor: not-allowed;
 }
+
+
+/* =========================================================
+   DIRECCIÓN DEL QUEJOSO
+   CAMPOS DESHABILITADOS POR ANONIMATO
+   MISMO ESTILO QUE LOS DEMÁS CAMPOS
+========================================================= */
+
+#editar-calle-quejoso:disabled,
+#editar-numero-quejoso:disabled,
+#editar-colonia-quejoso:disabled,
+#editar-municipio-quejoso:disabled,
+#editar-estado-quejoso:disabled {
+
+    color: #8799a8;
+
+    background: #f3f6f8;
+
+    border-color: #dbe3e9;
+
+    cursor: not-allowed;
+
+    box-shadow: none;
+}
+
+
+#editar-calle-quejoso:disabled::placeholder,
+#editar-numero-quejoso:disabled::placeholder,
+#editar-colonia-quejoso:disabled::placeholder,
+#editar-municipio-quejoso:disabled::placeholder,
+#editar-estado-quejoso:disabled::placeholder {
+
+    color: #9aa9b5;
+}
+
+/* =========================================================
+   DIRECCIÓN PARA NOTIFICACIÓN
+   CAMPOS DESHABILITADOS POR ANONIMATO
+========================================================= */
+
+#modal-editar-reporte
+#editar-seccion-direccion-notificacion
+input:disabled,
+
+#modal-editar-reporte
+#editar-seccion-direccion-notificacion
+select:disabled,
+
+#modal-editar-reporte
+#editar-seccion-direccion-notificacion
+textarea:disabled {
+
+    color: #8799a8;
+
+    background: #f3f6f8;
+
+    border-color: #dbe3e9;
+
+    cursor: not-allowed;
+
+    box-shadow: none;
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   PLACEHOLDER
+========================================================= */
+
+#modal-editar-reporte
+#editar-seccion-direccion-notificacion
+input:disabled::placeholder,
+
+#modal-editar-reporte
+#editar-seccion-direccion-notificacion
+textarea:disabled::placeholder {
+
+    color: #9aa9b5;
+}

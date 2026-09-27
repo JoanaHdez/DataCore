@@ -1851,6 +1851,172 @@ span {
 
 
 /* =========================================================
+   QJF
+   CLASIFICACIÓN Y SEGUIMIENTO
+   CAMPOS DESHABILITADOS
+
+   La sección conserva su diseño normal.
+   Solo los controles muestran estado deshabilitado.
+========================================================= */
+
+
+/* =========================================================
+   INPUTS / SELECT / TEXTAREA
+========================================================= */
+
+#modal-editar-reporte
+#editar-seccion-clasificacion-seguimiento
+input:disabled:not([type="checkbox"]):not([type="radio"]),
+
+#modal-editar-reporte
+#editar-seccion-clasificacion-seguimiento
+select:disabled,
+
+#modal-editar-reporte
+#editar-seccion-clasificacion-seguimiento
+textarea:disabled {
+
+    color: #8799a8;
+
+    background: #f3f6f8;
+
+    border-color: #dbe3e9;
+
+    cursor: not-allowed;
+
+    box-shadow: none;
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   PLACEHOLDERS
+========================================================= */
+
+#modal-editar-reporte
+#editar-seccion-clasificacion-seguimiento
+input:disabled::placeholder,
+
+#modal-editar-reporte
+#editar-seccion-clasificacion-seguimiento
+textarea:disabled::placeholder {
+
+    color: #9aa9b5;
+}
+
+
+/* =========================================================
+   SELECTOR DE CLASIFICACIÓN
+========================================================= */
+
+#modal-editar-reporte
+#editar-seccion-clasificacion-seguimiento
+.clasificacion-select:disabled {
+
+    color: #8799a8;
+
+    background: #f3f6f8;
+
+    border-color: #dbe3e9;
+
+    cursor: not-allowed;
+
+    box-shadow: none;
+
+    opacity: 1;
+}
+
+
+#modal-editar-reporte
+#editar-seccion-clasificacion-seguimiento
+.clasificacion-select:disabled
+.clasificacion-select__texto {
+
+    color: #8799a8;
+}
+
+
+#modal-editar-reporte
+#editar-seccion-clasificacion-seguimiento
+.clasificacion-select:disabled
+.clasificacion-select__flecha {
+
+    color: #9aa9b5;
+}
+
+
+/* =========================================================
+   SELECTOR DE ESTADO
+========================================================= */
+
+#modal-editar-reporte
+#editar-seccion-clasificacion-seguimiento
+.estado-select:disabled {
+
+    color: #8799a8;
+
+    background: #f3f6f8;
+
+    border-color: #dbe3e9;
+
+    cursor: not-allowed;
+
+    box-shadow: none;
+
+    opacity: 1;
+}
+
+
+#modal-editar-reporte
+#editar-seccion-clasificacion-seguimiento
+.estado-select:disabled
+.estado-select__texto {
+
+    color: #8799a8;
+}
+
+
+#modal-editar-reporte
+#editar-seccion-clasificacion-seguimiento
+.estado-select:disabled
+.estado-select__flecha {
+
+    color: #9aa9b5;
+}
+
+
+/* =========================================================
+   CHECKBOX / RADIO DESHABILITADOS
+========================================================= */
+
+#modal-editar-reporte
+#editar-seccion-clasificacion-seguimiento
+input[type="checkbox"]:disabled,
+
+#modal-editar-reporte
+#editar-seccion-clasificacion-seguimiento
+input[type="radio"]:disabled {
+
+    cursor: not-allowed;
+
+    opacity: 0.55;
+}
+
+
+/* =========================================================
+   OPCIONES QUE CONTIENEN CHECKBOX/RADIO DESHABILITADO
+========================================================= */
+
+#modal-editar-reporte
+#editar-seccion-clasificacion-seguimiento
+.editar-report-option:has(
+    input:disabled
+) {
+
+    cursor: not-allowed;
+}
+/* =========================================================
    RESPONSIVE
 ========================================================= */
 
