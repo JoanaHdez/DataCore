@@ -227,6 +227,11 @@
 }
 
 
+.dashboard-filtros__campo[hidden] {
+    display: none !important;
+}
+
+
 .dashboard-filtros__campo label {
     padding-left: 2px;
 

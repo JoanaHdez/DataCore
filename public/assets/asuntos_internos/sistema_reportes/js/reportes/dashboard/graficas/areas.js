@@ -286,6 +286,49 @@ const datos = {
        CREAR GRÁFICA
     ===================================================== */
 
+    const totalDatos =
+        datasets.reduce(
+            (acumulado, dataset) => {
+
+                const subtotal =
+                    Array.isArray(
+                        dataset.data
+                    )
+                        ? dataset.data.reduce(
+                            (suma, valor) => {
+
+                                return (
+                                    suma
+                                    + Number(
+                                        valor
+                                        || 0
+                                    )
+                                );
+                            },
+                            0
+                        )
+                        : 0;
+
+
+                return acumulado + subtotal;
+            },
+            0
+        );
+
+
+    if (
+        sectores.length === 0
+        || totalDatos <= 0
+    ) {
+
+        mostrarPlaceholderGraficaDashboard(
+            canvas
+        );
+
+        return;
+    }
+
+
     const grafica =
         new Chart(
             canvas,
@@ -659,6 +702,53 @@ const datos = {
         grafica
     );
 
+}
+
+
+function mostrarPlaceholderGraficaDashboard(
+    canvas
+) {
+
+    const contenedor =
+        canvas?.parentElement
+        ?? null;
+
+
+    if (!contenedor) {
+        return;
+    }
+
+
+    canvas.hidden =
+        true;
+
+
+    if (
+        contenedor.querySelector(
+            '.dashboard-grafica__placeholder'
+        )
+    ) {
+        return;
+    }
+
+
+    const placeholder =
+        document.createElement(
+            'div'
+        );
+
+
+    placeholder.className =
+        'dashboard-grafica__placeholder';
+
+
+    placeholder.innerHTML =
+        '<strong>Sin datos</strong><span>Sin datos para los filtros seleccionados.</span>';
+
+
+    contenedor.appendChild(
+        placeholder
+    );
 }
 
 

@@ -106,11 +106,8 @@ function inicializarGraficaTurnos() {
         );
 
 
-    if (
-        datosTurnos.length === 0
-    ) {
-        return;
-    }
+    const sinTurnos =
+        datosTurnos.length === 0;
 
 
     /* =====================================================
@@ -181,6 +178,19 @@ function inicializarGraficaTurnos() {
                 total
             );
 
+    }
+
+
+    if (
+        sinTurnos
+        || total <= 0
+    ) {
+
+        mostrarPlaceholderGraficaDashboard(
+            canvas
+        );
+
+        return;
     }
 
 
@@ -596,4 +606,51 @@ function inicializarGraficaTurnos() {
         }
     );
 
+}
+
+
+function mostrarPlaceholderGraficaDashboard(
+    canvas
+) {
+
+    const contenedor =
+        canvas?.parentElement
+        ?? null;
+
+
+    if (!contenedor) {
+        return;
+    }
+
+
+    canvas.hidden =
+        true;
+
+
+    if (
+        contenedor.querySelector(
+            '.dashboard-grafica__placeholder'
+        )
+    ) {
+        return;
+    }
+
+
+    const placeholder =
+        document.createElement(
+            'div'
+        );
+
+
+    placeholder.className =
+        'dashboard-grafica__placeholder';
+
+
+    placeholder.innerHTML =
+        '<strong>Sin datos</strong><span>Sin datos para los filtros seleccionados.</span>';
+
+
+    contenedor.appendChild(
+        placeholder
+    );
 }

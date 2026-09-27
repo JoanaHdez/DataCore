@@ -550,7 +550,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                      ESTADO
                 ========================================== -->
 
-                <div class="dashboard-filtros__campo">
+                <div class="dashboard-filtros__campo" data-dashboard-quejas-only>
 
                     <label id="dashboard-estado-label">
                         Estado
@@ -677,7 +677,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                      CLASIFICACIÓN
                 ========================================== -->
 
-                <div class="dashboard-filtros__campo">
+                <div class="dashboard-filtros__campo" data-dashboard-quejas-only>
 
                     <label id="dashboard-clasificacion-label">
                         Clasificación
@@ -847,7 +847,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                      SEGUIMIENTO
                 ========================================== -->
 
-                <div class="dashboard-filtros__campo">
+                <div class="dashboard-filtros__campo" data-dashboard-quejas-only>
 
                     <label id="dashboard-seguimiento-label">
                         Seguimiento
@@ -965,7 +965,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                      QUEJA ANÓNIMA
                 ========================================== -->
 
-                <div class="dashboard-filtros__campo">
+                <div class="dashboard-filtros__campo" data-dashboard-quejas-only>
 
                     <label>
                         Queja anónima

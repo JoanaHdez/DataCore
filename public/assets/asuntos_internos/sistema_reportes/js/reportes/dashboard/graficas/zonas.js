@@ -169,6 +169,16 @@ function inicializarGraficaZonas() {
     }
 
 
+    if (total <= 0) {
+
+        mostrarPlaceholderGraficaDashboard(
+            canvas
+        );
+
+        return;
+    }
+
+
     /* =====================================================
        CREAR GRÁFICA
     ===================================================== */
@@ -597,4 +607,51 @@ function inicializarGraficaZonas() {
         }
     );
 
+}
+
+
+function mostrarPlaceholderGraficaDashboard(
+    canvas
+) {
+
+    const contenedor =
+        canvas?.parentElement
+        ?? null;
+
+
+    if (!contenedor) {
+        return;
+    }
+
+
+    canvas.hidden =
+        true;
+
+
+    if (
+        contenedor.querySelector(
+            '.dashboard-grafica__placeholder'
+        )
+    ) {
+        return;
+    }
+
+
+    const placeholder =
+        document.createElement(
+            'div'
+        );
+
+
+    placeholder.className =
+        'dashboard-grafica__placeholder';
+
+
+    placeholder.innerHTML =
+        '<strong>Sin datos</strong><span>Sin datos para los filtros seleccionados.</span>';
+
+
+    contenedor.appendChild(
+        placeholder
+    );
 }

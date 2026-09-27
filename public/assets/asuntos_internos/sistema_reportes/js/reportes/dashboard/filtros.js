@@ -184,6 +184,24 @@ function inicializarFiltrosDashboard() {
 
     inicializarBuscadorPersonalDashboard();
 
+    actualizarFiltrosExclusivosQuejas(
+        filtros
+    );
+
+
+    if (tipo) {
+
+        tipo.addEventListener(
+            'change',
+            () => {
+
+                actualizarFiltrosExclusivosQuejas(
+                    filtros
+                );
+            }
+        );
+    }
+
     /* =====================================================
        PANEL AVANZADO
 
@@ -336,32 +354,60 @@ function aplicarFiltrosDashboard(
        REPORTE
     ===================================================== */
 
-    actualizarParametro(
-        url,
-        'estado',
-        filtros.estado?.value
-    );
+    const esFelicitacion =
+        String(
+            filtros.tipo?.value
+            ?? ''
+        )
+            .trim()
+            .toUpperCase() === 'FELICITACION';
 
 
-    actualizarParametro(
-        url,
-        'clasificacion',
-        filtros.clasificacion?.value
-    );
+    if (esFelicitacion) {
+
+        [
+            'estado',
+            'clasificacion',
+            'seguimiento',
+            'es_anonimo',
+        ].forEach(
+            (parametro) => {
+
+                url.searchParams.delete(
+                    parametro
+                );
+            }
+        );
+
+    } else {
+
+        actualizarParametro(
+            url,
+            'estado',
+            filtros.estado?.value
+        );
 
 
-    actualizarParametro(
-        url,
-        'seguimiento',
-        filtros.seguimiento?.value
-    );
+        actualizarParametro(
+            url,
+            'clasificacion',
+            filtros.clasificacion?.value
+        );
 
 
-    actualizarParametro(
-        url,
-        'es_anonimo',
-        filtros.esAnonimo?.value
-    );
+        actualizarParametro(
+            url,
+            'seguimiento',
+            filtros.seguimiento?.value
+        );
+
+
+        actualizarParametro(
+            url,
+            'es_anonimo',
+            filtros.esAnonimo?.value
+        );
+    }
 
 
     /* =====================================================
@@ -957,6 +1003,108 @@ function cerrarFiltrosAvanzados(
 /* =========================================================
    CATÁLOGOS VISUALES DEL DASHBOARD
 ========================================================= */
+
+function actualizarFiltrosExclusivosQuejas(
+    filtros
+) {
+
+    const esFelicitacion =
+        String(
+            filtros.tipo?.value
+            ?? ''
+        )
+            .trim()
+            .toUpperCase() === 'FELICITACION';
+
+
+    const camposExclusivos =
+        document.querySelectorAll(
+            '[data-dashboard-quejas-only]'
+        );
+
+
+    camposExclusivos.forEach(
+        (campo) => {
+
+            campo.hidden =
+                esFelicitacion;
+
+
+            if (!esFelicitacion) {
+                return;
+            }
+
+
+            const input =
+                campo.querySelector(
+                    '[data-dashboard-catalogo-valor]'
+                );
+
+
+            if (input) {
+
+                input.value =
+                    '';
+            }
+
+
+            const catalogo =
+                campo.querySelector(
+                    '[data-dashboard-catalogo]'
+                );
+
+
+            if (catalogo) {
+
+                cerrarCatalogoDashboard(
+                    catalogo
+                );
+
+
+                sincronizarCatalogoDashboard(
+                    catalogo
+                );
+            }
+        }
+    );
+
+
+    actualizarGruposFiltrosVisibles();
+}
+
+
+function actualizarGruposFiltrosVisibles() {
+
+    const grupos =
+        document.querySelectorAll(
+            '.dashboard-filtros__grupo'
+        );
+
+
+    grupos.forEach(
+        (grupo) => {
+
+            const campos =
+                Array.from(
+                    grupo.querySelectorAll(
+                        '.dashboard-filtros__campo'
+                    )
+                );
+
+
+            if (campos.length === 0) {
+                return;
+            }
+
+
+            grupo.hidden =
+                campos.every(
+                    (campo) => campo.hidden
+                );
+        }
+    );
+}
+
 
 function inicializarCatalogosDashboard() {
 
