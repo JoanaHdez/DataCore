@@ -315,16 +315,97 @@
 
         <div class="editar-reporte-campo editar-reporte-campo--full">
 
-            <label for="editar-direccion-quejoso">
-                Dirección del quejoso
+            <div class="editar-reporte-campo__group-header">
+
+                <strong>
+                    Dirección del quejoso
+                </strong>
+
+                <small class="editar-reporte-campo__help">
+                    Ingresa la dirección proporcionada por el quejoso.
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+            CALLE
+        ====================================================== -->
+
+        <div class="editar-reporte-campo">
+
+            <label for="editar-calle-quejoso">
+                Calle
             </label>
 
-            <textarea id="editar-direccion-quejoso" name="direccion_quejoso" rows="3"
-                placeholder="Ingresa la dirección del quejoso" autocomplete="street-address"></textarea>
+            <input type="text" id="editar-calle-quejoso" name="calle_quejoso" autocomplete="address-line1"
+                placeholder="Ingresa la calle">
 
-            <small class="editar-reporte-campo__help">
-                Ingresa la dirección proporcionada por el quejoso.
-            </small>
+        </div>
+
+
+        <!-- =====================================================
+            NÚMERO
+        ====================================================== -->
+
+        <div class="editar-reporte-campo">
+
+            <label for="editar-numero-quejoso">
+                Número
+            </label>
+
+            <input type="text" id="editar-numero-quejoso" name="numero_quejoso" autocomplete="address-line2"
+                placeholder="Ingresa el número">
+
+        </div>
+
+
+        <!-- =====================================================
+            COLONIA
+        ====================================================== -->
+
+        <div class="editar-reporte-campo">
+
+            <label for="editar-colonia-quejoso">
+                Colonia
+            </label>
+
+            <input type="text" id="editar-colonia-quejoso" name="colonia_quejoso" autocomplete="off"
+                placeholder="Ingresa la colonia">
+
+        </div>
+
+
+        <!-- =====================================================
+            MUNICIPIO
+        ====================================================== -->
+
+        <div class="editar-reporte-campo">
+
+            <label for="editar-municipio-quejoso">
+                Municipio
+            </label>
+
+            <input type="text" id="editar-municipio-quejoso" name="municipio_quejoso" autocomplete="address-level2"
+                placeholder="Ingresa el municipio">
+
+        </div>
+
+
+        <!-- =====================================================
+            ESTADO
+        ====================================================== -->
+
+        <div class="editar-reporte-campo editar-reporte-campo--full">
+
+            <label for="editar-estado-quejoso">
+                Estado
+            </label>
+
+            <input type="text" id="editar-estado-quejoso" name="estado_quejoso" autocomplete="address-level1"
+                placeholder="Ingresa el estado">
 
         </div>
 

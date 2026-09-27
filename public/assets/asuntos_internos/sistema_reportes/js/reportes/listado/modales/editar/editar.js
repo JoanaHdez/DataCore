@@ -3263,10 +3263,31 @@ function construirReporteEditar(
                 origen.correo_quejoso
             ),
 
-        direccion_quejoso:
+        calle_quejoso:
             valorEditar(
-                origen.direccion_quejoso
+                origen.calle_quejoso
             ),
+
+        numero_quejoso:
+            valorEditar(
+                origen.numero_quejoso
+            ),
+
+        colonia_quejoso:
+            valorEditar(
+                origen.colonia_quejoso
+            ),
+
+        municipio_quejoso:
+            valorEditar(
+                origen.municipio_quejoso
+            ),
+
+        estado_quejoso:
+            valorEditar(
+                origen.estado_quejoso
+            ),
+
 
         /* =====================================================
            QUEJA ANÓNIMA
@@ -3330,7 +3351,7 @@ function construirReporteEditar(
 
 
         /* =====================================================
-        SITUACIÓN DE LA SANCIÓN
+           SITUACIÓN DE LA SANCIÓN
         ===================================================== */
 
         sin_sanciones:
@@ -3339,13 +3360,11 @@ function construirReporteEditar(
                 ?? 0
             ),
 
-
         baja_voluntaria:
             Number(
                 origen.baja_voluntaria
                 ?? 0
             ),
-
 
         desistir:
             Number(
@@ -3489,7 +3508,6 @@ function construirReporteEditar(
                 : [],
     };
 }
-
 /* =========================================================
    FOLIO
 ========================================================= */

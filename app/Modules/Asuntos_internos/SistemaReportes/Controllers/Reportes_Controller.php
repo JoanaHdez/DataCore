@@ -1853,7 +1853,12 @@ class Reportes_Controller extends BaseController
                     'genero_quejoso',
                     'telefono_quejoso',
                     'correo_quejoso',
-                    'direccion_quejoso',
+
+                    'calle_quejoso',
+                    'numero_quejoso',
+                    'colonia_quejoso',
+                    'municipio_quejoso',
+                    'estado_quejoso',
 
                     'es_anonimo',
                     'numero_anonimo',

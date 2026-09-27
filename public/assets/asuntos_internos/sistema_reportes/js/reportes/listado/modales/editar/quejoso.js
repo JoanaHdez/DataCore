@@ -740,7 +740,39 @@ export function establecerAnonimoEditar(
 
         {
             selector:
-                '#editar-direccion-quejoso',
+                '#editar-calle-quejoso',
+
+            requerido:
+                false,
+        },
+
+        {
+            selector:
+                '#editar-numero-quejoso',
+
+            requerido:
+                false,
+        },
+
+        {
+            selector:
+                '#editar-colonia-quejoso',
+
+            requerido:
+                false,
+        },
+
+        {
+            selector:
+                '#editar-municipio-quejoso',
+
+            requerido:
+                false,
+        },
+
+        {
+            selector:
+                '#editar-estado-quejoso',
 
             requerido:
                 false,
@@ -773,8 +805,9 @@ export function establecerAnonimoEditar(
         }
     );
 
+
     /* =====================================================
-    SELECTOR VISUAL DE GÉNERO
+       SELECTOR VISUAL DE GÉNERO
     ===================================================== */
 
     const botonGenero =
@@ -1326,7 +1359,7 @@ export function cargarQuejosoEditar(
 
 
     /* =====================================================
-    GÉNERO
+       GÉNERO
     ===================================================== */
 
     const genero =
@@ -1363,11 +1396,45 @@ export function cargarQuejosoEditar(
         reporte.correo
     );
 
+
+    /* =====================================================
+       DIRECCIÓN DEL QUEJOSO
+    ===================================================== */
+
     asignarValorEditar(
         modal,
-        '#editar-direccion-quejoso',
-        reporte.direccion_quejoso
+        '#editar-calle-quejoso',
+        reporte.calle_quejoso
     );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-numero-quejoso',
+        reporte.numero_quejoso
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-colonia-quejoso',
+        reporte.colonia_quejoso
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-municipio-quejoso',
+        reporte.municipio_quejoso
+    );
+
+
+    asignarValorEditar(
+        modal,
+        '#editar-estado-quejoso',
+        reporte.estado_quejoso
+    );
+
 
     /* =====================================================
        ANÓNIMO
@@ -1502,17 +1569,40 @@ export function limpiarQuejosoEditar(
     }
 
 
-    const direccionQuejoso =
-        modal.querySelector(
-            '#editar-direccion-quejoso'
-        );
+    /* =====================================================
+       DIRECCIÓN DEL QUEJOSO
+    ===================================================== */
+
+    const camposDireccionQuejoso = [
+
+        '#editar-calle-quejoso',
+        '#editar-numero-quejoso',
+        '#editar-colonia-quejoso',
+        '#editar-municipio-quejoso',
+        '#editar-estado-quejoso',
+
+    ];
 
 
-    if (direccionQuejoso) {
+    camposDireccionQuejoso.forEach(
+        (selector) => {
 
-        direccionQuejoso.value =
-            '';
-    }
+            const campo =
+                modal.querySelector(
+                    selector
+                );
+
+
+            if (!campo) {
+                return;
+            }
+
+
+            campo.value =
+                '';
+        }
+    );
+
 
     /* =====================================================
        CANALIZACIÓN
