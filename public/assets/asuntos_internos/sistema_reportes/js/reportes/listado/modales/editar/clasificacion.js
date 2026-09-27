@@ -74,6 +74,10 @@ export function inicializarEditarClasificacion(
         modal
     );
 
+    inicializarInspectorEditar(
+        modal
+    );
+
     /* =====================================================
        ABRIR / CERRAR SELECTOR
     ===================================================== */
@@ -443,11 +447,17 @@ export function cargarClasificacionEditar(
        INSPECTOR
     ===================================================== */
 
-    const inspectorGuardado =
+    const inspectorGuardadoOriginal =
         String(
             reporte.inspector
             || ''
         ).trim();
+
+
+    const inspectorGuardado =
+        inspectorGuardadoOriginal.toUpperCase() === 'NO APLICA'
+            ? ''
+            : inspectorGuardadoOriginal;
 
 
     const inputInspector =
@@ -1705,6 +1715,22 @@ export function cargarClasificacionEditar(
                         await respuesta.json();
 
 
+                    const investigadorActual =
+                        String(
+                            inputInvestigador?.value
+                            || ''
+                        ).trim();
+
+
+                    if (
+                        investigadorActual.toUpperCase()
+                        !== investigadorGuardado.toUpperCase()
+                    ) {
+
+                        return;
+                    }
+
+
                     if (
                         !respuesta.ok
                         || resultado?.success !== true
@@ -1777,6 +1803,22 @@ export function cargarClasificacionEditar(
                         'Error cargando investigador en edición:',
                         error
                     );
+
+
+                    const investigadorActual =
+                        String(
+                            inputInvestigador?.value
+                            || ''
+                        ).trim();
+
+
+                    if (
+                        investigadorActual.toUpperCase()
+                        !== investigadorGuardado.toUpperCase()
+                    ) {
+
+                        return;
+                    }
 
 
                     /*
@@ -2065,6 +2107,999 @@ function cerrarClasificacionEditar(
             'clasificacion-select--activo'
         );
     }
+}
+
+/* =========================================================
+   INICIALIZAR INSPECTOR - EDITAR
+========================================================= */
+
+function inicializarInspectorEditar(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const buscador =
+        modal.querySelector(
+            '#editar-inspector-busqueda'
+        );
+
+
+    const resultados =
+        modal.querySelector(
+            '#editar-inspector-resultados'
+        );
+
+
+    const inputInspector =
+        modal.querySelector(
+            '#editar-inspector'
+        );
+
+
+    const inputPlantillaId =
+        modal.querySelector(
+            '#editar-inspector-plantilla-id'
+        );
+
+
+    const inputPerscod =
+        modal.querySelector(
+            '#editar-inspector-perscod'
+        );
+
+
+    const seleccionado =
+        modal.querySelector(
+            '#editar-inspector-seleccionado'
+        );
+
+
+    const foto =
+        modal.querySelector(
+            '#editar-inspector-foto'
+        );
+
+
+    const fotoFallback =
+        modal.querySelector(
+            '#editar-inspector-foto-fallback'
+        );
+
+
+    const nombre =
+        modal.querySelector(
+            '#editar-inspector-nombre'
+        );
+
+
+    const nomina =
+        modal.querySelector(
+            '#editar-inspector-nomina'
+        );
+
+
+    const detalle =
+        modal.querySelector(
+            '#editar-inspector-area'
+        );
+
+
+    const botonQuitar =
+        modal.querySelector(
+            '#btn-editar-quitar-inspector'
+        );
+
+
+    if (
+        !buscador
+        || !resultados
+        || !inputInspector
+        || !seleccionado
+    ) {
+        return;
+    }
+
+
+    let temporizadorBusqueda =
+        null;
+
+
+    let controladorBusqueda =
+        null;
+
+
+    function obtenerLetraApellido(
+        valor
+    ) {
+
+        const partes =
+            String(
+                valor
+                || ''
+            )
+                .trim()
+                .split(/\s+/)
+                .filter(Boolean);
+
+
+        if (partes.length === 0) {
+            return '—';
+        }
+
+
+        return partes[0]
+            .charAt(0)
+            .toUpperCase();
+    }
+
+
+    function cerrarResultados() {
+
+        resultados.hidden =
+            true;
+
+
+        resultados.innerHTML =
+            '';
+    }
+
+
+    function limpiarFoto() {
+
+        if (foto) {
+
+            foto.onerror =
+                null;
+
+
+            foto.onload =
+                null;
+
+
+            foto.removeAttribute(
+                'src'
+            );
+
+
+            foto.hidden =
+                true;
+
+
+            foto.style.display =
+                'none';
+        }
+
+
+        if (fotoFallback) {
+
+            fotoFallback.textContent =
+                '—';
+
+
+            fotoFallback.hidden =
+                false;
+
+
+            fotoFallback.style.display =
+                'flex';
+        }
+    }
+
+
+    function limpiarInspector(
+        enfocar = true
+    ) {
+
+        inputInspector.value =
+            '';
+
+
+        if (inputPlantillaId) {
+
+            inputPlantillaId.value =
+                '';
+        }
+
+
+        if (inputPerscod) {
+
+            inputPerscod.value =
+                '';
+        }
+
+
+        buscador.value =
+            '';
+
+
+        seleccionado.hidden =
+            true;
+
+
+        limpiarFoto();
+
+
+        if (nombre) {
+
+            nombre.textContent =
+                '—';
+        }
+
+
+        if (nomina) {
+
+            nomina.textContent =
+                '—';
+        }
+
+
+        if (detalle) {
+
+            detalle.textContent =
+                '—';
+        }
+
+
+        cerrarResultados();
+
+
+        inputInspector.dispatchEvent(
+            new Event(
+                'change',
+                {
+                    bubbles: true,
+                }
+            )
+        );
+
+
+        if (enfocar) {
+
+            buscador.focus();
+        }
+    }
+
+
+    function seleccionarInspector(
+        persona
+    ) {
+
+        if (!persona) {
+            return;
+        }
+
+
+        const id =
+            Number(
+                persona.id
+                || 0
+            );
+
+
+        const nombrePersona =
+            String(
+                persona.nombre
+                || ''
+            ).trim();
+
+
+        if (
+            id <= 0
+            || nombrePersona === ''
+        ) {
+            return;
+        }
+
+
+        const nominaPersona =
+            String(
+                persona.nomina
+                || ''
+            ).trim();
+
+
+        const areaPersona =
+            String(
+                persona.area
+                || ''
+            ).trim();
+
+
+        const turnoPersona =
+            String(
+                persona.turno
+                || ''
+            ).trim();
+
+
+        const fotoPersona =
+            String(
+                persona.foto
+                || ''
+            ).trim();
+
+
+        inputInspector.value =
+            nombrePersona;
+
+
+        buscador.value =
+            nombrePersona;
+
+
+        if (inputPlantillaId) {
+
+            inputPlantillaId.value =
+                String(
+                    id
+                );
+        }
+
+
+        if (inputPerscod) {
+
+            inputPerscod.value =
+                String(
+                    persona.perscod
+                    || ''
+                ).trim();
+        }
+
+
+        if (nombre) {
+
+            nombre.textContent =
+                nombrePersona;
+        }
+
+
+        if (nomina) {
+
+            nomina.textContent =
+                nominaPersona !== ''
+                    ? `Nómina: ${nominaPersona}`
+                    : 'Nómina no disponible';
+        }
+
+
+        if (detalle) {
+
+            const datos =
+                [];
+
+
+            if (areaPersona !== '') {
+
+                datos.push(
+                    areaPersona
+                );
+            }
+
+
+            if (turnoPersona !== '') {
+
+                datos.push(
+                    `Turno: ${turnoPersona}`
+                );
+            }
+
+
+            detalle.textContent =
+                datos.length > 0
+                    ? datos.join(' · ')
+                    : 'Inspector registrado';
+        }
+
+
+        limpiarFoto();
+
+
+        if (
+            foto
+            && fotoFallback
+        ) {
+
+            const letra =
+                obtenerLetraApellido(
+                    nombrePersona
+                );
+
+
+            if (fotoPersona !== '') {
+
+                foto.onerror =
+                    () => {
+
+                        foto.hidden =
+                            true;
+
+
+                        foto.style.display =
+                            'none';
+
+
+                        fotoFallback.textContent =
+                            letra;
+
+
+                        fotoFallback.hidden =
+                            false;
+
+
+                        fotoFallback.style.display =
+                            'flex';
+                    };
+
+
+                foto.onload =
+                    () => {
+
+                        foto.hidden =
+                            false;
+
+
+                        foto.style.display =
+                            'block';
+
+
+                        fotoFallback.hidden =
+                            true;
+
+
+                        fotoFallback.style.display =
+                            'none';
+                    };
+
+
+                foto.alt =
+                    nombrePersona;
+
+
+                foto.src =
+                    fotoPersona;
+
+            } else {
+
+                fotoFallback.textContent =
+                    letra;
+
+
+                fotoFallback.hidden =
+                    false;
+
+
+                fotoFallback.style.display =
+                    'flex';
+            }
+        }
+
+
+        seleccionado.hidden =
+            false;
+
+
+        cerrarResultados();
+
+
+        inputInspector.dispatchEvent(
+            new Event(
+                'change',
+                {
+                    bubbles: true,
+                }
+            )
+        );
+    }
+
+
+    function crearAvatar(
+        persona
+    ) {
+
+        const nombrePersona =
+            String(
+                persona.nombre
+                || ''
+            ).trim();
+
+
+        const fotoPersona =
+            String(
+                persona.foto
+                || ''
+            ).trim();
+
+
+        const avatar =
+            document.createElement(
+                'span'
+            );
+
+
+        avatar.className =
+            'inspector-resultados__avatar';
+
+
+        const imagen =
+            document.createElement(
+                'img'
+            );
+
+
+        const fallback =
+            document.createElement(
+                'span'
+            );
+
+
+        fallback.textContent =
+            obtenerLetraApellido(
+                nombrePersona
+            );
+
+
+        imagen.alt =
+            nombrePersona;
+
+
+        imagen.hidden =
+            true;
+
+
+        imagen.style.display =
+            'none';
+
+
+        fallback.hidden =
+            true;
+
+
+        fallback.style.display =
+            'none';
+
+
+        if (fotoPersona !== '') {
+
+            imagen.onerror =
+                () => {
+
+                    imagen.hidden =
+                        true;
+
+
+                    imagen.style.display =
+                        'none';
+
+
+                    fallback.hidden =
+                        false;
+
+
+                    fallback.style.display =
+                        'flex';
+                };
+
+
+            imagen.onload =
+                () => {
+
+                    imagen.hidden =
+                        false;
+
+
+                    imagen.style.display =
+                        'block';
+
+
+                    fallback.hidden =
+                        true;
+
+
+                    fallback.style.display =
+                        'none';
+                };
+
+
+            imagen.src =
+                fotoPersona;
+
+        } else {
+
+            fallback.hidden =
+                false;
+
+
+            fallback.style.display =
+                'flex';
+        }
+
+
+        avatar.appendChild(
+            imagen
+        );
+
+
+        avatar.appendChild(
+            fallback
+        );
+
+
+        return avatar;
+    }
+
+
+    function renderizarResultados(
+        personal
+    ) {
+
+        resultados.innerHTML =
+            '';
+
+
+        if (
+            !Array.isArray(
+                personal
+            )
+            || personal.length === 0
+        ) {
+
+            resultados.innerHTML =
+                '<div class="inspector-resultados__vacio">No se encontró personal de Asuntos Internos.</div>';
+
+
+            resultados.hidden =
+                false;
+
+
+            return;
+        }
+
+
+        personal.forEach(
+            (persona) => {
+
+                const boton =
+                    document.createElement(
+                        'button'
+                    );
+
+
+                boton.type =
+                    'button';
+
+
+                boton.className =
+                    'inspector-resultados__item';
+
+
+                const nombrePersona =
+                    String(
+                        persona.nombre
+                        || ''
+                    ).trim();
+
+
+                const nominaPersona =
+                    String(
+                        persona.nomina
+                        || ''
+                    ).trim();
+
+
+                const turnoPersona =
+                    String(
+                        persona.turno
+                        || ''
+                    ).trim();
+
+
+                const datos =
+                    document.createElement(
+                        'span'
+                    );
+
+
+                datos.className =
+                    'inspector-resultados__datos';
+
+
+                const titulo =
+                    document.createElement(
+                        'strong'
+                    );
+
+
+                titulo.textContent =
+                    nombrePersona;
+
+
+                const ayuda =
+                    document.createElement(
+                        'small'
+                    );
+
+
+                ayuda.textContent =
+                    nominaPersona !== ''
+                        ? `Nómina: ${nominaPersona}${turnoPersona !== '' ? ` · ${turnoPersona}` : ''}`
+                        : `Nómina no disponible${turnoPersona !== '' ? ` · ${turnoPersona}` : ''}`;
+
+
+                datos.appendChild(
+                    titulo
+                );
+
+
+                datos.appendChild(
+                    ayuda
+                );
+
+
+                boton.appendChild(
+                    crearAvatar(
+                        persona
+                    )
+                );
+
+
+                boton.appendChild(
+                    datos
+                );
+
+
+                boton.addEventListener(
+                    'click',
+                    () => {
+
+                        seleccionarInspector(
+                            persona
+                        );
+                    }
+                );
+
+
+                resultados.appendChild(
+                    boton
+                );
+            }
+        );
+
+
+        resultados.hidden =
+            false;
+    }
+
+
+    async function buscarInspector(
+        termino
+    ) {
+
+        const busqueda =
+            String(
+                termino
+                || ''
+            ).trim();
+
+
+        if (busqueda === '') {
+
+            cerrarResultados();
+
+            return;
+        }
+
+
+        if (controladorBusqueda) {
+
+            controladorBusqueda.abort();
+        }
+
+
+        controladorBusqueda =
+            new AbortController();
+
+
+        try {
+
+            const url =
+                new URL(
+                    'DataCore/public/asuntos-internos/reportes/personal/asuntos-internos/buscar',
+                    `${window.location.origin}/`
+                );
+
+
+            url.searchParams.set(
+                'q',
+                busqueda
+            );
+
+
+            const respuesta =
+                await fetch(
+                    url.toString(),
+                    {
+                        method:
+                            'GET',
+
+                        headers: {
+                            Accept:
+                                'application/json',
+                        },
+
+                        credentials:
+                            'same-origin',
+
+                        signal:
+                            controladorBusqueda.signal,
+                    }
+                );
+
+
+            const resultado =
+                await respuesta.json();
+
+
+            if (
+                !respuesta.ok
+                || resultado?.success !== true
+            ) {
+
+                throw new Error(
+                    resultado?.message
+                    || 'No fue posible consultar el personal.'
+                );
+            }
+
+
+            renderizarResultados(
+                resultado.personal
+                || []
+            );
+
+        } catch (error) {
+
+            if (error.name === 'AbortError') {
+                return;
+            }
+
+
+            console.error(
+                'Error buscando inspector en edición:',
+                error
+            );
+
+
+            resultados.innerHTML =
+                '<div class="inspector-resultados__vacio">No fue posible consultar el personal.</div>';
+
+
+            resultados.hidden =
+                false;
+        }
+    }
+
+
+    buscador.addEventListener(
+        'input',
+        () => {
+
+            const valorSeleccionado =
+                String(
+                    inputInspector.value
+                    || ''
+                ).trim();
+
+
+            const valorBuscador =
+                String(
+                    buscador.value
+                    || ''
+                ).trim();
+
+
+            if (
+                valorSeleccionado !== ''
+                && valorBuscador !== valorSeleccionado
+            ) {
+
+                inputInspector.value =
+                    '';
+
+
+                if (inputPlantillaId) {
+
+                    inputPlantillaId.value =
+                        '';
+                }
+
+
+                if (inputPerscod) {
+
+                    inputPerscod.value =
+                        '';
+                }
+
+
+                seleccionado.hidden =
+                    true;
+            }
+
+
+            window.clearTimeout(
+                temporizadorBusqueda
+            );
+
+
+            if (valorBuscador === '') {
+
+                cerrarResultados();
+
+                return;
+            }
+
+
+            temporizadorBusqueda =
+                window.setTimeout(
+                    () => {
+
+                        buscarInspector(
+                            valorBuscador
+                        );
+
+                    },
+                    250
+                );
+        }
+    );
+
+
+    if (botonQuitar) {
+
+        botonQuitar.addEventListener(
+            'click',
+            () => {
+
+                limpiarInspector();
+            }
+        );
+    }
+
+
+    document.addEventListener(
+        'click',
+        (evento) => {
+
+            if (
+                buscador.contains(
+                    evento.target
+                )
+                || resultados.contains(
+                    evento.target
+                )
+            ) {
+                return;
+            }
+
+
+            cerrarResultados();
+        }
+    );
+
+
+    document.addEventListener(
+        'keydown',
+        (evento) => {
+
+            if (evento.key === 'Escape') {
+
+                cerrarResultados();
+            }
+        }
+    );
 }
 
 /* =========================================================
@@ -2357,6 +3392,16 @@ function inicializarInvestigadorEditar(
 
 
         cerrarResultados();
+
+
+        inputInvestigador.dispatchEvent(
+            new Event(
+                'change',
+                {
+                    bubbles: true,
+                }
+            )
+        );
 
 
         if (enfocar) {

@@ -140,8 +140,7 @@
             INSPECTOR
         ====================================================== -->
 
-        <div class="editar-reporte-campo">
-
+        <div class="editar-reporte-campo editar-reporte-campo--inspector">  
             <label for="editar-inspector-busqueda">
                 Inspector
                 <span class="required">*</span>

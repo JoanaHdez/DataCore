@@ -747,10 +747,6 @@ class ReporteService
                     '';
 
 
-                $datos['observaciones'] =
-                    '';
-
-
                 $datos['motivos'] =
                     '';
 

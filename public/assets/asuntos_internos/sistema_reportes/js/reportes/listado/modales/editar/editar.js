@@ -71,7 +71,8 @@ import {
 
 import {
     inicializarMotivosEditar,
-    obtenerMotivosEditar
+    obtenerMotivosEditar,
+    establecerMotivosHabilitadosEditar
 } from './motivos.js';
 
 
@@ -1351,6 +1352,675 @@ function inicializarBloqueoEnterEditar(
    QJF - ESTADO GENERAL EN EDITAR
 ========================================================= */
 
+function obtenerSnapshotQjfControlEditar(
+    control
+) {
+
+    const snapshot = {
+        id:
+            control.id,
+
+        disabled:
+            Boolean(
+                control.disabled
+            ),
+
+        required:
+            Boolean(
+                control.required
+            ),
+    };
+
+
+    if (
+        control instanceof HTMLInputElement
+        || control instanceof HTMLTextAreaElement
+        || control instanceof HTMLSelectElement
+    ) {
+
+        snapshot.value =
+            control.value;
+    }
+
+
+    if (
+        control instanceof HTMLInputElement
+        && (
+            control.type === 'checkbox'
+            || control.type === 'radio'
+        )
+    ) {
+
+        snapshot.checked =
+            Boolean(
+                control.checked
+            );
+    }
+
+
+    return snapshot;
+}
+
+
+function guardarSnapshotQjfClasificacionEditar(
+    modal
+) {
+
+    if (
+        !modal
+        || modal.dataset.qjfEditarClasificacionSnapshot
+    ) {
+        return;
+    }
+
+
+    const selectTipoFolio =
+        modal.querySelector(
+            '#editar-tipo-folio'
+        );
+
+
+    const tipoOriginal =
+        String(
+            selectTipoFolio?.dataset
+                .tipoFolioOriginal
+            || ''
+        )
+            .trim()
+            .toUpperCase();
+
+
+    const clasificacionActual =
+        String(
+            modal.querySelector(
+                '#editar-clasificacion'
+            )?.value
+            || ''
+        )
+            .trim()
+            .toUpperCase();
+
+
+    const inspectorActual =
+        String(
+            modal.querySelector(
+                '#editar-inspector'
+            )?.value
+            || ''
+        )
+            .trim()
+            .toUpperCase();
+
+
+    const investigadorActual =
+        String(
+            modal.querySelector(
+                '#editar-investigador'
+            )?.value
+            || ''
+        )
+            .trim()
+            .toUpperCase();
+
+
+    const esSnapshotTecnicoQjf =
+        tipoOriginal === 'QJF'
+        && (
+            clasificacionActual === ''
+            || clasificacionActual === 'NO APLICA'
+        )
+        && (
+            inspectorActual === ''
+            || inspectorActual === 'NO APLICA'
+        )
+        && (
+            investigadorActual === ''
+            || investigadorActual === 'NO APLICA'
+        );
+
+
+    if (esSnapshotTecnicoQjf) {
+        return;
+    }
+
+
+    const idsControles = [
+        'editar-clasificacion',
+        'editar-inspector',
+        'editar-inspector-busqueda',
+        'editar-inspector-plantilla-id',
+        'editar-inspector-perscod',
+        'editar-investigador',
+        'editar-investigador-busqueda',
+        'editar-investigador-plantilla-id',
+        'editar-investigador-tipo',
+        'editar-investigador-otro-nombre',
+        'editar-estado-actual',
+        'editar-sin-sanciones',
+        'editar-baja-voluntaria',
+        'editar-desistir',
+        'editar-quien-emite-resolucion',
+        'editar-resolucion',
+    ];
+
+
+    const idsNodos = [
+        'editar-clasificacion-select-texto',
+        'editar-estado-select-texto',
+        'editar-inspector-seleccionado',
+        'editar-inspector-foto',
+        'editar-inspector-foto-fallback',
+        'editar-inspector-nombre',
+        'editar-inspector-nomina',
+        'editar-inspector-area',
+        'editar-investigador-seleccionado',
+        'editar-investigador-foto',
+        'editar-investigador-foto-fallback',
+        'editar-investigador-nombre',
+        'editar-investigador-nomina',
+        'editar-investigador-detalle',
+        'editar-investigador-otro-contenedor',
+    ];
+
+
+    const controles =
+        idsControles
+            .map(
+                (id) => modal.querySelector(
+                    `#${id}`
+                )
+            )
+            .filter(Boolean)
+            .map(
+                obtenerSnapshotQjfControlEditar
+            );
+
+
+    const nodos =
+        idsNodos
+            .map(
+                (id) => modal.querySelector(
+                    `#${id}`
+                )
+            )
+            .filter(Boolean)
+            .map(
+                (nodo) => ({
+                    id:
+                        nodo.id,
+
+                    hidden:
+                        Boolean(
+                            nodo.hidden
+                        ),
+
+                    textContent:
+                        nodo.textContent,
+
+                    display:
+                        nodo.style.display,
+
+                    src:
+                        nodo instanceof HTMLImageElement
+                            ? nodo.getAttribute(
+                                'src'
+                            )
+                            : null,
+
+                    alt:
+                        nodo instanceof HTMLImageElement
+                            ? nodo.getAttribute(
+                                'alt'
+                            )
+                            : null,
+                })
+            );
+
+
+    modal.dataset.qjfEditarClasificacionSnapshot =
+        JSON.stringify({
+            controles,
+            nodos,
+        });
+}
+
+
+function restaurarSnapshotQjfClasificacionEditar(
+    modal
+) {
+
+    if (
+        !modal
+        || !modal.dataset.qjfEditarClasificacionSnapshot
+    ) {
+        return false;
+    }
+
+
+    let snapshot = null;
+
+
+    try {
+
+        snapshot =
+            JSON.parse(
+                modal.dataset.qjfEditarClasificacionSnapshot
+            );
+
+    } catch (error) {
+
+        snapshot =
+            null;
+    }
+
+
+    delete modal.dataset.qjfEditarClasificacionSnapshot;
+
+
+    if (!snapshot) {
+        return false;
+    }
+
+
+    (
+        snapshot.controles
+        || []
+    ).forEach(
+        (controlGuardado) => {
+
+            const control =
+                modal.querySelector(
+                    `#${controlGuardado.id}`
+                );
+
+
+            if (!control) {
+                return;
+            }
+
+
+            if ('value' in controlGuardado) {
+
+                control.value =
+                    (
+                        (
+                            controlGuardado.id === 'editar-inspector'
+                            || controlGuardado.id === 'editar-inspector-busqueda'
+                            || controlGuardado.id === 'editar-investigador'
+                            || controlGuardado.id === 'editar-investigador-busqueda'
+                        )
+                        && String(
+                            controlGuardado.value
+                            || ''
+                        )
+                            .trim()
+                            .toUpperCase() === 'NO APLICA'
+                    )
+                        ? ''
+                        : controlGuardado.value;
+            }
+
+
+            if (
+                control instanceof HTMLInputElement
+                && 'checked' in controlGuardado
+            ) {
+
+                control.checked =
+                    Boolean(
+                        controlGuardado.checked
+                    );
+            }
+
+
+            control.disabled =
+                Boolean(
+                    controlGuardado.disabled
+                );
+
+
+            control.required =
+                Boolean(
+                    controlGuardado.required
+                );
+        }
+    );
+
+
+    (
+        snapshot.nodos
+        || []
+    ).forEach(
+        (nodoGuardado) => {
+
+            const nodo =
+                modal.querySelector(
+                    `#${nodoGuardado.id}`
+                );
+
+
+            if (!nodo) {
+                return;
+            }
+
+
+            nodo.hidden =
+                Boolean(
+                    nodoGuardado.hidden
+                );
+
+
+            nodo.textContent =
+                nodoGuardado.textContent
+                || '';
+
+
+            nodo.style.display =
+                nodoGuardado.display
+                || '';
+
+
+            if (nodo instanceof HTMLImageElement) {
+
+                if (nodoGuardado.src) {
+
+                    nodo.setAttribute(
+                        'src',
+                        nodoGuardado.src
+                    );
+
+                } else {
+
+                    nodo.removeAttribute(
+                        'src'
+                    );
+                }
+
+
+                if (nodoGuardado.alt) {
+
+                    nodo.setAttribute(
+                        'alt',
+                        nodoGuardado.alt
+                    );
+
+                } else {
+
+                    nodo.removeAttribute(
+                        'alt'
+                    );
+                }
+            }
+        }
+    );
+
+
+    return true;
+}
+
+
+function limpiarVisualQjfClasificacionEditar(
+    modal
+) {
+
+    const valores = {
+        '#editar-clasificacion':
+            '',
+
+        '#editar-inspector':
+            '',
+
+        '#editar-inspector-busqueda':
+            '',
+
+        '#editar-inspector-plantilla-id':
+            '',
+
+        '#editar-inspector-perscod':
+            '',
+
+        '#editar-investigador':
+            '',
+
+        '#editar-investigador-busqueda':
+            '',
+
+        '#editar-investigador-plantilla-id':
+            '',
+
+        '#editar-investigador-tipo':
+            '',
+
+        '#editar-investigador-otro-nombre':
+            '',
+
+        '#editar-estado-actual':
+            '',
+
+        '#editar-quien-emite-resolucion':
+            '',
+
+        '#editar-resolucion':
+            '',
+    };
+
+
+    Object
+        .entries(
+            valores
+        )
+        .forEach(
+            (
+                [
+                    selector,
+                    valor,
+                ]
+            ) => {
+
+                const control =
+                    modal.querySelector(
+                        selector
+                    );
+
+
+                if (control) {
+
+                    control.value =
+                        valor;
+                }
+            }
+        );
+
+
+    [
+        '#editar-sin-sanciones',
+        '#editar-baja-voluntaria',
+        '#editar-desistir',
+    ].forEach(
+        (selector) => {
+
+            const control =
+                modal.querySelector(
+                    selector
+                );
+
+
+            if (control) {
+
+                control.checked =
+                    false;
+
+
+                delete control.dataset.estadoAnterior;
+            }
+        }
+    );
+
+
+    const textos = {
+        '#editar-clasificacion-select-texto':
+            'Selecciona una clasificación',
+
+        '#editar-estado-select-texto':
+            'Selecciona un estado',
+
+        '#editar-inspector-nombre':
+            '—',
+
+        '#editar-inspector-nomina':
+            '—',
+
+        '#editar-inspector-area':
+            '—',
+
+        '#editar-investigador-nombre':
+            '—',
+
+        '#editar-investigador-nomina':
+            '—',
+
+        '#editar-investigador-detalle':
+            '—',
+    };
+
+
+    Object
+        .entries(
+            textos
+        )
+        .forEach(
+            (
+                [
+                    selector,
+                    texto,
+                ]
+            ) => {
+
+                const nodo =
+                    modal.querySelector(
+                        selector
+                    );
+
+
+                if (nodo) {
+
+                    nodo.textContent =
+                        texto;
+                }
+            }
+        );
+
+
+    [
+        '#editar-inspector-seleccionado',
+        '#editar-investigador-seleccionado',
+        '#editar-investigador-otro-contenedor',
+        '#editar-clasificacion-resultados',
+        '#editar-estado-resultados',
+        '#editar-inspector-resultados',
+        '#editar-investigador-resultados',
+    ].forEach(
+        (selector) => {
+
+            const nodo =
+                modal.querySelector(
+                    selector
+                );
+
+
+            if (nodo) {
+
+                nodo.hidden =
+                    true;
+            }
+        }
+    );
+
+
+    [
+        '#editar-inspector-foto',
+        '#editar-investigador-foto',
+    ].forEach(
+        (selector) => {
+
+            const foto =
+                modal.querySelector(
+                    selector
+                );
+
+
+            if (foto) {
+
+                foto.removeAttribute(
+                    'src'
+                );
+
+
+                foto.hidden =
+                    true;
+
+
+                foto.style.display =
+                    'none';
+            }
+        }
+    );
+
+
+    [
+        '#editar-inspector-foto-fallback',
+        '#editar-investigador-foto-fallback',
+    ].forEach(
+        (selector) => {
+
+            const fallback =
+                modal.querySelector(
+                    selector
+                );
+
+
+            if (fallback) {
+
+                fallback.textContent =
+                    '—';
+
+
+                fallback.hidden =
+                    false;
+
+
+                fallback.style.display =
+                    'flex';
+            }
+        }
+    );
+
+
+    const inputOtro =
+        modal.querySelector(
+            '#editar-investigador-otro-nombre'
+        );
+
+
+    if (inputOtro) {
+
+        inputOtro.required =
+            false;
+
+
+        inputOtro.disabled =
+            true;
+    }
+
+
+    establecerMotivosHabilitadosEditar(
+        modal,
+        false,
+        true
+    );
+}
+
+
 function actualizarEstadoQjfEditar(
     modal
 ) {
@@ -1408,6 +2078,30 @@ function actualizarEstadoQjfEditar(
 
 
     if (seccionClasificacion) {
+
+        let snapshotRestaurado =
+            false;
+
+
+        if (esQjf) {
+
+            guardarSnapshotQjfClasificacionEditar(
+                modal
+            );
+
+
+            limpiarVisualQjfClasificacionEditar(
+                modal
+            );
+
+        } else {
+
+            snapshotRestaurado =
+                restaurarSnapshotQjfClasificacionEditar(
+                    modal
+                );
+        }
+
 
         seccionClasificacion.classList.toggle(
             'editar-reporte-seccion__bloque--disabled',
@@ -1483,6 +2177,36 @@ function actualizarEstadoQjfEditar(
 
             }
         );
+
+
+        if (
+            !esQjf
+            && snapshotRestaurado
+        ) {
+
+            const motivosBloqueados =
+                Boolean(
+                    modal.querySelector(
+                        '#editar-sin-sanciones'
+                    )?.checked
+                )
+                || Boolean(
+                    modal.querySelector(
+                        '#editar-baja-voluntaria'
+                    )?.checked
+                )
+                || Boolean(
+                    modal.querySelector(
+                        '#editar-desistir'
+                    )?.checked
+                );
+
+            establecerMotivosHabilitadosEditar(
+                modal,
+                !motivosBloqueados,
+                true
+            );
+        }
     }
 
 
