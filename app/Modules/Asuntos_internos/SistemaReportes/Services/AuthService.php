@@ -10,11 +10,6 @@ class AuthService
     private BaseConnection $dbDataCore;
 
     /**
-     * ID del administrador oficial del Sistema de Reportes.
-     */
-    private const ADMIN_PLANTILLA_ID = 758;
-
-    /**
      * Roles locales de DataCore.
      */
     private const ROL_ADMIN   = 'admin';
@@ -108,19 +103,17 @@ class AuthService
         $plantillaId =
             (int) $persona['ID'];
 
+        $rolLocalActual =
+            $this->obtenerClaveRolPorPlantilla(
+                $plantillaId
+            );
+
 
         /*
          * =====================================================
          * DETERMINAR ROL
          * =====================================================
          */
-
-        if (
-            $plantillaId === self::ADMIN_PLANTILLA_ID
-        ) {
-
-            $rol = self::ROL_ADMIN;
-        } else {
 
             $tipoNomina =
                 trim(
@@ -139,8 +132,11 @@ class AuthService
 
 
             if (
-                $tipoNomina !== 'RAMO 33'
-                || $area !== 'COORDINACION DE ASUNTOS INTERNOS'
+                $rolLocalActual !== self::ROL_ADMIN
+                && (
+                    $tipoNomina !== 'RAMO 33'
+                    || $area !== 'COORDINACION DE ASUNTOS INTERNOS'
+                )
             ) {
 
                 return [
@@ -152,7 +148,6 @@ class AuthService
 
 
             $rol = self::ROL_USUARIO;
-        }
 
         /*
          * =====================================================
@@ -172,6 +167,24 @@ class AuthService
             return [
                 'ok'      => false,
                 'mensaje' => 'No fue posible preparar la sesión del usuario.',
+            ];
+        }
+
+
+        $rolSesion =
+            $this->obtenerClaveRol(
+                (int) (
+                    $usuarioLocal['id_rol']
+                    ?? 0
+                )
+            );
+
+
+        if ($rolSesion === '') {
+
+            return [
+                'ok'      => false,
+                'mensaje' => 'No fue posible identificar el rol del usuario.',
             ];
         }
 
@@ -218,7 +231,7 @@ class AuthService
                  * Rol del Sistema de Reportes
                  */
                 'rol' =>
-                $rol,
+                $rolSesion,
 
             ],
         ];
@@ -286,9 +299,6 @@ class AuthService
                     $usuarioExistente['id_usuario']
                 )
                 ->update([
-                    'id_rol'       =>
-                    (int) $rolLocal['id_rol'],
-
                     'activo'       =>
                     1,
 
@@ -355,6 +365,93 @@ class AuthService
             ->getRowArray();
     }
 
+
+    private function obtenerClaveRolPorPlantilla(
+        int $plantillaId
+    ): string {
+
+        if ($plantillaId <= 0) {
+
+            return '';
+        }
+
+
+        $usuario =
+            $this->dbDataCore
+            ->table('dc_usuarios')
+            ->select([
+                'id_rol',
+            ])
+            ->where(
+                'plantilla_id',
+                $plantillaId
+            )
+            ->where(
+                'activo',
+                1
+            )
+            ->get()
+            ->getRowArray();
+
+
+        return $this->obtenerClaveRol(
+            (int) (
+                $usuario['id_rol']
+                ?? 0
+            )
+        );
+    }
+
+
+    private function obtenerClaveRol(
+        int $idRol
+    ): string {
+
+        if ($idRol <= 0) {
+
+            return '';
+        }
+
+
+        $rol =
+            $this->dbDataCore
+            ->table('dc_roles')
+            ->select([
+                'clave',
+            ])
+            ->where(
+                'id_rol',
+                $idRol
+            )
+            ->where(
+                'activo',
+                1
+            )
+            ->get()
+            ->getRowArray();
+
+
+        $clave =
+            trim(
+                (string) (
+                    $rol['clave']
+                    ?? ''
+                )
+            );
+
+
+        return in_array(
+            $clave,
+            [
+                self::ROL_ADMIN,
+                self::ROL_USUARIO,
+            ],
+            true
+        )
+            ? $clave
+            : '';
+    }
+
     /**
      * =========================================================
      * VALIDAR AUTORIZACIÓN DEL ADMINISTRADOR
@@ -364,7 +461,7 @@ class AuthService
      * plantilla_general.plantilla.
      *
      * La autorización corresponde exclusivamente al usuario
-     * cuyo ID de plantilla es 758.
+     * con rol local de administrador.
      *
      * La CURP:
      * - no se guarda en DataCore
@@ -375,37 +472,9 @@ class AuthService
         string $curp
     ): bool {
 
-        $curp = strtoupper(
-            trim($curp)
-        );
-
-
-        if ($curp === '') {
-            return false;
-        }
-
-
-        $administrador =
-            $this->dbPlantilla
-            ->table('plantilla')
-            ->select('ID')
-            ->where(
-                'ID',
-                self::ADMIN_PLANTILLA_ID
-            )
-            ->where(
-                'CURP',
-                $curp
-            )
-            ->where(
-                'ESTADO',
-                'ACTIVO'
-            )
-            ->get()
-            ->getRowArray();
-
-
-        return !empty($administrador);
+        return $this->validarAutorizacionAdministradores(
+            $curp
+        ) !== null;
     }
     /**
      * =========================================================

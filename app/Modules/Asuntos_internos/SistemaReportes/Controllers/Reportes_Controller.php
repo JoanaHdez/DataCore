@@ -4639,9 +4639,9 @@ class Reportes_Controller extends BaseController
                 new AuthService();
 
 
-            $autorizado =
+            $administrador =
                 $authService
-                ->validarAutorizacionAdmin(
+                ->validarAutorizacionAdministradores(
                     $passwordAdmin
                 );
         } catch (\Throwable $e) {
@@ -4670,7 +4670,7 @@ class Reportes_Controller extends BaseController
         CONTRASEÑA INCORRECTA
         ===================================================== */
 
-        if (!$autorizado) {
+        if (!$administrador) {
 
             return $this->response
                 ->setStatusCode(403)
@@ -5130,9 +5130,9 @@ class Reportes_Controller extends BaseController
                     new AuthService();
 
 
-                $autorizado =
+                $administrador =
                     $authService
-                    ->validarAutorizacionAdmin(
+                    ->validarAutorizacionAdministradores(
                         $passwordAdmin
                     );
             } catch (\Throwable $e) {
@@ -5154,7 +5154,7 @@ class Reportes_Controller extends BaseController
 
 
             if (
-                !$autorizado
+                !$administrador
             ) {
 
                 return $this->response
@@ -5167,30 +5167,14 @@ class Reportes_Controller extends BaseController
             }
 
 
-            /*
-            * Buscamos el usuario local correspondiente
-            * al administrador de plantilla ID 758.
-            */
-
-            $adminLocal =
-                $db
-                ->table(
-                    'dc_usuarios'
-                )
-                ->select(
-                    'id_usuario'
-                )
-                ->where(
-                    'plantilla_id',
-                    758
-                )
-                ->get()
-                ->getRowArray();
+            $idAdministradorAutorizador =
+                (int) (
+                    $administrador['id_usuario']
+                    ?? 0
+                );
 
 
-            if (
-                !$adminLocal
-            ) {
+            if ($idAdministradorAutorizador <= 0) {
 
                 return $this->response
                     ->setStatusCode(500)
@@ -5200,13 +5184,6 @@ class Reportes_Controller extends BaseController
                         'No fue posible identificar al administrador autorizador.',
                     ]);
             }
-
-
-            $idAdministradorAutorizador =
-                (int) (
-                    $adminLocal['id_usuario']
-                    ?? 0
-                );
         }
 
 
