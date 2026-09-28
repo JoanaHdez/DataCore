@@ -1090,10 +1090,10 @@ class ListadoExcelService
             'Folio',
             'Nomenclatura',
             'Fecha',
+            'Folio IP',
             'Tipo de seguimiento',
             'Estado resultante',
             'Sanción disciplinaria',
-            'Especifique la sanción',
             'Observaciones',
         ];
 
@@ -1150,10 +1150,10 @@ class ListadoExcelService
                     $this->normalizar($reporte['folio'] ?? ''),
                     $this->normalizar($reporte['nomenclatura'] ?? ''),
                     $this->normalizar($seguimiento['fecha'] ?? ''),
+                    $this->normalizar($seguimiento['folio_ip'] ?? ''),
                     $this->normalizar($seguimiento['tipo'] ?? ''),
                     $this->normalizar($seguimiento['estado_resultante'] ?? ''),
                     $this->normalizar($seguimiento['sancion_disciplinaria'] ?? ''),
-                    $this->normalizar($seguimiento['sancion_otro'] ?? ''),
                     $this->normalizar($seguimiento['observaciones'] ?? ''),
                 ];
 

@@ -7,10 +7,6 @@ import {
     formatearFecha,
 } from './utils.js';
 
-/* =========================================================
-   SANCIÓN - INICIALIZAR
-========================================================= */
-
 export function inicializarSancionSeguimiento(
     modal
 ) {
@@ -41,182 +37,28 @@ export function inicializarSancionSeguimiento(
     actualizarCampoOtroSancion(
         modal
     );
-
 }
 
-
-/* =========================================================
-   SANCIÓN - CAMPO OTRO
-========================================================= */
 
 export function actualizarCampoOtroSancion(
     modal
 ) {
 
-    const select =
-        modal.querySelector(
-            '#seguimiento-sancion'
-        );
-
-
-    const contenedor =
-        modal.querySelector(
-            '#seguimiento-campo-sancion-otro'
-        );
-
-
-    const input =
-        modal.querySelector(
-            '#seguimiento-sancion-otro'
-        );
-
-
-    if (
-        !select
-        || !contenedor
-        || !input
-    ) {
-        return;
-    }
-
-
-    const mostrar =
-        select.value === 'Otro';
-
-
-    if (mostrar) {
-
-        contenedor.hidden =
-            false;
-
-
-        contenedor.style
-            .removeProperty(
-                'display'
-            );
-
-
-        input.disabled =
-            false;
-
-
-        input.required =
-            true;
-
-
-        return;
-    }
-
-
-    contenedor.hidden =
-        true;
-
-
-    contenedor.style
-        .setProperty(
-            'display',
-            'none',
-            'important'
-        );
-
-
-    input.disabled =
-        true;
-
-
-    input.required =
-        false;
-
-
-    input.value =
-        '';
-
+    void modal;
 }
 
 
-/* =========================================================
-   SANCIÓN - VALIDAR
-========================================================= */
-
-export function validarSancionSeguimiento(
-    modal
-) {
-
-    const select =
-        modal.querySelector(
-            '#seguimiento-sancion'
-        );
-
-
-    const inputOtro =
-        modal.querySelector(
-            '#seguimiento-sancion-otro'
-        );
-
-
-    if (!select) {
-        return true;
-    }
-
-
-    if (
-        select.value !== 'Otro'
-    ) {
-        return true;
-    }
-
-
-    const descripcion =
-        String(
-            inputOtro?.value
-            || ''
-        ).trim();
-
-
-    if (!descripcion) {
-
-        window.alert(
-            'Debes especificar la sanción disciplinaria.'
-        );
-
-
-        inputOtro?.focus();
-
-
-        return false;
-    }
-
-
-    if (
-        descripcion.length > 255
-    ) {
-
-        window.alert(
-            'La descripción de la sanción no puede exceder 255 caracteres.'
-        );
-
-
-        inputOtro?.focus();
-
-
-        return false;
-    }
-
+export function validarSancionSeguimiento() {
 
     return true;
-
 }
 
-
-/* =========================================================
-   SANCIÓN - OBTENER SELECCIONADA
-========================================================= */
 
 export function obtenerSancionSeleccionada(
     modal
 ) {
 
-    const tipo =
+    const valor =
         String(
             modal.querySelector(
                 '#seguimiento-sancion'
@@ -225,37 +67,52 @@ export function obtenerSancionSeleccionada(
         ).trim();
 
 
-    const descripcionOtro =
-        tipo === 'Otro'
-            ? String(
-                modal.querySelector(
-                    '#seguimiento-sancion-otro'
-                )?.value
-                || ''
-            ).trim()
-            : '';
+    const opcion =
+        Array.from(
+            modal.querySelectorAll(
+                '[data-seguimiento-sancion-opcion]'
+            )
+        ).find(
+            (elemento) =>
+                String(
+                    elemento.dataset.valor
+                    || ''
+                ).trim() === valor
+        );
+
+
+    const tipo =
+        String(
+            opcion?.dataset?.nombre
+            || opcion?.querySelector(
+                'strong'
+            )?.textContent
+            || ''
+        ).trim();
+
+
+    const idSancionSeguimiento =
+        Number(
+            valor
+            || 0
+        );
 
 
     return {
 
+        id_sancion_seguimiento:
+            idSancionSeguimiento,
+
         tipo,
 
         descripcion_otro:
-            descripcionOtro,
+            '',
 
         texto:
-            tipo === 'Otro'
-                ? descripcionOtro
-                : tipo,
-
+            tipo,
     };
-
 }
 
-
-/* =========================================================
-   SANCIÓN - NORMALIZAR
-========================================================= */
 
 export function normalizarSancion(
     sancion
@@ -276,7 +133,17 @@ export function normalizarSancion(
         ).trim();
 
 
-    if (!tipo) {
+    const idSancionSeguimiento =
+        Number(
+            sancion.id_sancion_seguimiento
+            || 0
+        );
+
+
+    if (
+        !tipo
+        && idSancionSeguimiento <= 0
+    ) {
         return null;
     }
 
@@ -288,20 +155,13 @@ export function normalizarSancion(
         ).trim();
 
 
-    let texto =
+    const texto =
         String(
             sancion.texto
+            || tipo
+            || descripcionOtro
             || ''
         ).trim();
-
-
-    if (!texto) {
-
-        texto =
-            tipo === 'Otro'
-                ? descripcionOtro
-                : tipo;
-    }
 
 
     return {
@@ -311,6 +171,9 @@ export function normalizarSancion(
                 sancion.id_sancion
                 || 0
             ),
+
+        id_sancion_seguimiento:
+            idSancionSeguimiento,
 
         tipo,
 
@@ -348,15 +211,9 @@ export function normalizarSancion(
                 sancion.es_actual
                 || 0
             ) === 1,
-
     };
-
 }
 
-
-/* =========================================================
-   SANCIÓN - COMPARAR NUEVO SEGUIMIENTO
-========================================================= */
 
 export function existeCambioRealSancion(
     sancionActual,
@@ -365,7 +222,10 @@ export function existeCambioRealSancion(
 
     if (
         !sancionNueva
-        || !sancionNueva.tipo
+        || (
+            !sancionNueva.id_sancion_seguimiento
+            && !sancionNueva.tipo
+        )
     ) {
         return false;
     }
@@ -376,39 +236,57 @@ export function existeCambioRealSancion(
     }
 
 
-    if (
-        sancionActual.tipo
-        !== sancionNueva.tipo
-    ) {
-        return true;
-    }
-
-
-    if (
-        sancionNueva.tipo === 'Otro'
-    ) {
-
-        return normalizarTextoComparacion(
-            sancionActual.descripcion_otro
-        ) !== normalizarTextoComparacion(
-            sancionNueva.descripcion_otro
+    const idActual =
+        Number(
+            sancionActual.id_sancion_seguimiento
+            || 0
         );
+
+
+    const idNuevo =
+        Number(
+            sancionNueva.id_sancion_seguimiento
+            || 0
+        );
+
+
+    if (
+        idActual > 0
+        || idNuevo > 0
+    ) {
+
+        return idActual !== idNuevo;
     }
 
 
-    return false;
-
+    return String(
+        sancionActual.tipo
+        || ''
+    ).trim() !== String(
+        sancionNueva.tipo
+        || ''
+    ).trim();
 }
 
-
-/* =========================================================
-   DETERMINAR ACCIÓN DE SANCIÓN EN EDICIÓN
-========================================================= */
 
 export function determinarAccionSancionEdicion(
     sancionAnterior,
     sancionNueva
 ) {
+
+    const idAnterior =
+        Number(
+            sancionAnterior?.id_sancion_seguimiento
+            || 0
+        );
+
+
+    const idNuevo =
+        Number(
+            sancionNueva?.id_sancion_seguimiento
+            || 0
+        );
+
 
     const tipoAnterior =
         String(
@@ -424,12 +302,10 @@ export function determinarAccionSancionEdicion(
         ).trim();
 
 
-    /* =====================================================
-       NO TENÍA SANCIÓN Y SIGUE SIN TENER
-    ===================================================== */
-
     if (
-        tipoAnterior === ''
+        idAnterior <= 0
+        && idNuevo <= 0
+        && tipoAnterior === ''
         && tipoNuevo === ''
     ) {
 
@@ -437,12 +313,12 @@ export function determinarAccionSancionEdicion(
     }
 
 
-    /* =====================================================
-       TENÍA SANCIÓN Y SE QUITÓ
-    ===================================================== */
-
     if (
-        tipoAnterior !== ''
+        (
+            idAnterior > 0
+            || tipoAnterior !== ''
+        )
+        && idNuevo <= 0
         && tipoNuevo === ''
     ) {
 
@@ -450,74 +326,35 @@ export function determinarAccionSancionEdicion(
     }
 
 
-    /* =====================================================
-       NO TENÍA SANCIÓN Y SE AGREGÓ
-    ===================================================== */
-
     if (
-        tipoAnterior === ''
-        && tipoNuevo !== ''
+        idAnterior <= 0
+        && idNuevo > 0
     ) {
 
         return 'cambiar';
     }
 
 
-    /* =====================================================
-       CAMBIÓ EL TIPO
-    ===================================================== */
-
     if (
-        tipoAnterior !== tipoNuevo
+        idAnterior !== idNuevo
     ) {
 
         return 'cambiar';
     }
 
 
-    /* =====================================================
-       AMBAS SON "OTRO"
-    ===================================================== */
-
     if (
-        tipoAnterior === 'Otro'
-        && tipoNuevo === 'Otro'
+        idNuevo <= 0
+        && tipoAnterior !== tipoNuevo
     ) {
 
-        const otroAnterior =
-            normalizarTextoComparacion(
-                sancionAnterior?.descripcion_otro
-            );
-
-
-        const otroNuevo =
-            normalizarTextoComparacion(
-                sancionNueva?.descripcion_otro
-            );
-
-
-        if (
-            otroAnterior
-            !== otroNuevo
-        ) {
-
-            return 'cambiar';
-        }
+        return 'cambiar';
     }
 
-
-    /* =====================================================
-       NO HUBO CAMBIO
-    ===================================================== */
 
     return 'mantener';
-
 }
 
-
-/* =========================================================
-   TEXTO SANCIÓN
-========================================================= */
 
 export function obtenerTextoSancion(
     sancion
@@ -525,34 +362,21 @@ export function obtenerTextoSancion(
 
     if (
         !sancion
-        || !sancion.tipo
+        || (
+            !sancion.tipo
+            && !sancion.texto
+        )
     ) {
         return 'Sin sanción registrada';
     }
 
 
-    if (
-        sancion.tipo === 'Otro'
-    ) {
-
-        return String(
-            sancion.descripcion_otro
-            || sancion.texto
-            || 'Otra sanción'
-        ).trim();
-    }
-
-
     return String(
-        sancion.tipo
+        sancion.texto
+        || sancion.tipo
     ).trim();
-
 }
 
-
-/* =========================================================
-   SANCIÓN ACTUAL
-========================================================= */
 
 export function cargarSancionActual(
     modal,
@@ -636,29 +460,4 @@ export function cargarSancionActual(
         .removeProperty(
             'display'
         );
-
-}
-
-
-/* =========================================================
-   NORMALIZAR TEXTO PARA COMPARACIÓN
-========================================================= */
-
-function normalizarTextoComparacion(
-    valor
-) {
-
-    return String(
-        valor
-        || ''
-    )
-        .trim()
-        .replace(
-            /\s+/g,
-            ' '
-        )
-        .toLocaleLowerCase(
-            'es-MX'
-        );
-
 }

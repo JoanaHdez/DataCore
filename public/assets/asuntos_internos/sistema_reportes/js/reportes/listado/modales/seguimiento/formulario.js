@@ -40,8 +40,8 @@ export function inicializarMayusculasSeguimiento(
 
     const camposMayusculas = [
         '#seguimiento-folio-ip',
+        '#seguimiento-tipo-otro',
         '#seguimiento-observaciones',
-        '#seguimiento-sancion-otro',
     ];
 
 
@@ -167,6 +167,35 @@ export function inicializarCatalogosSeguimiento(
                 'Selecciona',
         }
     );
+
+
+    const tipo =
+        modal.querySelector(
+            '#seguimiento-tipo'
+        );
+
+
+    if (
+        tipo
+        && tipo.dataset
+            .otroInicializado !== '1'
+    ) {
+
+        tipo.dataset
+            .otroInicializado = '1';
+
+
+        tipo.addEventListener(
+            'change',
+            () => {
+
+                actualizarCampoOtroTipoSeguimiento(
+                    modal
+                );
+
+            }
+        );
+    }
 
 
     inicializarCatalogoSeguimiento(
@@ -449,7 +478,8 @@ function actualizarCatalogoSeguimiento(
     opcionSelector,
     valor,
     textoVacio,
-    dispararCambio = false
+    dispararCambio = false,
+    textoAlternativo = ''
 ) {
 
     if (!modal) {
@@ -526,6 +556,10 @@ function actualizarCatalogoSeguimiento(
 
     texto.textContent =
         tituloOpcion
+        || String(
+            textoAlternativo
+            || ''
+        ).trim()
         || textoVacio;
 
 
@@ -553,6 +587,106 @@ function actualizarCatalogoSeguimiento(
                 }
             )
         );
+    }
+
+}
+
+
+/* =========================================================
+   TIPO DE SEGUIMIENTO - OTRO
+========================================================= */
+
+function actualizarCampoOtroTipoSeguimiento(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const tipo =
+        modal.querySelector(
+            '#seguimiento-tipo'
+        );
+
+
+    const campo =
+        modal.querySelector(
+            '#seguimiento-campo-tipo-otro'
+        );
+
+
+    const input =
+        modal.querySelector(
+            '#seguimiento-tipo-otro'
+        );
+
+
+    if (
+        !tipo
+        || !campo
+        || !input
+    ) {
+        return;
+    }
+
+
+    const opcion =
+        Array.from(
+            modal.querySelectorAll(
+                '[data-seguimiento-tipo-opcion]'
+            )
+        ).find(
+            (elemento) =>
+                String(
+                    elemento.dataset.valor
+                    || ''
+                ).trim() === String(
+                    tipo.value
+                    || ''
+                ).trim()
+        );
+
+
+    const esOtro =
+        opcion?.dataset?.esOtro === '1';
+
+
+    campo.hidden =
+        !esOtro;
+
+
+    if (esOtro) {
+
+        campo.style
+            .removeProperty(
+                'display'
+            );
+
+        input.disabled =
+            false;
+
+        input.required =
+            true;
+
+    } else {
+
+        campo.style
+            .setProperty(
+                'display',
+                'none',
+                'important'
+            );
+
+        input.required =
+            false;
+
+        input.disabled =
+            true;
+
+        input.value =
+            '';
     }
 
 }
@@ -685,6 +819,11 @@ export function prepararFormularioSeguimiento(
         '[data-seguimiento-tipo-opcion]',
         '',
         'Selecciona'
+    );
+
+
+    actualizarCampoOtroTipoSeguimiento(
+        modal
     );
 
 
@@ -1169,8 +1308,32 @@ export function iniciarEdicionSeguimiento(
         '#seguimiento-tipo-select',
         '#seguimiento-tipo-select-texto',
         '[data-seguimiento-tipo-opcion]',
-        seguimiento.tipo,
-        'Selecciona'
+        seguimiento.id_tipo_seguimiento
+        || '',
+        'Selecciona',
+        false,
+        seguimiento.tipo_texto
+        || seguimiento.tipo
+        || ''
+    );
+
+
+    asignarValor(
+        formulario,
+        '#seguimiento-tipo-otro',
+        String(
+            seguimiento.tipo_otro
+            || ''
+        )
+            .trim()
+            .toLocaleUpperCase(
+                'es-MX'
+            )
+    );
+
+
+    actualizarCampoOtroTipoSeguimiento(
+        modal
     );
 
 
@@ -1235,61 +1398,25 @@ export function iniciarEdicionSeguimiento(
         seguimiento.sancion;
 
 
-    const inputOtro =
-        modal.querySelector(
-            '#seguimiento-sancion-otro'
-        );
-
-
     actualizarCatalogoSeguimiento(
         modal,
         '#seguimiento-sancion',
         '#seguimiento-sancion-select',
         '#seguimiento-sancion-select-texto',
         '[data-seguimiento-sancion-opcion]',
-        sancion?.tipo
+        sancion?.id_sancion_seguimiento
         || '',
-        'Sin cambio'
+        'Sin cambio',
+        false,
+        sancion?.texto
+        || sancion?.tipo
+        || ''
     );
-
-
-    /* =====================================================
-       SANCIÓN OTRO
-    ===================================================== */
-
-    const descripcionOtro =
-        sancion?.tipo === 'Otro'
-            ? String(
-                sancion.descripcion_otro
-                || ''
-            )
-                .trim()
-                .toLocaleUpperCase(
-                    'es-MX'
-                )
-            : '';
-
-
-    if (inputOtro) {
-
-        inputOtro.value =
-            descripcionOtro;
-    }
 
 
     actualizarCampoOtroSancion(
         modal
     );
-
-
-    if (
-        sancion?.tipo === 'Otro'
-        && inputOtro
-    ) {
-
-        inputOtro.value =
-            descripcionOtro;
-    }
 
 
     /* =====================================================
@@ -1503,8 +1630,26 @@ export function iniciarDetalleSeguimiento(
         '#seguimiento-tipo-select',
         '#seguimiento-tipo-select-texto',
         '[data-seguimiento-tipo-opcion]',
-        seguimiento.tipo,
-        'Selecciona'
+        seguimiento.id_tipo_seguimiento
+        || '',
+        'Selecciona',
+        false,
+        seguimiento.tipo_texto
+        || seguimiento.tipo
+        || ''
+    );
+
+
+    asignarValor(
+        formulario,
+        '#seguimiento-tipo-otro',
+        seguimiento.tipo_otro
+        || ''
+    );
+
+
+    actualizarCampoOtroTipoSeguimiento(
+        modal
     );
 
 
@@ -1556,48 +1701,25 @@ export function iniciarDetalleSeguimiento(
         seguimiento.sancion;
 
 
-    const inputOtro =
-        modal.querySelector(
-            '#seguimiento-sancion-otro'
-        );
-
-
     actualizarCatalogoSeguimiento(
         modal,
         '#seguimiento-sancion',
         '#seguimiento-sancion-select',
         '#seguimiento-sancion-select-texto',
         '[data-seguimiento-sancion-opcion]',
-        sancion?.tipo
+        sancion?.id_sancion_seguimiento
         || '',
-        'Sin cambio'
+        'Sin cambio',
+        false,
+        sancion?.texto
+        || sancion?.tipo
+        || ''
     );
-
-
-    if (inputOtro) {
-
-        inputOtro.value =
-            sancion?.tipo === 'Otro'
-                ? sancion.descripcion_otro
-                    || ''
-                : '';
-    }
 
 
     actualizarCampoOtroSancion(
         modal
     );
-
-
-    if (
-        sancion?.tipo === 'Otro'
-        && inputOtro
-    ) {
-
-        inputOtro.value =
-            sancion.descripcion_otro
-            || '';
-    }
 
 
     /* =====================================================

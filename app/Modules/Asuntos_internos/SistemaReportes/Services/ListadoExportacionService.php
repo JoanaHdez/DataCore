@@ -483,39 +483,52 @@ class ListadoExportacionService
                 $seguimientosDb =
                     $db
                     ->table(
-                        'ai_reporte_seguimientos'
+                        'ai_reporte_seguimientos s'
                     )
                     ->select([
-                        'id_seguimiento',
+                        's.id_seguimiento',
 
-                        'id_reporte',
+                        's.id_reporte',
 
-                        'fecha',
+                        's.fecha',
 
-                        'tipo',
+                        's.folio_ip AS seguimiento_folio_ip',
 
-                        'estado_resultante',
+                        's.tipo AS tipo_legacy',
 
-                        'observaciones',
+                        's.id_tipo_seguimiento',
+
+                        's.tipo_otro',
+
+                        'ts.nombre AS tipo_catalogo',
+
+                        's.estado_resultante',
+
+                        's.observaciones',
                     ])
+                    ->join(
+                        'ai_cat_tipos_seguimiento ts',
+                        'ts.id_tipo_seguimiento = s.id_tipo_seguimiento',
+                        'left'
+                    )
                     ->whereIn(
-                        'id_reporte',
+                        's.id_reporte',
                         $idsReportes
                     )
                     ->where(
-                        'eliminado',
+                        's.eliminado',
                         0
                     )
                     ->orderBy(
-                        'id_reporte',
+                        's.id_reporte',
                         'ASC'
                     )
                     ->orderBy(
-                        'fecha',
+                        's.fecha',
                         'DESC'
                     )
                     ->orderBy(
-                        'id_seguimiento',
+                        's.id_seguimiento',
                         'DESC'
                     )
                     ->get()
@@ -563,39 +576,48 @@ class ListadoExportacionService
                     $sancionesSeguimientoDb =
                         $db
                         ->table(
-                            'ai_reporte_sanciones'
+                            'ai_reporte_sanciones s'
                         )
                         ->select([
-                            'id_sancion',
+                            's.id_sancion',
 
-                            'id_reporte',
+                            's.id_reporte',
 
-                            'tipo',
+                            's.tipo',
 
-                            'descripcion_otro',
+                            's.id_sancion_seguimiento',
 
-                            'origen',
+                            'ss.nombre AS sancion_catalogo',
 
-                            'id_seguimiento',
+                            's.descripcion_otro',
+
+                            's.origen',
+
+                            's.id_seguimiento',
                         ])
+                        ->join(
+                            'ai_cat_sanciones_seguimiento ss',
+                            'ss.id_sancion_seguimiento = s.id_sancion_seguimiento',
+                            'left'
+                        )
                         ->whereIn(
-                            'id_reporte',
+                            's.id_reporte',
                             $idsReportes
                         )
                         ->whereIn(
-                            'id_seguimiento',
+                            's.id_seguimiento',
                             $idsSeguimientos
                         )
                         ->where(
-                            'origen',
+                            's.origen',
                             'seguimiento'
                         )
                         ->where(
-                            'eliminado',
+                            's.eliminado',
                             0
                         )
                         ->orderBy(
-                            'id_sancion',
+                            's.id_sancion',
                             'ASC'
                         )
                         ->get()
@@ -836,14 +858,58 @@ class ListadoExportacionService
                 $sancionPorSeguimiento[$idSeguimiento]
                 ?? [];
 
-
-            $seguimiento['sancion_disciplinaria'] =
-                $sancion['tipo']
+            $seguimiento['folio_ip'] =
+                $seguimiento['seguimiento_folio_ip']
+                ?? $seguimiento['folio_ip']
                 ?? '';
 
 
-            $seguimiento['sancion_otro'] =
-                $sancion['descripcion_otro']
+            $tipoCatalogo =
+                trim(
+                    (string) (
+                        $seguimiento['tipo_catalogo']
+                        ?? ''
+                    )
+                );
+
+
+            $tipoOtro =
+                trim(
+                    (string) (
+                        $seguimiento['tipo_otro']
+                        ?? ''
+                    )
+                );
+
+
+            $tipoLegacy =
+                trim(
+                    (string) (
+                        $seguimiento['tipo_legacy']
+                        ?? ''
+                    )
+                );
+
+
+            if ($tipoCatalogo === 'OTRO') {
+
+                $seguimiento['tipo'] =
+                    $tipoOtro !== ''
+                    ? $tipoOtro
+                    : 'OTRO';
+
+            } else {
+
+                $seguimiento['tipo'] =
+                    $tipoCatalogo !== ''
+                    ? $tipoCatalogo
+                    : $tipoLegacy;
+            }
+
+
+            $seguimiento['sancion_disciplinaria'] =
+                $sancion['sancion_catalogo']
+                ?? $sancion['tipo']
                 ?? '';
 
 

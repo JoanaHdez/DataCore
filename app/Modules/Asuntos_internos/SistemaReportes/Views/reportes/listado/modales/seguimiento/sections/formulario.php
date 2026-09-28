@@ -52,7 +52,7 @@
                 VALOR REAL PARA BACKEND
             ================================================== -->
 
-            <input type="hidden" id="seguimiento-tipo" name="tipo" value="" required>
+            <input type="hidden" id="seguimiento-tipo" name="id_tipo_seguimiento" value="" required>
 
 
             <!-- =================================================
@@ -88,128 +88,96 @@
                 <div class="seguimiento-resultados" id="seguimiento-tipo-resultados" hidden>
 
 
-                    <!-- ACTUALIZACIÓN -->
+                    <?php
+                    $tiposSeguimiento =
+                        $tiposSeguimiento
+                        ?? [];
+                    ?>
 
-                    <button type="button" class="seguimiento-resultados__item" data-seguimiento-tipo-opcion
-                        data-valor="Actualización">
+                    <?php foreach ($tiposSeguimiento as $tipoSeguimiento): ?>
+                        <?php
+                        $idTipoSeguimiento =
+                            (int) (
+                                $tipoSeguimiento['id_tipo_seguimiento']
+                                ?? 0
+                            );
 
-                        <span class="seguimiento-resultados__avatar">
-                            A
-                        </span>
+                        $nombreTipoSeguimiento =
+                            trim(
+                                (string) (
+                                    $tipoSeguimiento['nombre']
+                                    ?? ''
+                                )
+                            );
 
-                        <span class="seguimiento-resultados__datos">
+                        if (
+                            $idTipoSeguimiento <= 0
+                            || $nombreTipoSeguimiento === ''
+                        ) {
+                            continue;
+                        }
 
-                            <strong>
-                                Actualización
-                            </strong>
+                        $inicialTipoSeguimiento =
+                            mb_substr(
+                                $nombreTipoSeguimiento,
+                                0,
+                                1,
+                                'UTF-8'
+                            );
 
-                            <small>
-                                Actualización del seguimiento
-                            </small>
+                        $descripcionTipoSeguimiento =
+                            $nombreTipoSeguimiento === 'ACTUALIZACIÓN'
+                                ? 'Actualización del seguimiento'
+                                : (
+                                    $nombreTipoSeguimiento === 'INVESTIGACIÓN'
+                                        ? 'Avance relacionado con investigación'
+                                        : (
+                                            $nombreTipoSeguimiento === 'RESOLUCIÓN'
+                                                ? 'Movimiento relacionado con resolución'
+                                                : 'Otro tipo de seguimiento'
+                                        )
+                                );
+                        ?>
 
-                        </span>
+                        <button type="button" class="seguimiento-resultados__item" data-seguimiento-tipo-opcion
+                            data-valor="<?= esc((string) $idTipoSeguimiento) ?>"
+                            data-nombre="<?= esc($nombreTipoSeguimiento) ?>"
+                            data-es-otro="<?= $nombreTipoSeguimiento === 'OTRO' ? '1' : '0' ?>">
 
-                    </button>
+                            <span class="seguimiento-resultados__avatar">
+                                <?= esc($inicialTipoSeguimiento) ?>
+                            </span>
 
+                            <span class="seguimiento-resultados__datos">
 
-                    <!-- INVESTIGACIÓN -->
+                                <strong>
+                                    <?= esc($nombreTipoSeguimiento) ?>
+                                </strong>
 
-                    <button type="button" class="seguimiento-resultados__item" data-seguimiento-tipo-opcion
-                        data-valor="Investigación">
+                                <small>
+                                    <?= esc($descripcionTipoSeguimiento) ?>
+                                </small>
 
-                        <span class="seguimiento-resultados__avatar">
-                            I
-                        </span>
+                            </span>
 
-                        <span class="seguimiento-resultados__datos">
-
-                            <strong>
-                                Investigación
-                            </strong>
-
-                            <small>
-                                Avance relacionado con investigación
-                            </small>
-
-                        </span>
-
-                    </button>
-
-
-                    <!-- TURNADO -->
-
-                    <button type="button" class="seguimiento-resultados__item" data-seguimiento-tipo-opcion
-                        data-valor="Turnado">
-
-                        <span class="seguimiento-resultados__avatar">
-                            T
-                        </span>
-
-                        <span class="seguimiento-resultados__datos">
-
-                            <strong>
-                                Turnado
-                            </strong>
-
-                            <small>
-                                Reporte turnado para atención
-                            </small>
-
-                        </span>
-
-                    </button>
-
-
-                    <!-- RESOLUCIÓN -->
-
-                    <button type="button" class="seguimiento-resultados__item" data-seguimiento-tipo-opcion
-                        data-valor="Resolución">
-
-                        <span class="seguimiento-resultados__avatar">
-                            R
-                        </span>
-
-                        <span class="seguimiento-resultados__datos">
-
-                            <strong>
-                                Resolución
-                            </strong>
-
-                            <small>
-                                Movimiento relacionado con resolución
-                            </small>
-
-                        </span>
-
-                    </button>
-
-
-                    <!-- OTRO -->
-
-                    <button type="button" class="seguimiento-resultados__item" data-seguimiento-tipo-opcion
-                        data-valor="Otro">
-
-                        <span class="seguimiento-resultados__avatar">
-                            O
-                        </span>
-
-                        <span class="seguimiento-resultados__datos">
-
-                            <strong>
-                                Otro
-                            </strong>
-
-                            <small>
-                                Otro tipo de seguimiento
-                            </small>
-
-                        </span>
-
-                    </button>
+                        </button>
+                    <?php endforeach; ?>
 
                 </div>
 
             </div>
+
+        </div>
+
+
+        <div class="editar-reporte-campo seguimiento-tipo-otro" id="seguimiento-campo-tipo-otro" hidden>
+
+            <label for="seguimiento-tipo-otro">
+                Especifique el tipo de seguimiento
+            </label>
+
+            <input type="text" id="seguimiento-tipo-otro" name="tipo_otro"
+                placeholder="Describe el tipo de seguimiento" autocomplete="off" maxlength="255" disabled>
 
         </div>
 
@@ -364,7 +332,7 @@
             SANCIÓN DISCIPLINARIA
         ================================================== -->
 
-        <div class="editar-reporte-campo editar-reporte-campo--full">
+        <div class="editar-reporte-campo editar-reporte-campo--full seguimiento-campo-sancion">
 
             <label>
                 Sanción disciplinaria
@@ -375,7 +343,7 @@
                 VALOR REAL PARA BACKEND
             ================================================== -->
 
-            <input type="hidden" id="seguimiento-sancion" name="sancion_disciplinaria" value="">
+            <input type="hidden" id="seguimiento-sancion" name="id_sancion_seguimiento" value="">
 
 
             <!-- =================================================
@@ -411,100 +379,73 @@
                 <div class="seguimiento-resultados" id="seguimiento-sancion-resultados" hidden>
 
 
-                    <!-- SIN CAMBIO -->
+                    <?php
+                    $sancionesSeguimiento =
+                        $sancionesSeguimiento
+                        ?? [];
+                    ?>
 
-                    <button type="button" class="seguimiento-resultados__item" data-seguimiento-sancion-opcion
-                        data-valor="">
+                    <?php foreach ($sancionesSeguimiento as $sancionSeguimiento): ?>
+                        <?php
+                        $idSancionSeguimiento =
+                            (int) (
+                                $sancionSeguimiento['id_sancion_seguimiento']
+                                ?? 0
+                            );
 
-                        <span class="seguimiento-resultados__avatar">
-                            —
-                        </span>
+                        $nombreSancionSeguimiento =
+                            trim(
+                                (string) (
+                                    $sancionSeguimiento['nombre']
+                                    ?? ''
+                                )
+                            );
 
-                        <span class="seguimiento-resultados__datos">
+                        if (
+                            $idSancionSeguimiento <= 0
+                            || $nombreSancionSeguimiento === ''
+                        ) {
+                            continue;
+                        }
 
-                            <strong>
-                                Sin cambio
-                            </strong>
+                        $inicialSancionSeguimiento =
+                            preg_replace(
+                                '/[^A-ZÁÉÍÓÚÑ]/u',
+                                '',
+                                $nombreSancionSeguimiento
+                            );
 
-                            <small>
-                                Mantener la sanción vigente
-                            </small>
+                        $inicialSancionSeguimiento =
+                            mb_substr(
+                                $inicialSancionSeguimiento ?: $nombreSancionSeguimiento,
+                                0,
+                                2,
+                                'UTF-8'
+                            );
+                        ?>
 
-                        </span>
+                        <button type="button" class="seguimiento-resultados__item" data-seguimiento-sancion-opcion
+                            data-valor="<?= esc((string) $idSancionSeguimiento) ?>"
+                            data-nombre="<?= esc($nombreSancionSeguimiento) ?>">
 
-                    </button>
+                            <span class="seguimiento-resultados__avatar">
+                                <?= esc($inicialSancionSeguimiento) ?>
+                            </span>
 
+                            <span class="seguimiento-resultados__datos">
 
-                    <!-- ARRESTO -->
+                                <strong>
+                                    <?= esc($nombreSancionSeguimiento) ?>
+                                </strong>
 
-                    <button type="button" class="seguimiento-resultados__item" data-seguimiento-sancion-opcion
-                        data-valor="Arresto">
+                                <small>
+                                    Sanción disciplinaria de seguimiento
+                                </small>
 
-                        <span class="seguimiento-resultados__avatar">
-                            A
-                        </span>
+                            </span>
 
-                        <span class="seguimiento-resultados__datos">
-
-                            <strong>
-                                Arresto
-                            </strong>
-
-                            <small>
-                                Sanción disciplinaria de arresto
-                            </small>
-
-                        </span>
-
-                    </button>
-
-
-                    <!-- AMONESTACIÓN -->
-
-                    <button type="button" class="seguimiento-resultados__item" data-seguimiento-sancion-opcion
-                        data-valor="Amonestación">
-
-                        <span class="seguimiento-resultados__avatar">
-                            AM
-                        </span>
-
-                        <span class="seguimiento-resultados__datos">
-
-                            <strong>
-                                Amonestación
-                            </strong>
-
-                            <small>
-                                Sanción disciplinaria de amonestación
-                            </small>
-
-                        </span>
-
-                    </button>
-
-
-                    <!-- OTRO -->
-
-                    <button type="button" class="seguimiento-resultados__item" data-seguimiento-sancion-opcion
-                        data-valor="Otro">
-
-                        <span class="seguimiento-resultados__avatar">
-                            O
-                        </span>
-
-                        <span class="seguimiento-resultados__datos">
-
-                            <strong>
-                                Otro
-                            </strong>
-
-                            <small>
-                                Otra sanción disciplinaria
-                            </small>
-
-                        </span>
-
-                    </button>
+                        </button>
+                    <?php endforeach; ?>
 
                 </div>
 
@@ -514,21 +455,6 @@
             <small>
                 Selecciona una opción únicamente si la sanción vigente cambia como resultado de este seguimiento.
             </small>
-
-        </div>
-
-
-        <!-- ESPECIFICAR OTRO -->
-        <div class="editar-reporte-campo editar-reporte-campo--full" id="seguimiento-campo-sancion-otro" hidden
-            style="display: none;">
-
-            <label for="seguimiento-sancion-otro">
-                Especifique la sanción
-                <span class="required">*</span>
-            </label>
-
-            <input type="text" id="seguimiento-sancion-otro" name="sancion_otro"
-                placeholder="Ingresa la sanción correspondiente" autocomplete="off" maxlength="255" disabled>
 
         </div>
 

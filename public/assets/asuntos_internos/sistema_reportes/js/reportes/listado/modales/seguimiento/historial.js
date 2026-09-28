@@ -152,7 +152,8 @@ function crearMovimientoHistorial(
 
 
     tipo.textContent =
-        seguimiento.tipo
+        seguimiento.tipo_texto
+        || seguimiento.tipo
         || 'Seguimiento';
 
 
@@ -219,7 +220,10 @@ function crearMovimientoHistorial(
 
     if (
         seguimiento.sancion
-        && seguimiento.sancion.tipo
+        && (
+            seguimiento.sancion.tipo
+            || seguimiento.sancion.texto
+        )
     ) {
 
         const bloqueSancion =
@@ -468,27 +472,18 @@ function obtenerTextoSancion(
 
     if (
         !sancion
-        || !sancion.tipo
+        || (
+            !sancion.tipo
+            && !sancion.texto
+        )
     ) {
         return 'Sin sanción registrada';
     }
 
 
-    if (
-        sancion.tipo === 'Otro'
-    ) {
-
-        return String(
-            sancion.descripcion_otro
-            || sancion.texto
-            || 'Otra sanción'
-        ).trim();
-
-    }
-
-
     return String(
-        sancion.tipo
+        sancion.texto
+        || sancion.tipo
     ).trim();
 
 }

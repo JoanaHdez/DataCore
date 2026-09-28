@@ -589,6 +589,7 @@ class DashboardService
         $conteos = [
             'Arresto' => 0,
             'Amonestación' => 0,
+            'Llamada de atención' => 0,
             'Otro' => 0,
         ];
 
@@ -604,11 +605,17 @@ class DashboardService
                 'r.id_reporte',
                 's.id_sancion',
                 's.tipo',
+                'ss.nombre AS sancion_seguimiento',
             ])
             ->join(
                 'ai_reporte_sanciones s',
                 's.id_reporte = r.id_reporte',
                 'inner'
+            )
+            ->join(
+                'ai_cat_sanciones_seguimiento ss',
+                'ss.id_sancion_seguimiento = s.id_sancion_seguimiento',
+                'left'
             )
             ->where(
                 's.es_actual',
@@ -683,7 +690,8 @@ class DashboardService
             $tipoOriginal =
                 trim(
                     (string) (
-                        $registro['tipo']
+                        $registro['sancion_seguimiento']
+                        ?? $registro['tipo']
                         ?? ''
                     )
                 );
@@ -714,6 +722,10 @@ class DashboardService
                     'AMONESTACIÓN',
                     'AMONESTACION' =>
                     'Amonestación',
+
+                    'LLAMADA DE ATENCIÓN',
+                    'LLAMADA DE ATENCION' =>
+                    'Llamada de atención',
 
                     'OTRO' =>
                     'Otro',
@@ -778,12 +790,14 @@ class DashboardService
             'tipos' => [
                 'Arresto',
                 'Amonestación',
+                'Llamada de atención',
                 'Otro',
             ],
 
             'totales' => [
                 $conteos['Arresto'],
                 $conteos['Amonestación'],
+                $conteos['Llamada de atención'],
                 $conteos['Otro'],
             ],
 

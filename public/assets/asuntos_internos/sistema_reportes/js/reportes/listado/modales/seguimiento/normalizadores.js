@@ -46,6 +46,31 @@ export function normalizarSeguimientos(
                     || ''
                 ).trim(),
 
+            tipo_texto:
+                String(
+                    seguimiento.tipo_texto
+                    || seguimiento.tipo
+                    || ''
+                ).trim(),
+
+            tipo_catalogo:
+                String(
+                    seguimiento.tipo_catalogo
+                    || ''
+                ).trim(),
+
+            id_tipo_seguimiento:
+                Number(
+                    seguimiento.id_tipo_seguimiento
+                    || 0
+                ),
+
+            tipo_otro:
+                String(
+                    seguimiento.tipo_otro
+                    || ''
+                ).trim(),
+
             estado:
                 String(
                     seguimiento.estado_resultante

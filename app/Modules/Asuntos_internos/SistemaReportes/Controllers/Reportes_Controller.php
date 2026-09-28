@@ -483,6 +483,26 @@ class Reportes_Controller extends BaseController
 
 
         /* =========================================================
+        CATALOGO DE TIPOS DE SEGUIMIENTO
+        ========================================================= */
+
+        $tiposSeguimiento =
+            $this->obtenerTiposSeguimientoActivos(
+                $db
+            );
+
+
+        /* =========================================================
+        CATALOGO DE SANCIONES DE SEGUIMIENTO
+        ========================================================= */
+
+        $sancionesSeguimiento =
+            $this->obtenerSancionesSeguimientoActivas(
+                $db
+            );
+
+
+        /* =========================================================
         VISTA
         ========================================================= */
 
@@ -503,6 +523,12 @@ class Reportes_Controller extends BaseController
 
                 'motivos' =>
                 $motivos,
+
+                'tiposSeguimiento' =>
+                $tiposSeguimiento,
+
+                'sancionesSeguimiento' =>
+                $sancionesSeguimiento,
             ]
         );
     }
@@ -6589,6 +6615,7 @@ class Reportes_Controller extends BaseController
                     'id_sancion',
                     'id_reporte',
                     'tipo',
+                    'id_sancion_seguimiento',
                     'descripcion_otro',
                     'origen',
                     'id_seguimiento',
@@ -6645,16 +6672,6 @@ class Reportes_Controller extends BaseController
                     $tipo;
 
 
-                if (
-                    $tipo === 'Otro'
-                    && $descripcionOtro !== ''
-                ) {
-
-                    $texto =
-                        $descripcionOtro;
-                }
-
-
                 $origen =
                     trim(
                         (string) (
@@ -6662,6 +6679,27 @@ class Reportes_Controller extends BaseController
                             ?? ''
                         )
                     );
+
+
+                if (
+                    $origen === 'seguimiento'
+                    && !empty($filaSancion['id_sancion_seguimiento'])
+                ) {
+
+                    $texto =
+                        $this->obtenerNombreSancionSeguimientoPorId(
+                            $db,
+                            (int) $filaSancion['id_sancion_seguimiento']
+                        )
+                        ?: $tipo;
+                } elseif (
+                    $tipo === 'Otro'
+                    && $descripcionOtro !== ''
+                ) {
+
+                    $texto =
+                        $descripcionOtro;
+                }
 
 
                 $fechaActualizacion =
@@ -6679,7 +6717,12 @@ class Reportes_Controller extends BaseController
                     ),
 
                     'tipo' =>
-                    $tipo,
+                    $texto,
+
+                    'id_sancion_seguimiento' =>
+                    !empty($filaSancion['id_sancion_seguimiento'])
+                        ? (int) $filaSancion['id_sancion_seguimiento']
+                        : null,
 
                     'descripcion_otro' =>
                     $descripcionOtro,
@@ -6716,31 +6759,40 @@ class Reportes_Controller extends BaseController
 
             $seguimientos =
                 $db
-                ->table('ai_reporte_seguimientos')
+                ->table('ai_reporte_seguimientos s')
                 ->select([
-                    'id_seguimiento',
-                    'id_reporte',
-                    'fecha',
-                    'tipo',
-                    'estado_resultante',
-                    'observaciones',
-                    'created_by',
-                    'created_at',
+                    's.id_seguimiento',
+                    's.id_reporte',
+                    's.fecha',
+                    's.folio_ip',
+                    's.tipo AS tipo_legacy',
+                    's.id_tipo_seguimiento',
+                    's.tipo_otro',
+                    'ts.nombre AS tipo_catalogo',
+                    's.estado_resultante',
+                    's.observaciones',
+                    's.created_by',
+                    's.created_at',
                 ])
+                ->join(
+                    'ai_cat_tipos_seguimiento ts',
+                    'ts.id_tipo_seguimiento = s.id_tipo_seguimiento',
+                    'left'
+                )
                 ->where(
-                    'id_reporte',
+                    's.id_reporte',
                     $idReporte
                 )
                 ->where(
-                    'eliminado',
+                    's.eliminado',
                     0
                 )
                 ->orderBy(
-                    'fecha',
+                    's.fecha',
                     'DESC'
                 )
                 ->orderBy(
-                    'id_seguimiento',
+                    's.id_seguimiento',
                     'DESC'
                 )
                 ->get()
@@ -6755,6 +6807,44 @@ class Reportes_Controller extends BaseController
                 $seguimientos
                 as &$seguimiento
             ) {
+
+                $tipoCatalogo =
+                    trim(
+                        (string) (
+                            $seguimiento['tipo_catalogo']
+                            ?? ''
+                        )
+                    );
+
+
+                $tipoOtro =
+                    trim(
+                        (string) (
+                            $seguimiento['tipo_otro']
+                            ?? ''
+                        )
+                    );
+
+
+                $tipoLegacy =
+                    trim(
+                        (string) (
+                            $seguimiento['tipo_legacy']
+                            ?? ''
+                        )
+                    );
+
+
+                $seguimiento['tipo'] =
+                    $this->formatearTipoSeguimiento(
+                        $tipoCatalogo,
+                        $tipoOtro,
+                        $tipoLegacy
+                    );
+
+
+                $seguimiento['tipo_texto'] =
+                    $seguimiento['tipo'];
 
                 $idSeguimiento =
                     (int) (
@@ -6774,27 +6864,34 @@ class Reportes_Controller extends BaseController
 
                 $sancionSeguimiento =
                     $db
-                    ->table('ai_reporte_sanciones')
+                    ->table('ai_reporte_sanciones rs')
                     ->select([
-                        'id_sancion',
-                        'tipo',
-                        'descripcion_otro',
-                        'es_actual',
+                        'rs.id_sancion',
+                        'rs.tipo',
+                        'rs.id_sancion_seguimiento',
+                        'ss.nombre AS sancion_catalogo',
+                        'rs.descripcion_otro',
+                        'rs.es_actual',
                     ])
+                    ->join(
+                        'ai_cat_sanciones_seguimiento ss',
+                        'ss.id_sancion_seguimiento = rs.id_sancion_seguimiento',
+                        'left'
+                    )
                     ->where(
-                        'id_reporte',
+                        'rs.id_reporte',
                         $idReporte
                     )
                     ->where(
-                        'id_seguimiento',
+                        'rs.id_seguimiento',
                         $idSeguimiento
                     )
                     ->where(
-                        'eliminado',
+                        'rs.eliminado',
                         0
                     )
                     ->orderBy(
-                        'id_sancion',
+                        'rs.id_sancion',
                         'DESC'
                     )
                     ->limit(1)
@@ -6810,7 +6907,8 @@ class Reportes_Controller extends BaseController
                 $tipoSeguimiento =
                     trim(
                         (string) (
-                            $sancionSeguimiento['tipo']
+                            $sancionSeguimiento['sancion_catalogo']
+                            ?? $sancionSeguimiento['tipo']
                             ?? ''
                         )
                     );
@@ -6849,6 +6947,11 @@ class Reportes_Controller extends BaseController
 
                     'tipo' =>
                     $tipoSeguimiento,
+
+                    'id_sancion_seguimiento' =>
+                    !empty($sancionSeguimiento['id_sancion_seguimiento'])
+                        ? (int) $sancionSeguimiento['id_sancion_seguimiento']
+                        : null,
 
                     'descripcion_otro' =>
                     $otroSeguimiento,
@@ -6889,6 +6992,11 @@ class Reportes_Controller extends BaseController
 
                     'seguimientos' =>
                     $seguimientos,
+
+                    'tipos_seguimiento' =>
+                    $this->obtenerTiposSeguimientoActivos(
+                        $db
+                    ),
 
                 ]);
         } catch (\Throwable $e) {
@@ -6986,11 +7094,18 @@ class Reportes_Controller extends BaseController
             );
 
 
-        $tipo =
+        $idTipoSeguimiento =
+            (int)
+            $this->request->getPost(
+                'id_tipo_seguimiento'
+            );
+
+
+        $tipoOtro =
             trim(
                 (string)
                 $this->request->getPost(
-                    'tipo'
+                    'tipo_otro'
                 )
             );
 
@@ -7046,22 +7161,19 @@ class Reportes_Controller extends BaseController
         SANCIÓN
         ===================================================== */
 
-        $sancionTipo =
-            trim(
-                (string)
-                $this->request->getPost(
-                    'sancion_disciplinaria'
-                )
+        $idSancionSeguimiento =
+            (int)
+            $this->request->getPost(
+                'id_sancion_seguimiento'
             );
+
+
+        $sancionTipo =
+            '';
 
 
         $sancionOtro =
-            trim(
-                (string)
-                $this->request->getPost(
-                    'sancion_otro'
-                )
-            );
+            null;
 
 
         /* =====================================================
@@ -7106,22 +7218,20 @@ class Reportes_Controller extends BaseController
         VALIDAR TIPO DE SEGUIMIENTO
         ===================================================== */
 
-        $tiposPermitidos = [
-            'Actualización',
-            'Investigación',
-            'Turnado',
-            'Resolución',
-            'Otro',
-        ];
+        $db =
+            \Config\Database::connect(
+                'datacore'
+            );
 
 
-        if (
-            !in_array(
-                $tipo,
-                $tiposPermitidos,
-                true
-            )
-        ) {
+        $tipoSeguimiento =
+            $this->obtenerTipoSeguimientoActivo(
+                $db,
+                $idTipoSeguimiento
+            );
+
+
+        if (!$tipoSeguimiento) {
 
             return $this->response
                 ->setStatusCode(422)
@@ -7130,6 +7240,50 @@ class Reportes_Controller extends BaseController
                     'message' =>
                     'El tipo de seguimiento seleccionado no es válido.',
                 ]);
+        }
+
+
+        $tipo =
+            trim(
+                (string) (
+                    $tipoSeguimiento['nombre']
+                    ?? ''
+                )
+            );
+
+
+        if ($tipo === 'OTRO') {
+
+            if ($tipoOtro === '') {
+
+                return $this->response
+                    ->setStatusCode(422)
+                    ->setJSON([
+                        'success' => false,
+                        'message' =>
+                        'Debes especificar el tipo de seguimiento.',
+                    ]);
+            }
+
+
+            if (
+                mb_strlen(
+                    $tipoOtro
+                ) > 255
+            ) {
+
+                return $this->response
+                    ->setStatusCode(422)
+                    ->setJSON([
+                        'success' => false,
+                        'message' =>
+                        'El tipo de seguimiento especificado no puede exceder 255 caracteres.',
+                    ]);
+            }
+        } else {
+
+            $tipoOtro =
+                null;
         }
 
 
@@ -7182,76 +7336,35 @@ class Reportes_Controller extends BaseController
         VALIDAR SANCIÓN
         ===================================================== */
 
-        $sancionesPermitidas = [
-            '',
-            'Arresto',
-            'Amonestación',
-            'Otro',
-        ];
+        if ($idSancionSeguimiento > 0) {
+
+            $sancionCatalogo =
+                $this->obtenerSancionSeguimientoActiva(
+                    $db,
+                    $idSancionSeguimiento
+                );
 
 
-        if (
-            !in_array(
-                $sancionTipo,
-                $sancionesPermitidas,
-                true
-            )
-        ) {
-
-            return $this->response
-                ->setStatusCode(422)
-                ->setJSON([
-                    'success' => false,
-                    'message' =>
-                    'La sanción disciplinaria seleccionada no es válida.',
-                ]);
-        }
-
-
-        if ($sancionTipo === 'Otro') {
-
-            if ($sancionOtro === '') {
+            if (!$sancionCatalogo) {
 
                 return $this->response
                     ->setStatusCode(422)
                     ->setJSON([
                         'success' => false,
                         'message' =>
-                        'Debes especificar la sanción disciplinaria.',
+                        'La sanción disciplinaria seleccionada no es válida.',
                     ]);
             }
 
 
-            if (
-                mb_strlen(
-                    $sancionOtro
-                ) > 255
-            ) {
-
-                return $this->response
-                    ->setStatusCode(422)
-                    ->setJSON([
-                        'success' => false,
-                        'message' =>
-                        'La descripción de la sanción no puede exceder 255 caracteres.',
-                    ]);
-            }
-        } else {
-
-            $sancionOtro =
-                null;
+            $sancionTipo =
+                trim(
+                    (string) (
+                        $sancionCatalogo['nombre']
+                        ?? ''
+                    )
+                );
         }
-
-
-        /* =====================================================
-        CONEXIÓN DATACORE
-        ===================================================== */
-
-        $db =
-            \Config\Database::connect(
-                'datacore'
-            );
-
 
         /* =====================================================
         VALIDAR REPORTE
@@ -7344,6 +7457,7 @@ class Reportes_Controller extends BaseController
             ->select([
                 'id_sancion',
                 'tipo',
+                'id_sancion_seguimiento',
                 'descripcion_otro',
                 'origen',
                 'id_seguimiento',
@@ -7378,7 +7492,7 @@ class Reportes_Controller extends BaseController
             false;
 
 
-        if ($sancionTipo !== '') {
+        if ($idSancionSeguimiento > 0) {
 
             if (!$sancionActual) {
 
@@ -7387,36 +7501,14 @@ class Reportes_Controller extends BaseController
             } else {
 
                 $tipoActual =
-                    trim(
-                        (string) (
-                            $sancionActual['tipo']
-                            ?? ''
-                        )
-                    );
-
-
-                $otroActual =
-                    trim(
-                        (string) (
-                            $sancionActual['descripcion_otro']
-                            ?? ''
-                        )
+                    (int) (
+                        $sancionActual['id_sancion_seguimiento']
+                        ?? 0
                     );
 
 
                 if (
-                    $tipoActual !== $sancionTipo
-                ) {
-
-                    $hayCambioSancion =
-                        true;
-                } elseif (
-                    $sancionTipo === 'Otro'
-                    && mb_strtolower(
-                        trim($otroActual)
-                    ) !== mb_strtolower(
-                        trim((string) $sancionOtro)
-                    )
+                    $tipoActual !== $idSancionSeguimiento
                 ) {
 
                     $hayCambioSancion =
@@ -7454,6 +7546,17 @@ class Reportes_Controller extends BaseController
 
                     'tipo' =>
                     $tipo,
+
+                    'id_tipo_seguimiento' =>
+                    $idTipoSeguimiento,
+
+                    'tipo_otro' =>
+                    $tipoOtro,
+
+                    'folio_ip' =>
+                    $folioIp !== ''
+                        ? $folioIp
+                        : null,
 
                     'estado_resultante' =>
                     $estado,
@@ -7566,8 +7669,11 @@ class Reportes_Controller extends BaseController
                         'tipo' =>
                         $sancionTipo,
 
+                        'id_sancion_seguimiento' =>
+                        $idSancionSeguimiento,
+
                         'descripcion_otro' =>
-                        $sancionOtro,
+                        null,
 
                         'origen' =>
                         'seguimiento',
@@ -7737,7 +7843,27 @@ class Reportes_Controller extends BaseController
                         $fecha,
 
                         'tipo' =>
+                        $this->formatearTipoSeguimiento(
+                            $tipo,
+                            $tipoOtro,
+                            $tipo
+                        ),
+
+                        'tipo_catalogo' =>
                         $tipo,
+
+                        'id_tipo_seguimiento' =>
+                        $idTipoSeguimiento,
+
+                        'tipo_otro' =>
+                        $tipoOtro,
+
+                        'tipo_texto' =>
+                        $this->formatearTipoSeguimiento(
+                            $tipo,
+                            $tipoOtro,
+                            $tipo
+                        ),
 
                         'estado_resultante' =>
                         $estado,
@@ -7877,10 +8003,17 @@ class Reportes_Controller extends BaseController
             );
 
 
-        $tipo =
+        $idTipoSeguimiento =
+            (int) (
+                $datos['id_tipo_seguimiento']
+                ?? 0
+            );
+
+
+        $tipoOtro =
             trim(
                 (string) (
-                    $datos['tipo']
+                    $datos['tipo_otro']
                     ?? ''
                 )
             );
@@ -7955,22 +8088,19 @@ class Reportes_Controller extends BaseController
             );
 
 
-        $sancionTipo =
-            trim(
-                (string) (
-                    $datos['sancion_disciplinaria']
-                    ?? ''
-                )
+        $idSancionSeguimiento =
+            (int) (
+                $datos['id_sancion_seguimiento']
+                ?? 0
             );
+
+
+        $sancionTipo =
+            '';
 
 
         $sancionOtro =
-            trim(
-                (string) (
-                    $datos['sancion_otro']
-                    ?? ''
-                )
-            );
+            null;
 
 
         /* =====================================================
@@ -8007,33 +8137,6 @@ class Reportes_Controller extends BaseController
                     'success' => false,
                     'message' =>
                     'La fecha del seguimiento no es válida.',
-                ]);
-        }
-
-
-        $tiposPermitidos = [
-            'Actualización',
-            'Investigación',
-            'Turnado',
-            'Resolución',
-            'Otro',
-        ];
-
-
-        if (
-            !in_array(
-                $tipo,
-                $tiposPermitidos,
-                true
-            )
-        ) {
-
-            return $this->response
-                ->setStatusCode(422)
-                ->setJSON([
-                    'success' => false,
-                    'message' =>
-                    'El tipo de seguimiento seleccionado no es válido.',
                 ]);
         }
 
@@ -8101,6 +8204,20 @@ class Reportes_Controller extends BaseController
         }
 
 
+        /* =====================================================
+        CONEXIÓN
+        ===================================================== */
+
+        $db =
+            \Config\Database::connect(
+                'datacore'
+            );
+
+
+        /* =====================================================
+        VALIDAR SANCIÓN DE SEGUIMIENTO
+        ===================================================== */
+
         if (
             in_array(
                 $sancionAccion,
@@ -8112,20 +8229,35 @@ class Reportes_Controller extends BaseController
             )
         ) {
 
-            $sancionesPermitidas = [
-                'Arresto',
-                'Amonestación',
-                'Otro',
-            ];
+            if ($idSancionSeguimiento > 0) {
+
+                $sancionCatalogo =
+                    $this->obtenerSancionSeguimientoActiva(
+                        $db,
+                        $idSancionSeguimiento
+                    );
 
 
-            if (
-                !in_array(
-                    $sancionTipo,
-                    $sancionesPermitidas,
-                    true
-                )
-            ) {
+                if (!$sancionCatalogo) {
+
+                    return $this->response
+                        ->setStatusCode(422)
+                        ->setJSON([
+                            'success' => false,
+                            'message' =>
+                            'La sanción disciplinaria seleccionada no es válida.',
+                        ]);
+                }
+
+
+                $sancionTipo =
+                    trim(
+                        (string) (
+                            $sancionCatalogo['nombre']
+                            ?? ''
+                        )
+                    );
+            } elseif ($sancionAccion === 'cambiar') {
 
                 return $this->response
                     ->setStatusCode(422)
@@ -8135,52 +8267,7 @@ class Reportes_Controller extends BaseController
                         'La sanción disciplinaria seleccionada no es válida.',
                     ]);
             }
-
-
-            if ($sancionTipo === 'Otro') {
-
-                if ($sancionOtro === '') {
-
-                    return $this->response
-                        ->setStatusCode(422)
-                        ->setJSON([
-                            'success' => false,
-                            'message' =>
-                            'Debes especificar la sanción disciplinaria.',
-                        ]);
-                }
-
-
-                if (
-                    mb_strlen(
-                        $sancionOtro
-                    ) > 255
-                ) {
-
-                    return $this->response
-                        ->setStatusCode(422)
-                        ->setJSON([
-                            'success' => false,
-                            'message' =>
-                            'La descripción de la sanción no puede exceder 255 caracteres.',
-                        ]);
-                }
-            } else {
-
-                $sancionOtro =
-                    null;
-            }
         }
-
-
-        /* =====================================================
-        CONEXIÓN
-        ===================================================== */
-
-        $db =
-            \Config\Database::connect(
-                'datacore'
-            );
 
 
         /* =====================================================
@@ -8211,6 +8298,124 @@ class Reportes_Controller extends BaseController
                     'message' =>
                     'El seguimiento solicitado no existe.',
                 ]);
+        }
+
+
+        /* =====================================================
+        VALIDAR TIPO DE SEGUIMIENTO
+        ===================================================== */
+
+        $tipo =
+            '';
+
+
+        if ($idTipoSeguimiento > 0) {
+
+            $tipoSeguimiento =
+                $this->obtenerTipoSeguimientoActivo(
+                    $db,
+                    $idTipoSeguimiento
+                );
+
+
+            if (!$tipoSeguimiento) {
+
+                return $this->response
+                    ->setStatusCode(422)
+                    ->setJSON([
+                        'success' => false,
+                        'message' =>
+                        'El tipo de seguimiento seleccionado no es válido.',
+                    ]);
+            }
+
+
+            $tipo =
+                trim(
+                    (string) (
+                        $tipoSeguimiento['nombre']
+                        ?? ''
+                    )
+                );
+
+
+            if ($tipo === 'OTRO') {
+
+                if ($tipoOtro === '') {
+
+                    return $this->response
+                        ->setStatusCode(422)
+                        ->setJSON([
+                            'success' => false,
+                            'message' =>
+                            'Debes especificar el tipo de seguimiento.',
+                        ]);
+                }
+
+
+                if (
+                    mb_strlen(
+                        $tipoOtro
+                    ) > 255
+                ) {
+
+                    return $this->response
+                        ->setStatusCode(422)
+                        ->setJSON([
+                            'success' => false,
+                            'message' =>
+                            'El tipo de seguimiento especificado no puede exceder 255 caracteres.',
+                        ]);
+                }
+            } else {
+
+                $tipoOtro =
+                    null;
+            }
+        } else {
+
+            $idTipoActual =
+                (int) (
+                    $seguimiento['id_tipo_seguimiento']
+                    ?? 0
+                );
+
+
+            $tipoLegacy =
+                trim(
+                    (string) (
+                        $seguimiento['tipo']
+                        ?? ''
+                    )
+                );
+
+
+            if (
+                $idTipoActual > 0
+                || $tipoLegacy === ''
+            ) {
+
+                return $this->response
+                    ->setStatusCode(422)
+                    ->setJSON([
+                        'success' => false,
+                        'message' =>
+                        'El tipo de seguimiento seleccionado no es válido.',
+                    ]);
+            }
+
+
+            $idTipoSeguimiento =
+                null;
+
+
+            $tipo =
+                $tipoLegacy;
+
+
+            $tipoOtro =
+                $seguimiento['tipo_otro']
+                ?? null;
         }
 
 
@@ -8388,6 +8593,17 @@ class Reportes_Controller extends BaseController
                     'tipo' =>
                     $tipo,
 
+                    'id_tipo_seguimiento' =>
+                    $idTipoSeguimiento,
+
+                    'tipo_otro' =>
+                    $tipoOtro,
+
+                    'folio_ip' =>
+                    $folioIp !== ''
+                        ? $folioIp
+                        : null,
+
                     'estado_resultante' =>
                     $estado,
 
@@ -8436,8 +8652,16 @@ class Reportes_Controller extends BaseController
                         'tipo' =>
                         $sancionTipo,
 
+                        'id_sancion_seguimiento' =>
+                        $idSancionSeguimiento > 0
+                            ? $idSancionSeguimiento
+                            : (
+                                $sancionSeguimiento['id_sancion_seguimiento']
+                                ?? null
+                            ),
+
                         'descripcion_otro' =>
-                        $sancionOtro,
+                        null,
 
                         /*
                             * NO modificamos:
@@ -8658,8 +8882,11 @@ class Reportes_Controller extends BaseController
                         'tipo' =>
                         $sancionTipo,
 
+                        'id_sancion_seguimiento' =>
+                        $idSancionSeguimiento,
+
                         'descripcion_otro' =>
-                        $sancionOtro,
+                        null,
 
                         'origen' =>
                         'seguimiento',
@@ -8909,6 +9136,215 @@ class Reportes_Controller extends BaseController
                     'No fue posible actualizar el seguimiento.',
                 ]);
         }
+    }
+
+
+    private function obtenerTiposSeguimientoActivos(
+        $db
+    ): array {
+
+        return $db
+            ->table(
+                'ai_cat_tipos_seguimiento'
+            )
+            ->select([
+                'id_tipo_seguimiento',
+                'nombre',
+                'orden',
+            ])
+            ->where(
+                'activo',
+                1
+            )
+            ->orderBy(
+                'orden',
+                'ASC'
+            )
+            ->get()
+            ->getResultArray();
+    }
+
+
+    private function obtenerTipoSeguimientoActivo(
+        $db,
+        int $idTipoSeguimiento
+    ): ?array {
+
+        if ($idTipoSeguimiento <= 0) {
+
+            return null;
+        }
+
+
+        $tipo =
+            $db
+            ->table(
+                'ai_cat_tipos_seguimiento'
+            )
+            ->select([
+                'id_tipo_seguimiento',
+                'nombre',
+                'orden',
+            ])
+            ->where(
+                'id_tipo_seguimiento',
+                $idTipoSeguimiento
+            )
+            ->where(
+                'activo',
+                1
+            )
+            ->get()
+            ->getRowArray();
+
+
+        return $tipo
+            ?: null;
+    }
+
+
+    private function formatearTipoSeguimiento(
+        string $tipoCatalogo,
+        ?string $tipoOtro = null,
+        ?string $tipoFallback = null
+    ): string {
+
+        $tipoCatalogo =
+            trim(
+                $tipoCatalogo
+            );
+
+
+        $tipoOtro =
+            trim(
+                (string) $tipoOtro
+            );
+
+
+        $tipoFallback =
+            trim(
+                (string) $tipoFallback
+            );
+
+
+        if ($tipoCatalogo !== '') {
+
+            if (
+                $tipoCatalogo === 'OTRO'
+                && $tipoOtro !== ''
+            ) {
+
+                return $tipoOtro;
+            }
+
+
+            return $tipoCatalogo;
+        }
+
+
+        return $tipoFallback !== ''
+            ? $tipoFallback
+            : 'Seguimiento';
+    }
+
+
+    private function obtenerSancionesSeguimientoActivas(
+        $db
+    ): array {
+
+        return $db
+            ->table(
+                'ai_cat_sanciones_seguimiento'
+            )
+            ->select([
+                'id_sancion_seguimiento',
+                'nombre',
+                'orden',
+            ])
+            ->where(
+                'activo',
+                1
+            )
+            ->orderBy(
+                'orden',
+                'ASC'
+            )
+            ->get()
+            ->getResultArray();
+    }
+
+
+    private function obtenerSancionSeguimientoActiva(
+        $db,
+        int $idSancionSeguimiento
+    ): ?array {
+
+        if ($idSancionSeguimiento <= 0) {
+
+            return null;
+        }
+
+
+        $sancion =
+            $db
+            ->table(
+                'ai_cat_sanciones_seguimiento'
+            )
+            ->select([
+                'id_sancion_seguimiento',
+                'nombre',
+                'orden',
+            ])
+            ->where(
+                'id_sancion_seguimiento',
+                $idSancionSeguimiento
+            )
+            ->where(
+                'activo',
+                1
+            )
+            ->get()
+            ->getRowArray();
+
+
+        return $sancion
+            ?: null;
+    }
+
+
+    private function obtenerNombreSancionSeguimientoPorId(
+        $db,
+        int $idSancionSeguimiento
+    ): string {
+
+        if ($idSancionSeguimiento <= 0) {
+
+            return '';
+        }
+
+
+        $sancion =
+            $db
+            ->table(
+                'ai_cat_sanciones_seguimiento'
+            )
+            ->select([
+                'nombre',
+            ])
+            ->where(
+                'id_sancion_seguimiento',
+                $idSancionSeguimiento
+            )
+            ->get()
+            ->getRowArray();
+
+
+        return trim(
+            (string) (
+                $sancion['nombre']
+                ?? ''
+            )
+        );
     }
 
 

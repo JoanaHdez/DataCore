@@ -461,3 +461,41 @@
         max-height: 240px;
     }
 }
+
+
+/* =========================================================
+   TIPO DE SEGUIMIENTO - OTRO
+========================================================= */
+
+#modal-seguimiento-reporte
+.seguimiento-tipo-otro {
+
+    padding: 14px;
+
+    background: #f7fbfe;
+
+    border: 1px solid #b9d8ea;
+
+    border-left: 4px solid #1681c4;
+
+    border-radius: 9px;
+
+    box-sizing: border-box;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-tipo-otro[hidden] {
+
+    display: none !important;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-reporte-grid:has(
+    .seguimiento-tipo-otro:not([hidden])
+)
+.seguimiento-campo-sancion {
+
+    grid-column: auto;
+}

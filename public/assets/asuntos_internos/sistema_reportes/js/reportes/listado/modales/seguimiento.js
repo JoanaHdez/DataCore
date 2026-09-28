@@ -848,18 +848,13 @@ async function procesarNuevoSeguimiento(
      */
 
     if (
-        sancionSeleccionada.tipo
+        sancionSeleccionada.id_sancion_seguimiento
+        || sancionSeleccionada.tipo
         && !hayCambioSancion
     ) {
 
         datos.set(
-            'sancion_disciplinaria',
-            ''
-        );
-
-
-        datos.set(
-            'sancion_otro',
+            'id_sancion_seguimiento',
             ''
         );
 
@@ -1345,9 +1340,18 @@ async function procesarEdicionSeguimiento(
 
 
     datos.set(
-        'tipo',
+        'id_tipo_seguimiento',
         formulario.querySelector(
             '#seguimiento-tipo'
+        )?.value
+        || ''
+    );
+
+
+    datos.set(
+        'tipo_otro',
+        formulario.querySelector(
+            '#seguimiento-tipo-otro'
         )?.value
         || ''
     );
@@ -1392,18 +1396,10 @@ async function procesarEdicionSeguimiento(
 
 
     datos.set(
-        'sancion_disciplinaria',
-        sancionNueva.tipo
+        'id_sancion_seguimiento',
+        sancionNueva.id_sancion_seguimiento
         || ''
     );
-
-
-    datos.set(
-        'sancion_otro',
-        sancionNueva.descripcion_otro
-        || ''
-    );
-
 
     /* =====================================================
        BOTÓN
@@ -1443,8 +1439,11 @@ async function procesarEdicionSeguimiento(
                 fecha:
                     datos.get('fecha'),
 
-                tipo:
-                    datos.get('tipo'),
+                id_tipo_seguimiento:
+                    datos.get('id_tipo_seguimiento'),
+
+                tipo_otro:
+                    datos.get('tipo_otro'),
 
                 estado:
                     datos.get('estado'),
@@ -1455,11 +1454,9 @@ async function procesarEdicionSeguimiento(
                 sancion_accion:
                     datos.get('sancion_accion'),
 
-                sancion_disciplinaria:
-                    datos.get('sancion_disciplinaria'),
+                id_sancion_seguimiento:
+                    datos.get('id_sancion_seguimiento'),
 
-                sancion_otro:
-                    datos.get('sancion_otro'),
             }
         );
 
