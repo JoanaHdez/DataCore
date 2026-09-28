@@ -590,6 +590,7 @@ class DashboardService
             'Arresto' => 0,
             'Amonestación' => 0,
             'Llamada de atención' => 0,
+            'FALTA' => 0,
             'Otro' => 0,
         ];
 
@@ -727,6 +728,9 @@ class DashboardService
                     'LLAMADA DE ATENCION' =>
                     'Llamada de atención',
 
+                    'FALTA' =>
+                    'FALTA',
+
                     'OTRO' =>
                     'Otro',
 
@@ -791,6 +795,7 @@ class DashboardService
                 'Arresto',
                 'Amonestación',
                 'Llamada de atención',
+                'FALTA',
                 'Otro',
             ],
 
@@ -798,6 +803,7 @@ class DashboardService
                 $conteos['Arresto'],
                 $conteos['Amonestación'],
                 $conteos['Llamada de atención'],
+                $conteos['FALTA'],
                 $conteos['Otro'],
             ],
 

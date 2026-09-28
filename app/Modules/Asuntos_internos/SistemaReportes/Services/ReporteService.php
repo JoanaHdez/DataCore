@@ -2745,11 +2745,14 @@ class ReporteService
             ================================================= */
 
             $folioSancion =
-                trim(
-                    (string) (
-                        $motivoFormulario['folio_sancion']
-                        ?? ''
-                    )
+                mb_strtoupper(
+                    trim(
+                        (string) (
+                            $motivoFormulario['folio_sancion']
+                            ?? ''
+                        )
+                    ),
+                    'UTF-8'
                 );
 
 
@@ -3338,11 +3341,14 @@ class ReporteService
             ================================================= */
 
             $folioSancion =
-                trim(
-                    (string) (
-                        $motivoFormulario['folio_sancion']
-                        ?? ''
-                    )
+                mb_strtoupper(
+                    trim(
+                        (string) (
+                            $motivoFormulario['folio_sancion']
+                            ?? ''
+                        )
+                    ),
+                    'UTF-8'
                 );
 
 

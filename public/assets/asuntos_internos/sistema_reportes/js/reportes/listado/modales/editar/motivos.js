@@ -16,6 +16,19 @@ const motivosSeleccionados =
 const motivosRespaldo =
     new Map();
 
+
+function normalizarFolioSancion(
+    valor
+) {
+
+    return String(
+        valor
+        || ''
+    )
+        .trim()
+        .toUpperCase();
+}
+
 /* =========================================================
    CARGAR MOTIVOS EXISTENTES
 ========================================================= */
@@ -108,10 +121,9 @@ export function cargarMotivosEditar(
 
 
                     folio_sancion:
-                        String(
+                        normalizarFolioSancion(
                             motivo.folio_sancion
-                            ?? ''
-                        ).trim(),
+                        ),
 
                 }
             );
@@ -505,10 +517,13 @@ export function inicializarMotivosEditar(
 
 
             motivo.folio_sancion =
-                String(
+                normalizarFolioSancion(
                     input.value
-                    || ''
                 );
+
+
+            input.value =
+                motivo.folio_sancion;
 
 
             motivosSeleccionados.set(
@@ -1697,8 +1712,9 @@ export function renderizarMotivosEditar(
 
 
             inputFolio.value =
-                motivo.folio_sancion
-                || '';
+                normalizarFolioSancion(
+                    motivo.folio_sancion
+                );
 
 
             inputFolio.placeholder =
@@ -2299,8 +2315,9 @@ export function obtenerMotivosEditar() {
                     motivo.sancion,
 
                 folio_sancion:
-                    motivo.folio_sancion
-                    || '',
+                    normalizarFolioSancion(
+                        motivo.folio_sancion
+                    ),
             });
         }
     );

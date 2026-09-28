@@ -126,6 +126,18 @@ function inicializarMotivos() {
             .trim();
     }
 
+    function normalizarFolioSancion(
+        valor
+    ) {
+
+        return String(
+            valor
+            || ''
+        )
+            .trim()
+            .toUpperCase();
+    }
+
     /* =========================================================
     CALCULAR TOTAL DE HORAS DE ARRESTO
     ========================================================= */
@@ -801,10 +813,9 @@ function inicializarMotivos() {
 
 
         motivo.folio =
-            String(
+            normalizarFolioSancion(
                 valor
-                || ''
-            ).trim();
+            );
 
 
         motivosSeleccionados.set(
@@ -927,6 +938,12 @@ function inicializarMotivos() {
                             input.dataset.motivoId,
                             input.value
                         );
+
+
+                        input.value =
+                            normalizarFolioSancion(
+                                input.value
+                            );
                     }
                 );
             }

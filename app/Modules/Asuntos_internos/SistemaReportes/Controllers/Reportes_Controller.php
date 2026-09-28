@@ -4423,10 +4423,14 @@ class Reportes_Controller extends BaseController
                 'tipos' => [
                     'Arresto',
                     'Amonestación',
+                    'Llamada de atención',
+                    'FALTA',
                     'Otro',
                 ],
 
                 'totales' => [
+                    0,
+                    0,
                     0,
                     0,
                     0,
