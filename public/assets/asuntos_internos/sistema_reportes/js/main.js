@@ -3,6 +3,7 @@
    Entrada principal de JavaScript
 ========================================================= */
 
+import './reportes/sesion.js';
 import './login.js';
 import './reportes/ubicacion.js';
 import './reportes/dashboard/graficas/sanciones.js';

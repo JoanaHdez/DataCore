@@ -9636,6 +9636,79 @@ class Reportes_Controller extends BaseController
         }
 
 
+        $usuario =
+            session()->get(
+                'usuario_reportes'
+            );
+
+
+        $esAdmin =
+            ($usuario['rol'] ?? null)
+            === 'admin';
+
+
+        $dashboardAutorizado =
+            session()->get(
+                'reportes_dashboard_autorizado'
+            ) === true;
+
+
+        if (
+            !$esAdmin
+            && !$dashboardAutorizado
+        ) {
+
+            $accept =
+                strtolower(
+                    (string) $this->request
+                    ->getHeaderLine(
+                        'Accept'
+                    )
+                );
+
+
+            $esPeticionJson =
+                str_contains(
+                    $accept,
+                    'application/json'
+                );
+
+
+            $esAjax =
+                strtolower(
+                    (string) $this->request
+                    ->getHeaderLine(
+                        'X-Requested-With'
+                    )
+                ) === 'xmlhttprequest';
+
+
+            if (
+                !$esPeticionJson
+                && !$esAjax
+            ) {
+
+                return redirect()
+                    ->to(
+                        base_url(
+                            'asuntos-internos/reportes/dashboard?autorizar=historial'
+                        )
+                    );
+            }
+
+
+            return $this->response
+                ->setStatusCode(403)
+                ->setJSON([
+                    'success' =>
+                        false,
+
+                    'message' =>
+                        'Se requiere autorización administrativa para consultar el historial.',
+                ]);
+        }
+
+
         /* =====================================================
         CONSULTAR HISTORIAL
         ===================================================== */
