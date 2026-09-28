@@ -1,3 +1,23 @@
+<?php
+
+$resoluciones =
+    $resoluciones
+    ?? [];
+
+
+$totalResoluciones =
+    (int) (
+        $resoluciones['total']
+        ?? 0
+    );
+
+
+$sinDatosResoluciones =
+    empty($resoluciones['resoluciones'] ?? [])
+    || $totalResoluciones <= 0;
+
+?>
+
 <section class="dashboard-grafica dashboard-grafica--resoluciones">
 
     <div class="dashboard-resoluciones__encabezado">
@@ -13,7 +33,7 @@
             </h2>
 
             <p class="dashboard-grafica__descripcion">
-                Distribución de los reportes de acuerdo con la resolución
+                Distribución de las quejas de acuerdo con la resolución
                 registrada en el expediente.
             </p>
 
@@ -27,7 +47,7 @@
             </span>
 
             <strong id="resoluciones-total">
-                <?= esc($resoluciones['total'] ?? 0) ?>
+                <?= esc($totalResoluciones) ?>
             </strong>
 
         </div>
@@ -36,6 +56,20 @@
 
 
     <div class="dashboard-resoluciones__contenido">
+
+        <?php if ($sinDatosResoluciones): ?>
+
+        <div class="dashboard-grafica__placeholder">
+            <strong>
+                Sin datos
+            </strong>
+
+            <span>
+                Sin datos para los filtros seleccionados.
+            </span>
+        </div>
+
+        <?php else: ?>
 
         <div
             class="
@@ -50,6 +84,8 @@
             ></canvas>
 
         </div>
+
+        <?php endif; ?>
 
     </div>
 

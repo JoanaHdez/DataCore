@@ -63,19 +63,13 @@ $esFelicitacion =
 $descripcionEvolucion =
     $esFelicitacion
         ? 'Comportamiento de las felicitaciones registradas durante el periodo consultado.'
-        : 'Comportamiento de los reportes registrados durante el periodo consultado.';
+        : 'Comportamiento de las quejas registradas durante el periodo consultado.';
 
 
 $ariaEvolucion =
     $esFelicitacion
         ? 'Gráfica de evolución temporal de felicitaciones'
-        : 'Gráfica de evolución temporal de reportes';
-
-
-$textoSinDatos =
-    $esFelicitacion
-        ? 'No existen felicitaciones para los filtros seleccionados.'
-        : 'No existen registros para los filtros seleccionados.';
+        : 'Gráfica de evolución temporal de quejas';
 
 
 /* =========================================================
@@ -131,6 +125,11 @@ foreach (
 
     ];
 }
+
+
+$sinDatosEvolucion =
+    empty($datosFrontend)
+    || $totalEvolucion <= 0;
 
 
 /* =========================================================
@@ -215,39 +214,22 @@ $textoAgrupacion =
 
     <div class="dashboard-evolucion__grafica">
 
-        <?php if (
-            !empty(
-                $datosFrontend
-            )
-        ): ?>
+        <?php if (!$sinDatosEvolucion): ?>
 
         <canvas id="dashboard-evolucion-chart" class="dashboard-evolucion__canvas"
             aria-label="<?= esc($ariaEvolucion) ?>" role="img"></canvas>
 
         <?php else: ?>
 
-        <div class="dashboard-evolucion__vacio">
-
-            <div class="dashboard-evolucion__vacio-icono" aria-hidden="true">
-
-                <svg viewBox="0 0 24 24">
-
-                    <path d="M4 19V5" />
-                    <path d="M4 19h16" />
-                    <path d="m7 15 4-4 3 2 5-6" />
-
-                </svg>
-
-            </div>
-
+        <div class="dashboard-grafica__placeholder">
 
             <strong>
-                Sin información para mostrar
+                Sin datos
             </strong>
 
 
             <span>
-                <?= esc($textoSinDatos) ?>
+                Sin datos para los filtros seleccionados.
             </span>
 
         </div>

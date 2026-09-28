@@ -12,7 +12,7 @@
             </h2>
 
             <p class="dashboard-grafica__descripcion">
-                Áreas de adscripción del personal involucrado en los reportes.
+                Áreas de adscripción del personal involucrado en las quejas.
             </p>
         </div>
 

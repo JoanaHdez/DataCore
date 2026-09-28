@@ -14,7 +14,7 @@
 
             <p class="dashboard-grafica__descripcion">
                 Distribución de las sanciones disciplinarias
-                vigentes registradas en los reportes.
+                vigentes registradas en las quejas.
             </p>
 
         </div>
@@ -84,12 +84,11 @@
                     <div>
 
                         <strong>
-                            Sin sanciones registradas
+                            Sin datos
                         </strong>
 
                         <span>
-                            No existen sanciones disciplinarias
-                            vigentes para la consulta actual.
+                            Sin datos para los filtros seleccionados.
                         </span>
 
                     </div>

@@ -85,6 +85,12 @@ $textoSecundaria =
         $secundariaSeleccionada
     );
 
+
+$sinDatosCruce =
+    empty($categorias)
+    || empty($series)
+    || $totalCruce <= 0;
+
 ?>
 
 
@@ -274,6 +280,20 @@ $textoSecundaria =
          ESPACIO PARA GRÁFICA FINAL
     ====================================================== -->
 
+    <?php if ($sinDatosCruce): ?>
+
+    <div class="dashboard-grafica__placeholder">
+        <strong>
+            Sin datos
+        </strong>
+
+        <span>
+            Sin datos para los filtros seleccionados.
+        </span>
+    </div>
+
+    <?php else: ?>
+
     <div class="dashboard-cruce__grafica">
 
         <canvas
@@ -291,11 +311,6 @@ $textoSecundaria =
     ====================================================== -->
 
     <div class="dashboard-cruce__tabla-contenedor">
-
-        <?php if (
-            !empty($categorias)
-            && !empty($series)
-        ): ?>
 
             <table class="dashboard-cruce__tabla">
 
@@ -365,23 +380,10 @@ $textoSecundaria =
 
             </table>
 
-        <?php else: ?>
-
-            <div class="dashboard-cruce__vacio">
-
-                <strong>
-                    Sin información para mostrar
-                </strong>
-
-                <span>
-                    No existen registros para la combinación seleccionada.
-                </span>
-
-            </div>
-
-        <?php endif; ?>
-
     </div>
+
+
+    <?php endif; ?>
 
 
     <!-- =====================================================

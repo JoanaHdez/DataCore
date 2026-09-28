@@ -123,7 +123,7 @@ if (!empty($perscodUsuario)) {
         ) ?>" class="report-nav__link <?= url_is(
             'asuntos-internos/reportes/listado'
         ) ? 'report-nav__link--active' : '' ?>">
-        Reportes
+        Reportes de Quejas
     </a>
 
 
@@ -132,7 +132,7 @@ if (!empty($perscodUsuario)) {
         ) ?>" class="report-nav__link <?= url_is(
             'asuntos-internos/reportes/felicitaciones'
         ) ? 'report-nav__link--active' : '' ?>">
-        Felicitaciones
+        Reportes de Felicitaciones
     </a>
 
 

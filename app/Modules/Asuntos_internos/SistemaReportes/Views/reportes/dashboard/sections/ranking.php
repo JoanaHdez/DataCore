@@ -80,27 +80,21 @@ if (
     $descripcionRanking =
         $esFelicitacion
             ? 'Personal con mayor número de felicitaciones asociadas.'
-            : 'Personal con mayor número de registros asociados.';
+            : 'Personal con mayor número de quejas asociadas.';
 
 } else {
 
     $descripcionRanking =
         $esFelicitacion
             ? 'Principales resultados de felicitaciones según la categoría seleccionada.'
-            : 'Principales resultados según la categoría seleccionada.';
+            : 'Principales resultados de quejas según la categoría seleccionada.';
 }
 
 
 $ariaRanking =
     $esFelicitacion
         ? 'Ranking Top 5 de felicitaciones'
-        : 'Ranking Top 5 de registros';
-
-
-$textoSinDatos =
-    $esFelicitacion
-        ? 'No existen felicitaciones para el ranking seleccionado.'
-        : 'No existen registros para el ranking seleccionado.';
+        : 'Ranking Top 5 de quejas';
 
 
 /* =========================================================
@@ -145,6 +139,11 @@ if (
 
     $opciones = [];
 }
+
+
+$sinDatosRanking =
+    empty($etiquetas)
+    || $totalTop <= 0;
 
 ?>
 
@@ -256,6 +255,20 @@ if (
 
     <div class="dashboard-ranking__contenido">
 
+        <?php if ($sinDatosRanking): ?>
+
+        <div class="dashboard-grafica__placeholder">
+            <strong>
+                Sin datos
+            </strong>
+
+            <span>
+                Sin datos para los filtros seleccionados.
+            </span>
+        </div>
+
+        <?php else: ?>
+
 
         <!-- =============================================
              ESPACIO PARA GRÁFICA FINAL
@@ -273,8 +286,6 @@ if (
         ============================================== -->
 
         <div class="dashboard-ranking__lista">
-
-            <?php if (!empty($etiquetas)): ?>
 
             <?php foreach ($etiquetas as $indice => $etiqueta): ?>
 
@@ -325,25 +336,9 @@ if (
 
             <?php endforeach; ?>
 
-
-            <?php else: ?>
-
-            <div class="dashboard-ranking__vacio">
-
-                <strong>
-                    Sin información para mostrar
-                </strong>
-
-
-                <span>
-                    <?= esc($textoSinDatos) ?>
-                </span>
-
-            </div>
-
-            <?php endif; ?>
-
         </div>
+
+        <?php endif; ?>
 
     </div>
 

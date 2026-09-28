@@ -104,6 +104,37 @@ $formatearFecha =
             );
     };
 
+
+$totalComparativa =
+    0;
+
+
+foreach ($metricas as $metrica) {
+
+    if (!is_array($metrica)) {
+        continue;
+    }
+
+
+    $totalComparativa +=
+        (int) (
+            $metrica['actual']
+            ?? 0
+        )
+        + (int) (
+            $metrica['anterior']
+            ?? 0
+        );
+}
+
+
+$sinDatosComparativa =
+    $disponible
+    && (
+        empty($metricas)
+        || $totalComparativa <= 0
+    );
+
 ?>
 
 
@@ -174,6 +205,21 @@ $formatearFecha =
             <span>
                 Ingresa fecha inicial y fecha final para comparar
                 contra el periodo anterior equivalente.
+            </span>
+
+        </div>
+
+
+    <?php elseif ($sinDatosComparativa): ?>
+
+        <div class="dashboard-grafica__placeholder">
+
+            <strong>
+                Sin datos
+            </strong>
+
+            <span>
+                Sin datos para los filtros seleccionados.
             </span>
 
         </div>

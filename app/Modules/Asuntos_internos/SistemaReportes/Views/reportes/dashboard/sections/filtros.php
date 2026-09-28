@@ -343,7 +343,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                             </strong>
 
                             <small data-dashboard-catalogo-descripcion>
-                                Todos los tipos de reporte
+                                Todos los tipos
                             </small>
 
                         </span>
@@ -367,7 +367,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                     dashboard-catalogo__item
                     dashboard-catalogo__item--activo
                 " data-dashboard-catalogo-opcion data-value="" data-texto="Todos"
-                        data-descripcion="Todos los tipos de reporte" data-avatar="T" role="option"
+                        data-descripcion="Todos los tipos" data-avatar="T" role="option"
                         aria-selected="true">
 
                         <span class="dashboard-catalogo__avatar">
@@ -381,7 +381,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                             </strong>
 
                             <small>
-                                Todos los tipos de reporte
+                                Todos los tipos
                             </small>
 
                         </span>
@@ -395,7 +395,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                     ========================================== -->
 
                     <button type="button" class="dashboard-catalogo__item" data-dashboard-catalogo-opcion
-                        data-value="QUEJA" data-texto="Queja" data-descripcion="Reportes con folio QJ" data-avatar="Q"
+                        data-value="QUEJA" data-texto="Queja" data-descripcion="Quejas con folio QJ" data-avatar="Q"
                         role="option" aria-selected="false">
 
                         <span class="dashboard-catalogo__avatar">
@@ -409,7 +409,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                             </strong>
 
                             <small>
-                                Reportes con folio QJ
+                                Quejas con folio QJ
                             </small>
 
                         </span>
@@ -423,7 +423,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                     ========================================== -->
 
                     <button type="button" class="dashboard-catalogo__item" data-dashboard-catalogo-opcion
-                        data-value="QUEJA_VERBAL" data-texto="Queja verbal" data-descripcion="Reportes con folio QJV"
+                        data-value="QUEJA_VERBAL" data-texto="Queja verbal" data-descripcion="Quejas con folio QJV"
                         data-avatar="QV" role="option" aria-selected="false">
 
                         <span class="dashboard-catalogo__avatar">
@@ -437,7 +437,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                             </strong>
 
                             <small>
-                                Reportes con folio QJV
+                                Quejas con folio QJV
                             </small>
 
                         </span>
@@ -451,7 +451,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                     ========================================== -->
 
                     <button type="button" class="dashboard-catalogo__item" data-dashboard-catalogo-opcion
-                        data-value="QUEJA_FORANEA" data-texto="Queja foránea" data-descripcion="Reportes con folio QJF"
+                        data-value="QUEJA_FORANEA" data-texto="Queja foránea" data-descripcion="Quejas con folio QJF"
                         data-avatar="QF" role="option" aria-selected="false">
 
                         <span class="dashboard-catalogo__avatar">
@@ -465,7 +465,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                             </strong>
 
                             <small>
-                                Reportes con folio QJF
+                                Quejas con folio QJF
                             </small>
 
                         </span>
@@ -810,7 +810,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                             <button type="button" class="dashboard-catalogo__item" data-dashboard-catalogo-opcion
                                 data-value="<?= esc($valorClasificacion) ?>"
                                 data-texto="<?= esc($textoClasificacion) ?>"
-                                data-descripcion="Clasificación del reporte"
+                                data-descripcion="Clasificación de la queja"
                                 data-avatar="<?= esc($avatarClasificacion) ?>" role="option" aria-selected="false">
 
                                 <span class="dashboard-catalogo__avatar">
@@ -824,7 +824,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                                     </strong>
 
                                     <small>
-                                        Clasificación del reporte
+                                        Clasificación de la queja
                                     </small>
 
                                 </span>
@@ -905,13 +905,13 @@ if (!function_exists('dashboardFiltroIniciales')) {
                                 [
                                     'valor' => 'con',
                                     'texto' => 'Con seguimiento',
-                                    'descripcion' => 'Reportes con seguimiento registrado',
+                                    'descripcion' => 'Quejas con seguimiento registrado',
                                     'avatar' => 'CS',
                                 ],
                                 [
                                     'valor' => 'sin',
                                     'texto' => 'Sin seguimiento',
-                                    'descripcion' => 'Reportes sin seguimiento registrado',
+                                    'descripcion' => 'Quejas sin seguimiento registrado',
                                     'avatar' => 'SS',
                                 ],
                             ];

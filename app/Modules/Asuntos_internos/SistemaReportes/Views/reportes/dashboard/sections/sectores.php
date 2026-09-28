@@ -108,6 +108,11 @@ usort(
     }
 );
 
+
+$sinDatosSector =
+    empty($filas)
+    || $totalSector <= 0;
+
 ?>
 
 
@@ -159,6 +164,20 @@ usort(
     ====================================================== -->
 
     <div class="dashboard-sectores__contenido">
+
+        <?php if ($sinDatosSector): ?>
+
+        <div class="dashboard-grafica__placeholder">
+            <strong>
+                Sin datos
+            </strong>
+
+            <span>
+                Sin datos para los filtros seleccionados.
+            </span>
+        </div>
+
+        <?php else: ?>
 
 
         <!-- =================================================
@@ -232,6 +251,8 @@ usort(
             <?php endforeach; ?>
 
         </div>
+
+        <?php endif; ?>
 
     </div>
 

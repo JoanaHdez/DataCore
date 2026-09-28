@@ -387,7 +387,7 @@ function inicializarGraficaCatalogo() {
                 datasets: [
                     {
                         label:
-                            'Registros',
+                            'Quejas',
 
                         data:
                             valores,
@@ -722,8 +722,8 @@ function inicializarGraficaCatalogo() {
                                 return (
                                     `${valor} ${
                                         valor === 1
-                                            ? 'registro'
-                                            : 'registros'
+                                            ? 'queja'
+                                            : 'quejas'
                                     } `
                                     + `(${porcentaje.toFixed(1)}%)`
                                 );

@@ -26,6 +26,11 @@ $totalQuejas =
         ?? 0
     );
 
+
+$sinDatosEstado =
+    empty($estados)
+    || $totalQuejas <= 0;
+
 ?>
 
 
@@ -66,6 +71,20 @@ $totalQuejas =
 
 
     <div class="dashboard-estado__contenido">
+
+        <?php if ($sinDatosEstado): ?>
+
+        <div class="dashboard-grafica__placeholder">
+            <strong>
+                Sin datos
+            </strong>
+
+            <span>
+                Sin datos para los filtros seleccionados.
+            </span>
+        </div>
+
+        <?php else: ?>
 
         <!-- =============================================
              ESPACIO PARA LA GRÁFICA
@@ -127,6 +146,8 @@ $totalQuejas =
             <?php endforeach; ?>
 
         </div>
+
+        <?php endif; ?>
 
     </div>
 

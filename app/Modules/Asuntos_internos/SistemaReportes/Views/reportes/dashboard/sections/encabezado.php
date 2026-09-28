@@ -13,7 +13,7 @@
             </h1>
 
             <p class="dashboard-encabezado__descripcion">
-                Consulta indicadores y estadísticas generales de los reportes.
+                Consulta indicadores y estadísticas generales de Quejas y Felicitaciones.
             </p>
 
         </div>

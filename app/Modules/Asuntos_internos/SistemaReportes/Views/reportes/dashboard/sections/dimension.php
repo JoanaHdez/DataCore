@@ -124,6 +124,11 @@ if (
     $opciones = [];
 }
 
+
+$sinDatosDimension =
+    empty($etiquetas)
+    || $totalDimension <= 0;
+
 ?>
 
 
@@ -234,6 +239,20 @@ if (
 
     <div class="dashboard-dimension__contenido">
 
+        <?php if ($sinDatosDimension): ?>
+
+        <div class="dashboard-grafica__placeholder">
+            <strong>
+                Sin datos
+            </strong>
+
+            <span>
+                Sin datos para los filtros seleccionados.
+            </span>
+        </div>
+
+        <?php else: ?>
+
         <!-- =============================================
              ESPACIO PARA LA GRÁFICA
         ============================================== -->
@@ -250,8 +269,6 @@ if (
         ============================================== -->
 
         <div class="dashboard-dimension__lista">
-
-            <?php if (!empty($etiquetas)): ?>
 
             <?php foreach ($etiquetas as $indice => $etiqueta): ?>
 
@@ -297,25 +314,9 @@ if (
 
             <?php endforeach; ?>
 
-
-            <?php else: ?>
-
-            <div class="dashboard-dimension__vacio">
-
-                <strong>
-                    Sin información para mostrar
-                </strong>
-
-
-                <span>
-                    No existen registros para la dimensión seleccionada.
-                </span>
-
-            </div>
-
-            <?php endif; ?>
-
         </div>
+
+        <?php endif; ?>
 
     </div>
 

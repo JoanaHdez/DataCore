@@ -17,8 +17,6 @@ if (
 ?>
 
 
-<?php if (!empty($hallazgosDashboard)): ?>
-
 <section class="dashboard-hallazgos" id="dashboard-hallazgos">
 
     <div class="dashboard-hallazgos__encabezado">
@@ -43,6 +41,20 @@ if (
 
 
     <div class="dashboard-hallazgos__grid">
+
+        <?php if (empty($hallazgosDashboard)): ?>
+
+        <div class="dashboard-grafica__placeholder">
+            <strong>
+                Sin datos
+            </strong>
+
+            <span>
+                Sin datos para los filtros seleccionados.
+            </span>
+        </div>
+
+        <?php else: ?>
 
         <?php foreach ($hallazgosDashboard as $hallazgo): ?>
 
@@ -97,8 +109,8 @@ if (
 
         <?php endforeach; ?>
 
+        <?php endif; ?>
+
     </div>
 
 </section>
-
-<?php endif; ?>

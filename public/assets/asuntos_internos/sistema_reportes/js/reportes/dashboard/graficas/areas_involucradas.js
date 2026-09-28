@@ -96,6 +96,38 @@ function inicializarGraficaAreasInvolucradas() {
         areas.length === 0
         || totales.length === 0
     ) {
+        mostrarPlaceholderGraficaDashboard(
+            canvas
+        );
+
+        return;
+    }
+
+
+    const total =
+        totales.reduce(
+            (
+                acumulado,
+                valor
+            ) => {
+
+                return (
+                    acumulado
+                    + Number(
+                        valor
+                        || 0
+                    )
+                );
+            },
+            0
+        );
+
+
+    if (total <= 0) {
+        mostrarPlaceholderGraficaDashboard(
+            canvas
+        );
+
         return;
     }
 
@@ -595,4 +627,51 @@ function inicializarGraficaAreasInvolucradas() {
         }
     );
 
+}
+
+
+function mostrarPlaceholderGraficaDashboard(
+    canvas
+) {
+
+    const contenedor =
+        canvas?.parentElement
+        ?? null;
+
+
+    if (!contenedor) {
+        return;
+    }
+
+
+    canvas.hidden =
+        true;
+
+
+    if (
+        contenedor.querySelector(
+            '.dashboard-grafica__placeholder'
+        )
+    ) {
+        return;
+    }
+
+
+    const placeholder =
+        document.createElement(
+            'div'
+        );
+
+
+    placeholder.className =
+        'dashboard-grafica__placeholder';
+
+
+    placeholder.innerHTML =
+        '<strong>Sin datos</strong><span>Sin datos para los filtros seleccionados.</span>';
+
+
+    contenedor.appendChild(
+        placeholder
+    );
 }

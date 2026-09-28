@@ -34,7 +34,7 @@
             </strong>
 
             <small>
-                registros
+                quejas
             </small>
 
         </div>
