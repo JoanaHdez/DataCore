@@ -167,6 +167,15 @@ $esFelicitacion =
 
 
                     <!-- =============================================
+                        PERSONAL INDIVIDUAL
+                    ============================================== -->
+
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\personal_individual'
+                    ) ?>
+
+
+                    <!-- =============================================
                         HALLAZGOS AUTOMÁTICOS
                     ============================================== -->
 

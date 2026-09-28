@@ -3604,6 +3604,48 @@ class Reportes_Controller extends BaseController
         }
 
 
+        $personalIndividualSeleccionado =
+            trim(
+                (string)
+                $this->request->getGet(
+                    'personal_individual'
+                )
+            );
+
+
+        $personalIndividual = [
+
+            'personal' => [
+
+                'identificador' =>
+                    $personalIndividualSeleccionado,
+
+                'perscod' =>
+                    null,
+
+                'plantilla_id' =>
+                    null,
+
+                'nombre' =>
+                    null,
+
+                'area' =>
+                    null,
+
+                'turno' =>
+                    null,
+
+            ],
+
+            'total_quejas' =>
+                0,
+
+            'ultimas_quejas' =>
+                [],
+
+        ];
+
+
         /* =========================================================
         DATOS DEL DASHBOARD
         ========================================================= */
@@ -3764,6 +3806,18 @@ class Reportes_Controller extends BaseController
                 ->establecerFiltros(
                     $filtrosDashboard
                 );
+
+
+            if (
+                $personalIndividualSeleccionado !== ''
+            ) {
+
+                $personalIndividual =
+                    $dashboardService
+                    ->obtenerPersonalIndividual(
+                        $personalIndividualSeleccionado
+                    );
+            }
 
 
             /* =====================================================
@@ -4495,6 +4549,17 @@ class Reportes_Controller extends BaseController
 
                 'rankingSeleccionado' =>
                 $rankingTipo,
+
+
+                /* =================================================
+                PERSONAL INDIVIDUAL
+                ================================================= */
+
+                'personalIndividualSeleccionado' =>
+                $personalIndividualSeleccionado,
+
+                'personalIndividual' =>
+                $personalIndividual,
 
 
                 /* =================================================

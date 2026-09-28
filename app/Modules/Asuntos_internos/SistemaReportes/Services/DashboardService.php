@@ -14,6 +14,7 @@ use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardCru
 use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardComparativaService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardRankingService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardFelicitacionesService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardPersonalService;
 
 class DashboardService
 {
@@ -31,6 +32,7 @@ class DashboardService
     private DashboardComparativaService $comparativaService;
     private DashboardRankingService $rankingService;
     private DashboardFelicitacionesService $felicitacionesService;
+    private DashboardPersonalService $personalService;
 
     /* =========================================================
        CONSTRUCTOR
@@ -140,6 +142,11 @@ class DashboardService
 
         $this->felicitacionesService =
             new DashboardFelicitacionesService(
+                $this->filtrosService
+            );
+
+        $this->personalService =
+            new DashboardPersonalService(
                 $this->filtrosService
             );
     }
@@ -459,6 +466,20 @@ class DashboardService
         return $this->rankingService
             ->obtenerRanking(
                 $tipo
+            );
+    }
+
+    /* =========================================================
+    PERSONAL INDIVIDUAL
+    ========================================================= */
+
+    public function obtenerPersonalIndividual(
+        string $identificador
+    ): array {
+
+        return $this->personalService
+            ->obtenerAnalisis(
+                $identificador
             );
     }
 
