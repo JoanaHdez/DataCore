@@ -1711,11 +1711,13 @@ function inicializarBuscadorPersonalDashboard() {
 
 
     /* =====================================================
-       RESTAURAR PERSONAL DESDE URL
+    RESTAURAR PERSONAL DESDE URL
 
-       El valor real permanece en #dashboard-personal.
-       La representación visual se completará cuando el
-       usuario vuelva a seleccionar una persona.
+    El valor técnico permanece en #dashboard-personal:
+    perscod o plantilla_id.
+
+    Después de recargar recuperamos los datos de la
+    persona para reconstruir su presentación visual.
     ===================================================== */
 
     const valorRestaurado =
@@ -1729,14 +1731,207 @@ function inicializarBuscadorPersonalDashboard() {
         valorRestaurado !== ''
     ) {
 
-        contenedorSeleccion.hidden =
-            false;
-
-
-        textoSeleccion.textContent =
-            valorRestaurado;
+        restaurarPersonalSeleccionadoDashboard(
+            valorRestaurado
+        );
     }
 
+    /* =====================================================
+       RESTAURAR PERSONA SELECCIONADA
+    ===================================================== */
+
+    async function restaurarPersonalSeleccionadoDashboard(
+        identificador
+    ) {
+
+        try {
+
+            const url =
+                new URL(
+                    'DataCore/public/asuntos-internos/reportes/personal/buscar',
+                    `${window.location.origin}/`
+                );
+
+
+            url.searchParams.set(
+                'q',
+                identificador
+            );
+
+
+            const respuesta =
+                await fetch(
+                    url.toString(),
+                    {
+                        method: 'GET',
+
+                        headers: {
+                            Accept:
+                                'application/json',
+                        },
+                    }
+                );
+
+
+            if (
+                !respuesta.ok
+            ) {
+
+                throw new Error(
+                    'No fue posible restaurar el personal seleccionado.'
+                );
+            }
+
+
+            const datos =
+                await respuesta.json();
+
+
+            const personas =
+                Array.isArray(
+                    datos.personal
+                )
+                    ? datos.personal
+                    : [];
+
+
+            const persona =
+                personas.find(
+                    registro => {
+
+                        const perscod =
+                            String(
+                                registro.perscod
+                                || ''
+                            ).trim();
+
+
+                        const plantillaId =
+                            String(
+                                registro.id
+                                ?? registro.plantilla_id
+                                ?? ''
+                            ).trim();
+
+
+                        return (
+                            perscod === identificador
+                            || plantillaId === identificador
+                        );
+                    }
+                );
+
+
+            /*
+             * Si por alguna razón el endpoint no encuentra
+             * a la persona, conservamos el identificador
+             * para no perder visualmente el filtro activo.
+             */
+
+            if (
+                !persona
+            ) {
+
+                contenedorSeleccion.hidden =
+                    false;
+
+
+                textoSeleccion.textContent =
+                    identificador;
+
+
+                return;
+            }
+
+
+            const nombre =
+                String(
+                    persona.nombre
+                    || ''
+                ).trim();
+
+
+            const nomina =
+                String(
+                    persona.nomina
+                    || ''
+                ).trim();
+
+
+            const perscod =
+                String(
+                    persona.perscod
+                    || ''
+                ).trim();
+
+
+            const plantillaId =
+                Number(
+                    persona.id
+                    ?? persona.plantilla_id
+                )
+                || 0;
+
+
+            /*
+             * El valor técnico NO cambia.
+             */
+
+            inputPersonal.value =
+                identificador;
+
+
+            /*
+             * Restauramos también el nombre que se veía
+             * en el buscador antes de aplicar los filtros.
+             */
+
+            inputBusqueda.value =
+                nombre;
+
+
+            /*
+             * La etiqueta visual vuelve a ser:
+             *
+             * Nombre · Nómina XXXXX
+             */
+
+            textoSeleccion.textContent =
+                construirTextoPersonalDashboard(
+                    {
+                        nombre,
+                        nomina,
+                        perscod,
+                        plantillaId,
+                    }
+                );
+
+
+            contenedorSeleccion.hidden =
+                false;
+
+        } catch (error) {
+
+            console.error(
+                'Error restaurando personal del Dashboard:',
+                error
+            );
+
+
+            /*
+             * Fallback:
+             * mantenemos visible el identificador para no
+             * aparentar que el filtro desapareció.
+             */
+
+            contenedorSeleccion.hidden =
+                false;
+
+
+            textoSeleccion.textContent =
+                identificador;
+        }
+    }
 
     /* =====================================================
        BUSCAR AL ESCRIBIR
@@ -1748,7 +1943,7 @@ function inicializarBuscadorPersonalDashboard() {
 
             const termino =
                 inputBusqueda.value
-                .trim();
+                    .trim();
 
 
             /*
@@ -1948,7 +2143,7 @@ function inicializarBuscadorPersonalDashboard() {
                         persona.nombre
                         || 'Sin nombre'
                     )
-                    .trim();
+                        .trim();
 
 
                 const nomina =
@@ -1956,7 +2151,7 @@ function inicializarBuscadorPersonalDashboard() {
                         persona.nomina
                         || ''
                     )
-                    .trim();
+                        .trim();
 
 
                 const area =
@@ -1964,7 +2159,7 @@ function inicializarBuscadorPersonalDashboard() {
                         persona.area
                         || ''
                     )
-                    .trim();
+                        .trim();
 
 
                 const perscod =
@@ -1972,7 +2167,7 @@ function inicializarBuscadorPersonalDashboard() {
                         persona.perscod
                         || ''
                     )
-                    .trim();
+                        .trim();
 
 
                 const plantillaId =
@@ -2002,14 +2197,14 @@ function inicializarBuscadorPersonalDashboard() {
                         <small>
                             Nómina:
                             ${escaparHtmlDashboard(
-                                nomina || '—'
-                            )}
+                    nomina || '—'
+                )}
                         </small>
 
                         <small>
                             ${escaparHtmlDashboard(
-                                area || 'Sin área'
-                            )}
+                    area || 'Sin área'
+                )}
                         </small>
 
                     </span>
@@ -2064,11 +2259,11 @@ function inicializarBuscadorPersonalDashboard() {
 
         const valor =
             persona.perscod !== ''
-            ? persona.perscod
-            : String(
-                persona.plantillaId
-                || ''
-            );
+                ? persona.perscod
+                : String(
+                    persona.plantillaId
+                    || ''
+                );
 
 
         if (

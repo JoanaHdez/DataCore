@@ -34,12 +34,28 @@ $totalQuejas =
     );
 
 
+$totalFelicitaciones =
+    (int) (
+        $personalIndividual['total_felicitaciones']
+        ?? 0
+    );
+
+
 $ultimasQuejas =
     is_array(
         $personalIndividual['ultimas_quejas']
         ?? null
     )
         ? $personalIndividual['ultimas_quejas']
+        : [];
+
+
+$ultimasFelicitaciones =
+    is_array(
+        $personalIndividual['ultimas_felicitaciones']
+        ?? null
+    )
+        ? $personalIndividual['ultimas_felicitaciones']
         : [];
 
 
@@ -58,13 +74,36 @@ $esFelicitacionPersonal =
     $tipoDashboardPersonal === 'FELICITACION';
 
 
+$tipoAnalisisPersonal =
+    (string) (
+        $personalIndividual['tipo_analisis']
+        ?? (
+            $esFelicitacionPersonal
+                ? 'felicitacion'
+                : 'queja'
+        )
+    );
+
+
+$totalRegistros =
+    $tipoAnalisisPersonal === 'felicitacion'
+        ? $totalFelicitaciones
+        : $totalQuejas;
+
+
+$ultimosRegistros =
+    $tipoAnalisisPersonal === 'felicitacion'
+        ? $ultimasFelicitaciones
+        : $ultimasQuejas;
+
+
 $sinPersonaSeleccionada =
     $personalIndividualSeleccionado === '';
 
 
 $sinDatosPersonal =
     !$sinPersonaSeleccionada
-    && $totalQuejas <= 0;
+    && $totalRegistros <= 0;
 
 ?>
 
@@ -85,7 +124,7 @@ $sinDatosPersonal =
             </h2>
 
             <p class="dashboard-grafica__descripcion">
-                Consulta las quejas asociadas a una persona especifica.
+                Consulta los registros asociados a una persona especifica.
             </p>
         </div>
     </div>
@@ -133,19 +172,7 @@ $sinDatosPersonal =
     </div>
 
 
-    <?php if ($esFelicitacionPersonal): ?>
-
-    <div class="dashboard-grafica__placeholder">
-        <strong>
-            No aplicable
-        </strong>
-
-        <span>
-            Personal individual corresponde a Quejas.
-        </span>
-    </div>
-
-    <?php elseif ($sinPersonaSeleccionada): ?>
+    <?php if ($sinPersonaSeleccionada): ?>
 
     <div class="dashboard-grafica__placeholder">
         <strong>
@@ -199,20 +226,35 @@ $sinDatosPersonal =
 
         <p class="dashboard-personal-individual__total">
             <strong>
-                Total de quejas:
+                <?= $tipoAnalisisPersonal === 'felicitacion'
+                    ? 'Total de felicitaciones:'
+                    : 'Total de quejas:' ?>
             </strong>
 
-            <?= esc($totalQuejas) ?>
+            <?= esc($totalRegistros) ?>
         </p>
 
 
         <h3>
-            Ultimas 10 quejas
+            <?= $tipoAnalisisPersonal === 'felicitacion'
+                ? 'Ultimas 10 felicitaciones'
+                : 'Ultimas 10 quejas' ?>
         </h3>
 
         <div class="dashboard-personal-individual__tabla-contenedor">
             <table class="dashboard-personal-individual__tabla">
                 <thead>
+                    <?php if ($tipoAnalisisPersonal === 'felicitacion'): ?>
+
+                    <tr>
+                        <th>Folio</th>
+                        <th>Fecha</th>
+                        <th>Felicitante</th>
+                        <th>Razon</th>
+                    </tr>
+
+                    <?php else: ?>
+
                     <tr>
                         <th>Folio</th>
                         <th>Fecha</th>
@@ -220,28 +262,41 @@ $sinDatosPersonal =
                         <th>Clasificacion</th>
                         <th>Motivos</th>
                     </tr>
+
+                    <?php endif; ?>
                 </thead>
 
                 <tbody>
-                    <?php foreach ($ultimasQuejas as $queja): ?>
+                    <?php foreach ($ultimosRegistros as $registro): ?>
+
+                    <?php if ($tipoAnalisisPersonal === 'felicitacion'): ?>
+
+                    <tr>
+                        <td><?= esc($registro['folio'] ?? 'Sin informacion') ?></td>
+                        <td><?= esc($registro['fecha'] ?? 'Sin informacion') ?></td>
+                        <td><?= esc($registro['felicitante'] ?? 'Sin informacion') ?></td>
+                        <td><?= esc($registro['razon'] ?? 'Sin informacion') ?></td>
+                    </tr>
+
+                    <?php else: ?>
 
                     <?php
 
                     $motivos =
                         is_array(
-                            $queja['motivos']
+                            $registro['motivos']
                             ?? null
                         )
-                            ? $queja['motivos']
+                            ? $registro['motivos']
                             : [];
 
                     ?>
 
                     <tr>
-                        <td><?= esc($queja['folio'] ?? 'Sin informacion') ?></td>
-                        <td><?= esc($queja['fecha'] ?? 'Sin informacion') ?></td>
-                        <td><?= esc($queja['estado'] ?? 'Sin informacion') ?></td>
-                        <td><?= esc($queja['clasificacion'] ?? 'Sin informacion') ?></td>
+                        <td><?= esc($registro['folio'] ?? 'Sin informacion') ?></td>
+                        <td><?= esc($registro['fecha'] ?? 'Sin informacion') ?></td>
+                        <td><?= esc($registro['estado'] ?? 'Sin informacion') ?></td>
+                        <td><?= esc($registro['clasificacion'] ?? 'Sin informacion') ?></td>
                         <td>
                             <?php if (empty($motivos)): ?>
 
@@ -262,6 +317,8 @@ $sinDatosPersonal =
                             <?php endif; ?>
                         </td>
                     </tr>
+
+                    <?php endif; ?>
 
                     <?php endforeach; ?>
                 </tbody>

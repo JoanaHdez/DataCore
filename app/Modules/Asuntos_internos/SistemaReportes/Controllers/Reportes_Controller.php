@@ -5493,6 +5493,25 @@ class Reportes_Controller extends BaseController
                     'NO_NOMINA',
                     $termino
                 )
+                ->orLike(
+                    'PERSCOD',
+                    $termino
+                );
+
+
+            if (
+                ctype_digit($termino)
+            ) {
+
+                $builder
+                    ->orWhere(
+                        'ID',
+                        (int) $termino
+                    );
+            }
+
+
+            $builder
                 ->groupEnd();
 
 
