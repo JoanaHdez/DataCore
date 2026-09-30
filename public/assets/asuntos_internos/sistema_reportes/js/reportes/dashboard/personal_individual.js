@@ -50,6 +50,18 @@ function inicializarPersonalIndividualDashboard() {
         );
 
 
+    const modalMotivos =
+        document.querySelector(
+            '#modal-personal-individual-motivos'
+        );
+
+
+    const botonesMotivos =
+        document.querySelectorAll(
+            '[data-personal-individual-motivos]'
+        );
+
+
     if (
         !inputBusqueda
         || !inputValor
@@ -413,6 +425,113 @@ function inicializarPersonalIndividualDashboard() {
 
         }
     );
+
+
+    /* =====================================================
+       MODAL DE MOTIVOS
+    ===================================================== */
+
+    if (
+        modalMotivos
+        && botonesMotivos.length
+    ) {
+
+        botonesMotivos.forEach(
+            boton => {
+
+                boton.addEventListener(
+                    'click',
+                    () => {
+
+                        abrirModalMotivos();
+                    }
+                );
+            }
+        );
+
+
+        modalMotivos.addEventListener(
+            'click',
+            evento => {
+
+                if (
+                    evento.target.closest(
+                        '[data-personal-individual-motivos-cerrar]'
+                    )
+                ) {
+
+                    cerrarModalMotivos();
+                }
+            }
+        );
+
+
+        document.addEventListener(
+            'keydown',
+            evento => {
+
+                if (
+                    evento.key === 'Escape'
+                    && modalMotivos.classList.contains(
+                        'modal-reporte--visible'
+                    )
+                ) {
+
+                    cerrarModalMotivos();
+                }
+            }
+        );
+    }
+
+
+    function abrirModalMotivos() {
+
+        if (!modalMotivos) {
+
+            return;
+        }
+
+
+        modalMotivos.classList.add(
+            'modal-reporte--visible'
+        );
+
+
+        modalMotivos.setAttribute(
+            'aria-hidden',
+            'false'
+        );
+
+
+        document.body.classList.add(
+            'modal-abierto'
+        );
+    }
+
+
+    function cerrarModalMotivos() {
+
+        if (!modalMotivos) {
+
+            return;
+        }
+
+
+        modalMotivos.classList.remove(
+            'modal-reporte--visible'
+        );
+
+
+        modalMotivos.setAttribute(
+            'aria-hidden',
+            'true'
+        );
+
+
+        document.body.classList.remove(
+            'modal-abierto'
+        );
+    }
 
 
     /* =====================================================

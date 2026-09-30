@@ -97,6 +97,15 @@ $ultimosRegistros =
         : $ultimasQuejas;
 
 
+$motivosAgrupados =
+    is_array(
+        $personalIndividual['motivos_agrupados']
+        ?? null
+    )
+        ? $personalIndividual['motivos_agrupados']
+        : [];
+
+
 $sinPersonaSeleccionada =
     $personalIndividualSeleccionado === '';
 
@@ -280,41 +289,19 @@ $sinDatosPersonal =
 
                     <?php else: ?>
 
-                    <?php
-
-                    $motivos =
-                        is_array(
-                            $registro['motivos']
-                            ?? null
-                        )
-                            ? $registro['motivos']
-                            : [];
-
-                    ?>
-
                     <tr>
                         <td><?= esc($registro['folio'] ?? 'Sin informacion') ?></td>
                         <td><?= esc($registro['fecha'] ?? 'Sin informacion') ?></td>
                         <td><?= esc($registro['estado'] ?? 'Sin informacion') ?></td>
                         <td><?= esc($registro['clasificacion'] ?? 'Sin informacion') ?></td>
                         <td>
-                            <?php if (empty($motivos)): ?>
-
-                            Sin informacion
-
-                            <?php else: ?>
-
-                            <ul>
-                                <?php foreach ($motivos as $motivo): ?>
-
-                                <li>
-                                    <?= esc($motivo['motivo'] ?? 'Sin informacion') ?>
-                                </li>
-
-                                <?php endforeach; ?>
-                            </ul>
-
-                            <?php endif; ?>
+                            <button
+                                type="button"
+                                class="dashboard-personal-individual__motivos-boton"
+                                data-personal-individual-motivos
+                            >
+                                Ver motivos
+                            </button>
                         </td>
                     </tr>
 
@@ -329,3 +316,111 @@ $sinDatosPersonal =
     <?php endif; ?>
 
 </section>
+
+
+<?php if ($tipoAnalisisPersonal === 'queja' && !$sinPersonaSeleccionada): ?>
+
+<div
+    class="modal-reporte"
+    id="modal-personal-individual-motivos"
+    aria-hidden="true"
+>
+    <div
+        class="modal-reporte__overlay"
+        data-personal-individual-motivos-cerrar
+    ></div>
+
+    <div
+        class="modal-reporte__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-personal-individual-motivos-titulo"
+    >
+        <div class="modal-reporte__header">
+            <div>
+                <span class="modal-reporte__eyebrow">
+                    Personal individual
+                </span>
+
+                <h2
+                    class="modal-reporte__title"
+                    id="modal-personal-individual-motivos-titulo"
+                >
+                    Motivos agrupados
+                </h2>
+            </div>
+
+            <button
+                type="button"
+                class="modal-reporte__close"
+                data-personal-individual-motivos-cerrar
+                aria-label="Cerrar"
+            >
+                &times;
+            </button>
+        </div>
+
+        <div class="modal-reporte__body">
+            <?php if (empty($motivosAgrupados)): ?>
+
+            <div class="dashboard-grafica__placeholder">
+                <strong>
+                    Sin motivos
+                </strong>
+
+                <span>
+                    Sin motivos registrados para los filtros seleccionados.
+                </span>
+            </div>
+
+            <?php else: ?>
+
+            <div class="dashboard-personal-individual__motivos-lista">
+                <?php foreach ($motivosAgrupados as $grupoMotivo): ?>
+
+                <?php
+
+                $foliosMotivo =
+                    is_array(
+                        $grupoMotivo['folios']
+                        ?? null
+                    )
+                        ? $grupoMotivo['folios']
+                        : [];
+
+                ?>
+
+                <article class="dashboard-personal-individual__motivo">
+                    <h3>
+                        <?= esc($grupoMotivo['motivo'] ?? 'Sin informacion') ?>
+                    </h3>
+
+                    <p>
+                        <?= esc((int) ($grupoMotivo['cantidad'] ?? 0)) ?>
+                        apariciones
+                    </p>
+
+                    <strong>
+                        Folios:
+                    </strong>
+
+                    <ul>
+                        <?php foreach ($foliosMotivo as $folioMotivo): ?>
+
+                        <li>
+                            <?= esc($folioMotivo) ?>
+                        </li>
+
+                        <?php endforeach; ?>
+                    </ul>
+                </article>
+
+                <?php endforeach; ?>
+            </div>
+
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
+<?php endif; ?>

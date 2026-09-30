@@ -129,6 +129,11 @@ class DashboardPersonalService
             'ultimos_registros' =>
                 $quejas,
 
+            'motivos_agrupados' =>
+                $this->obtenerMotivosAgrupados(
+                    $identificador
+                ),
+
         ];
     }
 
@@ -181,6 +186,9 @@ class DashboardPersonalService
 
             'ultimos_registros' =>
                 $felicitaciones,
+
+            'motivos_agrupados' =>
+                [],
 
         ];
     }
@@ -633,6 +641,239 @@ class DashboardPersonalService
 
 
         return $motivos;
+    }
+
+
+    /* =========================================================
+       MOTIVOS AGRUPADOS DEL ANALISIS ACTUAL
+    ========================================================= */
+
+    private function obtenerMotivosAgrupados(
+        string $identificador
+    ): array {
+
+        $builder =
+            $this->db
+            ->table(
+                'ai_reportes r'
+            )
+            ->select([
+                'r.id_reporte',
+                'r.folio',
+                'rm.motivo_personalizado',
+                'm.motivo',
+            ])
+            ->join(
+                'ai_reporte_personal p_individual',
+                'p_individual.id_reporte = r.id_reporte',
+                'inner'
+            )
+            ->join(
+                'ai_reporte_motivos rm',
+                'rm.id_reporte = r.id_reporte',
+                'inner'
+            )
+            ->join(
+                'ai_cat_motivos m',
+                'm.id_motivo = rm.id_motivo',
+                'left'
+            )
+            ->where(
+                'rm.eliminado',
+                0
+            );
+
+
+        $this->aplicarFiltrosSinPersonal(
+            $builder
+        );
+
+
+        $this->aplicarFiltroPersonaIndividual(
+            $builder,
+            $identificador
+        );
+
+
+        $registros =
+            $builder
+            ->orderBy(
+                'r.fecha_registro',
+                'DESC'
+            )
+            ->orderBy(
+                'r.id_reporte',
+                'DESC'
+            )
+            ->get()
+            ->getResultArray();
+
+
+        $agrupados = [];
+
+
+        foreach (
+            $registros
+            as $registro
+        ) {
+
+            $motivoPersonalizado =
+                $this->normalizarTexto(
+                    $registro['motivo_personalizado']
+                    ?? ''
+                );
+
+
+            $motivoCatalogo =
+                $this->normalizarTexto(
+                    $registro['motivo']
+                    ?? ''
+                );
+
+
+            $motivo =
+                $motivoPersonalizado !== ''
+                    ? $motivoPersonalizado
+                    : $motivoCatalogo;
+
+
+            if (
+                $motivo === ''
+            ) {
+
+                continue;
+            }
+
+
+            $folio =
+                $this->normalizarTexto(
+                    $registro['folio']
+                    ?? ''
+                );
+
+
+            if (
+                $folio === ''
+            ) {
+
+                continue;
+            }
+
+
+            $clave =
+                mb_strtoupper(
+                    $motivo,
+                    'UTF-8'
+                );
+
+
+            if (
+                !isset(
+                    $agrupados[$clave]
+                )
+            ) {
+
+                $agrupados[$clave] = [
+
+                    'motivo' =>
+                        $motivo,
+
+                    'folios' =>
+                        [],
+
+                    '_folios_unicos' =>
+                        [],
+
+                ];
+            }
+
+
+            if (
+                isset(
+                    $agrupados[$clave]['_folios_unicos'][$folio]
+                )
+            ) {
+
+                continue;
+            }
+
+
+            $agrupados[$clave]['_folios_unicos'][$folio] =
+                true;
+
+
+            $agrupados[$clave]['folios'][] =
+                $folio;
+        }
+
+
+        $respuesta = [];
+
+
+        foreach (
+            $agrupados
+            as $grupo
+        ) {
+
+            $folios =
+                $grupo['folios']
+                ?? [];
+
+
+            $respuesta[] = [
+
+                'motivo' =>
+                    $grupo['motivo']
+                    ?? '',
+
+                'cantidad' =>
+                    count(
+                        $folios
+                    ),
+
+                'folios' =>
+                    $folios,
+
+            ];
+        }
+
+
+        usort(
+            $respuesta,
+            static function (
+                array $a,
+                array $b
+            ): int {
+
+                $comparacion =
+                    ((int) ($b['cantidad'] ?? 0))
+                    <=>
+                    ((int) ($a['cantidad'] ?? 0));
+
+
+                if (
+                    $comparacion !== 0
+                ) {
+
+                    return $comparacion;
+                }
+
+
+                return strcasecmp(
+                    (string) (
+                        $a['motivo']
+                        ?? ''
+                    ),
+                    (string) (
+                        $b['motivo']
+                        ?? ''
+                    )
+                );
+            }
+        );
+
+
+        return $respuesta;
     }
 
 
