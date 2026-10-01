@@ -781,6 +781,7 @@ class DashboardRankingService
             )
             ->select([
                 'r.id_reporte',
+                'r.folio',
                 'p.area_snapshot',
             ])
             ->join(
@@ -804,6 +805,8 @@ class DashboardRankingService
 
 
         $conteos = [];
+
+        $reportesPorSector = [];
 
         $reportesContados = [];
 
@@ -877,6 +880,15 @@ class DashboardRankingService
 
 
             $conteos[$sector]++;
+
+
+            $reportesPorSector[$sector][$idReporte] =
+                $this->normalizarTexto(
+                    (string) (
+                        $registro['folio']
+                        ?? ''
+                    )
+                );
         }
 
 
@@ -895,17 +907,29 @@ class DashboardRankingService
             );
 
 
-        return $this->construirRespuesta(
-            'sector',
-            'Sectores',
-            $conteos
-        );
+        $respuesta =
+            $this->construirRespuesta(
+                'sector',
+                'Sectores',
+                $conteos
+            );
+
+
+        $respuesta['detalles_ranking'] =
+            $this->construirDetallesRanking(
+                $conteos,
+                $reportesPorSector
+            );
+
+
+        return $respuesta;
     }
 
 
     /* =========================================================
-       TOP 5 - ÁREA
+       TOP 5 - AREA
     ========================================================= */
+
 
     private function obtenerRankingArea(): array
     {
@@ -917,6 +941,7 @@ class DashboardRankingService
             )
             ->select([
                 'r.id_reporte',
+                'r.folio',
                 'p.area_snapshot',
             ])
             ->join(
@@ -953,6 +978,8 @@ class DashboardRankingService
 
 
         $conteos = [];
+
+        $reportesPorArea = [];
 
         $reportesContados = [];
 
@@ -1029,6 +1056,15 @@ class DashboardRankingService
 
 
             $conteos[$area]++;
+
+
+            $reportesPorArea[$area][$idReporte] =
+                $this->normalizarTexto(
+                    (string) (
+                        $registro['folio']
+                        ?? ''
+                    )
+                );
         }
 
 
@@ -1047,17 +1083,29 @@ class DashboardRankingService
             );
 
 
-        return $this->construirRespuesta(
-            'area',
-            'Áreas',
-            $conteos
-        );
+        $respuesta =
+            $this->construirRespuesta(
+                'area',
+                'Áreas',
+                $conteos
+            );
+
+
+        $respuesta['detalles_ranking'] =
+            $this->construirDetallesRanking(
+                $conteos,
+                $reportesPorArea
+            );
+
+
+        return $respuesta;
     }
 
 
     /* =========================================================
        TOP 5 - UNIDAD
     ========================================================= */
+
 
     private function obtenerRankingUnidad(): array
     {
@@ -1069,6 +1117,7 @@ class DashboardRankingService
             )
             ->select([
                 'r.id_reporte',
+                'r.folio',
                 'u.no_economico_snapshot',
                 'u.placas_snapshot',
             ])
@@ -1093,6 +1142,8 @@ class DashboardRankingService
 
 
         $conteos = [];
+
+        $reportesPorUnidad = [];
 
         $reportesContados = [];
 
@@ -1184,6 +1235,15 @@ class DashboardRankingService
 
 
             $conteos[$unidad]++;
+
+
+            $reportesPorUnidad[$unidad][$idReporte] =
+                $this->normalizarTexto(
+                    (string) (
+                        $registro['folio']
+                        ?? ''
+                    )
+                );
         }
 
 
@@ -1202,17 +1262,29 @@ class DashboardRankingService
             );
 
 
-        return $this->construirRespuesta(
-            'unidad',
-            'Unidades',
-            $conteos
-        );
+        $respuesta =
+            $this->construirRespuesta(
+                'unidad',
+                'Unidades',
+                $conteos
+            );
+
+
+        $respuesta['detalles_ranking'] =
+            $this->construirDetallesRanking(
+                $conteos,
+                $reportesPorUnidad
+            );
+
+
+        return $respuesta;
     }
 
 
     /* =========================================================
        TOP 5 - PERSONAL
     ========================================================= */
+
 
     private function obtenerRankingPersonal(): array
     {
@@ -1224,6 +1296,7 @@ class DashboardRankingService
             )
             ->select([
                 'r.id_reporte',
+                'r.folio',
                 'p.perscod',
                 'p.plantilla_id',
                 'p.nombre_snapshot',
@@ -1298,13 +1371,6 @@ class DashboardRankingService
                 );
 
 
-            /* =================================================
-               IDENTIDAD ÚNICA
-
-               1. perscod
-               2. plantilla_id
-            ================================================= */
-
             if (
                 $perscod !== ''
             ) {
@@ -1341,11 +1407,6 @@ class DashboardRankingService
             }
 
 
-            /* =================================================
-               UNA PERSONA SOLO CUENTA UNA VEZ
-               POR REPORTE
-            ================================================= */
-
             $clave =
                 $idReporte
                 . '|'
@@ -1380,11 +1441,28 @@ class DashboardRankingService
                     'total' =>
                         0,
 
+                    'identificador' =>
+                        $perscod !== ''
+                            ? $perscod
+                            : (string) $plantillaId,
+
+                    'reportes' =>
+                        [],
+
                 ];
             }
 
 
             $personas[$identidad]['total']++;
+
+
+            $personas[$identidad]['reportes'][$idReporte] =
+                $this->normalizarTexto(
+                    (string) (
+                        $registro['folio']
+                        ?? ''
+                    )
+                );
         }
 
 
@@ -1434,10 +1512,12 @@ class DashboardRankingService
 
         $conteos = [];
 
+        $detalles = [];
+
 
         foreach (
             $personas
-            as $persona
+            as $identidad => $persona
         ) {
 
             $nombre =
@@ -1460,16 +1540,410 @@ class DashboardRankingService
                     $persona['total']
                     ?? 0
                 );
+
+
+            $reportes =
+                is_array(
+                    $persona['reportes']
+                    ?? null
+                )
+                    ? $persona['reportes']
+                    : [];
+
+
+            $folios =
+                array_values(
+                    array_filter(
+                        $reportes,
+                        static function (
+                            $folio
+                        ): bool {
+
+                            return trim(
+                                (string) $folio
+                            ) !== '';
+                        }
+                    )
+                );
+
+
+            $detalles[] = [
+
+                'identidad' =>
+                    (string) $identidad,
+
+                'identificador' =>
+                    (string) (
+                        $persona['identificador']
+                        ?? ''
+                    ),
+
+                'nombre' =>
+                    $nombre,
+
+                'total_quejas' =>
+                    (int) (
+                        $persona['total']
+                        ?? 0
+                    ),
+
+                'folios' =>
+                    $folios,
+
+                'motivos' =>
+                    $this->obtenerMotivosAgrupadosPorReportes(
+                        $reportes
+                    ),
+
+            ];
         }
 
 
-        return $this->construirRespuesta(
-            'personal',
-            'Personal con mayor número de registros asociados',
-            $conteos
-        );
+        $respuesta =
+            $this->construirRespuesta(
+                'personal',
+                'Personal con mayor número de registros asociados',
+                $conteos
+            );
+
+
+        $respuesta['detalles_personal'] =
+            $detalles;
+
+        $respuesta['detalles_ranking'] =
+            $detalles;
+
+
+        return $respuesta;
     }
 
+
+    private function construirDetallesRanking(
+        array $conteos,
+        array $reportesPorElemento
+    ): array {
+
+        $detalles = [];
+
+
+        foreach (
+            $conteos
+            as $nombre => $total
+        ) {
+
+            $nombre =
+                (string) $nombre;
+
+            $reportes =
+                is_array(
+                    $reportesPorElemento[$nombre]
+                    ?? null
+                )
+                    ? $reportesPorElemento[$nombre]
+                    : [];
+
+
+            $folios =
+                array_values(
+                    array_filter(
+                        $reportes,
+                        static function (
+                            $folio
+                        ): bool {
+
+                            return trim(
+                                (string) $folio
+                            ) !== '';
+                        }
+                    )
+                );
+
+
+            $detalles[] = [
+
+                'nombre' =>
+                    $nombre,
+
+                'total_quejas' =>
+                    (int) $total,
+
+                'folios' =>
+                    $folios,
+
+                'motivos' =>
+                    $this->obtenerMotivosAgrupadosPorReportes(
+                        $reportes
+                    ),
+
+            ];
+        }
+
+
+        return $detalles;
+    }
+
+
+    private function obtenerMotivosAgrupadosPorReportes(
+        array $reportes
+    ): array {
+
+        if (
+            empty(
+                $reportes
+            )
+        ) {
+
+            return [];
+        }
+
+
+        $idsReportes =
+            array_values(
+                array_filter(
+                    array_map(
+                        'intval',
+                        array_keys(
+                            $reportes
+                        )
+                    ),
+                    static fn (
+                        int $idReporte
+                    ): bool =>
+                        $idReporte > 0
+                )
+            );
+
+
+        if (
+            empty(
+                $idsReportes
+            )
+        ) {
+
+            return [];
+        }
+
+
+        $registros =
+            $this->db
+            ->table(
+                'ai_reporte_motivos rm'
+            )
+            ->select([
+                'rm.id_reporte',
+                'rm.motivo_personalizado',
+                'm.motivo',
+            ])
+            ->join(
+                'ai_cat_motivos m',
+                'm.id_motivo = rm.id_motivo',
+                'left'
+            )
+            ->whereIn(
+                'rm.id_reporte',
+                $idsReportes
+            )
+            ->where(
+                'rm.eliminado',
+                0
+            )
+            ->orderBy(
+                'm.motivo',
+                'ASC'
+            )
+            ->get()
+            ->getResultArray();
+
+
+        $motivos = [];
+
+
+        foreach (
+            $registros
+            as $registro
+        ) {
+
+            $idReporte =
+                (int) (
+                    $registro['id_reporte']
+                    ?? 0
+                );
+
+
+            if (
+                $idReporte <= 0
+                || !array_key_exists(
+                    $idReporte,
+                    $reportes
+                )
+            ) {
+
+                continue;
+            }
+
+
+            $motivoPersonalizado =
+                $this->normalizarTexto(
+                    (string) (
+                        $registro['motivo_personalizado']
+                        ?? ''
+                    )
+                );
+
+
+            $motivoCatalogo =
+                $this->normalizarTexto(
+                    (string) (
+                        $registro['motivo']
+                        ?? ''
+                    )
+                );
+
+
+            $motivo =
+                $motivoPersonalizado !== ''
+                    ? $motivoPersonalizado
+                    : $motivoCatalogo;
+
+
+            if (
+                $motivo === ''
+            ) {
+
+                continue;
+            }
+
+
+            $clave =
+                mb_strtoupper(
+                    $motivo,
+                    'UTF-8'
+                );
+
+
+            if (
+                !isset(
+                    $motivos[$clave]
+                )
+            ) {
+
+                $motivos[$clave] = [
+
+                    'motivo' =>
+                        $motivo,
+
+                    'folios' =>
+                        [],
+
+                    '_reportes_contados' =>
+                        [],
+
+                ];
+            }
+
+
+            if (
+                isset(
+                    $motivos[$clave]['_reportes_contados'][$idReporte]
+                )
+            ) {
+
+                continue;
+            }
+
+
+            $folio =
+                $this->normalizarTexto(
+                    (string) (
+                        $reportes[$idReporte]
+                        ?? ''
+                    )
+                );
+
+
+            if (
+                $folio === ''
+            ) {
+
+                continue;
+            }
+
+
+            $motivos[$clave]['_reportes_contados'][$idReporte] =
+                true;
+
+            $motivos[$clave]['folios'][] =
+                $folio;
+        }
+
+
+        $resultado = [];
+
+
+        foreach (
+            $motivos
+            as $motivo
+        ) {
+
+            $folios =
+                array_values(
+                    array_unique(
+                        $motivo['folios']
+                    )
+                );
+
+
+            $resultado[] = [
+
+                'motivo' =>
+                    (string) (
+                        $motivo['motivo']
+                        ?? ''
+                    ),
+
+                'cantidad_quejas' =>
+                    count(
+                        $folios
+                    ),
+
+                'folios' =>
+                    $folios,
+
+            ];
+        }
+
+
+        usort(
+            $resultado,
+            static function (
+                array $a,
+                array $b
+            ): int {
+
+                $comparacion =
+                    ((int) ($b['cantidad_quejas'] ?? 0))
+                    <=>
+                    ((int) ($a['cantidad_quejas'] ?? 0));
+
+
+                if (
+                    $comparacion !== 0
+                ) {
+
+                    return $comparacion;
+                }
+
+
+                return strcasecmp(
+                    (string) ($a['motivo'] ?? ''),
+                    (string) ($b['motivo'] ?? '')
+                );
+            }
+        );
+
+
+        return $resultado;
+    }
 
     /* =========================================================
        CONSTRUIR RESPUESTA

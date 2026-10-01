@@ -50,6 +50,14 @@ $opciones =
     ?? [];
 
 
+$detallesRanking =
+    $rankingDashboard['detalles_ranking']
+    ?? (
+        $rankingDashboard['detalles_personal']
+        ?? []
+    );
+
+
 /* =========================================================
    TIPO ACTIVO
 ========================================================= */
@@ -139,6 +147,34 @@ if (
 
     $opciones = [];
 }
+
+
+if (
+    !is_array(
+        $detallesRanking
+    )
+) {
+
+    $detallesRanking = [];
+}
+
+
+$tiposConDetalleRanking = [
+    'sector',
+    'area',
+    'unidad',
+    'personal',
+];
+
+
+$mostrarDetalleRanking =
+    in_array(
+        $tipoSeleccionado,
+        $tiposConDetalleRanking,
+        true
+    )
+    && !$esFelicitacion
+    && !empty($detallesRanking);
 
 
 $sinDatosRanking =
@@ -332,6 +368,19 @@ $sinDatosRanking =
                     <?= esc($cantidad) ?>
                 </strong>
 
+                <?php if ($mostrarDetalleRanking): ?>
+
+                <button
+                    type="button"
+                    class="dashboard-personal-individual__boton"
+                    data-ranking-personal-detalle
+                    data-ranking-personal-detalle-indice="<?= esc((string) $indice) ?>"
+                >
+                    Ver detalle
+                </button>
+
+                <?php endif; ?>
+
             </div>
 
             <?php endforeach; ?>
@@ -382,6 +431,99 @@ $sinDatosRanking =
     ) ?>
     </script>
 
+
+    <script type="application/json" id="dashboard-ranking-personal-detalles">
+    <?= json_encode(
+        $detallesRanking,
+        JSON_UNESCAPED_UNICODE
+        | JSON_UNESCAPED_SLASHES
+        | JSON_HEX_TAG
+        | JSON_HEX_AMP
+        | JSON_HEX_APOS
+        | JSON_HEX_QUOT
+    ) ?>
+    </script>
+
+
+    <?php if ($mostrarDetalleRanking): ?>
+
+    <div
+        class="modal-reporte"
+        id="modal-ranking-personal-detalle"
+        aria-hidden="true"
+    >
+
+        <div
+            class="modal-reporte__overlay"
+            data-ranking-personal-detalle-cerrar
+        ></div>
+
+
+        <div class="modal-reporte__dialog" role="dialog" aria-modal="true" aria-labelledby="ranking-personal-detalle-titulo">
+
+            <header class="modal-reporte__header">
+
+                <div>
+
+                    <span class="modal-reporte__eyebrow">
+                        Ranking
+                    </span>
+
+                    <h3 class="modal-reporte__title" id="ranking-personal-detalle-titulo">
+                        Detalle de quejas y motivos
+                    </h3>
+
+                    <p class="dashboard-ranking__descripcion" id="ranking-personal-detalle-nombre"></p>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-reporte__close"
+                    aria-label="Cerrar"
+                    data-ranking-personal-detalle-cerrar
+                >
+                    &times;
+                </button>
+
+            </header>
+
+
+            <div class="modal-reporte__body dashboard-personal-individual__detalle">
+
+                <p>
+                    Total de quejas:
+                    <strong id="ranking-personal-detalle-total">0</strong>
+                </p>
+
+
+                <h4>Folios considerados</h4>
+
+                <ul id="ranking-personal-detalle-folios"></ul>
+
+
+                <h4>Motivos agrupados</h4>
+
+                <div id="ranking-personal-detalle-motivos"></div>
+
+                <div class="dashboard-grafica__placeholder" id="ranking-personal-detalle-motivos-vacio" hidden>
+                    <strong>
+                        Sin motivos
+                    </strong>
+
+                    <span>
+                        Sin motivos registrados para los filtros seleccionados.
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <?php endif; ?>
+
 </section>
 
 
@@ -419,6 +561,376 @@ document.addEventListener(
 
                 window.location.href =
                     url.toString();
+
+            }
+        );
+
+
+        const detallesJson =
+            document.getElementById(
+                'dashboard-ranking-personal-detalles'
+            );
+
+        const modal =
+            document.getElementById(
+                'modal-ranking-personal-detalle'
+            );
+
+
+        if (!detallesJson || !modal) {
+            return;
+        }
+
+
+        if (modal.parentElement !== document.body) {
+            document.body.appendChild(
+                modal
+            );
+        }
+
+
+        let detalles = [];
+
+
+        try {
+
+            detalles =
+                JSON.parse(
+                    detallesJson.textContent
+                    || '[]'
+                );
+
+        } catch (error) {
+
+            detalles = [];
+        }
+
+
+        const nombre =
+            document.getElementById(
+                'ranking-personal-detalle-nombre'
+            );
+
+        const total =
+            document.getElementById(
+                'ranking-personal-detalle-total'
+            );
+
+        const folios =
+            document.getElementById(
+                'ranking-personal-detalle-folios'
+            );
+
+        const motivos =
+            document.getElementById(
+                'ranking-personal-detalle-motivos'
+            );
+
+        const motivosVacio =
+            document.getElementById(
+                'ranking-personal-detalle-motivos-vacio'
+            );
+
+
+        const limpiarNodo =
+            (nodo) => {
+
+                if (!nodo) {
+                    return;
+                }
+
+
+                while (nodo.firstChild) {
+                    nodo.removeChild(nodo.firstChild);
+                }
+            };
+
+
+        const agregarLista =
+            (contenedor, valores) => {
+
+                limpiarNodo(
+                    contenedor
+                );
+
+
+                valores.forEach(
+                    (valor) => {
+
+                        const item =
+                            document.createElement(
+                                'li'
+                            );
+
+                        item.textContent =
+                            String(
+                                valor
+                            );
+
+                        contenedor.appendChild(
+                            item
+                        );
+
+                    }
+                );
+            };
+
+
+        const renderizarMotivos =
+            (items) => {
+
+                limpiarNodo(
+                    motivos
+                );
+
+
+                const hayMotivos =
+                    Array.isArray(
+                        items
+                    )
+                    && items.length > 0;
+
+
+                if (motivosVacio) {
+                    motivosVacio.hidden =
+                        hayMotivos;
+
+                    motivosVacio.style.display =
+                        hayMotivos
+                            ? 'none'
+                            : '';
+                }
+
+
+                if (!hayMotivos || !motivos) {
+                    return;
+                }
+
+
+                items.forEach(
+                    (item) => {
+
+                        const bloque =
+                            document.createElement(
+                                'article'
+                            );
+
+                        bloque.className =
+                            'dashboard-personal-individual__motivo';
+
+
+                        const titulo =
+                            document.createElement(
+                                'strong'
+                            );
+
+                        titulo.textContent =
+                            item.motivo
+                            || 'Sin información';
+
+
+                        const cantidad =
+                            document.createElement(
+                                'p'
+                            );
+
+                        cantidad.textContent =
+                            `${Number(item.cantidad_quejas || 0)} apariciones`;
+
+
+                        const etiquetaFolios =
+                            document.createElement(
+                                'span'
+                            );
+
+                        etiquetaFolios.textContent =
+                            'Folios:';
+
+
+                        const lista =
+                            document.createElement(
+                                'ul'
+                            );
+
+                        (
+                            Array.isArray(item.folios)
+                                ? item.folios
+                                : []
+                        ).forEach(
+                            (folio) => {
+
+                                const li =
+                                    document.createElement(
+                                        'li'
+                                    );
+
+                                li.textContent =
+                                    String(
+                                        folio
+                                    );
+
+                                lista.appendChild(
+                                    li
+                                );
+
+                            }
+                        );
+
+
+                        bloque.appendChild(
+                            titulo
+                        );
+
+                        bloque.appendChild(
+                            cantidad
+                        );
+
+                        bloque.appendChild(
+                            etiquetaFolios
+                        );
+
+                        bloque.appendChild(
+                            lista
+                        );
+
+                        motivos.appendChild(
+                            bloque
+                        );
+
+                    }
+                );
+            };
+
+
+        const abrirModal =
+            (detalle) => {
+
+                if (!detalle) {
+                    return;
+                }
+
+
+                if (nombre) {
+                    nombre.textContent =
+                        detalle.nombre
+                        || '';
+                }
+
+
+                if (total) {
+                    total.textContent =
+                        String(
+                            detalle.total_quejas
+                            || 0
+                        );
+                }
+
+
+                if (folios) {
+                    agregarLista(
+                        folios,
+                        Array.isArray(detalle.folios)
+                            ? detalle.folios
+                            : []
+                    );
+                }
+
+
+                renderizarMotivos(
+                    detalle.motivos
+                    || []
+                );
+
+
+                modal.classList.add(
+                    'modal-reporte--visible'
+                );
+
+                modal.setAttribute(
+                    'aria-hidden',
+                    'false'
+                );
+
+                document.body.classList.add(
+                    'modal-abierto'
+                );
+            };
+
+
+        const cerrarModal =
+            () => {
+
+                modal.classList.remove(
+                    'modal-reporte--visible'
+                );
+
+                modal.setAttribute(
+                    'aria-hidden',
+                    'true'
+                );
+
+                document.body.classList.remove(
+                    'modal-abierto'
+                );
+            };
+
+
+        document
+            .querySelectorAll(
+                '[data-ranking-personal-detalle]'
+            )
+            .forEach(
+                (boton) => {
+
+                    boton.addEventListener(
+                        'click',
+                        () => {
+
+                            const indice =
+                                Number(
+                                    boton.dataset.rankingPersonalDetalleIndice
+                                );
+
+                            abrirModal(
+                                detalles[indice]
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+
+        modal
+            .querySelectorAll(
+                '[data-ranking-personal-detalle-cerrar]'
+            )
+            .forEach(
+                (boton) => {
+
+                    boton.addEventListener(
+                        'click',
+                        cerrarModal
+                    );
+
+                }
+            );
+
+
+        document.addEventListener(
+            'keydown',
+            (evento) => {
+
+                if (
+                    evento.key === 'Escape'
+                    && modal.classList.contains(
+                        'modal-reporte--visible'
+                    )
+                ) {
+
+                    cerrarModal();
+                }
 
             }
         );
