@@ -6,7 +6,6 @@
 @import url('./encabezado.css');
 @import url('./filtros.css');
 @import url('./indicadores.css');
-@import url('./graficas.css');
 @import url('./recientes.css');
 @import url('./graficas.css');
 @import url('./zonas.css');
@@ -17,6 +16,8 @@
 @import url('./layout.css');
 @import url('./areas_involucradas.css');
 @import url('./historial.css');
+@import url('./evolucion.css');
+@import url('./estado.css');
 
 
 /* =========================================================

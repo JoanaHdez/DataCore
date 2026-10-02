@@ -13,6 +13,8 @@ import './reportes/dashboard/graficas/catalogo.js';
 import './reportes/dashboard/graficas/turnos.js';
 import './reportes/dashboard/graficas/areas_involucradas.js';
 import './reportes/dashboard/graficas/evolucion.js';
+import './reportes/dashboard/graficas/estado.js';
+
 
 import './reportes/dashboard/filtros.js';
 import './reportes/dashboard/personal_individual.js';

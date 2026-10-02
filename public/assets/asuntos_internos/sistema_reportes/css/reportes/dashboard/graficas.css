@@ -39,14 +39,10 @@
 
     overflow: hidden;
 
-    background:
-        #ffffff;
+    background: #ffffff;
 
-    border:
-        1px solid #e1e9e5;
-
-    border-radius:
-        24px;
+    border: 1px solid #e1e9e5;
+    border-radius: 24px;
 
     box-shadow:
         0 12px 30px
@@ -63,8 +59,7 @@
 
     isolation: isolate;
 
-    color:
-        #1d332c;
+    color: #1d332c;
 
     background:
         radial-gradient(
@@ -78,19 +73,14 @@
             #fcfefd 100%
         );
 
-    border:
-        1px solid #e2ebe7;
-
-    border-radius:
-        24px;
+    border: 1px solid #e2ebe7;
+    border-radius: 24px;
 
     box-shadow:
         0 16px 36px
         rgba(28, 78, 60, 0.08);
 }
 
-
-/* Brillo suave */
 
 .dashboard-grafica--dark::before {
     content: "";
@@ -104,17 +94,14 @@
     width: 350px;
     height: 280px;
 
-    border-radius:
-        50%;
+    border-radius: 50%;
 
     background:
         rgba(37, 171, 123, 0.08);
 
-    filter:
-        blur(70px);
+    filter: blur(70px);
 
-    pointer-events:
-        none;
+    pointer-events: none;
 }
 
 
@@ -128,14 +115,10 @@
 
     display: flex;
 
-    align-items:
-        flex-start;
+    align-items: flex-start;
+    justify-content: space-between;
 
-    justify-content:
-        space-between;
-
-    gap:
-        24px;
+    gap: 24px;
 
     padding:
         22px
@@ -145,11 +128,9 @@
 
 
 .dashboard-grafica__encabezado-info {
-    min-width:
-        0;
+    min-width: 0;
 
-    flex:
-        1;
+    flex: 1;
 }
 
 
@@ -158,26 +139,18 @@
 ========================================================= */
 
 .dashboard-grafica__eyebrow {
-    display:
-        block;
+    display: block;
 
-    margin-bottom:
-        5px;
+    margin-bottom: 5px;
 
-    color:
-        #139566;
+    color: #139566;
 
-    font-size:
-        9px;
+    font-size: 9px;
+    font-weight: 800;
 
-    font-weight:
-        800;
+    letter-spacing: 0.09em;
 
-    letter-spacing:
-        0.09em;
-
-    text-transform:
-        uppercase;
+    text-transform: uppercase;
 }
 
 
@@ -186,23 +159,16 @@
 ========================================================= */
 
 .dashboard-grafica__titulo {
-    margin:
-        0;
+    margin: 0;
 
-    color:
-        #233831;
+    color: #233831;
 
-    font-size:
-        17px;
+    font-size: 17px;
+    font-weight: 800;
 
-    font-weight:
-        800;
+    line-height: 1.3;
 
-    line-height:
-        1.3;
-
-    letter-spacing:
-        -0.015em;
+    letter-spacing: -0.015em;
 }
 
 
@@ -211,22 +177,18 @@
 ========================================================= */
 
 .dashboard-grafica__descripcion {
-    max-width:
-        720px;
+    max-width: 720px;
 
     margin:
         5px
         0
         0;
 
-    color:
-        #7d8c87;
+    color: #7d8c87;
 
-    font-size:
-        10px;
+    font-size: 10px;
 
-    line-height:
-        1.5;
+    line-height: 1.5;
 }
 
 
@@ -235,67 +197,42 @@
 ========================================================= */
 
 .dashboard-grafica__periodos {
-    display:
-        flex;
+    display: flex;
 
-    align-items:
-        center;
+    align-items: center;
 
-    gap:
-        6px;
+    gap: 6px;
 
-    flex-shrink:
-        0;
+    flex-shrink: 0;
 }
 
 
-/* =========================================================
-   BOTÓN DE PERIODO
-========================================================= */
-
 .dashboard-grafica__periodo {
-    min-width:
-        44px;
+    min-width: 44px;
+    height: 32px;
 
-    height:
-        32px;
+    display: flex;
 
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
+    align-items: center;
+    justify-content: center;
 
     padding:
         0
         14px;
 
-    color:
-        #6e7c78;
+    color: #6e7c78;
 
-    background:
-        #f5f8f6;
+    background: #f5f8f6;
 
-    border:
-        0;
+    border: 0;
+    border-radius: 999px;
 
-    border-radius:
-        999px;
+    cursor: pointer;
 
-    cursor:
-        pointer;
+    font-family: inherit;
 
-    font-family:
-        inherit;
-
-    font-size:
-        9px;
-
-    font-weight:
-        700;
+    font-size: 9px;
+    font-weight: 700;
 
     transition:
         color 0.2s ease,
@@ -305,29 +242,17 @@
 }
 
 
-/* =========================================================
-   HOVER
-========================================================= */
-
 .dashboard-grafica__periodo:hover {
-    color:
-        #107b58;
+    color: #107b58;
 
-    background:
-        #edf7f2;
+    background: #edf7f2;
 
-    transform:
-        translateY(-1px);
+    transform: translateY(-1px);
 }
 
 
-/* =========================================================
-   PERIODO ACTIVO
-========================================================= */
-
 .dashboard-grafica__periodo--activo {
-    color:
-        #ffffff;
+    color: #ffffff;
 
     background:
         linear-gradient(
@@ -347,14 +272,10 @@
 ========================================================= */
 
 .dashboard-grafica__contenido {
-    position:
-        relative;
+    position: relative;
+    z-index: 2;
 
-    z-index:
-        2;
-
-    width:
-        100%;
+    width: 100%;
 
     padding:
         8px
@@ -368,94 +289,71 @@
 ========================================================= */
 
 .dashboard-grafica__canvas {
-    position:
-        relative;
+    position: relative;
 
-    width:
-        100%;
+    width: 100%;
 
-    min-height:
-        300px;
+    min-height: 300px;
 }
 
 
 /* =========================================================
-   GRÁFICA DE SECTORES
+   SECTORES
+   TEMPORAL: moveremos esto cuando trabajemos Sector.
 ========================================================= */
 
 .dashboard-grafica__canvas--sectores {
-    height:
-        340px;
+    height: 340px;
 
-    min-height:
-        340px;
+    min-height: 340px;
 }
 
 
 .dashboard-grafica__canvas--sectores canvas {
-    width:
-        100% !important;
+    width: 100% !important;
 
-    height:
-        100% !important;
+    height: 100% !important;
 }
 
 
 /* =========================================================
-   PLACEHOLDER
+   PLACEHOLDER GENERAL
 ========================================================= */
 
 .dashboard-grafica__placeholder {
-    width:
-        100%;
+    width: 100%;
 
-    min-height:
-        260px;
+    min-height: 260px;
 
-    display:
-        flex;
+    display: flex;
 
-    flex-direction:
-        column;
+    flex-direction: column;
 
-    align-items:
-        center;
+    align-items: center;
+    justify-content: center;
 
-    justify-content:
-        center;
+    gap: 5px;
 
-    gap:
-        5px;
+    color: #85948f;
 
-    color:
-        #85948f;
+    background: #f8fbf9;
 
-    background:
-        #f8fbf9;
+    border: 1px dashed #d5e2dc;
+    border-radius: 14px;
 
-    border:
-        1px dashed #d5e2dc;
-
-    border-radius:
-        14px;
-
-    text-align:
-        center;
+    text-align: center;
 }
 
 
 .dashboard-grafica__placeholder strong {
-    color:
-        #5f756d;
+    color: #5f756d;
 
-    font-size:
-        11px;
+    font-size: 11px;
 }
 
 
 .dashboard-grafica__placeholder span {
-    font-size:
-        9px;
+    font-size: 9px;
 }
 
 
@@ -464,289 +362,7 @@
 ========================================================= */
 
 .dashboard-grafica__canvas--tendencia {
-    min-height:
-        300px;
-}
-
-
-/* =========================================================
-   EVOLUCIÓN TEMPORAL
-========================================================= */
-
-.dashboard-evolucion {
-    margin-bottom:
-        26px;
-}
-
-
-/* =========================================================
-   EVOLUCIÓN - ENCABEZADO
-========================================================= */
-
-.dashboard-evolucion__encabezado {
-    display:
-        flex;
-
-    align-items:
-        flex-start;
-
-    justify-content:
-        space-between;
-
-    gap:
-        24px;
-
-    margin-bottom:
-        10px;
-}
-
-
-.dashboard-evolucion__eyebrow {
-    display:
-        block;
-
-    margin-bottom:
-        5px;
-
-    color:
-        #0b8f63;
-
-    font-size:
-        9px;
-
-    font-weight:
-        800;
-
-    letter-spacing:
-        0.09em;
-
-    text-transform:
-        uppercase;
-}
-
-
-.dashboard-evolucion__titulo {
-    margin:
-        0;
-
-    color:
-        #173554;
-
-    font-size:
-        18px;
-
-    font-weight:
-        800;
-
-    line-height:
-        1.25;
-}
-
-
-.dashboard-evolucion__descripcion {
-    max-width:
-        720px;
-
-    margin:
-        6px
-        0
-        0;
-
-    color:
-        #71827c;
-
-    font-size:
-        10px;
-
-    line-height:
-        1.5;
-}
-
-
-/* =========================================================
-   EVOLUCIÓN - RESUMEN DEL PERIODO
-========================================================= */
-
-.dashboard-evolucion__resumen {
-    min-width:
-        118px;
-
-    display:
-        flex;
-
-    flex-direction:
-        column;
-
-    align-items:
-        flex-end;
-
-    flex-shrink:
-        0;
-
-    padding:
-        9px
-        12px;
-
-    background:
-        #f3f8f6;
-
-    border:
-        1px solid #dfeae5;
-
-    border-radius:
-        14px;
-}
-
-
-.dashboard-evolucion__resumen-etiqueta {
-    color:
-        #70817b;
-
-    font-size:
-        8px;
-
-    font-weight:
-        700;
-}
-
-
-.dashboard-evolucion__resumen-valor {
-    margin-top:
-        3px;
-
-    color:
-        #173554;
-
-    font-size:
-        22px;
-
-    font-weight:
-        800;
-
-    line-height:
-        1;
-}
-
-
-/* =========================================================
-   EVOLUCIÓN - META / AGRUPACIÓN
-========================================================= */
-
-.dashboard-evolucion__meta {
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    margin-bottom:
-        10px;
-}
-
-
-.dashboard-evolucion__agrupacion {
-    display:
-        inline-flex;
-
-    align-items:
-        center;
-
-    min-height:
-        28px;
-
-    padding:
-        6px
-        10px;
-
-    color:
-        #5f736b;
-
-    background:
-        #f4f8f6;
-
-    border:
-        1px solid #e0e9e5;
-
-    border-radius:
-        999px;
-
-    font-size:
-        8px;
-
-    font-weight:
-        700;
-}
-
-
-/* =========================================================
-   EVOLUCIÓN - CONTENEDOR DE GRÁFICA
-========================================================= */
-
-.dashboard-evolucion__grafica {
-    position:
-        relative;
-
-    width:
-        100%;
-
-    height:
-        330px;
-
-    padding:
-        18px
-        16px
-        10px;
-
-    overflow:
-        hidden;
-
-    background:
-        radial-gradient(
-            circle at 100% 0%,
-            rgba(22, 129, 196, 0.055),
-            transparent 34%
-        ),
-        #ffffff;
-
-    border:
-        1px solid #e0e9e5;
-
-    border-radius:
-        20px;
-
-    box-shadow:
-        0 10px 26px
-        rgba(28, 67, 54, 0.055);
-}
-
-
-/* =========================================================
-   EVOLUCIÓN - CANVAS
-========================================================= */
-
-.dashboard-evolucion__canvas {
-    display:
-        block;
-
-    width:
-        100% !important;
-
-    height:
-        100% !important;
-}
-
-
-/* =========================================================
-   EVOLUCIÓN - PLACEHOLDER
-========================================================= */
-
-.dashboard-evolucion__grafica
-.dashboard-grafica__placeholder {
-    min-height:
-        100%;
-
-    height:
-        100%;
+    min-height: 300px;
 }
 
 
@@ -757,42 +373,26 @@
 @media (max-width: 900px) {
 
     .dashboard-graficas-grid {
-        grid-template-columns:
-            1fr;
+        grid-template-columns: 1fr;
     }
 
 
     .dashboard-grafica--principal {
-        grid-column:
-            auto;
+        grid-column: auto;
     }
 
 
     .dashboard-grafica__encabezado {
-        flex-direction:
-            column;
+        flex-direction: column;
 
-        gap:
-            14px;
+        gap: 14px;
     }
 
 
     .dashboard-grafica__canvas--sectores {
-        height:
-            320px;
+        height: 320px;
 
-        min-height:
-            320px;
-    }
-
-
-    /* =====================================================
-       EVOLUCIÓN
-    ===================================================== */
-
-    .dashboard-evolucion__grafica {
-        height:
-            310px;
+        min-height: 320px;
     }
 
 }
@@ -805,14 +405,12 @@
 @media (max-width: 600px) {
 
     .dashboard-graficas-grid {
-        gap:
-            14px;
+        gap: 14px;
     }
 
 
     .dashboard-grafica {
-        border-radius:
-            18px;
+        border-radius: 18px;
     }
 
 
@@ -825,23 +423,17 @@
 
 
     .dashboard-grafica__periodos {
-        width:
-            100%;
+        width: 100%;
 
-        overflow-x:
-            auto;
+        overflow-x: auto;
 
-        padding-bottom:
-            4px;
+        padding-bottom: 4px;
     }
 
 
     .dashboard-grafica__periodo {
-        min-width:
-            40px;
-
-        height:
-            29px;
+        min-width: 40px;
+        height: 29px;
 
         padding:
             0
@@ -858,80 +450,14 @@
 
 
     .dashboard-grafica__canvas--sectores {
-        height:
-            300px;
+        height: 300px;
 
-        min-height:
-            300px;
+        min-height: 300px;
     }
 
 
     .dashboard-grafica__titulo {
-        font-size:
-            15px;
-    }
-
-
-    /* =====================================================
-       EVOLUCIÓN
-    ===================================================== */
-
-    .dashboard-evolucion {
-        margin-bottom:
-            22px;
-    }
-
-
-    .dashboard-evolucion__encabezado {
-        flex-direction:
-            column;
-
-        gap:
-            12px;
-    }
-
-
-    .dashboard-evolucion__titulo {
-        font-size:
-            16px;
-    }
-
-
-    .dashboard-evolucion__descripcion {
-        font-size:
-            9px;
-    }
-
-
-    .dashboard-evolucion__resumen {
-        width:
-            100%;
-
-        min-width:
-            0;
-
-        align-items:
-            flex-start;
-    }
-
-
-    .dashboard-evolucion__meta {
-        margin-bottom:
-            8px;
-    }
-
-
-    .dashboard-evolucion__grafica {
-        height:
-            285px;
-
-        padding:
-            14px
-            8px
-            8px;
-
-        border-radius:
-            16px;
+        font-size: 15px;
     }
 
 }

@@ -1,0 +1,277 @@
+/* =========================================================
+   EVOLUCIÓN TEMPORAL
+========================================================= */
+
+.dashboard-evolucion {
+    margin-bottom: 26px;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.dashboard-evolucion__encabezado {
+    display: flex;
+
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 24px;
+
+    margin-bottom: 10px;
+}
+
+
+.dashboard-evolucion__eyebrow {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #0b8f63;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.09em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-evolucion__titulo {
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 18px;
+    font-weight: 800;
+
+    line-height: 1.25;
+}
+
+
+.dashboard-evolucion__descripcion {
+    max-width: 720px;
+
+    margin:
+        6px
+        0
+        0;
+
+    color: #71827c;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   RESUMEN DEL PERIODO
+========================================================= */
+
+.dashboard-evolucion__resumen {
+    min-width: 118px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-end;
+
+    flex-shrink: 0;
+
+    padding:
+        9px
+        12px;
+
+    background: #f3f8f6;
+
+    border: 1px solid #dfeae5;
+    border-radius: 14px;
+}
+
+
+.dashboard-evolucion__resumen-etiqueta {
+    color: #70817b;
+
+    font-size: 8px;
+    font-weight: 700;
+}
+
+
+.dashboard-evolucion__resumen-valor {
+    margin-top: 3px;
+
+    color: #173554;
+
+    font-size: 22px;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   META / AGRUPACIÓN
+========================================================= */
+
+.dashboard-evolucion__meta {
+    display: flex;
+
+    align-items: center;
+
+    margin-bottom: 10px;
+}
+
+
+.dashboard-evolucion__agrupacion {
+    display: inline-flex;
+
+    align-items: center;
+
+    min-height: 28px;
+
+    padding:
+        6px
+        10px;
+
+    color: #5f736b;
+
+    background: #f4f8f6;
+
+    border: 1px solid #e0e9e5;
+    border-radius: 999px;
+
+    font-size: 8px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   CONTENEDOR DE GRÁFICA
+========================================================= */
+
+.dashboard-evolucion__grafica {
+    position: relative;
+
+    width: 100%;
+    height: 330px;
+
+    padding:
+        18px
+        16px
+        10px;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 100% 0%,
+            rgba(22, 129, 196, 0.055),
+            transparent 34%
+        ),
+        #ffffff;
+
+    border: 1px solid #e0e9e5;
+    border-radius: 20px;
+
+    box-shadow:
+        0 10px 26px
+        rgba(28, 67, 54, 0.055);
+}
+
+
+/* =========================================================
+   CANVAS
+========================================================= */
+
+.dashboard-evolucion__canvas {
+    display: block;
+
+    width: 100% !important;
+
+    height: 100% !important;
+}
+
+
+/* =========================================================
+   PLACEHOLDER
+========================================================= */
+
+.dashboard-evolucion__grafica
+.dashboard-grafica__placeholder {
+    min-height: 100%;
+
+    height: 100%;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .dashboard-evolucion__grafica {
+        height: 310px;
+    }
+
+}
+
+
+/* =========================================================
+   MÓVIL
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .dashboard-evolucion {
+        margin-bottom: 22px;
+    }
+
+
+    .dashboard-evolucion__encabezado {
+        flex-direction: column;
+
+        gap: 12px;
+    }
+
+
+    .dashboard-evolucion__titulo {
+        font-size: 16px;
+    }
+
+
+    .dashboard-evolucion__descripcion {
+        font-size: 9px;
+    }
+
+
+    .dashboard-evolucion__resumen {
+        width: 100%;
+
+        min-width: 0;
+
+        align-items: flex-start;
+    }
+
+
+    .dashboard-evolucion__meta {
+        margin-bottom: 8px;
+    }
+
+
+    .dashboard-evolucion__grafica {
+        height: 285px;
+
+        padding:
+            14px
+            8px
+            8px;
+
+        border-radius: 16px;
+    }
+
+}

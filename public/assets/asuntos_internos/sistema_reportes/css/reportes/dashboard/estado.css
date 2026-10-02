@@ -1,0 +1,292 @@
+/* =========================================================
+   ESTADO DE LAS QUEJAS
+========================================================= */
+
+.dashboard-estado {
+    margin-bottom: 26px;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.dashboard-estado__encabezado {
+    display: flex;
+
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 24px;
+
+    margin-bottom: 14px;
+}
+
+
+.dashboard-estado__eyebrow {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #0b8f63;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.09em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-estado__titulo {
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 18px;
+    font-weight: 800;
+
+    line-height: 1.25;
+}
+
+
+.dashboard-estado__descripcion {
+    max-width: 720px;
+
+    margin:
+        6px
+        0
+        0;
+
+    color: #71827c;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   RESUMEN
+========================================================= */
+
+.dashboard-estado__resumen {
+    min-width: 118px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-end;
+
+    flex-shrink: 0;
+
+    padding:
+        9px
+        12px;
+
+    background: #f3f8f6;
+
+    border: 1px solid #dfeae5;
+    border-radius: 14px;
+}
+
+
+.dashboard-estado__resumen-etiqueta {
+    color: #70817b;
+
+    font-size: 8px;
+    font-weight: 700;
+}
+
+
+.dashboard-estado__resumen-valor {
+    margin-top: 3px;
+
+    color: #173554;
+
+    font-size: 22px;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+.dashboard-estado__contenido {
+    display: grid;
+
+    grid-template-columns:
+        minmax(240px, 0.9fr)
+        minmax(0, 1.4fr);
+
+    gap: 22px;
+
+    align-items: center;
+
+    padding: 18px;
+
+    background: #ffffff;
+
+    border: 1px solid #e0e9e5;
+    border-radius: 20px;
+
+    box-shadow:
+        0 10px 26px
+        rgba(28, 67, 54, 0.055);
+}
+
+
+/* =========================================================
+   GRÁFICA
+========================================================= */
+
+.dashboard-estado__grafica {
+    position: relative;
+
+    height: 250px;
+}
+
+
+.dashboard-estado__grafica canvas {
+    width: 100% !important;
+
+    height: 100% !important;
+}
+
+
+/* =========================================================
+   LISTA
+========================================================= */
+
+.dashboard-estado__lista {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+
+.dashboard-estado__item {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 18px;
+
+    padding:
+        12px
+        14px;
+
+    background: #f8faf9;
+
+    border: 1px solid #e5ece9;
+    border-radius: 14px;
+}
+
+
+.dashboard-estado__item-info {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+.dashboard-estado__item-estado {
+    color: #314942;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+.dashboard-estado__item-porcentaje {
+    color: #7d8d87;
+
+    font-size: 9px;
+    font-weight: 600;
+}
+
+
+.dashboard-estado__item-total {
+    color: #173554;
+
+    font-size: 22px;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .dashboard-estado__contenido {
+        grid-template-columns: 1fr;
+    }
+
+
+    .dashboard-estado__grafica {
+        height: 230px;
+    }
+
+}
+
+
+/* =========================================================
+   MÓVIL
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .dashboard-estado__encabezado {
+        flex-direction: column;
+
+        gap: 12px;
+    }
+
+
+    .dashboard-estado__resumen {
+        width: 100%;
+
+        min-width: 0;
+
+        align-items: flex-start;
+    }
+
+
+    .dashboard-estado__contenido {
+        padding: 14px;
+
+        border-radius: 16px;
+    }
+
+
+    .dashboard-estado__grafica {
+        height: 210px;
+    }
+
+
+    .dashboard-estado__item {
+        padding:
+            11px
+            12px;
+    }
+
+
+    .dashboard-estado__item-total {
+        font-size: 20px;
+    }
+
+}
