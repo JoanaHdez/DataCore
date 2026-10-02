@@ -64,45 +64,6 @@
 
 
         <!-- =================================================
-             QUEJAS
-        ================================================== -->
-
-        <article class="dashboard-indicador dashboard-indicador--quejas">
-
-            <div class="dashboard-indicador__icono" aria-hidden="true">
-
-                <svg viewBox="0 0 24 24">
-
-                    <path d="M6 3h9l3 3v15H6Z" />
-                    <path d="M15 3v4h4" />
-                    <path d="M9 11h6" />
-                    <path d="M9 15h4" />
-
-                </svg>
-
-            </div>
-
-
-            <div class="dashboard-indicador__contenido">
-
-                <span class="dashboard-indicador__etiqueta">
-                    Quejas
-                </span>
-
-                <strong class="dashboard-indicador__valor" id="dashboard-total-quejas">
-                    <?= esc($indicadores['quejas'] ?? 0) ?>
-                </strong>
-
-                <span class="dashboard-indicador__descripcion">
-                    Quejas registradas
-                </span>
-
-            </div>
-
-        </article>
-
-
-        <!-- =================================================
              PENDIENTES
         ================================================== -->
 
