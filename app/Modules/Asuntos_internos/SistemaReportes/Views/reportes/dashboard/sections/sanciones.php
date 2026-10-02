@@ -112,9 +112,9 @@
                 'tipos' =>
                     $sanciones['tipos']
                     ?? [
-                        'Arresto',
                         'Amonestación',
-                        'Otro',
+                        'Arresto',
+                        'Llamada de atención',
                     ],
 
                 'totales' =>

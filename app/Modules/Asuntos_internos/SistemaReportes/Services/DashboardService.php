@@ -608,11 +608,9 @@ class DashboardService
         ===================================================== */
 
         $conteos = [
-            'Arresto' => 0,
             'Amonestación' => 0,
+            'Arresto' => 0,
             'Llamada de atención' => 0,
-            'FALTA' => 0,
-            'Otro' => 0,
         ];
 
 
@@ -626,7 +624,6 @@ class DashboardService
             ->select([
                 'r.id_reporte',
                 's.id_sancion',
-                's.tipo',
                 'ss.nombre AS sancion_seguimiento',
             ])
             ->join(
@@ -637,7 +634,7 @@ class DashboardService
             ->join(
                 'ai_cat_sanciones_seguimiento ss',
                 'ss.id_sancion_seguimiento = s.id_sancion_seguimiento',
-                'left'
+                'inner'
             )
             ->where(
                 's.es_actual',
@@ -646,6 +643,16 @@ class DashboardService
             ->where(
                 's.eliminado',
                 0
+            )
+            ->whereIn(
+                'ss.nombre',
+                [
+                    'AMONESTACIÓN',
+                    'AMONESTACION',
+                    'ARRESTO',
+                    'LLAMADA DE ATENCIÓN',
+                    'LLAMADA DE ATENCION',
+                ]
             );
 
 
@@ -713,7 +720,6 @@ class DashboardService
                 trim(
                     (string) (
                         $registro['sancion_seguimiento']
-                        ?? $registro['tipo']
                         ?? ''
                     )
                 );
@@ -738,22 +744,16 @@ class DashboardService
             $tipo =
                 match ($tipoNormalizado) {
 
-                    'ARRESTO' =>
-                    'Arresto',
-
                     'AMONESTACIÓN',
                     'AMONESTACION' =>
                     'Amonestación',
 
+                    'ARRESTO' =>
+                    'Arresto',
+
                     'LLAMADA DE ATENCIÓN',
                     'LLAMADA DE ATENCION' =>
                     'Llamada de atención',
-
-                    'FALTA' =>
-                    'FALTA',
-
-                    'OTRO' =>
-                    'Otro',
 
                     default =>
                     null,
@@ -813,19 +813,15 @@ class DashboardService
 
         return [
             'tipos' => [
-                'Arresto',
                 'Amonestación',
+                'Arresto',
                 'Llamada de atención',
-                'FALTA',
-                'Otro',
             ],
 
             'totales' => [
-                $conteos['Arresto'],
                 $conteos['Amonestación'],
+                $conteos['Arresto'],
                 $conteos['Llamada de atención'],
-                $conteos['FALTA'],
-                $conteos['Otro'],
             ],
 
             'total' =>
