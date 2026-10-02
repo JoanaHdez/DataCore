@@ -729,48 +729,99 @@ document.addEventListener(
                             || 'Sin información';
 
 
-                        const cantidad =
+                        const variantes =
+                            Array.isArray(item.variantes)
+                                ? item.variantes
+                                : [];
+
+                        const variantesContenedor =
                             document.createElement(
-                                'p'
+                                'div'
                             );
 
-                        cantidad.textContent =
-                            `${Number(item.cantidad_quejas || 0)} apariciones`;
+                        variantesContenedor.className =
+                            'dashboard-personal-individual__motivo-variantes';
 
 
-                        const etiquetaFolios =
-                            document.createElement(
-                                'span'
-                            );
+                        variantes.forEach(
+                            (variante) => {
 
-                        etiquetaFolios.textContent =
-                            'Folios:';
-
-
-                        const lista =
-                            document.createElement(
-                                'ul'
-                            );
-
-                        (
-                            Array.isArray(item.folios)
-                                ? item.folios
-                                : []
-                        ).forEach(
-                            (folio) => {
-
-                                const li =
+                                const varianteBloque =
                                     document.createElement(
-                                        'li'
+                                        'div'
                                     );
 
-                                li.textContent =
-                                    String(
-                                        folio
+                                varianteBloque.className =
+                                    'dashboard-personal-individual__motivo-variante';
+
+
+                                const sancion =
+                                    document.createElement(
+                                        'strong'
                                     );
 
-                                lista.appendChild(
-                                    li
+                                sancion.textContent =
+                                    `Sanción: ${variante.sancion || 'Sin sanción'}`;
+
+                                varianteBloque.appendChild(
+                                    sancion
+                                );
+
+
+                                if (
+                                    variante.horas_arresto !== null
+                                    && variante.horas_arresto !== undefined
+                                    && variante.horas_arresto !== ''
+                                ) {
+
+                                    const horas =
+                                        document.createElement(
+                                            'span'
+                                        );
+
+                                    horas.textContent =
+                                        `Horas de arresto: ${variante.horas_arresto}`;
+
+                                    varianteBloque.appendChild(
+                                        horas
+                                    );
+                                }
+
+
+                                const cantidadVariante =
+                                    document.createElement(
+                                        'span'
+                                    );
+
+                                cantidadVariante.textContent =
+                                    `${Number(variante.cantidad_quejas || variante.cantidad || 0)} quejas`;
+
+                                varianteBloque.appendChild(
+                                    cantidadVariante
+                                );
+
+
+                                if (
+                                    Array.isArray(variante.folios)
+                                    && variante.folios.length > 0
+                                ) {
+
+                                    const foliosVariante =
+                                        document.createElement(
+                                            'small'
+                                        );
+
+                                    foliosVariante.textContent =
+                                        `Folios: ${variante.folios.join(', ')}`;
+
+                                    varianteBloque.appendChild(
+                                        foliosVariante
+                                    );
+                                }
+
+
+                                variantesContenedor.appendChild(
+                                    varianteBloque
                                 );
 
                             }
@@ -781,17 +832,14 @@ document.addEventListener(
                             titulo
                         );
 
-                        bloque.appendChild(
-                            cantidad
-                        );
+                        if (
+                            variantes.length > 0
+                        ) {
 
-                        bloque.appendChild(
-                            etiquetaFolios
-                        );
-
-                        bloque.appendChild(
-                            lista
-                        );
+                            bloque.appendChild(
+                                variantesContenedor
+                            );
+                        }
 
                         motivos.appendChild(
                             bloque

@@ -668,6 +668,334 @@ class DashboardFelicitacionesService
 
 
     /* =========================================================
+       ANALISIS CRUZADO
+    ========================================================= */
+
+    public function obtenerCruce(
+        string $principal = 'sector',
+        string $secundaria = 'turno'
+    ): array {
+
+        $principal =
+            strtolower(
+                trim(
+                    $principal
+                )
+            );
+
+
+        $secundaria =
+            strtolower(
+                trim(
+                    $secundaria
+                )
+            );
+
+
+        $combinacionesValidas = [
+
+            'sector' => [
+                'turno',
+            ],
+
+            'zona' => [
+                'turno',
+            ],
+
+        ];
+
+
+        if (
+            !isset(
+                $combinacionesValidas[$principal]
+            )
+            || !in_array(
+                $secundaria,
+                $combinacionesValidas[$principal],
+                true
+            )
+        ) {
+
+            $principal =
+                'sector';
+
+            $secundaria =
+                'turno';
+        }
+
+
+        $builder =
+            $this->db
+            ->table(
+                'ai_felicitaciones f'
+            )
+            ->select([
+                'f.id_felicitacion',
+                'fp.area_snapshot',
+                'fp.turno_snapshot',
+            ])
+            ->join(
+                'ai_felicitacion_personal fp',
+                'fp.id_felicitacion = f.id_felicitacion',
+                'inner'
+            );
+
+
+        $this->filtrosService
+            ->aplicarFiltrosFelicitaciones(
+                $builder,
+                'f'
+            );
+
+
+        $registros =
+            $builder
+            ->get()
+            ->getResultArray();
+
+
+        $matriz = [];
+
+        $categoriasPrincipal = [];
+
+        $categoriasSecundaria = [];
+
+        $combinacionesContadas = [];
+
+
+        foreach (
+            $registros
+            as $registro
+        ) {
+
+            $idFelicitacion =
+                (int) (
+                    $registro['id_felicitacion']
+                    ?? 0
+                );
+
+
+            if (
+                $idFelicitacion <= 0
+            ) {
+
+                continue;
+            }
+
+
+            $valorPrincipal =
+                $this->obtenerValorCruce(
+                    $principal,
+                    $registro
+                );
+
+
+            $valorSecundaria =
+                $this->obtenerValorCruce(
+                    $secundaria,
+                    $registro
+                );
+
+
+            if (
+                $valorPrincipal === null
+                || $valorSecundaria === null
+                || $valorPrincipal === ''
+                || $valorSecundaria === ''
+            ) {
+
+                continue;
+            }
+
+
+            $clave =
+                $idFelicitacion
+                . '|'
+                . $principal
+                . ':'
+                . mb_strtoupper(
+                    $valorPrincipal,
+                    'UTF-8'
+                )
+                . '|'
+                . $secundaria
+                . ':'
+                . mb_strtoupper(
+                    $valorSecundaria,
+                    'UTF-8'
+                );
+
+
+            if (
+                isset(
+                    $combinacionesContadas[$clave]
+                )
+            ) {
+
+                continue;
+            }
+
+
+            $combinacionesContadas[$clave] =
+                true;
+
+            $categoriasPrincipal[$valorPrincipal] =
+                true;
+
+            $categoriasSecundaria[$valorSecundaria] =
+                true;
+
+
+            if (
+                !isset(
+                    $matriz[$valorPrincipal]
+                )
+            ) {
+
+                $matriz[$valorPrincipal] =
+                    [];
+            }
+
+
+            if (
+                !isset(
+                    $matriz[$valorPrincipal][$valorSecundaria]
+                )
+            ) {
+
+                $matriz[$valorPrincipal][$valorSecundaria] =
+                    0;
+            }
+
+
+            $matriz[$valorPrincipal][$valorSecundaria]++;
+        }
+
+
+        $categoriasPrincipal =
+            $this->ordenarCategoriasCruce(
+                $principal,
+                array_keys(
+                    $categoriasPrincipal
+                )
+            );
+
+
+        $categoriasSecundaria =
+            $this->ordenarCategoriasCruce(
+                $secundaria,
+                array_keys(
+                    $categoriasSecundaria
+                )
+            );
+
+
+        $series = [];
+
+
+        foreach (
+            $categoriasSecundaria
+            as $categoriaSecundaria
+        ) {
+
+            $datos = [];
+
+
+            foreach (
+                $categoriasPrincipal
+                as $categoriaPrincipal
+            ) {
+
+                $datos[] =
+                    (int) (
+                        $matriz[$categoriaPrincipal][$categoriaSecundaria]
+                        ?? 0
+                    );
+            }
+
+
+            $series[] = [
+
+                'nombre' =>
+                    $categoriaSecundaria,
+
+                'datos' =>
+                    $datos,
+
+            ];
+        }
+
+
+        $total = 0;
+
+
+        foreach (
+            $series
+            as $serie
+        ) {
+
+            $total +=
+                array_sum(
+                    $serie['datos']
+                    ?? []
+                );
+        }
+
+
+        return [
+
+            'principal' =>
+                $principal,
+
+            'secundaria' =>
+                $secundaria,
+
+            'categorias' =>
+                $categoriasPrincipal,
+
+            'series' =>
+                $series,
+
+            'total' =>
+                $total,
+
+            'opciones_principal' => [
+
+                [
+                    'valor' =>
+                        'sector',
+
+                    'texto' =>
+                        'Sector',
+                ],
+
+                [
+                    'valor' =>
+                        'zona',
+
+                    'texto' =>
+                        'Zona',
+                ],
+
+            ],
+
+            'opciones_secundaria' => [
+
+                [
+                    'valor' =>
+                        'turno',
+
+                    'texto' =>
+                        'Turno',
+                ],
+
+            ],
+
+        ];
+    }
+
+
+    /* =========================================================
        DIMENSIÓN
        ÁREA / UNIDAD
     ========================================================= */
@@ -1282,6 +1610,238 @@ class DashboardFelicitacionesService
          */
 
         return null;
+    }
+
+
+    private function obtenerValorCruce(
+        string $dimension,
+        array $registro
+    ): ?string {
+
+        return match ($dimension) {
+
+            'sector' =>
+            $this->obtenerSectorCruce(
+                (string) (
+                    $registro['area_snapshot']
+                    ?? ''
+                )
+            ),
+
+            'zona' =>
+            $this->obtenerZonaCruce(
+                (string) (
+                    $registro['area_snapshot']
+                    ?? ''
+                )
+            ),
+
+            'turno' =>
+            $this->clasificarTurno(
+                (string) (
+                    $registro['turno_snapshot']
+                    ?? ''
+                )
+            ),
+
+            default =>
+            null,
+        };
+    }
+
+
+    private function obtenerSectorCruce(
+        string $area
+    ): ?string {
+
+        $numeroSector =
+            $this->obtenerNumeroSector(
+                $area
+            );
+
+
+        if (
+            $numeroSector === null
+        ) {
+
+            return null;
+        }
+
+
+        return
+            'SECTOR '
+            . $numeroSector;
+    }
+
+
+    private function obtenerZonaCruce(
+        string $area
+    ): ?string {
+
+        $numeroSector =
+            $this->obtenerNumeroSector(
+                $area
+            );
+
+
+        if (
+            $numeroSector === null
+        ) {
+
+            return null;
+        }
+
+
+        return $this->obtenerZonaDesdeSector(
+            $numeroSector
+        );
+    }
+
+
+    private function ordenarCategoriasCruce(
+        string $dimension,
+        array $categorias
+    ): array {
+
+        $categorias =
+            array_values(
+                array_filter(
+                    array_unique(
+                        $categorias
+                    ),
+                    static fn (
+                        string $categoria
+                    ): bool =>
+                        $categoria !== ''
+                )
+            );
+
+
+        if (
+            $dimension === 'sector'
+        ) {
+
+            usort(
+                $categorias,
+                static function (
+                    string $a,
+                    string $b
+                ): int {
+
+                    preg_match(
+                        '/([0-9]+)/',
+                        $a,
+                        $numeroA
+                    );
+
+                    preg_match(
+                        '/([0-9]+)/',
+                        $b,
+                        $numeroB
+                    );
+
+
+                    return
+                        ((int) ($numeroA[1] ?? 0))
+                        <=>
+                        ((int) ($numeroB[1] ?? 0));
+                }
+            );
+
+
+            return $categorias;
+        }
+
+
+        if (
+            $dimension === 'zona'
+        ) {
+
+            $orden = [
+                'Zona Norte',
+                'Zona Poniente',
+                'Zona Centro',
+                'Zona Oriente',
+            ];
+
+
+            usort(
+                $categorias,
+                static function (
+                    string $a,
+                    string $b
+                ) use ($orden): int {
+
+                    return
+                        array_search(
+                            $a,
+                            $orden,
+                            true
+                        )
+                        <=>
+                        array_search(
+                            $b,
+                            $orden,
+                            true
+                        );
+                }
+            );
+
+
+            return $categorias;
+        }
+
+
+        if (
+            $dimension === 'turno'
+        ) {
+
+            $orden = [
+                'Primer turno',
+                'Segundo turno',
+                'Tercer turno',
+                'Alfa',
+                'Beta',
+                'Diario',
+                'No refiere ni fecha ni horario',
+            ];
+
+
+            usort(
+                $categorias,
+                static function (
+                    string $a,
+                    string $b
+                ) use ($orden): int {
+
+                    return
+                        array_search(
+                            $a,
+                            $orden,
+                            true
+                        )
+                        <=>
+                        array_search(
+                            $b,
+                            $orden,
+                            true
+                        );
+                }
+            );
+
+
+            return $categorias;
+        }
+
+
+        natcasesort(
+            $categorias
+        );
+
+
+        return array_values(
+            $categorias
+        );
     }
 
 

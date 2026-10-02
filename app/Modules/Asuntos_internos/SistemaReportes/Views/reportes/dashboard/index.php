@@ -135,7 +135,6 @@ $esFelicitacion =
                     ) ?>
 
 
-                    <?php if (!$esFelicitacion): ?>
 
                     <!-- =========================================
                              ANÁLISIS CRUZADO
@@ -145,6 +144,8 @@ $esFelicitacion =
                             'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\cruce'
                         ) ?>
 
+
+                    <?php if (!$esFelicitacion): ?>
 
                     <!-- =========================================
                              COMPARATIVAS

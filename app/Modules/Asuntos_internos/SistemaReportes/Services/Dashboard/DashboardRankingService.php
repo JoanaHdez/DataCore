@@ -1731,12 +1731,22 @@ class DashboardRankingService
             )
             ->select([
                 'rm.id_reporte',
+                'rm.id_reporte_motivo',
                 'rm.motivo_personalizado',
                 'm.motivo',
+                'm.sancion AS sancion_catalogo',
+                's.tipo AS sancion_registrada',
             ])
             ->join(
                 'ai_cat_motivos m',
                 'm.id_motivo = rm.id_motivo',
+                'left'
+            )
+            ->join(
+                'ai_reporte_sanciones s',
+                's.id_reporte_motivo = rm.id_reporte_motivo
+                AND s.es_actual = 1
+                AND s.eliminado = 0',
                 'left'
             )
             ->whereIn(
@@ -1838,6 +1848,9 @@ class DashboardRankingService
                     '_reportes_contados' =>
                         [],
 
+                    'variantes' =>
+                        [],
+
                 ];
             }
 
@@ -1874,6 +1887,70 @@ class DashboardRankingService
 
             $motivos[$clave]['folios'][] =
                 $folio;
+
+
+            $sancion =
+                $this->normalizarSancionMotivo(
+                    (string) (
+                        $registro['sancion_registrada']
+                        ?? ''
+                    ),
+                    (string) (
+                        $registro['sancion_catalogo']
+                        ?? ''
+                    )
+                );
+
+
+            $claveSancion =
+                mb_strtoupper(
+                    $sancion['sancion']
+                    . '|'
+                    . (
+                        $sancion['horas_arresto'] !== null
+                            ? (string) $sancion['horas_arresto']
+                            : ''
+                    ),
+                    'UTF-8'
+                );
+
+
+            if (
+                !isset(
+                    $motivos[$clave]['variantes'][$claveSancion]
+                )
+            ) {
+
+                $motivos[$clave]['variantes'][$claveSancion] = [
+
+                    'sancion' =>
+                        $sancion['sancion'],
+
+                    'horas_arresto' =>
+                        $sancion['horas_arresto'],
+
+                    'folios' =>
+                        [],
+
+                    '_reportes_contados' =>
+                        [],
+
+                ];
+            }
+
+
+            if (
+                !isset(
+                    $motivos[$clave]['variantes'][$claveSancion]['_reportes_contados'][$idReporte]
+                )
+            ) {
+
+                $motivos[$clave]['variantes'][$claveSancion]['_reportes_contados'][$idReporte] =
+                    true;
+
+                $motivos[$clave]['variantes'][$claveSancion]['folios'][] =
+                    $folio;
+            }
         }
 
 
@@ -1893,6 +1970,47 @@ class DashboardRankingService
                 );
 
 
+            $variantes = [];
+
+
+            foreach (
+                ($motivo['variantes'] ?? [])
+                as $variante
+            ) {
+
+                $foliosVariante =
+                    array_values(
+                        array_unique(
+                            $variante['folios']
+                            ?? []
+                        )
+                    );
+
+
+                $variantes[] = [
+
+                    'sancion' =>
+                        (string) (
+                            $variante['sancion']
+                            ?? 'Sin sanción'
+                        ),
+
+                    'horas_arresto' =>
+                        $variante['horas_arresto']
+                        ?? null,
+
+                    'cantidad_quejas' =>
+                        count(
+                            $foliosVariante
+                        ),
+
+                    'folios' =>
+                        $foliosVariante,
+
+                ];
+            }
+
+
             $resultado[] = [
 
                 'motivo' =>
@@ -1908,6 +2026,9 @@ class DashboardRankingService
 
                 'folios' =>
                     $folios,
+
+                'variantes' =>
+                    $variantes,
 
             ];
         }
@@ -2129,6 +2250,116 @@ class DashboardRankingService
             )
             ?? ''
         );
+    }
+
+
+    private function normalizarSancionMotivo(
+        string $sancionRegistrada,
+        string $sancionCatalogo
+    ): array {
+
+        $textoBase =
+            $this->normalizarTexto(
+                $sancionRegistrada
+            );
+
+
+        if (
+            $textoBase === ''
+        ) {
+
+            $textoBase =
+                $this->normalizarTexto(
+                    $sancionCatalogo
+                );
+        }
+
+
+        $textoNormalizado =
+            mb_strtoupper(
+                $textoBase,
+                'UTF-8'
+            );
+
+
+        $sancion =
+            match (true) {
+
+                str_contains(
+                    $textoNormalizado,
+                    'ARRESTO'
+                ) =>
+                'ARRESTO',
+
+                str_contains(
+                    $textoNormalizado,
+                    'AMONESTACIÓN'
+                )
+                || str_contains(
+                    $textoNormalizado,
+                    'AMONESTACION'
+                ) =>
+                'AMONESTACIÓN',
+
+                str_contains(
+                    $textoNormalizado,
+                    'LLAMADA DE ATENCIÓN'
+                )
+                || str_contains(
+                    $textoNormalizado,
+                    'LLAMADA DE ATENCION'
+                ) =>
+                'LLAMADA DE ATENCIÓN',
+
+                default =>
+                $textoBase !== ''
+                    ? $textoBase
+                    : 'Sin sanción',
+            };
+
+
+        return [
+
+            'sancion' =>
+                $sancion,
+
+            'horas_arresto' =>
+                $this->obtenerHorasArrestoDesdeSancion(
+                    $textoBase
+                ),
+
+        ];
+    }
+
+
+    private function obtenerHorasArrestoDesdeSancion(
+        string $sancion
+    ): ?int {
+
+        if (
+            stripos(
+                $sancion,
+                'ARRESTO'
+            ) === false
+        ) {
+
+            return null;
+        }
+
+
+        if (
+            preg_match(
+                '/(\d+)\s*horas?/i',
+                $sancion,
+                $coincidencias
+            )
+        ) {
+
+            return (int) $coincidencias[1];
+        }
+
+
+        return null;
     }
 
 }

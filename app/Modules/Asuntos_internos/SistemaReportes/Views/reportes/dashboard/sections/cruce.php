@@ -50,6 +50,33 @@ $opcionesSecundaria =
     ?? [];
 
 
+$tipoDashboard =
+    strtoupper(
+        trim(
+            (string) (
+                $_GET['tipo']
+                ?? ''
+            )
+        )
+    );
+
+
+$esFelicitacion =
+    $tipoDashboard === 'FELICITACION';
+
+
+$descripcionCruce =
+    $esFelicitacion
+        ? 'Relación entre dos dimensiones de las felicitaciones registradas.'
+        : 'Relación entre dos dimensiones de las quejas registradas.';
+
+
+$ariaCruce =
+    $esFelicitacion
+        ? 'Gráfica de análisis cruzado de felicitaciones'
+        : 'Gráfica de análisis cruzado de quejas';
+
+
 if (!is_array($categorias)) {
     $categorias = [];
 }
@@ -118,7 +145,7 @@ $sinDatosCruce =
             </h2>
 
             <p class="dashboard-cruce__descripcion">
-                Relación entre dos dimensiones de las quejas registradas.
+                <?= esc($descripcionCruce) ?>
             </p>
 
         </div>
@@ -298,7 +325,7 @@ $sinDatosCruce =
 
         <canvas
             id="dashboard-cruce-chart"
-            aria-label="Análisis cruzado de quejas"
+            aria-label="<?= esc($ariaCruce) ?>"
             role="img"
         ></canvas>
 

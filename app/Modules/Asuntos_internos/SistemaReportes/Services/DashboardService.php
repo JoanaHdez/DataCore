@@ -391,30 +391,11 @@ class DashboardService
             === 'FELICITACION'
         ) {
 
-            return [
-
-                'principal' =>
-                $principal,
-
-                'secundaria' =>
-                $secundaria,
-
-                'categorias' =>
-                [],
-
-                'series' =>
-                [],
-
-                'total' =>
-                0,
-
-                'opciones_principal' =>
-                [],
-
-                'opciones_secundaria' =>
-                [],
-
-            ];
+            return $this->felicitacionesService
+                ->obtenerCruce(
+                    $principal,
+                    $secundaria
+                );
         }
 
 

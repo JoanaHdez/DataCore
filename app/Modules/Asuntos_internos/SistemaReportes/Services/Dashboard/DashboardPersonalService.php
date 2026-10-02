@@ -660,8 +660,11 @@ class DashboardPersonalService
             ->select([
                 'r.id_reporte',
                 'r.folio',
+                'rm.id_reporte_motivo',
                 'rm.motivo_personalizado',
                 'm.motivo',
+                'm.sancion AS sancion_catalogo',
+                's.tipo AS sancion_registrada',
             ])
             ->join(
                 'ai_reporte_personal p_individual',
@@ -676,6 +679,13 @@ class DashboardPersonalService
             ->join(
                 'ai_cat_motivos m',
                 'm.id_motivo = rm.id_motivo',
+                'left'
+            )
+            ->join(
+                'ai_reporte_sanciones s',
+                's.id_reporte_motivo = rm.id_reporte_motivo
+                AND s.es_actual = 1
+                AND s.eliminado = 0',
                 'left'
             )
             ->where(
@@ -784,6 +794,9 @@ class DashboardPersonalService
                     '_folios_unicos' =>
                         [],
 
+                    'variantes' =>
+                        [],
+
                 ];
             }
 
@@ -804,6 +817,70 @@ class DashboardPersonalService
 
             $agrupados[$clave]['folios'][] =
                 $folio;
+
+
+            $sancion =
+                $this->normalizarSancionMotivo(
+                    (string) (
+                        $registro['sancion_registrada']
+                        ?? ''
+                    ),
+                    (string) (
+                        $registro['sancion_catalogo']
+                        ?? ''
+                    )
+                );
+
+
+            $claveSancion =
+                mb_strtoupper(
+                    $sancion['sancion']
+                    . '|'
+                    . (
+                        $sancion['horas_arresto'] !== null
+                            ? (string) $sancion['horas_arresto']
+                            : ''
+                    ),
+                    'UTF-8'
+                );
+
+
+            if (
+                !isset(
+                    $agrupados[$clave]['variantes'][$claveSancion]
+                )
+            ) {
+
+                $agrupados[$clave]['variantes'][$claveSancion] = [
+
+                    'sancion' =>
+                        $sancion['sancion'],
+
+                    'horas_arresto' =>
+                        $sancion['horas_arresto'],
+
+                    'folios' =>
+                        [],
+
+                    '_folios_unicos' =>
+                        [],
+
+                ];
+            }
+
+
+            if (
+                !isset(
+                    $agrupados[$clave]['variantes'][$claveSancion]['_folios_unicos'][$folio]
+                )
+            ) {
+
+                $agrupados[$clave]['variantes'][$claveSancion]['_folios_unicos'][$folio] =
+                    true;
+
+                $agrupados[$clave]['variantes'][$claveSancion]['folios'][] =
+                    $folio;
+            }
         }
 
 
@@ -820,6 +897,41 @@ class DashboardPersonalService
                 ?? [];
 
 
+            $variantes = [];
+
+
+            foreach (
+                ($grupo['variantes'] ?? [])
+                as $variante
+            ) {
+
+                $foliosVariante =
+                    $variante['folios']
+                    ?? [];
+
+
+                $variantes[] = [
+
+                    'sancion' =>
+                        $variante['sancion']
+                        ?? 'Sin sanción',
+
+                    'horas_arresto' =>
+                        $variante['horas_arresto']
+                        ?? null,
+
+                    'cantidad' =>
+                        count(
+                            $foliosVariante
+                        ),
+
+                    'folios' =>
+                        $foliosVariante,
+
+                ];
+            }
+
+
             $respuesta[] = [
 
                 'motivo' =>
@@ -833,6 +945,9 @@ class DashboardPersonalService
 
                 'folios' =>
                     $folios,
+
+                'variantes' =>
+                    $variantes,
 
             ];
         }
@@ -1376,6 +1491,116 @@ class DashboardPersonalService
                 ?? ''
             )
         );
+    }
+
+
+    private function normalizarSancionMotivo(
+        string $sancionRegistrada,
+        string $sancionCatalogo
+    ): array {
+
+        $textoBase =
+            $this->normalizarTexto(
+                $sancionRegistrada
+            );
+
+
+        if (
+            $textoBase === ''
+        ) {
+
+            $textoBase =
+                $this->normalizarTexto(
+                    $sancionCatalogo
+                );
+        }
+
+
+        $textoNormalizado =
+            mb_strtoupper(
+                $textoBase,
+                'UTF-8'
+            );
+
+
+        $sancion =
+            match (true) {
+
+                str_contains(
+                    $textoNormalizado,
+                    'ARRESTO'
+                ) =>
+                'ARRESTO',
+
+                str_contains(
+                    $textoNormalizado,
+                    'AMONESTACIÓN'
+                )
+                || str_contains(
+                    $textoNormalizado,
+                    'AMONESTACION'
+                ) =>
+                'AMONESTACIÓN',
+
+                str_contains(
+                    $textoNormalizado,
+                    'LLAMADA DE ATENCIÓN'
+                )
+                || str_contains(
+                    $textoNormalizado,
+                    'LLAMADA DE ATENCION'
+                ) =>
+                'LLAMADA DE ATENCIÓN',
+
+                default =>
+                $textoBase !== ''
+                    ? $textoBase
+                    : 'Sin sanción',
+            };
+
+
+        return [
+
+            'sancion' =>
+                $sancion,
+
+            'horas_arresto' =>
+                $this->obtenerHorasArrestoDesdeSancion(
+                    $textoBase
+                ),
+
+        ];
+    }
+
+
+    private function obtenerHorasArrestoDesdeSancion(
+        string $sancion
+    ): ?int {
+
+        if (
+            stripos(
+                $sancion,
+                'ARRESTO'
+            ) === false
+        ) {
+
+            return null;
+        }
+
+
+        if (
+            preg_match(
+                '/(\d+)\s*horas?/i',
+                $sancion,
+                $coincidencias
+            )
+        ) {
+
+            return (int) $coincidencias[1];
+        }
+
+
+        return null;
     }
 
 

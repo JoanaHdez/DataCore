@@ -380,12 +380,12 @@ $sinDatosPersonal =
 
                 <?php
 
-                $foliosMotivo =
+                $variantesMotivo =
                     is_array(
-                        $grupoMotivo['folios']
+                        $grupoMotivo['variantes']
                         ?? null
                     )
-                        ? $grupoMotivo['folios']
+                        ? $grupoMotivo['variantes']
                         : [];
 
                 ?>
@@ -395,24 +395,62 @@ $sinDatosPersonal =
                         <?= esc($grupoMotivo['motivo'] ?? 'Sin informacion') ?>
                     </h3>
 
-                    <p>
-                        <?= esc((int) ($grupoMotivo['cantidad'] ?? 0)) ?>
-                        apariciones
-                    </p>
+                    <?php if (!empty($variantesMotivo)): ?>
 
-                    <strong>
-                        Folios:
-                    </strong>
+                    <div class="dashboard-personal-individual__motivo-variantes">
+                        <?php foreach ($variantesMotivo as $varianteMotivo): ?>
 
-                    <ul>
-                        <?php foreach ($foliosMotivo as $folioMotivo): ?>
+                        <?php
 
-                        <li>
-                            <?= esc($folioMotivo) ?>
-                        </li>
+                        $foliosVariante =
+                            is_array(
+                                $varianteMotivo['folios']
+                                ?? null
+                            )
+                                ? $varianteMotivo['folios']
+                                : [];
+
+                        $horasArresto =
+                            $varianteMotivo['horas_arresto']
+                            ?? null;
+
+                        ?>
+
+                        <div class="dashboard-personal-individual__motivo-variante">
+                            <strong>
+                                Sanción:
+                                <?= esc($varianteMotivo['sancion'] ?? 'Sin sanción') ?>
+                            </strong>
+
+                            <?php if ($horasArresto !== null): ?>
+
+                            <span>
+                                Horas de arresto:
+                                <?= esc((string) $horasArresto) ?>
+                            </span>
+
+                            <?php endif; ?>
+
+                            <span>
+                                <?= esc((int) ($varianteMotivo['cantidad'] ?? 0)) ?>
+                                quejas
+                            </span>
+
+                            <?php if (!empty($foliosVariante)): ?>
+
+                            <small>
+                                Folios:
+                                <?= esc(implode(', ', $foliosVariante)) ?>
+                            </small>
+
+                            <?php endif; ?>
+                        </div>
 
                         <?php endforeach; ?>
-                    </ul>
+                    </div>
+
+                    <?php endif; ?>
+
                 </article>
 
                 <?php endforeach; ?>
