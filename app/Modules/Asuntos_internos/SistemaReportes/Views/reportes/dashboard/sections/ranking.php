@@ -608,41 +608,27 @@ $sinDatosRanking =
             </header>
 
 
-            <div class="
-                        modal-reporte__body
-                        dashboard-personal-individual__detalle
-                    ">
+            <div class="modal-reporte__body dashboard-personal-individual__detalle">
 
-                <p>
-                    Total de quejas:
-                    <strong id="ranking-personal-detalle-total">
-                        0
-                    </strong>
-                </p>
+                <div class="dashboard-ranking__modal-seccion">
 
+                    <span class="dashboard-ranking__modal-seccion-eyebrow">
+                        Análisis
+                    </span>
 
-                <h4>
-                    Folios considerados
-                </h4>
+                    <h4 class="dashboard-ranking__modal-seccion-titulo">
+                        Motivos agrupados
+                    </h4>
 
-
-                <ul id="ranking-personal-detalle-folios"></ul>
-
-
-                <h4>
-                    Motivos agrupados
-                </h4>
-
+                </div>
 
                 <div id="ranking-personal-detalle-motivos"></div>
-
 
                 <div class="dashboard-grafica__placeholder" id="ranking-personal-detalle-motivos-vacio" hidden>
 
                     <strong>
                         Sin motivos
                     </strong>
-
 
                     <span>
                         Sin motivos registrados para los filtros seleccionados.

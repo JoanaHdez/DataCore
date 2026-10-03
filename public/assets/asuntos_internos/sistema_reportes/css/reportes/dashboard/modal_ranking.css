@@ -1,0 +1,584 @@
+/* =========================================================
+   DASHBOARD
+   MODAL - RANKING
+========================================================= */
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+#modal-ranking-personal-detalle {
+    padding: 24px;
+}
+
+
+/* =========================================================
+   DIÁLOGO
+========================================================= */
+
+#modal-ranking-personal-detalle
+.modal-reporte__dialog {
+    width: min(820px, calc(100vw - 48px));
+    max-height: min(780px, 90vh);
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #dce7ee;
+    border-radius: 22px;
+
+    box-shadow:
+        0 28px 70px
+        rgba(23, 63, 89, 0.24);
+}
+
+
+/* =========================================================
+   OVERLAY
+========================================================= */
+
+#modal-ranking-personal-detalle
+.modal-reporte__overlay {
+    background:
+        rgba(20, 38, 52, 0.60);
+
+    backdrop-filter:
+        blur(5px);
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+#modal-ranking-personal-detalle
+.modal-reporte__header {
+    position: relative;
+
+    overflow: hidden;
+
+    padding:
+        22px
+        24px;
+
+    background:
+        radial-gradient(
+            circle at 88% 15%,
+            rgba(255, 255, 255, 0.11) 0%,
+            transparent 28%
+        ),
+        linear-gradient(
+            135deg,
+            #173f59 0%,
+            #1c5778 52%,
+            #216789 100%
+        );
+
+    border-bottom: 0;
+}
+
+
+#modal-ranking-personal-detalle
+.modal-reporte__header::after {
+    content: "";
+
+    position: absolute;
+
+    top: -35px;
+    right: 72px;
+
+    width: 120px;
+    height: 120px;
+
+    background:
+        rgba(255, 255, 255, 0.04);
+
+    border-radius: 50%;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   EYEBROW
+========================================================= */
+
+#modal-ranking-personal-detalle
+.modal-reporte__eyebrow {
+    position: relative;
+    z-index: 2;
+
+    margin-bottom: 5px;
+
+    color:
+        rgba(255, 255, 255, 0.62);
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 0.09em;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   TÍTULO
+========================================================= */
+
+#modal-ranking-personal-detalle
+.modal-reporte__title {
+    position: relative;
+    z-index: 2;
+
+    color: #ffffff;
+
+    font-size: 17px;
+    font-weight: 800;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   ELEMENTO SELECCIONADO
+========================================================= */
+
+#modal-ranking-personal-detalle
+#ranking-personal-detalle-nombre {
+    position: relative;
+    z-index: 2;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    width: fit-content;
+
+    margin:
+        9px
+        0
+        0;
+
+    padding:
+        5px
+        9px;
+
+    color:
+        rgba(255, 255, 255, 0.92);
+
+    background:
+        rgba(255, 255, 255, 0.11);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.16);
+
+    border-radius: 7px;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    line-height: 1;
+
+    letter-spacing: 0.055em;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   CERRAR
+========================================================= */
+
+#modal-ranking-personal-detalle
+.modal-reporte__close {
+    position: relative;
+    z-index: 3;
+
+    width: 34px;
+    height: 34px;
+
+    color: #ffffff;
+
+    background:
+        rgba(255, 255, 255, 0.10);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.16);
+
+    border-radius: 11px;
+
+    transition:
+        background-color 0.18s ease,
+        transform 0.18s ease;
+}
+
+
+#modal-ranking-personal-detalle
+.modal-reporte__close:hover {
+    background:
+        rgba(255, 255, 255, 0.18);
+
+    transform:
+        translateY(-1px);
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+#modal-ranking-personal-detalle
+.modal-reporte__body {
+    padding: 20px;
+
+    background: #f6f9fb;
+
+    scrollbar-width: thin;
+    scrollbar-color:
+        #bfd0da
+        transparent;
+}
+
+
+#modal-ranking-personal-detalle
+.modal-reporte__body::-webkit-scrollbar {
+    width: 7px;
+}
+
+
+#modal-ranking-personal-detalle
+.modal-reporte__body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+#modal-ranking-personal-detalle
+.modal-reporte__body::-webkit-scrollbar-thumb {
+    background: #bfd0da;
+
+    border-radius: 999px;
+}
+
+
+/* =========================================================
+   ENCABEZADO DE MOTIVOS
+========================================================= */
+
+#modal-ranking-personal-detalle
+.dashboard-ranking__modal-seccion {
+    margin-bottom: 12px;
+}
+
+
+#modal-ranking-personal-detalle
+.dashboard-ranking__modal-seccion-eyebrow {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #7d919d;
+
+    font-size: 7px;
+    font-weight: 800;
+
+    letter-spacing: 0.09em;
+
+    text-transform: uppercase;
+}
+
+
+#modal-ranking-personal-detalle
+.dashboard-ranking__modal-seccion-titulo {
+    margin: 0;
+
+    color: #29495c;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    line-height: 1.35;
+}
+
+
+/* =========================================================
+   TARJETA DE MOTIVO
+========================================================= */
+
+#modal-ranking-personal-detalle
+.dashboard-personal-individual__motivo {
+    position: relative;
+
+    overflow: hidden;
+
+    margin-bottom: 12px;
+
+    padding:
+        17px
+        18px;
+
+    background: #ffffff;
+
+    border:
+        1px solid
+        #dfe8ed;
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 5px 14px
+        rgba(23, 63, 89, 0.045);
+}
+
+
+#modal-ranking-personal-detalle
+.dashboard-personal-individual__motivo:last-child {
+    margin-bottom: 0;
+}
+
+
+#modal-ranking-personal-detalle
+.dashboard-personal-individual__motivo::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    bottom: 0;
+    left: 0;
+
+    width: 3px;
+
+    background: #1681c4;
+}
+
+
+/* =========================================================
+   NOMBRE DEL MOTIVO
+========================================================= */
+
+#modal-ranking-personal-detalle
+.dashboard-personal-individual__motivo > strong,
+#modal-ranking-personal-detalle
+.dashboard-personal-individual__motivo h3 {
+    display: block;
+
+    margin:
+        0
+        0
+        13px;
+
+    padding-left: 3px;
+
+    color: #29495c;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   VARIANTES
+========================================================= */
+
+#modal-ranking-personal-detalle
+.dashboard-personal-individual__motivo-variantes {
+    display: grid;
+
+    gap: 9px;
+}
+
+
+#modal-ranking-personal-detalle
+.dashboard-personal-individual__motivo-variante {
+    display: grid;
+
+    grid-template-columns:
+        minmax(150px, 1.4fr)
+        minmax(90px, 0.6fr);
+
+    gap:
+        7px
+        16px;
+
+    padding:
+        12px
+        13px;
+
+    background: #f7fafc;
+
+    border:
+        1px solid
+        #e3ebef;
+
+    border-radius: 11px;
+}
+
+
+/* =========================================================
+   SANCIÓN
+========================================================= */
+
+#modal-ranking-personal-detalle
+.dashboard-personal-individual__motivo-variante strong {
+    color: #315d77;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   DATOS
+========================================================= */
+
+#modal-ranking-personal-detalle
+.dashboard-personal-individual__motivo-variante span {
+    color: #687d88;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   FOLIOS DEL MOTIVO
+========================================================= */
+
+#modal-ranking-personal-detalle
+.dashboard-personal-individual__motivo-variante small {
+    grid-column:
+        1
+        / -1;
+
+    display: block;
+
+    margin-top: 2px;
+
+    padding-top: 8px;
+
+    color: #788a94;
+
+    border-top:
+        1px solid
+        #e4ebef;
+
+    font-size: 8px;
+    font-weight: 600;
+
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   SIN MOTIVOS
+========================================================= */
+
+#modal-ranking-personal-detalle
+.dashboard-grafica__placeholder {
+    min-height: 170px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    padding: 24px;
+
+    text-align: center;
+
+    background: #ffffff;
+
+    border:
+        1px dashed
+        #cfdee6;
+
+    border-radius: 15px;
+}
+
+
+#modal-ranking-personal-detalle
+.dashboard-grafica__placeholder strong {
+    color: #355568;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+#modal-ranking-personal-detalle
+.dashboard-grafica__placeholder span {
+    color: #81919a;
+
+    font-size: 9px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    #modal-ranking-personal-detalle {
+        padding: 12px;
+    }
+
+
+    #modal-ranking-personal-detalle
+    .modal-reporte__dialog {
+        width: 100%;
+        max-height: 92vh;
+
+        border-radius: 17px;
+    }
+
+
+    #modal-ranking-personal-detalle
+    .modal-reporte__header {
+        padding:
+            18px
+            17px;
+    }
+
+
+    #modal-ranking-personal-detalle
+    .modal-reporte__body {
+        padding: 13px;
+    }
+
+
+    #modal-ranking-personal-detalle
+    .dashboard-personal-individual__motivo {
+        padding: 14px;
+    }
+
+
+    #modal-ranking-personal-detalle
+    .dashboard-personal-individual__motivo-variante {
+        grid-template-columns: 1fr;
+    }
+
+
+    #modal-ranking-personal-detalle
+    .dashboard-personal-individual__motivo-variante small {
+        grid-column: auto;
+    }
+
+}
