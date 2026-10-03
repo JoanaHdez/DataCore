@@ -27,33 +27,25 @@ function inicializarGraficaZonas() {
         );
 
 
-    if (
-        !canvas
-        || typeof Chart === 'undefined'
-    ) {
-        return;
-    }
-
-
-    /* =====================================================
-       DATOS REALES
-    ===================================================== */
-
     const datosElemento =
         document.querySelector(
             '#dashboard-datos-zonas'
         );
 
 
-    if (!datosElemento) {
-
-        console.warn(
-            'No se encontraron los datos de la gráfica de zonas.'
-        );
+    if (
+        !canvas
+        || !datosElemento
+        || typeof Chart === 'undefined'
+    ) {
 
         return;
     }
 
+
+    /* =====================================================
+       DATOS DEL BACKEND
+    ===================================================== */
 
     let datosServidor;
 
@@ -78,6 +70,41 @@ function inicializarGraficaZonas() {
 
 
     /* =====================================================
+       TIPO ACTIVO
+    ===================================================== */
+
+    const tipo =
+        String(
+            datosServidor.tipo
+            || 'queja'
+        )
+            .trim()
+            .toLowerCase();
+
+
+    const esFelicitacion =
+        tipo === 'felicitacion';
+
+
+    const etiquetaDataset =
+        esFelicitacion
+            ? 'Felicitaciones'
+            : 'Quejas';
+
+
+    const singularRegistro =
+        esFelicitacion
+            ? 'felicitación'
+            : 'queja';
+
+
+    const pluralRegistro =
+        esFelicitacion
+            ? 'felicitaciones'
+            : 'quejas';
+
+
+    /* =====================================================
        NORMALIZAR DATOS
     ===================================================== */
 
@@ -86,7 +113,7 @@ function inicializarGraficaZonas() {
             datosServidor.zonas
         )
             ? datosServidor.zonas.map(
-                (zona) =>
+                zona =>
                     String(
                         zona
                         || ''
@@ -100,7 +127,7 @@ function inicializarGraficaZonas() {
             datosServidor.totales
         )
             ? datosServidor.totales.map(
-                (valor) => {
+                valor => {
 
                     const numero =
                         Number(
@@ -120,21 +147,12 @@ function inicializarGraficaZonas() {
             : [];
 
 
-    const datosZonas = {
-
-        labels,
-
-        valores,
-
-    };
-
-
     /* =====================================================
        TOTAL
     ===================================================== */
 
-    const total =
-        datosZonas.valores.reduce(
+    const totalCalculado =
+        valores.reduce(
             (
                 acumulado,
                 valor
@@ -153,13 +171,29 @@ function inicializarGraficaZonas() {
         );
 
 
+    const totalBackend =
+        Number(
+            datosServidor.total
+        );
+
+
+    const total =
+        Number.isFinite(
+            totalBackend
+        )
+            ? totalBackend
+            : totalCalculado;
+
+
     const totalElemento =
         document.querySelector(
             '#grafica-zonas-total'
         );
 
 
-    if (totalElemento) {
+    if (
+        totalElemento
+    ) {
 
         totalElemento.textContent =
             String(
@@ -169,7 +203,15 @@ function inicializarGraficaZonas() {
     }
 
 
-    if (total <= 0) {
+    /* =====================================================
+       SIN DATOS
+    ===================================================== */
+
+    if (
+        labels.length === 0
+        || valores.length === 0
+        || total <= 0
+    ) {
 
         mostrarPlaceholderGraficaDashboard(
             canvas
@@ -180,46 +222,93 @@ function inicializarGraficaZonas() {
 
 
     /* =====================================================
+       PORCENTAJES
+    ===================================================== */
+
+    const porcentajes =
+        valores.map(
+            valor => {
+
+                if (
+                    total <= 0
+                ) {
+
+                    return 0;
+                }
+
+
+                return (
+                    (
+                        Number(
+                            valor
+                        )
+                        / total
+                    )
+                    * 100
+                );
+
+            }
+        );
+
+
+    /* =====================================================
+       DESTRUIR GRÁFICA PREVIA
+    ===================================================== */
+
+    const graficaExistente =
+        Chart.getChart(
+            canvas
+        );
+
+
+    if (
+        graficaExistente
+    ) {
+
+        graficaExistente.destroy();
+
+    }
+
+
+    /* =====================================================
        CREAR GRÁFICA
     ===================================================== */
 
     new Chart(
         canvas,
         {
-
             type:
                 'bar',
 
 
-            /* =================================================
-               DATOS
-            ================================================= */
-
             data: {
 
                 labels:
-                    datosZonas.labels,
+                    labels,
+
 
                 datasets: [
                     {
 
                         label:
-                            'Quejas',
+                            etiquetaDataset,
+
 
                         data:
-                            datosZonas.valores,
+                            valores,
 
 
                         /* =========================================
-                           COLORES
+                           COLORES POR ZONA
                         ========================================= */
 
-                        bbackgroundColor: [
-                            'rgba(55, 112, 165, 0.84)',   // Azul
-                            'rgba(52, 151, 151, 0.82)',   // Turquesa
-                            'rgba(211, 158, 72, 0.82)',   // Ámbar
-                            'rgba(202, 105, 96, 0.80)',   // Coral
+                        backgroundColor: [
+                            'rgba(55, 112, 165, 0.84)',
+                            'rgba(52, 151, 151, 0.82)',
+                            'rgba(211, 158, 72, 0.82)',
+                            'rgba(202, 105, 96, 0.80)',
                         ],
+
 
                         hoverBackgroundColor: [
                             '#2d6498',
@@ -236,8 +325,10 @@ function inicializarGraficaZonas() {
                         borderWidth:
                             0,
 
+
                         borderSkipped:
                             false,
+
 
                         borderRadius: {
 
@@ -255,11 +346,14 @@ function inicializarGraficaZonas() {
 
                         },
 
+
                         categoryPercentage:
                             0.70,
 
+
                         barPercentage:
                             0.72,
+
 
                         maxBarThickness:
                             58,
@@ -270,14 +364,11 @@ function inicializarGraficaZonas() {
             },
 
 
-            /* =================================================
-               OPCIONES
-            ================================================= */
-
             options: {
 
                 responsive:
                     true,
+
 
                 maintainAspectRatio:
                     false,
@@ -291,6 +382,7 @@ function inicializarGraficaZonas() {
 
                     duration:
                         750,
+
 
                     easing:
                         'easeOutQuart',
@@ -306,6 +398,7 @@ function inicializarGraficaZonas() {
 
                     mode:
                         'nearest',
+
 
                     intersect:
                         false,
@@ -344,10 +437,6 @@ function inicializarGraficaZonas() {
 
                 scales: {
 
-                    /* =============================================
-                       EJE X
-                    ============================================= */
-
                     x: {
 
                         border: {
@@ -357,6 +446,7 @@ function inicializarGraficaZonas() {
 
                         },
 
+
                         grid: {
 
                             display:
@@ -364,18 +454,22 @@ function inicializarGraficaZonas() {
 
                         },
 
+
                         ticks: {
 
                             color:
                                 '#70827c',
 
+
                             padding:
                                 12,
+
 
                             font: {
 
                                 size:
                                     9,
+
 
                                 weight:
                                     '700',
@@ -386,10 +480,6 @@ function inicializarGraficaZonas() {
 
                     },
 
-
-                    /* =============================================
-                       EJE Y
-                    ============================================= */
 
                     y: {
 
@@ -406,19 +496,6 @@ function inicializarGraficaZonas() {
 
 
                         ticks: {
-
-                            /*
-                             * Las quejas son cantidades enteras.
-                             *
-                             * Evitamos mostrar:
-                             *
-                             * 0.1
-                             * 0.2
-                             * 0.3
-                             *
-                             * cuando solamente existen
-                             * una o dos quejas.
-                             */
 
                             precision:
                                 0,
@@ -441,6 +518,7 @@ function inicializarGraficaZonas() {
                                 ) {
 
                                     return numero;
+
                                 }
 
 
@@ -452,8 +530,10 @@ function inicializarGraficaZonas() {
                             padding:
                                 8,
 
+
                             color:
                                 '#94a09c',
+
 
                             font: {
 
@@ -470,10 +550,12 @@ function inicializarGraficaZonas() {
                             color:
                                 'rgba(105, 132, 121, 0.12)',
 
+
                             borderDash: [
                                 4,
                                 5,
                             ],
+
 
                             drawTicks:
                                 false,
@@ -491,10 +573,6 @@ function inicializarGraficaZonas() {
 
                 plugins: {
 
-                    /* =============================================
-                       LEYENDA
-                    ============================================= */
-
                     legend: {
 
                         display:
@@ -503,38 +581,43 @@ function inicializarGraficaZonas() {
                     },
 
 
-                    /* =============================================
-                       TOOLTIP
-                    ============================================= */
-
                     tooltip: {
 
                         enabled:
                             true,
 
+
                         displayColors:
                             false,
+
 
                         backgroundColor:
                             'rgba(255, 255, 255, 0.98)',
 
+
                         titleColor:
                             '#344740',
+
 
                         bodyColor:
                             '#087d59',
 
+
                         borderColor:
                             'rgba(16, 137, 96, 0.16)',
+
 
                         borderWidth:
                             1,
 
+
                         cornerRadius:
                             12,
 
+
                         padding:
                             12,
+
 
                         caretPadding:
                             8,
@@ -545,6 +628,7 @@ function inicializarGraficaZonas() {
                             size:
                                 10,
 
+
                             weight:
                                 '600',
 
@@ -554,7 +638,8 @@ function inicializarGraficaZonas() {
                         bodyFont: {
 
                             size:
-                                13,
+                                11,
+
 
                             weight:
                                 '800',
@@ -581,6 +666,10 @@ function inicializarGraficaZonas() {
                                 contexto
                             ) {
 
+                                const indice =
+                                    contexto.dataIndex;
+
+
                                 const valor =
                                     Number(
                                         contexto.raw
@@ -588,10 +677,21 @@ function inicializarGraficaZonas() {
                                     );
 
 
+                                const porcentaje =
+                                    porcentajes[
+                                        indice
+                                    ]
+                                    ?? 0;
+
+
                                 return (
-                                    valor === 1
-                                        ? '1 queja'
-                                        : `${valor} quejas`
+                                    `${valor} `
+                                    + (
+                                        valor === 1
+                                            ? singularRegistro
+                                            : pluralRegistro
+                                    )
+                                    + ` (${porcentaje.toFixed(1)}%)`
                                 );
 
                             },
