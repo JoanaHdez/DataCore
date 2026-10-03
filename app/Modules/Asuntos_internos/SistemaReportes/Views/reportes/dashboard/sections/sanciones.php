@@ -34,7 +34,7 @@
                 Total de sanciones
             </span>
 
-            <strong id="sanciones-total">
+            <strong class="dashboard-sanciones__resumen-total" id="sanciones-total">
                 <?= esc(
                     (string) (
                         $sanciones['total']
