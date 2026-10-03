@@ -1,0 +1,417 @@
+/* =========================================================
+   SECTORES
+========================================================= */
+
+.dashboard-sectores {
+    margin-bottom: 26px;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.dashboard-sectores__encabezado {
+    display: flex;
+
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 24px;
+
+    margin-bottom: 14px;
+}
+
+
+.dashboard-sectores__eyebrow {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #0b8f63;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.09em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-sectores__titulo {
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 18px;
+    font-weight: 800;
+
+    line-height: 1.25;
+}
+
+
+.dashboard-sectores__descripcion {
+    max-width: 720px;
+
+    margin:
+        6px
+        0
+        0;
+
+    color: #71827c;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   RESUMEN
+========================================================= */
+
+.dashboard-sectores__resumen {
+    min-width: 135px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-end;
+
+    flex-shrink: 0;
+
+    padding:
+        9px
+        12px;
+
+    background: #f3f8f6;
+
+    border: 1px solid #dfeae5;
+    border-radius: 14px;
+}
+
+
+.dashboard-sectores__resumen-etiqueta {
+    color: #70817b;
+
+    font-size: 8px;
+    font-weight: 700;
+}
+
+
+.dashboard-sectores__resumen-valor {
+    margin-top: 3px;
+
+    color: #173554;
+
+    font-size: 22px;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+.dashboard-sectores__contenido {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.6fr)
+        minmax(250px, 0.8fr);
+
+    gap: 22px;
+
+    align-items: stretch;
+
+    padding: 18px;
+
+    background: #ffffff;
+
+    border: 1px solid #e0e9e5;
+    border-radius: 20px;
+
+    box-shadow:
+        0 10px 26px
+        rgba(28, 67, 54, 0.055);
+}
+
+
+/* =========================================================
+   GRÁFICA
+========================================================= */
+
+.dashboard-sectores__grafica {
+    position: relative;
+
+    min-width: 0;
+
+    height: 390px;
+}
+
+
+.dashboard-sectores__grafica canvas {
+    width: 100% !important;
+
+    height: 100% !important;
+}
+
+
+/* =========================================================
+   LISTA
+========================================================= */
+
+.dashboard-sectores__lista {
+    min-width: 0;
+
+    max-height: 390px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    overflow-y: auto;
+
+    padding-right: 4px;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+.dashboard-sectores__lista::-webkit-scrollbar {
+    width: 5px;
+}
+
+
+.dashboard-sectores__lista::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+.dashboard-sectores__lista::-webkit-scrollbar-thumb {
+    background: #d4dfda;
+
+    border-radius: 999px;
+}
+
+
+/* =========================================================
+   ITEM
+========================================================= */
+
+.dashboard-sectores__item {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    padding:
+        10px
+        12px;
+
+    background: #f8faf9;
+
+    border: 1px solid #e5ece9;
+    border-radius: 12px;
+}
+
+
+.dashboard-sectores__item-info {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+.dashboard-sectores__item-sector {
+    overflow: hidden;
+
+    color: #314942;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    line-height: 1.35;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+.dashboard-sectores__item-porcentaje {
+    color: #7d8d87;
+
+    font-size: 8px;
+    font-weight: 600;
+}
+
+
+.dashboard-sectores__item-total {
+    flex-shrink: 0;
+
+    color: #173554;
+
+    font-size: 18px;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   HOVER DE LISTA
+========================================================= */
+
+.dashboard-sectores__item {
+    transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.18s ease;
+}
+
+
+.dashboard-sectores__item:hover {
+    background: #f3f7f5;
+
+    border-color: #d6e2dd;
+
+    transform: translateX(2px);
+}
+
+
+/* =========================================================
+   PLACEHOLDER
+========================================================= */
+
+.dashboard-sectores__contenido
+.dashboard-grafica__placeholder {
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1050px) {
+
+    .dashboard-sectores__contenido {
+        grid-template-columns:
+            minmax(0, 1.4fr)
+            minmax(220px, 0.8fr);
+    }
+
+
+    .dashboard-sectores__grafica {
+        height: 360px;
+    }
+
+
+    .dashboard-sectores__lista {
+        max-height: 360px;
+    }
+
+}
+
+
+@media (max-width: 850px) {
+
+    .dashboard-sectores__contenido {
+        grid-template-columns: 1fr;
+    }
+
+
+    .dashboard-sectores__grafica {
+        height: 360px;
+    }
+
+
+    .dashboard-sectores__lista {
+        max-height: none;
+
+        overflow: visible;
+
+        padding-right: 0;
+    }
+
+}
+
+
+/* =========================================================
+   MÓVIL
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .dashboard-sectores {
+        margin-bottom: 22px;
+    }
+
+
+    .dashboard-sectores__encabezado {
+        flex-direction: column;
+
+        gap: 12px;
+    }
+
+
+    .dashboard-sectores__titulo {
+        font-size: 16px;
+    }
+
+
+    .dashboard-sectores__descripcion {
+        font-size: 9px;
+    }
+
+
+    .dashboard-sectores__resumen {
+        width: 100%;
+
+        min-width: 0;
+
+        align-items: flex-start;
+    }
+
+
+    .dashboard-sectores__contenido {
+        gap: 16px;
+
+        padding: 14px;
+
+        border-radius: 16px;
+    }
+
+
+    .dashboard-sectores__grafica {
+        height: 330px;
+    }
+
+
+    .dashboard-sectores__item {
+        padding:
+            10px
+            11px;
+    }
+
+
+    .dashboard-sectores__item-total {
+        font-size: 17px;
+    }
+
+}

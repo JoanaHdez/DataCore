@@ -302,11 +302,6 @@
    TEMPORAL: moveremos esto cuando trabajemos Sector.
 ========================================================= */
 
-.dashboard-grafica__canvas--sectores {
-    height: 340px;
-
-    min-height: 340px;
-}
 
 
 .dashboard-grafica__canvas--sectores canvas {
@@ -388,13 +383,6 @@
         gap: 14px;
     }
 
-
-    .dashboard-grafica__canvas--sectores {
-        height: 320px;
-
-        min-height: 320px;
-    }
-
 }
 
 
@@ -446,13 +434,6 @@
             8px
             12px
             14px;
-    }
-
-
-    .dashboard-grafica__canvas--sectores {
-        height: 300px;
-
-        min-height: 300px;
     }
 
 
