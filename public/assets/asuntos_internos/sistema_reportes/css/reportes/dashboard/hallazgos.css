@@ -1,0 +1,314 @@
+/* =========================================================
+   DASHBOARD - HALLAZGOS
+========================================================= */
+
+.dashboard-hallazgos {
+    position: relative;
+
+    margin-bottom: 26px;
+
+    overflow: hidden;
+
+    padding:
+        24px
+        26px
+        26px;
+
+    background:
+        radial-gradient(
+            circle at 94% 0%,
+            rgba(17, 145, 101, 0.045) 0%,
+            transparent 32%
+        ),
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #fbfdfc 100%
+        );
+
+    border:
+        1px solid
+        #dfe9e4;
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 14px 32px
+        rgba(31, 75, 59, 0.055);
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.dashboard-hallazgos__encabezado {
+    margin-bottom: 20px;
+}
+
+
+.dashboard-hallazgos__eyebrow {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #0b8f63;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.09em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-hallazgos__titulo {
+    margin: 0;
+
+    color: #173554;
+
+    font-size: 18px;
+    font-weight: 800;
+
+    line-height: 1.25;
+}
+
+
+.dashboard-hallazgos__descripcion {
+    max-width: 720px;
+
+    margin:
+        6px
+        0
+        0;
+
+    color: #71827c;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.dashboard-hallazgos__grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+
+/* =========================================================
+   ITEM
+========================================================= */
+
+.dashboard-hallazgos__item {
+    position: relative;
+
+    min-width: 0;
+    min-height: 96px;
+
+    overflow: hidden;
+
+    padding:
+        17px
+        18px
+        16px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #f9fbfa
+        );
+
+    border:
+        1px solid
+        #e2ebe7;
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 5px 14px
+        rgba(34, 76, 61, 0.035);
+
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+
+.dashboard-hallazgos__item::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+
+    width: 2px;
+
+    background: #35ae87;
+}
+
+
+.dashboard-hallazgos__item:hover {
+    transform:
+        translateY(-2px);
+
+    border-color:
+        #d3e2db;
+
+    box-shadow:
+        0 8px 18px
+        rgba(34, 76, 61, 0.055);
+}
+
+
+/* =========================================================
+   ÚLTIMO ITEM IMPAR
+========================================================= */
+
+.dashboard-hallazgos__item:last-child:nth-child(odd) {
+    grid-column:
+        1
+        / -1;
+}
+
+
+/* =========================================================
+   ETIQUETA
+========================================================= */
+
+.dashboard-hallazgos__item-etiqueta {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #74867f;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 0.05em;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   VALOR
+========================================================= */
+
+.dashboard-hallazgos__item-valor {
+    display: block;
+
+    color: #29483c;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    line-height: 1.4;
+
+    white-space: normal;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   DESCRIPCIÓN
+========================================================= */
+
+.dashboard-hallazgos__item-descripcion {
+    margin:
+        7px
+        0
+        0;
+
+    color: #7d8e87;
+
+    font-size: 9px;
+
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   SIN DATOS
+========================================================= */
+
+.dashboard-hallazgos__grid
+.dashboard-grafica__placeholder {
+    grid-column:
+        1
+        / -1;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .dashboard-hallazgos__grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .dashboard-hallazgos__item:last-child:nth-child(odd) {
+        grid-column: auto;
+    }
+
+}
+
+
+/* =========================================================
+   MÓVIL
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .dashboard-hallazgos {
+        padding:
+            18px
+            16px;
+
+        border-radius: 18px;
+    }
+
+
+    .dashboard-hallazgos__encabezado {
+        margin-bottom: 16px;
+    }
+
+
+    .dashboard-hallazgos__grid {
+        gap: 10px;
+    }
+
+
+    .dashboard-hallazgos__item {
+        min-height: auto;
+
+        padding:
+            15px
+            16px;
+    }
+
+
+    .dashboard-hallazgos__titulo {
+        font-size: 16px;
+    }
+
+}

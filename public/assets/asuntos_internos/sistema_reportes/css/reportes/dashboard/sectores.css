@@ -1,9 +1,40 @@
 /* =========================================================
-   SECTORES
+   DASHBOARD - SECTORES
 ========================================================= */
 
 .dashboard-sectores {
+    position: relative;
+
     margin-bottom: 26px;
+
+    overflow: hidden;
+
+    padding:
+        22px
+        24px
+        24px;
+
+    background:
+        radial-gradient(
+            circle at 94% 0%,
+            rgba(19, 149, 102, 0.05) 0%,
+            transparent 30%
+        ),
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #fbfdfc 100%
+        );
+
+    border:
+        1px solid
+        #dfe9e4;
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 14px 32px
+        rgba(31, 75, 59, 0.06);
 }
 
 
@@ -19,7 +50,7 @@
 
     gap: 24px;
 
-    margin-bottom: 14px;
+    margin-bottom: 16px;
 }
 
 
@@ -83,12 +114,20 @@
     flex-shrink: 0;
 
     padding:
-        9px
-        12px;
+        10px
+        13px;
 
-    background: #f3f8f6;
+    background:
+        linear-gradient(
+            145deg,
+            #f1f8f5,
+            #edf6f2
+        );
 
-    border: 1px solid #dfeae5;
+    border:
+        1px solid
+        #dceae4;
+
     border-radius: 14px;
 }
 
@@ -132,12 +171,15 @@
 
     background: #ffffff;
 
-    border: 1px solid #e0e9e5;
-    border-radius: 20px;
+    border:
+        1px solid
+        #e4ebe8;
+
+    border-radius: 18px;
 
     box-shadow:
-        0 10px 26px
-        rgba(28, 67, 54, 0.055);
+        0 6px 18px
+        rgba(28, 67, 54, 0.035);
 }
 
 
@@ -156,7 +198,6 @@
 
 .dashboard-sectores__grafica canvas {
     width: 100% !important;
-
     height: 100% !important;
 }
 
@@ -179,6 +220,11 @@
     overflow-y: auto;
 
     padding-right: 4px;
+
+    scrollbar-width: thin;
+    scrollbar-color:
+        #d4dfda
+        transparent;
 }
 
 
@@ -219,10 +265,33 @@
         10px
         12px;
 
-    background: #f8faf9;
+    background:
+        linear-gradient(
+            145deg,
+            #fafcfb,
+            #f6f9f7
+        );
 
-    border: 1px solid #e5ece9;
+    border:
+        1px solid
+        #e5ece9;
+
     border-radius: 12px;
+
+    transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.18s ease;
+}
+
+
+.dashboard-sectores__item:hover {
+    background: #f3f7f5;
+
+    border-color: #d6e2dd;
+
+    transform:
+        translateX(2px);
 }
 
 
@@ -274,33 +343,14 @@
 
 
 /* =========================================================
-   HOVER DE LISTA
-========================================================= */
-
-.dashboard-sectores__item {
-    transition:
-        background-color 0.18s ease,
-        border-color 0.18s ease,
-        transform 0.18s ease;
-}
-
-
-.dashboard-sectores__item:hover {
-    background: #f3f7f5;
-
-    border-color: #d6e2dd;
-
-    transform: translateX(2px);
-}
-
-
-/* =========================================================
    PLACEHOLDER
 ========================================================= */
 
 .dashboard-sectores__contenido
 .dashboard-grafica__placeholder {
-    grid-column: 1 / -1;
+    grid-column:
+        1
+        / -1;
 }
 
 
@@ -360,6 +410,12 @@
 
     .dashboard-sectores {
         margin-bottom: 22px;
+
+        padding:
+            18px
+            16px;
+
+        border-radius: 18px;
     }
 
 
@@ -394,7 +450,7 @@
 
         padding: 14px;
 
-        border-radius: 16px;
+        border-radius: 15px;
     }
 
 

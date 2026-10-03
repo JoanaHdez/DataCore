@@ -1,9 +1,40 @@
 /* =========================================================
-   EVOLUCIÓN TEMPORAL
+   DASHBOARD - EVOLUCIÓN TEMPORAL
 ========================================================= */
 
 .dashboard-evolucion {
+    position: relative;
+
     margin-bottom: 26px;
+
+    overflow: hidden;
+
+    padding:
+        22px
+        24px
+        24px;
+
+    background:
+        radial-gradient(
+            circle at 94% 0%,
+            rgba(22, 129, 196, 0.05) 0%,
+            transparent 30%
+        ),
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #fbfdfc 100%
+        );
+
+    border:
+        1px solid
+        #dfe9e4;
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 14px 32px
+        rgba(31, 75, 59, 0.06);
 }
 
 
@@ -19,7 +50,7 @@
 
     gap: 24px;
 
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 
@@ -83,12 +114,20 @@
     flex-shrink: 0;
 
     padding:
-        9px
-        12px;
+        10px
+        13px;
 
-    background: #f3f8f6;
+    background:
+        linear-gradient(
+            145deg,
+            #f1f8f5,
+            #edf6f2
+        );
 
-    border: 1px solid #dfeae5;
+    border:
+        1px solid
+        #dceae4;
+
     border-radius: 14px;
 }
 
@@ -122,7 +161,7 @@
 
     align-items: center;
 
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 
@@ -141,7 +180,10 @@
 
     background: #f4f8f6;
 
-    border: 1px solid #e0e9e5;
+    border:
+        1px solid
+        #e0e9e5;
+
     border-radius: 999px;
 
     font-size: 8px;
@@ -150,7 +192,7 @@
 
 
 /* =========================================================
-   CONTENEDOR DE GRÁFICA
+   CONTENEDOR INTERNO DE GRÁFICA
 ========================================================= */
 
 .dashboard-evolucion__grafica {
@@ -169,17 +211,20 @@
     background:
         radial-gradient(
             circle at 100% 0%,
-            rgba(22, 129, 196, 0.055),
+            rgba(22, 129, 196, 0.045),
             transparent 34%
         ),
         #ffffff;
 
-    border: 1px solid #e0e9e5;
-    border-radius: 20px;
+    border:
+        1px solid
+        #e4ebe8;
+
+    border-radius: 18px;
 
     box-shadow:
-        0 10px 26px
-        rgba(28, 67, 54, 0.055);
+        0 6px 18px
+        rgba(28, 67, 54, 0.035);
 }
 
 
@@ -191,7 +236,6 @@
     display: block;
 
     width: 100% !important;
-
     height: 100% !important;
 }
 
@@ -229,6 +273,12 @@
 
     .dashboard-evolucion {
         margin-bottom: 22px;
+
+        padding:
+            18px
+            16px;
+
+        border-radius: 18px;
     }
 
 
@@ -259,7 +309,7 @@
 
 
     .dashboard-evolucion__meta {
-        margin-bottom: 8px;
+        margin-bottom: 10px;
     }
 
 
@@ -271,7 +321,7 @@
             8px
             8px;
 
-        border-radius: 16px;
+        border-radius: 15px;
     }
 
 }

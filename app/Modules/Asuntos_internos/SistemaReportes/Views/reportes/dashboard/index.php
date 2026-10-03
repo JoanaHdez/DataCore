@@ -86,6 +86,11 @@ $esFelicitacion =
                 <div class="dashboard-shell__contenido">
 
 
+                    <!-- =================================================
+                         1. RESUMEN GENERAL
+                    ================================================== -->
+
+
                     <!-- =============================================
                          INDICADORES
                     ============================================== -->
@@ -93,6 +98,12 @@ $esFelicitacion =
                     <?= $this->include(
                         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\indicadores'
                     ) ?>
+
+
+
+                    <!-- =================================================
+                         2. ANÁLISIS TEMPORAL
+                    ================================================== -->
 
 
                     <!-- =============================================
@@ -106,101 +117,62 @@ $esFelicitacion =
 
                     <?php if (!$esFelicitacion): ?>
 
-                    <!-- =========================================
-                             ESTADO DE LAS QUEJAS
-                        ========================================== -->
-
-                    <?= $this->include(
-                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\estado'
-                        ) ?>
-
-                    <?php endif; ?>
-
 
                     <!-- =============================================
-                         SECTOR
-                    ============================================== -->
-
-                    <?= $this->include(
-                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\sectores'
-                    ) ?>
-
-
-                    <!-- =============================================
-                         ÁREA / UNIDAD
-                    ============================================== -->
-
-                    <?= $this->include(
-                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\dimension'
-                    ) ?>
-
-
-
-                    <!-- =========================================
-                             ANÁLISIS CRUZADO
-                        ========================================== -->
-
-                    <?= $this->include(
-                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\cruce'
-                        ) ?>
-
-
-                    <?php if (!$esFelicitacion): ?>
-
-                    <!-- =========================================
-                             COMPARATIVAS
-                        ========================================== -->
+                             COMPARATIVA TEMPORAL
+                        ============================================== -->
 
                     <?= $this->include(
                             'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\comparativa'
                         ) ?>
 
+
                     <?php endif; ?>
 
 
+
+                    <!-- =================================================
+                         3. SITUACIÓN ACTUAL
+                    ================================================== -->
+
+
+                    <?php if (!$esFelicitacion): ?>
+
+
                     <!-- =============================================
-                         RANKING TOP 5
-                    ============================================== -->
+                             ESTADO DE LAS QUEJAS
+                        ============================================== -->
 
                     <?= $this->include(
-                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\ranking'
-                    ) ?>
+                            'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\estado'
+                        ) ?>
 
 
-                    <!-- =============================================
-                        PERSONAL INDIVIDUAL
-                    ============================================== -->
-
-                    <?= $this->include(
-                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\personal_individual'
-                    ) ?>
+                    <?php endif; ?>
 
 
-                    <!-- =============================================
-                        HALLAZGOS AUTOMÁTICOS
-                    ============================================== -->
 
-                    <?= $this->include(
-                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\hallazgos'
-                    ) ?>
+                    <!-- =================================================
+                         4. DISTRIBUCIÓN TERRITORIAL Y OPERATIVA
+                    ================================================== -->
 
-
-                    <!-- =============================================
-                         BLOQUES OPERATIVOS
-                    ============================================== -->
 
                     <div class="dashboard-layout">
 
 
-                        <!-- =========================================
-                             ZONA
-                        ========================================== -->
+                        <!-- =============================================
+                             ZONA + SANCIONES
+                        ============================================== -->
 
                         <div class="
                                 dashboard-layout__fila
                                 dashboard-layout__fila--zonas
                             ">
 
+
+                            <!-- =========================================
+                                 ZONA
+                            ========================================== -->
 
                             <div class="dashboard-layout__zona">
 
@@ -213,9 +185,10 @@ $esFelicitacion =
 
                             <?php if (!$esFelicitacion): ?>
 
-                            <!-- =================================
-                                     SANCIONES
-                                ================================== -->
+
+                            <!-- =====================================
+                                     SANCIONES DISCIPLINARIAS
+                                ====================================== -->
 
                             <div class="dashboard-layout__sanciones">
 
@@ -225,15 +198,16 @@ $esFelicitacion =
 
                             </div>
 
+
                             <?php endif; ?>
 
 
                         </div>
 
 
-                        <!-- =========================================
-                             TURNOS
-                        ========================================== -->
+                        <!-- =============================================
+                             TURNO
+                        ============================================== -->
 
                         <div class="
                                 dashboard-layout__fila
@@ -254,6 +228,91 @@ $esFelicitacion =
                     </div>
 
 
+
+                    <!-- =============================================
+                         SECTOR
+                    ============================================== -->
+
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\sectores'
+                    ) ?>
+
+
+
+                    <!-- =================================================
+                         5. DISTRIBUCIÓN INSTITUCIONAL
+                    ================================================== -->
+
+
+                    <!-- =============================================
+                         ÁREA / UNIDAD
+                    ============================================== -->
+
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\dimension'
+                    ) ?>
+
+
+
+                    <!-- =================================================
+                         6. RELACIONES ENTRE DIMENSIONES
+                    ================================================== -->
+
+
+                    <!-- =============================================
+                         ANÁLISIS CRUZADO
+                    ============================================== -->
+
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\cruce'
+                    ) ?>
+
+
+
+                    <!-- =================================================
+                         7. PRINCIPALES CONCENTRACIONES
+                    ================================================== -->
+
+
+                    <!-- =============================================
+                         RANKING TOP 5
+                    ============================================== -->
+
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\ranking'
+                    ) ?>
+
+
+
+                    <!-- =================================================
+                         8. SÍNTESIS AUTOMÁTICA
+                    ================================================== -->
+
+
+                    <!-- =============================================
+                         HALLAZGOS DEL PERIODO
+                    ============================================== -->
+
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\hallazgos'
+                    ) ?>
+
+
+
+                    <!-- =================================================
+                         9. ANÁLISIS INDIVIDUAL
+                    ================================================== -->
+
+
+                    <!-- =============================================
+                         PERSONAL INDIVIDUAL
+                    ============================================== -->
+
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\personal_individual'
+                    ) ?>
+
+
                 </div>
 
             </div>
@@ -264,7 +323,7 @@ $esFelicitacion =
 
 
     <!-- =====================================================
-        MODALES
+         MODALES
     ====================================================== -->
 
     <?= $this->include(
