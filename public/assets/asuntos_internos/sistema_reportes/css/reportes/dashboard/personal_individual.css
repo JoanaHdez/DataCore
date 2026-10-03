@@ -1,0 +1,1555 @@
+/* =========================================================
+   DASHBOARD - PERSONAL INDIVIDUAL
+========================================================= */
+
+.dashboard-personal-individual {
+    position: relative;
+
+    margin-bottom: 24px;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 92% 0%,
+            rgba(112, 89, 157, 0.07) 0%,
+            transparent 31%
+        ),
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #fcfbfd 100%
+        );
+
+    border: 1px solid #e3e0e9;
+    border-radius: 24px;
+
+    box-shadow:
+        0 15px 34px
+        rgba(49, 43, 74, 0.065);
+}
+
+
+/* =========================================================
+   FELICITACIONES
+========================================================= */
+
+.dashboard-personal-individual--felicitaciones {
+    background:
+        radial-gradient(
+            circle at 92% 0%,
+            rgba(23, 159, 112, 0.07) 0%,
+            transparent 31%
+        ),
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #fbfdfc 100%
+        );
+
+    border-color: #dfe9e4;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.dashboard-personal-individual__encabezado {
+    padding:
+        24px
+        24px
+        14px;
+}
+
+
+.dashboard-personal-individual__eyebrow {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #71678f;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.09em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-personal-individual--felicitaciones
+.dashboard-personal-individual__eyebrow {
+    color: #159668;
+}
+
+
+.dashboard-personal-individual__titulo {
+    margin: 0;
+
+    color: #233831;
+
+    font-size: 18px;
+    font-weight: 800;
+
+    line-height: 1.3;
+}
+
+
+.dashboard-personal-individual__descripcion {
+    max-width: 720px;
+
+    margin:
+        5px
+        0
+        0;
+
+    color: #7d8c87;
+
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   BUSCADOR
+========================================================= */
+
+.dashboard-personal-individual__busqueda {
+    position: relative;
+
+    margin:
+        0
+        24px
+        18px;
+
+    padding:
+        14px;
+
+    background: #f8f7fb;
+
+    border: 1px solid #e3e0eb;
+    border-radius: 16px;
+}
+
+
+.dashboard-personal-individual--felicitaciones
+.dashboard-personal-individual__busqueda {
+    background: #f4faf7;
+
+    border-color: #deebe5;
+}
+
+
+.dashboard-personal-individual__busqueda-header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 10px;
+}
+
+
+.dashboard-personal-individual__busqueda-icono {
+    width: 32px;
+    height: 32px;
+
+    flex:
+        0
+        0
+        32px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #71678f;
+
+    background: #ece9f3;
+
+    border-radius: 10px;
+}
+
+
+.dashboard-personal-individual--felicitaciones
+.dashboard-personal-individual__busqueda-icono {
+    color: #11865f;
+
+    background: #e5f4ed;
+}
+
+
+.dashboard-personal-individual__busqueda-icono svg {
+    width: 16px;
+    height: 16px;
+
+    fill: none;
+
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+.dashboard-personal-individual__busqueda-header span {
+    display: block;
+
+    color: #465951;
+
+    font-size: 9px;
+    font-weight: 800;
+}
+
+
+.dashboard-personal-individual__busqueda-header small {
+    display: block;
+
+    margin-top: 2px;
+
+    color: #87958f;
+
+    font-size: 8px;
+}
+
+
+/* =========================================================
+   INPUT BUSCADOR
+========================================================= */
+
+.dashboard-personal-individual__busqueda
+.dashboard-filtros__personal {
+    position: relative;
+
+    width: 100%;
+}
+
+
+.dashboard-personal-individual__busqueda-input {
+    width: 100% !important;
+    height: 42px !important;
+
+    display: block;
+
+    padding:
+        0
+        16px
+        0
+        42px !important;
+
+    color: #4b4758 !important;
+
+    background:
+        rgba(255, 255, 255, 0.92) !important;
+
+    border:
+        1px solid
+        #ded9e8 !important;
+
+    border-radius:
+        12px !important;
+
+    outline:
+        none !important;
+
+    box-shadow:
+        inset 0 1px 2px
+        rgba(63, 52, 82, 0.025);
+
+    font-family:
+        inherit;
+
+    font-size:
+        10px !important;
+
+    font-weight:
+        600;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+
+
+.dashboard-personal-individual__busqueda-input::placeholder {
+    color:
+        #9a94a5;
+
+    opacity:
+        1;
+}
+
+
+/* =========================================================
+   LUPA DENTRO DEL INPUT
+========================================================= */
+
+.dashboard-personal-individual__busqueda
+.dashboard-filtros__personal::before {
+    content: "";
+
+    position: absolute;
+    z-index: 3;
+
+    top: 13px;
+    left: 15px;
+
+    width: 13px;
+    height: 13px;
+
+    border:
+        1.7px solid
+        #81759e;
+
+    border-radius:
+        50%;
+
+    pointer-events:
+        none;
+}
+
+
+.dashboard-personal-individual__busqueda
+.dashboard-filtros__personal::after {
+    content: "";
+
+    position: absolute;
+    z-index: 3;
+
+    top: 25px;
+    left: 27px;
+
+    width: 6px;
+    height: 1.7px;
+
+    background:
+        #81759e;
+
+    border-radius:
+        999px;
+
+    transform:
+        rotate(45deg);
+
+    transform-origin:
+        left center;
+
+    pointer-events:
+        none;
+}
+
+
+/* =========================================================
+   FOCUS
+========================================================= */
+
+.dashboard-personal-individual__busqueda-input:hover {
+    background:
+        #ffffff !important;
+
+    border-color:
+        #cec7dc !important;
+}
+
+
+.dashboard-personal-individual__busqueda-input:focus {
+    background:
+        #ffffff !important;
+
+    border-color:
+        #8175a0 !important;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(113, 103, 143, 0.10) !important;
+}
+
+
+/* =========================================================
+   FELICITACIONES
+========================================================= */
+
+.dashboard-personal-individual--felicitaciones
+.dashboard-personal-individual__busqueda-input {
+    border-color:
+        #d8e7df !important;
+}
+
+
+.dashboard-personal-individual--felicitaciones
+.dashboard-personal-individual__busqueda
+.dashboard-filtros__personal::before {
+    border-color:
+        #168b64;
+}
+
+
+.dashboard-personal-individual--felicitaciones
+.dashboard-personal-individual__busqueda
+.dashboard-filtros__personal::after {
+    background:
+        #168b64;
+}
+
+
+.dashboard-personal-individual--felicitaciones
+.dashboard-personal-individual__busqueda-input:hover {
+    border-color:
+        #c4ddd1 !important;
+}
+
+
+.dashboard-personal-individual--felicitaciones
+.dashboard-personal-individual__busqueda-input:focus {
+    border-color:
+        #18a979 !important;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(24, 169, 121, 0.10) !important;
+}
+
+
+/* =========================================================
+   RESULTADOS DEL BUSCADOR
+========================================================= */
+
+.dashboard-personal-individual__resultados {
+    position: absolute;
+
+    z-index: 50;
+
+    top: calc(100% + 7px);
+    left: 0;
+    right: 0;
+
+    width: 100%;
+
+    max-height: 270px;
+
+    overflow-y: auto;
+
+    background:
+        rgba(255, 255, 255, 0.98);
+
+    border:
+        1px solid
+        #ded9e8;
+
+    border-radius:
+        12px;
+
+    box-shadow:
+        0 16px 32px
+        rgba(60, 48, 82, 0.12);
+}
+
+
+/* =========================================================
+   CHIP DE PERSONA SELECCIONADA
+========================================================= */
+
+.dashboard-personal-individual__seleccion {
+    width: fit-content;
+    max-width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top:
+        9px;
+
+    padding:
+        6px
+        8px
+        6px
+        11px;
+
+    color:
+        #615776;
+
+    background:
+        #eeebf4;
+
+    border:
+        1px solid
+        #ddd7e8;
+
+    border-radius:
+        999px;
+
+    font-size:
+        8px;
+
+    font-weight:
+        700;
+}
+
+
+.dashboard-personal-individual__seleccion span {
+    min-width:
+        0;
+
+    overflow:
+        hidden;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
+}
+
+
+.dashboard-personal-individual__seleccion button {
+    width:
+        20px;
+
+    height:
+        20px;
+
+    flex:
+        0
+        0
+        20px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        0;
+
+    color:
+        #71678f;
+
+    background:
+        rgba(255, 255, 255, 0.62);
+
+    border:
+        0;
+
+    border-radius:
+        50%;
+
+    cursor:
+        pointer;
+
+    font-size:
+        14px;
+
+    line-height:
+        1;
+}
+
+
+.dashboard-personal-individual__seleccion button:hover {
+    background:
+        #ffffff;
+}
+
+
+.dashboard-personal-individual--felicitaciones
+.dashboard-personal-individual__seleccion {
+    color:
+        #147453;
+
+    background:
+        #e8f5ef;
+
+    border-color:
+        #d2e9dd;
+}
+
+
+.dashboard-personal-individual--felicitaciones
+.dashboard-personal-individual__seleccion button {
+    color:
+        #11865f;
+}
+
+/* =========================================================
+   RESULTADOS BUSCADOR
+========================================================= */
+
+.dashboard-personal-individual__resultados {
+    z-index: 20;
+}
+
+
+/* =========================================================
+   CHIP SELECCIONADO
+========================================================= */
+
+.dashboard-personal-individual__seleccion {
+    margin-top: 9px;
+}
+
+
+/* =========================================================
+   ESTADO VACÍO
+========================================================= */
+
+.dashboard-personal-individual__estado {
+    min-height: 170px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 14px;
+
+    margin:
+        0
+        24px
+        24px;
+
+    padding: 24px;
+
+    background: #faf9fc;
+
+    border: 1px dashed #ddd9e6;
+    border-radius: 16px;
+}
+
+
+.dashboard-personal-individual__estado-icono {
+    width: 44px;
+    height: 44px;
+
+    flex:
+        0
+        0
+        44px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #71678f;
+
+    background: #ece9f3;
+
+    border-radius: 14px;
+}
+
+
+.dashboard-personal-individual--felicitaciones
+.dashboard-personal-individual__estado-icono {
+    color: #11865f;
+
+    background: #e4f4ec;
+}
+
+
+.dashboard-personal-individual__estado-icono svg {
+    width: 20px;
+    height: 20px;
+
+    fill: none;
+
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+.dashboard-personal-individual__estado > div:last-child {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+
+.dashboard-personal-individual__estado strong {
+    color: #485b54;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+.dashboard-personal-individual__estado span {
+    color: #84928d;
+
+    font-size: 9px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+.dashboard-personal-individual__contenido {
+    padding:
+        0
+        24px
+        24px;
+}
+
+
+/* =========================================================
+   FICHA PRINCIPAL
+========================================================= */
+
+.dashboard-personal-individual__ficha {
+    position: relative;
+
+    min-height: 190px;
+
+    display: grid;
+
+    grid-template-columns:
+        116px
+        minmax(0, 1fr)
+        170px;
+
+    align-items: center;
+
+    gap: 22px;
+
+    overflow: hidden;
+
+    padding:
+        25px
+        27px;
+
+    color: #ffffff;
+
+    background:
+        radial-gradient(
+            circle at 85% 12%,
+            rgba(255, 255, 255, 0.11) 0%,
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            #55466f 0%,
+            #6e5b91 48%,
+            #7a659d 100%
+        );
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 18px 34px
+        rgba(84, 65, 117, 0.22);
+}
+
+
+/* =========================================================
+   FICHA FELICITACIONES
+========================================================= */
+
+.dashboard-personal-individual--felicitaciones
+.dashboard-personal-individual__ficha {
+    background:
+        radial-gradient(
+            circle at 85% 12%,
+            rgba(255, 255, 255, 0.12) 0%,
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            #087d59 0%,
+            #10936a 50%,
+            #19a878 100%
+        );
+
+    box-shadow:
+        0 18px 34px
+        rgba(8, 125, 89, 0.20);
+}
+
+
+/* =========================================================
+   DECORACIÓN
+========================================================= */
+
+.dashboard-personal-individual__ficha::before {
+    content: "";
+
+    position: absolute;
+
+    top: -70px;
+    right: -45px;
+
+    width: 190px;
+    height: 190px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255, 255, 255, 0.055);
+}
+
+
+.dashboard-personal-individual__ficha::after {
+    content: "";
+
+    position: absolute;
+
+    bottom: -85px;
+    left: 32%;
+
+    width: 220px;
+    height: 150px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255, 255, 255, 0.035);
+}
+
+
+.dashboard-personal-individual__ficha-brillo {
+    position: absolute;
+
+    top: 22px;
+    right: 22px;
+
+    width: 48px;
+    height: 48px;
+
+    border: 1px solid
+        rgba(255, 255, 255, 0.11);
+
+    border-radius: 50%;
+}
+
+
+/* =========================================================
+   FOTO
+========================================================= */
+
+.dashboard-personal-individual__foto {
+    position: relative;
+    z-index: 2;
+
+    width: 106px;
+    height: 106px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background:
+        rgba(255, 255, 255, 0.13);
+
+    border:
+        3px solid
+        rgba(255, 255, 255, 0.28);
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 12px 22px
+        rgba(29, 21, 48, 0.14);
+}
+
+
+.dashboard-personal-individual__foto img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+
+.dashboard-personal-individual__foto span {
+    color:
+        rgba(255, 255, 255, 0.92);
+
+    font-size: 34px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   IDENTIDAD
+========================================================= */
+
+.dashboard-personal-individual__identidad {
+    position: relative;
+    z-index: 2;
+
+    min-width: 0;
+}
+
+
+.dashboard-personal-individual__ficha-eyebrow {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color:
+        rgba(255, 255, 255, 0.62);
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 0.09em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-personal-individual__identidad h3 {
+    max-width: 620px;
+
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 18px;
+    font-weight: 800;
+
+    line-height: 1.25;
+}
+
+
+.dashboard-personal-individual__identificador {
+    display: inline-flex;
+
+    margin-top: 7px;
+
+    padding:
+        4px
+        8px;
+
+    color:
+        rgba(255, 255, 255, 0.84);
+
+    background:
+        rgba(255, 255, 255, 0.10);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.11);
+
+    border-radius: 999px;
+
+    font-size: 8px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   ÁREA / TURNO
+========================================================= */
+
+.dashboard-personal-individual__datos {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+
+    margin-top: 17px;
+}
+
+
+.dashboard-personal-individual__datos > div {
+    min-width: 0;
+
+    padding:
+        9px
+        11px;
+
+    background:
+        rgba(255, 255, 255, 0.085);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.09);
+
+    border-radius: 11px;
+}
+
+
+.dashboard-personal-individual__datos span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color:
+        rgba(255, 255, 255, 0.58);
+
+    font-size: 7px;
+    font-weight: 700;
+
+    letter-spacing: 0.05em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-personal-individual__datos strong {
+    display: block;
+
+    overflow: hidden;
+
+    color:
+        rgba(255, 255, 255, 0.92);
+
+    font-size: 9px;
+    font-weight: 700;
+
+    line-height: 1.35;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   RESUMEN TOTAL
+========================================================= */
+
+.dashboard-personal-individual__resumen {
+    position: relative;
+    z-index: 2;
+
+    min-height: 124px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    padding:
+        16px;
+
+    text-align: center;
+
+    background:
+        rgba(255, 255, 255, 0.11);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.13);
+
+    border-radius: 18px;
+
+    backdrop-filter:
+        blur(4px);
+}
+
+
+.dashboard-personal-individual__resumen span {
+    color:
+        rgba(255, 255, 255, 0.64);
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 0.04em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-personal-individual__resumen strong {
+    margin:
+        8px
+        0
+        4px;
+
+    color: #ffffff;
+
+    font-size: 42px;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+.dashboard-personal-individual__resumen small {
+    color:
+        rgba(255, 255, 255, 0.58);
+
+    font-size: 8px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   REGISTROS
+========================================================= */
+
+.dashboard-personal-individual__registros {
+    margin-top: 16px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e9e6;
+    border-radius: 18px;
+
+    box-shadow:
+        0 8px 22px
+        rgba(37, 72, 59, 0.045);
+}
+
+
+/* =========================================================
+   HEADER REGISTROS
+========================================================= */
+
+.dashboard-personal-individual__registros-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 14px;
+
+    padding:
+        15px
+        17px;
+
+    border-bottom:
+        1px solid
+        #edf2ef;
+}
+
+
+.dashboard-personal-individual__registros-eyebrow {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #71678f;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-personal-individual--felicitaciones
+.dashboard-personal-individual__registros-eyebrow {
+    color: #159668;
+}
+
+
+.dashboard-personal-individual__registros-header h3 {
+    margin: 0;
+
+    color: #33483f;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+
+.dashboard-personal-individual__registros-total {
+    flex-shrink: 0;
+
+    padding:
+        5px
+        9px;
+
+    color: #746b8e;
+
+    background: #f1eef6;
+
+    border-radius: 999px;
+
+    font-size: 8px;
+    font-weight: 700;
+}
+
+
+.dashboard-personal-individual--felicitaciones
+.dashboard-personal-individual__registros-total {
+    color: #0e825d;
+
+    background: #eaf6f0;
+}
+
+
+/* =========================================================
+   TABLA
+========================================================= */
+
+.dashboard-personal-individual__tabla-contenedor {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+.dashboard-personal-individual__tabla {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+
+.dashboard-personal-individual__tabla th {
+    padding:
+        10px
+        14px;
+
+    color: #73857e;
+
+    background: #fafcfb;
+
+    border-bottom:
+        1px solid
+        #e7eeea;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    text-align: left;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+
+.dashboard-personal-individual__tabla td {
+    padding:
+        12px
+        14px;
+
+    color: #52655e;
+
+    border-bottom:
+        1px solid
+        #eef2f0;
+
+    font-size: 9px;
+
+    vertical-align: middle;
+}
+
+
+.dashboard-personal-individual__tabla tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+
+.dashboard-personal-individual__tabla tbody tr {
+    transition:
+        background-color 0.15s ease;
+}
+
+
+.dashboard-personal-individual__tabla tbody tr:hover {
+    background: #fafcfb;
+}
+
+
+/* =========================================================
+   FOLIO
+========================================================= */
+
+.dashboard-personal-individual__folio {
+    color: #344c42;
+
+    font-size: 9px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+.dashboard-personal-individual__estado-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    min-height: 23px;
+
+    padding:
+        0
+        8px;
+
+    border-radius: 999px;
+
+    font-size: 7px;
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+
+.dashboard-personal-individual__estado-badge--pendiente {
+    color: #9c6c1d;
+
+    background: #fff3da;
+}
+
+
+.dashboard-personal-individual__estado-badge--proceso {
+    color: #426f97;
+
+    background: #edf4f9;
+}
+
+
+.dashboard-personal-individual__estado-badge--finalizado {
+    color: #0f805b;
+
+    background: #e6f5ee;
+}
+
+
+.dashboard-personal-individual__estado-badge--neutral {
+    color: #697a74;
+
+    background: #eef2f0;
+}
+
+
+/* =========================================================
+   CLASIFICACIÓN
+========================================================= */
+
+.dashboard-personal-individual__clasificacion {
+    color: #596e65;
+
+    font-size: 8px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   RAZÓN LARGA
+========================================================= */
+
+.dashboard-personal-individual__texto-largo {
+    max-width: 420px;
+
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   BOTÓN MOTIVOS
+========================================================= */
+
+.dashboard-personal-individual__motivos-boton {
+    padding:
+        6px
+        9px;
+
+    color: #675b88;
+
+    background: #f1eef6;
+
+    border: 1px solid #e3deeb;
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    white-space: nowrap;
+
+    transition:
+        background-color 0.18s ease,
+        transform 0.18s ease;
+}
+
+
+.dashboard-personal-individual__motivos-boton:hover {
+    background: #e9e5f1;
+
+    transform:
+        translateY(-1px);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 950px) {
+
+    .dashboard-personal-individual__ficha {
+        grid-template-columns:
+            100px
+            minmax(0, 1fr);
+    }
+
+
+    .dashboard-personal-individual__foto {
+        width: 94px;
+        height: 94px;
+    }
+
+
+    .dashboard-personal-individual__resumen {
+        grid-column:
+            1
+            / -1;
+
+        min-height: auto;
+
+        flex-direction: row;
+
+        justify-content: flex-start;
+
+        gap: 10px;
+
+        text-align: left;
+    }
+
+
+    .dashboard-personal-individual__resumen strong {
+        margin: 0;
+
+        font-size: 30px;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .dashboard-personal-individual {
+        border-radius: 18px;
+    }
+
+
+    .dashboard-personal-individual__encabezado {
+        padding:
+            18px
+            16px
+            12px;
+    }
+
+
+    .dashboard-personal-individual__busqueda {
+        margin:
+            0
+            14px
+            14px;
+    }
+
+
+    .dashboard-personal-individual__contenido {
+        padding:
+            0
+            14px
+            16px;
+    }
+
+
+    .dashboard-personal-individual__ficha {
+        grid-template-columns: 1fr;
+
+        gap: 16px;
+
+        padding:
+            20px;
+
+        text-align: center;
+
+        border-radius: 18px;
+    }
+
+
+    .dashboard-personal-individual__foto {
+        margin:
+            0
+            auto;
+    }
+
+
+    .dashboard-personal-individual__identidad h3 {
+        margin:
+            0
+            auto;
+    }
+
+
+    .dashboard-personal-individual__datos {
+        text-align: left;
+    }
+
+
+    .dashboard-personal-individual__resumen {
+        grid-column: auto;
+
+        justify-content: center;
+
+        text-align: center;
+    }
+
+
+    .dashboard-personal-individual__registros {
+        border-radius: 15px;
+    }
+
+
+    .dashboard-personal-individual__registros-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 8px;
+    }
+
+
+    .dashboard-personal-individual__estado {
+        margin:
+            0
+            14px
+            16px;
+
+        min-height: 150px;
+    }
+
+}
+
+
+@media (max-width: 430px) {
+
+    .dashboard-personal-individual__datos {
+        grid-template-columns: 1fr;
+    }
+
+}

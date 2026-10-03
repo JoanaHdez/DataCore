@@ -2,6 +2,8 @@
 
 namespace App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard;
 
+use App\Modules\Asuntos_internos\SistemaReportes\Services\FotoPersonalService;
+
 
 class DashboardPersonalService
 {
@@ -9,6 +11,8 @@ class DashboardPersonalService
     private $db;
 
     private DashboardFiltrosService $filtrosService;
+
+    private FotoPersonalService $fotoPersonalService;
 
 
     /* =========================================================
@@ -27,6 +31,10 @@ class DashboardPersonalService
 
         $this->filtrosService =
             $filtrosService;
+
+
+        $this->fotoPersonalService =
+            new FotoPersonalService();
     }
 
 
@@ -1066,7 +1074,7 @@ class DashboardPersonalService
         }
 
 
-        return [
+        $datosPersona = [
 
             'identificador' =>
                 $identificador,
@@ -1101,6 +1109,16 @@ class DashboardPersonalService
                 ),
 
         ];
+
+
+        $datosPersona['foto'] =
+            $this->obtenerFotoPersona(
+                $datosPersona['perscod']
+                ?? null
+            );
+
+
+        return $datosPersona;
     }
 
 
@@ -1233,7 +1251,7 @@ class DashboardPersonalService
         }
 
 
-        return [
+        $datosPersona = [
 
             'identificador' =>
                 $identificador,
@@ -1268,6 +1286,16 @@ class DashboardPersonalService
                 ),
 
         ];
+
+
+        $datosPersona['foto'] =
+            $this->obtenerFotoPersona(
+                $datosPersona['perscod']
+                ?? null
+            );
+
+
+        return $datosPersona;
     }
 
 
@@ -1465,6 +1493,9 @@ class DashboardPersonalService
                 'turno' =>
                     null,
 
+                'foto' =>
+                    null,
+
             ],
 
             'total_quejas' =>
@@ -1474,6 +1505,54 @@ class DashboardPersonalService
                 [],
 
         ];
+    }
+
+
+    /* =========================================================
+       FOTO DE PERSONA
+    ========================================================= */
+
+    private function obtenerFotoPersona(
+        ?string $perscod
+    ): ?string {
+
+        $perscod =
+            $this->normalizarNullable(
+                $perscod
+            );
+
+
+        if (
+            $perscod === null
+        ) {
+
+            return null;
+        }
+
+
+        try {
+
+            return $this->fotoPersonalService
+                ->obtenerBase64(
+                    $perscod
+                );
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'No fue posible obtener foto para Personal individual {perscod}: {mensaje}',
+                [
+                    'perscod' =>
+                        $perscod,
+
+                    'mensaje' =>
+                        $e->getMessage(),
+                ]
+            );
+
+
+            return null;
+        }
     }
 
 
