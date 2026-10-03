@@ -32,6 +32,7 @@ function inicializarGraficaTurnos() {
         || !fuenteDatos
         || typeof Chart === 'undefined'
     ) {
+
         return;
     }
 
@@ -54,13 +55,52 @@ function inicializarGraficaTurnos() {
     } catch (error) {
 
         console.error(
-            'No fue posible interpretar los datos de quejas por turno:',
+            'No fue posible interpretar los datos de turnos:',
             error
         );
 
         return;
     }
 
+
+    /* =====================================================
+       TIPO ACTIVO
+    ===================================================== */
+
+    const tipo =
+        String(
+            datosBackend.tipo
+            || 'queja'
+        )
+            .trim()
+            .toLowerCase();
+
+
+    const esFelicitacion =
+        tipo === 'felicitacion';
+
+
+    const etiquetaDataset =
+        esFelicitacion
+            ? 'Felicitaciones'
+            : 'Quejas';
+
+
+    const singularRegistro =
+        esFelicitacion
+            ? 'felicitación'
+            : 'queja';
+
+
+    const pluralRegistro =
+        esFelicitacion
+            ? 'felicitaciones'
+            : 'quejas';
+
+
+    /* =====================================================
+       TURNOS / TOTALES
+    ===================================================== */
 
     const turnos =
         Array.isArray(
@@ -75,35 +115,49 @@ function inicializarGraficaTurnos() {
             datosBackend.totales
         )
             ? datosBackend.totales.map(
-                (total) =>
-                    Number(total) || 0
+                total =>
+                    Number(total)
+                    || 0
             )
             : [];
 
 
-    /*
-     * Convertimos la respuesta del backend
-     * al formato que ya utilizaba esta gráfica.
-     */
+    /* =====================================================
+       NORMALIZAR DATOS
+    ===================================================== */
 
     const datosTurnos =
-        turnos.map(
-            (
-                nombre,
-                indice
-            ) => {
+        turnos
+            .map(
+                (
+                    nombre,
+                    indice
+                ) => {
 
-                return {
-                    nombre:
-                        nombre,
+                    return {
 
-                    valor:
-                        totales[indice]
-                        ?? 0,
-                };
+                        nombre:
+                            String(
+                                nombre
+                                || ''
+                            ).trim(),
 
-            }
-        );
+                        valor:
+                            Number(
+                                totales[
+                                    indice
+                                ]
+                            )
+                            || 0,
+
+                    };
+
+                }
+            )
+            .filter(
+                turno =>
+                    turno.nombre !== ''
+            );
 
 
     const sinTurnos =
@@ -120,7 +174,9 @@ function inicializarGraficaTurnos() {
         );
 
 
-    if (graficaExistente) {
+    if (
+        graficaExistente
+    ) {
 
         graficaExistente.destroy();
 
@@ -171,7 +227,9 @@ function inicializarGraficaTurnos() {
         );
 
 
-    if (totalElemento) {
+    if (
+        totalElemento
+    ) {
 
         totalElemento.textContent =
             String(
@@ -180,6 +238,10 @@ function inicializarGraficaTurnos() {
 
     }
 
+
+    /* =====================================================
+       SIN DATOS
+    ===================================================== */
 
     if (
         sinTurnos
@@ -200,11 +262,12 @@ function inicializarGraficaTurnos() {
 
     const porcentajes =
         datosTurnos.map(
-            (turno) => {
+            turno => {
 
                 if (
                     total <= 0
                 ) {
+
                     return 0;
                 }
 
@@ -214,7 +277,8 @@ function inicializarGraficaTurnos() {
                         turno.valor
                     )
                     / total
-                ) * 100;
+                )
+                    * 100;
 
             }
         );
@@ -230,44 +294,40 @@ function inicializarGraficaTurnos() {
             type:
                 'bar',
 
+
             data: {
 
                 labels:
                     datosTurnos.map(
-                        (turno) => {
-
-                            return (
-                                turno.nombre
-                            );
-
-                        }
+                        turno =>
+                            turno.nombre
                     ),
+
 
                 datasets: [
                     {
+
                         label:
-                            'Quejas',
+                            etiquetaDataset,
+
 
                         data:
                             datosTurnos.map(
-                                (turno) => {
-
-                                    return (
-                                        turno.valor
-                                    );
-
-                                }
+                                turno =>
+                                    turno.valor
                             ),
 
+
                         backgroundColor: [
-                            'rgba(47, 111, 164, 0.88)',   // Azul
-                            'rgba(53, 151, 151, 0.82)',   // Turquesa
-                            'rgba(116, 94, 164, 0.80)',   // Violeta
-                            'rgba(211, 158, 72, 0.82)',   // Ámbar
-                            'rgba(202, 105, 96, 0.78)',   // Coral
-                            'rgba(77, 137, 116, 0.78)',   // Verde salvia
-                            'rgba(132, 145, 160, 0.72)',  // Gris azulado
+                            'rgba(47, 111, 164, 0.88)',
+                            'rgba(53, 151, 151, 0.82)',
+                            'rgba(116, 94, 164, 0.80)',
+                            'rgba(211, 158, 72, 0.82)',
+                            'rgba(202, 105, 96, 0.78)',
+                            'rgba(77, 137, 116, 0.78)',
+                            'rgba(132, 145, 160, 0.72)',
                         ],
+
 
                         hoverBackgroundColor: [
                             '#285f8c',
@@ -279,23 +339,30 @@ function inicializarGraficaTurnos() {
                             '#738190',
                         ],
 
+
                         borderWidth:
                             0,
+
 
                         borderSkipped:
                             false,
 
+
                         borderRadius:
                             12,
+
 
                         barPercentage:
                             0.62,
 
+
                         categoryPercentage:
                             0.72,
 
+
                         maxBarThickness:
                             28,
+
                     },
                 ],
 
@@ -307,8 +374,10 @@ function inicializarGraficaTurnos() {
                 responsive:
                     true,
 
+
                 maintainAspectRatio:
                     false,
+
 
                 indexAxis:
                     'y',
@@ -322,6 +391,7 @@ function inicializarGraficaTurnos() {
 
                     duration:
                         750,
+
 
                     easing:
                         'easeOutQuart',
@@ -337,6 +407,7 @@ function inicializarGraficaTurnos() {
 
                     mode:
                         'nearest',
+
 
                     intersect:
                         false,
@@ -355,11 +426,14 @@ function inicializarGraficaTurnos() {
                         top:
                             8,
 
+
                         right:
                             14,
 
+
                         bottom:
                             4,
+
 
                         left:
                             2,
@@ -380,14 +454,6 @@ function inicializarGraficaTurnos() {
                         beginAtZero:
                             true,
 
-                        /*
-                         * Ya no utilizamos suggestedMax: 90,
-                         * porque ese límite pertenecía a los
-                         * datos temporales del Excel.
-                         *
-                         * Chart.js calculará la escala con
-                         * base en los datos reales.
-                         */
 
                         border: {
 
@@ -396,21 +462,26 @@ function inicializarGraficaTurnos() {
 
                         },
 
+
                         ticks: {
 
                             precision:
                                 0,
 
+
                             padding:
                                 8,
 
+
                             color:
                                 '#8b9994',
+
 
                             font: {
 
                                 size:
                                     9,
+
 
                                 weight:
                                     '500',
@@ -419,15 +490,18 @@ function inicializarGraficaTurnos() {
 
                         },
 
+
                         grid: {
 
                             color:
                                 'rgba(103, 130, 119, 0.12)',
 
+
                             borderDash: [
                                 4,
                                 5,
                             ],
+
 
                             drawTicks:
                                 false,
@@ -446,6 +520,7 @@ function inicializarGraficaTurnos() {
 
                         },
 
+
                         grid: {
 
                             display:
@@ -453,18 +528,22 @@ function inicializarGraficaTurnos() {
 
                         },
 
+
                         ticks: {
 
                             color:
                                 '#40534c',
 
+
                             padding:
                                 10,
+
 
                             font: {
 
                                 size:
                                     9,
+
 
                                 weight:
                                     '700',
@@ -497,29 +576,38 @@ function inicializarGraficaTurnos() {
                         enabled:
                             true,
 
+
                         displayColors:
                             false,
+
 
                         backgroundColor:
                             'rgba(255, 255, 255, 0.98)',
 
+
                         titleColor:
                             '#31453d',
+
 
                         bodyColor:
                             '#087d59',
 
+
                         borderColor:
                             'rgba(12, 140, 96, 0.16)',
+
 
                         borderWidth:
                             1,
 
+
                         cornerRadius:
                             12,
 
+
                         padding:
                             12,
+
 
                         caretPadding:
                             8,
@@ -529,6 +617,7 @@ function inicializarGraficaTurnos() {
 
                             size:
                                 10,
+
 
                             weight:
                                 '700',
@@ -540,6 +629,7 @@ function inicializarGraficaTurnos() {
 
                             size:
                                 10,
+
 
                             weight:
                                 '700',
@@ -585,12 +675,13 @@ function inicializarGraficaTurnos() {
 
 
                                 return (
-                                    `${valor} ${
+                                    `${valor} `
+                                    + (
                                         valor === 1
-                                            ? 'queja'
-                                            : 'quejas'
-                                    } `
-                                    + `(${porcentaje.toFixed(1)}%)`
+                                            ? singularRegistro
+                                            : pluralRegistro
+                                    )
+                                    + ` (${porcentaje.toFixed(1)}%)`
                                 );
 
                             },
