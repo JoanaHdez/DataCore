@@ -1,0 +1,1009 @@
+/* =========================================================
+   DASHBOARD - COMPARATIVA TEMPORAL
+========================================================= */
+
+.dashboard-comparativa {
+    position: relative;
+
+    margin-bottom: 24px;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 94% 0%,
+            rgba(87, 98, 173, 0.065) 0%,
+            transparent 30%
+        ),
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #fbfcfd 100%
+        );
+
+    border: 1px solid #dfe7e4;
+    border-radius: 24px;
+
+    box-shadow:
+        0 15px 34px
+        rgba(31, 71, 59, 0.065);
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.dashboard-comparativa__encabezado {
+    display: flex;
+
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 24px;
+
+    padding:
+        24px
+        24px
+        16px;
+}
+
+
+.dashboard-comparativa__encabezado-info {
+    min-width: 0;
+
+    flex: 1;
+}
+
+
+.dashboard-comparativa__eyebrow {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #71678f;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.09em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-comparativa__titulo {
+    margin: 0;
+
+    color: #233831;
+
+    font-size: 18px;
+    font-weight: 800;
+
+    line-height: 1.3;
+
+    letter-spacing: -0.015em;
+}
+
+
+.dashboard-comparativa__descripcion {
+    max-width: 720px;
+
+    margin:
+        5px
+        0
+        0;
+
+    color: #7d8c87;
+
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   DURACIÓN
+========================================================= */
+
+.dashboard-comparativa__duracion {
+    min-width: 102px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    padding:
+        11px
+        14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #f1eef8,
+            #ece8f5
+        );
+
+    border: 1px solid #ded8ec;
+    border-radius: 16px;
+}
+
+
+.dashboard-comparativa__duracion span {
+    color: #827997;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 0.07em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-comparativa__duracion strong {
+    margin-top: 3px;
+
+    color: #574f73;
+
+    font-size: 27px;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+.dashboard-comparativa__duracion small {
+    margin-top: 3px;
+
+    color: #968da7;
+
+    font-size: 8px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   PERIODOS
+========================================================= */
+
+.dashboard-comparativa__periodos {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+
+    padding:
+        0
+        24px
+        16px;
+}
+
+
+.dashboard-comparativa__periodo {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    min-width: 0;
+
+    padding:
+        13px
+        15px;
+
+    background: #f8faf9;
+
+    border: 1px solid #e3ebe7;
+    border-radius: 15px;
+}
+
+
+.dashboard-comparativa__periodo--actual {
+    background:
+        linear-gradient(
+            145deg,
+            #f1f8f5,
+            #f8fbfa
+        );
+
+    border-color: #dcebe4;
+}
+
+
+.dashboard-comparativa__periodo--anterior {
+    background:
+        linear-gradient(
+            145deg,
+            #f6f5f9,
+            #faf9fb
+        );
+
+    border-color: #e4e0ea;
+}
+
+
+/* =========================================================
+   ICONO DE PERIODO
+========================================================= */
+
+.dashboard-comparativa__periodo-icono {
+    width: 36px;
+    height: 36px;
+
+    flex:
+        0
+        0
+        36px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #168c66;
+
+    background: #e6f4ee;
+
+    border-radius: 11px;
+}
+
+
+.dashboard-comparativa__periodo--anterior
+.dashboard-comparativa__periodo-icono {
+    color: #71678f;
+
+    background: #efedf5;
+}
+
+
+.dashboard-comparativa__periodo-icono svg {
+    width: 17px;
+    height: 17px;
+
+    fill: none;
+
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+/* =========================================================
+   TEXTO DE PERIODOS
+========================================================= */
+
+.dashboard-comparativa__periodo-etiqueta {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #71817b;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 0.05em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-comparativa__periodo-fecha {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    color: #344a42;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+.dashboard-comparativa__periodo-fecha span {
+    color: #93a09b;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   MÉTRICA PRINCIPAL
+========================================================= */
+
+.dashboard-comparativa__principal {
+    display: grid;
+
+    grid-template-columns:
+        minmax(180px, 0.7fr)
+        minmax(0, 1.3fr);
+
+    align-items: center;
+
+    gap: 24px;
+
+    margin:
+        0
+        24px
+        16px;
+
+    padding:
+        20px
+        22px;
+
+    background:
+        radial-gradient(
+            circle at 100% 0%,
+            rgba(255, 255, 255, 0.08),
+            transparent 35%
+        ),
+        linear-gradient(
+            145deg,
+            #173f59 0%,
+            #0d3048 100%
+        );
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 14px 28px
+        rgba(12, 48, 72, 0.15);
+}
+
+
+/* =========================================================
+   PRINCIPAL - INFORMACIÓN
+========================================================= */
+
+.dashboard-comparativa__principal-eyebrow {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color:
+        rgba(255, 255, 255, 0.58);
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 0.08em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-comparativa__principal-titulo {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   PRINCIPAL - VALORES
+========================================================= */
+
+.dashboard-comparativa__principal-valores {
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        1px
+        1fr
+        1px
+        1fr;
+
+    align-items: center;
+}
+
+
+.dashboard-comparativa__principal-valor,
+.dashboard-comparativa__principal-cambio {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    text-align: center;
+}
+
+
+.dashboard-comparativa__principal-valor span,
+.dashboard-comparativa__principal-cambio span {
+    color:
+        rgba(255, 255, 255, 0.62);
+
+    font-size: 8px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-comparativa__principal-valor strong {
+    margin-top: 5px;
+
+    color: #ffffff;
+
+    font-size: 29px;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+.dashboard-comparativa__principal-cambio strong {
+    margin-top: 5px;
+
+    color: #aee8d2;
+
+    font-size: 22px;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+.dashboard-comparativa__principal-cambio small {
+    margin-top: 4px;
+
+    color:
+        rgba(255, 255, 255, 0.68);
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+
+.dashboard-comparativa__principal-separador {
+    width: 1px;
+    height: 42px;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+}
+
+
+/* =========================================================
+   GRID DE MÉTRICAS
+========================================================= */
+
+.dashboard-comparativa__grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 12px;
+
+    padding:
+        0
+        24px
+        24px;
+}
+
+
+/* =========================================================
+   TARJETA
+========================================================= */
+
+.dashboard-comparativa__tarjeta {
+    position: relative;
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    padding:
+        16px;
+
+    background: #ffffff;
+
+    border: 1px solid #e2eae6;
+    border-radius: 16px;
+
+    box-shadow:
+        0 7px 18px
+        rgba(32, 70, 57, 0.045);
+
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        border-color 0.18s ease;
+}
+
+
+.dashboard-comparativa__tarjeta:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 11px 24px
+        rgba(32, 70, 57, 0.075);
+}
+
+
+/* =========================================================
+   ACENTO SUPERIOR
+========================================================= */
+
+.dashboard-comparativa__tarjeta::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 16px;
+    right: 16px;
+
+    height: 3px;
+
+    border-radius:
+        0
+        0
+        999px
+        999px;
+
+    background: #9ba9a4;
+}
+
+
+.dashboard-comparativa__tarjeta--aumento::before {
+    background: #1ba978;
+}
+
+
+.dashboard-comparativa__tarjeta--disminucion::before {
+    background: #d19a42;
+}
+
+
+.dashboard-comparativa__tarjeta--sin_cambio::before {
+    background: #81918b;
+}
+
+
+/* =========================================================
+   HEADER TARJETA
+========================================================= */
+
+.dashboard-comparativa__tarjeta-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 14px;
+}
+
+
+.dashboard-comparativa__tarjeta-etiqueta {
+    min-width: 0;
+
+    color: #465b53;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    line-height: 1.35;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   TENDENCIA
+========================================================= */
+
+.dashboard-comparativa__tendencia {
+    width: 25px;
+    height: 25px;
+
+    flex:
+        0
+        0
+        25px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #75867f;
+
+    background: #f0f4f2;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+
+.dashboard-comparativa__tendencia--aumento {
+    color: #11845e;
+
+    background: #e5f5ee;
+}
+
+
+.dashboard-comparativa__tendencia--disminucion {
+    color: #a87524;
+
+    background: #fff3dc;
+}
+
+
+.dashboard-comparativa__tendencia--sin_cambio {
+    color: #71817b;
+
+    background: #eef2f0;
+}
+
+
+/* =========================================================
+   ACTUAL / ANTERIOR
+========================================================= */
+
+.dashboard-comparativa__valores {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 8px;
+}
+
+
+.dashboard-comparativa__valores > div {
+    padding:
+        9px
+        10px;
+
+    background: #f7f9f8;
+
+    border-radius: 10px;
+}
+
+
+.dashboard-comparativa__valores span {
+    display: block;
+
+    color: #8b9994;
+
+    font-size: 8px;
+    font-weight: 600;
+}
+
+
+.dashboard-comparativa__valores strong {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #294039;
+
+    font-size: 19px;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.dashboard-comparativa__tarjeta-footer {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 8px;
+
+    margin-top: 10px;
+
+    padding-top: 10px;
+
+    border-top: 1px solid #edf1ef;
+}
+
+
+.dashboard-comparativa__cambio,
+.dashboard-comparativa__variacion {
+    min-width: 0;
+}
+
+
+.dashboard-comparativa__cambio span,
+.dashboard-comparativa__variacion span {
+    display: block;
+
+    color: #8c9994;
+
+    font-size: 7px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-comparativa__cambio strong,
+.dashboard-comparativa__variacion strong {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #4c6159;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   ESTADO SIN PERIODO
+========================================================= */
+
+.dashboard-comparativa__estado {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    margin:
+        0
+        24px
+        24px;
+
+    padding:
+        20px;
+
+    color: #71817b;
+
+    background: #f8faf9;
+
+    border: 1px dashed #d6e1dc;
+    border-radius: 16px;
+}
+
+
+.dashboard-comparativa__estado-icono {
+    width: 42px;
+    height: 42px;
+
+    flex:
+        0
+        0
+        42px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #71678f;
+
+    background: #eeecf4;
+
+    border-radius: 13px;
+}
+
+
+.dashboard-comparativa__estado-icono svg {
+    width: 19px;
+    height: 19px;
+
+    fill: none;
+
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+.dashboard-comparativa__estado > div:last-child {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+
+.dashboard-comparativa__estado strong {
+    color: #4d615a;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+.dashboard-comparativa__estado span {
+    color: #84928d;
+
+    font-size: 9px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   SIN DATOS
+========================================================= */
+
+.dashboard-comparativa__vacio {
+    padding:
+        0
+        24px
+        24px;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1000px) {
+
+    .dashboard-comparativa__grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
+    .dashboard-comparativa__principal {
+        grid-template-columns: 1fr;
+
+        gap: 18px;
+    }
+
+}
+
+
+@media (max-width: 760px) {
+
+    .dashboard-comparativa__periodos {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* =========================================================
+   MÓVIL
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .dashboard-comparativa {
+        border-radius: 18px;
+    }
+
+
+    .dashboard-comparativa__encabezado {
+        flex-direction: column;
+
+        gap: 12px;
+
+        padding:
+            18px
+            16px
+            14px;
+    }
+
+
+    .dashboard-comparativa__duracion {
+        width: 100%;
+
+        flex-direction: row;
+
+        justify-content: flex-start;
+
+        gap: 7px;
+    }
+
+
+    .dashboard-comparativa__duracion strong {
+        margin: 0;
+
+        font-size: 23px;
+    }
+
+
+    .dashboard-comparativa__periodos {
+        padding:
+            0
+            14px
+            14px;
+    }
+
+
+    .dashboard-comparativa__periodo {
+        padding:
+            12px;
+    }
+
+
+    .dashboard-comparativa__periodo-fecha {
+        flex-wrap: wrap;
+    }
+
+
+    .dashboard-comparativa__principal {
+        margin:
+            0
+            14px
+            14px;
+
+        padding:
+            17px;
+    }
+
+
+    .dashboard-comparativa__principal-valores {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+
+    .dashboard-comparativa__principal-separador {
+        display: none;
+    }
+
+
+    .dashboard-comparativa__principal-valor strong {
+        font-size: 23px;
+    }
+
+
+    .dashboard-comparativa__principal-cambio strong {
+        font-size: 18px;
+    }
+
+
+    .dashboard-comparativa__grid {
+        grid-template-columns: 1fr;
+
+        padding:
+            0
+            14px
+            16px;
+    }
+
+
+    .dashboard-comparativa__estado {
+        margin:
+            0
+            14px
+            16px;
+
+        padding: 16px;
+    }
+
+
+    .dashboard-comparativa__vacio {
+        padding:
+            0
+            14px
+            16px;
+    }
+
+}
