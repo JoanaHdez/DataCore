@@ -312,6 +312,22 @@ class DashboardExcelService
                     ?? 0
                 ),
             ],
+
+            [
+                'Quejas anónimas',
+                (int) (
+                    $datosDashboard['anonimas']
+                    ?? 0
+                ),
+            ],
+
+            [
+                'Personal involucrado',
+                (int) (
+                    $datosDashboard['personal_involucrado']
+                    ?? 0
+                ),
+            ],
         ];
 
 
