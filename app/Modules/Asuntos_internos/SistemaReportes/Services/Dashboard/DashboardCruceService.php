@@ -72,6 +72,7 @@ class DashboardCruceService
             ],
 
             'area' => [
+                'turno',
                 'estado',
             ],
 
@@ -86,18 +87,24 @@ class DashboardCruceService
             !isset(
                 $combinacionesValidas[$principal]
             )
-            || !in_array(
+        ) {
+
+            $principal =
+                'sector';
+
+        }
+
+
+        if (
+            !in_array(
                 $secundaria,
                 $combinacionesValidas[$principal],
                 true
             )
         ) {
 
-            $principal =
-                'sector';
-
             $secundaria =
-                'turno';
+                $combinacionesValidas[$principal][0];
         }
 
 
@@ -1014,6 +1021,14 @@ class DashboardCruceService
             ],
 
             'area' => [
+                [
+                    'valor' =>
+                        'turno',
+
+                    'texto' =>
+                        'Turno',
+                ],
+
                 [
                     'valor' =>
                         'estado',

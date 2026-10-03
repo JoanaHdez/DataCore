@@ -50,6 +50,10 @@ $opcionesSecundaria =
     ?? [];
 
 
+/* =========================================================
+   TIPO ACTIVO
+========================================================= */
+
 $tipoDashboard =
     strtoupper(
         trim(
@@ -77,6 +81,10 @@ $ariaCruce =
         : 'Gráfica de análisis cruzado de quejas';
 
 
+/* =========================================================
+   NORMALIZAR
+========================================================= */
+
 if (!is_array($categorias)) {
     $categorias = [];
 }
@@ -98,7 +106,7 @@ if (!is_array($opcionesSecundaria)) {
 
 
 /* =========================================================
-   TEXTO PARA TÍTULO
+   TÍTULOS
 ========================================================= */
 
 $textoPrincipal =
@@ -121,10 +129,7 @@ $sinDatosCruce =
 ?>
 
 
-<section
-    class="dashboard-cruce"
-    id="dashboard-cruce"
->
+<section class="dashboard-cruce" id="dashboard-cruce">
 
     <!-- =====================================================
          ENCABEZADO
@@ -132,17 +137,19 @@ $sinDatosCruce =
 
     <div class="dashboard-cruce__encabezado">
 
-        <div>
+        <div class="dashboard-cruce__encabezado-info">
 
             <span class="dashboard-cruce__eyebrow">
                 Análisis cruzado
             </span>
+
 
             <h2 class="dashboard-cruce__titulo">
                 <?= esc($textoPrincipal) ?>
                 ×
                 <?= esc($textoSecundaria) ?>
             </h2>
+
 
             <p class="dashboard-cruce__descripcion">
                 <?= esc($descripcionCruce) ?>
@@ -156,6 +163,7 @@ $sinDatosCruce =
             <span class="dashboard-cruce__resumen-etiqueta">
                 Asociaciones mostradas
             </span>
+
 
             <strong class="dashboard-cruce__resumen-valor">
                 <?= esc($totalCruce) ?>
@@ -172,11 +180,6 @@ $sinDatosCruce =
 
     <div class="dashboard-cruce__selectores">
 
-
-        <!-- =================================================
-             PRINCIPAL
-        ================================================== -->
-
         <div class="dashboard-cruce__selector">
 
             <label for="dashboard-cruce-principal">
@@ -184,14 +187,11 @@ $sinDatosCruce =
             </label>
 
 
-            <select
-                id="dashboard-cruce-principal"
-                class="dashboard-cruce__selector-control"
-            >
+            <select id="dashboard-cruce-principal" class="dashboard-cruce__selector-control">
 
                 <?php foreach ($opcionesPrincipal as $opcion): ?>
 
-                    <?php
+                <?php
 
                     $valor =
                         trim(
@@ -215,20 +215,16 @@ $sinDatosCruce =
                         $valor === ''
                         || $texto === ''
                     ) {
-
                         continue;
                     }
 
                     ?>
 
-                    <option
-                        value="<?= esc($valor) ?>"
-                        <?= $valor === $principalSeleccionado
+                <option value="<?= esc($valor) ?>" <?= $valor === $principalSeleccionado
                             ? 'selected'
-                            : '' ?>
-                    >
-                        <?= esc($texto) ?>
-                    </option>
+                            : '' ?>>
+                    <?= esc($texto) ?>
+                </option>
 
                 <?php endforeach; ?>
 
@@ -236,10 +232,6 @@ $sinDatosCruce =
 
         </div>
 
-
-        <!-- =================================================
-             SECUNDARIA
-        ================================================== -->
 
         <div class="dashboard-cruce__selector">
 
@@ -248,14 +240,11 @@ $sinDatosCruce =
             </label>
 
 
-            <select
-                id="dashboard-cruce-secundaria"
-                class="dashboard-cruce__selector-control"
-            >
+            <select id="dashboard-cruce-secundaria" class="dashboard-cruce__selector-control">
 
                 <?php foreach ($opcionesSecundaria as $opcion): ?>
 
-                    <?php
+                <?php
 
                     $valor =
                         trim(
@@ -279,20 +268,16 @@ $sinDatosCruce =
                         $valor === ''
                         || $texto === ''
                     ) {
-
                         continue;
                     }
 
                     ?>
 
-                    <option
-                        value="<?= esc($valor) ?>"
-                        <?= $valor === $secundariaSeleccionada
+                <option value="<?= esc($valor) ?>" <?= $valor === $secundariaSeleccionada
                             ? 'selected'
-                            : '' ?>
-                    >
-                        <?= esc($texto) ?>
-                    </option>
+                            : '' ?>>
+                    <?= esc($texto) ?>
+                </option>
 
                 <?php endforeach; ?>
 
@@ -304,111 +289,69 @@ $sinDatosCruce =
 
 
     <!-- =====================================================
-         ESPACIO PARA GRÁFICA FINAL
+         CONTENIDO
     ====================================================== -->
 
     <?php if ($sinDatosCruce): ?>
 
-    <div class="dashboard-grafica__placeholder">
-        <strong>
-            Sin datos
-        </strong>
+    <div class="dashboard-cruce__vacio">
 
-        <span>
-            Sin datos para los filtros seleccionados.
-        </span>
+        <div class="dashboard-grafica__placeholder">
+
+            <strong>
+                Sin datos
+            </strong>
+
+            <span>
+                Sin datos para los filtros seleccionados.
+            </span>
+
+        </div>
+
     </div>
 
     <?php else: ?>
 
-    <div class="dashboard-cruce__grafica">
+    <div class="dashboard-cruce__panel">
 
-        <canvas
-            id="dashboard-cruce-chart"
-            aria-label="<?= esc($ariaCruce) ?>"
-            role="img"
-        ></canvas>
+        <div class="dashboard-cruce__panel-header">
 
-    </div>
+            <div>
 
+                <span class="dashboard-cruce__panel-eyebrow">
+                    Distribución combinada
+                </span>
 
-    <!-- =====================================================
-         MATRIZ DE DATOS
-         TEMPORAL PARA VALIDACIÓN
-    ====================================================== -->
+                <h3 class="dashboard-cruce__panel-titulo">
+                    <?= esc($textoPrincipal) ?>
+                    ×
+                    <?= esc($textoSecundaria) ?>
+                </h3>
 
-    <div class="dashboard-cruce__tabla-contenedor">
-
-            <table class="dashboard-cruce__tabla">
-
-                <thead>
-
-                    <tr>
-
-                        <th>
-                            <?= esc($textoPrincipal) ?>
-                        </th>
-
-                        <?php foreach ($series as $serie): ?>
-
-                            <th>
-                                <?= esc(
-                                    $serie['nombre']
-                                    ?? ''
-                                ) ?>
-                            </th>
-
-                        <?php endforeach; ?>
-
-                    </tr>
-
-                </thead>
+            </div>
 
 
-                <tbody>
+            <span class="dashboard-cruce__categorias-total">
+                <?= esc(count($categorias)) ?>
+                <?= count($categorias) === 1
+                        ? 'categoría'
+                        : 'categorías' ?>
+            </span>
 
-                    <?php foreach ($categorias as $indice => $categoria): ?>
-
-                        <tr>
-
-                            <th>
-                                <?= esc($categoria) ?>
-                            </th>
-
-
-                            <?php foreach ($series as $serie): ?>
-
-                                <?php
-
-                                $datosSerie =
-                                    $serie['datos']
-                                    ?? [];
+        </div>
 
 
-                                $cantidad =
-                                    (int) (
-                                        $datosSerie[$indice]
-                                        ?? 0
-                                    );
+        <div class="dashboard-cruce__grafica-scroll">
 
-                                ?>
+            <div class="dashboard-cruce__grafica" id="dashboard-cruce-chart-container">
 
-                                <td>
-                                    <?= esc($cantidad) ?>
-                                </td>
+                <canvas id="dashboard-cruce-chart" aria-label="<?= esc($ariaCruce) ?>" role="img"></canvas>
 
-                            <?php endforeach; ?>
+            </div>
 
-                        </tr>
-
-                    <?php endforeach; ?>
-
-                </tbody>
-
-            </table>
+        </div>
 
     </div>
-
 
     <?php endif; ?>
 
@@ -417,127 +360,36 @@ $sinDatosCruce =
          DATOS PARA JAVASCRIPT
     ====================================================== -->
 
-    <script
-        type="application/json"
-        id="dashboard-cruce-datos"
-    ><?= json_encode(
-        [
-            'principal' =>
-                $principalSeleccionado,
+    <script type="application/json" id="dashboard-cruce-datos">
+    <?= json_encode(
+            [
+                'tipo' =>
+                    $esFelicitacion
+                        ? 'felicitacion'
+                        : 'queja',
 
-            'secundaria' =>
-                $secundariaSeleccionada,
+                'principal' =>
+                    $principalSeleccionado,
 
-            'categorias' =>
-                $categorias,
+                'secundaria' =>
+                    $secundariaSeleccionada,
 
-            'series' =>
-                $series,
+                'categorias' =>
+                    $categorias,
 
-            'total' =>
-                $totalCruce,
-        ],
-        JSON_UNESCAPED_UNICODE
-        | JSON_UNESCAPED_SLASHES
-        | JSON_HEX_TAG
-        | JSON_HEX_AMP
-        | JSON_HEX_APOS
-        | JSON_HEX_QUOT
-    ) ?></script>
+                'series' =>
+                    $series,
+
+                'total' =>
+                    $totalCruce,
+            ],
+            JSON_UNESCAPED_UNICODE
+            | JSON_UNESCAPED_SLASHES
+            | JSON_HEX_TAG
+            | JSON_HEX_AMP
+            | JSON_HEX_APOS
+            | JSON_HEX_QUOT
+        ) ?>
+    </script>
 
 </section>
-
-
-<script>
-document.addEventListener(
-    'DOMContentLoaded',
-    () => {
-
-        const principal =
-            document.getElementById(
-                'dashboard-cruce-principal'
-            );
-
-
-        const secundaria =
-            document.getElementById(
-                'dashboard-cruce-secundaria'
-            );
-
-
-        if (
-            !principal
-            || !secundaria
-        ) {
-
-            return;
-        }
-
-
-        const actualizarCruce =
-            () => {
-
-                const url =
-                    new URL(
-                        window.location.href
-                    );
-
-
-                url.searchParams.set(
-                    'cruce_principal',
-                    principal.value
-                );
-
-
-                url.searchParams.set(
-                    'cruce_secundaria',
-                    secundaria.value
-                );
-
-
-                window.location.href =
-                    url.toString();
-            };
-
-
-        principal.addEventListener(
-            'change',
-            () => {
-
-                /*
-                 * Cuando cambia la dimensión principal,
-                 * dejamos que el backend valide si la
-                 * combinación secundaria sigue siendo válida.
-                 */
-
-                const url =
-                    new URL(
-                        window.location.href
-                    );
-
-
-                url.searchParams.set(
-                    'cruce_principal',
-                    principal.value
-                );
-
-
-                url.searchParams.delete(
-                    'cruce_secundaria'
-                );
-
-
-                window.location.href =
-                    url.toString();
-            }
-        );
-
-
-        secundaria.addEventListener(
-            'change',
-            actualizarCruce
-        );
-
-    }
-);
-</script>

@@ -702,6 +702,10 @@ class DashboardFelicitacionesService
                 'turno',
             ],
 
+            'area' => [
+                'turno',
+            ],
+
         ];
 
 
@@ -709,18 +713,24 @@ class DashboardFelicitacionesService
             !isset(
                 $combinacionesValidas[$principal]
             )
-            || !in_array(
+        ) {
+
+            $principal =
+                'sector';
+
+        }
+
+
+        if (
+            !in_array(
                 $secundaria,
                 $combinacionesValidas[$principal],
                 true
             )
         ) {
 
-            $principal =
-                'sector';
-
             $secundaria =
-                'turno';
+                $combinacionesValidas[$principal][0];
         }
 
 
@@ -975,6 +985,14 @@ class DashboardFelicitacionesService
 
                     'texto' =>
                         'Zona',
+                ],
+
+                [
+                    'valor' =>
+                        'area',
+
+                    'texto' =>
+                        'Área',
                 ],
 
             ],
@@ -1630,6 +1648,14 @@ class DashboardFelicitacionesService
 
             'zona' =>
             $this->obtenerZonaCruce(
+                (string) (
+                    $registro['area_snapshot']
+                    ?? ''
+                )
+            ),
+
+            'area' =>
+            $this->normalizarTexto(
                 (string) (
                     $registro['area_snapshot']
                     ?? ''
