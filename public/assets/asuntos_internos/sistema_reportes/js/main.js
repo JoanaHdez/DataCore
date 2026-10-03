@@ -15,6 +15,7 @@ import './reportes/dashboard/graficas/areas_involucradas.js';
 import './reportes/dashboard/graficas/evolucion.js';
 import './reportes/dashboard/graficas/estado.js';
 import './reportes/dashboard/graficas/sectores.js';
+import './reportes/dashboard/graficas/dimension.js';
 
 
 import './reportes/dashboard/filtros.js';

@@ -81,46 +81,32 @@ $ariaDimension =
         : 'Distribución de quejas por dimensión';
 
 
+$textoRegistros =
+    $esFelicitacion
+        ? 'felicitaciones'
+        : 'quejas';
+
+
 /* =========================================================
    NORMALIZAR ARREGLOS
 ========================================================= */
 
-if (
-    !is_array(
-        $etiquetas
-    )
-) {
-
+if (!is_array($etiquetas)) {
     $etiquetas = [];
 }
 
 
-if (
-    !is_array(
-        $totales
-    )
-) {
-
+if (!is_array($totales)) {
     $totales = [];
 }
 
 
-if (
-    !is_array(
-        $porcentajes
-    )
-) {
-
+if (!is_array($porcentajes)) {
     $porcentajes = [];
 }
 
 
-if (
-    !is_array(
-        $opciones
-    )
-) {
-
+if (!is_array($opciones)) {
     $opciones = [];
 }
 
@@ -140,7 +126,7 @@ $sinDatosDimension =
 
     <div class="dashboard-dimension__encabezado">
 
-        <div>
+        <div class="dashboard-dimension__encabezado-info">
 
             <span class="dashboard-dimension__eyebrow">
                 Distribución institucional
@@ -170,23 +156,28 @@ $sinDatosDimension =
                 <?= esc($totalDimension) ?>
             </strong>
 
+
+            <small class="dashboard-dimension__resumen-texto">
+                <?= esc($textoRegistros) ?>
+            </small>
+
         </div>
 
     </div>
 
 
     <!-- =====================================================
-         SELECTOR
+         SELECTOR DE DIMENSIÓN
     ====================================================== -->
 
     <div class="dashboard-dimension__selector">
 
-        <label for="dashboard-dimension-select" class="dashboard-dimension__selector-label">
+        <span class="dashboard-dimension__selector-label">
             Analizar por
-        </label>
+        </span>
 
 
-        <select id="dashboard-dimension-select" class="dashboard-dimension__selector-control">
+        <div class="dashboard-dimension__tabs" role="group" aria-label="Seleccionar dimensión de análisis">
 
             <?php foreach ($opciones as $opcion): ?>
 
@@ -214,21 +205,28 @@ $sinDatosDimension =
                     $valor === ''
                     || $texto === ''
                 ) {
-
                     continue;
                 }
 
+
+                $activo =
+                    $valor === $dimensionSeleccionada;
+
                 ?>
 
-            <option value="<?= esc($valor) ?>" <?= $valor === $dimensionSeleccionada
-                        ? 'selected'
-                        : '' ?>>
+
+            <button type="button" class="
+                        dashboard-dimension__tab
+                        <?= $activo
+                            ? 'dashboard-dimension__tab--activo'
+                            : '' ?>
+                    " data-dimension="<?= esc($valor) ?>" aria-pressed="<?= $activo ? 'true' : 'false' ?>">
                 <?= esc($texto) ?>
-            </option>
+            </button>
 
             <?php endforeach; ?>
 
-        </select>
+        </div>
 
     </div>
 
@@ -237,11 +235,12 @@ $sinDatosDimension =
          CONTENIDO
     ====================================================== -->
 
-    <div class="dashboard-dimension__contenido">
+    <?php if ($sinDatosDimension): ?>
 
-        <?php if ($sinDatosDimension): ?>
+    <div class="dashboard-dimension__vacio">
 
         <div class="dashboard-grafica__placeholder">
+
             <strong>
                 Sin datos
             </strong>
@@ -249,76 +248,168 @@ $sinDatosDimension =
             <span>
                 Sin datos para los filtros seleccionados.
             </span>
-        </div>
-
-        <?php else: ?>
-
-        <!-- =============================================
-             ESPACIO PARA LA GRÁFICA
-        ============================================== -->
-
-        <div class="dashboard-dimension__grafica">
-
-            <canvas id="dashboard-dimension-chart" aria-label="<?= esc($ariaDimension) ?>" role="img"></canvas>
 
         </div>
 
+    </div>
+
+    <?php else: ?>
+
+    <div class="dashboard-dimension__panel">
 
         <!-- =============================================
-             LISTA DE RESULTADOS
-        ============================================== -->
+                 DISTRIBUCIÓN
+            ============================================== -->
 
-        <div class="dashboard-dimension__lista">
+        <div class="dashboard-dimension__bloque">
 
-            <?php foreach ($etiquetas as $indice => $etiqueta): ?>
+            <div class="dashboard-dimension__bloque-header">
 
-            <?php
+                <div>
 
-                    $cantidad =
-                        (int) (
-                            $totales[$indice]
-                            ?? 0
-                        );
-
-
-                    $porcentaje =
-                        (float) (
-                            $porcentajes[$indice]
-                            ?? 0
-                        );
-
-                    ?>
-
-
-            <div class="dashboard-dimension__item">
-
-                <div class="dashboard-dimension__item-info">
-
-                    <span class="dashboard-dimension__item-etiqueta">
-                        <?= esc($etiqueta) ?>
+                    <span class="dashboard-dimension__bloque-eyebrow">
+                        Distribución
                     </span>
 
-
-                    <span class="dashboard-dimension__item-porcentaje">
-                        <?= esc($porcentaje) ?>%
-                    </span>
+                    <h3 class="dashboard-dimension__bloque-titulo">
+                        <?= esc($tituloDimension) ?>
+                    </h3>
 
                 </div>
 
 
-                <strong class="dashboard-dimension__item-total">
-                    <?= esc($cantidad) ?>
-                </strong>
+                <span class="dashboard-dimension__cantidad-categorias">
+                    <?= esc(count($etiquetas)) ?>
+                    <?= count($etiquetas) === 1
+                            ? 'registro'
+                            : 'registros' ?>
+                </span>
 
             </div>
 
-            <?php endforeach; ?>
+
+            <div class="dashboard-dimension__grafica-scroll">
+
+                <div class="dashboard-dimension__grafica" id="dashboard-dimension-chart-container">
+
+                    <canvas id="dashboard-dimension-chart" aria-label="<?= esc($ariaDimension) ?>" role="img"></canvas>
+
+                </div>
+
+            </div>
 
         </div>
 
-        <?php endif; ?>
+
+        <!-- =============================================
+                 DETALLE
+            ============================================== -->
+
+        <div class="
+                dashboard-dimension__bloque
+                dashboard-dimension__bloque--detalle
+            ">
+
+            <div class="dashboard-dimension__bloque-header">
+
+                <div>
+
+                    <span class="dashboard-dimension__bloque-eyebrow">
+                        Detalle
+                    </span>
+
+                    <h3 class="dashboard-dimension__bloque-titulo">
+                        Todos los resultados
+                    </h3>
+
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-dimension__lista">
+
+                <?php foreach ($etiquetas as $indice => $etiqueta): ?>
+
+                <?php
+
+                        $cantidad =
+                            (int) (
+                                $totales[$indice]
+                                ?? 0
+                            );
+
+
+                        $porcentaje =
+                            (float) (
+                                $porcentajes[$indice]
+                                ?? 0
+                            );
+
+                        ?>
+
+
+                <div class="dashboard-dimension__item">
+
+                    <div class="dashboard-dimension__item-principal">
+
+                        <span class="dashboard-dimension__item-etiqueta">
+                            <?= esc($etiqueta) ?>
+                        </span>
+
+
+                        <span class="dashboard-dimension__item-porcentaje">
+                            <?= esc($porcentaje) ?>%
+                        </span>
+
+                    </div>
+
+
+                    <div class="dashboard-dimension__item-secundario">
+
+                        <strong class="dashboard-dimension__item-total">
+                            <?= esc($cantidad) ?>
+                        </strong>
+
+
+                        <span>
+                            <?= $cantidad === 1
+                                        ? esc(
+                                            $esFelicitacion
+                                                ? 'felicitación'
+                                                : 'queja'
+                                        )
+                                        : esc($textoRegistros) ?>
+                        </span>
+
+                    </div>
+
+
+                    <div class="dashboard-dimension__item-barra" aria-hidden="true">
+
+                        <span style="width: <?= esc(
+                                        min(
+                                            100,
+                                            max(
+                                                0,
+                                                $porcentaje
+                                            )
+                                        )
+                                    ) ?>%;"></span>
+
+                    </div>
+
+                </div>
+
+                <?php endforeach; ?>
+
+            </div>
+
+        </div>
 
     </div>
+
+    <?php endif; ?>
 
 
     <!-- =====================================================
@@ -327,80 +418,37 @@ $sinDatosDimension =
 
     <script type="application/json" id="dashboard-dimension-datos">
     <?= json_encode(
-        [
-            'tipo' =>
-                $esFelicitacion
-                    ? 'felicitacion'
-                    : 'queja',
+            [
+                'tipo' =>
+                    $esFelicitacion
+                        ? 'felicitacion'
+                        : 'queja',
 
-            'dimension' =>
-                $dimensionSeleccionada,
+                'dimension' =>
+                    $dimensionSeleccionada,
 
-            'titulo' =>
-                $tituloDimension,
+                'titulo' =>
+                    $tituloDimension,
 
-            'etiquetas' =>
-                $etiquetas,
+                'etiquetas' =>
+                    $etiquetas,
 
-            'totales' =>
-                $totales,
+                'totales' =>
+                    $totales,
 
-            'porcentajes' =>
-                $porcentajes,
+                'porcentajes' =>
+                    $porcentajes,
 
-            'total' =>
-                $totalDimension,
-        ],
-        JSON_UNESCAPED_UNICODE
-        | JSON_UNESCAPED_SLASHES
-        | JSON_HEX_TAG
-        | JSON_HEX_AMP
-        | JSON_HEX_APOS
-        | JSON_HEX_QUOT
-    ) ?>
+                'total' =>
+                    $totalDimension,
+            ],
+            JSON_UNESCAPED_UNICODE
+            | JSON_UNESCAPED_SLASHES
+            | JSON_HEX_TAG
+            | JSON_HEX_AMP
+            | JSON_HEX_APOS
+            | JSON_HEX_QUOT
+        ) ?>
     </script>
 
 </section>
-
-
-<script>
-document.addEventListener(
-    'DOMContentLoaded',
-    () => {
-
-        const selector =
-            document.getElementById(
-                'dashboard-dimension-select'
-            );
-
-
-        if (!selector) {
-            return;
-        }
-
-
-        selector.addEventListener(
-            'change',
-            () => {
-
-                const url =
-                    new URL(
-                        window.location.href
-                    );
-
-
-                url.searchParams.set(
-                    'dimension',
-                    selector.value
-                );
-
-
-                window.location.href =
-                    url.toString();
-
-            }
-        );
-
-    }
-);
-</script>
