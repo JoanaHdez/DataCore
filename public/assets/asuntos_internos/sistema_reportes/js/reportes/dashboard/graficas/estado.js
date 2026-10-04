@@ -245,6 +245,15 @@ function inicializarGraficaEstadoDashboard() {
 
                 plugins: {
 
+                    dashboardEtiquetasVisibles:
+                        window.DashboardEtiquetasGraficas
+                            ?.opciones(
+                                {
+                                    modo:
+                                        'cantidadPorcentaje',
+                                }
+                            ),
+
                     legend: {
 
                         display:

@@ -384,6 +384,17 @@ function inicializarGraficaEvolucionDashboard() {
 
                 plugins: {
 
+                    dashboardEtiquetasVisibles:
+                        window.DashboardEtiquetasGraficas
+                            ?.opciones(
+                                {
+                                    modo:
+                                        'cantidad',
+                                    offsetLinea:
+                                        14,
+                                }
+                            ),
+
                     legend: {
 
                         display:

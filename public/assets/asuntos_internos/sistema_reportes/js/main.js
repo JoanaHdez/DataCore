@@ -6,6 +6,7 @@
 import './reportes/sesion.js';
 import './login.js';
 import './reportes/ubicacion.js';
+import './reportes/dashboard/graficas/etiquetas.js';
 import './reportes/dashboard/graficas/sanciones.js';
 import './reportes/dashboard/graficas/areas.js';
 import './reportes/dashboard/graficas/zonas.js';
@@ -18,6 +19,7 @@ import './reportes/dashboard/graficas/sectores.js';
 import './reportes/dashboard/graficas/dimension.js';
 import './reportes/dashboard/graficas/cruce.js';
 import './reportes/dashboard/graficas/ranking.js';
+import './reportes/dashboard/utilidades/visualizaciones.js';
 
 
 import './reportes/dashboard/filtros.js';

@@ -53,6 +53,15 @@ function inicializarSelectoresCruce() {
     }
 
 
+    inicializarSelectorVisualCruce(
+        principal
+    );
+
+    inicializarSelectorVisualCruce(
+        secundaria
+    );
+
+
     /* =====================================================
        CAMBIO PRINCIPAL
     ===================================================== */
@@ -128,6 +137,625 @@ function inicializarSelectoresCruce() {
 /* =========================================================
    GRÁFICA
 ========================================================= */
+
+function inicializarSelectorVisualCruce(
+    select
+) {
+
+    const contenedor =
+        select.closest(
+            '.dashboard-cruce__selector'
+        );
+
+
+    const etiqueta =
+        contenedor?.querySelector(
+            'label'
+        );
+
+
+    if (
+        !contenedor
+        || contenedor.dataset.cruceSelectorCustom === '1'
+    ) {
+
+        return;
+    }
+
+
+    contenedor.dataset.cruceSelectorCustom =
+        '1';
+
+    contenedor.classList.add(
+        'dashboard-cruce__selector--customizado'
+    );
+
+
+    if (
+        etiqueta
+        && !etiqueta.id
+    ) {
+
+        etiqueta.id =
+            `${select.id}-label`;
+    }
+
+
+    const boton =
+        document.createElement(
+            'button'
+        );
+
+
+    boton.type =
+        'button';
+
+    boton.className =
+        'dashboard-cruce__selector-boton';
+
+    boton.setAttribute(
+        'aria-haspopup',
+        'listbox'
+    );
+
+    boton.setAttribute(
+        'aria-expanded',
+        'false'
+    );
+
+
+    if (
+        etiqueta?.id
+    ) {
+
+        boton.setAttribute(
+            'aria-labelledby',
+            etiqueta.id
+        );
+
+        boton.dataset.label =
+            etiqueta.textContent.trim();
+    }
+
+
+    const texto =
+        document.createElement(
+            'span'
+        );
+
+
+    texto.className =
+        'dashboard-cruce__selector-texto';
+
+
+    const flecha =
+        document.createElement(
+            'span'
+        );
+
+
+    flecha.className =
+        'dashboard-cruce__selector-flecha';
+
+    flecha.setAttribute(
+        'aria-hidden',
+        'true'
+    );
+
+
+    boton.append(
+        texto,
+        flecha
+    );
+
+
+    const lista =
+        document.createElement(
+            'div'
+        );
+
+
+    lista.className =
+        'dashboard-cruce__selector-menu';
+
+    lista.id =
+        `${select.id}-menu`;
+
+    lista.setAttribute(
+        'role',
+        'listbox'
+    );
+
+    boton.setAttribute(
+        'aria-controls',
+        lista.id
+    );
+
+    lista.hidden =
+        true;
+
+
+    Array.from(
+        select.options
+    ).forEach(
+        opcion => {
+
+            const item =
+                document.createElement(
+                    'button'
+                );
+
+
+            item.type =
+                'button';
+
+            item.className =
+                'dashboard-cruce__selector-opcion';
+
+            item.dataset.value =
+                opcion.value;
+
+            item.textContent =
+                opcion.textContent.trim();
+
+            item.setAttribute(
+                'role',
+                'option'
+            );
+
+            item.setAttribute(
+                'aria-selected',
+                opcion.selected
+                    ? 'true'
+                    : 'false'
+            );
+
+
+            item.addEventListener(
+                'click',
+                () => {
+
+                    seleccionarOpcionCruce(
+                        select,
+                        opcion.value
+                    );
+
+                }
+            );
+
+
+            lista.appendChild(
+                item
+            );
+
+        }
+    );
+
+
+    boton.addEventListener(
+        'click',
+        () => {
+
+            alternarSelectorCruce(
+                contenedor,
+                boton,
+                lista
+            );
+
+        }
+    );
+
+
+    boton.addEventListener(
+        'keydown',
+        evento => {
+
+            manejarTecladoBotonCruce(
+                evento,
+                contenedor,
+                boton,
+                lista
+            );
+
+        }
+    );
+
+
+    lista.addEventListener(
+        'keydown',
+        evento => {
+
+            manejarTecladoListaCruce(
+                evento,
+                select,
+                contenedor,
+                boton,
+                lista
+            );
+
+        }
+    );
+
+
+    etiqueta?.addEventListener(
+        'click',
+        evento => {
+
+            evento.preventDefault();
+
+            boton.focus();
+
+        }
+    );
+
+
+    document.addEventListener(
+        'click',
+        evento => {
+
+            if (
+                !contenedor.contains(
+                    evento.target
+                )
+            ) {
+
+                cerrarSelectorCruce(
+                    contenedor,
+                    boton,
+                    lista
+                );
+
+            }
+
+        }
+    );
+
+
+    contenedor.append(
+        boton,
+        lista
+    );
+
+
+    sincronizarSelectorVisualCruce(
+        select,
+        boton,
+        lista
+    );
+}
+
+
+function sincronizarSelectorVisualCruce(
+    select,
+    boton,
+    lista
+) {
+
+    const opcionSeleccionada =
+        select.options[
+            select.selectedIndex
+        ];
+
+
+    const texto =
+        boton.querySelector(
+            '.dashboard-cruce__selector-texto'
+        );
+
+
+    if (
+        texto
+    ) {
+
+        const textoActual =
+            opcionSeleccionada?.textContent
+                ?.trim()
+            || '';
+
+
+        texto.textContent =
+            textoActual;
+
+
+        boton.setAttribute(
+            'aria-label',
+            boton.dataset.label
+                ? `${boton.dataset.label}: ${textoActual}`
+                : textoActual
+        );
+    }
+
+
+    lista.querySelectorAll(
+        '.dashboard-cruce__selector-opcion'
+    ).forEach(
+        opcion => {
+
+            const seleccionada =
+                opcion.dataset.value === select.value;
+
+
+            opcion.setAttribute(
+                'aria-selected',
+                seleccionada
+                    ? 'true'
+                    : 'false'
+            );
+
+        }
+    );
+}
+
+
+function alternarSelectorCruce(
+    contenedor,
+    boton,
+    lista
+) {
+
+    const abierto =
+        boton.getAttribute(
+            'aria-expanded'
+        ) === 'true';
+
+
+    cerrarSelectoresCruce();
+
+
+    if (
+        abierto
+    ) {
+
+        return;
+    }
+
+
+    contenedor.classList.add(
+        'dashboard-cruce__selector--abierto'
+    );
+
+    boton.setAttribute(
+        'aria-expanded',
+        'true'
+    );
+
+    lista.hidden =
+        false;
+
+
+    const seleccionada =
+        lista.querySelector(
+            '[aria-selected="true"]'
+        );
+
+
+    (
+        seleccionada
+        || lista.querySelector(
+            '.dashboard-cruce__selector-opcion'
+        )
+    )?.focus();
+}
+
+
+function cerrarSelectorCruce(
+    contenedor,
+    boton,
+    lista
+) {
+
+    contenedor.classList.remove(
+        'dashboard-cruce__selector--abierto'
+    );
+
+    boton.setAttribute(
+        'aria-expanded',
+        'false'
+    );
+
+    lista.hidden =
+        true;
+}
+
+
+function cerrarSelectoresCruce() {
+
+    document.querySelectorAll(
+        '.dashboard-cruce__selector--customizado'
+    ).forEach(
+        contenedor => {
+
+            const boton =
+                contenedor.querySelector(
+                    '.dashboard-cruce__selector-boton'
+                );
+
+
+            const lista =
+                contenedor.querySelector(
+                    '.dashboard-cruce__selector-menu'
+                );
+
+
+            if (
+                boton
+                && lista
+            ) {
+
+                cerrarSelectorCruce(
+                    contenedor,
+                    boton,
+                    lista
+                );
+
+            }
+
+        }
+    );
+}
+
+
+function seleccionarOpcionCruce(
+    select,
+    valor
+) {
+
+    if (
+        select.value === valor
+    ) {
+
+        cerrarSelectoresCruce();
+
+        return;
+    }
+
+
+    select.value =
+        valor;
+
+    select.dispatchEvent(
+        new Event(
+            'change',
+            {
+                bubbles:
+                    true,
+            }
+        )
+    );
+}
+
+
+function manejarTecladoBotonCruce(
+    evento,
+    contenedor,
+    boton,
+    lista
+) {
+
+    if (
+        ![
+            'Enter',
+            ' ',
+            'ArrowDown',
+            'ArrowUp',
+        ].includes(
+            evento.key
+        )
+    ) {
+
+        return;
+    }
+
+
+    evento.preventDefault();
+
+    alternarSelectorCruce(
+        contenedor,
+        boton,
+        lista
+    );
+}
+
+
+function manejarTecladoListaCruce(
+    evento,
+    select,
+    contenedor,
+    boton,
+    lista
+) {
+
+    const opciones =
+        Array.from(
+            lista.querySelectorAll(
+                '.dashboard-cruce__selector-opcion'
+            )
+        );
+
+
+    const indiceActual =
+        opciones.indexOf(
+            document.activeElement
+        );
+
+
+    if (
+        evento.key === 'Escape'
+    ) {
+
+        evento.preventDefault();
+
+        cerrarSelectorCruce(
+            contenedor,
+            boton,
+            lista
+        );
+
+        boton.focus();
+
+        return;
+    }
+
+
+    if (
+        evento.key === 'Enter'
+        || evento.key === ' '
+    ) {
+
+        evento.preventDefault();
+
+        const opcion =
+            opciones[
+                indiceActual
+            ];
+
+
+        if (
+            opcion
+        ) {
+
+            seleccionarOpcionCruce(
+                select,
+                opcion.dataset.value
+            );
+
+        }
+
+        return;
+    }
+
+
+    if (
+        evento.key !== 'ArrowDown'
+        && evento.key !== 'ArrowUp'
+    ) {
+
+        return;
+    }
+
+
+    evento.preventDefault();
+
+    const direccion =
+        evento.key === 'ArrowDown'
+            ? 1
+            : -1;
+
+
+    const siguienteIndice =
+        (
+            indiceActual
+            + direccion
+            + opciones.length
+        )
+        % opciones.length;
+
+
+    opciones[
+        siguienteIndice
+    ]?.focus();
+}
+
 
 function inicializarGraficaCruce() {
 
@@ -638,6 +1266,15 @@ function inicializarGraficaCruce() {
 
 
                 plugins: {
+
+                    dashboardEtiquetasVisibles:
+                        window.DashboardEtiquetasGraficas
+                            ?.opciones(
+                                {
+                                    modo:
+                                        'cantidad',
+                                }
+                            ),
 
                     legend: {
 

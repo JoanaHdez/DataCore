@@ -561,6 +561,15 @@ function inicializarGraficaDimension() {
 
                 plugins: {
 
+                    dashboardEtiquetasVisibles:
+                        window.DashboardEtiquetasGraficas
+                            ?.opciones(
+                                {
+                                    modo:
+                                        'cantidadPorcentaje',
+                                }
+                            ),
+
                     legend: {
 
                         display:

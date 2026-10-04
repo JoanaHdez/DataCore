@@ -558,6 +558,15 @@ function inicializarGraficaRanking() {
 
                 plugins: {
 
+                    dashboardEtiquetasVisibles:
+                        window.DashboardEtiquetasGraficas
+                            ?.opciones(
+                                {
+                                    modo:
+                                        'cantidadPorcentaje',
+                                }
+                            ),
+
                     legend: {
 
                         display:
