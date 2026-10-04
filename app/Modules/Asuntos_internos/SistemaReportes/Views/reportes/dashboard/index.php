@@ -330,6 +330,15 @@ $esFelicitacion =
         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\modales\exportar'
     ) ?>
 
+    <!--
+        GENERADOR DE ANALISIS DASHBOARD
+        Modal tecnico preparado para IA + Word futuro. El acceso
+        visual se controla desde sections/encabezado.php.
+    -->
+    <?= $this->include(
+        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\modales\informe'
+    ) ?>
+
 
     <?= $this->include(
         'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\modales\historial'

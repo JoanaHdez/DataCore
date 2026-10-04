@@ -109,6 +109,16 @@ $routes->group(
                     '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::exportarDashboard'
                 );
 
+                /*
+                 * GENERADOR DE ANALISIS DASHBOARD
+                 * Endpoint tecnico para preparar payload sanitizado
+                 * y narrativa IA futura. No genera Word ni historial.
+                 */
+                $routes->post(
+                    'dashboard/informe/preparar',
+                    '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::prepararInformeDashboard'
+                );
+
                 $routes->get(
                     'dashboard/historial',
                     '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::historialDashboard'

@@ -8,59 +8,27 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class ReportesAuthFilter implements FilterInterface
 {
-    private const TIEMPO_INACTIVIDAD = 7200;
-
     private const VARIABLES_SESION_REPORTES = [
         'usuario_reportes',
         'reportes_autenticado',
         'reportes_dashboard_autorizado',
-        'reportes_ultima_actividad',
     ];
 
     public function before(
         RequestInterface $request,
         $arguments = null
     ) {
-        $ahora =
-            time();
-
-
         $sesionValida =
             session()->get('reportes_autenticado') === true
             && session()->has('usuario_reportes');
 
-
         if ($sesionValida) {
-
-            $ultimaActividad =
-                (int) (
-                    session()->get(
-                        'reportes_ultima_actividad'
-                    )
-                    ?? 0
-                );
-
-
-            if (
-                $ultimaActividad > 0
-                && ($ahora - $ultimaActividad) < self::TIEMPO_INACTIVIDAD
-            ) {
-
-                session()->set(
-                    'reportes_ultima_actividad',
-                    $ahora
-                );
-
-
-                return null;
-            }
+            return null;
         }
-
 
         session()->remove(
             self::VARIABLES_SESION_REPORTES
         );
-
 
         /* =====================================================
            PETICIONES QUE ESPERAN JSON
@@ -73,13 +41,11 @@ class ReportesAuthFilter implements FilterInterface
                 )
             );
 
-
         $esPeticionJson =
             str_contains(
                 $accept,
                 'application/json'
             );
-
 
         $esAjax =
             strtolower(
@@ -87,7 +53,6 @@ class ReportesAuthFilter implements FilterInterface
                     'X-Requested-With'
                 )
             ) === 'xmlhttprequest';
-
 
         if (
             $esPeticionJson
@@ -97,17 +62,18 @@ class ReportesAuthFilter implements FilterInterface
             return service('response')
                 ->setStatusCode(401)
                 ->setJSON([
-                    'success' => false,
-                    'session_expired' => true,
+                    'success' =>
+                        false,
+
                     'message' =>
-                        'Tu sesión ha expirado por inactividad.',
+                        'La sesion no es valida.',
+
                     'redirect' =>
                         base_url(
                             'asuntos-internos/reportes'
                         ),
                 ]);
         }
-
 
         /* =====================================================
            NAVEGACION NORMAL
@@ -118,13 +84,8 @@ class ReportesAuthFilter implements FilterInterface
                 base_url(
                     'asuntos-internos/reportes'
                 )
-            )
-            ->with(
-                'error',
-                'Tu sesión ha expirado por inactividad.'
             );
     }
-
 
     public function after(
         RequestInterface $request,

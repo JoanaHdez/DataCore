@@ -3,7 +3,6 @@
    Entrada principal de JavaScript
 ========================================================= */
 
-import './reportes/sesion.js';
 import './login.js';
 import './reportes/ubicacion.js';
 import './reportes/dashboard/graficas/etiquetas.js';
@@ -25,6 +24,8 @@ import './reportes/dashboard/utilidades/visualizaciones.js';
 import './reportes/dashboard/filtros.js';
 import './reportes/dashboard/personal_individual.js';
 import './reportes/dashboard/exportar.js';
+// GENERADOR DE ANALISIS DASHBOARD: modal tecnico IA/Word futuro.
+import './reportes/dashboard/informe.js';
 import './reportes/dashboard/autorizacion.js';
 import './reportes/dashboard/historial.js';
 

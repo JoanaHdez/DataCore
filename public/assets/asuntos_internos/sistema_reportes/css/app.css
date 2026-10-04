@@ -85,6 +85,8 @@
 
 @import url('./reportes/dashboard/dashboard.css');
 @import url('./reportes/dashboard/exportar.css');
+/* GENERADOR DE ANALISIS DASHBOARD: estilos del modal IA/Word futuro. */
+@import url('./reportes/dashboard/informe.css');
 
 /* =========================================================
    COMPONENTES REUTILIZABLES

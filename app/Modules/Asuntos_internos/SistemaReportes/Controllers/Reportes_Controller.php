@@ -7,6 +7,10 @@ use App\Modules\Asuntos_internos\SistemaReportes\Services\ListadoExcelService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\AuthService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\ReporteService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardInformeService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardInformeIaSanitizerService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardInformeIaService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardHallazgosService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\FolioService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\FelicitacionService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\HistorialService;
@@ -2818,6 +2822,16 @@ class Reportes_Controller extends BaseController
         bool $esFelicitacion
     ): array {
 
+        return (new DashboardHallazgosService())
+            ->construir(
+                $estadosQuejas,
+                $quejasPorSector,
+                $quejasPorZona,
+                $quejasPorTurno,
+                $dimensionDashboard,
+                $esFelicitacion
+            );
+
         $hallazgos = [];
 
 
@@ -5004,6 +5018,177 @@ class Reportes_Controller extends BaseController
 
                     'message' =>
                     'No fue posible generar el archivo de Excel.',
+                ]);
+        }
+    }
+
+    public function prepararInformeDashboard()
+    {
+        /*
+         * GENERADOR DE ANALISIS DASHBOARD
+         * -----------------------------------------------------
+         * Endpoint tecnico de preparacion. Devuelve payload
+         * sanitizado y, si existe API key autorizada, narrativas
+         * IA por seccion. No genera Word ni guarda historial.
+         *
+         * TODO IA/HISTORIAL:
+         * Antes de persistir analisis generados se debe aprobar
+         * una tabla que guarde solo filtros sanitizados, secciones,
+         * configuracion, narrativa y metadata no sensible.
+         */
+        if (
+            session()->get('reportes_autenticado') !== true
+            || !session()->has('usuario_reportes')
+        ) {
+
+            return $this->response
+                ->setStatusCode(401)
+                ->setJSON([
+                    'ok' => false,
+
+                    'message' =>
+                    'La sesión no es válida.',
+                ]);
+        }
+
+        $usuario =
+            session()->get(
+                'usuario_reportes'
+            );
+
+        $esAdmin =
+            ($usuario['rol'] ?? null)
+            === 'admin';
+
+        $dashboardAutorizado =
+            session()->get(
+                'reportes_dashboard_autorizado'
+            ) === true;
+
+        if (
+            !$esAdmin
+            && !$dashboardAutorizado
+        ) {
+
+            return $this->response
+                ->setStatusCode(403)
+                ->setJSON([
+                    'ok' => false,
+
+                    'message' =>
+                    'Se requiere autorización administrativa para preparar el informe.',
+                ]);
+        }
+
+        $payload =
+            $this->request->getJSON(
+                true
+            );
+
+        if (!is_array($payload)) {
+
+            $payload =
+                $this->request->getPost();
+        }
+
+        $filtros =
+            $payload['filtros']
+            ?? [];
+
+        $secciones =
+            $payload['secciones']
+            ?? [];
+
+        $configuracion =
+            $payload['configuracion']
+            ?? [];
+
+        if (!is_array($filtros)) {
+
+            $filtros = [];
+        }
+
+        if (!is_array($secciones)) {
+
+            $secciones = [];
+        }
+
+        if (!is_array($configuracion)) {
+
+            $configuracion = [];
+        }
+
+        try {
+
+            $servicio =
+                new DashboardInformeService();
+
+            $resultado =
+                $servicio->preparar(
+                    $filtros,
+                    $secciones,
+                    $configuracion
+                );
+
+            $sanitizador =
+                new DashboardInformeIaSanitizerService();
+
+            $payloadSeguro =
+                $sanitizador->construirPayloadSeguro(
+                    $resultado
+                );
+
+            if (!empty($payloadSeguro['secciones'])) {
+
+                $iaService =
+                    new DashboardInformeIaService();
+
+                $payloadSeguro['narrativas'] =
+                    $iaService->generarNarrativas(
+                        $payloadSeguro
+                    );
+            }
+
+            return $this->response
+                ->setJSON(
+                    $payloadSeguro
+                );
+
+        } catch (\InvalidArgumentException | \RuntimeException $e) {
+
+            return $this->response
+                ->setStatusCode(422)
+                ->setJSON([
+                    'ok' => false,
+
+                    'message' =>
+                    $e->getMessage(),
+                ]);
+
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'Error preparando informe de Dashboard: {mensaje} en {archivo}:{linea}',
+                [
+                    'mensaje' =>
+                    $e->getMessage(),
+
+                    'archivo' =>
+                    $e->getFile(),
+
+                    'linea' =>
+                    $e->getLine(),
+                ]
+            );
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'ok' => false,
+
+                    'message' =>
+                    'No fue posible preparar el informe del Dashboard.',
                 ]);
         }
     }

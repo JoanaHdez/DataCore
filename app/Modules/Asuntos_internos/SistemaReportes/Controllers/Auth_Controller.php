@@ -7,15 +7,6 @@ use App\Modules\Asuntos_internos\SistemaReportes\Services\AuthService;
 
 class Auth_Controller extends BaseController
 {
-    private const TIEMPO_INACTIVIDAD = 7200;
-
-    private const VARIABLES_SESION_REPORTES = [
-        'usuario_reportes',
-        'reportes_autenticado',
-        'reportes_dashboard_autorizado',
-        'reportes_ultima_actividad',
-    ];
-
     /**
      * =========================================================
      * LOGIN
@@ -32,35 +23,11 @@ class Auth_Controller extends BaseController
             && session()->has('usuario_reportes')
         ) {
 
-            $ahora =
-                time();
-
-            $ultimaActividad =
-                (int) (
-                    session()->get(
-                        'reportes_ultima_actividad'
-                    )
-                    ?? 0
-                );
-
-
-            if (
-                $ultimaActividad > 0
-                && ($ahora - $ultimaActividad) < self::TIEMPO_INACTIVIDAD
-            ) {
-
-                return redirect()->to(
-                    base_url(
-                        'asuntos-internos/reportes/nuevo'
-                    )
-                );
-            }
-
-
-            session()->remove(
-                self::VARIABLES_SESION_REPORTES
+            return redirect()->to(
+                base_url(
+                    'asuntos-internos/reportes/nuevo'
+                )
             );
-
         }
 
 
@@ -259,9 +226,6 @@ class Auth_Controller extends BaseController
 
             'reportes_autenticado' =>
                 true,
-
-            'reportes_ultima_actividad' =>
-                time(),
         ]);
 
 
@@ -295,7 +259,6 @@ class Auth_Controller extends BaseController
             'usuario_reportes',
             'reportes_autenticado',
             'reportes_dashboard_autorizado',
-            'reportes_ultima_actividad',
         ]);
 
 
