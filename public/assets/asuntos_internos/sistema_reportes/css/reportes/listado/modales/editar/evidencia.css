@@ -90,6 +90,10 @@
     border: 1.5px dashed #aac1d4;
     border-radius: 10px;
 
+    appearance: none;
+    font-family: inherit;
+    text-align: left;
+
     cursor: pointer;
 
     transition:

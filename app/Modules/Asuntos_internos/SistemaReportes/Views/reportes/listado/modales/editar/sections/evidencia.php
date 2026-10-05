@@ -33,7 +33,7 @@
                     class="editar-evidencia-carga__input" accept="image/jpeg,image/png,image/webp" multiple>
 
 
-                <label for="editar-evidencia-fotografica" class="editar-evidencia-carga__zona">
+                <button type="button" class="editar-evidencia-carga__zona" id="editar-evidencia-fotografica-trigger">
 
                     <div class="editar-evidencia-carga__icono">
                         ↑
@@ -56,7 +56,7 @@
 
                     </div>
 
-                </label>
+                </button>
 
             </div>
 

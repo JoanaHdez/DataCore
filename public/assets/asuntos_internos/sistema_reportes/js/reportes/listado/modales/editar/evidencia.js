@@ -12,6 +12,8 @@ let evidenciasExistentes = [];
 
 let evidenciasEliminadas = new Set();
 
+let scrollAntesSelectorEvidencia = null;
+
 
 /* =========================================================
    INICIALIZAR
@@ -40,10 +42,38 @@ export function inicializarEditarEvidencia(
         return;
     }
 
+    const botonSelector =
+        formulario.querySelector(
+            '#editar-evidencia-fotografica-trigger'
+        );
+
+
+    if (botonSelector) {
+
+        botonSelector.addEventListener(
+            'click',
+            (evento) => {
+
+                evento.preventDefault();
+
+                scrollAntesSelectorEvidencia =
+                    capturarScrollEvidencia(
+                        modal
+                    );
+
+
+                input.click();
+            }
+        );
+    }
+
 
     input.addEventListener(
         'change',
         () => {
+
+            input.blur();
+
 
             mostrarEvidenciaNueva(
                 modal,
@@ -547,6 +577,11 @@ export function mostrarEvidenciaNueva(
         return;
     }
 
+    const scrollAnterior =
+        obtenerScrollEvidenciaParaRestaurar(
+            modal
+        );
+
 
     const contenedor =
         modal.querySelector(
@@ -602,6 +637,9 @@ export function mostrarEvidenciaNueva(
             'important'
         );
 
+        restaurarScrollEvidencia(
+            scrollAnterior
+        );
 
         return;
     }
@@ -841,6 +879,101 @@ export function mostrarEvidenciaNueva(
 
             contenedor.appendChild(
                 item
+            );
+        }
+    );
+
+    restaurarScrollEvidencia(
+        scrollAnterior
+    );
+}
+
+
+/* =========================================================
+   CONSERVAR SCROLL DEL MODAL
+========================================================= */
+
+function capturarScrollEvidencia(
+    modal
+) {
+
+    const dialog =
+        modal.querySelector(
+            '.modal-reporte__dialog'
+        );
+
+
+    const body =
+        modal.querySelector(
+            '.modal-reporte__body--editar'
+        );
+
+
+    return {
+        dialog,
+        body,
+        dialogScroll:
+            dialog?.scrollTop
+            ?? 0,
+        bodyScroll:
+            body?.scrollTop
+            ?? 0,
+    };
+}
+
+
+function obtenerScrollEvidenciaParaRestaurar(
+    modal
+) {
+
+    const scroll =
+        scrollAntesSelectorEvidencia
+        || capturarScrollEvidencia(
+            modal
+        );
+
+
+    scrollAntesSelectorEvidencia =
+        null;
+
+
+    return scroll;
+}
+
+
+function restaurarScrollEvidencia(
+    estado
+) {
+
+    if (!estado) {
+        return;
+    }
+
+
+    const restaurar =
+        () => {
+
+            if (estado.dialog) {
+                estado.dialog.scrollTop =
+                    estado.dialogScroll;
+            }
+
+
+            if (estado.body) {
+                estado.body.scrollTop =
+                    estado.bodyScroll;
+            }
+        };
+
+
+    window.requestAnimationFrame(
+        () => {
+
+            restaurar();
+
+
+            window.requestAnimationFrame(
+                restaurar
             );
         }
     );
