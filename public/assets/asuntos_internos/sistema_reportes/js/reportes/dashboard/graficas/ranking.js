@@ -454,7 +454,7 @@ function inicializarGraficaRanking() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
                             },
 
@@ -512,7 +512,7 @@ function inicializarGraficaRanking() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
 
                                 weight:

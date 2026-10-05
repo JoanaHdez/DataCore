@@ -399,7 +399,7 @@ function inicializarGraficaSanciones() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
                                 weight:
                                     '500',
@@ -453,7 +453,7 @@ function inicializarGraficaSanciones() {
                             font: {
 
                                 size:
-                                    10,
+                                    13,
 
                                 weight:
                                     '700',
@@ -525,7 +525,7 @@ function inicializarGraficaSanciones() {
                         titleFont: {
 
                             size:
-                                10,
+                                13,
 
                             weight:
                                 '600',
@@ -535,7 +535,7 @@ function inicializarGraficaSanciones() {
                         bodyFont: {
 
                             size:
-                                11,
+                                14,
 
                             weight:
                                 '800',

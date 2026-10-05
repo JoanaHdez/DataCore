@@ -29,7 +29,7 @@
 
     color: #0b8f63;
 
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 800;
 
     letter-spacing: 0.08em;
@@ -43,7 +43,7 @@
 
     color: #173554;
 
-    font-size: 16px;
+    font-size: 19px;
     font-weight: 800;
 }
 
@@ -58,7 +58,7 @@
     border: 1px solid #dcebe4;
     border-radius: 999px;
 
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 700;
 }
 
@@ -195,7 +195,7 @@
 .dashboard-indicador__etiqueta {
     color: #63766f;
 
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 800;
 
     letter-spacing: 0.02em;
@@ -230,7 +230,7 @@
 .dashboard-indicador__descripcion {
     color: #8a9994;
 
-    font-size: 9px;
+    font-size: 12px;
 
     line-height: 1.4;
 }

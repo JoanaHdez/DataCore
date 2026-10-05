@@ -528,7 +528,7 @@ function inicializarGraficaSectoresDashboard() {
                         titleFont: {
 
                             size:
-                                10,
+                                13,
 
 
                             weight:
@@ -540,7 +540,7 @@ function inicializarGraficaSectoresDashboard() {
                         bodyFont: {
 
                             size:
-                                10,
+                                13,
 
 
                             weight:
@@ -647,7 +647,7 @@ function inicializarGraficaSectoresDashboard() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
 
                                 weight:
@@ -713,7 +713,7 @@ function inicializarGraficaSectoresDashboard() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
 
                                 weight:

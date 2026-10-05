@@ -480,7 +480,7 @@ function inicializarGraficaTurnos() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
 
                                 weight:
@@ -542,7 +542,7 @@ function inicializarGraficaTurnos() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
 
                                 weight:
@@ -625,7 +625,7 @@ function inicializarGraficaTurnos() {
                         titleFont: {
 
                             size:
-                                10,
+                                13,
 
 
                             weight:
@@ -637,7 +637,7 @@ function inicializarGraficaTurnos() {
                         bodyFont: {
 
                             size:
-                                10,
+                                13,
 
 
                             weight:

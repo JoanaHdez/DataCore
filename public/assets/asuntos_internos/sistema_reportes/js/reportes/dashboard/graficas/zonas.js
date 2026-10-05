@@ -468,7 +468,7 @@ function inicializarGraficaZonas() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
 
                                 weight:
@@ -538,7 +538,7 @@ function inicializarGraficaZonas() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
                             },
 
@@ -635,7 +635,7 @@ function inicializarGraficaZonas() {
                         titleFont: {
 
                             size:
-                                10,
+                                13,
 
 
                             weight:
@@ -647,7 +647,7 @@ function inicializarGraficaZonas() {
                         bodyFont: {
 
                             size:
-                                11,
+                                14,
 
 
                             weight:

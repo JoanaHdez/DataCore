@@ -448,7 +448,7 @@ function inicializarGraficaEvolucionDashboard() {
                         titleFont: {
 
                             size:
-                                10,
+                                13,
 
 
                             weight:
@@ -460,7 +460,7 @@ function inicializarGraficaEvolucionDashboard() {
                         bodyFont: {
 
                             size:
-                                10,
+                                13,
 
 
                             weight:
@@ -592,7 +592,7 @@ function inicializarGraficaEvolucionDashboard() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
 
                                 weight:
@@ -640,7 +640,7 @@ function inicializarGraficaEvolucionDashboard() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
 
                                 weight:

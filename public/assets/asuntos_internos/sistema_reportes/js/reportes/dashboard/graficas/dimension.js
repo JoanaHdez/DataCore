@@ -456,7 +456,7 @@ function inicializarGraficaDimension() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
                             },
 
@@ -514,7 +514,7 @@ function inicializarGraficaDimension() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
 
                                 weight:
@@ -623,7 +623,7 @@ function inicializarGraficaDimension() {
                         titleFont: {
 
                             size:
-                                10,
+                                13,
 
 
                             weight:
@@ -635,7 +635,7 @@ function inicializarGraficaDimension() {
                         bodyFont: {
 
                             size:
-                                10,
+                                13,
 
 
                             weight:

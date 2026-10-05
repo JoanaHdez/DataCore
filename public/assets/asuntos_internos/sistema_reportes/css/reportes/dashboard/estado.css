@@ -61,7 +61,7 @@
 
     color: #0b8f63;
 
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 800;
 
     letter-spacing: 0.09em;
@@ -75,7 +75,7 @@
 
     color: #173554;
 
-    font-size: 18px;
+    font-size: 21px;
     font-weight: 800;
 
     line-height: 1.25;
@@ -92,7 +92,7 @@
 
     color: #71827c;
 
-    font-size: 10px;
+    font-size: 13px;
 
     line-height: 1.5;
 }
@@ -135,7 +135,7 @@
 .dashboard-estado__resumen-etiqueta {
     color: #70817b;
 
-    font-size: 8px;
+    font-size: 11px;
     font-weight: 700;
 }
 
@@ -253,7 +253,7 @@
 .dashboard-estado__item-estado {
     color: #314942;
 
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 800;
 }
 
@@ -261,7 +261,7 @@
 .dashboard-estado__item-porcentaje {
     color: #7d8d87;
 
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 600;
 }
 
@@ -345,7 +345,7 @@
 
 
     .dashboard-estado__item-total {
-        font-size: 20px;
+        font-size: 23px;
     }
 
 }

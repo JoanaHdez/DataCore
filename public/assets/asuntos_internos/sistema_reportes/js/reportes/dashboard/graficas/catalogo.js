@@ -529,7 +529,7 @@ function inicializarGraficaCatalogo() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
                                 weight:
                                     '500',
@@ -583,7 +583,7 @@ function inicializarGraficaCatalogo() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
                                 weight:
                                     '700',
@@ -647,7 +647,7 @@ function inicializarGraficaCatalogo() {
                         titleFont: {
 
                             size:
-                                10,
+                                13,
 
                             weight:
                                 '700',
@@ -658,7 +658,7 @@ function inicializarGraficaCatalogo() {
                         bodyFont: {
 
                             size:
-                                10,
+                                13,
 
                             weight:
                                 '600',

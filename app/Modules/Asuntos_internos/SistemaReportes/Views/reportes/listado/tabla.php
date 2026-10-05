@@ -291,7 +291,7 @@
 
                         <!-- PDF DE QUEJA -->
 
-                        <a class="reportes-tabla__accion"
+                        <a class="reportes-tabla__accion reportes-tabla__accion--pdf"
                             href="<?= site_url('asuntos-internos/reportes/pdf-queja/' . $idReporte) ?>">
                             Descargar PDF
                         </a>

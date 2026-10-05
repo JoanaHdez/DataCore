@@ -132,7 +132,7 @@
     color:
         rgba(255, 255, 255, 0.70);
 
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 700;
 
     letter-spacing: 0.06em;
@@ -160,7 +160,7 @@
     color:
         rgba(255, 255, 255, 0.62);
 
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 600;
 }
 
@@ -277,7 +277,7 @@
 .dashboard-sanciones__sin-datos strong {
     color: #40574e;
 
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 800;
 }
 
@@ -289,7 +289,7 @@
 
     color: #84958e;
 
-    font-size: 9px;
+    font-size: 12px;
     line-height: 1.5;
 }
 

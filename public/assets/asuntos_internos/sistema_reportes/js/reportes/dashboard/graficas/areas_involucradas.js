@@ -416,7 +416,7 @@ function inicializarGraficaAreasInvolucradas() {
                         titleFont: {
 
                             size:
-                                10,
+                                13,
 
                             weight:
                                 '700',
@@ -427,7 +427,7 @@ function inicializarGraficaAreasInvolucradas() {
                         bodyFont: {
 
                             size:
-                                10,
+                                13,
 
                             weight:
                                 '700',
@@ -513,7 +513,7 @@ function inicializarGraficaAreasInvolucradas() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
                                 weight:
                                     '500',
@@ -569,7 +569,7 @@ function inicializarGraficaAreasInvolucradas() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
                                 weight:
                                     '700',

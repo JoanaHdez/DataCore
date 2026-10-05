@@ -856,6 +856,29 @@ function inicializarGraficaCruce() {
         tipo === 'felicitacion';
 
 
+    const principal =
+        String(
+            datos.principal
+            || ''
+        )
+            .trim()
+            .toLowerCase();
+
+
+    const secundaria =
+        String(
+            datos.secundaria
+            || ''
+        )
+            .trim()
+            .toLowerCase();
+
+
+    const esSectorTurno =
+        principal === 'sector'
+        && secundaria === 'turno';
+
+
     const singularRegistro =
         esFelicitacion
             ? 'felicitación'
@@ -886,7 +909,16 @@ function inicializarGraficaCruce() {
     ===================================================== */
 
     const alturaPorCategoria =
-        58;
+        esSectorTurno
+            ? Math.max(
+                140,
+                (
+                    series.length
+                    * 30
+                )
+                + 32
+            )
+            : 58;
 
 
     const alturaMinima =
@@ -1018,16 +1050,28 @@ function inicializarGraficaCruce() {
                         6,
 
 
+                    barThickness:
+                        esSectorTurno
+                            ? 20
+                            : undefined,
+
+
                     barPercentage:
-                        0.72,
+                        esSectorTurno
+                            ? 0.78
+                            : 0.72,
 
 
                     categoryPercentage:
-                        0.78,
+                        esSectorTurno
+                            ? 0.82
+                            : 0.78,
 
 
                     maxBarThickness:
-                        18,
+                        esSectorTurno
+                            ? 22
+                            : 18,
 
                 };
 
@@ -1158,7 +1202,7 @@ function inicializarGraficaCruce() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
                             },
 
@@ -1220,7 +1264,7 @@ function inicializarGraficaCruce() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
 
                                 weight:
@@ -1319,7 +1363,7 @@ function inicializarGraficaCruce() {
                             font: {
 
                                 size:
-                                    9,
+                                    12,
 
 
                                 weight:
@@ -1377,7 +1421,7 @@ function inicializarGraficaCruce() {
                         titleFont: {
 
                             size:
-                                10,
+                                13,
 
 
                             weight:
@@ -1389,7 +1433,7 @@ function inicializarGraficaCruce() {
                         bodyFont: {
 
                             size:
-                                10,
+                                13,
 
 
                             weight:

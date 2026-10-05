@@ -70,7 +70,7 @@
 .dashboard-catalogo__total-label {
     color: #698078;
 
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 700;
 
     letter-spacing: 0.07em;
@@ -95,7 +95,7 @@
 
     color: #8a9994;
 
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 600;
 }
 
@@ -223,7 +223,7 @@
 
     border-radius: 11px;
 
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 800;
 }
 
@@ -248,7 +248,7 @@
 
     color: #8a9994;
 
-    font-size: 8px;
+    font-size: 11px;
     font-weight: 700;
 
     letter-spacing: 0.04em;
@@ -262,7 +262,7 @@
 
     color: #354b43;
 
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 700;
 
     line-height: 1.35;
@@ -339,7 +339,7 @@
     .dashboard-catalogo__cantidad {
         grid-column: 2;
 
-        font-size: 18px;
+        font-size: 21px;
     }
 
 
@@ -407,7 +407,7 @@
     .dashboard-catalogo__cantidad {
         grid-column: auto;
 
-        font-size: 20px;
+        font-size: 23px;
     }
 
 

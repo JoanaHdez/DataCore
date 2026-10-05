@@ -101,7 +101,7 @@
 
     margin-bottom: 5px;
 
-    font-size: 0.72rem;
+    font-size: 0.9rem;
     font-weight: 800;
     letter-spacing: 0.1em;
 
@@ -130,7 +130,7 @@
         0
         0;
 
-    font-size: 0.88rem;
+    font-size: 1.04rem;
     line-height: 1.5;
 
     color: #64748b;
@@ -213,7 +213,7 @@
 
     color: #64748b;
 
-    font-size: 0.86rem;
+    font-size: 1.02rem;
     font-weight: 700;
 
     cursor: pointer;
@@ -234,7 +234,7 @@
 
     background: #eef2f7;
 
-    font-size: 0.72rem;
+    font-size: 0.9rem;
     line-height: 1.2;
 }
 
@@ -313,7 +313,7 @@
 
     color: #1e293b;
 
-    font-size: 0.88rem;
+    font-size: 1.04rem;
 
     transition:
         border-color 0.2s ease,
@@ -417,7 +417,7 @@
 
     margin-bottom: 3px;
 
-    font-size: 0.62rem;
+    font-size: 0.82rem;
     font-weight: 800;
     letter-spacing: 0.08em;
 
@@ -434,7 +434,7 @@
 
     color: #1e293b;
 
-    font-size: 0.96rem;
+    font-size: 1.08rem;
     font-weight: 800;
 
     text-overflow: ellipsis;
@@ -456,7 +456,7 @@
     background: #eef2f7;
     color: #64748b;
 
-    font-size: 0.64rem;
+    font-size: 0.84rem;
     font-weight: 800;
     letter-spacing: 0.035em;
 
@@ -556,7 +556,7 @@
 
     color: #94a3b8;
 
-    font-size: 0.63rem;
+    font-size: 0.83rem;
     font-weight: 800;
     letter-spacing: 0.055em;
 
@@ -569,7 +569,7 @@
 
     color: #334155;
 
-    font-size: 0.86rem;
+    font-size: 1.02rem;
     font-weight: 600;
     line-height: 1.5;
 }
@@ -622,7 +622,7 @@
 
     color: #475569;
 
-    font-size: 0.78rem;
+    font-size: 0.95rem;
     font-weight: 800;
 }
 
@@ -630,7 +630,7 @@
 .dashboard-historial__usuario-nombre {
     color: #334155;
 
-    font-size: 0.82rem;
+    font-size: 1rem;
     font-weight: 700;
     line-height: 1.35;
 }
@@ -643,7 +643,7 @@
 .dashboard-historial__fecha {
     color: #475569;
 
-    font-size: 0.82rem;
+    font-size: 1rem;
     font-weight: 600;
 }
 
@@ -678,12 +678,12 @@
 .dashboard-historial__estado strong {
     color: #334155;
 
-    font-size: 0.92rem;
+    font-size: 1.06rem;
 }
 
 
 .dashboard-historial__estado span {
-    font-size: 0.82rem;
+    font-size: 1rem;
 }
 
 
@@ -776,7 +776,7 @@
 
 
     .dashboard-historial__descripcion {
-        font-size: 0.8rem;
+        font-size: 0.96rem;
     }
 
 

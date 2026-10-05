@@ -61,7 +61,7 @@
 
     color: #0b8f63;
 
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 800;
 
     letter-spacing: 0.09em;
@@ -75,7 +75,7 @@
 
     color: #173554;
 
-    font-size: 18px;
+    font-size: 21px;
     font-weight: 800;
 
     line-height: 1.25;
@@ -92,7 +92,7 @@
 
     color: #71827c;
 
-    font-size: 10px;
+    font-size: 13px;
 
     line-height: 1.5;
 }
@@ -135,7 +135,7 @@
 .dashboard-sectores__resumen-etiqueta {
     color: #70817b;
 
-    font-size: 8px;
+    font-size: 11px;
     font-weight: 700;
 }
 
@@ -311,7 +311,7 @@
 
     color: #314942;
 
-    font-size: 9px;
+    font-size: 15px;
     font-weight: 800;
 
     line-height: 1.35;
@@ -325,8 +325,8 @@
 .dashboard-sectores__item-porcentaje {
     color: #7d8d87;
 
-    font-size: 8px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 700;
 }
 
 
@@ -335,7 +335,7 @@
 
     color: #173554;
 
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 800;
 
     line-height: 1;
@@ -427,12 +427,12 @@
 
 
     .dashboard-sectores__titulo {
-        font-size: 16px;
+        font-size: 19px;
     }
 
 
     .dashboard-sectores__descripcion {
-        font-size: 9px;
+        font-size: 12px;
     }
 
 
@@ -467,7 +467,7 @@
 
 
     .dashboard-sectores__item-total {
-        font-size: 17px;
+        font-size: 20px;
     }
 
 }

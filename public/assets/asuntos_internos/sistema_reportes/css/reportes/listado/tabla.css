@@ -256,6 +256,12 @@
     border-color: #9ecde8;
 }
 
+.reportes-tabla__accion--pdf,
+.reportes-tabla__accion--pdf:hover,
+.reportes-tabla__accion--pdf:focus {
+    text-decoration: none;
+}
+
 
 /* =========================================================
    ESTADO VACÍO

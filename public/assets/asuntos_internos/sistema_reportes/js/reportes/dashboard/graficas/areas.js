@@ -458,7 +458,7 @@ const datos = {
                                 font: {
 
                                     size:
-                                        8,
+                                        11,
 
                                     weight:
                                         '600',
@@ -502,7 +502,7 @@ const datos = {
                                 font: {
 
                                     size:
-                                        9,
+                                        12,
 
                                     weight:
                                         '500',
@@ -578,7 +578,7 @@ const datos = {
                                 font: {
 
                                     size:
-                                        9,
+                                        12,
 
                                     weight:
                                         '600',
@@ -632,7 +632,7 @@ const datos = {
                             titleFont: {
 
                                 size:
-                                    10,
+                                    13,
 
                                 weight:
                                     '700',
@@ -642,7 +642,7 @@ const datos = {
                             bodyFont: {
 
                                 size:
-                                    10,
+                                    13,
 
                                 weight:
                                     '600',

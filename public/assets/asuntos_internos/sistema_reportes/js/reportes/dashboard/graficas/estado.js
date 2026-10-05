@@ -307,7 +307,7 @@ function inicializarGraficaEstadoDashboard() {
                         titleFont: {
 
                             size:
-                                10,
+                                13,
 
 
                             weight:
@@ -319,7 +319,7 @@ function inicializarGraficaEstadoDashboard() {
                         bodyFont: {
 
                             size:
-                                10,
+                                13,
 
 
                             weight:

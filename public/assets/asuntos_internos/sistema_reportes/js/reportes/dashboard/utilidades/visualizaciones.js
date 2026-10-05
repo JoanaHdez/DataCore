@@ -104,6 +104,9 @@ const VISUALIZACIONES_DASHBOARD = [
             '.dashboard-cruce__selectores',
             '.dashboard-cruce__selector-menu',
         ],
+        expandir: [
+            '.dashboard-cruce__grafica-scroll',
+        ],
         contexto: textoCruceActivo,
     },
     {
@@ -502,6 +505,7 @@ function expandirContenedores(root, selectores, restauradores) {
                         maxHeight: elemento.style.maxHeight,
                         height: elemento.style.height,
                         overflow: elemento.style.overflow,
+                        scrollTop: elemento.scrollTop,
                     };
 
                     elemento.style.maxHeight =
@@ -524,6 +528,9 @@ function expandirContenedores(root, selectores, restauradores) {
 
                             elemento.style.overflow =
                                 originales.overflow;
+
+                            elemento.scrollTop =
+                                originales.scrollTop;
 
                         }
                     );

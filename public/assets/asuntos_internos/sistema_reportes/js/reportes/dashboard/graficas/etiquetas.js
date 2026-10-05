@@ -76,7 +76,7 @@ const pluginEtiquetasDashboard = {
 
         contexto.font =
             opciones.fuente
-            || '700 10px Inter, system-ui, sans-serif';
+            || '700 13px Inter, system-ui, sans-serif';
 
         contexto.textBaseline =
             'middle';
@@ -492,7 +492,7 @@ function dibujarEtiquetaBarraVertical(
 
     const altoLinea =
         opciones.altoLinea
-        ?? 11;
+        ?? 15;
 
 
     const altoTexto =
@@ -718,7 +718,7 @@ function dibujarEtiquetaDona(
 
     const altoLinea =
         opciones.altoLineaDona
-        ?? 11;
+        ?? 15;
 
 
     const angulo =
