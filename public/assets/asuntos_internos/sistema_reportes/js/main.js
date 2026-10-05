@@ -4,6 +4,7 @@
 ========================================================= */
 
 import './login.js';
+import './reportes/keepalive.js';
 import './reportes/ubicacion.js';
 import './reportes/dashboard/graficas/etiquetas.js';
 import './reportes/dashboard/graficas/sanciones.js';

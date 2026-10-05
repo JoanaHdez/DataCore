@@ -27,4 +27,12 @@ class Inicio_Controller extends BaseController
             'App\Modules\Asuntos_internos\SistemaReportes\Views\auth\login'
         );
     }
+
+    public function ping()
+    {
+        return $this->response
+            ->setJSON([
+                'success' => true,
+            ]);
+    }
 }

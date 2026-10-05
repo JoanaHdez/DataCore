@@ -130,6 +130,12 @@ $routes->group(
                 ================================================= */
 
                 $routes->get(
+                    'ping',
+                    '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Inicio_Controller::ping'
+                );
+
+
+                $routes->get(
                     'logout',
                     '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Auth_Controller::logout'
                 );
