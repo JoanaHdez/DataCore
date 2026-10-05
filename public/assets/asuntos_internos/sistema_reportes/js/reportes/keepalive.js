@@ -5,6 +5,8 @@
 const INTERVALO_KEEPALIVE_MS = 10 * 60 * 1000;
 const RUTA_KEEPALIVE = 'asuntos-internos/reportes/ping';
 
+let intervaloKeepaliveId = null;
+
 function obtenerUrlKeepalive() {
     const rutaActual =
         window.location.pathname;
@@ -32,8 +34,12 @@ function obtenerUrlKeepalive() {
 
 async function enviarKeepalive() {
     try {
+        const urlPing =
+            obtenerUrlKeepalive()
+                .toString();
+
         await fetch(
-            obtenerUrlKeepalive().toString(),
+            urlPing,
             {
                 method: 'GET',
                 headers: {
@@ -49,12 +55,38 @@ async function enviarKeepalive() {
     }
 }
 
-if (
-    typeof window !== 'undefined'
-    && document.querySelector('.report-header')
-) {
-    window.setInterval(
-        enviarKeepalive,
-        INTERVALO_KEEPALIVE_MS
-    );
+function inicializarKeepalive() {
+    if (
+        typeof window === 'undefined'
+        || !document.querySelector('.report-header')
+        || intervaloKeepaliveId !== null
+    ) {
+        return;
+    }
+
+    enviarKeepalive();
+
+    intervaloKeepaliveId =
+        window.setInterval(
+            enviarKeepalive,
+            INTERVALO_KEEPALIVE_MS
+        );
 }
+
+if (
+    document.readyState === 'loading'
+) {
+    document.addEventListener(
+        'DOMContentLoaded',
+        inicializarKeepalive,
+        {
+            once: true,
+        }
+    );
+} else {
+    inicializarKeepalive();
+}
+
+export {
+    inicializarKeepalive,
+};
