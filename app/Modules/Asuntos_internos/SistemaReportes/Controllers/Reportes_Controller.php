@@ -4975,15 +4975,47 @@ class Reportes_Controller extends BaseController
             DESCARGAR
             ===================================================== */
 
+            $nombre =
+                basename(
+                    $ruta
+                );
+
+            $contenido =
+                file_get_contents(
+                    $ruta
+                );
+
+            if (
+                $contenido === false
+                || $contenido === ''
+            ) {
+
+                throw new \RuntimeException(
+                    'No fue posible leer el archivo de Excel generado.'
+                );
+            }
+
+            if (
+                !unlink(
+                    $ruta
+                )
+            ) {
+
+                log_message(
+                    'warning',
+                    'No fue posible eliminar el archivo temporal de exportacion de Dashboard: {ruta}',
+                    [
+                        'ruta' =>
+                        $ruta,
+                    ]
+                );
+            }
+
             return $this->response
                 ->download(
-                    $ruta,
-                    null
-                )
-                ->setFileName(
-                    basename(
-                        $ruta
-                    )
+                    $nombre,
+                    $contenido,
+                    true
                 );
         } catch (\Throwable $e) {
 

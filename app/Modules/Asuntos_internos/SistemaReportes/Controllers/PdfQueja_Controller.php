@@ -35,14 +35,90 @@ class PdfQueja_Controller extends BaseController
                     $idReporte
                 );
 
+            $ruta =
+                $resultado['ruta']
+                ?? '';
+
+            $nombre =
+                $resultado['nombre']
+                ?? basename(
+                    (string) $ruta
+                );
+
+            $directorioPdf =
+                realpath(
+                    WRITEPATH
+                    . 'exports/pdf/'
+                );
+
+            $rutaReal =
+                realpath(
+                    (string) $ruta
+                );
+
+            $directorioPdf =
+                $directorioPdf !== false
+                    ? rtrim(
+                        $directorioPdf,
+                        DIRECTORY_SEPARATOR
+                    )
+                    . DIRECTORY_SEPARATOR
+                    : false;
+
+            if (
+                $ruta === ''
+                || $directorioPdf === false
+                || $rutaReal === false
+                || !str_starts_with(
+                    $rutaReal,
+                    $directorioPdf
+                )
+                || !is_file(
+                    $rutaReal
+                )
+            ) {
+
+                throw new \RuntimeException(
+                    'El archivo PDF no fue generado correctamente.'
+                );
+            }
+
+            $contenido =
+                file_get_contents(
+                    $rutaReal
+                );
+
+            if (
+                $contenido === false
+                || $contenido === ''
+            ) {
+
+                throw new \RuntimeException(
+                    'No fue posible leer el archivo PDF generado.'
+                );
+            }
+
+            if (
+                !unlink(
+                    $rutaReal
+                )
+            ) {
+
+                log_message(
+                    'warning',
+                    'No fue posible eliminar el archivo temporal PDF de queja: {ruta}',
+                    [
+                        'ruta' =>
+                            $rutaReal,
+                    ]
+                );
+            }
 
             return $this->response
                 ->download(
-                    $resultado['ruta'],
-                    null
-                )
-                ->setFileName(
-                    $resultado['nombre']
+                    $nombre,
+                    $contenido,
+                    true
                 );
 
 
