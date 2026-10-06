@@ -13,17 +13,15 @@ class Database extends Config
      * The directory that holds the Migrations and Seeds directories.
      */
     public string $filesPath =
-    APPPATH
+        APPPATH
         . 'Database'
         . DIRECTORY_SEPARATOR;
-
 
     /**
      * Lets you choose which connection group to use if no other is specified.
      */
     public string $defaultGroup =
-    'default';
-
+        'default';
 
     /**
      * The default database connection.
@@ -54,13 +52,12 @@ class Database extends Config
         'numberNative' => false,
         'foundRows'    => false,
 
-        'dateFormat'   => [
+        'dateFormat' => [
             'date'     => 'Y-m-d',
             'datetime' => 'Y-m-d H:i:s',
             'time'     => 'H:i:s',
         ],
     ];
-
 
     /**
      * DataCore.
@@ -80,7 +77,19 @@ class Database extends Config
      * - historial
      * - auditoría
      *
-     * Los valores reales se sobrescriben desde .env.
+     * IMPORTANTE:
+     *
+     * Esta conexión es independiente de "default".
+     *
+     * Los valores reales de:
+     *
+     * - hostname
+     * - database
+     * - username
+     * - password
+     * - port
+     *
+     * se sobrescriben desde .env mediante database.datacore.*
      *
      * @var array<string, mixed>
      */
@@ -105,13 +114,12 @@ class Database extends Config
         'numberNative' => false,
         'foundRows'    => false,
 
-        'dateFormat'   => [
+        'dateFormat' => [
             'date'     => 'Y-m-d',
             'datetime' => 'Y-m-d H:i:s',
             'time'     => 'H:i:s',
         ],
     ];
-
 
     /**
      * Plantilla General.
@@ -130,7 +138,8 @@ class Database extends Config
      * La contraseña/CURP se consulta únicamente para
      * autenticación y autorización. No se almacena en DataCore.
      *
-     * Los valores reales se sobrescriben desde .env.
+     * Esta conexión continúa utilizando el mismo servidor
+     * de la conexión default.
      *
      * @var array<string, mixed>
      */
@@ -155,13 +164,12 @@ class Database extends Config
         'numberNative' => false,
         'foundRows'    => false,
 
-        'dateFormat'   => [
+        'dateFormat' => [
             'date'     => 'Y-m-d',
             'datetime' => 'Y-m-d H:i:s',
             'time'     => 'H:i:s',
         ],
     ];
-
 
     /**
      * Parque Vehicular.
@@ -171,7 +179,8 @@ class Database extends Config
      *
      * puestasyremisiones.parque_vehicular
      *
-     * Los valores reales se sobrescriben desde .env.
+     * Esta conexión continúa utilizando el mismo servidor
+     * de la conexión default.
      *
      * @var array<string, mixed>
      */
@@ -196,13 +205,12 @@ class Database extends Config
         'numberNative' => false,
         'foundRows'    => false,
 
-        'dateFormat'   => [
+        'dateFormat' => [
             'date'     => 'Y-m-d',
             'datetime' => 'Y-m-d H:i:s',
             'time'     => 'H:i:s',
         ],
     ];
-
 
     /**
      * Base territorial de Prevención del Delito.
@@ -225,8 +233,9 @@ class Database extends Config
      * getDireccionData(longitud, latitud)
      *
      * IMPORTANTE:
+     *
      * Esta conexión utiliza un servidor distinto al de
-     * DataCore / Plantilla / Parque Vehicular.
+     * las demás conexiones y mantiene su configuración propia.
      *
      * @var array<string, mixed>
      */
@@ -275,7 +284,7 @@ class Database extends Config
             'time'     => 'H:i:s',
         ],
     ];
-    
+
     /**
      * This database connection is used when running PHPUnit database tests.
      *
@@ -307,7 +316,6 @@ class Database extends Config
         ],
     ];
 
-
     /* =========================================================
        CONSTRUCTOR
     ========================================================= */
@@ -316,22 +324,29 @@ class Database extends Config
     {
         parent::__construct();
 
-
         /*
          * =========================================================
          * CONEXIONES ADICIONALES
          * =========================================================
          *
-         * Las bases:
+         * DATACORE:
          *
-         * - datacore
-         * - plantilla_general
-         * - puestasyremisiones
+         * Ya NO se construye desde default.
          *
-         * se encuentran en el mismo servidor MySQL que la
+         * Su servidor, base, usuario, contraseña y puerto
+         * se obtienen de:
+         *
+         * database.datacore.*
+         *
+         * definido en .env.
+         *
+         *
+         * PLANTILLA GENERAL y PARQUE VEHICULAR:
+         *
+         * continúan en el mismo servidor MySQL que la
          * conexión default.
          *
-         * Por eso reutilizamos:
+         * Por eso reutilizan:
          *
          * - hostname
          * - username
@@ -339,35 +354,13 @@ class Database extends Config
          * - puerto
          * - driver
          *
-         * y únicamente cambiamos la base de datos.
+         * y únicamente cambian la base de datos.
          *
          *
-         * IMPORTANTE:
+         * TERRITORIO:
          *
-         * territorio NO se construye desde default porque
-         * prevencion_delito utiliza otro servidor y otro puerto.
+         * mantiene su conexión independiente.
          */
-
-
-        /* =====================================================
-           DATACORE
-        ===================================================== */
-
-        $this->datacore =
-            array_replace(
-                $this->default,
-                [
-                    'database' =>
-                    'datacore',
-
-                    'charset' =>
-                    'utf8mb4',
-
-                    'DBCollat' =>
-                    'utf8mb4_unicode_ci',
-                ]
-            );
-
 
         /* =====================================================
            PLANTILLA GENERAL
@@ -393,7 +386,6 @@ class Database extends Config
                 ]
             );
 
-
         /* =====================================================
            PARQUE VEHICULAR
         ===================================================== */
@@ -417,7 +409,6 @@ class Database extends Config
                 ]
             );
 
-
         /*
          * =====================================================
          * TERRITORIO
@@ -438,7 +429,6 @@ class Database extends Config
          * \Config\Database::connect('territorio')
          */
 
-
         /* =====================================================
            TESTS
         ===================================================== */
@@ -446,7 +436,6 @@ class Database extends Config
         if (
             ENVIRONMENT === 'testing'
         ) {
-
             $this->defaultGroup =
                 'tests';
         }

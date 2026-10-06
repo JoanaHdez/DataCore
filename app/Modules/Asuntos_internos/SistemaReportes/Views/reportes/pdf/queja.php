@@ -272,28 +272,249 @@ $marcaTipo = static function (
 ========================================================= */
 
 $narracion =
-    $valor(
-        $reporte,
-        'descripcion_hechos'
+    str_replace(
+        [
+            "\r\n",
+            "\r",
+        ],
+        "\n",
+        $valor(
+            $reporte,
+            'descripcion_hechos'
+        )
     );
 
 
-$narracionLarga =
-    mb_strlen(
+$lineasNarracionPrincipal = 18;
+$caracteresPorLineaNarrativa = 92;
+
+$estimarLineasNarrativa = static function (
+    string $texto,
+    int $caracteresPorLinea
+): int {
+    $lineas = 0;
+
+    foreach (
+        explode(
+            "\n",
+            $texto
+        )
+        as $parrafo
+    ) {
+        $parrafo =
+            trim(
+                $parrafo
+            );
+
+        if ($parrafo === '') {
+            $lineas++;
+            continue;
+        }
+
+        $longitudLinea = 0;
+        $lineasParrafo = 1;
+
+        foreach (
+            preg_split(
+                '/\s+/u',
+                $parrafo
+            )
+            as $palabra
+        ) {
+            if ($palabra === '') {
+                continue;
+            }
+
+            $longitudPalabra =
+                mb_strlen(
+                    $palabra,
+                    'UTF-8'
+                );
+
+            if ($longitudPalabra > $caracteresPorLinea) {
+                $lineasPalabra =
+                    (int) ceil(
+                        $longitudPalabra / $caracteresPorLinea
+                    );
+
+                $lineasParrafo +=
+                    max(
+                        0,
+                        $lineasPalabra - 1
+                    );
+
+                $longitudLinea =
+                    $longitudPalabra % $caracteresPorLinea;
+
+                continue;
+            }
+
+            if ($longitudLinea === 0) {
+                $longitudLinea =
+                    $longitudPalabra;
+                continue;
+            }
+
+            if (
+                $longitudLinea
+                + 1
+                + $longitudPalabra
+                <= $caracteresPorLinea
+            ) {
+                $longitudLinea +=
+                    1
+                    + $longitudPalabra;
+                continue;
+            }
+
+            $lineasParrafo++;
+            $longitudLinea =
+                $longitudPalabra;
+        }
+
+        $lineas +=
+            $lineasParrafo;
+    }
+
+    return max(
+        1,
+        $lineas
+    );
+};
+
+$calcularCorteNarrativa = static function (
+    string $texto,
+    int $lineasMaximas,
+    int $caracteresPorLinea
+) use (
+    $estimarLineasNarrativa
+): int {
+    $longitud =
+        mb_strlen(
+            $texto,
+            'UTF-8'
+        );
+
+    if (
+        $estimarLineasNarrativa(
+            $texto,
+            $caracteresPorLinea
+        ) <= $lineasMaximas
+    ) {
+        return $longitud;
+    }
+
+    $inicio = 0;
+    $fin = $longitud;
+    $mejorCorte = 0;
+
+    while ($inicio <= $fin) {
+        $medio =
+            (int) floor(
+                (
+                    $inicio
+                    + $fin
+                ) / 2
+            );
+
+        $fragmento =
+            mb_substr(
+                $texto,
+                0,
+                $medio,
+                'UTF-8'
+            );
+
+        if (
+            $estimarLineasNarrativa(
+                $fragmento,
+                $caracteresPorLinea
+            ) <= $lineasMaximas
+        ) {
+            $mejorCorte = $medio;
+            $inicio = $medio + 1;
+            continue;
+        }
+
+        $fin = $medio - 1;
+    }
+
+    $fragmento =
+        mb_substr(
+            $texto,
+            0,
+            $mejorCorte,
+            'UTF-8'
+        );
+
+    foreach (
+        [
+            "\n\n",
+            "\n",
+            '. ',
+            '; ',
+            ', ',
+            ' ',
+        ]
+        as $separador
+    ) {
+        $posicion =
+            mb_strrpos(
+                $fragmento,
+                $separador,
+                0,
+                'UTF-8'
+            );
+
+        if (
+            $posicion !== false
+        ) {
+            return $posicion
+                + mb_strlen(
+                    $separador,
+                    'UTF-8'
+                );
+        }
+    }
+
+    return $mejorCorte;
+};
+
+$corteNarracion =
+    $calcularCorteNarrativa(
         $narracion,
-        'UTF-8'
-    ) > 1200;
+        $lineasNarracionPrincipal,
+        $caracteresPorLineaNarrativa
+    );
+
+$narracionPrincipalBase =
+    rtrim(
+        mb_substr(
+            $narracion,
+            0,
+            $corteNarracion,
+            'UTF-8'
+        )
+    );
+
+$narracionRestante =
+    ltrim(
+        mb_substr(
+            $narracion,
+            $corteNarracion,
+            null,
+            'UTF-8'
+        )
+    );
+
+$narracionLarga =
+    $narracionRestante !== '';
 
 
 $narracionPrincipal =
     $narracionLarga
-        ? mb_substr(
-            $narracion,
-            0,
-            1200,
-            'UTF-8'
-        )
-            . '... (continúa en anexo de narrativa)'
+        ? $narracionPrincipalBase
+            . "\n\n... (continúa en anexo de narrativa)"
         : $narracion;
 
 
@@ -1520,15 +1741,11 @@ if (
     </h1>
 
 
-    <div class="narrative">
-
-        <?= nl2br(
-                $linea(
-                    $narracion
-                )
-            ) ?>
-
-    </div>
+    <div class="narrative"><?= nl2br(
+        $linea(
+            $narracionRestante
+        )
+    ) ?></div>
 
 
     <div class="signature">
