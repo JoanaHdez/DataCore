@@ -1414,7 +1414,7 @@ if (
     </div>
 
 
-    <div class="narrative">
+    <div class="narrative narrative--principal">
         <?= nl2br(
             $linea(
                 $narracionPrincipal
