@@ -285,7 +285,7 @@ $narracion =
     );
 
 
-$lineasNarracionPrincipal = 18;
+$lineasNarracionPrincipal = 10;
 $caracteresPorLineaNarrativa = 92;
 
 $estimarLineasNarrativa = static function (
