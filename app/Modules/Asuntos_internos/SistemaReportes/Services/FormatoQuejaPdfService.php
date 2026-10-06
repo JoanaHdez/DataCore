@@ -290,6 +290,12 @@ class FormatoQuejaPdfService
            DIRECCIÓN PARA NOTIFICACIÓN
         ===================================================== */
 
+        $atendioQueja =
+            $this->obtenerAtendioQueja(
+                $reporte
+            );
+
+
         $direccionNotificacion =
             $db
             ->table(
@@ -433,6 +439,9 @@ class FormatoQuejaPdfService
             'tipo_folio' =>
                 $tipoFolio,
 
+            'atendio_queja' =>
+                $atendioQueja,
+
             'direccion_notificacion' =>
                 $direccionNotificacion,
 
@@ -445,6 +454,122 @@ class FormatoQuejaPdfService
             'evidencias' =>
                 $evidencias,
         ];
+    }
+
+
+    /* =========================================================
+       OBTENER USUARIO QUE REGISTRÓ LA QUEJA
+    ========================================================= */
+
+    private function obtenerAtendioQueja(
+        array $reporte
+    ): string {
+
+        $idUsuario =
+            (int) (
+                $reporte['created_by']
+                ?? 0
+            );
+
+
+        if (
+            $idUsuario <= 0
+        ) {
+
+            return '';
+        }
+
+
+        $dbDataCore =
+            \Config\Database::connect(
+                'datacore'
+            );
+
+
+        $usuario =
+            $dbDataCore
+            ->table(
+                'dc_usuarios'
+            )
+            ->select([
+                'plantilla_id',
+            ])
+            ->where(
+                'id_usuario',
+                $idUsuario
+            )
+            ->get()
+            ->getRowArray()
+            ?? [];
+
+
+        $plantillaId =
+            (int) (
+                $usuario['plantilla_id']
+                ?? 0
+            );
+
+
+        if (
+            $plantillaId <= 0
+        ) {
+
+            return '';
+        }
+
+
+        $dbPlantilla =
+            \Config\Database::connect(
+                'plantilla'
+            );
+
+
+        $persona =
+            $dbPlantilla
+            ->table(
+                'plantilla'
+            )
+            ->select([
+                'NOMBRE_COMPLETO',
+                'AREA',
+            ])
+            ->where(
+                'ID',
+                $plantillaId
+            )
+            ->get()
+            ->getRowArray()
+            ?? [];
+
+
+        $nombre =
+            $this->texto(
+                $persona['NOMBRE_COMPLETO']
+                ?? ''
+            );
+
+
+        $area =
+            $this->texto(
+                $persona['AREA']
+                ?? ''
+            );
+
+
+        if (
+            $area !== ''
+            && $nombre !== ''
+        ) {
+
+            return $area
+                . ' - '
+                . $nombre;
+        }
+
+
+        return $nombre !== ''
+            ? $nombre
+            : $area;
     }
 
 

@@ -36,6 +36,15 @@ $tipoFolio =
     );
 
 
+$atendioQueja =
+    trim(
+        (string) (
+            $datos['atendio_queja']
+            ?? ''
+        )
+    );
+
+
 /* =========================================================
    VALOR SEGURO
 ========================================================= */
@@ -1566,7 +1575,7 @@ if (
                 Atendió su queja (unidad y nombre):
             </td>
 
-            <td class="line"></td>
+            <td class="line"><?= $linea($atendioQueja) ?></td>
 
         </tr>
 
