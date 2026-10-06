@@ -856,29 +856,6 @@ function inicializarGraficaCruce() {
         tipo === 'felicitacion';
 
 
-    const principal =
-        String(
-            datos.principal
-            || ''
-        )
-            .trim()
-            .toLowerCase();
-
-
-    const secundaria =
-        String(
-            datos.secundaria
-            || ''
-        )
-            .trim()
-            .toLowerCase();
-
-
-    const esSectorTurno =
-        principal === 'sector'
-        && secundaria === 'turno';
-
-
     const singularRegistro =
         esFelicitacion
             ? 'felicitación'
@@ -909,16 +886,14 @@ function inicializarGraficaCruce() {
     ===================================================== */
 
     const alturaPorCategoria =
-        esSectorTurno
-            ? Math.max(
-                140,
-                (
-                    series.length
-                    * 30
-                )
-                + 32
+        Math.max(
+            140,
+            (
+                series.length
+                * 30
             )
-            : 58;
+            + 32
+        );
 
 
     const alturaMinima =
@@ -1051,27 +1026,19 @@ function inicializarGraficaCruce() {
 
 
                     barThickness:
-                        esSectorTurno
-                            ? 20
-                            : undefined,
+                        20,
 
 
                     barPercentage:
-                        esSectorTurno
-                            ? 0.78
-                            : 0.72,
+                        0.78,
 
 
                     categoryPercentage:
-                        esSectorTurno
-                            ? 0.82
-                            : 0.78,
+                        0.82,
 
 
                     maxBarThickness:
-                        esSectorTurno
-                            ? 22
-                            : 18,
+                        22,
 
                 };
 
