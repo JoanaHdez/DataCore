@@ -168,6 +168,11 @@
 }
 
 
+.detalle-reporte-campo--full {
+    grid-column: 1 / -1;
+}
+
+
 .detalle-reporte-campo span {
     display: block;
 
@@ -184,10 +189,18 @@
 
 
 .detalle-reporte-campo strong {
+    display: block;
+
     color: #203d59;
 
     font-size: 12px;
     font-weight: 700;
+}
+
+
+#detalle-descripcion {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
 }
 
 
