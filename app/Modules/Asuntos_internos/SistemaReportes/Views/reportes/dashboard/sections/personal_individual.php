@@ -398,15 +398,20 @@ $tituloUltimos =
 
             <div class="dashboard-personal-individual__foto">
 
-                <?php if ($fotoPersona !== ''): ?>
-
-                <img src="<?= esc($fotoPersona) ?>" alt="" loading="lazy">
-
-                <?php else: ?>
-
                 <span>
                     <?= esc($inicialPersona) ?>
                 </span>
+
+                <?php if ($fotoPersona !== ''): ?>
+
+                <img
+                    src="<?= esc($fotoPersona) ?>"
+                    alt=""
+                    loading="lazy"
+                    style="display: none;"
+                    onload="this.previousElementSibling.style.display='none'; this.style.display='block';"
+                    onerror="this.style.display='none'; this.removeAttribute('src'); this.previousElementSibling.style.display='flex';"
+                >
 
                 <?php endif; ?>
 

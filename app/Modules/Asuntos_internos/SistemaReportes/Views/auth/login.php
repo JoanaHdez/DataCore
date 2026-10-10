@@ -20,11 +20,11 @@ Acceso | Sistema de Reportes
                 <div class="login__heading">
 
                     <span class="login__eyebrow">
-                        Asuntos Internos
+                        Asuntos Internos 
                     </span>
 
                     <h1>
-                        Iniciar sesión
+                        Iniciar sesión 
                     </h1>
 
                     <p>

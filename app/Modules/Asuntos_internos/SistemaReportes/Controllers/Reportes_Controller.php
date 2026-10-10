@@ -2223,11 +2223,7 @@ class Reportes_Controller extends BaseController
                     if ($perscod !== '') {
 
                         $foto =
-                            'http://10.8.6.2:8083/dgsc/images/fotos/'
-                            . rawurlencode(
-                                $perscod
-                            )
-                            . '/F.F.R.E.jpg';
+                            (new \App\Modules\Asuntos_internos\SistemaReportes\Services\FotoPersonalService())->obtenerUrl($perscod);
                     }
 
 
@@ -2352,9 +2348,7 @@ class Reportes_Controller extends BaseController
                 if ($perscod !== '') {
 
                     $foto =
-                        'http://10.8.6.2:8083/dgsc/images/fotos/'
-                        . rawurlencode($perscod)
-                        . '/F.F.R.E.jpg';
+                        (new \App\Modules\Asuntos_internos\SistemaReportes\Services\FotoPersonalService())->obtenerUrl($perscod);
                 }
 
 
@@ -5863,9 +5857,7 @@ class Reportes_Controller extends BaseController
                 ) {
 
                     $foto =
-                        'http://10.8.6.2:8083/dgsc/images/fotos/'
-                        . rawurlencode($perscod)
-                        . '/F.F.R.E.jpg';
+                        (new \App\Modules\Asuntos_internos\SistemaReportes\Services\FotoPersonalService())->obtenerUrl($perscod);
                 }
 
 
@@ -6308,11 +6300,7 @@ class Reportes_Controller extends BaseController
                 ) {
 
                     $foto =
-                        'http://10.8.6.2:8083/dgsc/images/fotos/'
-                        . rawurlencode(
-                            $perscod
-                        )
-                        . '/F.F.R.E.jpg';
+                        (new \App\Modules\Asuntos_internos\SistemaReportes\Services\FotoPersonalService())->obtenerUrl($perscod);
                 }
 
 

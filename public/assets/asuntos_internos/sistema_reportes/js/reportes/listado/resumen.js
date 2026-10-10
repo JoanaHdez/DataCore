@@ -25,6 +25,12 @@ function inicializarResumenReportes() {
         );
 
 
+    const pendientes =
+        document.querySelector(
+            '#resumen-pendientes'
+        );
+
+
     const enProceso =
         document.querySelector(
             '#resumen-en-proceso'
@@ -45,6 +51,7 @@ function inicializarResumenReportes() {
 
     if (
         !total
+        || !pendientes
         || !enProceso
         || !finalizados
         || !conArresto
@@ -94,6 +101,10 @@ function inicializarResumenReportes() {
         filas
     ) {
 
+        let cantidadPendientes =
+            0;
+
+
         let cantidadProceso =
             0;
 
@@ -130,6 +141,15 @@ function inicializarResumenReportes() {
                     normalizarEstado(
                         celdas[5].textContent
                     );
+
+
+                if (
+                    resolucion === 'pendiente'
+                ) {
+
+                    cantidadPendientes++;
+
+                }
 
 
                 if (
@@ -184,6 +204,12 @@ function inicializarResumenReportes() {
         total.textContent =
             String(
                 filas.length
+            );
+
+
+        pendientes.textContent =
+            String(
+                cantidadPendientes
             );
 
 

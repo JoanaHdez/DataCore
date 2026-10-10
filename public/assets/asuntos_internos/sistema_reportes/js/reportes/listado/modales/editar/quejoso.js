@@ -14,6 +14,233 @@ import {
    INICIALIZAR
 ========================================================= */
 
+function ajustarAlturaCatalogoCanalizacionEditar(
+    resultados
+) {
+
+    if (!resultados) {
+        return;
+    }
+
+
+    const opciones =
+        Array.from(
+            resultados.querySelectorAll(
+                '.canalizacion-resultados__item'
+            )
+        )
+        .filter(
+            (opcion) => !opcion.hidden
+        );
+
+
+    if (
+        opciones.length <= 4
+    ) {
+
+        resultados.style.maxHeight =
+            '';
+
+        resultados.classList.remove(
+            'canalizacion-resultados--scroll'
+        );
+
+        return;
+    }
+
+
+    const alturaPrimerasOpciones =
+        opciones
+            .slice(
+                0,
+                4
+            )
+            .reduce(
+                (total, opcion) => total
+                    + opcion.getBoundingClientRect().height,
+                0
+            );
+
+
+    resultados.style.maxHeight =
+        `${Math.ceil(alturaPrimerasOpciones + 2)}px`;
+
+
+    resultados.classList.add(
+        'canalizacion-resultados--scroll'
+    );
+}
+
+
+function seleccionarTextoCanalizacionEditar(
+    elemento
+) {
+
+    if (!elemento) {
+        return;
+    }
+
+
+    const seleccion =
+        window.getSelection();
+
+
+    if (!seleccion) {
+        return;
+    }
+
+
+    const rango =
+        document.createRange();
+
+
+    rango.selectNodeContents(
+        elemento
+    );
+
+
+    seleccion.removeAllRanges();
+
+
+    seleccion.addRange(
+        rango
+    );
+}
+
+
+function obtenerPosicionCursorCanalizacionEditar(
+    elemento
+) {
+
+    const seleccion =
+        window.getSelection();
+
+
+    if (
+        !seleccion
+        || seleccion.rangeCount === 0
+    ) {
+        return 0;
+    }
+
+
+    const rango =
+        seleccion.getRangeAt(
+            0
+        );
+
+
+    const previo =
+        rango.cloneRange();
+
+
+    previo.selectNodeContents(
+        elemento
+    );
+
+
+    previo.setEnd(
+        rango.endContainer,
+        rango.endOffset
+    );
+
+
+    return previo.toString().length;
+}
+
+
+function restaurarCursorCanalizacionEditar(
+    elemento,
+    posicion
+) {
+
+    const texto =
+        elemento.firstChild;
+
+
+    if (!texto) {
+        return;
+    }
+
+
+    const seleccion =
+        window.getSelection();
+
+
+    if (!seleccion) {
+        return;
+    }
+
+
+    const rango =
+        document.createRange();
+
+
+    rango.setStart(
+        texto,
+        Math.min(
+            posicion,
+            texto.textContent.length
+        )
+    );
+
+
+    rango.collapse(
+        true
+    );
+
+
+    seleccion.removeAllRanges();
+
+
+    seleccion.addRange(
+        rango
+    );
+}
+
+
+function convertirBusquedaCanalizacionEditarAMayusculas(
+    elemento
+) {
+
+    const texto =
+        elemento.textContent
+        || '';
+
+
+    const mayusculas =
+        texto.toLocaleUpperCase(
+            'es-MX'
+        );
+
+
+    if (
+        texto === mayusculas
+    ) {
+        return mayusculas;
+    }
+
+
+    const posicion =
+        obtenerPosicionCursorCanalizacionEditar(
+            elemento
+        );
+
+
+    elemento.textContent =
+        mayusculas;
+
+
+    restaurarCursorCanalizacionEditar(
+        elemento,
+        posicion
+    );
+
+
+    return mayusculas;
+}
+
+
 export function inicializarEditarQuejoso(
     modal
 ) {
@@ -126,34 +353,289 @@ export function inicializarEditarQuejoso(
         );
 
 
+    const textoCanalizacion =
+        modal.querySelector(
+            '#editar-canalizacion-select-texto'
+        );
+
+
+    const inputCanalizacion =
+        modal.querySelector(
+            '#editar-canalizacion'
+        );
+
+
+    let busquedaCanalizacionActiva =
+        false;
+
+
     if (
         botonCanalizacion
         && resultadosCanalizacion
+        && textoCanalizacion
+        && inputCanalizacion
     ) {
+
+        const opcionesCanalizacion =
+            Array.from(
+                resultadosCanalizacion.querySelectorAll(
+                    '[data-editar-canalizacion-opcion]'
+                )
+            );
+
+
+        const mensajeSinCoincidencias =
+            document.createElement(
+                'div'
+            );
+
+
+        mensajeSinCoincidencias.className =
+            'canalizacion-resultados__vacio';
+
+
+        mensajeSinCoincidencias.textContent =
+            'Sin coincidencias';
+
+
+        mensajeSinCoincidencias.hidden =
+            true;
+
+
+        resultadosCanalizacion.appendChild(
+            mensajeSinCoincidencias
+        );
+
+
+        const obtenerTextoSeleccionado = () => {
+
+            const valor =
+                String(
+                    inputCanalizacion.value
+                    || ''
+                ).trim();
+
+
+            return valor !== ''
+                ? valor
+                : 'Sin canalización';
+        };
+
+
+        const filtrarCanalizaciones = (
+            busqueda
+        ) => {
+
+            const termino =
+                normalizarTextoCanalizacion(
+                    busqueda
+                );
+
+
+            let totalVisibles =
+                0;
+
+
+            opcionesCanalizacion.forEach(
+                (opcion) => {
+
+                    const nombre =
+                        opcion.dataset.canalizacionNombre
+                        || opcion.textContent
+                        || '';
+
+
+                    const coincide =
+                        termino === ''
+                        || normalizarTextoCanalizacion(
+                            nombre
+                        ).includes(
+                            termino
+                        );
+
+
+                    opcion.hidden =
+                        !coincide;
+
+
+                    if (coincide) {
+                        totalVisibles += 1;
+                    }
+                }
+            );
+
+
+            mensajeSinCoincidencias.hidden =
+                totalVisibles > 0;
+
+
+            ajustarAlturaCatalogoCanalizacionEditar(
+                resultadosCanalizacion
+            );
+        };
+
+
+        const abrirCanalizacion = (
+            busqueda = ''
+        ) => {
+
+            resultadosCanalizacion.hidden =
+                false;
+
+
+            botonCanalizacion.classList.add(
+                'canalizacion-select--activo'
+            );
+
+
+            botonCanalizacion.setAttribute(
+                'aria-expanded',
+                'true'
+            );
+
+
+            filtrarCanalizaciones(
+                busqueda
+            );
+        };
+
+
+        const cerrarCanalizacion = (
+            restaurarTexto = true
+        ) => {
+
+            resultadosCanalizacion.hidden =
+                true;
+
+
+            botonCanalizacion.classList.remove(
+                'canalizacion-select--activo'
+            );
+
+
+            botonCanalizacion.setAttribute(
+                'aria-expanded',
+                'false'
+            );
+
+
+            if (restaurarTexto) {
+
+                textoCanalizacion.textContent =
+                    obtenerTextoSeleccionado();
+
+
+                busquedaCanalizacionActiva =
+                    false;
+
+
+                filtrarCanalizaciones(
+                    ''
+                );
+            }
+        };
 
         botonCanalizacion.addEventListener(
             'click',
-            () => {
+            (evento) => {
+
+                if (
+                    evento.target === textoCanalizacion
+                ) {
+
+                    abrirCanalizacion();
+
+                    requestAnimationFrame(
+                        () => seleccionarTextoCanalizacionEditar(
+                            textoCanalizacion
+                        )
+                    );
+
+                    return;
+                }
 
                 const estaAbierto =
                     !resultadosCanalizacion.hidden;
 
 
-                resultadosCanalizacion.hidden =
-                    estaAbierto;
+                if (estaAbierto) {
+
+                    cerrarCanalizacion(
+                        true
+                    );
+
+                } else {
+
+                    abrirCanalizacion();
+                }
+            }
+        );
 
 
-                botonCanalizacion.classList.toggle(
-                    'canalizacion-select--activo',
-                    !estaAbierto
+        textoCanalizacion.addEventListener(
+            'focus',
+            () => {
+
+                abrirCanalizacion();
+
+
+                requestAnimationFrame(
+                    () => seleccionarTextoCanalizacionEditar(
+                        textoCanalizacion
+                    )
+                );
+            }
+        );
+
+
+        textoCanalizacion.addEventListener(
+            'keydown',
+            (evento) => {
+
+                if (
+                    evento.key === 'Enter'
+                ) {
+
+                    evento.preventDefault();
+                }
+            }
+        );
+
+
+        textoCanalizacion.addEventListener(
+            'click',
+            () => {
+
+                requestAnimationFrame(
+                    () => seleccionarTextoCanalizacionEditar(
+                        textoCanalizacion
+                    )
+                );
+            }
+        );
+
+
+        textoCanalizacion.addEventListener(
+            'input',
+            () => {
+
+                const busqueda =
+                    convertirBusquedaCanalizacionEditarAMayusculas(
+                        textoCanalizacion
+                    );
+
+
+                busquedaCanalizacionActiva =
+                    true;
+
+
+                abrirCanalizacion(
+                    busqueda
                 );
 
 
-                botonCanalizacion.setAttribute(
-                    'aria-expanded',
-                    !estaAbierto
-                        ? 'true'
-                        : 'false'
+                filtrarCanalizaciones(
+                    busqueda
                 );
             }
         );
@@ -182,6 +664,15 @@ export function inicializarEditarQuejoso(
                     modal,
                     opcion.dataset.canalizacionNombre
                 );
+
+
+                cerrarCanalizacion(
+                    false
+                );
+
+
+                busquedaCanalizacionActiva =
+                    false;
             }
         );
 
@@ -233,6 +724,29 @@ export function inicializarEditarQuejoso(
                 'aria-expanded',
                 'false'
             );
+
+
+            if (
+                textoCanalizacion
+                && inputCanalizacion
+            ) {
+
+                const valor =
+                    String(
+                        inputCanalizacion.value
+                        || ''
+                    ).trim();
+
+
+                textoCanalizacion.textContent =
+                    valor !== ''
+                        ? valor
+                        : 'Sin canalización';
+
+
+                busquedaCanalizacionActiva =
+                    false;
+            }
         }
     );
 

@@ -34,7 +34,7 @@ class AuthService
      * Usuario:
      *     NO_NOMINA
      *
-     * Contraseña:
+     * ContraseÃ±a:
      *     CURP
      *
      * Requisitos:
@@ -57,7 +57,7 @@ class AuthService
 
             return [
                 'ok'      => false,
-                'mensaje' => 'Ingresa tu nómina y contraseña.',
+                'mensaje' => 'Ingresa tu nÃ³mina y contraseÃ±a.',
             ];
         }
 
@@ -65,11 +65,11 @@ class AuthService
         /*
          * IMPORTANTE:
          *
-         * CURP se utiliza únicamente para validar contra
+         * CURP se utiliza Ãºnicamente para validar contra
          * plantilla_general.plantilla.
          *
          * No se guarda en DataCore.
-         * No se agrega a la sesión.
+         * No se agrega a la sesiÃ³n.
          * No se devuelve al controlador.
          */
         $persona =
@@ -95,7 +95,7 @@ class AuthService
 
             return [
                 'ok'      => false,
-                'mensaje' => 'Nómina o contraseña incorrecta.',
+                'mensaje' => 'NÃ³mina o contraseÃ±a incorrecta.',
             ];
         }
 
@@ -142,7 +142,7 @@ class AuthService
                 return [
                     'ok'      => false,
                     'mensaje' =>
-                    'No tienes autorización para ingresar a este sistema.',
+                    'No tienes autorizaciÃ³n para ingresar a este sistema.',
                 ];
             }
 
@@ -166,7 +166,7 @@ class AuthService
 
             return [
                 'ok'      => false,
-                'mensaje' => 'No fue posible preparar la sesión del usuario.',
+                'mensaje' => 'No fue posible preparar la sesiÃ³n del usuario.',
             ];
         }
 
@@ -216,7 +216,9 @@ class AuthService
                 $persona['PERSCOD'] ?? null,
 
                 'nombre' =>
-                $persona['NOMBRE_COMPLETO'] ?? '',
+                $this->normalizarNombrePlantilla(
+                    (string) ($persona['NOMBRE_COMPLETO'] ?? '')
+                ),
 
                 'nomina' =>
                 $persona['NO_NOMINA'] ?? '',
@@ -235,6 +237,27 @@ class AuthService
 
             ],
         ];
+    }
+
+
+    private function normalizarNombrePlantilla(
+        string $nombre
+    ): string {
+        if (
+            $nombre === ''
+            || mb_check_encoding(
+                $nombre,
+                'UTF-8'
+            )
+        ) {
+            return $nombre;
+        }
+
+        return mb_convert_encoding(
+            $nombre,
+            'UTF-8',
+            'ISO-8859-1'
+        );
     }
 
 
@@ -454,18 +477,18 @@ class AuthService
 
     /**
      * =========================================================
-     * VALIDAR AUTORIZACIÓN DEL ADMINISTRADOR
+     * VALIDAR AUTORIZACIÃ“N DEL ADMINISTRADOR
      * =========================================================
      *
-     * Valida la contraseña administrativa directamente contra
+     * Valida la contraseÃ±a administrativa directamente contra
      * plantilla_general.plantilla.
      *
-     * La autorización corresponde exclusivamente al usuario
+     * La autorizaciÃ³n corresponde exclusivamente al usuario
      * con rol local de administrador.
      *
      * La CURP:
      * - no se guarda en DataCore
-     * - no se guarda en sesión
+     * - no se guarda en sesiÃ³n
      * - no se registra en logs
      */
     public function validarAutorizacionAdmin(
@@ -478,18 +501,18 @@ class AuthService
     }
     /**
      * =========================================================
-     * VALIDAR AUTORIZACIÓN DE ADMINISTRADORES
+     * VALIDAR AUTORIZACIÃ“N DE ADMINISTRADORES
      * =========================================================
      *
-     * Valida la contraseña contra cualquiera de los usuarios
+     * Valida la contraseÃ±a contra cualquiera de los usuarios
      * locales que actualmente tenga el rol "admin".
      *
-     * Devuelve información del administrador que autorizó
+     * Devuelve informaciÃ³n del administrador que autorizÃ³
      * para poder registrar correctamente autorizado_por.
      *
      * La CURP:
      * - no se guarda en DataCore
-     * - no se guarda en sesión
+     * - no se guarda en sesiÃ³n
      * - no se registra en logs
      */
     public function validarAutorizacionAdministradores(
@@ -551,7 +574,7 @@ class AuthService
 
 
         /* =====================================================
-        VALIDAR CONTRASEÑA CONTRA CADA ADMINISTRADOR
+        VALIDAR CONTRASEÃ‘A CONTRA CADA ADMINISTRADOR
         ===================================================== */
 
         foreach (

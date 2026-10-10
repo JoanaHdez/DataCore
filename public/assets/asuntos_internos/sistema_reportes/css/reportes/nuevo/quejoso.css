@@ -90,7 +90,8 @@
    NÚMERO ANÓNIMO
 ========================================================= */
 
-#numero-anonimo-contenedor {
+#numero-anonimo-contenedor,
+#canalizacion-otro-contenedor {
     position: relative;
 
     margin-top: 4px;
@@ -115,12 +116,14 @@
 }
 
 
-#numero-anonimo-contenedor[hidden] {
+#numero-anonimo-contenedor[hidden],
+#canalizacion-otro-contenedor[hidden] {
     display: none !important;
 }
 
 
-#numero-anonimo-contenedor label {
+#numero-anonimo-contenedor label,
+#canalizacion-otro-contenedor label {
     display: block;
 
     margin-bottom: 8px;
@@ -132,19 +135,22 @@
 }
 
 
-#numero-anonimo-contenedor .required {
+#numero-anonimo-contenedor .required,
+#canalizacion-otro-contenedor .required {
     color: #c43d35;
 }
 
 
-#numero-anonimo-contenedor .report-input {
+#numero-anonimo-contenedor .report-input,
+#canalizacion-otro-contenedor .report-input {
     background: #ffffff;
 
     border-color: #9fc9df;
 }
 
 
-#numero-anonimo-contenedor .report-input:focus {
+#numero-anonimo-contenedor .report-input:focus,
+#canalizacion-otro-contenedor .report-input:focus {
     border-color: #1681c4;
 
     box-shadow:
@@ -225,6 +231,7 @@
 
 .canalizacion-select__texto {
     min-width: 0;
+    flex: 1;
 
     overflow: hidden;
 
@@ -235,6 +242,11 @@
     text-overflow: ellipsis;
 
     white-space: nowrap;
+}
+
+
+.canalizacion-select__texto:focus {
+    outline: none;
 }
 
 
@@ -347,6 +359,33 @@
 }
 
 
+.canalizacion-resultados--scroll {
+
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    scrollbar-width: thin;
+    scrollbar-color: #c4d2dd #f3f6f8;
+}
+
+
+.canalizacion-resultados--scroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+
+.canalizacion-resultados--scroll::-webkit-scrollbar-track {
+    background: #f3f6f8;
+}
+
+
+.canalizacion-resultados--scroll::-webkit-scrollbar-thumb {
+    background: #c4d2dd;
+
+    border-radius: 10px;
+}
+
+
 .canalizacion-resultados[hidden] {
 
     display: none !important;
@@ -392,6 +431,31 @@
 .canalizacion-resultados__item:hover {
 
     background: #f5faff;
+}
+
+
+.canalizacion-resultados__item[hidden] {
+
+    display: none !important;
+}
+
+
+.canalizacion-resultados__vacio {
+
+    padding: 16px 14px;
+
+    color: #728596;
+    background: #ffffff;
+
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+}
+
+
+.canalizacion-resultados__vacio[hidden] {
+
+    display: none !important;
 }
 
 

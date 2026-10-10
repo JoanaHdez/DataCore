@@ -252,7 +252,8 @@
    MISMO DISEÑO QUE NUEVO REPORTE
 ========================================================= */
 
-#editar-numero-anonimo-contenedor {
+#editar-numero-anonimo-contenedor,
+#editar-canalizacion-otro-contenedor {
 
     position: relative;
 
@@ -284,7 +285,8 @@
    OCULTO
 ========================================================= */
 
-#editar-numero-anonimo-contenedor[hidden] {
+#editar-numero-anonimo-contenedor[hidden],
+#editar-canalizacion-otro-contenedor[hidden] {
 
     display: none !important;
 }
@@ -305,7 +307,8 @@
    LABEL
 ========================================================= */
 
-#editar-numero-anonimo-contenedor label {
+#editar-numero-anonimo-contenedor label,
+#editar-canalizacion-otro-contenedor label {
 
     display: block;
 
@@ -318,7 +321,8 @@
 }
 
 
-#editar-numero-anonimo-contenedor .required {
+#editar-numero-anonimo-contenedor .required,
+#editar-canalizacion-otro-contenedor .required {
 
     color: #c43d35;
 }
@@ -328,7 +332,8 @@
    INPUT
 ========================================================= */
 
-#editar-numero-anonimo {
+#editar-numero-anonimo,
+#editar-canalizacion-otro {
 
     width: 100%;
     min-height: 42px;
@@ -355,13 +360,15 @@
 }
 
 
-#editar-numero-anonimo::placeholder {
+#editar-numero-anonimo::placeholder,
+#editar-canalizacion-otro::placeholder {
 
     color: #93a5b5;
 }
 
 
-#editar-numero-anonimo:focus {
+#editar-numero-anonimo:focus,
+#editar-canalizacion-otro:focus {
 
     border-color: #1681c4;
 
@@ -375,6 +382,8 @@
 ========================================================= */
 
 #editar-numero-anonimo-contenedor
+.editar-reporte-campo__help,
+#editar-canalizacion-otro-contenedor
 .editar-reporte-campo__help {
 
     display: block;

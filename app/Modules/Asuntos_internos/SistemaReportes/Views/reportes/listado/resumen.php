@@ -13,6 +13,18 @@
     </article>
 
 
+    <article class="resumen-card resumen-card--pendientes">
+
+        <span class="resumen-card__label">
+            Pendientes
+        </span>
+
+        <strong class="resumen-card__value" id="resumen-pendientes">
+            0
+        </strong>
+
+    </article>
+
     <article class="resumen-card resumen-card--proceso">
 
         <span class="resumen-card__label">

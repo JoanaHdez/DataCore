@@ -25,7 +25,7 @@ if (!empty($perscodUsuario)) {
         new \App\Modules\Asuntos_internos\SistemaReportes\Services\FotoPersonalService();
 
     $fotoUsuario =
-        $fotoService->obtenerBase64(
+        $fotoService->obtenerUrl(
             $perscodUsuario
         );
 }
@@ -80,12 +80,6 @@ if (!empty($perscodUsuario)) {
 
         <div class="report-header__user-avatar">
 
-            <?php if (!empty($fotoUsuario)): ?>
-
-            <img src="<?= esc($fotoUsuario) ?>" alt="Foto de <?= esc($nombreUsuario) ?>">
-
-            <?php else: ?>
-
             <span>
                 <?= esc(
                         strtoupper(
@@ -97,6 +91,16 @@ if (!empty($perscodUsuario)) {
                         )
                     ) ?>
             </span>
+
+            <?php if (!empty($fotoUsuario)): ?>
+
+            <img
+                src="<?= esc($fotoUsuario) ?>"
+                alt="Foto de <?= esc($nombreUsuario) ?>"
+                style="display: none;"
+                onload="this.previousElementSibling.style.display='none'; this.style.display='block';"
+                onerror="this.style.display='none'; this.removeAttribute('src'); this.previousElementSibling.style.display='flex';"
+            >
 
             <?php endif; ?>
 

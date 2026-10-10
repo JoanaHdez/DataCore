@@ -237,6 +237,253 @@ function inicializarGeneroQuejoso() {
    CANALIZACIÓN
 ========================================================= */
 
+function ajustarAlturaCatalogoCanalizacion(
+    resultados
+) {
+
+    if (!resultados) {
+        return;
+    }
+
+
+    const opciones =
+        Array.from(
+            resultados.querySelectorAll(
+                '.canalizacion-resultados__item'
+            )
+        )
+        .filter(
+            (opcion) => !opcion.hidden
+        );
+
+
+    if (
+        opciones.length <= 4
+    ) {
+
+        resultados.style.maxHeight =
+            '';
+
+        resultados.classList.remove(
+            'canalizacion-resultados--scroll'
+        );
+
+        return;
+    }
+
+
+    const alturaPrimerasOpciones =
+        opciones
+            .slice(
+                0,
+                4
+            )
+            .reduce(
+                (total, opcion) => total
+                    + opcion.getBoundingClientRect().height,
+                0
+            );
+
+
+    resultados.style.maxHeight =
+        `${Math.ceil(alturaPrimerasOpciones + 2)}px`;
+
+
+    resultados.classList.add(
+        'canalizacion-resultados--scroll'
+    );
+}
+
+
+function normalizarBusquedaCanalizacion(
+    texto
+) {
+
+    return String(
+        texto
+        || ''
+    )
+        .normalize(
+            'NFD'
+        )
+        .replace(
+            /[\u0300-\u036f]/g,
+            ''
+        )
+        .toUpperCase()
+        .trim();
+}
+
+
+function seleccionarTextoCanalizacion(
+    elemento
+) {
+
+    if (!elemento) {
+        return;
+    }
+
+
+    const seleccion =
+        window.getSelection();
+
+
+    if (!seleccion) {
+        return;
+    }
+
+
+    const rango =
+        document.createRange();
+
+
+    rango.selectNodeContents(
+        elemento
+    );
+
+
+    seleccion.removeAllRanges();
+
+
+    seleccion.addRange(
+        rango
+    );
+}
+
+
+function obtenerPosicionCursorCanalizacion(
+    elemento
+) {
+
+    const seleccion =
+        window.getSelection();
+
+
+    if (
+        !seleccion
+        || seleccion.rangeCount === 0
+    ) {
+        return 0;
+    }
+
+
+    const rango =
+        seleccion.getRangeAt(
+            0
+        );
+
+
+    const previo =
+        rango.cloneRange();
+
+
+    previo.selectNodeContents(
+        elemento
+    );
+
+
+    previo.setEnd(
+        rango.endContainer,
+        rango.endOffset
+    );
+
+
+    return previo.toString().length;
+}
+
+
+function restaurarCursorCanalizacion(
+    elemento,
+    posicion
+) {
+
+    const texto =
+        elemento.firstChild;
+
+
+    if (!texto) {
+        return;
+    }
+
+
+    const seleccion =
+        window.getSelection();
+
+
+    if (!seleccion) {
+        return;
+    }
+
+
+    const rango =
+        document.createRange();
+
+
+    rango.setStart(
+        texto,
+        Math.min(
+            posicion,
+            texto.textContent.length
+        )
+    );
+
+
+    rango.collapse(
+        true
+    );
+
+
+    seleccion.removeAllRanges();
+
+
+    seleccion.addRange(
+        rango
+    );
+}
+
+
+function convertirBusquedaCanalizacionAMayusculas(
+    elemento
+) {
+
+    const texto =
+        elemento.textContent
+        || '';
+
+
+    const mayusculas =
+        texto.toLocaleUpperCase(
+            'es-MX'
+        );
+
+
+    if (
+        texto === mayusculas
+    ) {
+        return mayusculas;
+    }
+
+
+    const posicion =
+        obtenerPosicionCursorCanalizacion(
+            elemento
+        );
+
+
+    elemento.textContent =
+        mayusculas;
+
+
+    restaurarCursorCanalizacion(
+        elemento,
+        posicion
+    );
+
+
+    return mayusculas;
+}
+
+
 function inicializarCanalizacionQuejoso() {
 
     const selector =
@@ -293,11 +540,114 @@ function inicializarCanalizacionQuejoso() {
     }
 
 
+    const opcionesCanalizacion =
+        Array.from(
+            opciones
+        );
+
+
+    const mensajeSinCoincidencias =
+        document.createElement(
+            'div'
+        );
+
+
+    mensajeSinCoincidencias.className =
+        'canalizacion-resultados__vacio';
+
+
+    mensajeSinCoincidencias.textContent =
+        'Sin coincidencias';
+
+
+    mensajeSinCoincidencias.hidden =
+        true;
+
+
+    resultados.appendChild(
+        mensajeSinCoincidencias
+    );
+
+
+    function obtenerTextoSeleccionado() {
+
+        const valor =
+            String(
+                inputCanalizacion.value
+                || ''
+            ).trim();
+
+
+        return valor !== ''
+            ? valor
+            : 'Sin canalización';
+    }
+
+
+    function filtrarCanalizaciones(
+        busqueda
+    ) {
+
+        const termino =
+            normalizarBusquedaCanalizacion(
+                busqueda
+            );
+
+
+        let totalVisibles =
+            0;
+
+
+        opcionesCanalizacion.forEach(
+            (opcion) => {
+
+                const nombre =
+                    opcion.dataset.canalizacionNombre
+                    || opcion.textContent
+                    || '';
+
+
+                const coincide =
+                    termino === ''
+                    || normalizarBusquedaCanalizacion(
+                        nombre
+                    ).includes(
+                        termino
+                    );
+
+
+                opcion.hidden =
+                    !coincide;
+
+
+                if (coincide) {
+                    totalVisibles += 1;
+                }
+            }
+        );
+
+
+        mensajeSinCoincidencias.hidden =
+            totalVisibles > 0;
+
+
+        ajustarAlturaCatalogoCanalizacion(
+            resultados
+        );
+    }
+
+
     /* =====================================================
        ABRIR / CERRAR
     ===================================================== */
 
-    function abrirCatalogo() {
+    let busquedaActiva =
+        false;
+
+
+    function abrirCatalogo(
+        busqueda = ''
+    ) {
 
         resultados.hidden =
             false;
@@ -312,10 +662,22 @@ function inicializarCanalizacionQuejoso() {
         selector.classList.add(
             'canalizacion-select--activo'
         );
+
+
+        filtrarCanalizaciones(
+            busqueda
+        );
+
+
+        ajustarAlturaCatalogoCanalizacion(
+            resultados
+        );
     }
 
 
-    function cerrarCatalogo() {
+    function cerrarCatalogo(
+        restaurarTexto = true
+    ) {
 
         resultados.hidden =
             true;
@@ -330,6 +692,21 @@ function inicializarCanalizacionQuejoso() {
         selector.classList.remove(
             'canalizacion-select--activo'
         );
+
+
+        if (restaurarTexto) {
+
+            textoSelector.textContent =
+                obtenerTextoSeleccionado();
+
+            busquedaActiva =
+                false;
+
+
+            filtrarCanalizaciones(
+                ''
+            );
+        }
     }
 
 
@@ -383,7 +760,13 @@ function inicializarCanalizacionQuejoso() {
         }
 
 
-        cerrarCatalogo();
+        busquedaActiva =
+            false;
+
+
+        cerrarCatalogo(
+            false
+        );
     }
 
 
@@ -393,7 +776,22 @@ function inicializarCanalizacionQuejoso() {
 
     selector.addEventListener(
         'click',
-        () => {
+        (evento) => {
+
+            if (
+                evento.target === textoSelector
+            ) {
+
+                abrirCatalogo();
+
+                requestAnimationFrame(
+                    () => seleccionarTextoCanalizacion(
+                        textoSelector
+                    )
+                );
+
+                return;
+            }
 
             if (
                 resultados.hidden
@@ -405,6 +803,75 @@ function inicializarCanalizacionQuejoso() {
 
                 cerrarCatalogo();
             }
+        }
+    );
+
+
+    textoSelector.addEventListener(
+        'focus',
+        () => {
+
+            abrirCatalogo();
+
+
+            requestAnimationFrame(
+                () => seleccionarTextoCanalizacion(
+                    textoSelector
+                )
+            );
+        }
+    );
+
+
+    textoSelector.addEventListener(
+        'keydown',
+        (evento) => {
+
+            if (
+                evento.key === 'Enter'
+            ) {
+
+                evento.preventDefault();
+            }
+        }
+    );
+
+
+    textoSelector.addEventListener(
+        'click',
+        () => {
+
+            requestAnimationFrame(
+                () => seleccionarTextoCanalizacion(
+                    textoSelector
+                )
+            );
+        }
+    );
+
+
+    textoSelector.addEventListener(
+        'input',
+        () => {
+
+            const busqueda =
+                convertirBusquedaCanalizacionAMayusculas(
+                    textoSelector
+                );
+
+
+            busquedaActiva =
+                true;
+
+
+            abrirCatalogo(
+                busqueda
+            );
+
+
+            filtrarCanalizaciones(
+                busqueda
+            );
         }
     );
 

@@ -7,7 +7,7 @@
     display: grid;
 
     grid-template-columns:
-        repeat(4, minmax(0, 1fr));
+        repeat(5, minmax(0, 1fr));
 
     gap: 18px;
 
@@ -47,6 +47,20 @@
 /* =========================================================
    VARIANTES
 ========================================================= */
+
+.resumen-card--pendientes {
+
+    border-color: #C9DFF2;
+    border-top-color: #3B82C4;
+
+    background:
+        linear-gradient(
+            180deg,
+            #EAF3FC,
+            #EAF3FC
+        );
+}
+
 
 .resumen-card--proceso {
 
@@ -117,6 +131,13 @@
     font-weight: 800;
 
     line-height: 1;
+}
+
+
+.resumen-card--pendientes
+.resumen-card__value {
+
+    color: #2875B5;
 }
 
 

@@ -466,7 +466,8 @@
 
                 <button type="button" class="canalizacion-select" id="canalizacion-select" aria-expanded="false">
 
-                    <span class="canalizacion-select__texto" id="canalizacion-select-texto">
+                    <span class="canalizacion-select__texto" id="canalizacion-select-texto" contenteditable="true"
+                        spellcheck="false">
                         Sin canalización
                     </span>
 

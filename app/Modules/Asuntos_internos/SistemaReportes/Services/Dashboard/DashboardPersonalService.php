@@ -1533,7 +1533,7 @@ class DashboardPersonalService
         try {
 
             return $this->fotoPersonalService
-                ->obtenerBase64(
+                ->obtenerUrl(
                     $perscod
                 );
         } catch (\Throwable $e) {

@@ -135,19 +135,19 @@
         </div>
 
 
-        <!-- =====================================================
+       <!-- =====================================================
             DIRECCIÓN DEL QUEJOSO
         ====================================================== -->
 
-        <div class="detalle-reporte-campo detalle-reporte-campo--full">
-
-            <span>
-                Dirección del quejoso
-            </span>
+        <div class="detalle-reporte-grupo-titulo">
 
             <strong>
-                Datos de ubicación proporcionados por el quejoso
+                Dirección del quejoso
             </strong>
+
+            <small>
+                Dirección proporcionada por el quejoso.
+            </small>
 
         </div>
 

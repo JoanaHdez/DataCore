@@ -15,7 +15,7 @@ class Auth_Controller extends BaseController
     public function login()
     {
         /*
-         * Si ya existe una sesión válida del SistemaReportes,
+         * Si ya existe una sesiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lida del SistemaReportes,
          * evitamos volver a mostrar el login.
          */
         if (
@@ -65,7 +65,7 @@ class Auth_Controller extends BaseController
 
 
         /* =====================================================
-           VALIDACIÓN BÁSICA
+           VALIDACIÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œN BÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂSICA
         ===================================================== */
 
         if (
@@ -78,14 +78,14 @@ class Auth_Controller extends BaseController
                 ->withInput()
                 ->with(
                     'error',
-                    'Ingresa tu nómina y CURP.'
+                    'Ingresa tu nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³mina y CURP.'
                 );
 
         }
 
 
         /* =====================================================
-           AUTENTICACIÓN REAL
+           AUTENTICACIÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œN REAL
         ===================================================== */
 
         try {
@@ -105,7 +105,7 @@ class Auth_Controller extends BaseController
 
             log_message(
                 'error',
-                'Error durante autenticación de SistemaReportes: {mensaje}',
+                'Error durante autenticaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n de SistemaReportes: {mensaje}',
                 [
                     'mensaje' =>
                         $e->getMessage(),
@@ -118,14 +118,14 @@ class Auth_Controller extends BaseController
                 ->withInput()
                 ->with(
                     'error',
-                    'No fue posible iniciar sesión. Inténtalo nuevamente.'
+                    'No fue posible iniciar sesiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n. IntÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©ntalo nuevamente.'
                 );
 
         }
 
 
         /* =====================================================
-           CREDENCIALES / ACCESO INVÁLIDO
+           CREDENCIALES / ACCESO INVÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂLIDO
         ===================================================== */
 
         if (
@@ -140,7 +140,7 @@ class Auth_Controller extends BaseController
                 ->with(
                     'error',
                     $resultado['mensaje']
-                    ?? 'No fue posible iniciar sesión.'
+                    ?? 'No fue posible iniciar sesiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n.'
                 );
 
         }
@@ -161,19 +161,18 @@ class Auth_Controller extends BaseController
                 ->withInput()
                 ->with(
                     'error',
-                    'No fue posible preparar la sesión del usuario.'
+                    'No fue posible preparar la sesiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n del usuario.'
                 );
 
         }
 
-
         /* =====================================================
-           REGENERAR SESIÓN
+           REGENERAR SESIÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œN
         ===================================================== */
 
         /*
-         * Regeneramos el identificador de sesión después
-         * de iniciar sesión para evitar session fixation.
+         * Regeneramos el identificador de sesiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n despuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©s
+         * de iniciar sesiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n para evitar session fixation.
          */
         session()->regenerate(
             true
@@ -181,7 +180,7 @@ class Auth_Controller extends BaseController
 
 
         /* =====================================================
-           SESIÓN EXCLUSIVA DE SISTEMA REPORTES
+           SESIÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œN EXCLUSIVA DE SISTEMA REPORTES
         ===================================================== */
 
         session()->set([
@@ -227,10 +226,8 @@ class Auth_Controller extends BaseController
             'reportes_autenticado' =>
                 true,
         ]);
-
-
         /* =====================================================
-           REDIRECCIÓN
+           REDIRECCIÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œN
         ===================================================== */
 
         return redirect()->to(
@@ -248,11 +245,12 @@ class Auth_Controller extends BaseController
      */
     public function logout()
     {
+
         /*
-         * Eliminamos únicamente las variables
+         * Eliminamos ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºnicamente las variables
          * pertenecientes a SistemaReportes.
          *
-         * No destruimos indiscriminadamente toda la sesión
+         * No destruimos indiscriminadamente toda la sesiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n
          * del proyecto DataCore.
          */
         session()->remove([
@@ -263,7 +261,7 @@ class Auth_Controller extends BaseController
 
 
         /*
-         * Regeneramos nuevamente el ID después del logout.
+         * Regeneramos nuevamente el ID despuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©s del logout.
          */
         session()->regenerate(
             true

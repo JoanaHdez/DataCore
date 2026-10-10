@@ -1730,7 +1730,7 @@ if (
 
 
         <div class="signature-caption">
-            NOMBRE Y FIRMA DEL DENUNCIANTE
+            NOMBRE Y FIRMA
         </div>
 
     </div>
@@ -1795,7 +1795,7 @@ if (
 
 
         <div class="signature-caption">
-            NOMBRE Y FIRMA DEL DENUNCIANTE
+            NOMBRE Y FIRMA
         </div>
 
     </div>

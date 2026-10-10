@@ -962,10 +962,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     : 'Foto de usuario';
 
 
-            imagen.loading =
-                'lazy';
-
-
             imagen.style.display =
                 'none';
 
@@ -995,13 +991,13 @@ document.addEventListener('DOMContentLoaded', () => {
             );
 
 
-            imagen.src =
-                urlFoto;
-
-
             fotoContenedor.appendChild(
                 imagen
             );
+
+
+            imagen.src =
+                urlFoto;
         }
 
 
