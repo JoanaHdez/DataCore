@@ -3,6 +3,10 @@ import {
 } from './utilidades.js';
 
 
+const estadosMunicipiosEditar =
+    new WeakMap();
+
+
 /* =========================================================
    SISTEMA DE REPORTES - ASUNTOS INTERNOS
    EDITAR REPORTE
@@ -760,6 +764,16 @@ export function inicializarEditarQuejoso(
     );
 
 
+    inicializarEstadoMunicipioQuejosoEditar(
+        modal
+    );
+
+
+    inicializarColoniaQuejosoEditarMayusculas(
+        modal
+    );
+
+
     /* =====================================================
        ESTADO INICIAL
     ===================================================== */
@@ -1349,6 +1363,115 @@ export function establecerAnonimoEditar(
        DIRECCIÓN PARA NOTIFICACIÓN
     ===================================================== */
 
+    const selectorEstadoQuejoso =
+        modal.querySelector(
+            '#editar-estado-quejoso-select'
+        );
+
+
+    const textoEstadoQuejoso =
+        modal.querySelector(
+            '#editar-estado-quejoso-select-texto'
+        );
+
+
+    const resultadosEstadoQuejoso =
+        modal.querySelector(
+            '#editar-estado-quejoso-resultados'
+        );
+
+
+    const selectorMunicipioQuejoso =
+        modal.querySelector(
+            '#editar-municipio-quejoso-select'
+        );
+
+
+    const textoMunicipioQuejoso =
+        modal.querySelector(
+            '#editar-municipio-quejoso-select-texto'
+        );
+
+
+    const resultadosMunicipioQuejoso =
+        modal.querySelector(
+            '#editar-municipio-quejoso-resultados'
+        );
+
+
+    [
+        [
+            selectorEstadoQuejoso,
+            textoEstadoQuejoso,
+            resultadosEstadoQuejoso,
+        ],
+        [
+            selectorMunicipioQuejoso,
+            textoMunicipioQuejoso,
+            resultadosMunicipioQuejoso,
+        ],
+    ].forEach(
+        ([
+            selector,
+            texto,
+            resultados,
+        ]) => {
+
+            if (!selector) {
+                return;
+            }
+
+
+            selector.disabled =
+                esAnonimo
+                || (
+                    selector === selectorMunicipioQuejoso
+                    && !modal.querySelector(
+                        '#editar-estado-quejoso-id'
+                    )?.value
+                );
+
+
+            selector.setAttribute(
+                'aria-disabled',
+                selector.disabled
+                    ? 'true'
+                    : 'false'
+            );
+
+
+            if (texto) {
+
+                texto.contentEditable =
+                    selector.disabled
+                        ? 'false'
+                        : 'true';
+            }
+
+
+            if (
+                resultados
+                && esAnonimo
+            ) {
+
+                resultados.hidden =
+                    true;
+
+
+                selector.setAttribute(
+                    'aria-expanded',
+                    'false'
+                );
+
+
+                selector.classList.remove(
+                    'editar-quejoso-catalogo-select--activo'
+                );
+            }
+        }
+    );
+
+
     const seccionNotificacion =
         modal.querySelector(
             '#editar-seccion-direccion-notificacion'
@@ -1862,6 +1985,1565 @@ function normalizarTextoCanalizacion(
 
 
 /* =========================================================
+   ESTADO / MUNICIPIO DEL QUEJOSO
+========================================================= */
+
+function ajustarAlturaCatalogoQuejosoEditar(
+    resultados
+) {
+
+    if (!resultados) {
+        return;
+    }
+
+
+    const opciones =
+        Array.from(
+            resultados.querySelectorAll(
+                '.editar-quejoso-catalogo-resultados__item'
+            )
+        );
+
+
+    if (
+        opciones.length <= 4
+    ) {
+
+        resultados.style.maxHeight =
+            '';
+
+        resultados.classList.remove(
+            'editar-quejoso-catalogo-resultados--scroll'
+        );
+
+        return;
+    }
+
+
+    const alturaPrimerasOpciones =
+        opciones
+            .slice(
+                0,
+                4
+            )
+            .reduce(
+                (total, opcion) => total
+                    + opcion.getBoundingClientRect().height,
+                0
+            );
+
+
+    resultados.style.maxHeight =
+        `${Math.ceil(alturaPrimerasOpciones + 2)}px`;
+
+
+    resultados.classList.add(
+        'editar-quejoso-catalogo-resultados--scroll'
+    );
+}
+
+
+function normalizarTextoQuejosoCatalogoEditar(
+    valor
+) {
+
+    return String(
+        valor
+        || ''
+    )
+        .trim()
+        .normalize(
+            'NFD'
+        )
+        .replace(
+            /[\u0300-\u036f]/g,
+            ''
+        )
+        .toLocaleUpperCase(
+            'es-MX'
+        );
+}
+
+
+function seleccionarTextoQuejosoCatalogoEditar(
+    elemento
+) {
+
+    if (!elemento) {
+        return;
+    }
+
+
+    const seleccion =
+        window.getSelection();
+
+
+    if (!seleccion) {
+        return;
+    }
+
+
+    const rango =
+        document.createRange();
+
+
+    rango.selectNodeContents(
+        elemento
+    );
+
+
+    seleccion.removeAllRanges();
+
+
+    seleccion.addRange(
+        rango
+    );
+}
+
+
+function obtenerPosicionCursorQuejosoCatalogoEditar(
+    elemento
+) {
+
+    const seleccion =
+        window.getSelection();
+
+
+    if (
+        !seleccion
+        || seleccion.rangeCount === 0
+    ) {
+        return 0;
+    }
+
+
+    const rango =
+        seleccion.getRangeAt(
+            0
+        );
+
+
+    const previo =
+        rango.cloneRange();
+
+
+    previo.selectNodeContents(
+        elemento
+    );
+
+
+    previo.setEnd(
+        rango.endContainer,
+        rango.endOffset
+    );
+
+
+    return previo.toString().length;
+}
+
+
+function restaurarCursorQuejosoCatalogoEditar(
+    elemento,
+    posicion
+) {
+
+    const texto =
+        elemento.firstChild;
+
+
+    if (!texto) {
+        return;
+    }
+
+
+    const seleccion =
+        window.getSelection();
+
+
+    if (!seleccion) {
+        return;
+    }
+
+
+    const rango =
+        document.createRange();
+
+
+    rango.setStart(
+        texto,
+        Math.min(
+            posicion,
+            texto.textContent.length
+        )
+    );
+
+
+    rango.collapse(
+        true
+    );
+
+
+    seleccion.removeAllRanges();
+
+
+    seleccion.addRange(
+        rango
+    );
+}
+
+
+function convertirTextoQuejosoCatalogoEditarAMayusculas(
+    elemento
+) {
+
+    const texto =
+        elemento.textContent
+        || '';
+
+
+    const mayusculas =
+        texto.toLocaleUpperCase(
+            'es-MX'
+        );
+
+
+    if (
+        texto === mayusculas
+    ) {
+        return mayusculas;
+    }
+
+
+    const posicion =
+        obtenerPosicionCursorQuejosoCatalogoEditar(
+            elemento
+        );
+
+
+    elemento.textContent =
+        mayusculas;
+
+
+    restaurarCursorQuejosoCatalogoEditar(
+        elemento,
+        posicion
+    );
+
+
+    return mayusculas;
+}
+
+
+function convertirInputQuejosoEditarAMayusculas(
+    input
+) {
+
+    if (!input) {
+        return;
+    }
+
+
+    const valor =
+        input.value
+        || '';
+
+
+    const mayusculas =
+        valor.toLocaleUpperCase(
+            'es-MX'
+        );
+
+
+    if (
+        valor === mayusculas
+    ) {
+        return;
+    }
+
+
+    const inicio =
+        input.selectionStart;
+
+    const fin =
+        input.selectionEnd;
+
+
+    input.value =
+        mayusculas;
+
+
+    if (
+        inicio !== null
+        && fin !== null
+    ) {
+
+        input.setSelectionRange(
+            inicio,
+            fin
+        );
+    }
+}
+
+
+function construirUrlCatalogoQuejosoEditar(
+    ruta
+) {
+
+    return new URL(
+        `DataCore/public/asuntos-internos/reportes/${ruta}`,
+        `${window.location.origin}/`
+    );
+}
+
+
+function obtenerInicialCatalogoQuejosoEditar(
+    texto
+) {
+
+    const limpio =
+        String(
+            texto
+            || ''
+        ).trim();
+
+
+    return limpio !== ''
+        ? limpio.charAt(0).toLocaleUpperCase('es-MX')
+        : '-';
+}
+
+
+function crearSelectorCatalogoQuejosoEditar(
+    modal,
+    configuracion
+) {
+
+    const selector =
+        modal.querySelector(
+            configuracion.selector
+        );
+
+
+    const textoSelector =
+        modal.querySelector(
+            configuracion.texto
+        );
+
+
+    const inputValor =
+        modal.querySelector(
+            configuracion.input
+        );
+
+
+    const inputId =
+        configuracion.inputId
+            ? modal.querySelector(
+                configuracion.inputId
+            )
+            : null;
+
+
+    const resultados =
+        modal.querySelector(
+            configuracion.resultados
+        );
+
+
+    if (
+        !selector
+        || !textoSelector
+        || !inputValor
+        || !resultados
+    ) {
+        return null;
+    }
+
+
+    let opciones =
+        [];
+
+
+    let deshabilitado =
+        selector.disabled;
+
+
+    function obtenerTextoSeleccionado() {
+
+        const valor =
+            String(
+                inputValor.value
+                || ''
+            ).trim();
+
+
+        return valor !== ''
+            ? valor
+            : configuracion.placeholder;
+    }
+
+
+    function renderizarOpciones(
+        lista
+    ) {
+
+        resultados.innerHTML =
+            '';
+
+
+        if (
+            lista.length === 0
+        ) {
+
+            const vacio =
+                document.createElement(
+                    'div'
+                );
+
+
+            vacio.className =
+                'editar-quejoso-catalogo-resultados__vacio';
+
+
+            vacio.textContent =
+                'Sin coincidencias';
+
+
+            resultados.appendChild(
+                vacio
+            );
+
+
+            ajustarAlturaCatalogoQuejosoEditar(
+                resultados
+            );
+
+            return;
+        }
+
+
+        lista.forEach(
+            (opcion) => {
+
+                const boton =
+                    document.createElement(
+                        'button'
+                    );
+
+
+                boton.type =
+                    'button';
+
+
+                boton.className =
+                    'editar-quejoso-catalogo-resultados__item';
+
+
+                boton.dataset.id =
+                    String(
+                        opcion.id
+                        ?? ''
+                    );
+
+
+                boton.dataset.nombre =
+                    String(
+                        opcion.nombre
+                        ?? ''
+                    );
+
+
+                boton.innerHTML =
+                    `<span class="editar-quejoso-catalogo-resultados__avatar">${obtenerInicialCatalogoQuejosoEditar(opcion.nombre)}</span>
+                    <span class="editar-quejoso-catalogo-resultados__datos">
+                        <strong></strong>
+                        <small>${configuracion.descripcion}</small>
+                    </span>`;
+
+
+                const nombre =
+                    boton.querySelector(
+                        'strong'
+                    );
+
+
+                if (nombre) {
+                    nombre.textContent =
+                        opcion.nombre;
+                }
+
+
+                boton.addEventListener(
+                    'click',
+                    () => seleccionar(
+                        opcion
+                    )
+                );
+
+
+                resultados.appendChild(
+                    boton
+                );
+            }
+        );
+
+
+        requestAnimationFrame(
+            () => ajustarAlturaCatalogoQuejosoEditar(
+                resultados
+            )
+        );
+    }
+
+
+    function filtrar(
+        busqueda = ''
+    ) {
+
+        const termino =
+            normalizarTextoQuejosoCatalogoEditar(
+                busqueda
+            );
+
+
+        const filtradas =
+            termino === ''
+                ? opciones
+                : opciones.filter(
+                    (opcion) => normalizarTextoQuejosoCatalogoEditar(
+                        opcion.nombre
+                    ).includes(
+                        termino
+                    )
+                );
+
+
+        renderizarOpciones(
+            filtradas
+        );
+    }
+
+
+    function abrir(
+        busqueda = ''
+    ) {
+
+        if (
+            deshabilitado
+            || selector.disabled
+        ) {
+            return;
+        }
+
+
+        resultados.hidden =
+            false;
+
+
+        selector.setAttribute(
+            'aria-expanded',
+            'true'
+        );
+
+
+        selector.classList.add(
+            'editar-quejoso-catalogo-select--activo'
+        );
+
+
+        filtrar(
+            busqueda
+        );
+    }
+
+
+    function cerrar(
+        restaurarTexto = true
+    ) {
+
+        resultados.hidden =
+            true;
+
+
+        selector.setAttribute(
+            'aria-expanded',
+            'false'
+        );
+
+
+        selector.classList.remove(
+            'editar-quejoso-catalogo-select--activo'
+        );
+
+
+        if (restaurarTexto) {
+
+            textoSelector.textContent =
+                obtenerTextoSeleccionado();
+
+
+            filtrar(
+                ''
+            );
+        }
+    }
+
+
+    function seleccionar(
+        opcion
+    ) {
+
+        const nombre =
+            String(
+                opcion.nombre
+                || ''
+            ).trim();
+
+
+        inputValor.value =
+            nombre;
+
+
+        textoSelector.textContent =
+            nombre !== ''
+                ? nombre
+                : configuracion.placeholder;
+
+
+        if (inputId) {
+
+            inputId.value =
+                String(
+                    opcion.id
+                    ?? ''
+                );
+        }
+
+
+        cerrar(
+            false
+        );
+
+
+        if (
+            typeof configuracion.onSelect === 'function'
+        ) {
+
+            configuracion.onSelect(
+                opcion
+            );
+        }
+
+
+        inputValor.dispatchEvent(
+            new Event(
+                'change',
+                {
+                    bubbles:
+                        true,
+                }
+            )
+        );
+    }
+
+
+    function establecerValorHistorico(
+        valor,
+        id = ''
+    ) {
+
+        const texto =
+            String(
+                valor
+                || ''
+            ).trim();
+
+
+        inputValor.value =
+            texto;
+
+
+        if (inputId) {
+
+            inputId.value =
+                String(
+                    id
+                    || ''
+                );
+        }
+
+
+        textoSelector.textContent =
+            texto !== ''
+                ? texto
+                : configuracion.placeholder;
+    }
+
+
+    function limpiar(
+        texto = configuracion.placeholder
+    ) {
+
+        inputValor.value =
+            '';
+
+
+        if (inputId) {
+            inputId.value =
+                '';
+        }
+
+
+        textoSelector.textContent =
+            texto;
+
+
+        cerrar(
+            false
+        );
+    }
+
+
+    function establecerOpciones(
+        nuevasOpciones
+    ) {
+
+        opciones =
+            Array.isArray(
+                nuevasOpciones
+            )
+                ? nuevasOpciones
+                    .map(
+                        (opcion) => ({
+                            id:
+                                String(
+                                    opcion.id
+                                    ?? opcion.idEstado
+                                    ?? ''
+                                ),
+
+                            nombre:
+                                String(
+                                    opcion.nombre
+                                    ?? ''
+                                ).trim(),
+                        })
+                    )
+                    .filter(
+                        (opcion) => opcion.id !== ''
+                            && opcion.nombre !== ''
+                    )
+                : [];
+
+
+        filtrar(
+            ''
+        );
+    }
+
+
+    function establecerDeshabilitado(
+        valor,
+        texto
+    ) {
+
+        deshabilitado =
+            valor;
+
+
+        selector.disabled =
+            valor;
+
+
+        selector.setAttribute(
+            'aria-disabled',
+            valor
+                ? 'true'
+                : 'false'
+        );
+
+
+        textoSelector.contentEditable =
+            valor
+                ? 'false'
+                : 'true';
+
+
+        if (
+            texto
+            && String(
+                inputValor.value
+                || ''
+            ).trim() === ''
+        ) {
+
+            textoSelector.textContent =
+                texto;
+        }
+
+
+        if (valor) {
+            cerrar(
+                false
+            );
+        }
+    }
+
+
+    function buscarPorNombre(
+        valor
+    ) {
+
+        const normalizado =
+            normalizarTextoQuejosoCatalogoEditar(
+                valor
+            );
+
+
+        if (normalizado === '') {
+            return null;
+        }
+
+
+        return opciones.find(
+            (opcion) => normalizarTextoQuejosoCatalogoEditar(
+                opcion.nombre
+            ) === normalizado
+        )
+            || null;
+    }
+
+
+    selector.addEventListener(
+        'click',
+        (evento) => {
+
+            if (
+                deshabilitado
+                || selector.disabled
+            ) {
+                return;
+            }
+
+
+            if (
+                evento.target === textoSelector
+            ) {
+
+                abrir();
+
+                requestAnimationFrame(
+                    () => seleccionarTextoQuejosoCatalogoEditar(
+                        textoSelector
+                    )
+                );
+
+                return;
+            }
+
+
+            if (
+                resultados.hidden
+            ) {
+
+                abrir();
+
+            } else {
+
+                cerrar();
+            }
+        }
+    );
+
+
+    textoSelector.addEventListener(
+        'focus',
+        () => {
+
+            if (
+                deshabilitado
+                || selector.disabled
+            ) {
+                return;
+            }
+
+
+            abrir();
+
+
+            requestAnimationFrame(
+                () => seleccionarTextoQuejosoCatalogoEditar(
+                    textoSelector
+                )
+            );
+        }
+    );
+
+
+    textoSelector.addEventListener(
+        'click',
+        () => {
+
+            if (
+                deshabilitado
+                || selector.disabled
+            ) {
+                return;
+            }
+
+
+            requestAnimationFrame(
+                () => seleccionarTextoQuejosoCatalogoEditar(
+                    textoSelector
+                )
+            );
+        }
+    );
+
+
+    textoSelector.addEventListener(
+        'keydown',
+        (evento) => {
+
+            if (
+                evento.key === 'Enter'
+            ) {
+
+                evento.preventDefault();
+            }
+        }
+    );
+
+
+    textoSelector.addEventListener(
+        'input',
+        () => {
+
+            const busqueda =
+                convertirTextoQuejosoCatalogoEditarAMayusculas(
+                    textoSelector
+                );
+
+
+            abrir(
+                busqueda
+            );
+
+
+            filtrar(
+                busqueda
+            );
+        }
+    );
+
+
+    document.addEventListener(
+        'click',
+        (evento) => {
+
+            if (
+                selector.contains(
+                    evento.target
+                )
+                || resultados.contains(
+                    evento.target
+                )
+            ) {
+                return;
+            }
+
+
+            cerrar();
+        }
+    );
+
+
+    document.addEventListener(
+        'keydown',
+        (evento) => {
+
+            if (
+                evento.key === 'Escape'
+            ) {
+
+                cerrar();
+            }
+        }
+    );
+
+
+    filtrar(
+        ''
+    );
+
+
+    return {
+        cerrar,
+        limpiar,
+        seleccionar,
+        establecerValorHistorico,
+        establecerOpciones,
+        establecerDeshabilitado,
+        buscarPorNombre,
+    };
+}
+
+
+function inicializarEstadoMunicipioQuejosoEditar(
+    modal
+) {
+
+    if (
+        estadosMunicipiosEditar.has(
+            modal
+        )
+    ) {
+        return;
+    }
+
+
+    const estado =
+        crearSelectorCatalogoQuejosoEditar(
+            modal,
+            {
+                selector:
+                    '#editar-estado-quejoso-select',
+
+                texto:
+                    '#editar-estado-quejoso-select-texto',
+
+                input:
+                    '#editar-estado-quejoso',
+
+                inputId:
+                    '#editar-estado-quejoso-id',
+
+                resultados:
+                    '#editar-estado-quejoso-resultados',
+
+                placeholder:
+                    'Selecciona un estado',
+
+                descripcion:
+                    'Estado',
+
+                onSelect:
+                    (opcion) => {
+
+                        municipio.limpiar(
+                            'Cargando municipios...'
+                        );
+
+                        cargarMunicipios(
+                            String(
+                                opcion.id
+                                || ''
+                            ),
+                            ''
+                        );
+                    },
+            }
+        );
+
+
+    const municipio =
+        crearSelectorCatalogoQuejosoEditar(
+            modal,
+            {
+                selector:
+                    '#editar-municipio-quejoso-select',
+
+                texto:
+                    '#editar-municipio-quejoso-select-texto',
+
+                input:
+                    '#editar-municipio-quejoso',
+
+                inputId:
+                    '#editar-municipio-quejoso-id',
+
+                resultados:
+                    '#editar-municipio-quejoso-resultados',
+
+                placeholder:
+                    'Selecciona un municipio',
+
+                descripcion:
+                    'Municipio',
+            }
+        );
+
+
+    if (
+        !estado
+        || !municipio
+    ) {
+        return;
+    }
+
+
+    let controladorMunicipios =
+        null;
+
+
+    let solicitudMunicipios =
+        0;
+
+
+    let estadosCargados =
+        false;
+
+
+    let historicoPendiente =
+        null;
+
+
+    municipio.establecerDeshabilitado(
+        true,
+        'Selecciona un estado primero'
+    );
+
+
+    function aplicarHistorico(
+        estadoHistorico,
+        municipioHistorico
+    ) {
+
+        const valorEstado =
+            String(
+                estadoHistorico
+                || ''
+            ).trim();
+
+
+        const valorMunicipio =
+            String(
+                municipioHistorico
+                || ''
+            ).trim();
+
+
+        estado.establecerValorHistorico(
+            valorEstado
+        );
+
+
+        municipio.establecerValorHistorico(
+            valorMunicipio
+        );
+
+
+        if (!estadosCargados) {
+
+            historicoPendiente = {
+                estado:
+                    valorEstado,
+
+                municipio:
+                    valorMunicipio,
+            };
+
+            return;
+        }
+
+
+        const estadoCatalogo =
+            estado.buscarPorNombre(
+                valorEstado
+            );
+
+
+        if (!estadoCatalogo) {
+
+            municipio.establecerDeshabilitado(
+                true,
+                valorMunicipio !== ''
+                    ? valorMunicipio
+                    : 'Selecciona un estado primero'
+            );
+
+            return;
+        }
+
+
+        estado.seleccionar(
+            estadoCatalogo
+        );
+
+
+        cargarMunicipios(
+            String(
+                estadoCatalogo.id
+                || ''
+            ),
+            valorMunicipio
+        );
+    }
+
+
+    async function cargarEstados() {
+
+        estado.establecerDeshabilitado(
+            true,
+            'Cargando estados...'
+        );
+
+
+        try {
+
+            const url =
+                construirUrlCatalogoQuejosoEditar(
+                    'catalogos/estados'
+                );
+
+
+            const respuesta =
+                await fetch(
+                    url.toString(),
+                    {
+                        method:
+                            'GET',
+
+                        credentials:
+                            'same-origin',
+
+                        headers: {
+                            Accept:
+                                'application/json',
+                        },
+                    }
+                );
+
+
+            if (
+                !respuesta.ok
+            ) {
+                throw new Error(
+                    'No fue posible consultar los estados.'
+                );
+            }
+
+
+            const datos =
+                await respuesta.json();
+
+
+            estado.establecerOpciones(
+                Array.isArray(
+                    datos.estados
+                )
+                    ? datos.estados
+                    : []
+            );
+
+
+            estado.establecerDeshabilitado(
+                false,
+                'Selecciona un estado'
+            );
+
+
+            estadosCargados =
+                true;
+
+
+            if (historicoPendiente) {
+
+                const historico =
+                    historicoPendiente;
+
+
+                historicoPendiente =
+                    null;
+
+
+                aplicarHistorico(
+                    historico.estado,
+                    historico.municipio
+                );
+            }
+        } catch (error) {
+
+            console.error(
+                'Error cargando estados del quejoso:',
+                error
+            );
+
+
+            estado.establecerOpciones(
+                []
+            );
+
+
+            estado.establecerDeshabilitado(
+                true,
+                'No fue posible cargar estados'
+            );
+        }
+    }
+
+
+    async function cargarMunicipios(
+        idEstado,
+        valorHistorico = ''
+    ) {
+
+        const id =
+            String(
+                idEstado
+                || ''
+            ).trim();
+
+
+        solicitudMunicipios += 1;
+
+
+        const solicitudActual =
+            solicitudMunicipios;
+
+
+        if (controladorMunicipios) {
+            controladorMunicipios.abort();
+        }
+
+
+        if (id === '') {
+
+            municipio.establecerOpciones(
+                []
+            );
+
+
+            municipio.establecerDeshabilitado(
+                true,
+                'Selecciona un estado primero'
+            );
+
+            return;
+        }
+
+
+        controladorMunicipios =
+            new AbortController();
+
+
+        municipio.establecerDeshabilitado(
+            true,
+            'Cargando municipios...'
+        );
+
+
+        try {
+
+            const url =
+                construirUrlCatalogoQuejosoEditar(
+                    'catalogos/municipios'
+                );
+
+
+            url.searchParams.set(
+                'idEstado',
+                id
+            );
+
+
+            const respuesta =
+                await fetch(
+                    url.toString(),
+                    {
+                        method:
+                            'GET',
+
+                        credentials:
+                            'same-origin',
+
+                        headers: {
+                            Accept:
+                                'application/json',
+                        },
+
+                        signal:
+                            controladorMunicipios.signal,
+                    }
+                );
+
+
+            if (
+                !respuesta.ok
+            ) {
+                throw new Error(
+                    'No fue posible consultar los municipios.'
+                );
+            }
+
+
+            const datos =
+                await respuesta.json();
+
+
+            if (
+                solicitudActual !== solicitudMunicipios
+            ) {
+                return;
+            }
+
+
+            municipio.establecerOpciones(
+                Array.isArray(
+                    datos.municipios
+                )
+                    ? datos.municipios
+                    : []
+            );
+
+
+            const coincidencia =
+                municipio.buscarPorNombre(
+                    valorHistorico
+                );
+
+
+            if (coincidencia) {
+
+                municipio.seleccionar(
+                    coincidencia
+                );
+
+            } else if (
+                String(
+                    valorHistorico
+                    || ''
+                ).trim() !== ''
+            ) {
+
+                municipio.establecerValorHistorico(
+                    valorHistorico
+                );
+
+            } else {
+
+                municipio.limpiar(
+                    'Selecciona un municipio'
+                );
+            }
+
+
+            municipio.establecerDeshabilitado(
+                false,
+                'Selecciona un municipio'
+            );
+        } catch (error) {
+
+            if (
+                error.name === 'AbortError'
+            ) {
+                return;
+            }
+
+
+            console.error(
+                'Error cargando municipios del quejoso:',
+                error
+            );
+
+
+            if (
+                solicitudActual !== solicitudMunicipios
+            ) {
+                return;
+            }
+
+
+            municipio.establecerOpciones(
+                []
+            );
+
+
+            municipio.establecerDeshabilitado(
+                true,
+                'No fue posible cargar municipios'
+            );
+        }
+    }
+
+
+    cargarEstados();
+
+
+    estadosMunicipiosEditar.set(
+        modal,
+        {
+            estado,
+            municipio,
+            cargarMunicipios,
+            cargarHistorico:
+                aplicarHistorico,
+        }
+    );
+}
+
+
+function cargarEstadoMunicipioQuejosoEditar(
+    modal,
+    estadoHistorico,
+    municipioHistorico
+) {
+
+    if (
+        !estadosMunicipiosEditar.has(
+            modal
+        )
+    ) {
+
+        inicializarEstadoMunicipioQuejosoEditar(
+            modal
+        );
+    }
+
+
+    const contexto =
+        estadosMunicipiosEditar.get(
+            modal
+        );
+
+
+    if (!contexto) {
+        return;
+    }
+
+
+    contexto.cargarHistorico(
+        estadoHistorico,
+        municipioHistorico
+    );
+}
+
+
+function inicializarColoniaQuejosoEditarMayusculas(
+    modal
+) {
+
+    const colonia =
+        modal.querySelector(
+            '#editar-colonia-quejoso'
+        );
+
+
+    if (!colonia) {
+        return;
+    }
+
+
+    colonia.addEventListener(
+        'input',
+        () => convertirInputQuejosoEditarAMayusculas(
+            colonia
+        )
+    );
+}
+
+
+/* =========================================================
    CARGAR DATOS EXISTENTES
 ========================================================= */
 
@@ -1960,17 +3642,10 @@ export function cargarQuejosoEditar(
     );
 
 
-    asignarValorEditar(
+    cargarEstadoMunicipioQuejosoEditar(
         modal,
-        '#editar-municipio-quejoso',
+        reporte.estado_quejoso,
         reporte.municipio_quejoso
-    );
-
-
-    asignarValorEditar(
-        modal,
-        '#editar-estado-quejoso',
-        reporte.estado_quejoso
     );
 
 
@@ -2140,6 +3815,36 @@ export function limpiarQuejosoEditar(
                 '';
         }
     );
+
+
+    const contextoCatalogos =
+        estadosMunicipiosEditar.get(
+            modal
+        );
+
+
+    if (contextoCatalogos) {
+
+        contextoCatalogos.estado.limpiar(
+            'Selecciona un estado'
+        );
+
+
+        contextoCatalogos.municipio.establecerOpciones(
+            []
+        );
+
+
+        contextoCatalogos.municipio.limpiar(
+            'Selecciona un estado primero'
+        );
+
+
+        contextoCatalogos.municipio.establecerDeshabilitado(
+            true,
+            'Selecciona un estado primero'
+        );
+    }
 
 
     /* =====================================================

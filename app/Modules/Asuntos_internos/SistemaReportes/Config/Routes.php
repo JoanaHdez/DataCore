@@ -214,6 +214,22 @@ $routes->group(
 
 
                 /* =================================================
+                   CATALOGOS
+                ================================================= */
+
+                $routes->get(
+                    'catalogos/estados',
+                    '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Catalogos_Controller::estados'
+                );
+
+
+                $routes->get(
+                    'catalogos/municipios',
+                    '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Catalogos_Controller::municipios'
+                );
+
+
+                /* =================================================
                    UBICACIÓN
                 ================================================= */
 

@@ -135,8 +135,8 @@
         </div>
 
 
-       <!-- =====================================================
-            DIRECCIÓN DEL QUEJOSO
+        <!-- =====================================================
+             DIRECCIÓN DEL QUEJOSO
         ====================================================== -->
 
         <div class="detalle-reporte-grupo-titulo">
@@ -153,7 +153,7 @@
 
 
         <!-- =====================================================
-            CALLE
+             CALLE
         ====================================================== -->
 
         <div class="detalle-reporte-campo">
@@ -170,7 +170,7 @@
 
 
         <!-- =====================================================
-            NÚMERO
+             NÚMERO
         ====================================================== -->
 
         <div class="detalle-reporte-campo">
@@ -187,16 +187,16 @@
 
 
         <!-- =====================================================
-            COLONIA
+             ESTADO
         ====================================================== -->
 
-        <div class="detalle-reporte-campo">
+        <div class="detalle-reporte-campo detalle-reporte-campo--full">
 
             <span>
-                Colonia
+                Estado
             </span>
 
-            <strong id="detalle-colonia-quejoso">
+            <strong id="detalle-estado-quejoso">
                 —
             </strong>
 
@@ -204,7 +204,7 @@
 
 
         <!-- =====================================================
-            MUNICIPIO
+             MUNICIPIO
         ====================================================== -->
 
         <div class="detalle-reporte-campo">
@@ -221,20 +221,21 @@
 
 
         <!-- =====================================================
-            ESTADO
+             COLONIA
         ====================================================== -->
 
-        <div class="detalle-reporte-campo detalle-reporte-campo--full">
+        <div class="detalle-reporte-campo">
 
             <span>
-                Estado
+                Colonia
             </span>
 
-            <strong id="detalle-estado-quejoso">
+            <strong id="detalle-colonia-quejoso">
                 —
             </strong>
 
         </div>
+
 
         <!-- =====================================================
              CANALIZACIÓN

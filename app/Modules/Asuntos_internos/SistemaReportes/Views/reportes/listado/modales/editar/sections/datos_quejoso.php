@@ -362,17 +362,34 @@
 
 
         <!-- =====================================================
-            COLONIA
+            ESTADO
         ====================================================== -->
 
-        <div class="editar-reporte-campo">
+        <div class="editar-reporte-campo editar-reporte-campo--full">
 
-            <label for="editar-colonia-quejoso">
-                Colonia
+            <label for="editar-estado-quejoso">
+                Estado
             </label>
 
-            <input type="text" id="editar-colonia-quejoso" name="colonia_quejoso" autocomplete="off"
-                placeholder="Ingresa la colonia">
+            <input type="hidden" id="editar-estado-quejoso" name="estado_quejoso" value="">
+
+            <input type="hidden" id="editar-estado-quejoso-id" value="">
+
+            <button type="button" class="editar-quejoso-catalogo-select" id="editar-estado-quejoso-select"
+                aria-expanded="false">
+
+                <span class="editar-quejoso-catalogo-select__texto" id="editar-estado-quejoso-select-texto"
+                    contenteditable="true" spellcheck="false">
+                    Selecciona un estado
+                </span>
+
+                <span class="editar-quejoso-catalogo-select__flecha" aria-hidden="true">
+                    ▾
+                </span>
+
+            </button>
+
+            <div class="editar-quejoso-catalogo-resultados" id="editar-estado-quejoso-resultados" hidden></div>
 
         </div>
 
@@ -387,24 +404,41 @@
                 Municipio
             </label>
 
-            <input type="text" id="editar-municipio-quejoso" name="municipio_quejoso" autocomplete="address-level2"
-                placeholder="Ingresa el municipio">
+            <input type="hidden" id="editar-municipio-quejoso" name="municipio_quejoso" value="">
+
+            <input type="hidden" id="editar-municipio-quejoso-id" value="">
+
+            <button type="button" class="editar-quejoso-catalogo-select" id="editar-municipio-quejoso-select"
+                aria-expanded="false" disabled>
+
+                <span class="editar-quejoso-catalogo-select__texto" id="editar-municipio-quejoso-select-texto"
+                    contenteditable="true" spellcheck="false">
+                    Selecciona un estado primero
+                </span>
+
+                <span class="editar-quejoso-catalogo-select__flecha" aria-hidden="true">
+                    ▾
+                </span>
+
+            </button>
+
+            <div class="editar-quejoso-catalogo-resultados" id="editar-municipio-quejoso-resultados" hidden></div>
 
         </div>
 
 
         <!-- =====================================================
-            ESTADO
+            COLONIA
         ====================================================== -->
 
-        <div class="editar-reporte-campo editar-reporte-campo--full">
+        <div class="editar-reporte-campo">
 
-            <label for="editar-estado-quejoso">
-                Estado
+            <label for="editar-colonia-quejoso">
+                Colonia
             </label>
 
-            <input type="text" id="editar-estado-quejoso" name="estado_quejoso" autocomplete="address-level1"
-                placeholder="Ingresa el estado">
+            <input type="text" id="editar-colonia-quejoso" name="colonia_quejoso" autocomplete="off"
+                placeholder="Ingresa la colonia">
 
         </div>
 
