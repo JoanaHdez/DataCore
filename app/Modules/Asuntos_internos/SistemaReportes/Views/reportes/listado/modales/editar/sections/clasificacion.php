@@ -140,7 +140,7 @@
             INSPECTOR
         ====================================================== -->
 
-        <div class="editar-reporte-campo editar-reporte-campo--inspector">  
+        <div class="editar-reporte-campo editar-reporte-campo--inspector">
             <label for="editar-inspector-busqueda">
                 Inspector
                 <span class="required">*</span>
@@ -493,6 +493,19 @@
 
             <div class="editar-report-options">
 
+                <!-- =====================================================
+                    CON SANCIÓN
+                ====================================================== -->
+
+                <label class="editar-report-option">
+
+                    <input type="checkbox" id="editar-con-sancion" name="con_sanciones" value="1">
+
+                    <span>
+                        Con sanción
+                    </span>
+
+                </label>
 
                 <!-- SIN SANCIONES -->
 
@@ -555,11 +568,13 @@
             </label>
 
 
-            <input type="text" id="editar-buscar-motivo" placeholder="Escribe para buscar un motivo" autocomplete="off">
+            <input type="text" id="editar-buscar-motivo" placeholder="Escribe para buscar un motivo" autocomplete="off"
+                disabled>
 
 
             <small class="editar-reporte-campo__help">
-                Puedes agregar uno o más motivos. El motivo es opcional.
+                Selecciona "Con sanción" para habilitar el catálogo. 
+                Solo podrás registrar un motivo.
             </small>
 
 

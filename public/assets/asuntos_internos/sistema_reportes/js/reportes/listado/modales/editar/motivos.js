@@ -16,6 +16,11 @@ const motivosSeleccionados =
 const motivosRespaldo =
     new Map();
 
+/* =========================================================
+   MOTIVOS ORIGINALES GUARDADOS EN BASE DE DATOS
+========================================================= */
+
+const motivosOriginalesEditar = new Map();
 
 function normalizarFolioSancion(
     valor
@@ -30,7 +35,7 @@ function normalizarFolioSancion(
 }
 
 /* =========================================================
-   CARGAR MOTIVOS EXISTENTES
+   CARGAR MOTIVOS EXISTENTES - EDITAR
 ========================================================= */
 
 export function cargarMotivosEditar(
@@ -42,792 +47,404 @@ export function cargarMotivosEditar(
         return;
     }
 
-
     /* =====================================================
-       LIMPIAR ESTADO ANTERIOR
+       LIMPIAR INFORMACIÓN DEL REPORTE ANTERIOR
     ===================================================== */
 
     motivosSeleccionados.clear();
-
     motivosRespaldo.clear();
-
-
-    /* =====================================================
-       VALIDAR MOTIVOS RECIBIDOS
-    ===================================================== */
-
-    if (
-        !Array.isArray(
-            motivos
-        )
-    ) {
-
-        renderizarMotivosEditar(
-            modal
-        );
-
-
-        return;
-    }
-
+    motivosOriginalesEditar.clear();
 
     /* =====================================================
-       CARGAR MOTIVOS
+       CARGAR MOTIVOS DESDE BASE DE DATOS
     ===================================================== */
 
-    motivos.forEach(
-        (motivo) => {
+    if (Array.isArray(motivos)) {
 
-            const idMotivo =
-                String(
-                    motivo.id_motivo
-                    ?? ''
-                ).trim();
+        motivos.forEach((motivo) => {
 
+            const idMotivo = String(
+                motivo.id_motivo ?? ''
+            ).trim();
 
             if (!idMotivo) {
                 return;
             }
 
+            const datosMotivo = {
+
+                id_motivo: idMotivo,
+
+                motivo: String(
+                    motivo.motivo ?? ''
+                ).trim(),
+
+                motivo_personalizado: String(
+                    motivo.motivo_personalizado ?? ''
+                ).trim(),
+
+                sancion: String(
+                    motivo.sancion ??
+                    motivo.tipo_sancion ??
+                    ''
+                ).trim(),
+
+                folio_sancion: normalizarFolioSancion(
+                    motivo.folio_sancion
+                )
+
+            };
+
+            /* Motivo visible durante la edición */
 
             motivosSeleccionados.set(
                 idMotivo,
-                {
-
-                    id_motivo:
-                        idMotivo,
-
-
-                    motivo:
-                        String(
-                            motivo.motivo
-                            ?? ''
-                        ).trim(),
-
-
-                    motivo_personalizado:
-                        String(
-                            motivo.motivo_personalizado
-                            ?? ''
-                        ).trim(),
-
-
-                    sancion:
-                        String(
-                            motivo.sancion
-                            ?? motivo.tipo_sancion
-                            ?? ''
-                        ).trim(),
-
-
-                    folio_sancion:
-                        normalizarFolioSancion(
-                            motivo.folio_sancion
-                        ),
-
-                }
+                { ...datosMotivo }
             );
-        }
-    );
 
+            /* Copia original, independiente */
 
-    /* =====================================================
-       LIMPIAR BUSCADOR
-    ===================================================== */
+            motivosOriginalesEditar.set(
+                idMotivo,
+                { ...datosMotivo }
+            );
 
-    const buscador =
-        modal.querySelector(
-            '#editar-buscar-motivo'
-        );
+        });
 
-
-    if (buscador) {
-
-        buscador.value =
-            '';
     }
 
-
-    const resultados =
-        modal.querySelector(
-            '#editar-motivos-resultados'
-        );
-
-
-    if (resultados) {
-
-        resultados.hidden =
-            true;
-
-
-        resultados
-            .querySelectorAll(
-                '[data-editar-motivo-opcion]'
-            )
-            .forEach(
-                (opcion) => {
-
-                    opcion.hidden =
-                        true;
-                }
-            );
-    }
-
-
     /* =====================================================
-       RENDERIZAR MOTIVOS REGISTRADOS
+       OPCIONES DE SANCIÓN
     ===================================================== */
 
-    renderizarMotivosEditar(
-        modal
-    );
-
-
-    /* =====================================================
-       ESTADO ACTUAL DE LA SANCIÓN
-    ===================================================== */
+    const conSancion =
+        modal.querySelector('#editar-con-sancion');
 
     const sinSanciones =
-        modal.querySelector(
-            '#editar-sin-sanciones'
-        );
-
+        modal.querySelector('#editar-sin-sanciones');
 
     const bajaVoluntaria =
-        modal.querySelector(
-            '#editar-baja-voluntaria'
-        );
-
+        modal.querySelector('#editar-baja-voluntaria');
 
     const desistir =
-        modal.querySelector(
-            '#editar-desistir'
-        );
+        modal.querySelector('#editar-desistir');
 
+    const tieneBaja =
+        bajaVoluntaria?.checked === true;
+
+    const tieneDesistimiento =
+        desistir?.checked === true;
+
+    const noTieneSanciones =
+        sinSanciones?.checked === true;
+
+    const tieneMotivos =
+        motivosOriginalesEditar.size > 0;
+
+    if (conSancion) {
+
+        conSancion.checked =
+            tieneMotivos &&
+            !tieneBaja &&
+            !tieneDesistimiento &&
+            !noTieneSanciones;
+
+    }
 
     /* =====================================================
        LIMPIAR ESTADOS TEMPORALES
     ===================================================== */
 
     if (bajaVoluntaria) {
-
-        delete bajaVoluntaria
-            .dataset
-            .estadoAnterior;
+        delete bajaVoluntaria.dataset.estadoAnterior;
     }
-
 
     if (desistir) {
-
-        delete desistir
-            .dataset
-            .estadoAnterior;
+        delete desistir.dataset.estadoAnterior;
     }
 
-
     /* =====================================================
-       BAJA VOLUNTARIA
+       REINICIAR BUSCADOR
     ===================================================== */
 
-    if (
-        bajaVoluntaria
-        && bajaVoluntaria.checked
-    ) {
+    const buscador =
+        modal.querySelector('#editar-buscar-motivo');
 
-        establecerMotivosHabilitadosEditar(
-            modal,
-            false,
-            true
+    const resultados =
+        modal.querySelector('#editar-motivos-resultados');
+
+    if (buscador) {
+
+        buscador.value = '';
+
+        buscador.disabled =
+            conSancion?.checked !== true;
+
+        buscador.classList.toggle(
+            'report-input--disabled',
+            buscador.disabled
         );
 
-
-        actualizarBajaVoluntariaEditar(
-            modal
-        );
-
-
-        return;
     }
 
+    if (resultados) {
 
-    /* =====================================================
-       DESISTIR
-    ===================================================== */
+        resultados.hidden = true;
 
-    if (
-        desistir
-        && desistir.checked
-    ) {
+        resultados.querySelectorAll(
+            '[data-editar-motivo-opcion]'
+        ).forEach((opcion) => {
 
-        establecerMotivosHabilitadosEditar(
-            modal,
-            false,
-            true
+            opcion.hidden = true;
+            opcion.style.display = 'none';
+
+        });
+
+        const mensaje = resultados.querySelector(
+            '.motivos-resultados__vacio'
         );
 
+        if (mensaje) {
+            mensaje.hidden = true;
+            mensaje.style.display = 'none';
+        }
 
-        actualizarDesistirEditar(
-            modal
-        );
-
-
-        return;
     }
 
-
     /* =====================================================
-       SIN SANCIONES
+       MOSTRAR MOTIVOS ÚNICAMENTE SI CORRESPONDE
     ===================================================== */
 
-    if (
-        sinSanciones
-        && sinSanciones.checked
-    ) {
-
-        establecerMotivosHabilitadosEditar(
-            modal,
-            false,
-            true
-        );
-
-
-        return;
+    if (conSancion?.checked !== true) {
+        motivosSeleccionados.clear();
     }
 
+    renderizarMotivosEditar(modal);
 
     /* =====================================================
-       SITUACIÓN NORMAL
+       ACTUALIZAR ESTADO DEL REPORTE
     ===================================================== */
 
-    establecerMotivosHabilitadosEditar(
-        modal,
-        true,
-        true
-    );
+    actualizarBajaVoluntariaEditar(modal);
+    actualizarDesistirEditar(modal);
 }
-
-
 /* =========================================================
-   INICIALIZAR
+   INICIALIZAR MOTIVOS - EDITAR
 ========================================================= */
 
-export function inicializarMotivosEditar(
-    modal
-) {
+export function inicializarMotivosEditar(modal) {
 
     if (!modal) {
         return;
     }
 
-
-    if (
-        modal.dataset.editarMotivosInicializados
-        === '1'
-    ) {
+    if (modal.dataset.editarMotivosInicializados === '1') {
         return;
     }
-
 
     const buscador =
-        modal.querySelector(
-            '#editar-buscar-motivo'
-        );
-
+        modal.querySelector('#editar-buscar-motivo');
 
     const resultados =
-        modal.querySelector(
-            '#editar-motivos-resultados'
-        );
-
+        modal.querySelector('#editar-motivos-resultados');
 
     const tbody =
-        modal.querySelector(
-            '#editar-motivos-agregados-body'
-        );
-
+        modal.querySelector('#editar-motivos-agregados-body');
 
     const contenedorInputs =
-        modal.querySelector(
-            '#editar-motivos-inputs'
-        );
+        modal.querySelector('#editar-motivos-inputs');
 
-
-    const sinSanciones =
-        modal.querySelector(
-            '#editar-sin-sanciones'
-        );
-
-
-    const bajaVoluntaria =
-        modal.querySelector(
-            '#editar-baja-voluntaria'
-        );
-
-
-    const desistir =
-        modal.querySelector(
-            '#editar-desistir'
-        );
-
+    const opciones = {
+        conSancion: modal.querySelector('#editar-con-sancion'),
+        sinSanciones: modal.querySelector('#editar-sin-sanciones'),
+        bajaVoluntaria: modal.querySelector('#editar-baja-voluntaria'),
+        desistir: modal.querySelector('#editar-desistir')
+    };
 
     if (
-        !buscador
-        || !resultados
-        || !tbody
-        || !contenedorInputs
+        !buscador ||
+        !resultados ||
+        !tbody ||
+        !contenedorInputs ||
+        !opciones.conSancion
     ) {
         return;
     }
 
-
-    modal.dataset.editarMotivosInicializados =
-        '1';
-
+    modal.dataset.editarMotivosInicializados = '1';
 
     /* =====================================================
-       BUSCAR
+       MOSTRAR CATÁLOGO AL ENFOCAR
     ===================================================== */
 
-    buscador.addEventListener(
-        'input',
-        () => {
+    buscador.addEventListener('focus', () => {
 
-            filtrarMotivosEditar(
-                modal
-            );
+        if (!buscador.disabled) {
+            filtrarMotivosEditar(modal);
         }
-    );
 
+    });
 
     /* =====================================================
-       CLICK EN RESULTADO
+       BUSCAR MOTIVOS
     ===================================================== */
 
-    resultados.addEventListener(
-        'click',
-        (evento) => {
+    buscador.addEventListener('input', () => {
 
-            const opcion =
-                evento.target.closest(
-                    '[data-editar-motivo-opcion]'
-                );
+        filtrarMotivosEditar(modal);
 
+    });
 
-            if (!opcion) {
-                return;
-            }
+    /* =====================================================
+       SELECCIONAR MOTIVO
+    ===================================================== */
 
+    resultados.addEventListener('click', (evento) => {
 
-            agregarMotivoEditar(
-                modal,
-                opcion
-            );
+        const opcion = evento.target.closest(
+            '[data-editar-motivo-opcion]'
+        );
+
+        if (!opcion || buscador.disabled) {
+            return;
         }
-    );
 
+        agregarMotivoEditar(modal, opcion);
+
+    });
 
     /* =====================================================
        QUITAR MOTIVO
     ===================================================== */
 
-    tbody.addEventListener(
-        'click',
-        (evento) => {
+    tbody.addEventListener('click', (evento) => {
 
-            const boton =
-                evento.target.closest(
-                    '[data-editar-quitar-motivo]'
-                );
+        const boton = evento.target.closest(
+            '[data-editar-quitar-motivo]'
+        );
 
-
-            if (!boton) {
-                return;
-            }
-
-
-            const idMotivo =
-                String(
-                    boton.dataset.motivoId
-                    || ''
-                ).trim();
-
-
-            if (!idMotivo) {
-                return;
-            }
-
-
-            motivosSeleccionados.delete(
-                idMotivo
-            );
-
-
-            motivosRespaldo.delete(
-                idMotivo
-            );
-
-
-            renderizarMotivosEditar(
-                modal
-            );
-
-
-            filtrarMotivosEditar(
-                modal
-            );
+        if (!boton) {
+            return;
         }
-    );
 
+        const idMotivo = String(
+            boton.dataset.motivoId || ''
+        ).trim();
+
+        if (!idMotivo) {
+            return;
+        }
+
+        motivosSeleccionados.delete(idMotivo);
+
+        // Quitar manualmente descarta también el respaldo.
+        motivosRespaldo.clear();
+
+        renderizarMotivosEditar(modal);
+
+        if (!buscador.disabled) {
+            filtrarMotivosEditar(modal);
+        }
+
+    });
 
     /* =====================================================
        FOLIO DE SANCIÓN
     ===================================================== */
 
-    tbody.addEventListener(
-        'input',
-        (evento) => {
+    tbody.addEventListener('input', (evento) => {
 
-            const input =
-                evento.target.closest(
-                    '[data-editar-folio-sancion]'
-                );
+        const input = evento.target.closest(
+            '[data-editar-folio-sancion]'
+        );
 
-
-            if (!input) {
-                return;
-            }
-
-
-            const idMotivo =
-                String(
-                    input.dataset.motivoId
-                    || ''
-                ).trim();
-
-
-            const motivo =
-                motivosSeleccionados.get(
-                    idMotivo
-                );
-
-
-            if (!motivo) {
-                return;
-            }
-
-
-            motivo.folio_sancion =
-                normalizarFolioSancion(
-                    input.value
-                );
-
-
-            input.value =
-                motivo.folio_sancion;
-
-
-            motivosSeleccionados.set(
-                idMotivo,
-                motivo
-            );
-
-
-            actualizarInputsMotivosEditar(
-                modal
-            );
+        if (!input) {
+            return;
         }
-    );
 
-    /* =====================================================
-    MOTIVO PERSONALIZADO
-    ===================================================== */
+        const idMotivo = String(
+            input.dataset.motivoId || ''
+        ).trim();
 
-    tbody.addEventListener(
-        'input',
-        (evento) => {
+        const motivo =
+            motivosSeleccionados.get(idMotivo);
 
-            const input =
-                evento.target.closest(
-                    '[data-editar-motivo-personalizado]'
-                );
-
-
-            if (!input) {
-                return;
-            }
-
-
-            const idMotivo =
-                String(
-                    input.dataset.motivoId
-                    || ''
-                ).trim();
-
-
-            const motivo =
-                motivosSeleccionados.get(
-                    idMotivo
-                );
-
-
-            if (!motivo) {
-                return;
-            }
-
-
-            motivo.motivo_personalizado =
-                String(
-                    input.value
-                    || ''
-                );
-
-
-            motivosSeleccionados.set(
-                idMotivo,
-                motivo
-            );
-
-
-            actualizarInputsMotivosEditar(
-                modal
-            );
+        if (!motivo) {
+            return;
         }
-    );
 
+        motivo.folio_sancion =
+            normalizarFolioSancion(input.value);
 
-    /* =====================================================
-       SIN SANCIONES
-    ===================================================== */
+        input.value = motivo.folio_sancion;
 
-    if (sinSanciones) {
+        motivosSeleccionados.set(idMotivo, motivo);
 
-        sinSanciones.addEventListener(
-            'change',
-            () => {
+        actualizarInputsMotivosEditar(modal);
 
-                if (
-                    sinSanciones.checked
-                ) {
-
-                    if (bajaVoluntaria) {
-
-                        bajaVoluntaria.checked =
-                            false;
-                    }
-
-
-                    if (desistir) {
-
-                        desistir.checked =
-                            false;
-                    }
-
-
-                    actualizarBajaVoluntariaEditar(
-                        modal
-                    );
-
-
-                    actualizarDesistirEditar(
-                        modal
-                    );
-
-
-                    establecerMotivosHabilitadosEditar(
-                        modal,
-                        false,
-                        true
-                    );
-
-
-                    return;
-                }
-
-
-                const bajaActiva =
-                    bajaVoluntaria
-                    && bajaVoluntaria.checked;
-
-
-                const desistirActivo =
-                    desistir
-                    && desistir.checked;
-
-
-                if (
-                    !bajaActiva
-                    && !desistirActivo
-                ) {
-
-                    establecerMotivosHabilitadosEditar(
-                        modal,
-                        true,
-                        true
-                    );
-                }
-            }
-        );
-    }
-
+    });
 
     /* =====================================================
-       BAJA VOLUNTARIA
+       MOTIVO PERSONALIZADO - ID 55
     ===================================================== */
 
-    if (bajaVoluntaria) {
+    tbody.addEventListener('input', (evento) => {
 
-        bajaVoluntaria.addEventListener(
-            'change',
-            () => {
-
-                if (
-                    bajaVoluntaria.checked
-                ) {
-
-                    if (sinSanciones) {
-
-                        sinSanciones.checked =
-                            false;
-                    }
-
-
-                    if (desistir) {
-
-                        desistir.checked =
-                            false;
-                    }
-
-
-                    establecerMotivosHabilitadosEditar(
-                        modal,
-                        false,
-                        true
-                    );
-
-                } else {
-
-                    const desistirActivo =
-                        desistir
-                        && desistir.checked;
-
-
-                    const sinSancionesActivo =
-                        sinSanciones
-                        && sinSanciones.checked;
-
-
-                    if (
-                        !desistirActivo
-                        && !sinSancionesActivo
-                    ) {
-
-                        establecerMotivosHabilitadosEditar(
-                            modal,
-                            true,
-                            true
-                        );
-                    }
-                }
-
-
-                actualizarBajaVoluntariaEditar(
-                    modal
-                );
-
-
-                actualizarDesistirEditar(
-                    modal
-                );
-            }
+        const input = evento.target.closest(
+            '[data-editar-motivo-personalizado]'
         );
-    }
 
+        if (!input) {
+            return;
+        }
+
+        const idMotivo = String(
+            input.dataset.motivoId || ''
+        ).trim();
+
+        const motivo =
+            motivosSeleccionados.get(idMotivo);
+
+        if (!motivo) {
+            return;
+        }
+
+        motivo.motivo_personalizado =
+            String(input.value || '');
+
+        motivosSeleccionados.set(idMotivo, motivo);
+
+        actualizarInputsMotivosEditar(modal);
+
+    });
 
     /* =====================================================
-       DESISTIR
+       CAMBIOS EN SITUACIÓN DE LA SANCIÓN
     ===================================================== */
 
-    if (desistir) {
+    Object.entries(opciones).forEach(([clave, checkbox]) => {
 
-        desistir.addEventListener(
-            'change',
-            () => {
+        if (!checkbox) {
+            return;
+        }
 
-                if (
-                    desistir.checked
-                ) {
+        checkbox.addEventListener('change', () => {
 
-                    if (sinSanciones) {
+            actualizarSituacionSancionEditar(
+                modal,
+                clave
+            );
 
-                        sinSanciones.checked =
-                            false;
-                    }
+        });
 
-
-                    if (bajaVoluntaria) {
-
-                        bajaVoluntaria.checked =
-                            false;
-                    }
-
-
-                    establecerMotivosHabilitadosEditar(
-                        modal,
-                        false,
-                        true
-                    );
-
-                } else {
-
-                    const bajaActiva =
-                        bajaVoluntaria
-                        && bajaVoluntaria.checked;
-
-
-                    const sinSancionesActivo =
-                        sinSanciones
-                        && sinSanciones.checked;
-
-
-                    if (
-                        !bajaActiva
-                        && !sinSancionesActivo
-                    ) {
-
-                        establecerMotivosHabilitadosEditar(
-                            modal,
-                            true,
-                            true
-                        );
-                    }
-                }
-
-
-                actualizarDesistirEditar(
-                    modal
-                );
-
-
-                actualizarBajaVoluntariaEditar(
-                    modal
-                );
-            }
-        );
-    }
-
+    });
 
     /* =====================================================
        ESTADO INICIAL
     ===================================================== */
 
-    actualizarBajaVoluntariaEditar(
-        modal
-    );
-
-
-    actualizarDesistirEditar(
-        modal
-    );
+    actualizarBajaVoluntariaEditar(modal);
+    actualizarDesistirEditar(modal);
 }
 
 
@@ -1226,219 +843,191 @@ export function actualizarDesistirEditar(
 
 
 /* =========================================================
-   FILTRAR MOTIVOS
+   FILTRAR MOTIVOS - EDITAR
 ========================================================= */
 
-function filtrarMotivosEditar(
-    modal
-) {
+function filtrarMotivosEditar(modal) {
+
+    if (!modal) {
+        return;
+    }
 
     const buscador =
-        modal.querySelector(
-            '#editar-buscar-motivo'
-        );
-
+        modal.querySelector('#editar-buscar-motivo');
 
     const resultados =
-        modal.querySelector(
-            '#editar-motivos-resultados'
-        );
+        modal.querySelector('#editar-motivos-resultados');
 
-
-    const opciones =
-        resultados?.querySelectorAll(
-            '[data-editar-motivo-opcion]'
-        )
-        || [];
-
-
-    if (
-        !buscador
-        || !resultados
-    ) {
+    if (!buscador || !resultados) {
         return;
     }
 
-
-    const busqueda =
-        normalizarTextoMotivoEditar(
-            buscador.value
-        );
-
-
-    /*
-     * Igual que en Nuevo:
-     * si no se escribió nada, no mostramos todo el catálogo.
-     */
-
-    if (!busqueda) {
-
-        resultados.hidden =
-            true;
-
-
-        opciones.forEach(
-            (opcion) => {
-
-                opcion.hidden =
-                    true;
-            }
-        );
-
-
-        return;
-    }
-
-
-    let encontrados =
-        0;
-
-
-    opciones.forEach(
-        (opcion) => {
-
-            const id =
-                String(
-                    opcion.dataset.motivoId
-                    || ''
-                ).trim();
-
-
-            const texto =
-                normalizarTextoMotivoEditar(
-                    opcion.dataset.motivoTexto
-                );
-
-
-            const sancion =
-                normalizarTextoMotivoEditar(
-                    opcion.dataset.motivoSancion
-                );
-
-
-            const yaSeleccionado =
-                motivosSeleccionados.has(
-                    id
-                );
-
-
-            const coincide =
-                !yaSeleccionado
-                && (
-                    texto.includes(
-                        busqueda
-                    )
-                    || sancion.includes(
-                        busqueda
-                    )
-                    || id === busqueda
-                );
-
-
-            opcion.hidden =
-                !coincide;
-
-
-            if (coincide) {
-
-                encontrados++;
-            }
-        }
+    const opciones = resultados.querySelectorAll(
+        '[data-editar-motivo-opcion]'
     );
 
+    if (buscador.disabled) {
 
-    resultados.hidden =
-        encontrados === 0;
+        resultados.hidden = true;
+
+        return;
+    }
+
+    buscador.value =
+        buscador.value.toLocaleUpperCase('es-MX');
+
+    const busqueda = normalizarTextoMotivoEditar(
+        buscador.value
+    );
+
+    let encontrados = 0;
+
+    opciones.forEach((opcion) => {
+
+        const id = String(
+            opcion.dataset.motivoId || ''
+        ).trim();
+
+        const texto = normalizarTextoMotivoEditar(
+            opcion.dataset.motivoTexto
+        );
+
+        const sancion = normalizarTextoMotivoEditar(
+            opcion.dataset.motivoSancion
+        );
+
+        const coincide =
+            busqueda === '' ||
+            texto.includes(busqueda) ||
+            sancion.includes(busqueda) ||
+            id === busqueda;
+
+        opcion.hidden = !coincide;
+
+        opcion.style.display = coincide
+            ? 'flex'
+            : 'none';
+
+        if (coincide) {
+            encontrados++;
+        }
+
+    });
+
+    let mensajeVacio = resultados.querySelector(
+        '.motivos-resultados__vacio'
+    );
+
+    if (!mensajeVacio) {
+
+        mensajeVacio = document.createElement('div');
+
+        mensajeVacio.className =
+            'motivos-resultados__vacio';
+
+        mensajeVacio.textContent =
+            'Sin coincidencias';
+
+        resultados.appendChild(mensajeVacio);
+    }
+
+    mensajeVacio.hidden = encontrados > 0;
+
+    mensajeVacio.style.display = encontrados > 0
+        ? 'none'
+        : 'block';
+
+    resultados.hidden = false;
 }
 
-
 /* =========================================================
-   AGREGAR MOTIVO
+   AGREGAR / REEMPLAZAR MOTIVO - EDITAR
 ========================================================= */
 
-function agregarMotivoEditar(
-    modal,
-    opcion
-) {
+function agregarMotivoEditar(modal, opcion) {
 
-    const id =
-        String(
-            opcion.dataset.motivoId
-            || ''
-        ).trim();
-
-
-    const texto =
-        String(
-            opcion.dataset.motivoTexto
-            || ''
-        ).trim();
-
-
-    const sancion =
-        String(
-            opcion.dataset.motivoSancion
-            || ''
-        ).trim();
-
-
-    if (
-        !id
-        || motivosSeleccionados.has(
-            id
-        )
-    ) {
+    if (!modal || !opcion) {
         return;
     }
 
+    const conSancion =
+        modal.querySelector('#editar-con-sancion');
 
-    motivosSeleccionados.set(
-        id,
-        {
-            id_motivo:
-                id,
+    if (!conSancion?.checked) {
+        return;
+    }
 
-            motivo:
-                texto,
+    const id = String(
+        opcion.dataset.motivoId || ''
+    ).trim();
 
-            sancion:
-                sancion,
+    const texto = String(
+        opcion.dataset.motivoTexto || ''
+    ).trim();
 
-            folio_sancion:
-                '',
-        }
-    );
+    const sancion = String(
+        opcion.dataset.motivoSancion || ''
+    ).trim();
 
+    if (!id) {
+        return;
+    }
+
+    /* =====================================================
+       CONSERVAR DATOS SI ES EL MISMO MOTIVO
+    ===================================================== */
+
+    const motivoAnterior =
+        motivosSeleccionados.get(id);
+
+    /* =====================================================
+       PERMITIR ÚNICAMENTE UN MOTIVO
+    ===================================================== */
+
+    motivosSeleccionados.clear();
+    motivosRespaldo.clear();
+
+    motivosSeleccionados.set(id, {
+
+        id_motivo: id,
+
+        motivo: texto,
+
+        sancion: sancion,
+
+        folio_sancion:
+            motivoAnterior?.folio_sancion || '',
+
+        motivo_personalizado:
+            id === '55'
+                ? (motivoAnterior?.motivo_personalizado || '')
+                : ''
+
+    });
+
+    /* =====================================================
+       LIMPIAR BUSCADOR
+    ===================================================== */
 
     const buscador =
-        modal.querySelector(
-            '#editar-buscar-motivo'
-        );
-
+        modal.querySelector('#editar-buscar-motivo');
 
     const resultados =
-        modal.querySelector(
-            '#editar-motivos-resultados'
-        );
-
+        modal.querySelector('#editar-motivos-resultados');
 
     if (buscador) {
-
-        buscador.value =
-            '';
+        buscador.value = '';
     }
-
 
     if (resultados) {
-
-        resultados.hidden =
-            true;
+        resultados.hidden = true;
     }
 
+    /* =====================================================
+       ACTUALIZAR TABLA Y CAMPOS
+    ===================================================== */
 
-    renderizarMotivosEditar(
-        modal
-    );
+    renderizarMotivosEditar(modal);
 }
 
 
@@ -1943,85 +1532,92 @@ function actualizarInputsMotivosEditar(
 
 
 /* =========================================================
-   LIMPIAR
+   LIMPIAR MOTIVOS - EDITAR
 ========================================================= */
 
-export function limpiarMotivosEditar(
-    modal
-) {
+export function limpiarMotivosEditar(modal) {
 
     /* =====================================================
-       LIMPIAR ESTADOS
+       LIMPIAR TODOS LOS ESTADOS
     ===================================================== */
 
     motivosSeleccionados.clear();
-
     motivosRespaldo.clear();
+    motivosOriginalesEditar.clear();
 
+    if (!modal) {
+        return;
+    }
 
     /* =====================================================
-       BUSCADOR
+       LIMPIAR BUSCADOR
     ===================================================== */
 
     const buscador =
-        modal?.querySelector(
-            '#editar-buscar-motivo'
-        );
-
+        modal.querySelector('#editar-buscar-motivo');
 
     const resultados =
-        modal?.querySelector(
-            '#editar-motivos-resultados'
-        );
-
+        modal.querySelector('#editar-motivos-resultados');
 
     if (buscador) {
 
-        buscador.value =
-            '';
+        buscador.value = '';
+        buscador.disabled = true;
+
+        buscador.classList.add(
+            'report-input--disabled'
+        );
+
     }
 
+    /* =====================================================
+       OCULTAR CATÁLOGO
+    ===================================================== */
 
     if (resultados) {
 
-        resultados.hidden =
-            true;
+        resultados.hidden = true;
+
+        resultados.querySelectorAll(
+            '[data-editar-motivo-opcion]'
+        ).forEach((opcion) => {
+
+            opcion.hidden = true;
+            opcion.style.display = 'none';
+
+        });
+
+        const mensaje = resultados.querySelector(
+            '.motivos-resultados__vacio'
+        );
+
+        if (mensaje) {
+            mensaje.hidden = true;
+            mensaje.style.display = 'none';
+        }
+
     }
 
-
     /* =====================================================
-       RENDERIZAR
+       LIMPIAR VISUALIZACIÓN
     ===================================================== */
 
-    renderizarMotivosEditar(
-        modal
-    );
+    renderizarMotivosEditar(modal);
 }
 
-
 /* =========================================================
-   NORMALIZAR TEXTO
+   NORMALIZAR TEXTO DE MOTIVOS - EDITAR
 ========================================================= */
 
-function normalizarTextoMotivoEditar(
-    valor
-) {
+function normalizarTextoMotivoEditar(valor) {
 
-    return String(
-        valor
-        || ''
-    )
+    return String(valor ?? '')
         .trim()
-        .toLocaleLowerCase(
-            'es-MX'
-        )
-        .normalize(
-            'NFD'
-        )
-        .replace(
-            /[\u0300-\u036f]/g,
-            ''
-        );
+        .toLocaleUpperCase('es-MX')
+        .replace(/Ñ/g, '\uE000')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\uE000/g, 'Ñ');
 }
 
 
@@ -2104,7 +1700,7 @@ function actualizarTotalHorasArrestoEditar(
 
 
 /* =========================================================
-   HABILITAR / DESHABILITAR MOTIVOS
+   HABILITAR / DESHABILITAR MOTIVOS - EDITAR
 ========================================================= */
 
 export function establecerMotivosHabilitadosEditar(
@@ -2117,66 +1713,58 @@ export function establecerMotivosHabilitadosEditar(
         return;
     }
 
-
     const buscador =
-        modal.querySelector(
-            '#editar-buscar-motivo'
-        );
-
+        modal.querySelector('#editar-buscar-motivo');
 
     const resultados =
-        modal.querySelector(
-            '#editar-motivos-resultados'
-        );
-
+        modal.querySelector('#editar-motivos-resultados');
 
     /* =====================================================
-       BUSCADOR
+       ACTUALIZAR BUSCADOR
     ===================================================== */
 
     if (buscador) {
 
-        buscador.disabled =
-            !habilitados;
-
+        buscador.disabled = !habilitados;
 
         buscador.classList.toggle(
             'report-input--disabled',
             !habilitados
         );
 
-
         if (!habilitados) {
-
-            buscador.value =
-                '';
+            buscador.value = '';
         }
+
     }
 
-
     /* =====================================================
-       RESULTADOS
+       OCULTAR CATÁLOGO
     ===================================================== */
 
     if (resultados) {
 
-        resultados.hidden =
-            true;
+        resultados.hidden = true;
 
+        resultados.querySelectorAll(
+            '[data-editar-motivo-opcion]'
+        ).forEach((opcion) => {
 
-        resultados
-            .querySelectorAll(
-                '[data-editar-motivo-opcion]'
-            )
-            .forEach(
-                (opcion) => {
+            opcion.hidden = true;
+            opcion.style.display = 'none';
 
-                    opcion.hidden =
-                        true;
-                }
-            );
+        });
+
+        const mensaje = resultados.querySelector(
+            '.motivos-resultados__vacio'
+        );
+
+        if (mensaje) {
+            mensaje.hidden = true;
+            mensaje.style.display = 'none';
+        }
+
     }
-
 
     /* =====================================================
        DESHABILITAR MOTIVOS
@@ -2184,112 +1772,49 @@ export function establecerMotivosHabilitadosEditar(
 
     if (!habilitados) {
 
-        /* =================================================
-           CONSERVAR RESPALDO
-
-           IMPORTANTE:
-
-           Solo reemplazamos el respaldo cuando realmente
-           existen motivos activos.
-
-           Si estamos cambiando directamente entre:
-           - Baja voluntaria
-           - Sin sanciones
-
-           los motivos activos ya estarán vacíos, pero el
-           respaldo original debe conservarse.
-        ================================================= */
-
-        if (conservarRespaldo) {
-
-            if (
-                motivosSeleccionados.size > 0
-            ) {
-
-                motivosRespaldo.clear();
-
-
-                motivosSeleccionados.forEach(
-                    (
-                        motivo,
-                        idMotivo
-                    ) => {
-
-                        motivosRespaldo.set(
-                            idMotivo,
-                            {
-                                ...motivo,
-                            }
-                        );
-                    }
-                );
-            }
-
-        } else {
-
-            /* =================================================
-               ELIMINAR RESPALDO DEFINITIVAMENTE
-            ================================================= */
-
-            motivosRespaldo.clear();
-        }
-
-
-        /* =================================================
-           ELIMINAR MOTIVOS ACTIVOS
-        ================================================= */
-
         motivosSeleccionados.clear();
+        motivosRespaldo.clear();
 
+        /*
+         * No modificamos motivosOriginalesEditar.
+         * Su contenido debe permanecer intacto.
+         */
 
-        renderizarMotivosEditar(
-            modal
-        );
-
+        renderizarMotivosEditar(modal);
 
         return;
     }
 
-
     /* =====================================================
-       VOLVER A HABILITAR
+       RECUPERAR MOTIVOS ORIGINALES
     ===================================================== */
 
-    if (
-        motivosSeleccionados.size === 0
-        && motivosRespaldo.size > 0
-    ) {
+    /*
+     * Al regresar a "Con sanción" se recuperan
+     * exclusivamente los motivos cargados desde BD.
+     *
+     * Nunca se restaura el último motivo temporal.
+     */
 
-        motivosRespaldo.forEach(
-            (
-                motivo,
-                idMotivo
-            ) => {
+    motivosSeleccionados.clear();
+    motivosRespaldo.clear();
 
-                motivosSeleccionados.set(
-                    idMotivo,
-                    {
-                        ...motivo,
-                    }
-                );
-            }
-        );
+    motivosOriginalesEditar.forEach(
+        (motivo, idMotivo) => {
 
+            motivosSeleccionados.set(
+                idMotivo,
+                { ...motivo }
+            );
 
-        /* =================================================
-           YA FUERON RESTAURADOS
+        }
+    );
 
-           Limpiamos el respaldo para que el próximo cambio
-           genere uno nuevo con el estado actual.
-        ================================================= */
+    /* =====================================================
+       ACTUALIZAR TABLA
+    ===================================================== */
 
-        motivosRespaldo.clear();
-
-
-        renderizarMotivosEditar(
-            modal
-        );
-    }
+    renderizarMotivosEditar(modal);
 }
 
 /* =========================================================
@@ -2324,4 +1849,50 @@ export function obtenerMotivosEditar() {
 
 
     return motivos;
+}
+
+
+/* =========================================================
+   ACTUALIZAR SITUACIÓN DE SANCIÓN - EDITAR
+========================================================= */
+
+function actualizarSituacionSancionEditar(
+    modal,
+    opcionActiva = null
+) {
+
+    if (!modal) {
+        return;
+    }
+
+    const opciones = {
+        conSancion: modal.querySelector('#editar-con-sancion'),
+        sinSanciones: modal.querySelector('#editar-sin-sanciones'),
+        bajaVoluntaria: modal.querySelector('#editar-baja-voluntaria'),
+        desistir: modal.querySelector('#editar-desistir')
+    };
+
+    if (opcionActiva && opciones[opcionActiva]?.checked) {
+
+        Object.entries(opciones).forEach(([clave, checkbox]) => {
+
+            if (clave !== opcionActiva && checkbox) {
+                checkbox.checked = false;
+            }
+
+        });
+
+    }
+
+    const conSancionActiva =
+        opciones.conSancion?.checked === true;
+
+    establecerMotivosHabilitadosEditar(
+        modal,
+        conSancionActiva,
+        true
+    );
+
+    actualizarBajaVoluntariaEditar(modal);
+    actualizarDesistirEditar(modal);
 }
