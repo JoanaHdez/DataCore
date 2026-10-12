@@ -9,7 +9,7 @@ use Throwable;
 class CatalogoEstadosMunicipiosService
 {
     private const TABLA =
-        'municipios_estados';
+    'nezasegu_infraestructura_institucional.municipios_estados';
 
     /**
      * @return array<int, array{idEstado: string, nombre: string}>
@@ -20,7 +20,7 @@ class CatalogoEstadosMunicipiosService
 
             $db =
                 Database::connect(
-                    'unidades'
+                    'datacore'
                 );
 
             $db
@@ -87,7 +87,7 @@ class CatalogoEstadosMunicipiosService
 
             $db =
                 Database::connect(
-                    'unidades'
+                    'datacore'
                 );
 
             $db
@@ -141,7 +141,7 @@ class CatalogoEstadosMunicipiosService
 
             $db =
                 Database::connect(
-                    'unidades'
+                    'datacore'
                 );
 
             $db

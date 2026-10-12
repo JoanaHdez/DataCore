@@ -13,7 +13,7 @@ class Database extends Config
      * The directory that holds the Migrations and Seeds directories.
      */
     public string $filesPath =
-    APPPATH
+        APPPATH
         . 'Database'
         . DIRECTORY_SEPARATOR;
 
@@ -21,7 +21,7 @@ class Database extends Config
      * Lets you choose which connection group to use if no other is specified.
      */
     public string $defaultGroup =
-    'default';
+        'default';
 
     /**
      * The default database connection.
@@ -370,59 +370,19 @@ class Database extends Config
             array_replace(
                 $this->default,
                 [
-                    'hostname' =>
-                    env(
-                        'database.plantilla.hostname',
-                        $this->default['hostname']
-                    ),
-
                     'database' =>
-                    env(
-                        'database.plantilla.database',
-                        'plantilla_general'
-                    ),
+                    'plantilla_general',
 
-                    'username' =>
-                    env(
-                        'database.plantilla.username',
-                        $this->default['username']
-                    ),
-
-                    'password' =>
-                    env(
-                        'database.plantilla.password',
-                        $this->default['password']
-                    ),
-
-                    'DBDriver' =>
-                    env(
-                        'database.plantilla.DBDriver',
-                        $this->default['DBDriver']
-                    ),
-
-                    'port' =>
-                    (int) env(
-                        'database.plantilla.port',
-                        $this->default['port']
-                    ),
-
-                    'DBPrefix' =>
-                    env(
-                        'database.plantilla.DBPrefix',
-                        $this->default['DBPrefix']
-                    ),
+                    /*
+                     * La tabla plantilla está creada
+                     * originalmente en latin1.
+                     */
 
                     'charset' =>
-                    env(
-                        'database.plantilla.charset',
-                        'latin1'
-                    ),
+                    'latin1',
 
                     'DBCollat' =>
-                    env(
-                        'database.plantilla.DBCollat',
-                        'latin1_swedish_ci'
-                    ),
+                    'latin1_swedish_ci',
                 ]
             );
 
@@ -434,70 +394,20 @@ class Database extends Config
             array_replace(
                 $this->default,
                 [
-                    'hostname' =>
-                    env(
-                        'database.unidades.hostname',
-                        $this->default['hostname']
-                    ),
-
                     'database' =>
-                    env(
-                        'database.unidades.database',
-                        'puestasyremisiones'
-                    ),
+                    'puestasyremisiones',
 
-                    'username' =>
-                    env(
-                        'database.unidades.username',
-                        $this->default['username']
-                    ),
-
-                    'password' =>
-                    env(
-                        'database.unidades.password',
-                        $this->default['password']
-                    ),
-
-                    'DBDriver' =>
-                    env(
-                        'database.unidades.DBDriver',
-                        $this->default['DBDriver']
-                    ),
-
-                    'port' =>
-                    (int) env(
-                        'database.unidades.port',
-                        $this->default['port']
-                    ),
-
-                    'DBPrefix' =>
-                    env(
-                        'database.unidades.DBPrefix',
-                        $this->default['DBPrefix']
-                    ),
+                    /*
+                     * parque_vehicular utiliza utf8.
+                     */
 
                     'charset' =>
-                    env(
-                        'database.unidades.charset',
-                        'utf8'
-                    ),
+                    'utf8',
 
                     'DBCollat' =>
-                    env(
-                        'database.unidades.DBCollat',
-                        'utf8_general_ci'
-                    ),
+                    'utf8_general_ci',
                 ]
             );
-
-        /* =====================================================
-           TERRITORIO
-        ===================================================== */
-
-        $this->territorio =
-            $this->unidades;
-
-
 
         /*
          * =====================================================

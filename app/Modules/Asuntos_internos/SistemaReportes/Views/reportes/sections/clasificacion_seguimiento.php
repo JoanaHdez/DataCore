@@ -486,6 +486,26 @@
 
                 <div class="report-options">
 
+
+                <!-- =============================================
+     CON SANCIÓN
+============================================== -->
+
+<label class="report-option">
+
+    <input
+        type="checkbox"
+        id="con-sancion"
+        name="con_sancion"
+        value="1"
+    >
+
+    <span>
+        Con sanción
+    </span>
+
+</label>
+
                     <!-- =============================================
                          SIN SANCIONES
                     ============================================== -->
@@ -548,13 +568,20 @@
                 </label>
 
 
-                <input type="text" id="buscar-motivo" class="report-input" placeholder="Escribe para buscar un motivo"
-                    autocomplete="off">
+                <input
+    type="text"
+    id="buscar-motivo"
+    class="report-input report-input--disabled"
+    placeholder="Selecciona 'Con sanción' para buscar motivos"
+    autocomplete="off"
+    disabled
+>
 
 
                 <small class="report-field__help">
-                    Puedes agregar uno o más motivos. El motivo es opcional.
-                </small>
+    Selecciona "Con sanción" para habilitar el catálogo.
+    Solo podrás registrar un motivo.
+</small>
 
 
                 <!-- =================================================

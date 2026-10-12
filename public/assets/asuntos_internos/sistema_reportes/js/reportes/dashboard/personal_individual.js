@@ -83,6 +83,55 @@ function inicializarPersonalIndividualDashboard() {
         null;
 
 
+    function normalizarBusquedaPersonalIndividual() {
+
+        const valorOriginal =
+            inputBusqueda.value;
+
+
+        const valorMayusculas =
+            valorOriginal.toLocaleUpperCase(
+                'es-MX'
+            );
+
+
+        if (
+            valorOriginal === valorMayusculas
+        ) {
+
+            return valorMayusculas;
+        }
+
+
+        const inicioSeleccion =
+            inputBusqueda.selectionStart;
+
+
+        const finSeleccion =
+            inputBusqueda.selectionEnd;
+
+
+        inputBusqueda.value =
+            valorMayusculas;
+
+
+        if (
+            inicioSeleccion !== null
+            && finSeleccion !== null
+            && typeof inputBusqueda.setSelectionRange === 'function'
+        ) {
+
+            inputBusqueda.setSelectionRange(
+                inicioSeleccion,
+                finSeleccion
+            );
+        }
+
+
+        return valorMayusculas;
+    }
+
+
     /* =====================================================
        BUSCAR AL ESCRIBIR
     ===================================================== */
@@ -92,7 +141,8 @@ function inicializarPersonalIndividualDashboard() {
         () => {
 
             const termino =
-                inputBusqueda.value.trim();
+                normalizarBusquedaPersonalIndividual()
+                    .trim();
 
 
             if (temporizadorBusqueda) {

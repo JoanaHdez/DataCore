@@ -2223,7 +2223,11 @@ class Reportes_Controller extends BaseController
                     if ($perscod !== '') {
 
                         $foto =
-                            (new \App\Modules\Asuntos_internos\SistemaReportes\Services\FotoPersonalService())->obtenerUrl($perscod);
+                            'http://10.8.6.2:8083/dgsc/images/fotos/'
+                            . rawurlencode(
+                                $perscod
+                            )
+                            . '/F.F.R.E.jpg';
                     }
 
 
@@ -2348,7 +2352,9 @@ class Reportes_Controller extends BaseController
                 if ($perscod !== '') {
 
                     $foto =
-                        (new \App\Modules\Asuntos_internos\SistemaReportes\Services\FotoPersonalService())->obtenerUrl($perscod);
+                        'http://10.8.6.2:8083/dgsc/images/fotos/'
+                        . rawurlencode($perscod)
+                        . '/F.F.R.E.jpg';
                 }
 
 
@@ -5694,19 +5700,57 @@ class Reportes_Controller extends BaseController
             |
             */
 
+            $terminoBusqueda =
+                $termino;
+
+
+            if (
+                mb_check_encoding(
+                    $termino,
+                    'UTF-8'
+                )
+            ) {
+
+                $terminoLatin1 =
+                    mb_convert_encoding(
+                        $termino,
+                        'ISO-8859-1',
+                        'UTF-8'
+                    );
+
+
+                $terminoVerificado =
+                    mb_convert_encoding(
+                        $terminoLatin1,
+                        'UTF-8',
+                        'ISO-8859-1'
+                    );
+
+
+                if (
+                    $terminoVerificado
+                    === $termino
+                ) {
+
+                    $terminoBusqueda =
+                        $terminoLatin1;
+                }
+            }
+
+
             $builder
                 ->groupStart()
                 ->like(
                     'NOMBRE_COMPLETO',
-                    $termino
+                    $terminoBusqueda
                 )
                 ->orLike(
                     'NO_NOMINA',
-                    $termino
+                    $terminoBusqueda
                 )
                 ->orLike(
                     'PERSCOD',
-                    $termino
+                    $terminoBusqueda
                 );
 
 
@@ -5857,7 +5901,9 @@ class Reportes_Controller extends BaseController
                 ) {
 
                     $foto =
-                        (new \App\Modules\Asuntos_internos\SistemaReportes\Services\FotoPersonalService())->obtenerUrl($perscod);
+                        'http://10.8.6.2:8083/dgsc/images/fotos/'
+                        . rawurlencode($perscod)
+                        . '/F.F.R.E.jpg';
                 }
 
 
@@ -6186,19 +6232,57 @@ class Reportes_Controller extends BaseController
             BÚSQUEDA
             ========================================================= */
 
+            $terminoBusqueda =
+                $termino;
+
+
+            if (
+                mb_check_encoding(
+                    $termino,
+                    'UTF-8'
+                )
+            ) {
+
+                $terminoLatin1 =
+                    mb_convert_encoding(
+                        $termino,
+                        'ISO-8859-1',
+                        'UTF-8'
+                    );
+
+
+                $terminoVerificado =
+                    mb_convert_encoding(
+                        $terminoLatin1,
+                        'UTF-8',
+                        'ISO-8859-1'
+                    );
+
+
+                if (
+                    $terminoVerificado
+                    === $termino
+                ) {
+
+                    $terminoBusqueda =
+                        $terminoLatin1;
+                }
+            }
+
+
             $builder
                 ->groupStart()
                 ->like(
                     'NOMBRE_COMPLETO',
-                    $termino
+                    $terminoBusqueda
                 )
                 ->orLike(
                     'NO_NOMINA',
-                    $termino
+                    $terminoBusqueda
                 )
                 ->orLike(
                     'PERSCOD',
-                    $termino
+                    $terminoBusqueda
                 )
                 ->groupEnd();
 
@@ -6300,7 +6384,11 @@ class Reportes_Controller extends BaseController
                 ) {
 
                     $foto =
-                        (new \App\Modules\Asuntos_internos\SistemaReportes\Services\FotoPersonalService())->obtenerUrl($perscod);
+                        'http://10.8.6.2:8083/dgsc/images/fotos/'
+                        . rawurlencode(
+                            $perscod
+                        )
+                        . '/F.F.R.E.jpg';
                 }
 
 

@@ -1710,6 +1710,55 @@ function inicializarBuscadorPersonalDashboard() {
         null;
 
 
+    function normalizarBusquedaPersonalDashboard() {
+
+        const valorOriginal =
+            inputBusqueda.value;
+
+
+        const valorMayusculas =
+            valorOriginal.toLocaleUpperCase(
+                'es-MX'
+            );
+
+
+        if (
+            valorOriginal === valorMayusculas
+        ) {
+
+            return valorMayusculas;
+        }
+
+
+        const inicioSeleccion =
+            inputBusqueda.selectionStart;
+
+
+        const finSeleccion =
+            inputBusqueda.selectionEnd;
+
+
+        inputBusqueda.value =
+            valorMayusculas;
+
+
+        if (
+            inicioSeleccion !== null
+            && finSeleccion !== null
+            && typeof inputBusqueda.setSelectionRange === 'function'
+        ) {
+
+            inputBusqueda.setSelectionRange(
+                inicioSeleccion,
+                finSeleccion
+            );
+        }
+
+
+        return valorMayusculas;
+    }
+
+
     /* =====================================================
     RESTAURAR PERSONAL DESDE URL
 
@@ -1887,7 +1936,9 @@ function inicializarBuscadorPersonalDashboard() {
              */
 
             inputBusqueda.value =
-                nombre;
+                nombre.toLocaleUpperCase(
+                    'es-MX'
+                );
 
 
             /*
@@ -1942,7 +1993,7 @@ function inicializarBuscadorPersonalDashboard() {
         () => {
 
             const termino =
-                inputBusqueda.value
+                normalizarBusquedaPersonalDashboard()
                     .trim();
 
 
@@ -2279,7 +2330,9 @@ function inicializarBuscadorPersonalDashboard() {
 
 
         inputBusqueda.value =
-            persona.nombre;
+            persona.nombre.toLocaleUpperCase(
+                'es-MX'
+            );
 
 
         textoSeleccion.textContent =
