@@ -184,14 +184,17 @@ export function obtenerClaseEstado(
             estado
             || ''
         ).trim()
+            .toLocaleUpperCase(
+                'es-MX'
+            )
     ) {
 
-        case 'Finalizado':
+        case 'FINALIZADO':
 
             return 'estado--finalizado';
 
 
-        case 'En proceso':
+        case 'EN PROCESO':
 
             return 'estado--proceso';
 

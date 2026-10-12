@@ -13,6 +13,16 @@ import {
    Seguimiento - Formulario
 ========================================================= */
 
+const TIPOS_SEGUIMIENTO_FINALIZAN = new Set([
+    'CONSEJO DE HONOR Y JUSTICIA',
+    'NO PROCEDENTE',
+]);
+
+
+const SANCIONES_SEGUIMIENTO_FINALIZAN = new Set([
+    'RECOMENDACIÓN',
+]);
+
 /* =========================================================
    INICIALIZAR MAYÚSCULAS
 ========================================================= */
@@ -193,6 +203,15 @@ export function inicializarCatalogosSeguimiento(
                     modal
                 );
 
+
+                aplicarReglasTipoSeguimiento(
+                    modal,
+                    {
+                        limpiarSancion:
+                            true,
+                    }
+                );
+
             }
         );
     }
@@ -244,6 +263,35 @@ export function inicializarCatalogosSeguimiento(
                 'Sin cambio',
         }
     );
+
+
+    const sancion =
+        modal.querySelector(
+            '#seguimiento-sancion'
+        );
+
+
+    if (
+        sancion
+        && sancion.dataset
+            .reglasInicializadas !== '1'
+    ) {
+
+        sancion.dataset
+            .reglasInicializadas = '1';
+
+
+        sancion.addEventListener(
+            'change',
+            () => {
+
+                aplicarReglasSancionSeguimiento(
+                    modal
+                );
+
+            }
+        );
+    }
 
 }
 
@@ -693,6 +741,523 @@ function actualizarCampoOtroTipoSeguimiento(
 
 
 /* =========================================================
+   REGLAS DE TIPO DE SEGUIMIENTO
+========================================================= */
+
+function aplicarReglasTipoSeguimiento(
+    modal,
+    opciones = {}
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    const limpiarSancion =
+        opciones.limpiarSancion !== false;
+
+
+    const tipoEspecial =
+        esTipoSeguimientoEspecial(
+            modal
+        );
+
+
+    if (tipoEspecial) {
+
+        if (
+            modal.dataset
+                .tipoSeguimientoEspecialActivo !== '1'
+        ) {
+
+            modal.dataset
+                .estadoAntesTipoSeguimientoEspecial =
+                obtenerEstadoBaseAntesDeReglas(
+                    modal
+                );
+        }
+
+
+        modal.dataset
+            .tipoSeguimientoEspecialActivo = '1';
+
+
+        limpiarReglasSancionSeguimiento(
+            modal
+        );
+
+
+        actualizarCatalogoSeguimiento(
+            modal,
+            '#seguimiento-estado',
+            '#seguimiento-estado-select',
+            '#seguimiento-estado-select-texto',
+            '[data-seguimiento-estado-opcion]',
+            'FINALIZADO',
+            'Selecciona'
+        );
+
+
+        establecerCatalogoHabilitado(
+            modal,
+            '#seguimiento-estado-select',
+            '#seguimiento-estado-resultados',
+            false
+        );
+
+
+        establecerCatalogoHabilitado(
+            modal,
+            '#seguimiento-sancion-select',
+            '#seguimiento-sancion-resultados',
+            false
+        );
+
+
+        if (limpiarSancion) {
+
+            actualizarCatalogoSeguimiento(
+                modal,
+                '#seguimiento-sancion',
+                '#seguimiento-sancion-select',
+                '#seguimiento-sancion-select-texto',
+                '[data-seguimiento-sancion-opcion]',
+                '',
+                'Sin cambio'
+            );
+        }
+
+
+        return;
+    }
+
+
+    const debeRestaurarEstado =
+        modal.dataset
+            .tipoSeguimientoEspecialActivo === '1';
+
+
+    const estadoRestaurar =
+        String(
+            modal.dataset
+                .estadoAntesTipoSeguimientoEspecial
+            || ''
+        ).trim();
+
+
+    limpiarReglasTipoSeguimiento(
+        modal
+    );
+
+
+    limpiarReglasSancionSeguimiento(
+        modal
+    );
+
+
+    establecerCatalogoHabilitado(
+        modal,
+        '#seguimiento-estado-select',
+        '#seguimiento-estado-resultados',
+        true
+    );
+
+
+    establecerCatalogoHabilitado(
+        modal,
+        '#seguimiento-sancion-select',
+        '#seguimiento-sancion-resultados',
+        true
+    );
+
+
+    if (debeRestaurarEstado) {
+
+        actualizarCatalogoSeguimiento(
+            modal,
+            '#seguimiento-estado',
+            '#seguimiento-estado-select',
+            '#seguimiento-estado-select-texto',
+            '[data-seguimiento-estado-opcion]',
+            estadoRestaurar,
+            'Selecciona'
+        );
+    }
+
+
+    aplicarReglasSancionSeguimiento(
+        modal
+    );
+
+}
+
+
+function aplicarReglasSancionSeguimiento(
+    modal
+) {
+
+    if (!modal) {
+        return;
+    }
+
+
+    if (
+        modal.dataset
+            .tipoSeguimientoEspecialActivo === '1'
+    ) {
+        return;
+    }
+
+
+    const sancionFinaliza =
+        esSancionSeguimientoFinaliza(
+            modal
+        );
+
+
+    if (sancionFinaliza) {
+
+        if (
+            modal.dataset
+                .sancionSeguimientoFinalizaActiva !== '1'
+        ) {
+
+            modal.dataset
+                .estadoAntesSancionSeguimientoFinaliza =
+                obtenerValorCatalogo(
+                    modal,
+                    '#seguimiento-estado'
+                );
+        }
+
+
+        modal.dataset
+            .sancionSeguimientoFinalizaActiva = '1';
+
+
+        actualizarCatalogoSeguimiento(
+            modal,
+            '#seguimiento-estado',
+            '#seguimiento-estado-select',
+            '#seguimiento-estado-select-texto',
+            '[data-seguimiento-estado-opcion]',
+            'FINALIZADO',
+            'Selecciona'
+        );
+
+
+        establecerCatalogoHabilitado(
+            modal,
+            '#seguimiento-estado-select',
+            '#seguimiento-estado-resultados',
+            false
+        );
+
+
+        establecerCatalogoHabilitado(
+            modal,
+            '#seguimiento-sancion-select',
+            '#seguimiento-sancion-resultados',
+            true
+        );
+
+
+        return;
+    }
+
+
+    const debeRestaurarEstado =
+        modal.dataset
+            .sancionSeguimientoFinalizaActiva === '1';
+
+
+    const estadoRestaurar =
+        String(
+            modal.dataset
+                .estadoAntesSancionSeguimientoFinaliza
+            || ''
+        ).trim();
+
+
+    limpiarReglasSancionSeguimiento(
+        modal
+    );
+
+
+    establecerCatalogoHabilitado(
+        modal,
+        '#seguimiento-estado-select',
+        '#seguimiento-estado-resultados',
+        true
+    );
+
+
+    establecerCatalogoHabilitado(
+        modal,
+        '#seguimiento-sancion-select',
+        '#seguimiento-sancion-resultados',
+        true
+    );
+
+
+    if (debeRestaurarEstado) {
+
+        actualizarCatalogoSeguimiento(
+            modal,
+            '#seguimiento-estado',
+            '#seguimiento-estado-select',
+            '#seguimiento-estado-select-texto',
+            '[data-seguimiento-estado-opcion]',
+            estadoRestaurar,
+            'Selecciona'
+        );
+    }
+
+}
+
+
+function esTipoSeguimientoEspecial(
+    modal
+) {
+
+    const nombre =
+        obtenerNombreCatalogoSeleccionado(
+            modal,
+            '#seguimiento-tipo',
+            '[data-seguimiento-tipo-opcion]'
+        );
+
+
+    const nombreNormalizado =
+        normalizarNombreRegla(
+            nombre
+        );
+
+
+    const resultado =
+        TIPOS_SEGUIMIENTO_FINALIZAN
+        .has(
+            nombreNormalizado
+        );
+
+
+    return resultado;
+
+}
+
+
+function esSancionSeguimientoFinaliza(
+    modal
+) {
+
+    const nombre =
+        obtenerNombreCatalogoSeleccionado(
+            modal,
+            '#seguimiento-sancion',
+            '[data-seguimiento-sancion-opcion]'
+        );
+
+
+    return SANCIONES_SEGUIMIENTO_FINALIZAN
+        .has(
+            normalizarNombreRegla(
+                nombre
+            )
+        );
+
+}
+
+
+function obtenerEstadoBaseAntesDeReglas(
+    modal
+) {
+
+    if (
+        modal.dataset
+            .sancionSeguimientoFinalizaActiva === '1'
+    ) {
+
+        return String(
+            modal.dataset
+                .estadoAntesSancionSeguimientoFinaliza
+            || ''
+        ).trim();
+    }
+
+
+    return obtenerValorCatalogo(
+        modal,
+        '#seguimiento-estado'
+    );
+
+}
+
+
+function obtenerNombreCatalogoSeleccionado(
+    modal,
+    inputSelector,
+    opcionSelector
+) {
+
+    const valor =
+        obtenerValorCatalogo(
+            modal,
+            inputSelector
+        );
+
+
+    if (valor === '') {
+        return '';
+    }
+
+
+    const opcion =
+        Array.from(
+            modal.querySelectorAll(
+                opcionSelector
+            )
+        ).find(
+            (elemento) =>
+                String(
+                    elemento.dataset.valor
+                    || ''
+                ).trim() === valor
+        );
+
+
+    return String(
+        opcion?.dataset?.nombre
+        || opcion
+            ?.querySelector(
+                'strong'
+            )
+            ?.textContent
+        || ''
+    ).trim();
+
+}
+
+
+function obtenerValorCatalogo(
+    modal,
+    inputSelector
+) {
+
+    return String(
+        modal.querySelector(
+            inputSelector
+        )?.value
+        || ''
+    ).trim();
+
+}
+
+
+function normalizarNombreRegla(
+    valor
+) {
+
+    return String(
+        valor
+        || ''
+    )
+        .trim()
+        .replace(
+            /\s+/g,
+            ' '
+        )
+        .toLocaleUpperCase(
+            'es-MX'
+        );
+
+}
+
+
+function establecerCatalogoHabilitado(
+    modal,
+    botonSelector,
+    resultadosSelector,
+    habilitado
+) {
+
+    const boton =
+        modal.querySelector(
+            botonSelector
+        );
+
+
+    const resultados =
+        modal.querySelector(
+            resultadosSelector
+        );
+
+
+    if (boton) {
+
+        boton.disabled =
+            !habilitado;
+
+        boton.setAttribute(
+            'aria-disabled',
+            habilitado
+                ? 'false'
+                : 'true'
+        );
+
+        if (!habilitado) {
+
+            boton.setAttribute(
+                'aria-expanded',
+                'false'
+            );
+
+            boton.classList.remove(
+                'seguimiento-select--activo'
+            );
+        }
+    }
+
+
+    if (
+        resultados
+        && !habilitado
+    ) {
+
+        resultados.hidden =
+            true;
+    }
+
+}
+
+
+function limpiarReglasTipoSeguimiento(
+    modal
+) {
+
+    delete modal.dataset
+        .tipoSeguimientoEspecialActivo;
+
+    delete modal.dataset
+        .estadoAntesTipoSeguimientoEspecial;
+
+}
+
+
+function limpiarReglasSancionSeguimiento(
+    modal
+) {
+
+    delete modal.dataset
+        .sancionSeguimientoFinalizaActiva;
+
+    delete modal.dataset
+        .estadoAntesSancionSeguimientoFinaliza;
+
+}
+
+
+/* =========================================================
    CERRAR LOS DEMÁS CATÁLOGOS
 ========================================================= */
 
@@ -807,6 +1372,32 @@ export function prepararFormularioSeguimiento(
     }
 
 
+    limpiarReglasTipoSeguimiento(
+        modal
+    );
+
+
+    limpiarReglasSancionSeguimiento(
+        modal
+    );
+
+
+    establecerCatalogoHabilitado(
+        modal,
+        '#seguimiento-estado-select',
+        '#seguimiento-estado-resultados',
+        true
+    );
+
+
+    establecerCatalogoHabilitado(
+        modal,
+        '#seguimiento-sancion-select',
+        '#seguimiento-sancion-resultados',
+        true
+    );
+
+
     /* =====================================================
        TIPO
     ===================================================== */
@@ -832,9 +1423,9 @@ export function prepararFormularioSeguimiento(
     ===================================================== */
 
     const estadosPermitidos = [
-        'Pendiente',
-        'En proceso',
-        'Finalizado',
+        'PENDIENTE',
+        'EN PROCESO',
+        'FINALIZADO',
     ];
 
 
@@ -842,7 +1433,10 @@ export function prepararFormularioSeguimiento(
         String(
             estadoActual
             || ''
-        ).trim();
+        ).trim()
+            .toLocaleUpperCase(
+                'es-MX'
+            );
 
 
     actualizarCatalogoSeguimiento(
@@ -1070,6 +1664,18 @@ export function actualizarInterfazModoFormulario(
     );
 
 
+    if (!detalle) {
+
+        aplicarReglasTipoSeguimiento(
+            modal,
+            {
+                limpiarSancion:
+                    false,
+            }
+        );
+    }
+
+
     if (detalle) {
 
         cerrarCatalogosSeguimiento(
@@ -1285,6 +1891,16 @@ export function iniciarEdicionSeguimiento(
                 idSeguimiento
             );
     }
+
+
+    limpiarReglasTipoSeguimiento(
+        modal
+    );
+
+
+    limpiarReglasSancionSeguimiento(
+        modal
+    );
 
 
     /* =====================================================
@@ -1607,6 +2223,16 @@ export function iniciarDetalleSeguimiento(
 
     estadoSeguimiento.seguimientoEdicion =
         null;
+
+
+    limpiarReglasTipoSeguimiento(
+        modal
+    );
+
+
+    limpiarReglasSancionSeguimiento(
+        modal
+    );
 
 
     /* =====================================================

@@ -206,7 +206,7 @@ function crearMovimientoHistorial(
 
     estado.textContent =
         seguimiento.estado
-        || 'Pendiente';
+        || 'PENDIENTE';
 
 
     item.appendChild(

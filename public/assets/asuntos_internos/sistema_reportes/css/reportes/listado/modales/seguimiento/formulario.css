@@ -209,6 +209,35 @@
 }
 
 
+#modal-seguimiento-reporte
+.seguimiento-select:disabled {
+
+    color: #66788a;
+
+    background: #f1f5f9;
+
+    border-color: #d6e0ea;
+
+    cursor: not-allowed;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-select:disabled
+.seguimiento-select__texto {
+
+    color: #40566b;
+}
+
+
+#modal-seguimiento-reporte
+.seguimiento-select:disabled
+.seguimiento-select__flecha {
+
+    color: #91a1b0;
+}
+
+
 /* =========================================================
    TEXTO
 ========================================================= */

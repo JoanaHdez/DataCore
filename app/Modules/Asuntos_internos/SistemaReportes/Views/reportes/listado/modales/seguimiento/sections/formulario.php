@@ -253,7 +253,7 @@
                     <!-- PENDIENTE -->
 
                     <button type="button" class="seguimiento-resultados__item" data-seguimiento-estado-opcion
-                        data-valor="Pendiente">
+                        data-valor="PENDIENTE">
 
                         <span class="seguimiento-resultados__avatar">
                             P
@@ -262,7 +262,7 @@
                         <span class="seguimiento-resultados__datos">
 
                             <strong>
-                                Pendiente
+                                PENDIENTE
                             </strong>
 
                             <small>
@@ -277,7 +277,7 @@
                     <!-- EN PROCESO -->
 
                     <button type="button" class="seguimiento-resultados__item" data-seguimiento-estado-opcion
-                        data-valor="En proceso">
+                        data-valor="EN PROCESO">
 
                         <span class="seguimiento-resultados__avatar">
                             EP
@@ -286,7 +286,7 @@
                         <span class="seguimiento-resultados__datos">
 
                             <strong>
-                                En proceso
+                                EN PROCESO
                             </strong>
 
                             <small>
@@ -301,7 +301,7 @@
                     <!-- FINALIZADO -->
 
                     <button type="button" class="seguimiento-resultados__item" data-seguimiento-estado-opcion
-                        data-valor="Finalizado">
+                        data-valor="FINALIZADO">
 
                         <span class="seguimiento-resultados__avatar">
                             F
@@ -310,7 +310,7 @@
                         <span class="seguimiento-resultados__datos">
 
                             <strong>
-                                Finalizado
+                                FINALIZADO
                             </strong>
 
                             <small>

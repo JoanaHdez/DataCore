@@ -76,7 +76,10 @@ export function normalizarSeguimientos(
                     seguimiento.estado_resultante
                     || seguimiento.estado
                     || ''
-                ).trim(),
+                ).trim()
+                    .toLocaleUpperCase(
+                        'es-MX'
+                    ),
 
             observaciones:
                 String(

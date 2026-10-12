@@ -17,7 +17,6 @@ import {
     validarSancionSeguimiento,
     obtenerSancionSeleccionada,
     normalizarSancion,
-    existeCambioRealSancion,
     determinarAccionSancionEdicion,
     obtenerTextoSancion,
     cargarSancionActual,
@@ -711,7 +710,10 @@ async function procesarNuevoSeguimiento(
                 .reporte
                 ?.estado_actual
             || 'Pendiente'
-        ).trim();
+        ).trim()
+            .toLocaleUpperCase(
+                'es-MX'
+            );
 
 
     /* =====================================================
@@ -760,7 +762,7 @@ async function procesarNuevoSeguimiento(
         ------------------------------------------------- */
 
         if (
-            estadoNuevo === 'Finalizado'
+            estadoNuevo === 'FINALIZADO'
         ) {
 
             mensajeEstado +=
@@ -781,7 +783,7 @@ async function procesarNuevoSeguimiento(
             await confirmarAccion({
 
                 titulo:
-                    estadoNuevo === 'Finalizado'
+                    estadoNuevo === 'FINALIZADO'
                         ? 'Confirmar finalización de la queja'
                         : 'Confirmar cambio de estado',
 
@@ -789,7 +791,7 @@ async function procesarNuevoSeguimiento(
                     mensajeEstado,
 
                 textoConfirmar:
-                    estadoNuevo === 'Finalizado'
+                    estadoNuevo === 'FINALIZADO'
                         ? 'Finalizar'
                         : 'Cambiar estado',
 
@@ -817,22 +819,6 @@ async function procesarNuevoSeguimiento(
 
 
     /* =====================================================
-       DETECTAR CAMBIO REAL DE SANCIÓN
-
-       Ya NO genera confirmación.
-
-       Solamente se utiliza para decidir si realmente
-       debemos enviar una modificación de sanción.
-    ===================================================== */
-
-    const hayCambioSancion =
-        existeCambioRealSancion(
-            estadoSeguimiento.sancionActual,
-            sancionSeleccionada
-        );
-
-
-    /* =====================================================
        FORM DATA
     ===================================================== */
 
@@ -840,25 +826,6 @@ async function procesarNuevoSeguimiento(
         new FormData(
             formulario
         );
-
-
-    /*
-     * Si seleccionó exactamente la misma sanción,
-     * se envía como "Sin cambio".
-     */
-
-    if (
-        sancionSeleccionada.id_sancion_seguimiento
-        || sancionSeleccionada.tipo
-        && !hayCambioSancion
-    ) {
-
-        datos.set(
-            'id_sancion_seguimiento',
-            ''
-        );
-
-    }
 
 
     /* =====================================================
@@ -985,7 +952,7 @@ async function procesarNuevoSeguimiento(
             titulo:
                 hayCambioEstado
                     ? (
-                        estadoNuevo === 'Finalizado'
+                        estadoNuevo === 'FINALIZADO'
                             ? 'Queja finalizada'
                             : 'Estado actualizado'
                     )
@@ -994,7 +961,7 @@ async function procesarNuevoSeguimiento(
             mensaje:
                 hayCambioEstado
                     ? (
-                        estadoNuevo === 'Finalizado'
+                        estadoNuevo === 'FINALIZADO'
                             ? 'El seguimiento se registró correctamente y la queja quedó finalizada.'
                             : `El seguimiento se registró correctamente y el estado cambió a ${estadoNuevo}.`
                     )
@@ -1234,7 +1201,7 @@ async function procesarEdicionSeguimiento(
 
 
         if (
-            estadoNuevo === 'Finalizado'
+            estadoNuevo === 'FINALIZADO'
         ) {
 
             mensajeEstado +=
@@ -1255,7 +1222,7 @@ async function procesarEdicionSeguimiento(
             await confirmarAccion({
 
                 titulo:
-                    estadoNuevo === 'Finalizado'
+                    estadoNuevo === 'FINALIZADO'
                         ? 'Confirmar cambio a Finalizado'
                         : 'Confirmar cambio de estado',
 
@@ -1263,7 +1230,7 @@ async function procesarEdicionSeguimiento(
                     mensajeEstado,
 
                 textoConfirmar:
-                    estadoNuevo === 'Finalizado'
+                    estadoNuevo === 'FINALIZADO'
                         ? 'Finalizar'
                         : 'Cambiar estado',
 
@@ -1587,7 +1554,7 @@ async function procesarEdicionSeguimiento(
             titulo:
                 hayCambioEstado
                     ? (
-                        estadoNuevo === 'Finalizado'
+                        estadoNuevo === 'FINALIZADO'
                             ? 'Estado actualizado a Finalizado'
                             : 'Estado actualizado'
                     )

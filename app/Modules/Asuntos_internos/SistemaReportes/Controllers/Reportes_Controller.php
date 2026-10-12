@@ -7477,6 +7477,12 @@ class Reportes_Controller extends BaseController
             );
 
 
+        $estado =
+            $this->normalizarEstadoSeguimiento(
+                $estado
+            );
+
+
         $observaciones =
             trim(
                 (string)
@@ -7650,9 +7656,9 @@ class Reportes_Controller extends BaseController
         ===================================================== */
 
         $estadosPermitidos = [
-            'Pendiente',
-            'En proceso',
-            'Finalizado',
+            'PENDIENTE',
+            'EN PROCESO',
+            'FINALIZADO',
         ];
 
 
@@ -7672,6 +7678,12 @@ class Reportes_Controller extends BaseController
                     'El estado seleccionado no es válido.',
                 ]);
         }
+
+
+        $estadoReporte =
+            $this->normalizarEstadoReporteDesdeSeguimiento(
+                $estado
+            );
 
 
         /* =====================================================
@@ -7843,37 +7855,11 @@ class Reportes_Controller extends BaseController
 
 
         /* =====================================================
-        DETERMINAR SI REALMENTE CAMBIA LA SANCIÓN
+        DETERMINAR SI SE REGISTRARÁ SANCIÓN DEL SEGUIMIENTO
         ===================================================== */
 
         $hayCambioSancion =
-            false;
-
-
-        if ($idSancionSeguimiento > 0) {
-
-            if (!$sancionActual) {
-
-                $hayCambioSancion =
-                    true;
-            } else {
-
-                $tipoActual =
-                    (int) (
-                        $sancionActual['id_sancion_seguimiento']
-                        ?? 0
-                    );
-
-
-                if (
-                    $tipoActual !== $idSancionSeguimiento
-                ) {
-
-                    $hayCambioSancion =
-                        true;
-                }
-            }
-        }
+            $idSancionSeguimiento > 0;
 
 
         /* =====================================================
@@ -8086,7 +8072,7 @@ class Reportes_Controller extends BaseController
                         ),
 
                     'estado_actual' =>
-                    $estado,
+                    $estadoReporte,
 
                     'origen_estado' =>
                     'seguimiento',
@@ -8145,7 +8131,7 @@ class Reportes_Controller extends BaseController
 
             if (
                 $estadoAnterior !== ''
-                && $estadoAnterior !== $estado
+                && $estadoAnterior !== $estadoReporte
             ) {
 
                 $historialService
@@ -8153,7 +8139,7 @@ class Reportes_Controller extends BaseController
                         $idReporte,
                         $idUsuario,
                         $estadoAnterior,
-                        $estado
+                        $estadoReporte
                     );
             }
 
@@ -8240,7 +8226,7 @@ class Reportes_Controller extends BaseController
                         ),
 
                     'estado_actual' =>
-                    $estado,
+                    $estadoReporte,
 
                     'sancion_modificada' =>
                     $hayCambioSancion,
@@ -8386,6 +8372,12 @@ class Reportes_Controller extends BaseController
             );
 
 
+        $estado =
+            $this->normalizarEstadoSeguimiento(
+                $estado
+            );
+
+
         $observaciones =
             trim(
                 (string) (
@@ -8500,9 +8492,9 @@ class Reportes_Controller extends BaseController
 
 
         $estadosPermitidos = [
-            'Pendiente',
-            'En proceso',
-            'Finalizado',
+            'PENDIENTE',
+            'EN PROCESO',
+            'FINALIZADO',
         ];
 
 
@@ -9322,6 +9314,12 @@ class Reportes_Controller extends BaseController
                 );
 
 
+            $estadoActualReporte =
+                $this->normalizarEstadoReporteDesdeSeguimiento(
+                    $estadoActualReporte
+                );
+
+
             /* =================================================
             ACTUALIZAR REPORTE PRINCIPAL
             ================================================= */
@@ -9494,6 +9492,63 @@ class Reportes_Controller extends BaseController
                     'No fue posible actualizar el seguimiento.',
                 ]);
         }
+    }
+
+
+    private function normalizarEstadoSeguimiento(
+        string $estado
+    ): string {
+
+        $estadoNormalizado =
+            mb_strtoupper(
+                trim(
+                    preg_replace(
+                        '/\s+/',
+                        ' ',
+                        $estado
+                    )
+                    ?? ''
+                ),
+                'UTF-8'
+            );
+
+
+        return match ($estadoNormalizado) {
+
+            'PENDIENTE' =>
+            'PENDIENTE',
+
+            'EN PROCESO' =>
+            'EN PROCESO',
+
+            'FINALIZADO' =>
+            'FINALIZADO',
+
+            default =>
+            '',
+        };
+    }
+
+
+    private function normalizarEstadoReporteDesdeSeguimiento(
+        string $estado
+    ): string {
+
+        return match (
+            $this->normalizarEstadoSeguimiento(
+                $estado
+            )
+        ) {
+
+            'EN PROCESO' =>
+            'En proceso',
+
+            'FINALIZADO' =>
+            'Finalizado',
+
+            default =>
+            'Pendiente',
+        };
     }
 
 
