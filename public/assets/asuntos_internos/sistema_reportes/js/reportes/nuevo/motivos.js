@@ -73,6 +73,11 @@ function inicializarMotivos() {
             '#desistir'
         );
 
+    const checkboxConSancion =
+        document.querySelector(
+            '#con-sancion'
+        );
+
     const selectEstado =
         document.querySelector(
             '#estado_actual'
@@ -103,6 +108,33 @@ function inicializarMotivos() {
         new Map();
 
 
+    let actualizandoBuscadorMotivos =
+        false;
+
+
+    const mensajeSinCoincidencias =
+        document.createElement(
+            'div'
+        );
+
+
+    mensajeSinCoincidencias.className =
+    'motivos-resultados__vacio';
+
+
+    mensajeSinCoincidencias.hidden =
+        true;
+
+
+    mensajeSinCoincidencias.textContent =
+        'Sin coincidencias';
+
+
+    resultados.appendChild(
+        mensajeSinCoincidencias
+    );
+
+
     /* =====================================================
        NORMALIZAR TEXTO
     ===================================================== */
@@ -115,6 +147,14 @@ function inicializarMotivos() {
             valor
             || ''
         )
+            .replace(
+                /ñ/g,
+                '\uE000'
+            )
+            .replace(
+                /Ñ/g,
+                '\uE001'
+            )
             .normalize(
                 'NFD'
             )
@@ -122,8 +162,63 @@ function inicializarMotivos() {
                 /[\u0300-\u036f]/g,
                 ''
             )
-            .toLowerCase()
+            .replace(
+                /\uE000/g,
+                'Ñ'
+            )
+            .replace(
+                /\uE001/g,
+                'Ñ'
+            )
+            .toUpperCase()
             .trim();
+    }
+
+    function convertirBusquedaAMayusculas() {
+
+        const inicio =
+            buscador.selectionStart;
+
+
+        const fin =
+            buscador.selectionEnd;
+
+
+        const valorOriginal =
+            String(
+                buscador.value
+                || ''
+            );
+
+
+        const valorMayusculas =
+            valorOriginal.toLocaleUpperCase(
+                'es-MX'
+            );
+
+
+        if (
+            valorOriginal === valorMayusculas
+        ) {
+
+            return;
+        }
+
+
+        buscador.value =
+            valorMayusculas;
+
+
+        if (
+            inicio !== null
+            && fin !== null
+        ) {
+
+            buscador.setSelectionRange(
+                inicio,
+                fin
+            );
+        }
     }
 
     function normalizarFolioSancion(
@@ -218,6 +313,130 @@ function inicializarMotivos() {
 
         resultados.hidden =
             true;
+
+
+        alternarElementoResultado(
+            mensajeSinCoincidencias,
+            false
+        );
+    }
+
+
+    function alternarElementoResultado(
+        elemento,
+        mostrar
+    ) {
+
+        if (!elemento) {
+            return;
+        }
+
+
+        elemento.hidden =
+            !mostrar;
+
+
+        elemento.style.display =
+            mostrar
+                ? ''
+                : 'none';
+    }
+
+
+    /* =====================================================
+       LIMPIAR MOTIVOS
+    ===================================================== */
+
+    function limpiarMotivos() {
+
+        buscador.value =
+            '';
+
+
+        cerrarResultados();
+
+
+        opciones.forEach(
+            (opcion) => {
+
+                alternarElementoResultado(
+                    opcion,
+                    false
+                );
+            }
+        );
+
+
+        motivosSeleccionados.clear();
+
+
+        renderizarMotivos();
+    }
+
+
+    /* =====================================================
+       ACTUALIZAR BUSCADOR DE MOTIVOS
+    ===================================================== */
+
+    function actualizarBuscadorMotivos() {
+
+        if (
+            actualizandoBuscadorMotivos
+        ) {
+
+            return;
+        }
+
+
+        actualizandoBuscadorMotivos =
+            true;
+
+
+        const conSancion =
+            checkboxConSancion
+            && checkboxConSancion.checked;
+
+
+        const bloqueadoPorSituacion =
+            (
+                checkboxSinSanciones
+                && checkboxSinSanciones.checked
+            )
+            || (
+                checkboxBajaVoluntaria
+                && checkboxBajaVoluntaria.checked
+            )
+            || (
+                checkboxDesistir
+                && checkboxDesistir.checked
+            );
+
+
+        const habilitar =
+            Boolean(
+                conSancion
+            )
+            && !bloqueadoPorSituacion;
+
+
+        buscador.disabled =
+            !habilitar;
+
+
+        buscador.classList.toggle(
+            'report-input--disabled',
+            !habilitar
+        );
+
+
+        if (!habilitar) {
+
+            limpiarMotivos();
+        }
+
+
+        actualizandoBuscadorMotivos =
+            false;
     }
 
 
@@ -236,6 +455,10 @@ function inicializarMotivos() {
 
         if (
             (
+                !checkboxConSancion
+                || !checkboxConSancion.checked
+            )
+            || (
                 checkboxSinSanciones
                 && checkboxSinSanciones.checked
             )
@@ -266,16 +489,6 @@ function inicializarMotivos() {
         * cuando el campo está vacío.
         */
 
-        if (
-            busqueda === ''
-        ) {
-
-            cerrarResultados();
-
-            return;
-        }
-
-
         let encontrados =
             0;
 
@@ -302,14 +515,9 @@ function inicializarMotivos() {
                     );
 
 
-                const yaSeleccionado =
-                    motivosSeleccionados.has(
-                        id
-                    );
-
-
                 const coincide =
-                    motivo.includes(
+                    busqueda === ''
+                    || motivo.includes(
                         busqueda
                     )
                     || sancion.includes(
@@ -319,12 +527,13 @@ function inicializarMotivos() {
 
 
                 const mostrar =
-                    coincide
-                    && !yaSeleccionado;
+                    coincide;
 
 
-                opcion.hidden =
-                    !mostrar;
+                alternarElementoResultado(
+                    opcion,
+                    mostrar
+                );
 
 
                 if (
@@ -337,8 +546,14 @@ function inicializarMotivos() {
         );
 
 
+        alternarElementoResultado(
+            mensajeSinCoincidencias,
+            encontrados === 0
+        );
+
+
         resultados.hidden =
-            encontrados === 0;
+            false;
     }
 
 
@@ -679,6 +894,10 @@ function inicializarMotivos() {
 
         if (
             (
+                !checkboxConSancion
+                || !checkboxConSancion.checked
+            )
+            || (
                 checkboxSinSanciones
                 && checkboxSinSanciones.checked
             )
@@ -726,18 +945,11 @@ function inicializarMotivos() {
         }
 
 
-        if (
-            motivosSeleccionados.has(
-                id
-            )
-        ) {
-
-            return;
-        }
-
-
         const esAmonestacionVerbal =
             id === '55';
+
+
+        motivosSeleccionados.clear();
 
 
         motivosSeleccionados.set(
@@ -1011,6 +1223,31 @@ function inicializarMotivos() {
 
     buscador.addEventListener(
         'input',
+        () => {
+
+            convertirBusquedaAMayusculas();
+
+
+            mostrarResultados(
+                buscador.value
+            );
+        }
+    );
+
+
+    buscador.addEventListener(
+        'focus',
+        () => {
+
+            mostrarResultados(
+                buscador.value
+            );
+        }
+    );
+
+
+    buscador.addEventListener(
+        'click',
         () => {
 
             mostrarResultados(
@@ -1369,6 +1606,21 @@ function inicializarMotivos() {
 
 
         /* =====================================================
+        NO PUEDE COEXISTIR CON CON SANCIÃ“N
+        ===================================================== */
+
+        if (
+            sinSanciones
+            && checkboxConSancion
+            && checkboxConSancion.checked
+        ) {
+
+            checkboxConSancion.checked =
+                false;
+        }
+
+
+        /* =====================================================
         NO PUEDE COEXISTIR CON BAJA VOLUNTARIA
         ===================================================== */
 
@@ -1460,6 +1712,9 @@ function inicializarMotivos() {
             renderizarMotivos();
 
 
+            actualizarBuscadorMotivos();
+
+
             return;
         }
 
@@ -1489,6 +1744,9 @@ function inicializarMotivos() {
             'report-input--disabled',
             bloqueadoPorOtraSituacion
         );
+
+
+        actualizarBuscadorMotivos();
     }
 
 
@@ -1532,6 +1790,21 @@ function inicializarMotivos() {
             document.querySelector(
                 '#estado-resultados'
             );
+
+
+        /* =====================================================
+        NO PUEDE COEXISTIR CON CON SANCIÃ“N
+        ===================================================== */
+
+        if (
+            bajaVoluntaria
+            && checkboxConSancion
+            && checkboxConSancion.checked
+        ) {
+
+            checkboxConSancion.checked =
+                false;
+        }
 
 
         /* =====================================================
@@ -1802,6 +2075,9 @@ function inicializarMotivos() {
 
             renderizarMotivos();
         }
+
+
+        actualizarBuscadorMotivos();
     }
 
 
@@ -1845,6 +2121,21 @@ function inicializarMotivos() {
             document.querySelector(
                 '#estado-resultados'
             );
+
+
+        /* =====================================================
+        NO PUEDE COEXISTIR CON CON SANCIÃ“N
+        ===================================================== */
+
+        if (
+            desistir
+            && checkboxConSancion
+            && checkboxConSancion.checked
+        ) {
+
+            checkboxConSancion.checked =
+                false;
+        }
 
 
         /* =====================================================
@@ -2122,7 +2413,87 @@ function inicializarMotivos() {
 
             renderizarMotivos();
         }
+
+
+        actualizarBuscadorMotivos();
     }
+
+    /* =========================================================
+    CON SANCIÃ“N
+    ========================================================= */
+
+    function actualizarConSancion() {
+
+        if (
+            !checkboxConSancion
+        ) {
+
+            return;
+        }
+
+
+        const conSancion =
+            checkboxConSancion.checked;
+
+
+        if (
+            conSancion
+        ) {
+
+            if (
+                checkboxSinSanciones
+                && checkboxSinSanciones.checked
+            ) {
+
+                checkboxSinSanciones.checked =
+                    false;
+            }
+
+
+            if (
+                checkboxBajaVoluntaria
+                && checkboxBajaVoluntaria.checked
+            ) {
+
+                checkboxBajaVoluntaria.checked =
+                    false;
+
+
+                actualizarBajaVoluntaria();
+            }
+
+
+            if (
+                checkboxDesistir
+                && checkboxDesistir.checked
+            ) {
+
+                checkboxDesistir.checked =
+                    false;
+
+
+                actualizarDesistir();
+            }
+        }
+
+
+        actualizarBuscadorMotivos();
+    }
+
+    /* =========================================================
+    EVENTO CON SANCIÃ“N
+    ========================================================= */
+
+    if (
+        checkboxConSancion
+    ) {
+
+        checkboxConSancion.addEventListener(
+            'change',
+            actualizarConSancion
+        );
+    }
+
 
     /* =========================================================
     EVENTO BAJA VOLUNTARIA
@@ -2185,5 +2556,7 @@ function inicializarMotivos() {
     actualizarBajaVoluntaria();
 
     actualizarDesistir();
+
+    actualizarConSancion();
 
 }
