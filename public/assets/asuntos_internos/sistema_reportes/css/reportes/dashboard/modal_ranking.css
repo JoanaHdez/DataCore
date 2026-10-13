@@ -285,6 +285,14 @@
 
 
 #modal-ranking-personal-detalle
+#ranking-personal-detalle-reportes-seccion:not([hidden])
++ #ranking-personal-detalle-motivos-seccion:not([hidden])
+> .dashboard-ranking__modal-seccion {
+    margin-top: 24px;
+}
+
+
+#modal-ranking-personal-detalle
 .dashboard-ranking__modal-seccion-eyebrow {
     display: block;
 

@@ -56,6 +56,30 @@ function inicializarQuejosoIndividualDashboard() {
         );
 
 
+    const botonAbrirRecurrencias =
+        document.querySelector(
+            '#dashboard-quejoso-individual-recurrencias-abrir'
+        );
+
+
+    const modalRecurrencias =
+        document.querySelector(
+            '#modal-quejoso-individual-recurrencias'
+        );
+
+
+    const dialogoRecurrencias =
+        modalRecurrencias
+            ? modalRecurrencias.querySelector(
+                '.modal-reporte__dialog'
+            )
+            : null;
+
+
+    let elementoActivoAntesRecurrencias =
+        null;
+
+
     if (
         !inputBusqueda
         || !inputValor
@@ -393,6 +417,38 @@ function inicializarQuejosoIndividualDashboard() {
 
 
     if (
+        botonAbrirRecurrencias
+        && modalRecurrencias
+    ) {
+
+        botonAbrirRecurrencias.addEventListener(
+            'click',
+            () => {
+
+                abrirModalRecurrenciasQuejoso();
+
+            }
+        );
+
+
+        modalRecurrencias.addEventListener(
+            'click',
+            evento => {
+
+                if (
+                    evento.target.closest(
+                        '[data-quejoso-individual-recurrencias-cerrar]'
+                    )
+                ) {
+
+                    cerrarModalRecurrenciasQuejoso();
+                }
+            }
+        );
+    }
+
+
+    if (
         botonesMotivos.length
     ) {
 
@@ -467,6 +523,126 @@ function inicializarQuejosoIndividualDashboard() {
                 }
             }
         );
+    }
+
+
+    document.addEventListener(
+        'keydown',
+        evento => {
+
+            if (
+                evento.key !== 'Escape'
+            ) {
+
+                return;
+            }
+
+
+            if (
+                modalRecurrencias
+                && modalRecurrencias.classList.contains(
+                    'modal-reporte--visible'
+                )
+            ) {
+
+                cerrarModalRecurrenciasQuejoso();
+            }
+        }
+    );
+
+
+    function abrirModalRecurrenciasQuejoso() {
+
+        if (
+            !modalRecurrencias
+        ) {
+
+            return;
+        }
+
+
+        elementoActivoAntesRecurrencias =
+            document.activeElement instanceof HTMLElement
+                ? document.activeElement
+                : null;
+
+
+        modalRecurrencias.classList.add(
+            'modal-reporte--visible'
+        );
+
+
+        modalRecurrencias.setAttribute(
+            'aria-hidden',
+            'false'
+        );
+
+
+        document.body.classList.add(
+            'modal-abierto'
+        );
+
+
+        window.setTimeout(
+            () => {
+
+                if (
+                    dialogoRecurrencias
+                    && typeof dialogoRecurrencias.focus === 'function'
+                ) {
+
+                    dialogoRecurrencias.focus();
+                }
+            },
+            80
+        );
+    }
+
+
+    function cerrarModalRecurrenciasQuejoso() {
+
+        if (
+            !modalRecurrencias
+        ) {
+
+            return;
+        }
+
+
+        modalRecurrencias.classList.remove(
+            'modal-reporte--visible'
+        );
+
+
+        modalRecurrencias.setAttribute(
+            'aria-hidden',
+            'true'
+        );
+
+
+        if (
+            !document.querySelector(
+                '.modal-reporte.modal-reporte--visible'
+            )
+        ) {
+
+            document.body.classList.remove(
+                'modal-abierto'
+            );
+        }
+
+
+        if (
+            elementoActivoAntesRecurrencias
+            && typeof elementoActivoAntesRecurrencias.focus === 'function'
+        ) {
+
+            elementoActivoAntesRecurrencias.focus();
+        }
+
+
+        elementoActivoAntesRecurrencias =
+            null;
     }
 
 

@@ -191,6 +191,18 @@ class DashboardQuejosoService
             );
 
 
+        $idsReportes =
+            array_values(
+                array_map(
+                    'intval',
+                    array_keys(
+                        $quejosoFiltrado['reportes']
+                        ?? []
+                    )
+                )
+            );
+
+
         return [
 
             'quejoso' => [
@@ -223,14 +235,12 @@ class DashboardQuejosoService
                 ),
 
             'ids_reportes' =>
-                array_values(
-                    array_map(
-                        'intval',
-                        array_keys(
-                            $quejosoFiltrado['reportes']
-                            ?? []
-                        )
-                    )
+                $idsReportes,
+
+            'recurrencias' =>
+                $this->obtenerRecurrencias(
+                    $idsReportes,
+                    $historial
                 ),
 
         ];
@@ -834,6 +844,910 @@ class DashboardQuejosoService
         return null;
     }
 
+    private function obtenerRecurrencias(
+        array $idsReporte,
+        array $historial
+    ): array {
+        $idsReporte =
+            $this->normalizarIdsReporte(
+                $idsReporte
+            );
+
+
+        if (
+            empty($idsReporte)
+        ) {
+            return $this->recurrenciasVacias();
+        }
+
+
+        $foliosPorReporte =
+            $this->obtenerFoliosPorReporte(
+                $historial
+            );
+
+
+        return [
+
+            'personal' =>
+                $this->obtenerRecurrenciasPersonal(
+                    $idsReporte,
+                    $foliosPorReporte
+                ),
+
+            'areas' =>
+                $this->obtenerRecurrenciasAreas(
+                    $idsReporte,
+                    $foliosPorReporte
+                ),
+
+            'sectores' =>
+                $this->obtenerRecurrenciasSectores(
+                    $idsReporte,
+                    $foliosPorReporte
+                ),
+
+            'turnos' =>
+                $this->obtenerRecurrenciasTurnos(
+                    $idsReporte,
+                    $foliosPorReporte
+                ),
+
+            'unidades' =>
+                $this->obtenerRecurrenciasUnidades(
+                    $idsReporte,
+                    $foliosPorReporte
+                ),
+
+            'motivos' =>
+                $this->obtenerRecurrenciasMotivos(
+                    $idsReporte,
+                    $foliosPorReporte
+                ),
+
+        ];
+    }
+
+    private function obtenerRecurrenciasPersonal(
+        array $idsReporte,
+        array $foliosPorReporte
+    ): array {
+        $registros =
+            $this->db
+            ->table(
+                'ai_reporte_personal'
+            )
+            ->select([
+                'id_reporte',
+                'plantilla_id',
+                'perscod',
+                'nombre_snapshot',
+            ])
+            ->whereIn(
+                'id_reporte',
+                $idsReporte
+            )
+            ->orderBy(
+                'nombre_snapshot',
+                'ASC'
+            )
+            ->get()
+            ->getResultArray();
+
+
+        $grupos = [];
+
+
+        foreach (
+            $registros
+            as $registro
+        ) {
+            $idReporte =
+                (int) (
+                    $registro['id_reporte']
+                    ?? 0
+                );
+
+            $plantillaId =
+                (int) (
+                    $registro['plantilla_id']
+                    ?? 0
+                );
+
+            $perscod =
+                $this->normalizarNombre(
+                    (string) (
+                        $registro['perscod']
+                        ?? ''
+                    )
+                );
+
+            $nombre =
+                $this->normalizarNombre(
+                    (string) (
+                        $registro['nombre_snapshot']
+                        ?? ''
+                    )
+                );
+
+            if (
+                $idReporte <= 0
+                || (
+                    $plantillaId <= 0
+                    && $perscod === ''
+                    && $nombre === ''
+                )
+            ) {
+                continue;
+            }
+
+            if (
+                $plantillaId > 0
+            ) {
+                $clave =
+                    'plantilla:'
+                    . $plantillaId;
+            } elseif (
+                $perscod !== ''
+            ) {
+                $clave =
+                    'perscod:'
+                    . mb_strtoupper(
+                        $perscod,
+                        'UTF-8'
+                    );
+            } else {
+                $clave =
+                    'nombre:'
+                    . mb_strtoupper(
+                        $nombre,
+                        'UTF-8'
+                    );
+            }
+
+            $valor =
+                $nombre !== ''
+                    ? $nombre
+                    : (
+                        $perscod !== ''
+                            ? $perscod
+                            : 'Personal '
+                            . $plantillaId
+                    );
+
+            $this->agregarReporteARecurrencia(
+                $grupos,
+                $clave,
+                $valor,
+                $idReporte,
+                $foliosPorReporte
+            );
+        }
+
+
+        return $this->formatearRecurrencias(
+            $grupos
+        );
+    }
+
+    private function obtenerRecurrenciasAreas(
+        array $idsReporte,
+        array $foliosPorReporte
+    ): array {
+        return $this->obtenerRecurrenciasDesdePersonalSnapshot(
+            $idsReporte,
+            $foliosPorReporte,
+            'area_snapshot'
+        );
+    }
+
+    private function obtenerRecurrenciasTurnos(
+        array $idsReporte,
+        array $foliosPorReporte
+    ): array {
+        return $this->obtenerRecurrenciasDesdePersonalSnapshot(
+            $idsReporte,
+            $foliosPorReporte,
+            'turno_snapshot'
+        );
+    }
+
+    private function obtenerRecurrenciasDesdePersonalSnapshot(
+        array $idsReporte,
+        array $foliosPorReporte,
+        string $campo
+    ): array {
+        $registros =
+            $this->db
+            ->table(
+                'ai_reporte_personal'
+            )
+            ->select([
+                'id_reporte',
+                $campo,
+            ])
+            ->whereIn(
+                'id_reporte',
+                $idsReporte
+            )
+            ->where(
+                $campo . ' IS NOT NULL',
+                null,
+                false
+            )
+            ->where(
+                "TRIM({$campo}) != ''",
+                null,
+                false
+            )
+            ->orderBy(
+                $campo,
+                'ASC'
+            )
+            ->get()
+            ->getResultArray();
+
+
+        $grupos = [];
+
+
+        foreach (
+            $registros
+            as $registro
+        ) {
+            $idReporte =
+                (int) (
+                    $registro['id_reporte']
+                    ?? 0
+                );
+
+            $valor =
+                $this->normalizarNombre(
+                    (string) (
+                        $registro[$campo]
+                        ?? ''
+                    )
+                );
+
+            if (
+                $idReporte <= 0
+                || $valor === ''
+            ) {
+                continue;
+            }
+
+            $clave =
+                mb_strtoupper(
+                    $valor,
+                    'UTF-8'
+                );
+
+            $this->agregarReporteARecurrencia(
+                $grupos,
+                $clave,
+                $valor,
+                $idReporte,
+                $foliosPorReporte
+            );
+        }
+
+
+        return $this->formatearRecurrencias(
+            $grupos
+        );
+    }
+
+    private function obtenerRecurrenciasSectores(
+        array $idsReporte,
+        array $foliosPorReporte
+    ): array {
+        $registros =
+            $this->db
+            ->table(
+                'ai_reporte_personal'
+            )
+            ->select([
+                'id_reporte',
+                'area_snapshot',
+            ])
+            ->whereIn(
+                'id_reporte',
+                $idsReporte
+            )
+            ->where(
+                'area_snapshot IS NOT NULL',
+                null,
+                false
+            )
+            ->where(
+                "TRIM(area_snapshot) != ''",
+                null,
+                false
+            )
+            ->orderBy(
+                'area_snapshot',
+                'ASC'
+            )
+            ->get()
+            ->getResultArray();
+
+
+        $grupos = [];
+
+
+        foreach (
+            $registros
+            as $registro
+        ) {
+            $idReporte =
+                (int) (
+                    $registro['id_reporte']
+                    ?? 0
+                );
+
+            $sector =
+                $this->obtenerSectorDesdeArea(
+                    (string) (
+                        $registro['area_snapshot']
+                        ?? ''
+                    )
+                );
+
+            if (
+                $idReporte <= 0
+                || $sector === null
+            ) {
+                continue;
+            }
+
+            $this->agregarReporteARecurrencia(
+                $grupos,
+                $sector,
+                $sector,
+                $idReporte,
+                $foliosPorReporte
+            );
+        }
+
+
+        return $this->formatearRecurrencias(
+            $grupos
+        );
+    }
+
+    private function obtenerRecurrenciasUnidades(
+        array $idsReporte,
+        array $foliosPorReporte
+    ): array {
+        $registros =
+            $this->db
+            ->table(
+                'ai_reporte_unidades'
+            )
+            ->select([
+                'id_reporte',
+                'parque_vehicular_id',
+                'no_economico_snapshot',
+                'placas_snapshot',
+            ])
+            ->whereIn(
+                'id_reporte',
+                $idsReporte
+            )
+            ->orderBy(
+                'no_economico_snapshot',
+                'ASC'
+            )
+            ->orderBy(
+                'placas_snapshot',
+                'ASC'
+            )
+            ->get()
+            ->getResultArray();
+
+
+        $grupos = [];
+
+
+        foreach (
+            $registros
+            as $registro
+        ) {
+            $idReporte =
+                (int) (
+                    $registro['id_reporte']
+                    ?? 0
+                );
+
+            $parqueId =
+                (int) (
+                    $registro['parque_vehicular_id']
+                    ?? 0
+                );
+
+            $noEconomico =
+                $this->normalizarNombre(
+                    (string) (
+                        $registro['no_economico_snapshot']
+                        ?? ''
+                    )
+                );
+
+            $placas =
+                $this->normalizarNombre(
+                    (string) (
+                        $registro['placas_snapshot']
+                        ?? ''
+                    )
+                );
+
+            if (
+                $idReporte <= 0
+                || (
+                    $parqueId <= 0
+                    && $noEconomico === ''
+                    && $placas === ''
+                )
+            ) {
+                continue;
+            }
+
+            if (
+                $parqueId > 0
+            ) {
+                $clave =
+                    'parque:'
+                    . $parqueId;
+            } elseif (
+                $noEconomico !== ''
+            ) {
+                $clave =
+                    'economico:'
+                    . mb_strtoupper(
+                        $noEconomico,
+                        'UTF-8'
+                    );
+            } else {
+                $clave =
+                    'placas:'
+                    . mb_strtoupper(
+                        $placas,
+                        'UTF-8'
+                    );
+            }
+
+            if (
+                $noEconomico !== ''
+                && $placas !== ''
+            ) {
+                $valor =
+                    $noEconomico
+                    . ' - '
+                    . $placas;
+            } else {
+                $valor =
+                    $noEconomico !== ''
+                        ? $noEconomico
+                        : $placas;
+            }
+
+            $this->agregarReporteARecurrencia(
+                $grupos,
+                $clave,
+                $valor,
+                $idReporte,
+                $foliosPorReporte
+            );
+        }
+
+
+        return $this->formatearRecurrencias(
+            $grupos
+        );
+    }
+
+    private function obtenerRecurrenciasMotivos(
+        array $idsReporte,
+        array $foliosPorReporte
+    ): array {
+        $registros =
+            $this->db
+            ->table(
+                'ai_reporte_motivos rm'
+            )
+            ->select([
+                'rm.id_reporte',
+                'rm.id_motivo',
+                'rm.motivo_personalizado',
+                'm.motivo',
+            ])
+            ->join(
+                'ai_cat_motivos m',
+                'm.id_motivo = rm.id_motivo',
+                'left'
+            )
+            ->whereIn(
+                'rm.id_reporte',
+                $idsReporte
+            )
+            ->where(
+                'rm.eliminado',
+                0
+            )
+            ->orderBy(
+                'm.motivo',
+                'ASC'
+            )
+            ->get()
+            ->getResultArray();
+
+
+        $grupos = [];
+
+
+        foreach (
+            $registros
+            as $registro
+        ) {
+            $idReporte =
+                (int) (
+                    $registro['id_reporte']
+                    ?? 0
+                );
+
+            $motivoPersonalizado =
+                $this->normalizarNombre(
+                    (string) (
+                        $registro['motivo_personalizado']
+                        ?? ''
+                    )
+                );
+
+            $motivoCatalogo =
+                $this->normalizarNombre(
+                    (string) (
+                        $registro['motivo']
+                        ?? ''
+                    )
+                );
+
+            $motivo =
+                $motivoPersonalizado !== ''
+                    ? $motivoPersonalizado
+                    : $motivoCatalogo;
+
+            if (
+                $idReporte <= 0
+                || $motivo === ''
+            ) {
+                continue;
+            }
+
+            $idMotivo =
+                (int) (
+                    $registro['id_motivo']
+                    ?? 0
+                );
+
+            if (
+                $idMotivo > 0
+            ) {
+                $clave =
+                    'motivo:'
+                    . $idMotivo;
+            } else {
+                $clave =
+                    'texto:'
+                    . mb_strtoupper(
+                        $motivo,
+                        'UTF-8'
+                    );
+            }
+
+            if (
+                $motivoPersonalizado !== ''
+            ) {
+                $clave =
+                    'personalizado:'
+                    . mb_strtoupper(
+                        $motivoPersonalizado,
+                        'UTF-8'
+                    );
+            }
+
+            $this->agregarReporteARecurrencia(
+                $grupos,
+                $clave,
+                $motivo,
+                $idReporte,
+                $foliosPorReporte
+            );
+        }
+
+
+        return $this->formatearRecurrencias(
+            $grupos
+        );
+    }
+
+    private function agregarReporteARecurrencia(
+        array &$grupos,
+        string $clave,
+        string $valor,
+        int $idReporte,
+        array $foliosPorReporte
+    ): void {
+        if (
+            $clave === ''
+            || $valor === ''
+            || $idReporte <= 0
+        ) {
+            return;
+        }
+
+        if (
+            !isset($grupos[$clave])
+        ) {
+            $grupos[$clave] = [
+
+                'clave' =>
+                    $clave,
+
+                'valor' =>
+                    $valor,
+
+                'folios' =>
+                    [],
+
+                'ids_reportes' =>
+                    [],
+
+                '_reportes' =>
+                    [],
+
+            ];
+        }
+
+        if (
+            isset(
+                $grupos[$clave]['_reportes'][$idReporte]
+            )
+        ) {
+            return;
+        }
+
+        $grupos[$clave]['_reportes'][$idReporte] =
+            true;
+
+        $grupos[$clave]['ids_reportes'][] =
+            $idReporte;
+
+        $grupos[$clave]['folios'][] =
+            $foliosPorReporte[$idReporte]
+            ?? 'Sin folio asignado';
+    }
+
+    private function formatearRecurrencias(
+        array $grupos
+    ): array {
+        $resultado = [];
+
+        foreach (
+            $grupos
+            as $grupo
+        ) {
+            $idsReporte =
+                array_values(
+                    array_map(
+                        'intval',
+                        $grupo['ids_reportes']
+                        ?? []
+                    )
+                );
+
+            $cantidad =
+                count(
+                    $idsReporte
+                );
+
+            if (
+                $cantidad <= 0
+            ) {
+                continue;
+            }
+
+            $resultado[] = [
+
+                'clave' =>
+                    (string) (
+                        $grupo['clave']
+                        ?? ''
+                    ),
+
+                'valor' =>
+                    (string) (
+                        $grupo['valor']
+                        ?? ''
+                    ),
+
+                'cantidad' =>
+                    $cantidad,
+
+                'folios' =>
+                    array_values(
+                        $grupo['folios']
+                        ?? []
+                    ),
+
+                'ids_reportes' =>
+                    $idsReporte,
+
+                'recurrente' =>
+                    $cantidad >= 2,
+
+            ];
+        }
+
+        usort(
+            $resultado,
+            static function (
+                array $a,
+                array $b
+            ): int {
+                $comparacion =
+                    ((int) ($b['cantidad'] ?? 0))
+                    <=>
+                    ((int) ($a['cantidad'] ?? 0));
+
+                if (
+                    $comparacion !== 0
+                ) {
+                    return $comparacion;
+                }
+
+                return strcasecmp(
+                    (string) (
+                        $a['valor']
+                        ?? ''
+                    ),
+                    (string) (
+                        $b['valor']
+                        ?? ''
+                    )
+                );
+            }
+        );
+
+        return $resultado;
+    }
+
+    private function obtenerFoliosPorReporte(
+        array $historial
+    ): array {
+        $folios = [];
+
+        foreach (
+            $historial
+            as $reporte
+        ) {
+            $idReporte =
+                (int) (
+                    $reporte['id_reporte']
+                    ?? 0
+                );
+
+            if (
+                $idReporte <= 0
+            ) {
+                continue;
+            }
+
+            $folio =
+                $this->normalizarNombre(
+                    (string) (
+                        $reporte['folio']
+                        ?? ''
+                    )
+                );
+
+            $folios[$idReporte] =
+                $folio !== ''
+                    ? $folio
+                    : 'Sin folio asignado';
+        }
+
+        return $folios;
+    }
+
+    private function normalizarIdsReporte(
+        array $idsReporte
+    ): array {
+        return array_values(
+            array_unique(
+                array_filter(
+                    array_map(
+                        'intval',
+                        $idsReporte
+                    ),
+                    static fn (
+                        int $idReporte
+                    ): bool =>
+                        $idReporte > 0
+                )
+            )
+        );
+    }
+
+    private function recurrenciasVacias(): array
+    {
+        return [
+
+            'personal' =>
+                [],
+
+            'areas' =>
+                [],
+
+            'sectores' =>
+                [],
+
+            'turnos' =>
+                [],
+
+            'unidades' =>
+                [],
+
+            'motivos' =>
+                [],
+
+        ];
+    }
+
+    private function obtenerSectorDesdeArea(
+        string $area
+    ): ?string {
+        $area =
+            mb_strtoupper(
+                $this->normalizarNombre(
+                    $area
+                ),
+                'UTF-8'
+            );
+
+        if (
+            $area === ''
+        ) {
+            return null;
+        }
+
+        if (
+            !preg_match(
+                '/^SECTOR\s+0*([0-9]+)\b/u',
+                $area,
+                $coincidencias
+            )
+        ) {
+            return null;
+        }
+
+        $numero =
+            (int) (
+                $coincidencias[1]
+                ?? 0
+            );
+
+        if (
+            $numero < 1
+            || $numero > 15
+        ) {
+            return null;
+        }
+
+        return
+            'SECTOR '
+            . $numero;
+    }
+
     private function crearClaveSeleccion(
         string $nombreNormalizado
     ): string {
@@ -954,6 +1868,9 @@ class DashboardQuejosoService
 
             'ids_reportes' =>
                 [],
+
+            'recurrencias' =>
+                $this->recurrenciasVacias(),
 
         ];
     }

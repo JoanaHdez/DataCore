@@ -54,6 +54,36 @@ $historialQuejoso =
         : [];
 
 
+$recurrenciasQuejoso =
+    is_array(
+        $quejosoIndividual['recurrencias']
+        ?? null
+    )
+        ? $quejosoIndividual['recurrencias']
+        : [];
+
+
+$categoriasRecurrenciasQuejoso = [
+    'personal' =>
+        'Personal involucrado',
+
+    'areas' =>
+        'Areas del personal',
+
+    'sectores' =>
+        'Sectores',
+
+    'turnos' =>
+        'Turnos',
+
+    'unidades' =>
+        'Unidades',
+
+    'motivos' =>
+        'Motivos',
+];
+
+
 $totalQuejasResumen =
     (int) (
         $indicadoresQuejoso['total']
@@ -431,6 +461,15 @@ $sinDatosQuejoso =
                 <?= esc($resumenQuejoso) ?>
             </p>
 
+
+            <button
+                type="button"
+                class="dashboard-quejoso-individual__recurrencias-boton"
+                id="dashboard-quejoso-individual-recurrencias-abrir"
+            >
+                Ver analisis de recurrencias
+            </button>
+
         </div>
 
 
@@ -705,6 +744,7 @@ $sinDatosQuejoso =
 
         </div>
 
+
     </div>
 
     <?php endif; ?>
@@ -717,6 +757,206 @@ $sinDatosQuejoso =
     && !$sinQuejosoSeleccionado
     && !$sinDatosQuejoso
 ): ?>
+
+<div class="modal-reporte modal-quejoso-individual-recurrencias"
+    id="modal-quejoso-individual-recurrencias" aria-hidden="true">
+
+    <div class="modal-reporte__overlay" data-quejoso-individual-recurrencias-cerrar></div>
+
+
+    <div class="modal-reporte__dialog" role="dialog" aria-modal="true"
+        aria-labelledby="modal-quejoso-individual-recurrencias-titulo" tabindex="-1">
+
+        <div class="modal-reporte__header">
+
+            <div>
+
+                <span class="modal-reporte__eyebrow">
+                    Quejoso individual
+                </span>
+
+
+                <h2 class="modal-reporte__title" id="modal-quejoso-individual-recurrencias-titulo">
+                    Analisis de recurrencias
+                </h2>
+
+
+                <p class="modal-reporte__subtitle">
+                    <?= esc($nombreQuejoso) ?>
+                </p>
+
+            </div>
+
+
+            <button type="button" class="modal-reporte__close" data-quejoso-individual-recurrencias-cerrar
+                aria-label="Cerrar">
+                &times;
+            </button>
+
+        </div>
+
+
+        <div class="modal-reporte__body">
+
+            <?php if ($totalQuejasResumen <= 0): ?>
+
+            <div class="dashboard-quejoso-individual__recurrencias-vacio">
+
+                <strong>
+                    Sin recurrencias con los filtros actuales
+                </strong>
+
+                <span>
+                    La seleccion del quejoso se conserva. Al cambiar los filtros se actualizaran estos resultados.
+                </span>
+
+            </div>
+
+            <?php else: ?>
+
+            <div class="dashboard-quejoso-individual__recurrencias-grid">
+
+                <?php foreach ($categoriasRecurrenciasQuejoso as $claveCategoria => $tituloCategoria): ?>
+
+                <?php
+
+                $itemsRecurrencia =
+                    is_array(
+                        $recurrenciasQuejoso[$claveCategoria]
+                        ?? null
+                    )
+                        ? $recurrenciasQuejoso[$claveCategoria]
+                        : [];
+
+                ?>
+
+                <article class="dashboard-quejoso-recurrencia">
+
+                    <div class="dashboard-quejoso-recurrencia__header">
+
+                        <h4>
+                            <?= esc($tituloCategoria) ?>
+                        </h4>
+
+                        <span>
+                            <?= esc((string) count($itemsRecurrencia)) ?>
+                        </span>
+
+                    </div>
+
+
+                    <?php if (empty($itemsRecurrencia)): ?>
+
+                    <div class="dashboard-quejoso-recurrencia__vacio">
+                        Sin informacion registrada
+                    </div>
+
+                    <?php else: ?>
+
+                    <div class="dashboard-quejoso-recurrencia__lista">
+
+                        <?php foreach ($itemsRecurrencia as $itemRecurrencia): ?>
+
+                        <?php
+
+                        $valorRecurrencia =
+                            trim(
+                                (string) (
+                                    $itemRecurrencia['valor']
+                                    ?? ''
+                                )
+                            );
+
+
+                        $cantidadRecurrencia =
+                            (int) (
+                                $itemRecurrencia['cantidad']
+                                ?? 0
+                            );
+
+
+                        $foliosRecurrencia =
+                            is_array(
+                                $itemRecurrencia['folios']
+                                ?? null
+                            )
+                                ? $itemRecurrencia['folios']
+                                : [];
+
+
+                        $recurrenteRecurrencia =
+                            !empty(
+                                $itemRecurrencia['recurrente']
+                            );
+
+                        ?>
+
+                        <div class="
+                                dashboard-quejoso-recurrencia__item
+                                <?= $recurrenteRecurrencia ? 'dashboard-quejoso-recurrencia__item--recurrente' : '' ?>
+                            ">
+
+                            <div class="dashboard-quejoso-recurrencia__item-principal">
+
+                                <strong>
+                                    <?= esc(
+                                        $valorRecurrencia !== ''
+                                            ? $valorRecurrencia
+                                            : 'Sin informacion'
+                                    ) ?>
+                                </strong>
+
+                                <span>
+                                    <?= esc((string) $cantidadRecurrencia) ?>
+                                    <?= $cantidadRecurrencia === 1 ? 'queja' : 'quejas' ?>
+                                </span>
+
+                            </div>
+
+
+                            <small>
+                                Folios:
+                                <?= esc(
+                                    !empty($foliosRecurrencia)
+                                        ? implode(
+                                            ', ',
+                                            array_map(
+                                                static fn ($folio): string =>
+                                                    trim(
+                                                        (string) $folio
+                                                    ) !== ''
+                                                        ? trim(
+                                                            (string) $folio
+                                                        )
+                                                        : 'Sin folio asignado',
+                                                $foliosRecurrencia
+                                            )
+                                        )
+                                        : 'Sin folio asignado'
+                                ) ?>
+                            </small>
+
+                        </div>
+
+                        <?php endforeach; ?>
+
+                    </div>
+
+                    <?php endif; ?>
+
+                </article>
+
+                <?php endforeach; ?>
+
+            </div>
+
+            <?php endif; ?>
+
+        </div>
+
+    </div>
+
+</div>
 
 <?php foreach ($historialQuejoso as $reporteQuejosoModal): ?>
 
@@ -859,6 +1099,21 @@ $motivosReporteModal =
                             </span>
 
                             <?php endif; ?>
+
+
+                            <span>
+                                1 queja
+                            </span>
+
+
+                            <small>
+                                Folios:
+                                <?= esc(
+                                    $folioReporteModal !== ''
+                                        ? $folioReporteModal
+                                        : 'Sin folio asignado'
+                                ) ?>
+                            </small>
 
                         </div>
 
