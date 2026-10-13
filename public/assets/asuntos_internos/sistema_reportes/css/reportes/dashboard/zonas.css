@@ -105,16 +105,16 @@
     display: grid;
 
     grid-template-columns:
-        170px
+        112px
         minmax(0, 1fr);
 
-    gap: 22px;
+    gap: 12px;
 
     align-items: stretch;
 
     padding:
         8px
-        24px
+        16px
         22px;
 }
 

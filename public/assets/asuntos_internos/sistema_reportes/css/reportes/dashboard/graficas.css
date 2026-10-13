@@ -1,32 +1,25 @@
 /* =========================================================
-   DISTRIBUCIÓN DE GRÁFICAS
+   DISTRIBUCION DE GRAFICAS
 ========================================================= */
 
 .dashboard-graficas-grid {
     display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px;
-
     margin-bottom: 26px;
 }
-
 
 .dashboard-graficas-grid .dashboard-grafica {
     margin-bottom: 0;
 }
 
-
 /* =========================================================
-   GRÁFICA PRINCIPAL
+   GRAFICA PRINCIPAL
 ========================================================= */
 
 .dashboard-grafica--principal {
     grid-column: 1 / -1;
 }
-
 
 /* =========================================================
    TARJETA GENERAL
@@ -34,21 +27,13 @@
 
 .dashboard-grafica {
     position: relative;
-
     margin-bottom: 24px;
-
     overflow: hidden;
-
     background: #ffffff;
-
     border: 1px solid #e1e9e5;
     border-radius: 24px;
-
-    box-shadow:
-        0 12px 30px
-        rgba(37, 75, 62, 0.07);
+    box-shadow: 0 12px 30px rgba(37, 75, 62, 0.07);
 }
-
 
 /* =========================================================
    VARIANTE PRINCIPAL VERDE
@@ -56,54 +41,33 @@
 
 .dashboard-grafica--dark {
     position: relative;
-
     isolation: isolate;
-
     color: #1d332c;
-
     background:
         radial-gradient(
             circle at 88% 0%,
             rgba(39, 171, 126, 0.08) 0%,
             transparent 34%
         ),
-        linear-gradient(
-            180deg,
-            #ffffff 0%,
-            #fcfefd 100%
-        );
-
+        linear-gradient(180deg, #ffffff 0%, #fcfefd 100%);
     border: 1px solid #e2ebe7;
     border-radius: 24px;
-
-    box-shadow:
-        0 16px 36px
-        rgba(28, 78, 60, 0.08);
+    box-shadow: 0 16px 36px rgba(28, 78, 60, 0.08);
 }
-
 
 .dashboard-grafica--dark::before {
     content: "";
-
     position: absolute;
     z-index: -1;
-
     top: -120px;
     right: -100px;
-
     width: 350px;
     height: 280px;
-
     border-radius: 50%;
-
-    background:
-        rgba(37, 171, 123, 0.08);
-
+    background: rgba(37, 171, 123, 0.08);
     filter: blur(70px);
-
     pointer-events: none;
 }
-
 
 /* =========================================================
    ENCABEZADO
@@ -112,27 +76,17 @@
 .dashboard-grafica__encabezado {
     position: relative;
     z-index: 2;
-
     display: flex;
-
     align-items: flex-start;
     justify-content: space-between;
-
     gap: 24px;
-
-    padding:
-        22px
-        24px
-        4px;
+    padding: 22px 24px 4px;
 }
-
 
 .dashboard-grafica__encabezado-info {
     min-width: 0;
-
     flex: 1;
 }
-
 
 /* =========================================================
    EYEBROW
@@ -140,57 +94,38 @@
 
 .dashboard-grafica__eyebrow {
     display: block;
-
     margin-bottom: 5px;
-
     color: #139566;
-
     font-size: 12px;
     font-weight: 800;
-
     letter-spacing: 0.09em;
-
     text-transform: uppercase;
 }
 
-
 /* =========================================================
-   TÍTULO
+   TITULO
 ========================================================= */
 
 .dashboard-grafica__titulo {
     margin: 0;
-
     color: #233831;
-
     font-size: 20px;
     font-weight: 800;
-
     line-height: 1.3;
-
     letter-spacing: -0.015em;
 }
 
-
 /* =========================================================
-   DESCRIPCIÓN
+   DESCRIPCION
 ========================================================= */
 
 .dashboard-grafica__descripcion {
     max-width: 720px;
-
-    margin:
-        5px
-        0
-        0;
-
+    margin: 5px 0 0;
     color: #7d8c87;
-
     font-size: 13px;
-
     line-height: 1.5;
 }
-
 
 /* =========================================================
    CONTROLES DE PERIODO
@@ -198,42 +133,26 @@
 
 .dashboard-grafica__periodos {
     display: flex;
-
     align-items: center;
-
     gap: 6px;
-
     flex-shrink: 0;
 }
-
 
 .dashboard-grafica__periodo {
     min-width: 44px;
     height: 32px;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
-    padding:
-        0
-        14px;
-
+    padding: 0 14px;
     color: #6e7c78;
-
     background: #f5f8f6;
-
     border: 0;
     border-radius: 999px;
-
     cursor: pointer;
-
     font-family: inherit;
-
     font-size: 12px;
     font-weight: 700;
-
     transition:
         color 0.2s ease,
         background-color 0.2s ease,
@@ -241,31 +160,17 @@
         transform 0.2s ease;
 }
 
-
 .dashboard-grafica__periodo:hover {
     color: #107b58;
-
     background: #edf7f2;
-
     transform: translateY(-1px);
 }
 
-
 .dashboard-grafica__periodo--activo {
     color: #ffffff;
-
-    background:
-        linear-gradient(
-            135deg,
-            #18a979,
-            #07885e
-        );
-
-    box-shadow:
-        0 7px 16px
-        rgba(7, 136, 94, 0.22);
+    background: linear-gradient(135deg, #18a979, #07885e);
+    box-shadow: 0 7px 16px rgba(7, 136, 94, 0.22);
 }
-
 
 /* =========================================================
    CONTENIDO
@@ -274,15 +179,9 @@
 .dashboard-grafica__contenido {
     position: relative;
     z-index: 2;
-
     width: 100%;
-
-    padding:
-        8px
-        22px
-        18px;
+    padding: 8px 22px 18px;
 }
-
 
 /* =========================================================
    CANVAS GENERAL
@@ -290,26 +189,18 @@
 
 .dashboard-grafica__canvas {
     position: relative;
-
     width: 100%;
-
     min-height: 300px;
 }
 
-
 /* =========================================================
    SECTORES
-   TEMPORAL: moveremos esto cuando trabajemos Sector.
 ========================================================= */
-
-
 
 .dashboard-grafica__canvas--sectores canvas {
     width: 100% !important;
-
     height: 100% !important;
 }
-
 
 /* =========================================================
    PLACEHOLDER GENERAL
@@ -317,40 +208,27 @@
 
 .dashboard-grafica__placeholder {
     width: 100%;
-
     min-height: 260px;
-
     display: flex;
-
     flex-direction: column;
-
     align-items: center;
     justify-content: center;
-
     gap: 5px;
-
     color: #85948f;
-
     background: #f8fbf9;
-
     border: 1px dashed #d5e2dc;
     border-radius: 14px;
-
     text-align: center;
 }
 
-
 .dashboard-grafica__placeholder strong {
     color: #5f756d;
-
     font-size: 14px;
 }
-
 
 .dashboard-grafica__placeholder span {
     font-size: 12px;
 }
-
 
 /* =========================================================
    TENDENCIA
@@ -360,85 +238,59 @@
     min-height: 300px;
 }
 
-
 /* =========================================================
    TABLET
 ========================================================= */
 
 @media (max-width: 900px) {
-
     .dashboard-graficas-grid {
         grid-template-columns: 1fr;
     }
-
 
     .dashboard-grafica--principal {
         grid-column: auto;
     }
 
-
     .dashboard-grafica__encabezado {
         flex-direction: column;
-
         gap: 14px;
     }
-
 }
 
-
 /* =========================================================
-   MÓVIL
+   MOVIL
 ========================================================= */
 
 @media (max-width: 600px) {
-
     .dashboard-graficas-grid {
         gap: 14px;
     }
-
 
     .dashboard-grafica {
         border-radius: 18px;
     }
 
-
     .dashboard-grafica__encabezado {
-        padding:
-            17px
-            16px
-            2px;
+        padding: 17px 16px 2px;
     }
-
 
     .dashboard-grafica__periodos {
         width: 100%;
-
         overflow-x: auto;
-
         padding-bottom: 4px;
     }
-
 
     .dashboard-grafica__periodo {
         min-width: 40px;
         height: 29px;
-
-        padding:
-            0
-            11px;
+        padding: 0 11px;
     }
-
 
     .dashboard-grafica__contenido {
-        padding:
-            8px
-            12px
-            14px;
+        padding: 8px 12px 14px;
     }
-
 
     .dashboard-grafica__titulo {
         font-size: 18px;
     }
-
 }
