@@ -571,50 +571,15 @@
                                 );
 
                                 $letraCanalizacion =
-                                    'A';
-
-
-                                $nombreMayusculas =
                                     mb_strtoupper(
-                                        $nombreCanalizacion,
+                                        mb_substr(
+                                            $nombreCanalizacion,
+                                            0,
+                                            1,
+                                            'UTF-8'
+                                        ),
                                         'UTF-8'
                                     );
-
-
-                                if (
-                                    str_contains(
-                                        $nombreMayusculas,
-                                        'BUSQUEDA'
-                                    )
-                                ) {
-
-                                    $letraCanalizacion =
-                                        'B';
-
-                                } elseif (
-                                    str_contains(
-                                        $nombreMayusculas,
-                                        'VICTIMAS'
-                                    )
-                                ) {
-
-                                    $letraCanalizacion =
-                                        'V';
-
-                                } elseif (
-                                    str_contains(
-                                        $nombreMayusculas,
-                                        'VIOLENCIA FAMILIAR'
-                                    )
-                                    || str_contains(
-                                        $nombreMayusculas,
-                                        'GENERO'
-                                    )
-                                ) {
-
-                                    $letraCanalizacion =
-                                        'G';
-                                }
 
                             ?>
 

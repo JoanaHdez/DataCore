@@ -538,60 +538,15 @@
 
 
                         $letraCanalizacion =
-                            'A';
-
-
-                        $nombreMayusculas =
                             mb_strtoupper(
-                                $nombreCanalizacion,
+                                mb_substr(
+                                    $nombreCanalizacion,
+                                    0,
+                                    1,
+                                    'UTF-8'
+                                ),
                                 'UTF-8'
                             );
-
-
-                        if (
-                            str_contains(
-                                $nombreMayusculas,
-                                'BUSQUEDA'
-                            )
-                            || str_contains(
-                                $nombreMayusculas,
-                                'BÚSQUEDA'
-                            )
-                        ) {
-
-                            $letraCanalizacion =
-                                'B';
-                        } elseif (
-                            str_contains(
-                                $nombreMayusculas,
-                                'VICTIMAS'
-                            )
-                            || str_contains(
-                                $nombreMayusculas,
-                                'VÍCTIMAS'
-                            )
-                        ) {
-
-                            $letraCanalizacion =
-                                'V';
-                        } elseif (
-                            str_contains(
-                                $nombreMayusculas,
-                                'VIOLENCIA FAMILIAR'
-                            )
-                            || str_contains(
-                                $nombreMayusculas,
-                                'GENERO'
-                            )
-                            || str_contains(
-                                $nombreMayusculas,
-                                'GÉNERO'
-                            )
-                        ) {
-
-                            $letraCanalizacion =
-                                'G';
-                        }
 
                         ?>
 
