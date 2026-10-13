@@ -144,6 +144,28 @@ const VISUALIZACIONES_DASHBOARD = [
             '.dashboard-personal-individual__tabla-contenedor',
         ],
     },
+
+    {
+        root: '#dashboard-quejoso-individual',
+
+        accionesTarget:
+            '.dashboard-quejoso-individual__encabezado',
+
+        nombre: () =>
+            nombreConTipo('dashboard-quejoso-individual'),
+
+        ocultar: [
+            '.dashboard-quejoso-individual__busqueda',
+            '.dashboard-quejoso-individual__recurrencias-boton',
+        ],
+
+        expandir: [
+            '.dashboard-quejoso-individual__tabla-contenedor',
+        ],
+
+        prepararCaptura:
+            prepararQuejosoIndividualParaCaptura,
+    },
 ];
 
 
@@ -651,12 +673,12 @@ async function generarBlobPng(root, configuracion) {
                 scrollHeight:
                     root.scrollHeight,
                 rect:
-                    {
-                        width:
-                            rect.width,
-                        height:
-                            rect.height,
-                    },
+                {
+                    width:
+                        rect.width,
+                    height:
+                        rect.height,
+                },
                 canvas:
                     obtenerDiagnosticoCanvas(root),
             }
@@ -748,7 +770,7 @@ function notificarErrorPortapapeles(error) {
 
     const mensaje =
         nombreError === 'NotAllowedError'
-        || nombreError === 'SecurityError'
+            || nombreError === 'SecurityError'
             ? 'No se concedió permiso para copiar la imagen.'
             : 'No fue posible copiar la visualización al portapapeles.';
 
@@ -1089,9 +1111,9 @@ function localizarCanvasEstado(root) {
 
     const rootEstado =
         root instanceof HTMLElement
-        && root.matches(
-            'section.dashboard-estado'
-        )
+            && root.matches(
+                'section.dashboard-estado'
+            )
             ? root
             : document.querySelector(
                 'section.dashboard-estado'
@@ -1720,4 +1742,109 @@ function iconoDescargar() {
             <path d="M5 21h14"></path>
         </svg>
     `;
+}
+
+
+/* =========================================================
+   EXPORTACIÓN - QUEJOSO INDIVIDUAL
+========================================================= */
+
+function prepararQuejosoIndividualParaCaptura(
+    root,
+    restauradores
+) {
+
+    /* =====================================================
+       NOMBRE DEL QUEJOSO
+    ===================================================== */
+
+    const nombre = document
+        .querySelector(
+            '#dashboard-quejoso-individual-seleccion-texto'
+        )
+        ?.textContent
+        ?.trim();
+
+    const encabezado = root.querySelector(
+        '.dashboard-quejoso-individual__encabezado'
+    );
+
+    if (nombre && encabezado) {
+
+        const identificacion =
+            document.createElement('p');
+
+        identificacion.textContent =
+            `Quejoso seleccionado: ${nombre}`;
+
+        identificacion.style.margin =
+            '12px 0 0';
+
+        identificacion.style.color =
+            '#625778';
+
+        identificacion.style.fontSize =
+            '15px';
+
+        identificacion.style.fontWeight =
+            '700';
+
+        identificacion.style.lineHeight =
+            '1.5';
+
+        encabezado.appendChild(
+            identificacion
+        );
+
+        restauradores.push(
+            () => identificacion.remove()
+        );
+    }
+
+
+    /* =====================================================
+       CONTADOR DE REGISTROS
+    ===================================================== */
+
+    const contador = root.querySelector(
+        '.dashboard-quejoso-individual__historial-header > strong'
+    );
+
+    if (contador) {
+
+        const estilosOriginales = {
+            whiteSpace: contador.style.whiteSpace,
+            display: contador.style.display,
+            width: contador.style.width,
+            minWidth: contador.style.minWidth,
+            flexShrink: contador.style.flexShrink,
+        };
+
+        contador.style.whiteSpace =
+            'nowrap';
+
+        contador.style.display =
+            'inline-flex';
+
+        contador.style.width =
+            'max-content';
+
+        contador.style.minWidth =
+            'max-content';
+
+        contador.style.flexShrink =
+            '0';
+
+        restauradores.push(
+            () => {
+
+                Object.assign(
+                    contador.style,
+                    estilosOriginales
+                );
+
+            }
+        );
+    }
+
 }
