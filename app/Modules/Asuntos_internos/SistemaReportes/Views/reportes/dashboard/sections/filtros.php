@@ -859,8 +859,8 @@ if (!function_exists('dashboardFiltroIniciales')) {
                             data-dashboard-catalogo-valor>
 
 
-                        <button type="button" class="dashboard-catalogo__selector" data-dashboard-catalogo-selector
-                            aria-expanded="false">
+                        <div class="dashboard-catalogo__selector" data-dashboard-catalogo-selector
+                            role="button" tabindex="0" aria-expanded="false">
 
                             <span class="dashboard-catalogo__selector-contenido">
 
@@ -889,7 +889,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                                 <path d="m8 10 4 4 4-4" />
                             </svg>
 
-                        </button>
+                        </div>
 
 
                         <div class="dashboard-catalogo__resultados" data-dashboard-catalogo-resultados hidden>
@@ -1522,7 +1522,7 @@ if (!function_exists('dashboardFiltroIniciales')) {
                         Área
                     </label>
 
-                    <div class="dashboard-catalogo" data-dashboard-catalogo>
+                    <div class="dashboard-catalogo" data-dashboard-catalogo data-dashboard-catalogo-buscable>
 
                         <input type="hidden" id="dashboard-area-personal" name="area_personal" value=""
                             data-dashboard-catalogo-valor>
@@ -1542,7 +1542,9 @@ if (!function_exists('dashboardFiltroIniciales')) {
 
                                 <span class="dashboard-catalogo__selector-datos">
 
-                                    <strong data-dashboard-catalogo-texto>
+                                    <strong data-dashboard-catalogo-texto data-dashboard-catalogo-busqueda
+                                        contenteditable="true" spellcheck="false" role="textbox"
+                                        aria-label="Buscar área del personal">
                                         Todas
                                     </strong>
 

@@ -271,7 +271,16 @@
 
 #modal-ranking-personal-detalle
 .dashboard-ranking__modal-seccion {
-    margin-bottom: 12px;
+    margin:
+        20px
+        0
+        12px;
+}
+
+
+#modal-ranking-personal-detalle
+.dashboard-ranking__modal-seccion:first-child {
+    margin-top: 0;
 }
 
 
@@ -477,6 +486,92 @@
     font-weight: 600;
 
     line-height: 1.55;
+}
+
+
+/* =========================================================
+   REPORTES RELACIONADOS
+========================================================= */
+
+#modal-ranking-personal-detalle
+.dashboard-ranking__reporte-detalle {
+    display: grid;
+
+    gap: 10px;
+
+    margin-bottom: 10px;
+
+    padding:
+        14px
+        15px;
+
+    background: #ffffff;
+
+    border:
+        1px solid
+        #dfe8ed;
+
+    border-radius: 13px;
+
+    box-shadow:
+        0 5px 14px
+        rgba(23, 63, 89, 0.035);
+}
+
+
+#modal-ranking-personal-detalle
+.dashboard-ranking__reporte-detalle:last-child {
+    margin-bottom: 0;
+}
+
+
+#modal-ranking-personal-detalle
+.dashboard-ranking__reporte-detalle-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+
+#modal-ranking-personal-detalle
+.dashboard-ranking__reporte-detalle-header strong {
+    color: #29495c;
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+
+#modal-ranking-personal-detalle
+.dashboard-ranking__reporte-detalle-header span {
+    flex-shrink: 0;
+
+    color: #78909d;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+#modal-ranking-personal-detalle
+.dashboard-ranking__reporte-motivos {
+    display: grid;
+
+    gap: 5px;
+
+    margin: 0;
+
+    padding-left: 18px;
+
+    color: #607986;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    line-height: 1.45;
 }
 
 

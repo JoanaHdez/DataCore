@@ -1211,6 +1211,19 @@ function inicializarCatalogoDashboard(
         );
 
 
+    const buscador =
+        catalogo.querySelector(
+            '[data-dashboard-catalogo-busqueda]'
+        );
+
+
+    const esBuscable =
+        catalogo.hasAttribute(
+            'data-dashboard-catalogo-buscable'
+        )
+        && buscador;
+
+
     if (
         !selector
         || !resultados
@@ -1252,6 +1265,22 @@ function inicializarCatalogoDashboard(
             );
 
 
+            if (
+                esBuscable
+                && buscador.contains(
+                    evento.target
+                )
+                && estaAbierto
+            ) {
+
+                seleccionarTextoCatalogoDashboard(
+                    buscador
+                );
+
+                return;
+            }
+
+
             if (estaAbierto) {
 
                 cerrarCatalogoDashboard(
@@ -1266,8 +1295,60 @@ function inicializarCatalogoDashboard(
                 catalogo
             );
 
+            if (esBuscable) {
+
+                seleccionarTextoCatalogoDashboard(
+                    buscador
+                );
+            }
+
         }
     );
+
+
+    selector.addEventListener(
+        'keydown',
+        evento => {
+
+            if (
+                esBuscable
+                && buscador.contains(
+                    evento.target
+                )
+            ) {
+
+                return;
+            }
+
+
+            if (
+                selector.tagName === 'BUTTON'
+                || (
+                    evento.key !== 'Enter'
+                    && evento.key !== ' '
+                    && evento.key !== 'Spacebar'
+                )
+            ) {
+
+                return;
+            }
+
+
+            evento.preventDefault();
+            evento.stopPropagation();
+
+
+            selector.click();
+        }
+    );
+
+
+    if (esBuscable) {
+
+        prepararCatalogoBuscableDashboard(
+            catalogo
+        );
+    }
 
 
     /* =====================================================
@@ -1303,7 +1384,8 @@ function inicializarCatalogoDashboard(
 ========================================================= */
 
 function abrirCatalogoDashboard(
-    catalogo
+    catalogo,
+    busqueda = ''
 ) {
 
     const selector =
@@ -1329,6 +1411,19 @@ function abrirCatalogoDashboard(
 
     resultados.hidden =
         false;
+
+
+    if (
+        catalogo.hasAttribute(
+            'data-dashboard-catalogo-buscable'
+        )
+    ) {
+
+        filtrarOpcionesCatalogoDashboard(
+            catalogo,
+            busqueda
+        );
+    }
 
 
     selector.setAttribute(
@@ -1372,6 +1467,23 @@ function cerrarCatalogoDashboard(
         true;
 
 
+    if (
+        catalogo.hasAttribute(
+            'data-dashboard-catalogo-buscable'
+        )
+    ) {
+
+        restaurarTextoCatalogoBuscableDashboard(
+            catalogo
+        );
+
+        filtrarOpcionesCatalogoDashboard(
+            catalogo,
+            ''
+        );
+    }
+
+
     selector.setAttribute(
         'aria-expanded',
         'false'
@@ -1379,6 +1491,502 @@ function cerrarCatalogoDashboard(
 
 }
 
+
+/* =========================================================
+   PREPARAR CATÁLOGO BUSCABLE
+========================================================= */
+
+function prepararCatalogoBuscableDashboard(
+    catalogo
+) {
+
+    const buscador =
+        catalogo.querySelector(
+            '[data-dashboard-catalogo-busqueda]'
+        );
+
+
+    const resultados =
+        catalogo.querySelector(
+            '[data-dashboard-catalogo-resultados]'
+        );
+
+
+    if (
+        !buscador
+        || !resultados
+    ) {
+
+        return;
+    }
+
+
+    if (
+        !catalogo.querySelector(
+            '[data-dashboard-catalogo-vacio]'
+        )
+    ) {
+
+        const mensaje =
+            document.createElement(
+                'div'
+            );
+
+
+        mensaje.className =
+            'dashboard-catalogo__vacio';
+
+
+        mensaje.dataset.dashboardCatalogoVacio =
+            'true';
+
+
+        mensaje.hidden =
+            true;
+
+
+        mensaje.textContent =
+            'Sin coincidencias';
+
+
+        resultados.appendChild(
+            mensaje
+        );
+    }
+
+
+    buscador.addEventListener(
+        'keydown',
+        evento => {
+
+            evento.stopPropagation();
+
+
+            if (
+                evento.key === 'Enter'
+            ) {
+
+                evento.preventDefault();
+            }
+        }
+    );
+
+
+    buscador.addEventListener(
+        'keyup',
+        evento => {
+
+            evento.stopPropagation();
+        }
+    );
+
+
+    buscador.addEventListener(
+        'click',
+        evento => {
+
+            evento.stopPropagation();
+
+
+            abrirCatalogoDashboard(
+                catalogo
+            );
+
+
+            seleccionarTextoCatalogoDashboard(
+                buscador
+            );
+        }
+    );
+
+
+    buscador.addEventListener(
+        'input',
+        () => {
+
+            const busqueda =
+                convertirBusquedaCatalogoDashboardAMayusculas(
+                    buscador
+                );
+
+
+            abrirCatalogoDashboard(
+                catalogo,
+                busqueda
+            );
+        }
+    );
+
+
+    buscador.addEventListener(
+        'focus',
+        () => {
+
+            abrirCatalogoDashboard(
+                catalogo
+            );
+
+
+            seleccionarTextoCatalogoDashboard(
+                buscador
+            );
+        }
+    );
+}
+
+
+/* =========================================================
+   FILTRAR OPCIONES DE CATÁLOGO
+========================================================= */
+
+function filtrarOpcionesCatalogoDashboard(
+    catalogo,
+    busqueda
+) {
+
+    const termino =
+        normalizarBusquedaCatalogoDashboard(
+            busqueda
+        );
+
+
+    const opciones =
+        Array.from(
+            catalogo.querySelectorAll(
+                '[data-dashboard-catalogo-opcion]'
+            )
+        );
+
+
+    const mensaje =
+        catalogo.querySelector(
+            '[data-dashboard-catalogo-vacio]'
+        );
+
+
+    let totalVisibles =
+        0;
+
+
+    opciones.forEach(
+        opcion => {
+
+            const texto =
+                [
+                    opcion.dataset.texto,
+                    opcion.dataset.value,
+                    opcion.dataset.descripcion,
+                ]
+                    .filter(Boolean)
+                    .join(' ');
+
+
+            const coincide =
+                termino === ''
+                || normalizarBusquedaCatalogoDashboard(
+                    texto
+                ).includes(
+                    termino
+                );
+
+
+            opcion.hidden =
+                !coincide;
+
+
+            if (coincide) {
+
+                totalVisibles += 1;
+            }
+        }
+    );
+
+
+    if (mensaje) {
+
+        mensaje.hidden =
+            totalVisibles > 0;
+    }
+
+
+    ajustarAlturaCatalogoDashboard(
+        catalogo
+    );
+}
+
+
+/* =========================================================
+   ALTURA DE CATÁLOGO BUSCABLE
+========================================================= */
+
+function ajustarAlturaCatalogoDashboard(
+    catalogo
+) {
+
+    const resultados =
+        catalogo.querySelector(
+            '[data-dashboard-catalogo-resultados]'
+        );
+
+
+    if (!resultados) {
+
+        return;
+    }
+
+
+    const opciones =
+        Array.from(
+            resultados.querySelectorAll(
+                '[data-dashboard-catalogo-opcion]'
+            )
+        )
+            .filter(
+                opcion => !opcion.hidden
+            );
+
+
+    if (
+        opciones.length <= 4
+    ) {
+
+        resultados.style.maxHeight =
+            '';
+
+        return;
+    }
+
+
+    const alturaOpciones =
+        opciones
+            .slice(
+                0,
+                4
+            )
+            .reduce(
+                (total, opcion) =>
+                    total
+                    + opcion.getBoundingClientRect().height,
+                0
+            );
+
+
+    resultados.style.maxHeight =
+        `${Math.ceil(alturaOpciones + 14)}px`;
+}
+
+
+/* =========================================================
+   NORMALIZAR BÚSQUEDA
+========================================================= */
+
+function normalizarBusquedaCatalogoDashboard(
+    texto
+) {
+
+    return String(
+        texto
+        || ''
+    )
+        .replaceAll(
+            'Ñ',
+            '__ENYE_MAYUSCULA__'
+        )
+        .replaceAll(
+            'ñ',
+            '__ENYE_MINUSCULA__'
+        )
+        .normalize(
+            'NFD'
+        )
+        .replace(
+            /[\u0300-\u036f]/g,
+            ''
+        )
+        .replaceAll(
+            '__ENYE_MAYUSCULA__',
+            'Ñ'
+        )
+        .replaceAll(
+            '__ENYE_MINUSCULA__',
+            'Ñ'
+        )
+        .toLocaleUpperCase(
+            'es-MX'
+        )
+        .trim();
+}
+
+
+/* =========================================================
+   MAYÚSCULAS EN BUSCADOR
+========================================================= */
+
+function convertirBusquedaCatalogoDashboardAMayusculas(
+    elemento
+) {
+
+    const valorOriginal =
+        elemento.textContent
+        || '';
+
+
+    const valorMayusculas =
+        valorOriginal.toLocaleUpperCase(
+            'es-MX'
+        );
+
+
+    if (
+        valorOriginal !== valorMayusculas
+    ) {
+
+        elemento.textContent =
+            valorMayusculas;
+
+
+        colocarCursorAlFinalCatalogoDashboard(
+            elemento
+        );
+    }
+
+
+    return valorMayusculas;
+}
+
+
+/* =========================================================
+   SELECCIONAR TEXTO BUSCADOR
+========================================================= */
+
+function seleccionarTextoCatalogoDashboard(
+    elemento
+) {
+
+    if (!elemento) {
+
+        return;
+    }
+
+
+    requestAnimationFrame(
+        () => {
+
+            const seleccion =
+                window.getSelection();
+
+
+            const rango =
+                document.createRange();
+
+
+            rango.selectNodeContents(
+                elemento
+            );
+
+
+            seleccion?.removeAllRanges();
+
+
+            seleccion?.addRange(
+                rango
+            );
+        }
+    );
+}
+
+
+/* =========================================================
+   CURSOR AL FINAL
+========================================================= */
+
+function colocarCursorAlFinalCatalogoDashboard(
+    elemento
+) {
+
+    const seleccion =
+        window.getSelection();
+
+
+    const rango =
+        document.createRange();
+
+
+    rango.selectNodeContents(
+        elemento
+    );
+
+
+    rango.collapse(
+        false
+    );
+
+
+    seleccion?.removeAllRanges();
+
+
+    seleccion?.addRange(
+        rango
+    );
+}
+
+
+/* =========================================================
+   RESTAURAR TEXTO VISIBLE
+========================================================= */
+
+function restaurarTextoCatalogoBuscableDashboard(
+    catalogo
+) {
+
+    const buscador =
+        catalogo.querySelector(
+            '[data-dashboard-catalogo-busqueda]'
+        );
+
+
+    const input =
+        catalogo.querySelector(
+            '[data-dashboard-catalogo-valor]'
+        );
+
+
+    const opciones =
+        Array.from(
+            catalogo.querySelectorAll(
+                '[data-dashboard-catalogo-opcion]'
+            )
+        );
+
+
+    if (
+        !buscador
+        || !input
+    ) {
+
+        return;
+    }
+
+
+    const opcionSeleccionada =
+        opciones.find(
+            opcion =>
+                String(
+                    opcion.dataset.value
+                    ?? ''
+                ) === String(
+                    input.value
+                    ?? ''
+                )
+        )
+        || opciones[0]
+        || null;
+
+
+    buscador.textContent =
+        opcionSeleccionada?.dataset.texto
+        ?? '';
+}
 
 /* =========================================================
    CERRAR TODOS LOS CATÁLOGOS

@@ -1,0 +1,1435 @@
+/* =========================================================
+   DASHBOARD - QUEJOSO INDIVIDUAL
+========================================================= */
+
+.dashboard-quejoso-individual {
+    position: relative;
+
+    margin-bottom: 24px;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 92% 0%,
+            rgba(112, 89, 157, 0.07) 0%,
+            transparent 31%
+        ),
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #fcfbfd 100%
+        );
+
+    border: 1px solid #e3e0e9;
+    border-radius: 24px;
+
+    box-shadow:
+        0 15px 34px
+        rgba(49, 43, 74, 0.065);
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.dashboard-quejoso-individual__encabezado {
+    padding:
+        24px
+        24px
+        14px;
+}
+
+
+.dashboard-quejoso-individual__eyebrow {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #71678f;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: 0.09em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-quejoso-individual__titulo {
+    margin: 0;
+
+    color: #233831;
+
+    font-size: 21px;
+    font-weight: 800;
+
+    line-height: 1.3;
+}
+
+
+.dashboard-quejoso-individual__descripcion {
+    max-width: 720px;
+
+    margin:
+        5px
+        0
+        0;
+
+    color: #7d8c87;
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   BUSCADOR
+========================================================= */
+
+.dashboard-quejoso-individual__busqueda {
+    position: relative;
+
+    margin:
+        0
+        24px
+        18px;
+
+    padding:
+        14px;
+
+    background: #f8f7fb;
+
+    border: 1px solid #e3e0eb;
+    border-radius: 16px;
+}
+
+
+.dashboard-quejoso-individual__busqueda-header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 10px;
+}
+
+
+.dashboard-quejoso-individual__busqueda-icono {
+    width: 32px;
+    height: 32px;
+
+    flex:
+        0
+        0
+        32px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #71678f;
+
+    background: #ece9f3;
+
+    border-radius: 10px;
+}
+
+
+.dashboard-quejoso-individual__busqueda-icono svg {
+    width: 16px;
+    height: 16px;
+
+    fill: none;
+
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+.dashboard-quejoso-individual__busqueda-header span {
+    display: block;
+
+    color: #465951;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+
+.dashboard-quejoso-individual__busqueda-header small {
+    display: block;
+
+    margin-top: 2px;
+
+    color: #87958f;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   INPUT BUSCADOR
+========================================================= */
+
+.dashboard-quejoso-individual__busqueda
+.dashboard-filtros__personal {
+    position: relative;
+
+    width: 100%;
+}
+
+
+.dashboard-quejoso-individual__busqueda-input {
+    width: 100% !important;
+    height: 42px !important;
+
+    display: block;
+
+    padding:
+        0
+        16px
+        0
+        42px !important;
+
+    color: #4b4758 !important;
+
+    background:
+        rgba(255, 255, 255, 0.92) !important;
+
+    border:
+        1px solid
+        #ded9e8 !important;
+
+    border-radius:
+        12px !important;
+
+    outline:
+        none !important;
+
+    box-shadow:
+        inset 0 1px 2px
+        rgba(63, 52, 82, 0.025);
+
+    font-family:
+        inherit;
+
+    font-size:
+        10px !important;
+
+    font-weight:
+        600;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+
+
+.dashboard-quejoso-individual__busqueda-input::placeholder {
+    color:
+        #9a94a5;
+
+    opacity:
+        1;
+}
+
+
+.dashboard-quejoso-individual__busqueda-input:disabled {
+    color:
+        #87918d !important;
+
+    background:
+        #f0eef4 !important;
+
+    border-color:
+        #ded9e8 !important;
+
+    cursor:
+        not-allowed;
+}
+
+
+/* =========================================================
+   LUPA DENTRO DEL INPUT
+========================================================= */
+
+.dashboard-quejoso-individual__busqueda
+.dashboard-filtros__personal::before {
+    content: "";
+
+    position: absolute;
+    z-index: 3;
+
+    top: 13px;
+    left: 15px;
+
+    width: 13px;
+    height: 13px;
+
+    border:
+        1.7px solid
+        #81759e;
+
+    border-radius:
+        50%;
+
+    pointer-events:
+        none;
+}
+
+
+.dashboard-quejoso-individual__busqueda
+.dashboard-filtros__personal::after {
+    content: "";
+
+    position: absolute;
+    z-index: 3;
+
+    top: 25px;
+    left: 27px;
+
+    width: 6px;
+    height: 1.7px;
+
+    background:
+        #81759e;
+
+    border-radius:
+        999px;
+
+    transform:
+        rotate(45deg);
+
+    transform-origin:
+        left center;
+
+    pointer-events:
+        none;
+}
+
+
+/* =========================================================
+   FOCUS
+========================================================= */
+
+.dashboard-quejoso-individual__busqueda-input:hover {
+    background:
+        #ffffff !important;
+
+    border-color:
+        #cec7dc !important;
+}
+
+
+.dashboard-quejoso-individual__busqueda-input:focus {
+    background:
+        #ffffff !important;
+
+    border-color:
+        #8175a0 !important;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(113, 103, 143, 0.10) !important;
+}
+
+
+/* =========================================================
+   RESULTADOS DEL BUSCADOR
+========================================================= */
+
+.dashboard-quejoso-individual__resultados {
+    position: absolute;
+
+    z-index: 50;
+
+    top: calc(100% + 7px);
+    left: 0;
+    right: 0;
+
+    width: 100%;
+
+    max-height: 270px;
+
+    overflow-y: auto;
+
+    background:
+        rgba(255, 255, 255, 0.98);
+
+    border:
+        1px solid
+        #ded9e8;
+
+    border-radius:
+        12px;
+
+    box-shadow:
+        0 16px 32px
+        rgba(60, 48, 82, 0.12);
+}
+
+
+.dashboard-quejoso-individual__resultados[hidden] {
+    display: none;
+}
+
+
+.dashboard-quejoso-resultados__item {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding:
+        9px
+        10px;
+
+    color: #344d45;
+
+    background: transparent;
+
+    border: 0;
+    border-radius: 9px;
+
+    font-family: inherit;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.18s ease;
+}
+
+
+.dashboard-quejoso-resultados__item:hover {
+    background: #f0f8f4;
+}
+
+
+.dashboard-quejoso-resultados__avatar {
+    width: 31px;
+    height: 31px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #71678f;
+
+    background: #eeebf4;
+
+    border: 1px solid #ddd7e8;
+
+    border-radius: 50%;
+
+    font-size: 12px;
+    font-weight: 900;
+}
+
+
+.dashboard-quejoso-resultados__datos {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+.dashboard-quejoso-resultados__datos strong {
+    overflow: hidden;
+
+    color: #31594b;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.dashboard-quejoso-resultados__datos small {
+    overflow: hidden;
+
+    color: #89968f;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.dashboard-quejoso-resultados__vacio {
+    padding:
+        13px
+        10px;
+
+    color: #82918c;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   CHIP DE QUEJOSO SELECCIONADO
+========================================================= */
+
+.dashboard-quejoso-individual__seleccion {
+    width: fit-content;
+    max-width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top:
+        9px;
+
+    padding:
+        6px
+        8px
+        6px
+        11px;
+
+    color:
+        #615776;
+
+    background:
+        #eeebf4;
+
+    border:
+        1px solid
+        #ddd7e8;
+
+    border-radius:
+        999px;
+
+    font-size:
+        11px;
+
+    font-weight:
+        700;
+}
+
+
+.dashboard-quejoso-individual__seleccion span {
+    min-width:
+        0;
+
+    overflow:
+        hidden;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
+}
+
+
+.dashboard-quejoso-individual__seleccion button {
+    width:
+        20px;
+
+    height:
+        20px;
+
+    flex:
+        0
+        0
+        20px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        0;
+
+    color:
+        #71678f;
+
+    background:
+        rgba(255, 255, 255, 0.62);
+
+    border:
+        0;
+
+    border-radius:
+        50%;
+
+    cursor:
+        pointer;
+
+    font-size:
+        17px;
+
+    line-height:
+        1;
+}
+
+
+.dashboard-quejoso-individual__seleccion button:hover {
+    background:
+        #ffffff;
+}
+
+
+/* =========================================================
+   ESTADOS
+========================================================= */
+
+.dashboard-quejoso-individual__estado {
+    min-height: 170px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 14px;
+
+    margin:
+        0
+        24px
+        24px;
+
+    padding: 24px;
+
+    background: #faf9fc;
+
+    border: 1px dashed #ddd9e6;
+    border-radius: 16px;
+}
+
+
+.dashboard-quejoso-individual__estado--seleccionado {
+    justify-content: flex-start;
+
+    min-height: 118px;
+
+    background: #ffffff;
+
+    border-style: solid;
+}
+
+
+.dashboard-quejoso-individual__estado-icono {
+    width: 44px;
+    height: 44px;
+
+    flex:
+        0
+        0
+        44px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #71678f;
+
+    background: #ece9f3;
+
+    border-radius: 14px;
+}
+
+
+.dashboard-quejoso-individual__estado-icono svg {
+    width: 20px;
+    height: 20px;
+
+    fill: none;
+
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+.dashboard-quejoso-individual__estado > div:last-child {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+
+.dashboard-quejoso-individual__estado strong {
+    color: #485b54;
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+
+.dashboard-quejoso-individual__estado span {
+    color: #84928d;
+
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+.dashboard-quejoso-individual__contenido {
+    padding:
+        0
+        24px
+        24px;
+}
+
+
+/* =========================================================
+   RESUMEN
+========================================================= */
+
+.dashboard-quejoso-individual__resumen {
+    margin-bottom: 16px;
+
+    padding:
+        16px
+        18px;
+
+    background: #ffffff;
+
+    border: 1px solid #e3e0e9;
+    border-left: 4px solid #71678f;
+    border-radius: 15px;
+
+    box-shadow:
+        0 8px 18px
+        rgba(49, 43, 74, 0.045);
+}
+
+
+.dashboard-quejoso-individual__resumen span {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #71678f;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-quejoso-individual__resumen p {
+    margin: 0;
+
+    color: #52655e;
+
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   INDICADORES
+========================================================= */
+
+.dashboard-quejoso-individual__indicadores {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 12px;
+
+    margin-bottom: 16px;
+}
+
+
+.dashboard-quejoso-indicador {
+    min-width: 0;
+
+    padding:
+        14px
+        15px;
+
+    background: #ffffff;
+
+    border: 1px solid #e3e0e9;
+    border-top: 4px solid #71678f;
+    border-radius: 14px;
+
+    box-shadow:
+        0 8px 18px
+        rgba(49, 43, 74, 0.045);
+}
+
+
+.dashboard-quejoso-indicador span {
+    display: block;
+
+    color: #7d8c87;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-quejoso-indicador strong {
+    display: block;
+
+    margin-top: 7px;
+
+    color: #3f3658;
+
+    font-size: 28px;
+    font-weight: 850;
+
+    line-height: 1;
+}
+
+
+.dashboard-quejoso-indicador--pendiente {
+    border-top-color: #8a95a3;
+}
+
+
+.dashboard-quejoso-indicador--pendiente strong {
+    color: #5c6672;
+}
+
+
+.dashboard-quejoso-indicador--proceso {
+    border-top-color: #3b82c4;
+}
+
+
+.dashboard-quejoso-indicador--proceso strong {
+    color: #2875b5;
+}
+
+
+.dashboard-quejoso-indicador--finalizada {
+    border-top-color: #17a36f;
+}
+
+
+.dashboard-quejoso-indicador--finalizada strong {
+    color: #0f805b;
+}
+
+
+/* =========================================================
+   HISTORIAL
+========================================================= */
+
+.dashboard-quejoso-individual__historial {
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e9e6;
+    border-radius: 18px;
+
+    box-shadow:
+        0 8px 22px
+        rgba(37, 72, 59, 0.045);
+}
+
+
+.dashboard-quejoso-individual__historial-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 14px;
+
+    padding:
+        15px
+        17px;
+
+    border-bottom:
+        1px solid
+        #edf2ef;
+}
+
+
+.dashboard-quejoso-individual__historial-header span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #71678f;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+
+    text-transform: uppercase;
+}
+
+
+.dashboard-quejoso-individual__historial-header h3 {
+    margin: 0;
+
+    color: #33483f;
+
+    font-size: 15px;
+    font-weight: 800;
+}
+
+
+.dashboard-quejoso-individual__historial-header strong {
+    flex-shrink: 0;
+
+    padding:
+        5px
+        9px;
+
+    color: #746b8e;
+
+    background: #f1eef6;
+
+    border-radius: 999px;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+.dashboard-quejoso-individual__tabla-contenedor {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+.dashboard-quejoso-individual__tabla {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+
+.dashboard-quejoso-individual__tabla th {
+    padding:
+        10px
+        14px;
+
+    color: #73857e;
+
+    background: #fafcfb;
+
+    border-bottom:
+        1px solid
+        #e7eeea;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    text-align: left;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+
+.dashboard-quejoso-individual__tabla td {
+    padding:
+        12px
+        14px;
+
+    color: #52655e;
+
+    border-bottom:
+        1px solid
+        #eef2f0;
+
+    font-size: 12px;
+
+    vertical-align: middle;
+}
+
+
+.dashboard-quejoso-individual__tabla tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+
+.dashboard-quejoso-individual__tabla tbody tr {
+    transition:
+        background-color 0.15s ease;
+}
+
+
+.dashboard-quejoso-individual__tabla tbody tr:hover {
+    background: #fafcfb;
+}
+
+
+.dashboard-quejoso-individual__folio {
+    color: #344c42;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+
+.dashboard-quejoso-individual__estado-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    min-height: 23px;
+
+    padding:
+        0
+        8px;
+
+    border-radius: 999px;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+
+.dashboard-quejoso-individual__estado-badge--pendiente {
+    color: #9c6c1d;
+
+    background: #fff3da;
+}
+
+
+.dashboard-quejoso-individual__estado-badge--proceso {
+    color: #426f97;
+
+    background: #edf4f9;
+}
+
+
+.dashboard-quejoso-individual__estado-badge--finalizado {
+    color: #0f805b;
+
+    background: #e6f5ee;
+}
+
+
+.dashboard-quejoso-individual__estado-badge--neutral {
+    color: #697a74;
+
+    background: #eef2f0;
+}
+
+
+.dashboard-quejoso-individual__historial-vacio {
+    min-height: 120px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    padding: 24px;
+
+    text-align: center;
+}
+
+
+.dashboard-quejoso-individual__historial-vacio strong {
+    color: #485b54;
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+
+.dashboard-quejoso-individual__historial-vacio span {
+    max-width: 520px;
+
+    color: #84928d;
+
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   MODAL MOTIVOS
+========================================================= */
+
+.modal-quejoso-individual-motivos {
+    padding: 24px;
+}
+
+
+.modal-quejoso-individual-motivos
+.modal-reporte__dialog {
+    width: min(820px, calc(100vw - 48px));
+    max-height: min(780px, 90vh);
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e0eb;
+    border-radius: 22px;
+
+    box-shadow:
+        0 28px 70px
+        rgba(43, 34, 60, 0.24);
+}
+
+
+.modal-quejoso-individual-motivos
+.modal-reporte__overlay {
+    background:
+        rgba(28, 24, 38, 0.58);
+
+    backdrop-filter:
+        blur(5px);
+}
+
+
+.modal-quejoso-individual-motivos
+.modal-reporte__header {
+    position: relative;
+
+    padding:
+        22px
+        24px;
+
+    background:
+        radial-gradient(
+            circle at 88% 15%,
+            rgba(255, 255, 255, 0.12) 0%,
+            transparent 28%
+        ),
+        linear-gradient(
+            135deg,
+            #55466f 0%,
+            #6e5b91 52%,
+            #7a659d 100%
+        );
+
+    border-bottom: 0;
+}
+
+
+.modal-quejoso-individual-motivos
+.modal-reporte__eyebrow {
+    margin-bottom: 5px;
+
+    color:
+        rgba(255, 255, 255, 0.64);
+}
+
+
+.modal-quejoso-individual-motivos
+.modal-reporte__title {
+    color: #ffffff;
+}
+
+
+.modal-quejoso-individual-motivos
+.modal-reporte__subtitle {
+    margin:
+        6px
+        0
+        0;
+
+    color:
+        rgba(255, 255, 255, 0.72);
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+.modal-quejoso-individual-motivos
+.modal-reporte__close {
+    color: #ffffff;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+}
+
+
+.modal-quejoso-individual-motivos
+.modal-reporte__body {
+    max-height:
+        calc(90vh - 122px);
+
+    overflow-y: auto;
+
+    padding:
+        22px
+        24px
+        24px;
+
+    background: #fbfafc;
+}
+
+
+.modal-quejoso-individual-motivos
+.dashboard-personal-individual__motivos-lista {
+    display: grid;
+
+    gap: 12px;
+}
+
+
+.modal-quejoso-individual-motivos
+.dashboard-personal-individual__motivo {
+    position: relative;
+
+    overflow: hidden;
+
+    padding:
+        17px
+        18px;
+
+    background: #ffffff;
+
+    border:
+        1px solid
+        #e4e0e9;
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 5px 14px
+        rgba(55, 45, 72, 0.045);
+}
+
+
+.modal-quejoso-individual-motivos
+.dashboard-personal-individual__motivo::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    bottom: 0;
+    left: 0;
+
+    width: 3px;
+
+    background: #71678f;
+}
+
+
+.modal-quejoso-individual-motivos
+.dashboard-personal-individual__motivo h3 {
+    margin:
+        0
+        0
+        13px;
+
+    padding-left: 3px;
+
+    color: #3e3949;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    line-height: 1.45;
+}
+
+
+.modal-quejoso-individual-motivos
+.dashboard-personal-individual__motivo-variantes {
+    display: grid;
+
+    gap: 9px;
+}
+
+
+.modal-quejoso-individual-motivos
+.dashboard-personal-individual__motivo-variante {
+    display: grid;
+
+    grid-template-columns:
+        minmax(150px, 1.4fr)
+        minmax(90px, 0.6fr);
+
+    gap:
+        7px
+        16px;
+
+    padding:
+        12px
+        13px;
+
+    background: #faf9fc;
+
+    border:
+        1px solid
+        #ebe7ef;
+
+    border-radius: 11px;
+}
+
+
+.modal-quejoso-individual-motivos
+.dashboard-personal-individual__motivo-variante strong {
+    color: #625778;
+
+    font-size: 15px;
+    font-weight: 800;
+
+    line-height: 1.4;
+}
+
+
+.modal-quejoso-individual-motivos
+.dashboard-personal-individual__motivo-variante span {
+    color: #68746f;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .dashboard-quejoso-individual {
+        border-radius: 18px;
+    }
+
+
+    .dashboard-quejoso-individual__encabezado {
+        padding:
+            18px
+            16px
+            12px;
+    }
+
+
+    .dashboard-quejoso-individual__busqueda {
+        margin:
+            0
+            14px
+            14px;
+    }
+
+
+    .dashboard-quejoso-individual__estado {
+        margin:
+            0
+            14px
+            16px;
+
+        min-height: 150px;
+    }
+
+
+    .dashboard-quejoso-individual__contenido {
+        padding:
+            0
+            14px
+            16px;
+    }
+
+
+    .dashboard-quejoso-individual__indicadores {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
+    .dashboard-quejoso-individual__historial-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 8px;
+    }
+
+
+    .modal-quejoso-individual-motivos {
+        padding: 14px;
+    }
+
+
+    .modal-quejoso-individual-motivos
+    .modal-reporte__dialog {
+        width: calc(100vw - 28px);
+
+        border-radius: 18px;
+    }
+
+
+    .modal-quejoso-individual-motivos
+    .modal-reporte__header {
+        padding:
+            18px
+            18px;
+    }
+
+
+    .modal-quejoso-individual-motivos
+    .modal-reporte__body {
+        padding:
+            18px;
+    }
+
+}
+
+
+@media (max-width: 430px) {
+
+    .dashboard-quejoso-individual__indicadores {
+        grid-template-columns: 1fr;
+    }
+
+}

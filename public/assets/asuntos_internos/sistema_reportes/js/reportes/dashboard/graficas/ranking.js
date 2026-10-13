@@ -772,9 +772,33 @@ function inicializarDetalleRanking() {
         );
 
 
+    const reportes =
+        document.getElementById(
+            'ranking-personal-detalle-reportes'
+        );
+
+
+    const reportesSeccion =
+        document.getElementById(
+            'ranking-personal-detalle-reportes-seccion'
+        );
+
+
+    const reportesVacio =
+        document.getElementById(
+            'ranking-personal-detalle-reportes-vacio'
+        );
+
+
     const motivos =
         document.getElementById(
             'ranking-personal-detalle-motivos'
+        );
+
+
+    const motivosSeccion =
+        document.getElementById(
+            'ranking-personal-detalle-motivos-seccion'
         );
 
 
@@ -861,6 +885,189 @@ function inicializarDetalleRanking() {
 
 
     /* =====================================================
+       REPORTES
+    ===================================================== */
+
+    const renderizarReportes =
+        items => {
+
+            limpiarNodo(
+                reportes
+            );
+
+
+            const reportesSinMotivos =
+                Array.isArray(
+                    items
+                )
+                    ? items.filter(
+                        item => {
+
+                            const motivosReporte =
+                                Array.isArray(
+                                    item.motivos
+                                )
+                                    ? item.motivos
+                                    : [];
+
+
+                            return motivosReporte.length === 0;
+                        }
+                    )
+                    : [];
+
+
+            const hayReportes =
+                reportesSinMotivos.length > 0;
+
+
+            if (
+                reportesSeccion
+            ) {
+
+                reportesSeccion.hidden =
+                    !hayReportes;
+
+
+                reportesSeccion.style.display =
+                    hayReportes
+                        ? ''
+                        : 'none';
+
+            }
+
+
+            if (
+                reportesVacio
+            ) {
+
+                reportesVacio.hidden =
+                    hayReportes;
+
+
+                reportesVacio.style.display =
+                    hayReportes
+                        ? 'none'
+                        : '';
+
+            }
+
+
+            if (
+                !hayReportes
+                || !reportes
+            ) {
+
+                return;
+            }
+
+
+            reportesSinMotivos.forEach(
+                item => {
+
+                    const bloque =
+                        document.createElement(
+                            'article'
+                        );
+
+
+                    bloque.className =
+                        'dashboard-ranking__reporte-detalle';
+
+
+                    const encabezado =
+                        document.createElement(
+                            'div'
+                        );
+
+
+                    encabezado.className =
+                        'dashboard-ranking__reporte-detalle-header';
+
+
+                    const folio =
+                        document.createElement(
+                            'strong'
+                        );
+
+
+                    folio.textContent =
+                        item.folio_visible
+                        || item.folio
+                        || 'Sin folio asignado';
+
+
+                    encabezado.appendChild(
+                        folio
+                    );
+
+
+                    if (
+                        item.id_reporte
+                    ) {
+
+                        const identificador =
+                            document.createElement(
+                                'span'
+                            );
+
+
+                        identificador.textContent =
+                            `ID ${item.id_reporte}`;
+
+
+                        encabezado.appendChild(
+                            identificador
+                        );
+
+                    }
+
+
+                    bloque.appendChild(
+                        encabezado
+                    );
+
+
+                    const listaMotivos =
+                        document.createElement(
+                            'ul'
+                        );
+
+
+                    listaMotivos.className =
+                        'dashboard-ranking__reporte-motivos';
+
+                    const motivoVacio =
+                        document.createElement(
+                            'li'
+                        );
+
+
+                    motivoVacio.textContent =
+                        'Sin motivos registrados';
+
+
+                    listaMotivos.appendChild(
+                        motivoVacio
+                    );
+
+
+                    bloque.appendChild(
+                        listaMotivos
+                    );
+
+
+                    reportes.appendChild(
+                        bloque
+                    );
+
+                }
+            );
+
+        };
+
+
+    /* =====================================================
        MOTIVOS
     ===================================================== */
 
@@ -877,6 +1084,22 @@ function inicializarDetalleRanking() {
                     items
                 )
                 && items.length > 0;
+
+
+            if (
+                motivosSeccion
+            ) {
+
+                motivosSeccion.hidden =
+                    !hayMotivos;
+
+
+                motivosSeccion.style.display =
+                    hayMotivos
+                        ? ''
+                        : 'none';
+
+            }
 
 
             if (
@@ -1140,6 +1363,12 @@ function inicializarDetalleRanking() {
 
             renderizarMotivos(
                 detalle.motivos
+                || []
+            );
+
+
+            renderizarReportes(
+                detalle.reportes
                 || []
             );
 

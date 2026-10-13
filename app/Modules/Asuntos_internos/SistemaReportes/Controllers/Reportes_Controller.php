@@ -7,6 +7,8 @@ use App\Modules\Asuntos_internos\SistemaReportes\Services\ListadoExcelService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\AuthService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\ReporteService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardFiltrosService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardQuejosoService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardInformeService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardInformeIaSanitizerService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\DashboardInformeIaService;
@@ -3608,6 +3610,7 @@ class Reportes_Controller extends BaseController
                     'area',
                     'unidad',
                     'personal',
+                    'quejoso',
                 ],
                 true
             )
@@ -3623,6 +3626,15 @@ class Reportes_Controller extends BaseController
                 (string)
                 $this->request->getGet(
                     'personal_individual'
+                )
+            );
+
+
+        $quejosoIndividualSeleccionado =
+            trim(
+                (string)
+                $this->request->getGet(
+                    'quejoso_individual'
                 )
             );
 
@@ -3655,6 +3667,27 @@ class Reportes_Controller extends BaseController
                 0,
 
             'ultimas_quejas' =>
+                [],
+
+        ];
+
+
+        $quejosoIndividual = [
+
+            'quejoso' => [
+
+                'clave' =>
+                    $quejosoIndividualSeleccionado,
+
+                'nombre' =>
+                    null,
+
+            ],
+
+            'total_quejas' =>
+                0,
+
+            'ids_reportes' =>
                 [],
 
         ];
@@ -3830,6 +3863,18 @@ class Reportes_Controller extends BaseController
                     $dashboardService
                     ->obtenerPersonalIndividual(
                         $personalIndividualSeleccionado
+                    );
+            }
+
+
+            if (
+                $quejosoIndividualSeleccionado !== ''
+            ) {
+
+                $quejosoIndividual =
+                    $dashboardService
+                    ->obtenerQuejosoIndividual(
+                        $quejosoIndividualSeleccionado
                     );
             }
 
@@ -4574,6 +4619,17 @@ class Reportes_Controller extends BaseController
 
                 'personalIndividual' =>
                 $personalIndividual,
+
+
+                /* =================================================
+                QUEJOSO INDIVIDUAL
+                ================================================= */
+
+                'quejosoIndividualSeleccionado' =>
+                $quejosoIndividualSeleccionado,
+
+                'quejosoIndividual' =>
+                $quejosoIndividual,
 
 
                 /* =================================================
@@ -5621,6 +5677,195 @@ class Reportes_Controller extends BaseController
                 'El reporte fue eliminado correctamente.',
             ]);
     }
+
+    public function buscarQuejososDashboard()
+    {
+        $termino =
+            trim(
+                (string)
+                $this->request->getGet('q')
+            );
+
+
+        if (
+            mb_strlen(
+                $termino,
+                'UTF-8'
+            ) > 80
+        ) {
+
+            $termino =
+                mb_substr(
+                    $termino,
+                    0,
+                    80,
+                    'UTF-8'
+                );
+        }
+
+
+        $filtrosDashboard = [
+
+            'fecha_registro_inicio' =>
+            trim(
+                (string)
+                $this->request->getGet(
+                    'fecha_registro_inicio'
+                )
+            ),
+
+            'fecha_registro_fin' =>
+            trim(
+                (string)
+                $this->request->getGet(
+                    'fecha_registro_fin'
+                )
+            ),
+
+            'tipo' =>
+            trim(
+                (string)
+                $this->request->getGet(
+                    'tipo'
+                )
+            ),
+
+            'estado' =>
+            trim(
+                (string)
+                $this->request->getGet(
+                    'estado'
+                )
+            ),
+
+            'clasificacion' =>
+            trim(
+                (string)
+                $this->request->getGet(
+                    'clasificacion'
+                )
+            ),
+
+            'seguimiento' =>
+            trim(
+                (string)
+                $this->request->getGet(
+                    'seguimiento'
+                )
+            ),
+
+            'es_anonimo' =>
+            trim(
+                (string)
+                $this->request->getGet(
+                    'es_anonimo'
+                )
+            ),
+
+            'zona' =>
+            trim(
+                (string)
+                $this->request->getGet(
+                    'zona'
+                )
+            ),
+
+            'sector' =>
+            trim(
+                (string)
+                $this->request->getGet(
+                    'sector'
+                )
+            ),
+
+            'turno' =>
+            trim(
+                (string)
+                $this->request->getGet(
+                    'turno'
+                )
+            ),
+
+            'area_personal' =>
+            trim(
+                (string)
+                $this->request->getGet(
+                    'area_personal'
+                )
+            ),
+
+            'personal' =>
+            trim(
+                (string)
+                $this->request->getGet(
+                    'personal'
+                )
+            ),
+
+            'unidad' =>
+            trim(
+                (string)
+                $this->request->getGet(
+                    'unidad'
+                )
+            ),
+
+        ];
+
+
+        try {
+
+            $filtrosService =
+                new DashboardFiltrosService();
+
+
+            $filtrosService
+                ->establecerFiltros(
+                    $filtrosDashboard
+                );
+
+
+            $servicio =
+                new DashboardQuejosoService(
+                    $filtrosService
+                );
+
+
+            return $this->response
+                ->setJSON([
+                    'success' =>
+                        true,
+
+                    'quejosos' =>
+                        $servicio->buscarQuejosos(
+                            $termino
+                        ),
+                ]);
+
+        } catch (\Throwable $e) {
+
+            log_message(
+                'error',
+                'No fue posible buscar quejosos del Dashboard: {mensaje}',
+                [
+                    'mensaje' =>
+                        $e->getMessage(),
+                ]
+            );
+
+
+            return $this->response
+                ->setStatusCode(500)
+                ->setJSON([
+                    'success' =>
+                        false,
+
+                    'message' =>
+                        'No fue posible consultar los quejosos.',
+                ]);
+        }
+    }
+
 
     public function buscarPersonal()
     {

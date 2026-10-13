@@ -90,6 +90,13 @@ if (
             ? 'Personal con mayor número de felicitaciones asociadas.'
             : 'Personal con mayor número de quejas asociadas.';
 
+} elseif (
+    $tipoSeleccionado === 'quejoso'
+) {
+
+    $descripcionRanking =
+        'Quejosos no anónimos con mayor número de quejas registradas.';
+
 } else {
 
     $descripcionRanking =
@@ -129,6 +136,28 @@ if (!is_array($opciones)) {
 }
 
 
+if ($esFelicitacion) {
+
+    $opciones =
+        array_values(
+            array_filter(
+                $opciones,
+                static function (
+                    array $opcion
+                ): bool {
+
+                    return (
+                        (string) (
+                            $opcion['valor']
+                            ?? ''
+                        )
+                    ) !== 'quejoso';
+                }
+            )
+        );
+}
+
+
 if (!is_array($detallesRanking)) {
     $detallesRanking = [];
 }
@@ -143,6 +172,7 @@ $tiposConDetalleRanking = [
     'area',
     'unidad',
     'personal',
+    'quejoso',
 ];
 
 
@@ -610,6 +640,40 @@ $sinDatosRanking =
 
             <div class="modal-reporte__body dashboard-personal-individual__detalle">
 
+                <div id="ranking-personal-detalle-reportes-seccion">
+
+                <div class="dashboard-ranking__modal-seccion">
+
+                    <span class="dashboard-ranking__modal-seccion-eyebrow">
+                        Reportes
+                    </span>
+
+                    <h4 class="dashboard-ranking__modal-seccion-titulo">
+                        Quejas sin motivos registrados
+                    </h4>
+
+                </div>
+
+                <div id="ranking-personal-detalle-reportes"></div>
+
+                <div class="dashboard-grafica__placeholder" id="ranking-personal-detalle-reportes-vacio" hidden>
+
+                    <strong>
+                        Sin reportes
+                    </strong>
+
+                    <span>
+                        Sin reportes registrados para los filtros seleccionados.
+                    </span>
+
+                </div>
+
+
+                </div>
+
+
+                <div id="ranking-personal-detalle-motivos-seccion">
+
                 <div class="dashboard-ranking__modal-seccion">
 
                     <span class="dashboard-ranking__modal-seccion-eyebrow">
@@ -633,6 +697,8 @@ $sinDatosRanking =
                     <span>
                         Sin motivos registrados para los filtros seleccionados.
                     </span>
+
+                </div>
 
                 </div>
 

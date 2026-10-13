@@ -15,6 +15,7 @@ use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardCom
 use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardRankingService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardFelicitacionesService;
 use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardPersonalService;
+use App\Modules\Asuntos_internos\SistemaReportes\Services\Dashboard\DashboardQuejosoService;
 
 class DashboardService
 {
@@ -33,6 +34,7 @@ class DashboardService
     private DashboardRankingService $rankingService;
     private DashboardFelicitacionesService $felicitacionesService;
     private DashboardPersonalService $personalService;
+    private DashboardQuejosoService $quejosoService;
 
     /* =========================================================
        CONSTRUCTOR
@@ -147,6 +149,11 @@ class DashboardService
 
         $this->personalService =
             new DashboardPersonalService(
+                $this->filtrosService
+            );
+
+        $this->quejosoService =
+            new DashboardQuejosoService(
                 $this->filtrosService
             );
     }
@@ -461,6 +468,20 @@ class DashboardService
         return $this->personalService
             ->obtenerAnalisis(
                 $identificador
+            );
+    }
+
+    /* =========================================================
+    QUEJOSO INDIVIDUAL
+    ========================================================= */
+
+    public function obtenerQuejosoIndividual(
+        string $claveSeleccion
+    ): array {
+
+        return $this->quejosoService
+            ->obtenerAnalisisBase(
+                $claveSeleccion
             );
     }
 

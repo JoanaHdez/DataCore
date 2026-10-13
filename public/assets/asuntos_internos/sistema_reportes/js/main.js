@@ -23,6 +23,7 @@ import './reportes/dashboard/utilidades/visualizaciones.js';
 
 import './reportes/dashboard/filtros.js';
 import './reportes/dashboard/personal_individual.js';
+import './reportes/dashboard/quejoso_individual.js';
 import './reportes/dashboard/exportar.js';
 // GENERADOR DE ANALISIS DASHBOARD: modal tecnico IA/Word futuro.
 import './reportes/dashboard/informe.js';

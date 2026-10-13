@@ -96,6 +96,9 @@ class DashboardRankingService
             'personal' =>
                 $this->obtenerRankingPersonal(),
 
+            'quejoso' =>
+                $this->obtenerRankingQuejosos(),
+
             default =>
                 $this->obtenerRankingSector(),
         };
@@ -1590,6 +1593,11 @@ class DashboardRankingService
                 'folios' =>
                     $folios,
 
+                'reportes' =>
+                    $this->construirDetalleReportes(
+                        $reportes
+                    ),
+
                 'motivos' =>
                     $this->obtenerMotivosAgrupadosPorReportes(
                         $reportes
@@ -1609,6 +1617,306 @@ class DashboardRankingService
 
         $respuesta['detalles_personal'] =
             $detalles;
+
+        $respuesta['detalles_ranking'] =
+            $detalles;
+
+
+        return $respuesta;
+    }
+
+    /* =========================================================
+       TOP 5 - QUEJOSOS
+    ========================================================= */
+
+
+    private function obtenerRankingQuejosos(): array
+    {
+
+        $builder =
+            $this->db
+            ->table(
+                'ai_reportes r'
+            )
+            ->select([
+                'r.id_reporte',
+                'r.folio',
+                'r.nombre_quejoso',
+            ])
+            ->where(
+                'r.es_anonimo',
+                0
+            )
+            ->where(
+                'r.nombre_quejoso IS NOT NULL',
+                null,
+                false
+            )
+            ->where(
+                "TRIM(r.nombre_quejoso) != ''",
+                null,
+                false
+            );
+
+
+        $this->filtrosService
+            ->aplicarFiltrosReportes(
+                $builder,
+                'r'
+            );
+
+
+        $registros =
+            $builder
+            ->get()
+            ->getResultArray();
+
+
+        $quejosos = [];
+
+        $reportesContados = [];
+
+
+        foreach (
+            $registros
+            as $registro
+        ) {
+
+            $idReporte =
+                (int) (
+                    $registro['id_reporte']
+                    ?? 0
+                );
+
+
+            if (
+                $idReporte <= 0
+            ) {
+
+                continue;
+            }
+
+
+            $nombreNormalizado =
+                $this->normalizarTexto(
+                    (string) (
+                        $registro['nombre_quejoso']
+                        ?? ''
+                    )
+                );
+
+
+            if (
+                $nombreNormalizado === ''
+            ) {
+
+                continue;
+            }
+
+
+            $claveQuejoso =
+                mb_strtoupper(
+                    $nombreNormalizado,
+                    'UTF-8'
+                );
+
+
+            $claveReporte =
+                $idReporte
+                . '|'
+                . $claveQuejoso;
+
+
+            if (
+                isset(
+                    $reportesContados[$claveReporte]
+                )
+            ) {
+
+                continue;
+            }
+
+
+            $reportesContados[$claveReporte] =
+                true;
+
+
+            if (
+                !isset(
+                    $quejosos[$claveQuejoso]
+                )
+            ) {
+
+                $quejosos[$claveQuejoso] = [
+
+                    'nombre' =>
+                        $claveQuejoso,
+
+                    'total' =>
+                        0,
+
+                    'reportes' =>
+                        [],
+
+                ];
+            }
+
+
+            $quejosos[$claveQuejoso]['total']++;
+
+
+            $quejosos[$claveQuejoso]['reportes'][$idReporte] =
+                $this->normalizarTexto(
+                    (string) (
+                        $registro['folio']
+                        ?? ''
+                    )
+                );
+        }
+
+
+        uasort(
+            $quejosos,
+            static function (
+                array $a,
+                array $b
+            ): int {
+
+                $comparacion =
+                    ((int) ($b['total'] ?? 0))
+                    <=>
+                    ((int) ($a['total'] ?? 0));
+
+
+                if (
+                    $comparacion !== 0
+                ) {
+
+                    return $comparacion;
+                }
+
+
+                return strcasecmp(
+                    (string) (
+                        $a['nombre']
+                        ?? ''
+                    ),
+                    (string) (
+                        $b['nombre']
+                        ?? ''
+                    )
+                );
+            }
+        );
+
+
+        $quejosos =
+            array_slice(
+                $quejosos,
+                0,
+                5,
+                true
+            );
+
+
+        $conteos = [];
+
+        $detalles = [];
+
+
+        foreach (
+            $quejosos
+            as $identidad => $quejoso
+        ) {
+
+            $nombre =
+                (string) (
+                    $quejoso['nombre']
+                    ?? ''
+                );
+
+
+            if (
+                $nombre === ''
+            ) {
+
+                continue;
+            }
+
+
+            $conteos[$nombre] =
+                (int) (
+                    $quejoso['total']
+                    ?? 0
+                );
+
+
+            $reportes =
+                is_array(
+                    $quejoso['reportes']
+                    ?? null
+                )
+                    ? $quejoso['reportes']
+                    : [];
+
+
+            $folios =
+                array_values(
+                    array_filter(
+                        $reportes,
+                        static function (
+                            $folio
+                        ): bool {
+
+                            return trim(
+                                (string) $folio
+                            ) !== '';
+                        }
+                    )
+                );
+
+
+            $detalles[] = [
+
+                'identidad' =>
+                    (string) $identidad,
+
+                'identificador' =>
+                    '',
+
+                'nombre' =>
+                    $nombre,
+
+                'total_quejas' =>
+                    (int) (
+                        $quejoso['total']
+                        ?? 0
+                    ),
+
+                'folios' =>
+                    $folios,
+
+                'reportes' =>
+                    $this->construirDetalleReportes(
+                        $reportes
+                    ),
+
+                'motivos' =>
+                    $this->obtenerMotivosAgrupadosPorReportes(
+                        $reportes
+                    ),
+
+            ];
+        }
+
+
+        $respuesta =
+            $this->construirRespuesta(
+                'quejoso',
+                'Quejosos con mayor número de registros',
+                $conteos
+            );
+
 
         $respuesta['detalles_ranking'] =
             $detalles;
@@ -1670,6 +1978,11 @@ class DashboardRankingService
                 'folios' =>
                     $folios,
 
+                'reportes' =>
+                    $this->construirDetalleReportes(
+                        $reportes
+                    ),
+
                 'motivos' =>
                     $this->obtenerMotivosAgrupadosPorReportes(
                         $reportes
@@ -1680,6 +1993,203 @@ class DashboardRankingService
 
 
         return $detalles;
+    }
+
+
+    private function construirDetalleReportes(
+        array $reportes
+    ): array {
+
+        $idsReportes =
+            array_values(
+                array_filter(
+                    array_map(
+                        'intval',
+                        array_keys(
+                            $reportes
+                        )
+                    ),
+                    static fn (
+                        int $idReporte
+                    ): bool =>
+                        $idReporte > 0
+                )
+            );
+
+
+        if (
+            empty(
+                $idsReportes
+            )
+        ) {
+
+            return [];
+        }
+
+
+        $motivosPorReporte = [];
+
+
+        $registrosMotivos =
+            $this->db
+            ->table(
+                'ai_reporte_motivos rm'
+            )
+            ->select([
+                'rm.id_reporte',
+                'rm.motivo_personalizado',
+                'm.motivo',
+            ])
+            ->join(
+                'ai_cat_motivos m',
+                'm.id_motivo = rm.id_motivo',
+                'left'
+            )
+            ->whereIn(
+                'rm.id_reporte',
+                $idsReportes
+            )
+            ->where(
+                'rm.eliminado',
+                0
+            )
+            ->orderBy(
+                'm.motivo',
+                'ASC'
+            )
+            ->get()
+            ->getResultArray();
+
+
+        foreach (
+            $registrosMotivos
+            as $registro
+        ) {
+
+            $idReporte =
+                (int) (
+                    $registro['id_reporte']
+                    ?? 0
+                );
+
+
+            if (
+                $idReporte <= 0
+                || !array_key_exists(
+                    $idReporte,
+                    $reportes
+                )
+            ) {
+
+                continue;
+            }
+
+
+            $motivoPersonalizado =
+                $this->normalizarTexto(
+                    (string) (
+                        $registro['motivo_personalizado']
+                        ?? ''
+                    )
+                );
+
+
+            $motivoCatalogo =
+                $this->normalizarTexto(
+                    (string) (
+                        $registro['motivo']
+                        ?? ''
+                    )
+                );
+
+
+            $motivo =
+                $motivoPersonalizado !== ''
+                    ? $motivoPersonalizado
+                    : $motivoCatalogo;
+
+
+            if (
+                $motivo === ''
+            ) {
+
+                continue;
+            }
+
+
+            if (
+                !isset(
+                    $motivosPorReporte[$idReporte]
+                )
+            ) {
+
+                $motivosPorReporte[$idReporte] =
+                    [];
+            }
+
+
+            $claveMotivo =
+                mb_strtoupper(
+                    $motivo,
+                    'UTF-8'
+                );
+
+
+            $motivosPorReporte[$idReporte][$claveMotivo] =
+                $motivo;
+        }
+
+
+        $detalle = [];
+
+
+        foreach (
+            $reportes
+            as $idReporte => $folio
+        ) {
+
+            $idReporte =
+                (int) $idReporte;
+
+
+            if (
+                $idReporte <= 0
+            ) {
+
+                continue;
+            }
+
+
+            $folio =
+                $this->normalizarTexto(
+                    (string) $folio
+                );
+
+
+            $detalle[] = [
+
+                'id_reporte' =>
+                    $idReporte,
+
+                'folio' =>
+                    $folio,
+
+                'folio_visible' =>
+                    $folio !== ''
+                        ? $folio
+                        : 'Sin folio asignado',
+
+                'motivos' =>
+                    array_values(
+                        $motivosPorReporte[$idReporte]
+                        ?? []
+                    ),
+
+            ];
+        }
+
+
+        return $detalle;
     }
 
 
@@ -2167,6 +2677,14 @@ class DashboardRankingService
 
                     'texto' =>
                         'Personal',
+                ],
+
+                [
+                    'valor' =>
+                        'quejoso',
+
+                    'texto' =>
+                        'Quejosos',
                 ],
 
             ],

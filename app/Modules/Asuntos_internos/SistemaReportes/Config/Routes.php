@@ -125,6 +125,12 @@ $routes->group(
                 );
 
 
+                $routes->get(
+                    'dashboard/quejosos/buscar',
+                    '\App\Modules\Asuntos_internos\SistemaReportes\Controllers\Reportes_Controller::buscarQuejososDashboard'
+                );
+
+
                 /* =================================================
                    SESIÓN
                 ================================================= */

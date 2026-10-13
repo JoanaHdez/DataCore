@@ -313,6 +313,15 @@ $esFelicitacion =
                     ) ?>
 
 
+                    <!-- =============================================
+                         QUEJOSO INDIVIDUAL
+                    ============================================== -->
+
+                    <?= $this->include(
+                        'App\Modules\Asuntos_internos\SistemaReportes\Views\reportes\dashboard\sections\quejoso_individual'
+                    ) ?>
+
+
                 </div>
 
             </div>
