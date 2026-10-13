@@ -322,10 +322,10 @@ class DashboardService
             return [
 
                 'sectores' =>
-                    [],
+                [],
 
                 'turnos' =>
-                    [],
+                [],
 
             ];
         }
@@ -350,31 +350,31 @@ class DashboardService
             return [
 
                 'disponible' =>
-                    false,
+                false,
 
                 'dias_periodo' =>
-                    0,
+                0,
 
                 'periodo_actual' => [
 
                     'inicio' =>
-                        null,
+                    null,
 
                     'fin' =>
-                        null,
+                    null,
                 ],
 
                 'periodo_anterior' => [
 
                     'inicio' =>
-                        null,
+                    null,
 
                     'fin' =>
-                        null,
+                    null,
                 ],
 
                 'metricas' =>
-                    [],
+                [],
 
             ];
         }
@@ -584,6 +584,7 @@ class DashboardService
     - se respetan todos los filtros del Dashboard
     ========================================================= */
 
+
     public function obtenerSanciones(): array
     {
         if (
@@ -592,36 +593,33 @@ class DashboardService
         ) {
 
             return [
-
-                'tipos' =>
-                [],
-
-                'totales' =>
-                [],
-
-                'total' =>
-                0,
-
+                'tipos' => [],
+                'totales' => [],
+                'total' => 0,
             ];
         }
 
         /* =====================================================
-        CATEGORÍAS
-        ===================================================== */
+       CATEGORÍAS ACTUALES DE SEGUIMIENTO
+    ===================================================== */
 
-        $conteos = [
-            'Amonestación' => 0,
-            'Arresto' => 0,
-            'Llamada de atención' => 0,
+        $categorias = [
+            'AMONESTACIÓN ESCRITA' => 'Amonestación escrita',
+            'ARRESTO' => 'Arresto',
+            'AMONESTACIÓN VERBAL' => 'Amonestación verbal',
+            'RECOMENDACIÓN' => 'Recomendación',
         ];
 
+        $conteos = array_fill_keys(
+            array_values($categorias),
+            0
+        );
 
         /* =====================================================
-        CONSULTAR REPORTES + SANCIÓN ACTUAL
-        ===================================================== */
+       CONSULTAR SANCIONES ACTUALES DE SEGUIMIENTO
+    ===================================================== */
 
-        $builder =
-            $this->db
+        $builder = $this->db
             ->table('ai_reportes r')
             ->select([
                 'r.id_reporte',
@@ -638,200 +636,89 @@ class DashboardService
                 'ss.id_sancion_seguimiento = s.id_sancion_seguimiento',
                 'inner'
             )
-            ->where(
-                's.es_actual',
-                1
-            )
-            ->where(
-                's.eliminado',
-                0
-            )
+            ->where('s.es_actual', 1)
+            ->where('s.eliminado', 0)
             ->whereIn(
                 'ss.nombre',
-                [
-                    'AMONESTACIÓN',
-                    'AMONESTACION',
-                    'ARRESTO',
-                    'LLAMADA DE ATENCIÓN',
-                    'LLAMADA DE ATENCION',
-                ]
+                array_keys($categorias)
             );
 
-
         /* =====================================================
-        FILTROS DEL DASHBOARD
-
-        De esta forma la gráfica de sanciones responde
-        exactamente a los mismos filtros que las demás.
-        ===================================================== */
+       FILTROS GLOBALES DEL DASHBOARD
+    ===================================================== */
 
         $this->aplicarFiltrosReportes(
             $builder,
             'r'
         );
 
-
         /* =====================================================
-        CONSULTAR
-        ===================================================== */
+       CONSULTAR
+    ===================================================== */
 
-        $registros =
-            $builder
+        $registros = $builder
             ->get()
             ->getResultArray();
 
-
         /* =====================================================
-        EVITAR DUPLICADOS
-
-        Aunque la regla de negocio establece una sola
-        sanción actual por reporte, protegemos el Dashboard
-        ante posibles inconsistencias históricas.
-
-        La unidad de conteo será:
-
-        reporte + tipo de sanción
-        ===================================================== */
+       EVITAR DUPLICADOS POR REPORTE Y TIPO
+    ===================================================== */
 
         $reportesContados = [];
 
-
-        /* =====================================================
-        CONTABILIZAR
-        ===================================================== */
-
         foreach ($registros as $registro) {
 
-            $idReporte =
-                (int) (
-                    $registro['id_reporte']
-                    ?? 0
-                );
-
+            $idReporte = (int) (
+                $registro['id_reporte'] ?? 0
+            );
 
             if ($idReporte <= 0) {
                 continue;
             }
 
-
-            /* =================================================
-            NORMALIZAR TIPO
-            ================================================= */
-
-            $tipoOriginal =
-                trim(
-                    (string) (
-                        $registro['sancion_seguimiento']
-                        ?? ''
-                    )
-                );
-
+            $tipoOriginal = trim(
+                (string) (
+                    $registro['sancion_seguimiento'] ?? ''
+                )
+            );
 
             if ($tipoOriginal === '') {
                 continue;
             }
 
+            $tipoNormalizado = mb_strtoupper(
+                $tipoOriginal,
+                'UTF-8'
+            );
 
-            $tipoNormalizado =
-                mb_strtoupper(
-                    $tipoOriginal,
-                    'UTF-8'
-                );
-
-
-            /* =================================================
-            CLASIFICAR
-            ================================================= */
-
-            $tipo =
-                match ($tipoNormalizado) {
-
-                    'AMONESTACIÓN',
-                    'AMONESTACION' =>
-                    'Amonestación',
-
-                    'ARRESTO' =>
-                    'Arresto',
-
-                    'LLAMADA DE ATENCIÓN',
-                    'LLAMADA DE ATENCION' =>
-                    'Llamada de atención',
-
-                    default =>
-                    null,
-                };
-
-
-            /*
-         * No inventamos categorías para valores
-         * que no pertenezcan al catálogo oficial.
-         */
-
-            if (
-                $tipo === null
-                || !array_key_exists(
-                    $tipo,
-                    $conteos
-                )
-            ) {
+            if (!isset($categorias[$tipoNormalizado])) {
                 continue;
             }
 
+            $tipo = $categorias[$tipoNormalizado];
 
-            /* =================================================
-            EVITAR DUPLICADOS
-            ================================================= */
+            $clave = $idReporte . '|' . $tipo;
 
-            $clave =
-                $idReporte
-                . '|'
-                . $tipo;
-
-
-            if (
-                isset(
-                    $reportesContados[$clave]
-                )
-            ) {
+            if (isset($reportesContados[$clave])) {
                 continue;
             }
 
-
-            $reportesContados[$clave] =
-                true;
-
-
-            /* =================================================
-            SUMAR
-            ================================================= */
+            $reportesContados[$clave] = true;
 
             $conteos[$tipo]++;
         }
 
-
         /* =====================================================
-        RESPUESTA
-        ===================================================== */
+       RESPUESTA COMPATIBLE CON EL DASHBOARD
+    ===================================================== */
 
         return [
-            'tipos' => [
-                'Amonestación',
-                'Arresto',
-                'Llamada de atención',
-            ],
-
-            'totales' => [
-                $conteos['Amonestación'],
-                $conteos['Arresto'],
-                $conteos['Llamada de atención'],
-            ],
-
-            'total' =>
-            array_sum(
-                $conteos
-            ),
+            'tipos' => array_values($categorias),
+            'totales' => array_values($conteos),
+            'total' => array_sum($conteos),
         ];
     }
+
 
     /* =========================================================
     QUEJAS POR ÁREA
@@ -882,13 +769,13 @@ class DashboardService
             return [
 
                 'clasificaciones' =>
-                    [],
+                [],
 
                 'totales' =>
-                    [],
+                [],
 
                 'total' =>
-                    0,
+                0,
 
             ];
         }
@@ -923,19 +810,19 @@ class DashboardService
         return match ($tipo) {
 
             'QUEJA' =>
-                'QUEJA',
+            'QUEJA',
 
             'QUEJA_VERBAL' =>
-                'QUEJA_VERBAL',
+            'QUEJA_VERBAL',
 
             'QUEJA_FORANEA' =>
-                'QUEJA_FORANEA',
+            'QUEJA_FORANEA',
 
             'FELICITACION' =>
-                'FELICITACION',
+            'FELICITACION',
 
             default =>
-                'TODOS',
+            'TODOS',
         };
     }
 }
