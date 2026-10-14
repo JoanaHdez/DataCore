@@ -224,7 +224,11 @@ class Auth_Controller extends BaseController
                 ],
 
             'reportes_autenticado' =>
-                true,
+    true,
+
+'reportes_ultima_actividad' =>
+    time(),
+
         ]);
         /* =====================================================
            REDIRECCIÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œN
@@ -254,10 +258,11 @@ class Auth_Controller extends BaseController
          * del proyecto DataCore.
          */
         session()->remove([
-            'usuario_reportes',
-            'reportes_autenticado',
-            'reportes_dashboard_autorizado',
-        ]);
+    'usuario_reportes',
+    'reportes_autenticado',
+    'reportes_dashboard_autorizado',
+    'reportes_ultima_actividad',
+]);
 
 
         /*

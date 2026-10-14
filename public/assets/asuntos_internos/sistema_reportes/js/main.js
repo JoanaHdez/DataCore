@@ -4,6 +4,8 @@
 ========================================================= */
 
 import './login.js';
+import './reportes/keepalive.js';
+
 import './reportes/ubicacion.js';
 import './reportes/dashboard/graficas/etiquetas.js';
 import './reportes/dashboard/graficas/sanciones.js';
@@ -87,3 +89,4 @@ import './reportes/listado/modales/eliminar.js';
 
 import './reportes/notificaciones/resultado.js';
 import './reportes/notificaciones/confirmacion.js';
+
