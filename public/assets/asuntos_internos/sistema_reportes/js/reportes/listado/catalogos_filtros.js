@@ -112,7 +112,12 @@ function inicializarCatalogoFiltroReportes(
         <span class="reportes-filtros-catalogo__contenido">
             <span class="reportes-filtros-catalogo__avatar" aria-hidden="true"></span>
             <span class="reportes-filtros-catalogo__datos">
-                <strong></strong>
+                <strong
+                    contenteditable="true"
+                    spellcheck="false"
+                    role="textbox"
+                    aria-label="Buscar opción"
+                ></strong>
                 <small></small>
             </span>
         </span>
@@ -159,6 +164,10 @@ function inicializarCatalogoFiltroReportes(
     catalogo.dataset.filtroCatalogoNombre =
         nombre;
 
+    prepararBusquedaCatalogoFiltroReportes(
+        catalogo
+    );
+
     reconstruirOpcionesCatalogoFiltroReportes(
         catalogo
     );
@@ -189,6 +198,10 @@ function inicializarCatalogoFiltroReportes(
             }
 
             abrirCatalogoFiltroReportes(
+                catalogo
+            );
+
+            seleccionarTextoCatalogoFiltroReportes(
                 catalogo
             );
         }
@@ -267,7 +280,16 @@ function reconstruirOpcionesCatalogoFiltroReportes(
         return;
     }
 
-    menu.textContent =
+    const opciones =
+        menu.querySelector(
+            '.reportes-filtros-catalogo__opciones'
+        );
+
+    if (!opciones) {
+        return;
+    }
+
+    opciones.textContent =
         '';
 
     Array.from(
@@ -300,14 +322,22 @@ function reconstruirOpcionesCatalogoFiltroReportes(
                 '.reportes-filtros-catalogo__avatar'
             ).textContent =
                 obtenerInicialCatalogoFiltroReportes(
-                    option.textContent
+                    obtenerTextoVisibleCatalogoFiltroReportes(
+                        catalogo,
+                        option.textContent,
+                        option.value,
+                        true
+                    )
                 );
 
             item.querySelector(
                 'strong'
             ).textContent =
-                limpiarTextoCatalogoFiltroReportes(
-                    option.textContent
+                obtenerTextoVisibleCatalogoFiltroReportes(
+                    catalogo,
+                    option.textContent,
+                    option.value,
+                    true
                 );
 
             item.querySelector(
@@ -345,11 +375,211 @@ function reconstruirOpcionesCatalogoFiltroReportes(
                 }
             );
 
-            menu.appendChild(
+            opciones.appendChild(
                 item
             );
         }
     );
+
+    filtrarOpcionesCatalogoFiltroReportes(
+        catalogo,
+        menu.hidden ? '' : undefined
+    );
+}
+
+function prepararBusquedaCatalogoFiltroReportes(
+    catalogo
+) {
+    const menu =
+        catalogo.querySelector(
+            '.reportes-filtros-catalogo__resultados'
+        );
+
+    if (!menu) {
+        return;
+    }
+
+    if (!menu.querySelector('.reportes-filtros-catalogo__opciones')) {
+        const opciones = document.createElement('div');
+
+        opciones.className =
+            'reportes-filtros-catalogo__opciones';
+
+        menu.appendChild(opciones);
+    }
+
+    if (!menu.querySelector('.reportes-filtros-catalogo__vacio')) {
+        const vacio = document.createElement('div');
+
+        vacio.className =
+            'reportes-filtros-catalogo__vacio';
+        vacio.hidden = true;
+        vacio.textContent = 'Sin coincidencias';
+
+        menu.appendChild(vacio);
+    }
+
+    const buscador =
+        catalogo.querySelector(
+            '.reportes-filtros-catalogo__datos strong[contenteditable="true"]'
+        );
+
+    if (!buscador) {
+        return;
+    }
+
+    buscador.addEventListener(
+        'keydown',
+        evento => {
+            evento.stopPropagation();
+
+            if (evento.key === 'Enter') {
+                evento.preventDefault();
+            }
+        }
+    );
+
+    buscador.addEventListener(
+        'keyup',
+        evento => {
+            evento.stopPropagation();
+        }
+    );
+
+    buscador.addEventListener(
+        'click',
+        evento => {
+            evento.stopPropagation();
+            abrirCatalogoFiltroReportes(catalogo);
+            seleccionarTextoCatalogoFiltroReportes(catalogo);
+        }
+    );
+
+    buscador.addEventListener(
+        'focus',
+        () => {
+            abrirCatalogoFiltroReportes(catalogo);
+            seleccionarTextoCatalogoFiltroReportes(catalogo);
+        }
+    );
+
+    buscador.addEventListener(
+        'input',
+        () => {
+            abrirCatalogoFiltroReportes(
+                catalogo,
+                buscador.textContent
+            );
+        }
+    );
+}
+
+function filtrarOpcionesCatalogoFiltroReportes(
+    catalogo,
+    busqueda = undefined
+) {
+    const menu =
+        catalogo.querySelector(
+            '.reportes-filtros-catalogo__resultados'
+        );
+
+    const buscador =
+        catalogo.querySelector(
+            '.reportes-filtros-catalogo__datos strong[contenteditable="true"]'
+        );
+
+    const vacio =
+        menu?.querySelector(
+            '.reportes-filtros-catalogo__vacio'
+        );
+
+    if (!menu || !buscador || !vacio) {
+        return;
+    }
+
+    const termino =
+        normalizarBusquedaCatalogoFiltroReportes(
+            busqueda === undefined
+                ? buscador.textContent
+                : busqueda
+        );
+
+    let visibles = 0;
+
+    menu.querySelectorAll(
+        '.reportes-filtros-catalogo__item'
+    ).forEach(
+        item => {
+            const texto =
+                normalizarBusquedaCatalogoFiltroReportes(
+                    item.querySelector(
+                        'strong'
+                    )?.textContent
+                    || ''
+                );
+
+            const coincide =
+                termino === ''
+                || texto.includes(termino);
+
+            item.hidden =
+                !coincide;
+
+            if (coincide) {
+                visibles += 1;
+            }
+        }
+    );
+
+    vacio.hidden =
+        visibles > 0;
+
+    ajustarAlturaCatalogoFiltroReportes(
+        catalogo
+    );
+}
+
+function normalizarBusquedaCatalogoFiltroReportes(
+    texto
+) {
+    return String(
+        texto
+        || ''
+    )
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toLocaleUpperCase('es-MX');
+}
+
+function obtenerTextoVisibleCatalogoFiltroReportes(
+    catalogo,
+    texto,
+    valor = null,
+    esOpcion = false
+) {
+    const select =
+        catalogo.querySelector(
+            'select'
+        );
+
+    const limpio =
+        limpiarTextoCatalogoFiltroReportes(
+            texto
+        );
+
+    if (
+        select?.id === 'filtro_resolucion'
+    ) {
+        if (!esOpcion && valor === '') {
+            return 'Todas';
+        }
+
+        return limpio.toLocaleUpperCase('es-MX');
+    }
+
+    return limpio;
 }
 
 function sincronizarCatalogosFiltroReportes() {
@@ -416,9 +646,10 @@ function sincronizarCatalogoFiltroReportes(
         ?? '';
 
     const etiqueta =
-        limpiarTextoCatalogoFiltroReportes(
-            option?.textContent
-            || ''
+        obtenerTextoVisibleCatalogoFiltroReportes(
+            catalogo,
+            option?.textContent || '',
+            valor
         );
 
     if (texto) {
@@ -460,7 +691,8 @@ function sincronizarCatalogoFiltroReportes(
 }
 
 function abrirCatalogoFiltroReportes(
-    catalogo
+    catalogo,
+    busqueda = ''
 ) {
     const boton =
         catalogo.querySelector(
@@ -481,6 +713,11 @@ function abrirCatalogoFiltroReportes(
 
     menu.hidden =
         false;
+
+    filtrarOpcionesCatalogoFiltroReportes(
+        catalogo,
+        busqueda
+    );
 
     boton.setAttribute(
         'aria-expanded',
@@ -515,10 +752,53 @@ function cerrarCatalogoFiltroReportes(
     menu.hidden =
         true;
 
+    restaurarTextoCatalogoFiltroReportes(
+        catalogo
+    );
+
+    filtrarOpcionesCatalogoFiltroReportes(
+        catalogo,
+        ''
+    );
+
     boton.setAttribute(
         'aria-expanded',
         'false'
     );
+}
+
+function restaurarTextoCatalogoFiltroReportes(
+    catalogo
+) {
+    sincronizarCatalogoFiltroReportes(
+        catalogo
+    );
+}
+
+function seleccionarTextoCatalogoFiltroReportes(
+    catalogo
+) {
+    const buscador =
+        catalogo.querySelector(
+            '.reportes-filtros-catalogo__datos strong[contenteditable="true"]'
+        );
+
+    if (!buscador) {
+        return;
+    }
+
+    const rango =
+        document.createRange();
+
+    rango.selectNodeContents(
+        buscador
+    );
+
+    const seleccion =
+        window.getSelection();
+
+    seleccion?.removeAllRanges();
+    seleccion?.addRange(rango);
 }
 
 function cerrarCatalogosFiltroReportes(
@@ -559,7 +839,7 @@ function ajustarAlturaCatalogoFiltroReportes(
     const items =
         Array.from(
             menu.querySelectorAll(
-                '.reportes-filtros-catalogo__item'
+                '.reportes-filtros-catalogo__item:not([hidden])'
             )
         );
 

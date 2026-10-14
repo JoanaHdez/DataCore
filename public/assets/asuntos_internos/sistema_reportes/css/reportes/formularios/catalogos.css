@@ -1,0 +1,115 @@
+/* =========================================================
+   SELECTORES CERRADOS DE FORMULARIOS
+   Presentacion comun para Nuevo y Editar
+========================================================= */
+
+.tipo-folio-select,
+#editar-tipo-folio-select,
+.genero-select,
+.quejoso-catalogo-select,
+.editar-quejoso-catalogo-select,
+.canalizacion-select,
+.clasificacion-select,
+.estado-select {
+    min-height: 42px;
+    box-sizing: border-box;
+
+    color: #405d78;
+    background: #ffffff;
+
+    border: 1px solid #cfdce7;
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 11px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.tipo-folio-select,
+#editar-tipo-folio-select,
+.genero-select,
+.quejoso-catalogo-select,
+.editar-quejoso-catalogo-select,
+.canalizacion-select,
+.clasificacion-select,
+.estado-select {
+    outline: none;
+}
+
+.tipo-folio-select:hover,
+#editar-tipo-folio-select:hover,
+.genero-select:hover,
+.quejoso-catalogo-select:hover,
+.editar-quejoso-catalogo-select:hover,
+.canalizacion-select:hover,
+.clasificacion-select:hover,
+.estado-select:hover {
+    border-color: #9fc7df;
+}
+
+.tipo-folio-select:focus,
+#editar-tipo-folio-select:focus,
+.genero-select:focus,
+.quejoso-catalogo-select:focus,
+.editar-quejoso-catalogo-select:focus,
+.canalizacion-select:focus,
+.clasificacion-select:focus,
+.estado-select:focus,
+.tipo-folio-select--activo,
+.genero-select--activo,
+.canalizacion-select--activo,
+.clasificacion-select--activo,
+.estado-select--activo {
+    border-color: #1681c4;
+
+    box-shadow:
+        0 0 0 3px rgba(22, 129, 196, 0.10);
+}
+
+.tipo-folio-select__texto,
+.genero-select__texto,
+.canalizacion-select__texto,
+.clasificacion-select__texto,
+.estado-select__texto {
+    min-width: 0;
+
+    overflow: hidden;
+
+    color: #173554;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tipo-folio-select__flecha,
+.genero-select__flecha,
+.canalizacion-select__flecha,
+.clasificacion-select__flecha,
+.estado-select__flecha {
+    flex-shrink: 0;
+
+    color: #647d92;
+
+    transition:
+        transform 0.2s ease,
+        color 0.2s ease;
+}
+
+.tipo-folio-select:disabled,
+#editar-tipo-folio-select:disabled,
+.genero-select:disabled,
+.quejoso-catalogo-select:disabled,
+.editar-quejoso-catalogo-select:disabled,
+.canalizacion-select:disabled,
+.clasificacion-select:disabled,
+.estado-select:disabled {
+    color: #8999a8;
+    background: #eef2f5;
+    border-color: #dde5eb;
+    cursor: not-allowed;
+    box-shadow: none;
+}
