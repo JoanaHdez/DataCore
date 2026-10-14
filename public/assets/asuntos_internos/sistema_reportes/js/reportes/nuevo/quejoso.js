@@ -137,6 +137,11 @@ function inicializarGeneroQuejoso() {
                 ? genero
                 : 'Selecciona una opción';
 
+        selector.classList.toggle(
+            'genero-select--seleccionado',
+            genero !== ''
+        );
+
 
         cerrarCatalogo();
     }

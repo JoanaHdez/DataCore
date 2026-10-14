@@ -925,6 +925,11 @@ function inicializarGeneroEditar(
                     ? valor
                     : 'Selecciona una opción';
 
+            boton.classList.toggle(
+                'genero-select--seleccionado',
+                valor !== ''
+            );
+
 
             cerrarGeneroEditar(
                 modal
@@ -1086,6 +1091,18 @@ function actualizarGeneroEditar(
         valor !== ''
             ? valor
             : 'Selecciona una opción';
+
+    const boton =
+        modal.querySelector(
+            '#editar-genero-select'
+        );
+
+    if (boton) {
+        boton.classList.toggle(
+            'genero-select--seleccionado',
+            valor !== ''
+        );
+    }
 }
 
 

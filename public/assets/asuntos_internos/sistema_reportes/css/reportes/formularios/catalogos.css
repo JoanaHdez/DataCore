@@ -85,6 +85,10 @@
     white-space: nowrap;
 }
 
+.genero-select--seleccionado .genero-select__texto {
+    text-transform: uppercase;
+}
+
 .tipo-folio-select__flecha,
 .genero-select__flecha,
 .canalizacion-select__flecha,
