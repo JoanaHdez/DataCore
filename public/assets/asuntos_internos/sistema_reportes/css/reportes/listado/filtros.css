@@ -5,7 +5,7 @@
 .reportes-filtros {
     margin-bottom: 24px;
 
-    overflow: hidden;
+    overflow: visible;
 
     background: #ffffff;
 
@@ -87,6 +87,8 @@
 ========================================================= */
 
 .reportes-filtros__field {
+    position: relative;
+
     display: flex;
     flex-direction: column;
 
@@ -125,12 +127,297 @@
         box-shadow 0.2s ease;
 }
 
+.reportes-filtros__select--visual {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    opacity: 0;
+    pointer-events: none;
+}
+
 .reportes-filtros__input:focus,
 .reportes-filtros__select:focus {
     border-color: #1681c4;
 
     box-shadow:
         0 0 0 3px rgba(22, 129, 196, 0.1);
+}
+
+/* =========================================================
+   CATÁLOGOS VISUALES
+========================================================= */
+
+.reportes-filtros-catalogo {
+    position: relative;
+
+    width: 100%;
+}
+
+.reportes-filtros-catalogo__selector {
+    width: 100%;
+    min-height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    padding:
+        5px
+        9px;
+
+    color: #344d64;
+
+    background: #ffffff;
+
+    border: 1px solid #d8e1e9;
+    border-radius: 8px;
+
+    outline: none;
+
+    font-family: inherit;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.reportes-filtros-catalogo__selector:hover {
+    background: #fbfdff;
+
+    border-color: #b8ccd9;
+}
+
+.reportes-filtros-catalogo__selector:focus,
+.reportes-filtros-catalogo__selector[aria-expanded="true"] {
+    background: #ffffff;
+
+    border-color: #1681c4;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(22, 129, 196, 0.10);
+}
+
+.reportes-filtros-catalogo__contenido {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+}
+
+.reportes-filtros-catalogo__avatar {
+    width: 27px;
+    height: 27px;
+
+    flex-shrink: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #166c9f;
+
+    background: #edf7fd;
+
+    border: 1px solid #d6eaf6;
+    border-radius: 50%;
+
+    font-size: 11px;
+    font-weight: 900;
+
+    text-transform: uppercase;
+}
+
+.reportes-filtros-catalogo__datos {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 1px;
+}
+
+.reportes-filtros-catalogo__datos strong {
+    overflow: hidden;
+
+    color: #294e69;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    line-height: 1.25;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.reportes-filtros-catalogo__datos small {
+    overflow: hidden;
+
+    color: #8392a1;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    line-height: 1.3;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.reportes-filtros-catalogo__flecha {
+    width: 15px;
+    height: 15px;
+
+    flex-shrink: 0;
+
+    fill: none;
+
+    color: #70869a;
+
+    stroke: currentColor;
+
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    transition:
+        transform 0.2s ease,
+        color 0.2s ease;
+}
+
+.reportes-filtros-catalogo__selector[aria-expanded="true"]
+.reportes-filtros-catalogo__flecha {
+    color: #1681c4;
+
+    transform: rotate(180deg);
+}
+
+.reportes-filtros-catalogo__resultados {
+    position: absolute;
+
+    top:
+        calc(
+            100% + 6px
+        );
+
+    left: 0;
+
+    z-index: 80;
+
+    width: 100%;
+
+    max-height: 220px;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    padding: 6px;
+
+    background: #ffffff;
+
+    border: 1px solid #d8e1e9;
+    border-radius: 10px;
+
+    box-shadow:
+        0 14px 30px
+        rgba(24, 53, 84, 0.14);
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        #c6d7e4
+        transparent;
+}
+
+.reportes-filtros-catalogo__resultados[hidden] {
+    display: none;
+}
+
+.reportes-filtros-catalogo__resultados::-webkit-scrollbar {
+    width: 5px;
+}
+
+.reportes-filtros-catalogo__resultados::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.reportes-filtros-catalogo__resultados::-webkit-scrollbar-thumb {
+    background: #c6d7e4;
+
+    border-radius: 999px;
+}
+
+.reportes-filtros-catalogo__item {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding:
+        8px
+        9px;
+
+    color: #344d64;
+
+    background: transparent;
+
+    border: 0;
+    border-radius: 8px;
+
+    font-family: inherit;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.18s ease,
+        transform 0.18s ease;
+}
+
+.reportes-filtros-catalogo__item:hover {
+    background: #f1f7fb;
+}
+
+.reportes-filtros-catalogo__item--activo {
+    background: #eaf5fb;
+}
+
+.reportes-filtros-catalogo__item--activo:hover {
+    background: #e3f1f9;
+}
+
+.reportes-filtros-catalogo__item--activo
+.reportes-filtros-catalogo__avatar {
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1b8ccf,
+            #126fa8
+        );
+
+    border-color: #147ab8;
+}
+
+.reportes-filtros-catalogo__item--activo
+.reportes-filtros-catalogo__datos strong {
+    color: #0f6298;
 }
 
 
