@@ -340,10 +340,3 @@
     </div>
 
 </section>
-
-
-<!-- =============================================================
-     GOOGLE MAPS
-============================================================= -->
-
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxfm6rP0X1P2_6p2YdMIfkuTGFpQwBu6A"></script>

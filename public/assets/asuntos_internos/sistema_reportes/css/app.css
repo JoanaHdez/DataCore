@@ -2,8 +2,6 @@
    SISTEMA DE REPORTES - ASUNTOS INTERNOS
    Entrada principal de estilos
 ========================================================= */
-@import url('./ajustes-legibilidad.css');
-
 /* =========================================================
    LOGIN
 ========================================================= */
@@ -105,7 +103,6 @@
 ========================================================= */
 
 @import url('./reportes/felicitaciones/listado.css');
-@import url('./reportes/felicitaciones/editar.css');
 @import url('./reportes/felicitaciones/formulario.css');
 
 /* =========================================================

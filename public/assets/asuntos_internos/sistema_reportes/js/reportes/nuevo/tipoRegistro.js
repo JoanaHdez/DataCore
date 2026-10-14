@@ -148,6 +148,12 @@ async function seleccionarTipoRegistro(
        CERRAR MODAL
     ===================================================== */
 
+    if (
+        modal.contains(document.activeElement)
+    ) {
+        document.activeElement.blur();
+    }
+
     modal.hidden =
         true;
 
