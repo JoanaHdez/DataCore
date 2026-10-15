@@ -572,7 +572,7 @@ function obtenerTextoVisibleCatalogoFiltroReportes(
     if (
         select?.id === 'filtro_resolucion'
     ) {
-        if (!esOpcion && valor === '') {
+        if (valor === '') {
             return 'Todas';
         }
 
